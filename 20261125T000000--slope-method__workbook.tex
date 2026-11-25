@@ -3,7 +3,7 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{xr-hyper}
 \usepackage[hidelinks]{hyperref}
-\externaldocument[st-]{20261124T214500--supersingular-theta-divisibility__workbook}
+\externaldocument[tw-]{20261126T030100--a-twist-for-each-prime__workbook}
 
 % Chapter number; \ref{chap} gives it.
 \newcounter{chap}
@@ -20,59 +20,53 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\Oc}{\mathcal{O}}
-\newcommand{\Hc}{\mathcal{H}}
 \newcommand{\pp}{\mathfrak{p}}
-\newcommand{\aaa}{\mathfrak{a}}
 \newcommand{\ii}{\mathrm{i}}
-\newcommand{\mumax}{\mu_{\max}}
-\newcommand{\mumin}{\mu_{\min}}
-\newcommand{\covol}{\operatorname{covol}}
-\newcommand{\codim}{\operatorname{codim}}
-\newcommand{\tr}{\operatorname{tr}}
-\newcommand{\HS}{\mathrm{HS}}
+\newcommand{\Qlb}{\overline{\Q}_\ell}
+\newcommand{\Aut}{\operatorname{Aut}}
 
 \setlength{\emergencystretch}{2em}
 
 \title{Size against divisibility}
 \author{}
-\date{November 25, 2026}
+\date{November 26, 2026}
 
 \begin{document}
 \maketitle
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-Linear algebra over \(\R\) and \(\C\): the spectral theorem, the Hilbert--Schmidt norm \(\lVert A \rVert_\HS^2 = \tr(A^*A)\), exterior powers, and Hadamard's inequality \(\lvert \det(v_1, \dots, v_n) \rvert \le \lVert v_1 \rVert \cdots \lVert v_n \rVert\).  Lattices in a Euclidean space \cite[Ch.~I, \S4]{Ne}.  Dedekind domains, the absolute norm of a fractional ideal, ramification indices and residue degrees, the Frobenius element of an unramified prime, and the product formula \cite[Ch.~I and Ch.~III]{Ne}.  Legendre's formula \(v_p(n!) = \sum_{e \ge 1} \lfloor n/p^e \rfloor\), Stirling's formula, and the von Mangoldt function \(\Lambda\).  No earlier chapter is used; one remark in Section~\ref{sec:image} points to Chapter~\ref{st-chap}.  The next chapter, \emph{The slope inequality in the mean}, continues this one with many maps into one target.
+Linear algebra over \(\C\): Hermitian and positive semidefinite matrices, and Hadamard's inequality, in the form \(\det A \le a_{11} \cdots a_{nn}\) for a positive semidefinite Hermitian matrix \(A = (a_{ik})\), or \(\lvert \det(v_1, \dots, v_n) \rvert \le \lVert v_1 \rVert \cdots \lVert v_n \rVert\) for vectors.  Dedekind domains, the absolute norm, the product formula \cite[Ch.~I and Ch.~III]{Ne}, and the unique extension of the \(\ell\)-adic absolute value to an algebraic closure \(\Qlb\) of \(\Q_\ell\) \cite[Ch.~II, \S4]{Ne}.  Transcendence bases \cite[Ch.~VIII, \S1]{La}, and two consequences: \(\C\) and \(\Qlb\) are isomorphic fields, both being algebraically closed of characteristic \(0\) and of transcendence degree the continuum over \(\Q\); and an isomorphism between two subfields of \(\C\) that are finitely generated over \(\Q\) extends to an automorphism of \(\C\).  Legendre's formula \(v_p(n!) = \sum_{e \ge 1} \lfloor n/p^e \rfloor\), Stirling's formula, and the von Mangoldt function \(\Lambda\).  No earlier chapter is used.  The next chapter, \emph{A twist for each prime}, continues this one.
 
 \section{Divisibility against size}\label{sec:chebyshev}
 
-How can a divisibility statement bound a sum over primes?  Chebyshev's answer uses one integer \cite{Ch}.  Let \(\theta(x) := \sum_{p \le x} \log p\).
+How can a divisibility statement bound a sum over primes?  A binomial coefficient illustrates Chebyshev's factorial method \cite{Ch}.  Let \(\theta(x) := \sum_{p \le x} \log p\).  In the next two problems let \(n\) be a nonnegative integer.
 
 \begin{problem}\label{pr:binomial}
 Every prime \(p\) with \(n < p \le 2n\) divides \(\binom{2n}{n}\), and \(\binom{2n}{n} \le 4^n\).  Hence \(\theta(2n) - \theta(n) \le n \log 4\).
 \end{problem}
 
-The principle is the following.  If a nonzero integer \(\Delta\) is divisible by \(p^{e_p}\) for each prime \(p\) in a set \(S\), then
+The principle is the following.  If a nonzero integer \(\Delta\) is divisible by \(p^{e_p}\) for each prime \(p\) in a set \(S\), where the \(e_p\) are nonnegative integers, then
 \begin{equation}\label{eq:det}
   \sum_{p \in S} e_p \log p \le \log \lvert \Delta \rvert .
 \end{equation}
 
-For \(\Delta = n!\) both sides of~\eqref{eq:det} are known exactly.
+For \(\Delta = n!\) and \(e_p = v_p(n!)\), with \(S\) the primes up to \(n\), both sides of~\eqref{eq:det} are known exactly.
 
 \begin{problem}\label{pr:legendre}
 \(\log n! = \sum_{r \le n} \Lambda(r) \lfloor n/r \rfloor\).
 \end{problem}
 
-By Stirling's formula the left side is \(n\log n - n + O(\log n)\).  Without the floor function the right side would be \(n \sum_{r \le n} \Lambda(r)/r\).  The fractional parts contribute \(\sum_{r \le n} \Lambda(r) \{n/r\}\), which by Chebyshev's bounds is of size \(n\), the size of the term \(-n\) on the left.  So the identity cannot see \(\psi(n) - n\), where \(\psi(x) := \sum_{r \le x} \Lambda(r)\).  To do better one needs an object whose exponent at \(p^e\) is a smooth function of \(p^e\), such as the ramp \((x/p^e - 1)_+\), where \(t_+ := \max(t, 0)\), and whose size is known with an error much smaller than its linear term.
+By Stirling's formula the left side is \(n\log n - n + O(\log n)\).  Without the floor function the right side would be \(n \sum_{r \le n} \Lambda(r)/r\).  Removing the floors overestimates the right side by \(\sum_{r \le n} \Lambda(r) \{n/r\}\), an error of order \(n\) by Chebyshev's bounds, the scale of the linear term in Stirling's formula; so this estimate cannot see \(\psi(n) - n\), where \(\psi(x) := \sum_{r \le x} \Lambda(r)\).  For a finer comparison one can seek divisibility bounds with a continuous weight on prime powers, such as \((x/p^e - 1)_+\), where \(t_+ := \max(t, 0)\), and a size estimate whose error is smaller than its linear term.
 
-The integer \(\Delta\) will be a minor of a matrix.
+The number \(\Delta\) will be a minor of a matrix.
 
 \begin{problem}\label{pr:hadamard-det}
 Let \(A \in M_r(\Z)\) with \(\det A \ne 0\), and suppose that the \(j\)th column \(A_j\) is divisible by the positive integer \(g_j\).  Then
 \[
   g_1 \cdots g_r \le \lvert \det A \rvert \le \lVert A_1 \rVert \cdots \lVert A_r \rVert .
 \]
-For the columns \((6, 6)\) and \((10, 20)\) the three numbers are \(60\), \(60\) and \(60\sqrt{10}\).
+For the columns \((6, 6)\) and \((10, 20)\), with \(g_1 = 6\) and \(g_2 = 10\), the three numbers are \(60\), \(60\) and \(60\sqrt{10}\).
 \end{problem}
 
 The same principle holds over a number field \(K\), where the product formula accounts for the size of a number at every place.  At a finite place \(v\) write \(\Oc_v\), \(\pp_v\) and \(q_v\) for the valuation ring, its maximal ideal and the size of its residue field, and let \(\lvert x \rvert_v := q_v^{-\operatorname{ord}_v x}\).  At an archimedean place use the usual modulus.  Let \(n_v := 2\) at complex places and \(n_v := 1\) at the other places.  Then \(\sum_v n_v \log \lvert c \rvert_v = 0\) for \(c \in K^\times\).  Hence, if \(\delta \in K^\times\) satisfies \(\lvert \delta \rvert_v \le \exp(b_v - g_v)\) at every place, where \(b_v\) and \(g_v\) are real and vanish for almost all \(v\), then
@@ -84,13 +78,13 @@ Typically \(\delta\) is a minor of a matrix, \(b_v\) bounds it through the sizes
 
 \section{A minor of a jet evaluation map}\label{sec:minor}
 
-Where does a minor with many prime factors come from?  One source is Frobenius.  Let \(K = \Q(\ii)\), so that a prime \(p \equiv 3 \pmod 4\) is inert and \(\Z[\ii]/p\) is the field with \(p^2\) elements.
+Where does a minor with many prime factors come from?  One source is Frobenius.  Throughout this section \(p\) denotes a prime.  Let \(K = \Q(\ii)\), so that a prime \(p \equiv 3 \pmod 4\) is inert and \(\Z[\ii]/p\) is the field with \(p^2\) elements.
 
 \begin{problem}\label{pr:frob}
 If \(p \equiv 3 \pmod 4\) and \(u \in \Z[\ii]\), then \(\bar u \equiv u^p \pmod p\).
 \end{problem}
 
-Thus complex conjugation is the Frobenius at every inert prime.  Let \(u_1, \dots, u_I \in \Z[\ii]\), let \(\mathcal{T} \subset \Z_{\ge 0}^2\) be a finite set of \(s\) exponents, and let \(J \ge 1\).  On the span of the monomials \(X^a Y^b\), \((a,b) \in \mathcal{T}\), consider the jet evaluation map
+Thus complex conjugation is the Frobenius at every inert prime.  Let \(u_1, \dots, u_I \in \Z[\ii]\), let \(\mathcal{T} \subset \Z_{\ge 0}^2\) be a finite set of \(s\) exponents, and let \(J\) be a positive integer.  On the \(K\)-span of the monomials \(X^a Y^b\), \((a,b) \in \mathcal{T}\), consider the jet evaluation map
 \[
   \mathrm{ev} \colon f \longmapsto \bigl( (\partial_X^j f)(u_i, \bar u_i) \bigr)_{1 \le i \le I,\ 0 \le j < J} .
 \]
@@ -113,106 +107,104 @@ Suppose that \(\mathrm{ev}\) is injective, and let \(P\) be a set of primes \(p 
 \]
 \end{theorem}
 
-Over a function field this is the mechanism of Stepanov's proof of the Riemann hypothesis for curves \cite{Bom}.
+Over a finite field, Stepanov's method for curves likewise compares the forced vanishing of an auxiliary function with a bound on its degree \cite{Bom}.
 
-\section{Normed spaces and slopes}\label{sec:slopes}
+\section{Heights of families}\label{sec:heights}
 
-The minor \(\delta\) of Section~\ref{sec:minor} is the top exterior power of a linear map, written in chosen bases.  To let the bases vary with the place, one puts norms on the spaces.
+In Section~\ref{sec:chebyshev} the size and the divisibility of one number were compared at the places of one field.  In the rewritten Lean proof \cite{GL}, \texttt{HeightLe} bounds a family of complex numbers indexed by pairs of a prime and an isomorphism as below; its entries may vary with the isomorphism, and its definition involves no number field.  The places are therefore replaced by isomorphisms.
 
-Let \(K\) be a number field, with the conventions of Section~\ref{sec:chebyshev}.  A \emph{normed space} over \(K\) is a finite-dimensional \(K\)-vector space \(V\) with a norm on each \(V_v := V \otimes_K K_v\): a Euclidean or Hermitian norm at each archimedean place, and at each finite place the sup norm of a full \(\Oc_v\)-lattice \(L_v\), the \emph{unit lattice}.  Almost everywhere \(L_v\) is the \(\Oc_v\)-span of a fixed basis.  Subspaces carry the restricted norms, quotients the quotient norms, the dual \(V^\vee\) the dual norms, and exterior powers the induced norms.  For \(e \ne 0\) in \(V\) let \(h(e) := \sum_v n_v \log \lVert e \rVert_v\), and for a nonzero linear map \(\varphi \colon V \to F\) of normed spaces let
-\[
-  h(\varphi) := \sum_v n_v \log \lVert \varphi \rVert_v ,
-\]
-with the operator norms, and \(h_\infty(\varphi)\) for the sum over the archimedean places alone.  For \(r = \dim V > 0\) and a generator \(\omega\) of \(\det V := \wedge^r V\), let
-\[
-  \deg V := -h(\omega) , \qquad \mu(V) := \deg V / r .
-\]
-By the product formula \(\deg V\) does not depend on \(\omega\).  These are the \emph{degree} and the \emph{slope} of \(V\).  We follow Bost \cite{Bo96} and do not divide by \([K:\Q]\).
+For a prime \(\ell\) let \(\lvert\cdot\rvert_\ell\) be the absolute value on \(\Qlb\) that extends the \(\ell\)-adic one, so that \(\lvert \ell \rvert_\ell = \ell^{-1}\).  Write \(\iota \mid \ell\) for a field isomorphism \(\iota \colon \C \to \Qlb\), put \(\lvert x \rvert_\iota := \lvert \iota(x) \rvert_\ell\) for \(x \in \C\), and let \(\bar\iota \mid \ell\) be the isomorphism \(x \mapsto \iota(\bar x)\).  Let \(\Aut(\C)\) be the group of all field automorphisms of \(\C\); most of them are not continuous.  A \emph{family} \(y\) assigns a complex number \(y_\iota\) to every isomorphism \(\iota \mid \ell\), for every prime \(\ell\).
 
-\begin{problem}\label{pr:deg-Q}
-Over \(\Q\), the lattice \(L := V \cap \bigcap_p L_p\) has \(L \otimes \Z_p = L_p\) for every \(p\), and \(\deg V = -\log \covol(L)\).
+\begin{problem}\label{pr:iota}
+Let \(\iota \mid \ell\).  If \(x \in \Q\), then \(\lvert x \rvert_\iota = \lvert x \rvert_\ell\).  If \(\ell \equiv 3 \pmod 4\) and \(0 \ne x \in \Z[\ii]\), then \(\lvert x \rvert_\iota = \ell^{-v}\), where \(\ell^v\) is the exact power of \(\ell\) dividing \(x\) in \(\Z[\ii]\).  If \(\ell = 5\), then exactly one of \(\lvert 2 + \ii \rvert_\iota\) and \(\lvert 2 + \ii \rvert_{\bar\iota}\) equals \(1/5\), and the other equals \(1\).
 \end{problem}
 
-So over \(\Q\) a normed space is a Euclidean lattice.
+So the constant family \(2 + \ii\) has different absolute values at different isomorphisms above one prime.  The following notion bounds a family by one number.  Let \(c \in \R\).  A family \(y\) has \emph{height at most \(c\)} if there are \(H \in \C\), \(\alpha \in \R\) and real numbers \(h(\ell)\), one for each prime \(\ell\), such that
+\begin{enumerate}
+\item[(i)] \(H \ne 0\), and \(h(\ell) \ge 0\) for every prime \(\ell\);
+\item[(ii)] \(\lvert \sigma H \rvert \le e^\alpha\) for every \(\sigma \in \Aut(\C)\);
+\item[(iii)] \(\lvert H y_\iota \rvert_\iota \le \ell^{h(\ell)}\) for every prime \(\ell\) and every \(\iota \mid \ell\);
+\item[(iv)] \(\alpha + \sum_{\ell \in U} h(\ell) \log \ell \le c\) for every finite set \(U\) of primes.
+\end{enumerate}
+The multiplier \(H\) and the bound \(\alpha\) at infinity are common to all \(\iota\), while \(y_\iota\) may depend on \(\iota\), even among the isomorphisms above one prime.  There is no condition on the sign of \(\alpha\).
 
-\begin{problem}\label{pr:deg-basic}
-Let \(\tau \in \C\) with \(\operatorname{Im}\tau > 0\), and give \(\C = \R^2\) its usual norm.  Then the Euclidean lattice \(\Z + \Z\tau\) has \(\deg(\Z + \Z\tau) = -\log \operatorname{Im}\tau\).  If \(M \subseteq L\) is a sublattice of index \(N\), then \(\deg M = \deg L - \log N\).  Multiplying the norm of \(L\) by \(c > 0\) subtracts \(r \log c\) from \(\deg L\).
+\begin{problem}\label{pr:height-mul}
+If the families \(y\) and \(y'\) have heights at most \(c\) and \(c'\), then the family \(\iota \mapsto y_\iota y'_\iota\) has height at most \(c + c'\).  If \(y\) has height at most \(c\), then for every integer \(n \ge 0\) the family \(\iota \mapsto y_\iota^n\) has height at most \(nc\).
 \end{problem}
 
-\begin{problem}\label{pr:additivity}
-If \(U \subseteq V\) is a subspace, then \(\deg V = \deg U + \deg(V/U)\).
+\begin{problem}\label{pr:height-easy}
+(a) Let \(e(\ell)\) be real numbers, of any sign, one for each prime \(\ell\), with \(\sum_{\ell \in U} e(\ell) \le c\) for every finite set \(U\) of primes.  If \(\lvert y_\iota \rvert_\iota \le e^{e(\ell)}\) for every \(\iota \mid \ell\), then \(y\) has height at most \(c\).
+(b) If \(H \ne 0\) and \(\lvert \sigma H \rvert \le e^c\) for every \(\sigma \in \Aut(\C)\), then the constant family \(H^{-1}\) has height at most \(c\).
 \end{problem}
 
-The domain of the slope method is a lattice of sections of a line bundle, or of automorphic forms.  The simplest case is the projective line.  For \(D \ge 0\) let \(E_D\) be the lattice of homogeneous polynomials \(f \in \Z[x, y]\) of degree \(D\), with
-\[
-  \lVert f \rVert^2 := \int_\C \frac{\lvert f(z, 1) \rvert^2}{(1 + \lvert z \rvert^2)^D} \, \frac{d A(z)}{\pi (1 + \lvert z \rvert^2)^2} .
-\]
-This is the \(L^2\) norm of a section of \(\Oc(D)\) for the Fubini--Study metric and the Fubini--Study probability measure.
+Can a height be negative?  For the constant family \(1\), every admissible bound is nonnegative.
 
-\begin{problem}\label{pr:FS}
-The monomials are orthogonal, and \(\lVert x^a y^{D-a} \rVert^2 = a!\,(D-a)!/(D+1)!\).
+\begin{problem}\label{pr:transcendental}
+If \(H \in \C\) is transcendental over \(\Q\), then for every prime \(\ell\) the numbers \(\lvert H \rvert_\iota\), \(\iota \mid \ell\), are unbounded.  Hence a number \(H\) with \(\lvert H \rvert_\iota \le C\) for all \(\iota \mid 2\) is algebraic.
 \end{problem}
 
-\begin{problem}\label{pr:HS-P1}
-\(\mu(E_D) = D/4 + O(\log D)\).
+\begin{problem}\label{pr:one}
+If the constant family \(1\) has height at most \(c\), then \(c \ge 0\).
 \end{problem}
 
-Problem~\ref{pr:HS-P1} is the simplest case of the arithmetic Hilbert--Samuel theorem \cite[Thm.~8]{GS2}.
+Problems~\ref{pr:height-mul}, \ref{pr:height-easy}(b) and~\ref{pr:one} give the product formula for families.
 
-\begin{problem}\label{pr:ideal}
-Let \(\aaa\) be a fractional ideal of \(K\), with unit lattices \(\aaa\Oc_v\) and \(\lVert x \rVert_v = \lvert x \rvert_v\) at the archimedean places.  Then \(\deg \aaa = -\log N\aaa\).  Replacing every unit lattice \(L_v\) of \(V\) by \(\aaa L_v\) lowers \(\mu(V)\) by \(\log N\aaa\).
-\end{problem}
-
-To compare slopes over fields of different degrees, one normalizes by the degree, and many authors also use squared norms.  Let
-\[
-  \mu^\sharp := \frac{2}{[K:\Q]}\, \mu , \qquad h^\sharp := \frac{2}{[K:\Q]}\, h .
-\]
-For a prime \(\pp\) of \(K\) above \(p\), with ramification index \(e_\pp\), let \(c_\pp := 2 e_\pp \log N\pp/[K:\Q]\).
-
-\begin{problem}\label{pr:normalization}
-\(\sum_{\pp \mid p} c_\pp = 2\log p\).  If every unit lattice \(L_\pp\), \(\pp \mid p\), is replaced by \(p^{-e} L_\pp\), then \(\mu^\sharp\) increases by \(2e\log p\).
-\end{problem}
-
-So a divisibility by \(p^e\) at every place above \(p\) is worth \(2e\log p\) in the normalized slopes.
-
-
-\section{The height inequality for an image}\label{sec:image}
-
-How does a linear map compare the slopes of its source and target?  Let \(\varphi \colon V \to F\) be an injective map of normed spaces with image \(U\), and let \(r = \dim V > 0\).  On determinant lines it induces \(\wedge^r\varphi \colon \det V \to \det U\).
-
-\begin{problem}\label{pr:wedge}
-\(\sum_v n_v \log \lVert \wedge^r \varphi \rVert_v = r\bigl(\mu(V) - \mu(U)\bigr)\), and \(\lVert \wedge^r\varphi \rVert_v \le \lVert \varphi \rVert_v^r\) at every place.
-\end{problem}
-
-Summing local bounds gives the following.
-
-\begin{theorem}\label{thm:image}
-Suppose that \(\log \lVert \wedge^r\varphi \rVert_v \le b_v - g_v\) at every place, with \(b_v = g_v = 0\) almost everywhere.  Then
-\[
-  \sum_v n_v g_v \le \sum_v n_v b_v + r\bigl(\mu(U) - \mu(V)\bigr) .
-\]
-In particular \(\mu(V) \le \mu(U) + h(\varphi) \le \mumax(F) + h(\varphi)\), where \(\mumax(F)\) is the supremum of the slopes of the nonzero subspaces of \(F\).
+\begin{theorem}\label{thm:product}
+Let \(z \in \C\), \(z \ne 0\), and \(c, c' \in \R\).  If the constant family \(z\) has height at most \(c\), and \(\lvert \sigma z \rvert \le e^{c'}\) for every \(\sigma \in \Aut(\C)\), then \(-c \le c'\).
 \end{theorem}
 
-The last inequality is the slope inequality of Bost \cite{Bo96}, \cite[Prop.~4.5]{Bo01}.  For \(V = F = K\) with the standard norms and \(\varphi\) the multiplication by \(\delta\), Theorem~\ref{thm:image} is~\eqref{eq:scalar}.
-
-Over \(\Q\) the local norms at the primes are divisibilities.
-
-\begin{problem}\label{pr:hfin}
-Let \(L\) and \(M\) be Euclidean lattices and \(\varphi \colon L_\Q \to M_\Q\) nonzero.  Then \(\lVert \varphi \rVert_p = p^{-e}\) for the largest integer \(e\) with \(\varphi(L) \subseteq p^e (M \otimes \Z_{(p)})\).  In particular \(\sum_p \log\lVert\varphi\rVert_p \le 0\) when \(\varphi(L) \subseteq M\), with every divisibility of the values making it smaller.
+\begin{problem}\label{pr:height-rational}
+Let \(x \in \Q^\times\).  The constant family \(x\) has height at most \(c\) if and only if \(c \ge -\log \lvert x \rvert\).  For instance, the constant family \(2\) has height at most \(-\log 2\).  If \(g = \prod_{p \in S} p^{e_p}\), with \(S\) a finite set of primes, divides the nonzero integer \(\Delta\), then the constant family \(\Delta\) has height at most \(-\log g\), and Theorem~\ref{thm:product} then gives~\eqref{eq:det}.
 \end{problem}
 
-When the ranks agree, an identity replaces the inequality.
+\begin{problem}\label{pr:reciprocal}
+Let \(S\) be a finite set of primes and \(N := \prod_{\ell \in S} \ell\).  The family with \(y_\iota = \ell^{-1}\) for \(\iota \mid \ell\) with \(\ell \in S\), and \(y_\iota = 1\) for \(\iota \mid \ell\) with \(\ell \notin S\), has height at most \(c\) if and only if \(c \ge \log N\).  For \(S = \{2, 3\}\) the least height is \(\log 6\).
+\end{problem}
 
-\begin{problem}\label{pr:index-det}
-Suppose that \(\dim L_\Q = \dim M_\Q\), that \(\varphi\) is injective, and that \(\varphi(L) \subseteq M\).  Then
+In the rewritten Lean proof \cite{GL}, the pairs of a prime \(\ell\) and an isomorphism \(\iota \mid \ell\) are \texttt{PrimePadicIso}, a height at most \(c\) is \texttt{HeightLe} (there \(h\) is a function on all natural numbers, nonnegative everywhere, and only its values at primes enter the bounds; in \texttt{HeightLe.of\_le} the function \(e\) is likewise defined on all natural numbers, of either sign), and Problems~\ref{pr:height-mul}, \ref{pr:height-easy} and~\ref{pr:one} and Theorem~\ref{thm:product} are \texttt{HeightLe.mul} with \texttt{HeightLe.pow}, \texttt{HeightLe.of\_le} with \texttt{HeightLe.inv\_const}, \texttt{HeightLe.nonneg\_of\_one} and \texttt{HeightLe.neg\_le\_of\_norm\_map\_le}, all in \texttt{New/Reduction/Lattices/Heights.lean} of the readable edition.  \texttt{New.isAlgebraic\_of\_norm\_complexToCp\_le}, in \texttt{Lib/General/NumberTheory/PadicLimitsValuation.lean}, states that a common bound on the norms of the images of \(H\) at one prime \(\ell\), over all \(\iota\mid\ell\), implies that \(H\) is algebraic over \(\Q\); it takes the norm after the isometric embedding of \(\Qlb\) into its completion.  Problem~\ref{pr:transcendental} states the contrapositive and the case \(\ell=2\).
+
+
+\section{Index and covolume}\label{sec:index}
+
+The minor \(\Delta\) of Section~\ref{sec:minor} is a Gaussian integer and a determinant.  The proof of \texttt{TwistedLattice.covolume\_add\_index\_nonneg} in \cite{GL} compares Gram determinants of the images of a basis.  A covolume bound on the given vectors and squared-length bounds on the completing vectors control the size at the trivial twist, and at each \(\iota\) the rows of one index matrix give combinations of the given vectors that are integral for every twist allowed at its prime.  Here we use one map; the next chapter allows a choice of twist for each \(\iota \mid \ell\).
+
+For \(\iota \mid \ell\) let \(\Oc_\iota := \{x \in \C : \lvert x \rvert_\iota \le 1\}\), a subring of \(\C\).  A \emph{lattice datum} consists of
+\begin{enumerate}
+\item[(i)] a complex vector space \(V\), a complex inner product space \(W\), with \(\langle \cdot, \cdot \rangle\) conjugate-linear in the first variable, and a linear map \(\Theta \colon V \to W\);
+\item[(ii)] for every prime \(\ell\) and every \(\iota \mid \ell\), an \(\Oc_\iota\)-submodule \(\Lambda_\iota \subseteq W\), such that \(\lvert \langle \varphi, \varphi' \rangle \rvert_\iota \le 1\) for all \(\varphi \in \Lambda_{\bar\iota}\) and \(\varphi' \in \Lambda_\iota\);
+\item[(iii)] a finite set \(I\), a linear map \(b \colon W \to \C^I\), and a matrix \(G \in M_I(\Q)\), positive definite as a complex matrix, with \(\langle \varphi, \varphi' \rangle = b(\varphi)^* G\, b(\varphi')\) for all \(\varphi, \varphi' \in W\), where \({}^*\) is the conjugate transpose.
+\end{enumerate}
+A vector \(y \in V\) is \emph{integral at \(\iota\)} if \(\Theta y \in \Lambda_\iota\); these vectors form an \(\Oc_\iota\)-submodule \(M_\iota\) of \(V\).  The \emph{standard datum} on \(\C^n\) has \(V = W = \C^n\), \(\Theta = b = \mathrm{id}\), \(G = 1\) and \(\Lambda_\iota = \Oc_\iota^n\).
+
+Let \(S\) be a finite set, \(y = (y_s)_{s \in S}\) a family of vectors of \(V\), and \(\delta \in \R\).  The family \(y\) has \emph{index at most \(\delta\)} if there are real numbers \(e(\ell) \ge 0\), one for each prime \(\ell\), with \(\sum_{\ell \in U} e(\ell) \log \ell \le \delta\) for every finite set \(U\) of primes, such that for every \(\iota \mid \ell\) some matrix \(u \in M_S(\Oc_\iota)\) satisfies
 \[
-  \deg M - \deg L = \log [M : \varphi(L)] - \log \lvert \det \varphi_\R \rvert ,
+  \lvert \det u \rvert_\iota \ge \ell^{-e(\ell)} \quad\text{and}\quad \sum_{k \in S} u_{ik}\, y_k \in M_\iota \text{ for every } i \in S .
 \]
-where \(\det \varphi_\R\) is computed in orthonormal bases.
+The matrix may depend on \(\iota\).  Every admissible \(\delta\) is nonnegative.
+
+\begin{problem}\label{pr:index-basic}
+The standard datum satisfies condition (ii).  In it, a family of vectors with entries in \(\Z[\ii]\) has index at most \(0\).  On \(\C^1\), the family consisting of the one vector \(1/3\) has index at most \(\delta\) if and only if \(\delta \ge \log 3\).
 \end{problem}
 
-Where do divisible values and controlled norms come from together?  The simplest example is the \(a\)th derivative at \(0\) of a polynomial with integer coefficients, which is divisible by \(a!\), on a space of polynomials with a Gaussian norm.  For \(f \in \C[z]\) let
+\begin{problem}\label{pr:index-sum}
+If \(y = (y_s)_{s \in S}\) has index at most \(\delta\) and \(y' = (y'_s)_{s \in S'}\) has index at most \(\delta'\), then the family indexed by the disjoint union \(S \sqcup S'\) that restricts to \(y\) and \(y'\) has index at most \(\delta + \delta'\).
+\end{problem}
+
+An index bound is usually proved one submodule at a time.  For \(\Oc_\iota\)-submodules \(M, M'\) of \(V\) and \(z \in \Oc_\iota\), say that \emph{the colength of \(M'\) in \(M\) divides \(z\)} if for every \(n \ge 0\) and all \(\Phi_1, \dots, \Phi_n \in M\) there is a matrix \(m \in M_n(\Oc_\iota)\) such that \(\det m\) divides \(z\) in \(\Oc_\iota\) and \(\sum_k m_{ik} \Phi_k \in M'\) for every \(i\).  No inclusion between \(M\) and \(M'\) is assumed.  This colength condition gives an upper bound for the index.
+
+\begin{theorem}\label{thm:colength}
+Let \(y_1, \dots, y_n \in V\), \(\delta \in \R\), and let \(e(\ell) \ge 0\), one for each prime \(\ell\), satisfy \(\sum_{\ell \in U} e(\ell) \log \ell \le \delta\) for every finite set \(U\) of primes.  Suppose that for every \(\iota \mid \ell\) there are an integer \(j \ge 0\) and an \(\Oc_\iota\)-submodule \(M \subseteq V\) such that \(j \le e(\ell)\), every \(y_i\) lies in \(M\), and the colength of \(M_\iota\) in \(M\) divides \(\ell^j\).  Then \(y\) has index at most \(\delta\).
+\end{theorem}
+
+\begin{problem}\label{pr:lattice-change}
+Let \(\Lambda \subset \Q^n\) be a subgroup that contains \(\Z^n\) with finite index \(N\), and let \(y_1, \dots, y_n\) be a basis of \(\Lambda\).  In the standard datum on \(\C^n\), the family \(y\) has index at most \(\log N\), and \(\det(y_i^* y_k)_{i,k} = N^{-2}\).
+\end{problem}
+
+Now the size.  For \(\sigma \in \Aut(\C)\) and \(y \in V\) let \(v_\sigma(y) \in \C^I\) be the vector \(b(\Theta y)\) with \(\sigma\) applied to each coordinate, and let \(N(y, \sigma) := \operatorname{Re}\bigl(v_\sigma(y)^* G\, v_\sigma(y)\bigr)\).  A family \(y = (y_s)_{s \in S}\) has \emph{covolume at most \(c\)} if
+\[
+  \bigl\lvert \det\bigl( v_\sigma(y_i)^* G\, v_\sigma(y_k) \bigr)_{i,k \in S} \bigr\rvert \le e^c \quad\text{for every } \sigma \in \Aut(\C).
+\]
+For \(\sigma = \mathrm{id}\) the determinant is the Gram determinant of the vectors \(\Theta y_s\), the square of a volume.  So the family of Problem~\ref{pr:lattice-change} has covolume at most \(c\) exactly when \(c \ge -2\log N\).  In the next example \(G\) differs from the identity when \(D \ge 3\).  For \(f \in \C[z]\) let
 \[
   \lVert f \rVert^2 := \frac{1}{\pi} \int_\C \lvert f(z) \rvert^2 e^{-\lvert z \rvert^2} \, d A(z) .
 \]
@@ -221,46 +213,54 @@ Where do divisible values and controlled norms come from together?  The simplest
 The monomials are orthogonal, and \(\lVert z^a \rVert^2 = a!\).
 \end{problem}
 
-\begin{problem}\label{pr:fock-height}
-Let \(a < D\), let \(L\) be the lattice of polynomials in \(\Z[z]\) of degree less than \(D\) with the norm above, and let \(\varphi(f) := f^{(a)}(0) \in \Z\), with \(\Z\) the standard lattice.  Then \(\sum_p \log\lVert\varphi\rVert_p = -\log a!\) and \(h_\infty(\varphi) = \tfrac12 \log a!\).
+\begin{problem}\label{pr:fock-datum}
+Let \(D\) be a positive integer, let \(V = W\) be the polynomials of degree less than \(D\) with the inner product of Problem~\ref{pr:fock}, \(\Theta = \mathrm{id}\), \(b(f) = (f_0, \dots, f_{D-1})\) the coefficients, \(G = \operatorname{diag}(0!, 1!, \dots, (D-1)!)\), and \(\Lambda_\iota\) the polynomials with coefficients in \(\Oc_\iota\).  This is a lattice datum.  In it, the family \((z^a/a!)_{0 \le a < D}\) has index at most \(\sum_{a < D} \log a!\), and covolume at most \(c\) if and only if \(c \ge -\sum_{a < D} \log a!\).  For \(D = 4\) the sum is \(\log 12\).
 \end{problem}
 
-By Problem~\ref{pr:legendre} the gain \(\log a!\) at the finite places is a sum over primes, and the cost at infinity is half of it.  In the applications the function is a theta function with complex multiplication, and at a supersingular prime the divisibility that one proves is only about \(a \sum_{e\ \mathrm{odd}} p^{-e}\) of the \(v_p(a!) \approx a \sum_{e \ge 1} p^{-e}\) (Chapter~\ref{st-chap}, Theorem~\ref{st-thm:single}).
-
-\section{Divisibility of a pairing as a change of lattice}\label{sec:pairing}
-
-In the applications the values of the map are periods, that is, values of a bilinear pairing.  Let \(P \colon V \times W \to K\) be a bilinear pairing of normed spaces, with unit lattices \(L_v\) and \(R_v\), and let \(\varphi_P \colon V \to W^\vee\) be the induced map.
-
-\begin{problem}\label{pr:pairing-norm}
-At a finite place, if \(P \ne 0\), then \(\lVert \varphi_P \rVert_v = q_v^{-k}\) for the largest \(k\) with \(P(L_v, R_v) \subseteq \pp_v^k\).  Multiplying the norms of \(W\) at the archimedean places by constants \(\lambda_v > 0\) adds \(\sum_v n_v \log\lambda_v\) to \(\mu(W^\vee)\) and subtracts it from \(h(\varphi_P)\).
+\begin{problem}\label{pr:hadamard-gram}
+Let \(G \in M_I(\C)\) be positive semidefinite and \(w_1, \dots, w_n \in \C^I\).  Then \(\lvert \det(w_i^* G w_k)_{i,k} \rvert \le \prod_i w_i^* G w_i\).  For \(G = 1\) and the columns \((6, 6)\) and \((10, 20)\) of Problem~\ref{pr:hadamard-det} the two sides are \(3600\) and \(36000\).
 \end{problem}
 
-So only \(h(\varphi_P) + \mu(W^\vee)\) is independent of the normalization of \(W\).  To estimate \(P\) at different places one may use different factorizations.
+A uniform bound on squared norms gives a covolume bound.
 
-\begin{problem}\label{pr:chain}
-Suppose that \(P(x, w) = c_v\, P'_v(A_{m,v} \cdots A_{1,v}\, x,\ C_{m,v} \cdots C_{1,v}\, w)\) at a place \(v\), where \(c_v \in K_v^\times\), the intermediate spaces carry norms and \(P'_v\) has the bilinear operator norm.  Then
-\[
-  \log \lVert \varphi_P \rVert_v \le \log \lvert c_v \rvert_v + \log \lVert P'_v \rVert_v + \sum_{j=1}^m \bigl( \log \lVert A_{j,v} \rVert_v + \log \lVert C_{j,v} \rVert_v \bigr) .
-\]
-At a finite place, an inclusion \(A_{j,v} L_{j-1} \subseteq \pp_v^k L_j\), where \(L_{j-1}\) and \(L_j\) are the unit lattices of the source and the target of \(A_{j,v}\), contributes \(-k\log q_v\), for every integer \(k\).
+\begin{theorem}\label{thm:hadamard}
+Let \(y_1, \dots, y_n \in V\) and \(h \in \R\).  If \(N(y_i, \sigma) \le e^h\) for every \(i\) and every \(\sigma \in \Aut(\C)\), then \(y\) has covolume at most \(nh\).
+\end{theorem}
+
+The hypothesis concerns every \(\sigma\).  For the vector \(1 - \sqrt 2\) in the standard datum on \(\C^1\), \(N(1 - \sqrt 2, \mathrm{id}) = 3 - 2\sqrt 2\), but \(N(1 - \sqrt 2, \sigma) = 3 + 2\sqrt 2\) when \(\sigma\sqrt 2 = -\sqrt 2\).
+
+Size and divisibility now meet in one determinant.  Let \(y_1, \dots, y_n \in V\), and let \(\Gamma := \det(\langle \Theta y_i, \Theta y_k \rangle)_{i,k}\) be their Gram determinant.  For \(\sigma \in \Aut(\C)\) let \(\sigma'\) be the automorphism \(x \mapsto \overline{\sigma(\bar x)}\).
+
+\begin{problem}\label{pr:conj-gram}
+For \(y, y' \in V\) and \(\sigma \in \Aut(\C)\), \(\sigma\langle \Theta y, \Theta y' \rangle = v_{\sigma'}(y)^* G\, v_\sigma(y')\).
 \end{problem}
 
-Thus local gains add along a chain of maps, while the slopes of \(V\) and \(W^\vee\) enter only once.  Now record a gain as a change of the unit lattice of \(V\).
-
-\begin{problem}\label{pr:lattice-change}
-Let \(v\) be finite, let \(L'_v \subseteq L_v\) be a full sublattice, and let \(k\) be an integer with \(P(L'_v, R_v) \subseteq \pp_v^k\).  Replace \(L_v\) by \(N_v := \pp_v^{-k} L'_v\).  Then the new norm of \(\varphi_P\) at \(v\) is at most \(1\), and \(\deg V\) increases by \(\log q_v \bigl( k\dim V - \operatorname{length}_{\Oc_v}(L_v/L'_v) \bigr)\).
+\begin{problem}\label{pr:cs-det}
+Let \(G \in M_I(\C)\) be positive semidefinite, and let \(A, B\) be \(I \times n\) matrices.  Then \(\lvert \det(A^* G B) \rvert^2 \le \lvert \det(A^* G A) \rvert \, \lvert \det(B^* G B) \rvert\).  Consequently, if \(y\) has covolume at most \(c\), then \(\lvert \sigma \Gamma \rvert \le e^c\) for every \(\sigma \in \Aut(\C)\).
 \end{problem}
 
-Problem~\ref{pr:lattice-change} and Theorem~\ref{thm:image} prove the following.
+\begin{problem}\label{pr:gram-local}
+Let \(\iota \mid \ell\), and let \(u, u' \in M_n(\C)\) satisfy \(\sum_k u_{ik} y_k \in M_\iota\) and \(\sum_k u'_{ik} y_k \in M_{\bar\iota}\) for every \(i\).  Then \(\lvert \overline{\det u'} \rvert_\iota \, \lvert \Gamma \rvert_\iota \, \lvert \det u \rvert_\iota \le 1\).  Consequently, if \(y\) has index at most \(\delta\), then the constant family \(\Gamma\) has height at most \(2\delta\).
+\end{problem}
+
+If \(\Theta\) is injective and \(y\) is a basis of \(V\), then \(\Gamma \ne 0\).  Theorem~\ref{thm:product} and Problems~\ref{pr:cs-det} and~\ref{pr:gram-local} prove the following.
 
 \begin{theorem}\label{thm:one}
-Let \(P \colon V \times W \to K\) be a pairing with \(\varphi_P\) injective and \(r = \dim V > 0\).  For each finite place \(v\) let \(L'_v \subseteq L_v\) be a full sublattice and \(k_v\) an integer with \(P(L'_v, R_v) \subseteq \pp_v^{k_v}\), where \(L'_v = L_v\) and \(k_v = 0\) almost everywhere.  Then
+Let \(\Theta\) be injective, and let \(y_1, \dots, y_n\) be a basis of \(V\).  If \(y\) has covolume at most \(c\) and index at most \(\delta\), then
 \[
-  \sum_{v \nmid \infty} k_v \log q_v \le h_\infty(\varphi_P) + \mumax(W^\vee) - \mu(V) + \frac1r \sum_{v \nmid \infty} \log\, [L_v : L'_v] .
+  0 \le c + 2\delta .
 \]
 \end{theorem}
 
-For \(V = W = K\) with the standard norms, \(P(x, y) = cxy\) with \(0 \ne c \in \Oc_K\), \(L'_v = L_v\) and \(k_v = \operatorname{ord}_v(c)\), this is the product formula for \(c\), with equality.  The left side is the unknown sum over primes.  The right side involves \(\mumax\) of the target, so a single map sees only the part of the target that contains its image; the sequel removes this by using many maps.
+By Problems~\ref{pr:index-basic} and~\ref{pr:lattice-change}, equality holds for the vector \(1/3\) in \(\C^1\), with \(c = -2\log 3\) and \(\delta = \log 3\), and for a basis of a lattice \(\Lambda \supseteq \Z^n\).  In the datum of Problem~\ref{pr:fock-datum} the bounds found there give \(c + 2\delta = \sum_{a<D} \log a!\).
+
+\begin{problem}\label{pr:minor-again}
+In the setting of Theorem~\ref{thm:minor}, let \(\Delta\) be a nonzero \(s \times s\) minor of the matrix of \(\mathrm{ev}\), let \(g := \prod_{p \in P} p^{N_p}\), and let \(B := s!\,A_*^{s(J-1)}\beta^D\).  In the standard datum on \(\C^1\), the vector \(\Delta/g\) has index at most \(0\) and covolume at most \(2\log(B/g)\), and Theorem~\ref{thm:one} gives Theorem~\ref{thm:minor}.  For \(P = \{3\}\), \(I = 1\), \(u_1 = \ii\), \(J = 2\) and \(\mathcal{T} = \{(3, 0), (0, 1)\}\): \(\Delta = \pm 3\ii\), \(g = 3\) and \(B = 18\).
+\end{problem}
+
+In the rewritten Lean proof \cite{GL}, our lattice datum gives a \texttt{TwistedLattice} with a singleton twist type and \(\texttt{IsAllowed}(m,1)\) true for every \(m\in\mathbb N\); for it, index and covolume are \texttt{TwistedLattice.IndexLe} and \texttt{TwistedLattice.CovolumeLe} (in \texttt{IndexLe} and \texttt{indexLe\_of\_colengthDvd}, \(e\) is a function on all natural numbers, nonnegative everywhere, and only its values at primes enter the bounds), the colength condition is \texttt{ColengthDvd}, Problem~\ref{pr:index-sum} and Theorems~\ref{thm:colength} and~\ref{thm:hadamard} are \texttt{IndexLe.sumElim}, \texttt{indexLe\_of\_colengthDvd} and \texttt{covolumeLe\_of\_normSqAt\_le}, and Theorem~\ref{thm:one} follows from \texttt{covolume\_add\_index\_nonneg} for this single twist, with \(V\) given the inner product in which \(y\) is orthonormal, no completing vectors, the auxiliary scalar \(1\) and the three auxiliary bounds \(0\) (the volume ratio is \(1\) because \(\Theta\) is injective); these are in \texttt{New/Reduction/Lattices/TwistedLattice.lean}, except \texttt{ColengthDvd}, in \texttt{Colength.lean} of the same directory.  In \texttt{Lib/General/LinearAlgebra/GramDeterminant.lean}, the product bound of Problem~\ref{pr:hadamard-gram} occurs in the proof of \texttt{norm\_det\_formGram\_le}.  The same file defines \texttt{formGram} and proves the first assertion of Problem~\ref{pr:cs-det} as \texttt{norm\_det\_pairing\_sq\_le}.  Its second assertion is \texttt{CovolumeLe.norm\_map\_det\_gram\_le} in \texttt{TwistedLattice.lean}.  For Problem~\ref{pr:gram-local}, equip \(V\) with any complex inner product; its two assertions are then the single-twist cases of \texttt{norm\_det\_mul\_det\_gram\_le\_one} and of \texttt{heightLe\_pow\_mul\_det\_gram} with no completing vectors, and neither depends on the inner product chosen.  Our \(\bar\iota\) and \(\Oc_\iota\) are \texttt{PrimePadicIso.conj} and \texttt{PrimePadicIso.integers}, the matrix condition in the index is \texttt{PrimePadicIso.Carries}, \(v_\sigma\) and \(N\) are \texttt{TwistedLattice.conjCoord} and \texttt{TwistedLattice.normSqAt}, \(\sigma'\) is \texttt{conjAut}, and Problem~\ref{pr:conj-gram} is the single-twist case of \texttt{TwistedLattice.map\_inner\_lift\_one}.
+
+In \texttt{TwistedLattice.integralVectors} of \cite{GL}, integrality at \(\iota \mid \ell\) is tested by every map allowed at \(\ell\), and in \texttt{TwistedLattice.covolume\_add\_index\_nonneg} one chooses an allowed map for each \(\iota\), while the covolume uses the map of the trivial twist.  Chapter~\ref{tw-chap} introduces the height of the ratio of the squared volume of the trivial map to that of the chosen map.
 
 \section*{Hints}
 
@@ -278,39 +278,36 @@ For \(V = W = K\) with the standard norms, \(P(x, y) = cxy\) with \(0 \ne c \in 
 \item[\ref{pr:minor-div}] Write \(a = kp + t\) with \(0 \le t < p\), and consider the polynomials \(X^tY^bg^k\).
 \end{description}
 
-\subsection*{\S\ref{sec:slopes}}
+\subsection*{\S\ref{sec:heights}}
 \begin{description}
-\item[\ref{pr:deg-Q}] For almost all \(p\), \(L_p\) is the \(\Z_p\)-span of a fixed basis of \(V\), and every \(L_p\) lies between \(p^{k}\) and \(p^{-k}\) times that span for some \(k\).  Then take \(\omega = e_1 \wedge \dots \wedge e_r\) for a basis \((e_j)\) of \(L\).
-\item[\ref{pr:deg-basic}] A fundamental domain of \(M\) is a union of \(N\) translates of one for \(L\).
-\item[\ref{pr:additivity}] At a finite place, extend a basis of the saturated lattice \(U_v \cap L_v\).  At an archimedean place, use an orthogonal complement.
-\item[\ref{pr:FS}] Use polar coordinates and \(t = \lvert z \rvert^2\).  The result is a Beta integral.
-\item[\ref{pr:HS-P1}] Compute \(\deg E_D\) from Problem~\ref{pr:FS}, then use Stirling's formula.
-\item[\ref{pr:ideal}] Take \(\omega = x \in \aaa\), and use \(\sum_{v \mid \infty} n_v \log \lvert x \rvert_v = \log \lvert N_{K/\Q}(x) \rvert\).
-\item[\ref{pr:normalization}] \(\sum_{\pp \mid p} e_\pp f_\pp = [K:\Q]\), where \(N\pp = p^{f_\pp}\).
+\item[\ref{pr:iota}] The restriction of \(\lvert\cdot\rvert_\iota\) to \(\Q(\ii)\) is an absolute value extending \(\lvert\cdot\rvert_\ell\).  For \(\ell = 5\): \((2+\ii)(2-\ii) = 5\), and \(\bar\iota(2+\ii) = \iota(2-\ii)\).
+\item[\ref{pr:height-mul}] Multiply the multipliers.
+\item[\ref{pr:height-easy}] (a) Take \(H = 1\).  (b) Take the multiplier \(H\).
+\item[\ref{pr:transcendental}] Fix one \(\iota_0 \mid \ell\).  Extend an isomorphism \(\Q(H) \to \Q(\iota_0^{-1}(t))\), for a suitable transcendental \(t \in \Qlb\), to an automorphism of \(\C\).
+\item[\ref{pr:one}] Problem~\ref{pr:transcendental}, then the product formula for the norm of \(H\) from \(\Q(H)\) to \(\Q\).
+\item[\ref{pr:height-rational}] Take \(H = x^{-1}\); for the converse, Theorem~\ref{thm:product}.
+\item[\ref{pr:reciprocal}] Compare with the constant family \(1/N\).
 \end{description}
 
-\subsection*{\S\ref{sec:image}}
+\subsection*{\S\ref{sec:index}}
 \begin{description}
-\item[\ref{pr:wedge}] The norm of a map of lines is \(\lVert (\wedge^r\varphi)\omega \rVert_v / \lVert \omega \rVert_v\).  For the second statement use Hadamard's inequality at the archimedean places, and at a finite place a basis of the unit lattice.
-\item[\ref{pr:hfin}] The unit ball of \(M \otimes \Q_p\) is \(M \otimes \Z_p\).
-\item[\ref{pr:index-det}] Compute \(\deg \varphi(L)\) in two ways.
+\item[\ref{pr:index-basic}] At \(\iota \mid 3\) a \(1 \times 1\) matrix \((u)\) must satisfy \(\lvert u \rvert_\iota \le 1/3\).
+\item[\ref{pr:index-sum}] Block diagonal matrices.
+\item[\ref{pr:lattice-change}] Express the standard basis in terms of \(y\).
 \item[\ref{pr:fock}] Polar coordinates.
-\item[\ref{pr:fock-height}] Problems~\ref{pr:hfin} and~\ref{pr:fock}.
-\end{description}
-
-\subsection*{\S\ref{sec:pairing}}
-\begin{description}
-\item[\ref{pr:pairing-norm}] The local norm of \(\varphi_P\) is the supremum of \(\lvert P(x, w) \rvert_v\) over unit vectors.
-\item[\ref{pr:chain}] Operator norms are submultiplicative.
-\item[\ref{pr:lattice-change}] Compare the top exterior powers of \(L_v\), \(L'_v\) and \(N_v\).
+\item[\ref{pr:fock-datum}] A diagonal matrix.
+\item[\ref{pr:hadamard-gram}] The matrix \((w_i^* G w_k)\) is positive semidefinite.
+\item[\ref{pr:conj-gram}] The entries of \(G\) are rational.
+\item[\ref{pr:cs-det}] The Gram matrix of the \(2n\) columns of \(A\) and \(B\) is positive semidefinite; apply a Schur complement after adding \(\varepsilon\) times the identity, and let \(\varepsilon \to 0\).  Then Problem~\ref{pr:conj-gram}.
+\item[\ref{pr:gram-local}] Compare the matrix of inner products of the two transformed families with that of the vectors \(\Theta y_k\).  Then Problem~\ref{pr:height-easy}(a).
+\item[\ref{pr:minor-again}] An automorphism of \(\C\) restricts to the identity or to complex conjugation on \(\Q(\ii)\).
 \end{description}
 
 \begin{thebibliography}{Bom}
-\bibitem[Bo1]{Bo96} J.-B.~Bost, \emph{P\'eriodes et isog\'enies des vari\'et\'es ab\'eliennes sur les corps de nombres (d'apr\`es D.~Masser et G.~W\"ustholz)}, S\'eminaire Bourbaki, Exp.~795, Ast\'erisque \textbf{237} (1996), 115--161.
-\bibitem[Bo2]{Bo01} J.-B.~Bost, \emph{Algebraic leaves of algebraic foliations over number fields}, Publ.\ Math.\ IH\'ES \textbf{93} (2001), 161--221.
 \bibitem[Bom]{Bom} E.~Bombieri, \emph{Counting points on curves over finite fields (d'apr\`es S.~A.~Stepanov)}, S\'eminaire Bourbaki, Exp.~430, Lecture Notes in Math.\ 383, Springer, 1974, 234--241.
 \bibitem[Ch]{Ch} P.~L.~Chebyshev, \emph{M\'emoire sur les nombres premiers}, J.\ Math.\ Pures Appl.\ \textbf{17} (1852), 366--390.
-\bibitem[GS2]{GS2} H.~Gillet and C.~Soul\'e, \emph{An arithmetic Riemann--Roch theorem}, Invent.\ Math.\ \textbf{110} (1992), 473--543.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[La]{La} S.~Lang, \emph{Algebra}, rev.\ 3rd ed., Grad.\ Texts in Math.\ 211, Springer, 2002.
 \bibitem[Ne]{Ne} J.~Neukirch, \emph{Algebraic Number Theory}, Grundlehren Math.\ Wiss.\ 322, Springer, 1999.
 \end{thebibliography}
 
