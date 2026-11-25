@@ -1,0 +1,242 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[sm-]{20261125T000000--slope-method__workbook}
+\externaldocument[dc-]{20261125T016700--divisibility-along-the-chain__workbook}
+\externaldocument[di-]{20261125T020100--divisibility-at-inert-primes-in-general__workbook}
+\externaldocument[le-]{20261126T020410--local-exponents-of-the-lifts__workbook}
+\externaldocument[as-]{20261125T021500--assembly-at-one-scale__workbook}
+\externaldocument[ea-]{20261126T020130--nondegeneracy-at-an-edge__workbook}
+\externaldocument[co-]{20261126T020140--the-colength-of-a-hecke-image__workbook}
+
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T020150\endcsname
+  \chapnumber{20261126T020150}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Tc}{\mathcal T}
+\newcommand{\Vc}{\mathcal V}
+\renewcommand{\Pr}{\mathrm{Pr}}
+\newcommand{\gain}{\mathrm{gain}}
+\newcommand{\io}{\mathrm{io}}
+\newcommand{\rk}{\operatorname{rk}}
+\newcommand{\len}{\operatorname{length}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\vo}{\mathfrak o}
+\newcommand{\tl}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\title{Gain and loss at an inert prime}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Chapter~\ref{sm-chap}, Problem~\ref{sm-pr:lattice-change}: replacing the unit lattice \(L_v\) at a finite place by \(\mathfrak p_v^{-k}L'_v\), for a full sublattice \(L'_v\subseteq L_v\), raises \(\deg V\) by \(\log q_v\,(k\dim V-\len(L_v/L'_v))\).  Chapter~\ref{dc-chap}: the valuation \(\ord\) of Problem~\ref{dc-pr:gain} and Theorem~\ref{dc-thm:chain-gain}.  Chapter~\ref{di-chap}, Sections~\ref{di-sec:chain}--\ref{di-sec:global}.  Chapter~\ref{ea-chap} and Chapter~\ref{co-chap}, Theorem~\ref{co-thm:colength}: the Hecke image \(N\), the exponent \(\tau\), and the bound \(\len\le v(p)\rk M(\tau+2S\Sigma)\).  The classes of inert primes and the Frobenius orbits of Section~\ref{le-sec:orbits}, and Problem~\ref{le-pr:mertens}: \(\sum_{p\le N}(\log p)/p\le\log N+\log4\).  The notation \(x,\varepsilon,a,b',X',X''\), \(k\), \(m\), the tops \(\Tc\) and their weights \(a_t\), as in Section~\ref{di-sec:image}.
+
+At an inert prime \(p\) the chain of lifts gains a power of \(p\), but only on the Hecke image \(N\), and passing to \(N\) costs its colength.  How are the two combined, and what does the formalization \cite{Lean} actually assert at one prime?  The answer has three parts: explicit numbers for the gain at each Frobenius orbit, a divisibility statement for the lifts on \(N\), and a bookkeeping inequality between numbers.  In the formalization the last two are proved on separate branches, and the bookkeeping never sees the lifts.  The chapter ends with the form in which these statements reach the record at one scale.
+
+\section{The numbers at one orbit}\label{sec:numbers}
+
+Fix an inert prime \(p\le X''\) of class I or~II, and write \(\Vc\) for the set of Frobenius orbits on the columns, Section~\ref{le-sec:orbits}.  For an orbit \(v\) let \(\Tc_v\) be the set of tops on it.  A top is \emph{even} if its distance along the orbit from a fixed base point of \(v\), taken in \([0,n_p)\), is even, and \emph{odd} otherwise.  An odd power \(e\) is \emph{excluded} at the top \(s\) if the \(e\)-th Frobenius image of the column of \(s\) is the column of another top, reached for the first time.  Put \(\gamma_p=p/(p^2-1)\).
+
+The formalization defines, for each orbit \(v\) and each step \(1\le j\le m\), three real numbers.  With \(\alpha_s=a_s-2c_G\) for a top \(s\) (where \(c_G\) is a small constant), with caps \(c_j(s,e)\), given by the weight of the \(j\)-th lift at the cell of \(p^e\) in the column of \(s\) plus \(c_G\), and with a small loss term \(\theta_v\ge0\), these are
+\[
+ g^0_j(v)=\sum_{s\in\Tc_v}\ \sum_{e\ \text{odd, not excluded}}\Bigl(\frac{\alpha_s}{p^e}-c_j(s,e)\Bigr)_+-\theta_v ,\qquad
+ g^U_j(v)=\gamma_p\sum_{s\in\Tc_v}\alpha_s-\sum_{s\ \text{odd}}\ \sum_{e\ \text{odd}}\min\Bigl(\frac{\alpha_s}{p^e},c_j(s,e)\Bigr)-\theta_v ,
+\]
+and a \emph{price} \(\Pr_j(v)\ge0\).  The number \(g^0\) is the gain of the \(j\)-th step without a Hecke operator at \(v\), \(g^U\) its gain after the Hecke operator at its target, and \(\Pr\) bounds the cost of commuting the Hecke operator through the composite, as in Theorem~\ref{di-thm:chain}.  \emph{Status}: these are definitions in the formalization; that the lifts realize them is the input of Section~\ref{sec:gain}.  We assume \(c_j(s,e)\ge0\) and \(\alpha_s\ge0\), that is, \(a_s\ge2c_G\).
+
+\begin{problem}\label{pr:gamma}
+For a real \(\alpha\ge0\) and reals \(c_e\ge0\), indexed by the odd \(e\ge1\),
+\[
+ \gamma_p\alpha-\sum_{e\ \text{odd}}\min\Bigl(\frac\alpha{p^e},c_e\Bigr)=\sum_{e\ \text{odd}}\Bigl(\frac\alpha{p^e}-c_e\Bigr)_+ .
+\]
+For \(p=3\), \(\alpha=100\) and all \(c_e=2\), both sides equal \(892/27\).
+\end{problem}
+
+\begin{problem}\label{pr:even-gain}
+If no power is excluded at any top of \(v\), then
+\(g^U_j(v)-g^0_j(v)=\sum_{s\ \text{even}}\sum_{e\ \text{odd}}\min(\alpha_s/p^e,c_j(s,e))\ge0\).
+\end{problem}
+
+So the Hecke operator lets the even tops gain the full \(\gamma_p\alpha_s\), while without it every top gains only the part of \(\alpha_s/p^e\) above the cap.
+
+\begin{problem}\label{pr:max}
+For reals \(u\) and \(g\), \(\max(u,g_+)=g_++(u-g_+)_+\).
+\end{problem}
+
+Only primes of class~I are \emph{served}.  For such \(p\), let \(\kappa_v\) be the defect at the orbit \(v\): the explicit defect of Theorem~\ref{ea-thm:small} if \(p<p_*\), and the least defect of Problem~\ref{ea-pr:trivial-defect}, for the depth \(t_v\) and denominator \(D_p\) of the formalization, if \(p\ge p_*\); and \(\Sigma(p)=m\sum_{v\ \text{good}}\kappa_v\).  If \(p<X'\), its orbits are long enough, \(p\) avoids the excluded bands, and \(\Sigma(p)\le x^{-\varepsilon}\), the served set \(\Vc_p\) is the set of good orbits; otherwise \(\Vc_p=\varnothing\).  Put
+\[
+ S_v=\Bigl\lceil\sum_{j=1}^m\bigl(g^U_j(v)-\Pr_j(v)-g^0_j(v)_+\bigr)_+\Bigr\rceil ,\qquad
+ \gain_j(p)=\sum_{v\in\Vc_p}\max\bigl(g^U_j-\Pr_j,\,(g^0_j)_+\bigr)(v)+\sum_{v\notin\Vc_p}g^0_j(v)_+ ,
+\]
+and \(\gain_j(p)=0\) if \(p\) is of class~I with Frobenius label \(h_p=0\).  The exponents \(\tau(p)\) and \(\io(p)=2\Sigma(p)\max_{v\in\Vc_p}S_v\) are those of Chapter~\ref{co-chap}, with \(\tau(p)=\io(p)=0\) when \(\Vc_p=\varnothing\).
+
+\begin{problem}\label{pr:gain-vs-S}
+\(\sum_j\gain_j(p)\le\sum_j\sum_{v\in\Vc}g^0_j(v)_++\sum_{v\in\Vc_p}S_v\).  If \(\Vc_p\ne\varnothing\), then \(\io(p)\le2x^{-\varepsilon}\max_{v\in\Vc_p}S_v\).
+\end{problem}
+
+\begin{problem}\label{pr:price-check}
+Let \(\Vc=\Vc_p=\{v\}\), with \(m=2\), \(g^0_j(v)=0\), \(g^U(v)=(3,2)\) and \(\Pr(v)=(1,3)\).  Then \(\gain_1(p)+\gain_2(p)=2\) and \(S_v=2\), the numbers of Problem~\ref{di-pr:price}.
+\end{problem}
+
+\section{The gain on the Hecke image}\label{sec:gain}
+
+Let \(w\mid p\) be a place, \(\vo\) the completion at \(w\), \(M\) the forms at \(p\) of Chapter~\ref{co-chap}, \(V^{\rm ram}\) the chosen subspace, and \(K\) the composite of the \(m\) lifts, from \(M\) to the final lattice.  Let \(\ord\) be the valuation of Problem~\ref{dc-pr:gain} on the final lattice, normalized by \(\ord(p)=1\), and let \(\mathrm{low}\) be a real number (the other local terms: \(\sum_j(F_j-E_{u,j})+v_p(D_\Gamma)\) in the notation of Chapter~\ref{le-chap}).  Write \(y_v\) for the normalized Hecke operator at \(v\).  The input from the lifts is the following.
+\begin{itemize}
+\item[(G)] For every \(\Vc'\subseteq\Vc\) and every \(F\in M\),
+\[
+ \ord\Bigl(K\prod_{v\in\Vc'}y_v^mF\Bigr)\ge\sum_{j=1}^m\Bigl(\sum_{v\in\Vc'}\max\bigl(g^U_j-\Pr_j,\,(g^0_j)_+\bigr)(v)+\sum_{v\notin\Vc'}g^0_j(v)_+\Bigr)+\mathrm{low}.
+\]
+\end{itemize}
+\emph{Status}: (G) is a hypothesis of the divisibility statement in the formalization, which is supplied by the construction of the lifts; we have not traced its proof.  Theorem~\ref{di-thm:chain} is its consequence in the form of Theorem~\ref{thm:gain} below, and its case of one orbit is Theorem~\ref{dc-thm:chain-gain}.
+
+Let \(N\) be the module of Chapter~\ref{co-chap} built from \(\Vc_p\) and the \(S_v\) above, and \(N\!P_w=N\cap p^{\lceil\tau(p)\rceil}M\cap V^{\rm ram}\).
+
+\begin{problem}\label{pr:ord-span}
+\(\ord(\sum_ic_ix_i)\ge\min_i\ord(x_i)\) for \(c_i\in\vo\), and \(\ord(p^sx)=s+\ord(x)\).
+\end{problem}
+
+\begin{problem}\label{pr:generators}
+Assume (G).  For \(U\subseteq\Vc_p\) and \(F\in M\), the generator \(\prod_{v\in\Vc_p\setminus U}y_v^m\,p^{\sum_{v\in U}S_v}F\) of \(N\) satisfies \(\ord(K\,\cdot)\ge\sum_j\gain_j(p)+\mathrm{low}\).
+\end{problem}
+
+Problems~\ref{pr:ord-span} and~\ref{pr:generators} prove the following.
+
+\begin{theorem}[gain on the Hecke image]\label{thm:gain}
+Assume (G).  Then \(\ord(Kx)\ge\sum_j\gain_j(p)+\mathrm{low}\) for every \(x\in N\!P_w\).
+\end{theorem}
+
+\noindent\emph{Status}: proved in the formalization from (G).  The corresponding statement in \cite{Adr} is Theorem~\ref{di-thm:chain}, for the served orbits.
+
+\begin{problem}\label{pr:unserved}
+If \(\Vc_p=\varnothing\), then \(N=M\), \(N\!P_w=M\cap V^{\rm ram}\), and \(\gain_j(p)=\sum_vg^0_j(v)_+\), unless \(p\) is of class~I with \(h_p=0\), where \(\gain_j(p)=0\).  Such a \(p\) is never served, since its orbits have length one.
+\end{problem}
+
+\begin{problem}\label{pr:zero-chain}
+If \(K=0\), the conclusion of Theorem~\ref{thm:gain} holds with any real number in place of \(\sum_j\gain_j(p)+\mathrm{low}\).
+\end{problem}
+
+\section{Recording the gain and the loss}\label{sec:record}
+
+At a place \(w\mid p\) with ramification index \(e_w\) and residue field of order \(q_w\), the source lattice of the word \(u\) is
+\[
+ N_{u,w}=\mathfrak p_w^{-\lfloor e_w\,\mathrm{sg}_u(w)\rfloor}N\!P_w,\qquad \mathrm{sg}_u(w)=\sum_j\bigl(\gain_j(p)+F_j(w)-E_{u,j}(w)\bigr),
+\]
+where \(F_j\) and \(E_{u,j}\) are the other local terms of Chapter~\ref{le-chap}.  Theorem~\ref{thm:gain} is what makes the pairing integral on \(N_u\); the colength of \(N\!P_w\) is what it costs.
+
+\begin{problem}\label{pr:record}
+Let \(M^{\rm ram}=M\cap V^{\rm ram}\) have rank \(d\), and suppose \(\len(M^{\rm ram}/N\!P_w)\le e_w\rk M\,(\tau(p)+\io(p))\), as Theorem~\ref{co-thm:colength}(b) gives with \(M'=M^{\rm ram}\) and \(v(p)=e_w\).  Replacing \(M^{\rm ram}\) by \(N_{u,w}\) raises the degree by at least \(\log q_w\bigl(d(e_w\mathrm{sg}_u(w)-1)-e_w\rk M\,(\tau(p)+\io(p))\bigr)\).
+\end{problem}
+
+\begin{problem}\label{pr:net}
+Per unit of \(e_wd\log q_w\), the change in Problem~\ref{pr:record} is at least \(\sum_j\gain_j(p)-(\rk M/d)(\tau(p)+\io(p))\), plus the other local terms, up to the rounding \(1/e_w\).  If \(V^{\rm ram}\) is the whole space, so that \(d=\rk M\), and \(\Vc_p\ne\varnothing\), this is at least \(\sum_j\gain_j(p)-\tau(p)-2x^{-\varepsilon}\max_{v\in\Vc_p}S_v\) plus the other local terms, up to the rounding.
+\end{problem}
+
+\section{The inequality at one prime}\label{sec:inequality}
+
+For a top \(t\) and step \(j\), the contribution of the odd powers of \(p\) to the prime sum of Section~\ref{di-sec:global} is
+\[
+ V_j(t,p)=\sum_{i\ \text{odd},\ i\le\lfloor\log_pa_t\rfloor+1}\Bigl(\frac{a_t}{p^i}-w_j(t,p,i)\Bigr)_+ ,
+\]
+where \(w_j(t,p,i)\) is the weight of the cell of \(p^i\) in the column of \(t\).  Let \(\Tc_p\) be the set of tops on served orbits, or all tops if \(p\) is of class~II or \(p\ge X'\).
+
+\begin{theorem}[gain against the prime sum]\label{thm:linkG}
+There are a constant \(C\) and a function \(\delta(x)\to0\) such that, for all large \(x\), every datum of every sufficiently large family in the class used by the formalization, and every inert \(p\le X''\) of class I or~II,
+\begin{itemize}
+\item[(i)] \(0\le\gain_j(p)\le4\lvert\Tc\rvert a/p\) for every \(j\);
+\item[(ii)] \(\sum_j\sum_{t\in\Tc_p}\bigl(V_j(t,p)-\mathrm{lo}(p)\bigr)-m\,\mathrm{fl}(p)\le\sum_j\gain_j(p)-\tau(p)\), where \(\mathrm{fl}(p)=Cf(N_m^2\log_pa+(\log_pa)^2)\) and \(\mathrm{lo}(p)\) is an explicit loss term: a multiple of \(\log_p(2a)\), plus, at the primes of class~I below \(X'\), terms that depend on the range of \(p\), among them \(b^{\delta(x)}\) for \(p_*\le p<X'\);
+\item[(iii)] the source lattice satisfies the inclusion and the length bound of Theorem~\ref{co-thm:colength}(b) at every \(w\mid p\) with \(p\ne T_u\).
+\end{itemize}
+\end{theorem}
+
+\noindent\emph{Status}: proved in the formalization.  Part~(iii) is Theorem~\ref{co-thm:colength} with the defects of Theorems~\ref{ea-thm:small} and~\ref{ea-thm:classI}.  Parts~(i) and~(ii) are inequalities between the explicit numbers of Section~\ref{sec:numbers}; their proof uses the size conditions of the family, the mean bound of Theorem~\ref{ea-thm:classI}, and the choice of the weights below.  We have not followed the proof of~(ii).  The statement contains no lift: in the formalization it is proved with the chain of lifts replaced by the zero chain, for which the divisibility clause holds by Problem~\ref{pr:zero-chain}.  The divisibility is Theorem~\ref{thm:gain}, proved on a separate branch from (G), and the two meet only through the lattice \(N_u\) of Section~\ref{sec:record}.  The corresponding statement in \cite{Adr} is part of Theorem~\ref{di-thm:K1}.
+
+The weights are chosen so that few primes are rejected.  For weights \((a_\bullet,b_\bullet)\) in the box of Theorem~\ref{ea-thm:classI}, let
+\[
+ \Phi(a_\bullet,b_\bullet)=\sum_{p<X'\ \text{candidate}}\frac{\log p}p\Bigl(2\cdot\mathbf 1_{\Sigma(p)>x^{-\varepsilon}}+4\Sigma(p)\Bigr).
+\]
+
+\begin{problem}\label{pr:markov}
+The mean of \(\Phi\) over the box is at most \((2x^\varepsilon+4)\sum_{p<X'\ \text{candidate}}\frac{\log p}p\,\overline{\Sigma(p)}\), where \(\overline{\Sigma(p)}\) is the mean of \(\Sigma(p)\).  Hence some weight in the box has \(\Phi\) at most this bound.
+\end{problem}
+
+\begin{problem}\label{pr:mean-bound}
+Suppose that at every good orbit \(v\) of every candidate the mean of \(\kappa_v\) is at most \(N_vx^{-12}\), where \(N_v\) is the number of tops on \(v\).  Then the bound of Problem~\ref{pr:markov} is at most \((2x^\varepsilon+4)(x^{\varepsilon/3}+\log4)\,m\lvert\Tc\rvert x^{-12}\).
+\end{problem}
+
+\noindent\emph{Status}: the formalization proves the hypothesis of Problem~\ref{pr:mean-bound} for its family, from Theorem~\ref{ea-thm:classI} for \(p\ge p_*\) and from the explicit defect for \(p<p_*\), and its admissible weights satisfy \(\Phi\le x^{-9}\); we have not traced how the size conditions turn the bound of Problem~\ref{pr:mean-bound} into this.
+
+\section{The record at one scale}\label{sec:scale}
+
+For each word \(u\) the formalization records, at the scale \(x\), the slopes of \(M_u\) and \(N_u\), the rank, the height, and the sums \(\sum_w2\ell_we_w(\sum_j\gain_j-\tau)\), \(\sum_w2\ell_we_w\tau\) and \(\sum_w\ell_we_w\io\) over the places \(w\), in the normalization of Chapter~\ref{le-chap}; these enter the accounting of Chapter~\ref{as-chap}.  It produces such records by an argument about families, whose quantifiers we make explicit.
+
+Let \(\mathcal K\) be a set of \emph{thresholds} with a binary operation \(\vee\), and suppose that each family \(\mathcal F\) at each \(\varepsilon\) has a predicate \(\mathrm{Large}(\mathcal F,K)\) with \(\mathrm{Large}(\mathcal F,K\vee K')\) equivalent to \(\mathrm{Large}(\mathcal F,K)\) and \(\mathrm{Large}(\mathcal F,K')\).  A property \(P\) is \emph{closed} on a class \(\mathcal C\) of families if there is \(\varepsilon_1>0\) such that for every \(\varepsilon\le\varepsilon_1\) there is \(K\) with \(P(\mathcal F)\) for every \(\mathcal F\in\mathcal C\) at \(\varepsilon\) with \(\mathrm{Large}(\mathcal F,K)\).  The class \(\mathcal C\) has \emph{designs} if there is \(\varepsilon_0>0\) such that for every \(\varepsilon\le\varepsilon_0\) and every \(K\) some \(\mathcal F\in\mathcal C\) at \(\varepsilon\) has \(\mathrm{Large}(\mathcal F,K)\).
+
+\begin{problem}\label{pr:closed-and}
+If \(P\) and \(Q\) are closed on \(\mathcal C\), so is \(P\wedge Q\).
+\end{problem}
+
+\begin{problem}\label{pr:design}
+If \(P_1,\dots,P_9\) are closed on \(\mathcal C\) and \(\mathcal C\) has designs, then there is \(\varepsilon_2>0\) such that for every \(\varepsilon<\varepsilon_2\) some family in \(\mathcal C\) at \(\varepsilon\) has all nine properties.
+\end{problem}
+
+In the formalization the nine properties are the inputs of the accounting: the bound for the twisted places, the covering of the twisted places, the bound on irreducibility defects, the rank equality at small level, the divisibility and size statement with its slope consequence, the rank condition, Theorem~\ref{thm:linkG}, the Gram conditions, and the passage to the chain record.  The constants are \(e_D=2\) and \(e_L=0\).  For each primitive character \(\psi\) the class consists of the families attached to \(\psi\) whose windows satisfy the condition of Chapter~\ref{as-chap}.  The conclusion is: for every small \(\varepsilon\) there is \emph{one} family, and \(x_0\), such that at every \(x\ge x_0\) in its window set a chain record exists.  The record at \(x\) ties together, for each translate \(u_0\) in the group of columns, one member of the family at the same \(x\); these members share the frame, \(m\), \(f\), \(q\), \(d\) and the top weights.  \emph{Status}: proved in the formalization.  The corresponding step in \cite{Adr} is \cite[Hyp.~18.10]{Adr}, assumed there for every admissible datum; the formalization proves the weaker statement just described, which is what the window argument of Chapter~\ref{as-chap} uses.
+
+\begin{leanremark}
+\raggedright In \cite{Lean} the numbers of Section~\ref{sec:numbers} are \tl{g0}, \tl{gU}, \tl{Pr}, \tl{Sv}, \tl{gainP}, \tl{tauP}, \tl{ioP}, \tl{Sig} and the served set \tl{VV}; even tops are \tl{IsV}, excluded powers \tl{Excl}.  The input (G) is \tl{UAt}, inside \tl{WeilJacquetShalikaLaw.unitBoundAtTwistedPlaces}; Theorem~\ref{thm:gain} is \tl{WeilJacquetShalikaLaw.Conclusion1}, on the module \tl{NP} of \tl{InNP}.  The lattice of Section~\ref{sec:record} is given by \tl{Iu} and \tl{NprimeDef}, and the slope it records is \tl{LinkMu}.  Theorem~\ref{thm:linkG} is \tl{LinkG}, with \(V_j\) the \tl{vonMangoldtClassSum} and \(\mathrm{lo}\), \(\mathrm{fl}\) the terms \tl{loG}, \tl{flG}; it is proved by \tl{linkG\_\allowbreak{}without\_\allowbreak{}kernels} with the zero chain \tl{zeroCh}, from \tl{AuxBlock8.Pf.stmtF}.  The function \(\Phi\) is the left side of \tl{WReq}, and the mean hypothesis of Problem~\ref{pr:mean-bound} is \tl{MeanKappaBound}.  Section~\ref{sec:scale}: closed properties are \tl{Closed}, designs are \tl{DesignExists}, Problem~\ref{pr:design} is \tl{topDesWin}, and its conclusion is \tl{FamilyClassConnected} with the record \tl{ChainTied}.
+\end{leanremark}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:numbers}}
+\begin{description}
+\item[\ref{pr:gamma}] Work term by term.
+\item[\ref{pr:even-gain}] Problem~\ref{pr:gamma} for the odd tops.
+\item[\ref{pr:gain-vs-S}] Problem~\ref{pr:max}, summed over \(j\).
+\end{description}
+
+\subsection*{\S\ref{sec:gain}}
+\begin{description}
+\item[\ref{pr:generators}] Input (G), and Problem~\ref{pr:max} at the orbits of \(U\).
+\end{description}
+
+\subsection*{\S\ref{sec:record}}
+\begin{description}
+\item[\ref{pr:record}] Problem~\ref{sm-pr:lattice-change} with \(k=\lfloor e_w\mathrm{sg}_u(w)\rfloor\) and \(L'_w=N\!P_w\).
+\item[\ref{pr:net}] Problem~\ref{pr:gain-vs-S}.
+\end{description}
+
+\subsection*{\S\ref{sec:inequality}}
+\begin{description}
+\item[\ref{pr:markov}] Markov's inequality for the indicator.
+\item[\ref{pr:mean-bound}] Problem~\ref{le-pr:mertens} with \(N=\lfloor X'\rfloor\), and \(\sum_vN_v\le\lvert\Tc\rvert\).
+\end{description}
+
+\subsection*{\S\ref{sec:scale}}
+\begin{description}
+\item[\ref{pr:closed-and}] The operation \(\vee\).
+\item[\ref{pr:design}] Problem~\ref{pr:closed-and}.
+\end{description}
+
+\begin{thebibliography}{Lean}
+\bibitem[Adr]{Adr}  J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[Lean]{Lean} The Lean community, \emph{riemann-hypothesis}, a Lean formalization of Alp\"oge's argument, \url{https://github.com/leanprover-community/riemann-hypothesis}.
+\end{thebibliography}
+\end{document}
