@@ -1,0 +1,299 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[sm-]{20261125T000000--slope-method__workbook}
+\externaldocument[gf-]{20261125T005000--galois-fourier-and-averaging__workbook}
+\externaldocument[dt-]{20261125T002000--definite-theta-lifts__workbook}
+\externaldocument[tn-]{20261125T002100--definite-theta-lifts-and-norms__workbook}
+\externaldocument[di-]{20261125T020100--divisibility-at-inert-primes-in-general__workbook}
+\externaldocument[sb-]{20261125T020200--slopes-frames-and-bessel-poincare-series__workbook}
+\externaldocument[hp-]{20261125T020300--heights-periods-and-the-auxiliary-prime__workbook}
+\externaldocument[lt-]{20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook}
+\externaldocument[as-]{20261125T021500--assembly-at-one-scale__workbook}
+
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T000000\endcsname
+  \chapnumber{20261126T000000}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Gal}{\operatorname{Gal}}
+\newcommand{\Oc}{\mathcal O}
+\newcommand{\Tc}{\mathcal T}
+\newcommand{\Wc}{\mathcal W}
+\newcommand{\Ec}{\mathcal E}
+\newcommand{\pp}{\mathfrak p}
+\newcommand{\Frob}{\operatorname{Frob}}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\sig}{\operatorname{sig}}
+\newcommand{\Cl}{\operatorname{Cl}}
+\newcommand{\len}{\operatorname{len}}
+\newcommand{\tl}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\title{The objects of the construction}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+From Chapter~\ref{gf-chap}: the field \(E\), the groups \(H\) and \(\Gamma\), the CM type \(\Phi\), cells, and Problems~\ref{gf-pr:galois} and~\ref{gf-pr:outside}.  From Chapter~\ref{dt-chap}: class sets, the groups \(\Gamma_L\), forms and their norm (Section~\ref{dt-sec:forms}), the masses \(M_\nu\) and numbers \(\kappa_\nu\) of~\eqref{dt-eq:kappa} there, Problem~\ref{dt-pr:kappa}, the Weyl dimension~\eqref{dt-eq:weyl} there and Problem~\ref{dt-pr:count}.  From Chapter~\ref{tn-chap}: the lift~\eqref{tn-eq:lift} there and Problem~\ref{tn-pr:compose}.  From Chapter~\ref{sm-chap}: degrees and slopes, Problems~\ref{sm-pr:deg-basic}, \ref{sm-pr:ideal} and~\ref{sm-pr:normalization}; slopes below are the normalized slopes \(\mu^\sharp\) there, written \(\mu\).  Hermitian forms over a CM field and their signatures; Hilbert's reciprocity law \cite[Ch.~VI, \S8]{Ne}.
+
+\medskip
+Chapters~\ref{di-chap}--\ref{as-chap} speak of words, tops, nodes, terminal primes, the lattices \(M_u\), \(N_u\), \(R\) and the period maps \(B_u\).  What are they?  This chapter defines them, in the form in which the Lean formalization \cite{Lean} uses them, and checks that the ranks, signatures and weights fit together.  We follow \cite[\S III.10]{Rub}, \cite[\S4.1]{Zh} and \cite[\S7, Defs.~6.1, 11.5--11.10, 18.5, 18.9]{Adr}.  Fix the scale \(x\), \(0<\varepsilon<\frac1{52}\), \(b:=\exp(x^\varepsilon)\), \(a:=xb\) and \(b':=a\exp(-x^{\varepsilon/3})\), as in Chapter~\ref{as-chap}.
+
+\section{The field and its places}\label{sec:field}
+
+Let \(q\equiv3\pmod 8\) and \(d\equiv7\pmod{16}\) be primes with \(q\mid d+1\), let \(n\ge4\) be a power of \(2\), \(N:=4n\), and let \(E\), \(K=\Q(\sqrt{-d})\), \(H\), \(\Gamma=\Gal(E/\Q)\) and \(\Phi=\Gal(E/K)\) be as in Chapter~\ref{gf-chap}.  Let \(F\) be the maximal real subfield of \(E\), and \(f:=\lvert\Phi\rvert=2n\).  The elements \(\rho\in\Phi\) are the \emph{places}; \(\rho=(s,e_1,1)\) is the cell \((v,s)\) with \(v=\frac12(1-e_1)\).
+
+Three subsets of \(\Phi\) are singled out.  A set \(\Tc\subset H\) of \emph{tops} gives the \emph{top places} \((0,t)\), \(t\in\Tc\).  A set \(T_2\subset H\) and a \emph{translate} \(\tau\in H\) give the \emph{thick places} \((1,\tau s)\), \(s\in T_2\).  The other places are \emph{thin}.  (Chapter~\ref{as-chap} writes \(T\) for \(\Tc\).)  The translate is fixed until Section~\ref{sec:lattices}.
+
+Let \(p\nmid 2qd\) be inert in \(K\), and put \(\varphi_p:=c\Frob_p\), where \(c=([1],-1,-1)\) is complex conjugation.
+
+\begin{problem}\label{pr:orbit}
+\(\varphi_p\in\Phi\).  Either \(\Frob_p=c\), or \(c\notin\langle\Frob_p\rangle\) and \(\varphi_p\) has the order of \(\Frob_p\), which is even.
+\end{problem}
+
+\begin{problem}\label{pr:rows}
+Multiplication by \(\varphi_p\) sends the cell \((v,s)\) to \(\bigl(v+\frac12(1+\chi_q(p))\bmod 2,\ s[p]\bigr)\).  So the orbits stay in one row when \(\chi_q(p)=-1\) and alternate between the rows when \(\chi_q(p)=1\).
+\end{problem}
+
+The primes inert in \(K\) with \(\chi_q(p)=1\) are called \emph{signal} primes, and those with \(\chi_q(p)=-1\) primes of \emph{inert class}.  When \(\varphi_p\) has order \(2\nu\), an orbit \(\{\rho\varphi_p^s:s\in\Z/2\nu\}\) of \(\varphi_p\) on \(\Phi\) is an orbit with its \emph{positions} \(s\) in the sense of \cite[\S11.1]{Adr}; its even positions are the places \(\rho\Frob_p^s\), its odd positions the places \(\rho\Frob_p^sc\).  Chapter~\ref{di-chap} works along these orbits.
+
+\begin{problem}\label{pr:orbit-example}
+For \(q=11\), \(d=1319\), \(n=4\), the orbit of the place \((0,[1])\) is \((0,[1]),(0,[3]),(0,[7]),(0,[5])\) for \(p=13\), and \((0,[1]),(1,[7])\) for \(p=23\).  For \(p=17\), \(\Frob_p=c\).
+\end{problem}
+
+\begin{leanremark}
+\raggedright The field is a record \tl{Host} with required properties (Galois group, CM type \tl{cmType}, Frobenius elements), not a field given by generators; for \(\zeta\) it is the field \(E\) above, by an inference from the definitions in \cite[\S III.10, \S9, Remark~(1)]{Rub}.  Tops are \tl{Host.TT}, top and thick places \tl{Host.topPlaces} and \tl{Host.thickPlaces}, the translate \tl{Host.u0}, the classes of primes \tl{primeClass} (\tl{splitK}, \tl{signal}, \tl{inertClass}).
+\end{leanremark}
+
+\section{Ranks and hermitian spaces}\label{sec:spaces}
+
+The construction has three integers \(k\), \(m\), \(t_0\), subject to
+\begin{equation}\label{eq:ranks}
+ \begin{gathered}
+ k,m\ \text{even},\qquad t_0\ \text{odd},\qquad 2\le m,\qquad m+3\le k,\\
+ k+m+4\le t_0,\qquad 3m<t_0,\qquad m\le f\le k,\qquad m^2\le N_m,
+ \end{gathered}
+\end{equation}
+where \(N_j:=k+j(t_0+1)\) for \(0\le j\le m\).  Put \(r:=k+m-1\).  In the argument \(m\approx x^{1/2}\) is the number of lifts and \(k\approx x^{9/2}\) (Chapter~\ref{as-chap}); \(t_0\) is a power of \(x\) as well \cite[\S III.10, \S3]{Rub}.  Hermitian spaces are over \(E\); at each \(\rho\in\Phi\) a hermitian space has a signature, the numbers of positive and negative eigenvalues of \(\rho\) applied to a Gram matrix.  The construction uses the following spaces.
+\begin{itemize}
+\item[(S1)] \(X_j\) for \(0\le j\le m\), positive definite of rank \(N_j\).
+\item[(S2)] A vector \(z\in X_m\) with \(\langle z,z\rangle\ne0\), and \(X':=z^\perp\subset X_m\).
+\item[(S3)] \(Y_j\) for \(0\le j\le m\), of rank \(r+jt_0\) and signature \(\bigl(r+jt_0-\lfloor\frac{m-j}2\rfloor,\lfloor\frac{m-j}2\rfloor\bigr)\) at every \(\rho\); isometric embeddings \(X_j\to Y_j\) for \(j<m\), and an isometry \(X'\to Y_m\).
+\item[(S4)] A decomposition \(Y_0=X_0\perp Ez_0\perp P_1\perp\dots\perp P_{m/2-1}\) into the image of \(X_0\), a line with \(\langle z_0,z_0\rangle=-T\) for a prime \(T\) (Section~\ref{sec:lattices}), and hyperbolic planes \(P_i\).
+\item[(S5)] \(W_j\) for \(1\le j\le m\), of rank \(r\) and signature \((k+j-1,m-j)\) at every \(\rho\), isometric to \(Y_0\) over \(F_v\) for every finite place \(v\) of \(F\).
+\end{itemize}
+The forms of Section~\ref{sec:lifts} live on the definite groups \(U(X_j)\); the spaces \(Y_j\) and \(W_j\) carry the periods (Chapters~\ref{sb-chap} and~\ref{hp-chap}).
+
+\begin{problem}\label{pr:smallest}
+For \(n=4\) the smallest ranks allowed by~\eqref{eq:ranks} are \((m,k,t_0)=(2,8,15)\).  Then \(r=9\) and \(N_0,N_1,N_2=8,24,40\).
+\end{problem}
+
+\begin{problem}\label{pr:parity}
+Under~\eqref{eq:ranks}, \(r\) is odd, every \(N_j\) is even, \(N_m=(r+mt_0)+1\), and \(\operatorname{rk}Y_j-N_j=m-1-j\).
+\end{problem}
+
+\begin{problem}\label{pr:complement}
+For \(j<m\) the orthogonal complement of \(X_j\) in \(Y_j\) has rank \(m-1-j\) and signature \(\bigl(\lceil\frac{m-j}2\rceil-1,\lfloor\frac{m-j}2\rfloor\bigr)\) at every \(\rho\).  For \(0\le j\le m\), \(U(Y_j)\) is compact at the archimedean places exactly when \(j\ge m-1\).
+\end{problem}
+
+The codimension \(m-1-j\) is odd for even \(j\) and even for odd \(j\); accordingly the periods between \(U(X_j)\) and \(U(Y_j)\) are Bessel periods for even \(j\) and Fourier--Jacobi periods for odd \(j\) \cite[\S4.1]{Zh}.  At \(j=m\) the inclusion reverses: \(Y_m\cong X'\) has codimension one in \(X_m\).
+
+\begin{problem}\label{pr:Y0}
+The space \(Y_0\) of (S4) has rank \(r\) and signature \((k+\frac m2-1,\frac m2)\), as (S3) requires; this is the signature of \(W_{m/2}\).  The space \(W_m\) is positive definite.
+\end{problem}
+
+\begin{problem}\label{pr:instance-spaces}
+For \((m,k,t_0)=(2,8,15)\) the spaces \(Y_0,Y_1,Y_2\) have ranks \(9,24,39\) and signatures \((8,1),(24,0),(39,0)\); \(W_1,W_2\) have signatures \((8,1),(9,0)\); there are no hyperbolic planes in (S4).
+\end{problem}
+
+The local condition in (S5) constrains the signatures.  An isometry \(g\) multiplies the Gram determinant by the norm \(\det g\,\overline{\det g}\).  So if \(W_j\) and \(Y_0\) are isometric at every finite place of \(F\), the quotient \(\delta\in F^\times\) of their Gram determinants is a norm from \(E_v\) at every finite \(v\).  By Hilbert's reciprocity law for the quadratic extension \(E/F\), \(\delta\) is then negative at an even number of real places of \(F\).
+
+\begin{problem}\label{pr:local-global}
+The sign of \(\delta\) at the real place of \(F\) below \(\rho\) is \((-1)^{m/2-j}\), the same at all \(f\) places.  Since \(f\) is even, the parity condition holds for every \(j\).
+\end{problem}
+
+The spaces are data of the records of the formalization, which requires (S1)--(S5) of them and constructs such records at every large scale (Section~\ref{sec:lattices}); \cite[\S III.10, Hyp.~O12]{Rub} assumes them.
+
+\begin{leanremark}
+\raggedright The ranks are \tl{Ranks} (with \tl{t} for \(t_0\), \tl{N}, \tl{r}, \tl{rankY}), the spaces \tl{Spaces}: \tl{X}, \tl{X'}, \tl{z}, \tl{Y}, \tl{iXY}, \tl{eYm}, \tl{zm}, \tl{hypE}, \tl{hypF}, \tl{W}, and definite spaces \tl{V j} of rank \(r+t_0\) not used here.  The signatures are \tl{sigYD}, \tl{sigY0}, \tl{sigW} with \tl{D7.Y\_sigval}, \tl{W\_sigval}, \tl{baseSpace\_isometric\_graded}; Problems~\ref{pr:parity} and~\ref{pr:Y0} are \tl{FactROdd}, \tl{FactNEven}, \tl{FactXm}, \tl{FactYm}, \tl{RankBaseSpaceEq}, \tl{SignatureBaseMiddleEq}, \tl{FactWmDef}.  The record \tl{Inhab.Rt} has the ranks of Problem~\ref{pr:smallest} with larger odd \(t_0\).
+\end{leanremark}
+
+\section{Weights, nodes and words}\label{sec:weights}
+
+At each place \(\rho\) the construction fixes numbers \(\xi_1,\dots,\xi_k\in\Z+\frac12\) and integers \(\xi'_1,\dots,\xi'_{k-1}\), \(\theta_1,\dots,\theta_m\), \(w_1,\dots,w_m\), all depending on \(\rho\), with
+\begin{equation}\label{eq:H}
+ \xi_1>\xi'_1>\xi_2>\dots>\xi'_{k-1}>\xi_k>-\theta_1,\qquad
+ w_j-\theta_j\ge\tfrac{t_0+3}2,\qquad \theta_{j+1}-w_j\ge\tfrac{t_0+3}2 .
+\end{equation}
+The \emph{weight of level \(j\)} at \(\rho\) is \(\lambda^{(j)}=\lambda^{(j)}(\rho)\in\Z^{N_j}\): first \(\lambda^{(j)}_i=\xi_i+i-\frac{k+1}2\) for \(1\le i\le k\), then, for \(l=1,\dots,j\), a block of \(t_0+1\) entries equal to \(-w_l+\frac k2+(2l-1)\frac{t_0+1}2\).  The numbers \(w_j(\rho)\) are the \emph{nodes}.  For a weight \(\lambda\) of rank \(N'\) the shifted numbers \(\lambda_i+\frac{N'+1}2-i\) are its \emph{Harish-Chandra parameters}.
+
+\begin{problem}\label{pr:dominant}
+Under~\eqref{eq:H} every \(\lambda^{(j)}\) is integral and nonincreasing.
+\end{problem}
+
+\begin{problem}\label{pr:parameter}
+The Harish-Chandra parameters of \(\lambda^{(j)}\) are \(\xi_1,\dots,\xi_k\) together with the blocks \(B_l:=\{-w_l+\frac{t_0}2-c:0\le c\le t_0\}\), \(l\le j\), all translated by \(j\frac{t_0+1}2\).  Thus the \(j\)-th lift keeps the old parameters, up to a common translation, and adds the block of \(t_0+1\) consecutive numbers centred at \(-w_j\).
+\end{problem}
+
+At the top place \(\rho_t=(0,t)\) of a top \(t\) there are integers \(a_t\), the \emph{top weights}, and \(b_t\), with \(\xi_1(\rho_t)=a_t+\frac{k-1}2\) and \(\xi_k(\rho_t)=-b_t-\frac{k-1}2\), where \(a\le a_t\le a(1+x^{-13}/k)\) and \(b'\le b_t\le(1+x^{-2})b'\) \cite[Def.~18.5]{Adr}.
+
+\begin{problem}\label{pr:top}
+\(\lambda^{(0)}(\rho_t)\) begins with \(a_t\) and ends with \(-b_t\).
+\end{problem}
+
+So the top weight \(a_t\approx xb\) is the length of the first row of the weight at the top place.  The nodes lie in windows of a common width \(\Delta\): \(b\le w_j\le b+\Delta+1\) at thick places, \(b_t+b'/x\le w_j\le b_t+b'/x+\Delta\) at the top place of \(t\), and \(w''\le w_j\le w''+\Delta\) at thin places, where \(w'':=b'/(xn)\).  This is the thick--thin condition~\eqref{gf-eq:thick-thin} of Chapter~\ref{gf-chap}, and the nodes are the weights \(w_j\colon\Phi\to(0,\infty)\) of the prime sums \(P_{t,w_j}(a_t)\) of Chapter~\ref{as-chap}.  At places other than top places \(\xi_1-\xi'_1\) and all \(\xi'_i\) are bounded by a constant multiple of a size parameter \(S_c\) \cite[\S III.10, Hyp.~O24]{Rub}.
+
+The \emph{words} vary the middle of the parameter.  There is an integer \(\Delta_\Wc\ge1\) with \(\xi'_l-\xi'_{l+1}=4\Delta_\Wc\) at every place.  A word \(u\) is a string of letters \(\epsilon_1,\dots,\epsilon_{k-2}\in\{0,1\}\); its parameters are \(\xi_1\), \(\xi_k\), the \(\xi'\), \(\theta\), \(w\) above, and
+\[
+ \xi_{l+1}(u)=\xi'_l-\tfrac12-\epsilon_l\Delta_\Wc\qquad(1\le l\le k-2),
+\]
+the same letters at every place.  A finite set \(\Wc\) of words with \(\lvert\Wc\rvert\le2^{k-3}\) is chosen; Chapter~\ref{sb-chap} explains why there must be many (Problem~\ref{sb-pr:words}).
+
+\begin{problem}\label{pr:words}
+Every word satisfies~\eqref{eq:H}, and distinct words have distinct weights \(\lambda^{(0)}(\rho)\) at every place.
+\end{problem}
+
+By the branching rule for \(U(k)\supset U(k-1)\), whose condition is interlacing of Harish-Chandra parameters, the representations of all words at \(\rho\) contain the representation of \(U(k-1)\) with parameter \(\xi'\): the words are weights of rank \(k\) above one fixed weight of rank \(k-1\) \cite[\S III.10, \S6]{Rub}.
+
+How does a lift change the number of forms?  Work in the model of Chapter~\ref{dt-chap}, with one place and \(\Z[\mathrm i]\) in place of \(\Oc_E\).  For a nonincreasing \(\lambda\in\Z^{N'}\) write \(z_i=\lambda_i+N'-i\), so that \(D_{N'}(z)\) is its Weyl dimension; this depends only on the differences of the \(\lambda_i\).
+
+\begin{problem}\label{pr:add-block}
+Let \(\lambda\in\Z^{N'}\) be nonincreasing, \(c\le\lambda_{N'}\) an integer, and \(\lambda^+\) the weight \(\lambda\) followed by \(t_0+1\) entries \(c\), with \(z^+\) defined in rank \(N'+t_0+1\).  Then
+\[
+ V_{N'+t_0+1}(z^+)=V_{N'}(z)\prod_{c'=1}^{t_0}c'!\ \prod_{i=1}^{N'}\prod_{l=1}^{t_0+1}\bigl(\lambda_i-c+N'-i+l\bigr).
+\]
+\end{problem}
+
+\begin{problem}\label{pr:count-block}
+In the situation of Problem~\ref{pr:add-block}, with the masses \(M_\nu\) of Chapter~\ref{dt-chap},
+\[
+ \frac{M_{N'+t_0+1}D_{N'+t_0+1}(z^+)}{M_{N'}D_{N'}(z)}
+ =\prod_{c'=1}^{t_0}c'!\ \prod_{i=1}^{N'}\prod_{l=1}^{t_0+1}\bigl(\lambda_i-c+N'-i+l\bigr)\prod_{\nu=N'+1}^{N'+t_0+1}\pi^{-\nu}\kappa_\nu .
+\]
+For \(\lambda=(3,1)\), \(t_0=1\), \(c=0\) this ratio is \(5/64\).
+\end{problem}
+
+So the count of forms changes at each lift by a product of differences among the new parameters and between them and the old ones; the factor \(\prod_{c'}c'!\) is the Vandermonde product of the new block, and no factorial from the denominators of the Weyl formula is left over.  Over \(E\) the Weyl factor is a product over \(\Phi\), and the mass ratio is an exact formula for unramified CM fields, used in Chapter~\ref{hp-chap}.
+
+\begin{leanremark}
+\raggedright The parameters are \tl{HCParam} with fields \tl{u}, \tl{v}, \tl{b}, \tl{e} (our \(\xi\), \(\xi'\), \(\theta\), \(w\)) and the gaps \tl{gap\_be}, \tl{gap\_eb}; the weights are \tl{MemberForms.lam} with \tl{lam\_eq}; the nodes \tl{wj}; the top weights \tl{SizeData\(_2\).aT}, \tl{bT} with \tl{top\_u}; the windows \tl{win\_thick}, \tl{win\_top}, \tl{win\_thin}; the words \tl{SData.letter}, \tl{u\_letter}, \tl{cloud\_gap} (spacing \tl{Del}).  Problem~\ref{pr:dominant} is \tl{factHCMono} with the integrality facts \tl{FactSInt}, \tl{FactEInt}.
+\end{leanremark}
+
+\section{Forms and the lifts}\label{sec:lifts}
+
+For each level \(j\) the construction has a finite set \(\Cl_j\) of lattices in \(X_j\), representatives of the classes of a genus with level structure, and their finite stabilizers \(\Gamma_\Lambda\).  A \emph{form of level \(j\)} assigns to \(\Lambda\in\Cl_j\) a vector of the representation of weight \((\lambda^{(j)}(\rho))_{\rho\in\Phi}\) fixed by \(\Gamma_\Lambda\), with the norm \(\sum_\Lambda\lvert\Gamma_\Lambda\rvert^{-1}\lVert\varphi(\Lambda)\rVert^2\), as in Section~\ref{dt-sec:forms} of Chapter~\ref{dt-chap}.  The \(j\)-th \emph{lift} \(K_j\), from level \(j-1\) to level \(j\), is
+\begin{equation}\label{eq:lift}
+ (K_j\varphi)(\Lambda')=\sum_{\Lambda\in\Cl_{j-1}}\frac{\epsilon_j(\Lambda,\Lambda')}{\lvert\Gamma_\Lambda\rvert}\,\mathbf K_j(\Lambda,\Lambda')\,\varphi(\Lambda),\qquad\lvert\epsilon_j(\Lambda,\Lambda')\rvert=1 .
+\end{equation}
+This is~\eqref{tn-eq:lift} of Chapter~\ref{tn-chap} with unit scalars.  The block \(\mathbf K_j(\Lambda,\Lambda')\) is built from Taylor coefficients at \(0\) of a theta function of the lattice \(\Hom_{\Oc_E}(\Lambda,\Lambda')\), shifted by a fractional ideal and averaged over Heisenberg translates at the level primes, on \(V=\prod_{\rho\in\Phi}M_{N_j\times N_{j-1}}(\C)\) \cite[\S7, Def.~11.10]{Adr}; this is the \emph{kernel} of the lift.  The \emph{chain} is the composite \(K_m\cdots K_1\).  Let \(D_\Gamma\) be a common multiple of the orders \(\lvert\Gamma_\Lambda\rvert\), \(\Lambda\in\Cl_j\), \(j<m\).
+
+\begin{problem}\label{pr:variables}
+\(\Hom_{\Oc_E}(\Lambda,\Lambda')\) is a free \(\Z\)-module of rank \(2fN_{j-1}N_j\), and its theta function is a function of \(fN_{j-1}N_j\) complex variables; for \((m,k,t_0)=(2,8,15)\) and \(j=1\) there are \(1536\) of them.
+\end{problem}
+
+\begin{problem}\label{pr:chain-kernel}
+\((K_m\cdots K_1\varphi)(\Lambda_m)\) is the sum over \(\Lambda_j\in\Cl_j\), \(j<m\), of \(\prod_{j<m}\lvert\Gamma_{\Lambda_j}\rvert^{-1}\prod_{j=1}^m\epsilon_j(\Lambda_{j-1},\Lambda_j)\cdot\mathbf K_m(\Lambda_{m-1},\Lambda_m)\cdots\mathbf K_1(\Lambda_0,\Lambda_1)\varphi(\Lambda_0)\).  Hence \(D_\Gamma^m\) clears the stabilizer denominators of the chain.
+\end{problem}
+
+In \cite{Adr} the lifts are \cite[Def.~11.10]{Adr}, and \(D_\Gamma\) may be taken to be Minkowski's bound \(M(2fN_m)\) for the orders of finite subgroups of \(\mathrm{GL}_{2fN_m}(\Z)\) \cite[Prop.~11.14]{Adr}; see Problem~\ref{di-pr:minkowski} of Chapter~\ref{di-chap}.  The integrality of the kernels needed there rests in \cite{Adr} on the hypotheses (N1)--(N3) of Chapter~\ref{di-chap}, assumed there; the formalization proves the final theorem without assuming them.
+
+\begin{leanremark}
+\raggedright The chain is \tl{ColumnChain}: classes \tl{cls}, stabilizers \tl{stab}, weights \tl{wt}\({}=1/\lvert\)\tl{stab}\(\rvert\), the common multiple \tl{DGam} with \tl{dvd\_DGam}, the block \tl{Kmap}\({}=\)\tl{rhoDet}\(\cdot\)\tl{rhoDet'}\(\cdot\)(\tl{divDe}\(\circ\)\tl{unf}\(\circ\)\tl{sharp}), the lift \tl{K} and the composite \tl{col}.  Here \tl{rhoDet}, \tl{rhoDet'} are the unit scalars, and \tl{sharp}, \tl{divDe} rescale coordinates by powers with exponents \(w_j-N_j/2\) and \(w_j-N_{j-1}/2\).  The block \tl{unf} is abstract; its relation to theta functions is the separate statement \tl{ThetaX}, which we have not followed.  The forms of level \(0\) are \tl{Mu0}, and the inner product is \tl{MemberForms.ipC}.
+\end{leanremark}
+
+\section{Terminal primes, lattices and period maps}\label{sec:lattices}
+
+Each word \(u\in\Wc\) has its own lattice classes and lifts, and a \emph{terminal prime} \(T_u=\varpi_u\bar\varpi_u\) with \(\varpi_u\in\Oc_K\) and \(\varpi_u\equiv1\) modulo \(Nqd(g_0g_1)^2\), where \(g_0,g_1\) are the level primes (Chapter~\ref{as-chap}).  The prime \(T\) of (S4) is \(T_{u_0}\) for a base word \(u_0\).  The terminal primes are chosen in windows fixed by dimensions of spaces of forms, so that \(\lvert\log T_u-\log T_{u'}\rvert=O(\log k)\) \cite[Def.~18.9 (K7)]{Adr}; Chapter~\ref{hp-chap} computes their size.  (Chapter~\ref{as-chap} calls \(T_u\) the auxiliary prime.)
+
+\begin{problem}\label{pr:Tu-split}
+\(T_u\equiv1\pmod{Nqd}\), so \(T_u\) splits completely in \(E\).  There are \(f\) primes of \(F\) above \(T_u\); each has residue field \(\mathbb F_{T_u}\) and splits in \(E\).
+\end{problem}
+
+At each prime \(v\) of \(F\) above \(T_u\) the level structure of a lattice \(\Lambda\in\Cl_j\) contains an \(\mathbb F_{T_u}\)-vector space of dimension \(N_j\) with a nonzero linear form, and \(\alpha\in\mathbb F_{T_u}^\times\) acts on lattices with level structure, and on forms, by rescaling that form.  A form of level \(0\) is \emph{ramified at \(T_u\)} if \(\sum_{\alpha\in\mathbb F_{T_u}^\times}\alpha\cdot\varphi=0\) for each of the \(f\) primes \(v\).
+
+The lattices are over the ring of integers of a \emph{coefficient field} \(L\supset E\), a number field that is Galois over \(\Q\) and totally complex, with a fixed embedding in \(\C\) (Chapter~\ref{sb-chap} writes \(K\) for it).  For a place \(w\) of \(L\) let \(\pp_w\), \(e_w\) be its prime and ramification index, and \(\ell_w:=\log N\pp_w/[L:\Q]\), as in Chapter~\ref{lt-chap}.
+\begin{itemize}
+\item[(M)] The \emph{base lattice} \(M_u\) is an \(\Oc_L\)-lattice spanning an \(L\)-structure of the space of forms of level \(0\) of the word \(u\), with the norm of Section~\ref{sec:lifts} at the fixed embedding.  Let \(M_u^{\rm ram}\) be its intersection with the ramified forms, of rank \(d_u\).
+\item[(N)] An \(\Oc_L\)-lattice \(N'_u\) of rank \(d_u\) in \(M_u^{\rm ram}\otimes L\), with the same norms, such that \(N'_{u,w}\subseteq M^{\rm ram}_{u,w}\) at every \(w\nmid T_u\), with equality above the primes that are not inert in \(K\) and above the inert primes at which no gain is taken; and the \emph{source lattice} \(N_u:=I_uN'_u\), with \(I_u:=\prod_w\pp_w^{-\lfloor e_w\sigma_u(w)\rfloor}\) for numbers \(\sigma_u(w)\ge0\), the \emph{gains}, nonzero at finitely many \(w\).
+\item[(R)] The \emph{top lattice} \(R\), an \(\Oc_L\)-lattice spanning an \(L\)-structure of a finite-dimensional space \(\Ec\) of automorphic forms, the same for all words, and its dual \(R^\vee:=\Hom_{\Oc_L}(R,\Oc_L)\subset\Hom_L(R\otimes L,L)\), whose unit lattices are the dual unit lattices of Chapter~\ref{sm-chap}.
+\item[(B)] The \emph{period map} \(B_u\colon N_u\otimes L\to\Hom_L(R\otimes L,L)\).  Over \(\C\), \(B_u(\varphi)(G)\) lifts \(\varphi\) along the chain \(K_m\cdots K_1\), restricts the result to the lattices of \(X'=z^\perp\), projects it to one weight of rank \(N_m-1\), and pairs it with the form on \(X'\cong Y_m\) attached to \(G\in\Ec\).
+\end{itemize}
+The record requires \(B_u(N_u)\subseteq R^\vee\) and \(h(B_u)\le h_u\) for numbers \(h_u\) (Chapter~\ref{sb-chap}).  Chapter~\ref{di-chap} proves the inclusion, with the gains \(\sigma_u(w)\) at the inert primes; Chapter~\ref{sb-chap} identifies \(B_u\) with a Bessel period; Chapter~\ref{hp-chap} bounds \(h_u\).  At the places above \(T_u\) the formalization imposes a separate condition on \(N'_u\), and it defines \(\Ec\) and \(R\) place by place from integral structures that depend on twisting data; we have not traced either, nor the projection in (B).
+
+\begin{problem}\label{pr:index-slope}
+Let \(N'\subseteq M\) be \(\Oc_L\)-lattices of rank \(d\) in one space, with the same archimedean norms, and \(\len_w\) the length of \((M/N')\otimes\Oc_{L,w}\).  Then \(\mu(N')=\mu(M)-\frac1d\sum_w2\ell_w\len_w\).
+\end{problem}
+
+\begin{problem}\label{pr:rescale}
+For integers \(n_w\), almost all zero, \(\mu\bigl(\prod_w\pp_w^{-n_w}N\bigr)=\mu(N)+\sum_w2\ell_wn_w\).  If \(n_w=e_w\sigma_p\) for every \(w\mid p\), the contribution of \(p\) is \(2\sigma_p\log p\).
+\end{problem}
+
+Combining Problems~\ref{pr:index-slope} and~\ref{pr:rescale},
+\[
+ \mu(N_u)=\mu(M_u^{\rm ram})-\frac1{d_u}\sum_{w\nmid T_u}2\ell_w\len_w(M_u^{\rm ram}/N'_u)+\sum_w2\ell_w\lfloor e_w\sigma_u(w)\rfloor
+\]
+when \(N'_{u,w}=M^{\rm ram}_{u,w}\) above \(T_u\).  The last sum is the gain, about \(\sum_p2\sigma_p\log p\); the middle one is the loss at the inert primes.  This is the shape of~\eqref{as-A2} of Chapter~\ref{as-chap}, whose left side has \(\mu(M_u)\) in place of \(\mu(M_u^{\rm ram})\); we have not traced the comparison of these two slopes in the formalization.
+
+\begin{problem}\label{pr:periods}
+\(B_u(N_u)\subseteq R^\vee\) if and only if \(B_u(\varphi)(y)\in\prod_w\pp_w^{\lfloor e_w\sigma_u(w)\rfloor}\) for all \(\varphi\in N'_u\) and \(y\in R\).
+\end{problem}
+
+So the inclusion \(B_u(N_u)\subseteq R^\vee\) says that the periods of the lattice \(N'_u\) are divisible, at each place \(w\), by \(\pp_w^{\lfloor e_w\sigma_u(w)\rfloor}\); the gains are measured in units of \(v_p\).
+
+\paragraph{The record.}  For one scale and one translate, the objects \(\Wc\), \(T_u\), \(M_u\), \(N_u\), \(h_u\), \(R\), together with the local terms \(E_{u,j}\), the common local term \(\mathcal L\), the total gain \(\Gamma\) and the index loss, form a \emph{chain record} \cite[Def.~18.9]{Adr} if they satisfy the eight conditions (K1)--(K8) listed there.  These are the inequalities~\eqref{as-A1}--\eqref{as-A7} of Chapter~\ref{as-chap} with explicit errors.  The formalization proves the final theorem; the corresponding step in \cite{Adr}, the existence of chain records for every admissible datum, is \cite[Hyp.~18.10]{Adr}, assumed there.  The formalization establishes records only for the data of one family class that it selects, which is weaker than the quantifiers of \cite[Hyp.~18.10]{Adr} and suffices for the final theorem.
+
+\begin{leanremark}
+\raggedright \(T_u\) is \tl{ColumnsAtT.T}, with \tl{D7.T\_norm} (the congruence), \tl{D7.T\_win} (the window, of relative width \(1/(fk)\) around \tl{Tstar}), and \tl{D7.cOf\_eq}; the \(f\) primes above \(T_u\) are \tl{vT} with residue fields \tl{Fv}, the action is \tl{rhoT} (\tl{MemberForms.dil}), and the ramified forms are \tl{Mram}.  \(L\) is \tl{Rows.Data.LL}; lattices are \tl{HLat}.  \(M_u\) is \tl{(D7.fm u).lat 0}, \(M_u^{\rm ram}\) is \tl{DV.MramL}, \(N'_u\) is \tl{SizeData\(_2\).NuLat}, with the conditions \tl{DV.NuDef}, and \(N_u=\)\tl{D7.div.Nu u} by \tl{DV.NprimeDef}; the gains are \tl{SizeData\(_2\).sg} and \(2\ell_we_w\sigma\) is \tl{SizeData\(_2\).sz w \(\sigma\)}.  \(R\), \(B_u\), \(h_u\) are \tl{DivData.RR}, \tl{Bk}, \tl{h}; \tl{Rows.BuDefQ} and \tl{D7.BuRational} give (B); \(B_u(N_u)\subseteq R^\vee\) is \tl{DivData.OneMapIntoCC}, a clause of \tl{LinkDIV\_at}.  A family of records over the scales is \tl{FamP}; the interface statements on it are \tl{LinkG}, \tl{LinkS}, \tl{LinkDIV\_at}, \tl{LinkMu} and \tl{LinkN\_at} in \tl{GlobalTheoremInputs}, and \tl{ChainTied} with \tl{TieLocal} ties them to the abstract record of \cite[Def.~18.9]{Adr} (rank \(d_u\), \(T_u\), \(\mu(N_u)\), \(\mu_{\max}(N_u)\), \(h_u\), \(\mu(M_u)\), \(\mu_{\max}(M_u)\), \(\mu(R^\vee)\), the local terms).  The selections and analytic inputs from which these statements are derived are the package \tl{HypsAlt}, on one family class.
+\end{leanremark}
+
+\section*{Hints}
+\begin{description}
+\item[\ref{pr:orbit}] \(\Phi\) has index two and contains neither \(c\) nor \(\Frob_p\).  If \(c=\Frob_p^i\), compare the three components; \(H\) is a \(2\)-group.  Then compute \((c\Frob_p)^s\) for even and odd \(s\).
+\item[\ref{pr:rows}] Problem~\ref{gf-pr:galois}; compare Problem~\ref{gf-pr:outside}.
+\item[\ref{pr:orbit-example}] Compute \([p]\), \(\chi_{11}(p)\), \(\chi_{1319}(p)\) and use Problem~\ref{pr:rows}.
+\item[\ref{pr:smallest}] Take each of \(m\), \(k\), \(t_0\) as small as the constraints allow, in this order.
+\item[\ref{pr:complement}] The image of \(X_j\) is positive definite, so the complement carries all negative directions.  For the last part use (S3) directly.
+\item[\ref{pr:Y0}] A hyperbolic plane has signature \((1,1)\) at every place.
+\item[\ref{pr:local-global}] At a real place the sign of the Gram determinant is \((-1)\) to the number of negative eigenvalues.
+\item[\ref{pr:dominant}] Between half-integers and integers, a strict inequality gains \(\frac12\).  Where the blocks begin use \(\xi_k>-\theta_1\) and \(w_1-\theta_1\ge\frac{t_0+3}2\); between two blocks use \(w_{l+1}-w_l\ge t_0+3\).
+\item[\ref{pr:parameter}] For an entry of the block \(l\) the position is \(i=k+(l-1)(t_0+1)+c\), \(1\le c\le t_0+1\).
+\item[\ref{pr:words}] \(\frac12+\Delta_\Wc<4\Delta_\Wc\).
+\item[\ref{pr:add-block}] Sort the pairs of indices into old--old, new--new and old--new.
+\item[\ref{pr:count-block}] Problem~\ref{dt-pr:count} with~\eqref{dt-eq:weyl}, and Problem~\ref{dt-pr:kappa} for the value.
+\item[\ref{pr:variables}] Over \(\R\), \(\Hom_E(X_{j-1},X_j)\otimes\R\) is the product over \(\rho\in\Phi\) of complex matrix spaces.
+\item[\ref{pr:chain-kernel}] Induction on \(m\), as in Problem~\ref{tn-pr:compose}.
+\item[\ref{pr:Tu-split}] \(\varpi_u\bar\varpi_u\) is congruent to \(1\) modulo the ideal generated by \(Nqd\); then Problem~\ref{gf-pr:galois}.
+\item[\ref{pr:index-slope}] Only the unit lattices at the finite places change.  At each \(w\) use elementary divisors of \(N'_w\) in \(M_w\), as in Problem~\ref{sm-pr:deg-basic}.
+\item[\ref{pr:rescale}] Problems~\ref{sm-pr:ideal} and~\ref{sm-pr:normalization}.
+\item[\ref{pr:periods}] \(B_u(I_uN'_u)=I_uB_u(N'_u)\); localize, where \(R\) is free.
+\end{description}
+
+\begin{thebibliography}{Lean}
+\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[Lean]{Lean} The Lean community, \emph{riemann-hypothesis}, a Lean formalization of Alp\"oge's argument, \url{https://github.com/leanprover-community/riemann-hypothesis}.
+\bibitem[Ne]{Ne} J.~Neukirch, \emph{Algebraic Number Theory}, Grundlehren Math.\ Wiss.\ 322, Springer, 1999.
+\bibitem[Rub]{Rub} \emph{The Alp\"oge--Claude proof of the Riemann hypothesis explained for the Riemann zeta function}, written by AI models at the behest of M.~O.~Rubinstein, working draft, 21 November 2026, \url{https://www.math.uwaterloo.ca/~mrubinst/alpoge_claude_grh/zeta-paper.pdf}.
+\bibitem[Zh]{Zh} R.~Zhang, \emph{A preliminary note on Alp\"oge's proposed proof of the generalized Riemann hypothesis}, preprint, 2026, hexagon:2611.00809.
+\end{thebibliography}
+
+\end{document}
