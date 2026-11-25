@@ -547,8 +547,9 @@ def site(directory):
            "problems are inserted.  Each chapter, section and numbered result "
            "of the settled parts also has a <em>tag</em>, four characters "
            "that never change and are never reused.  To cite an item "
-           "permanently, cite its tag (\u201cTag 2B7K\u201d) or link to "
-           "<code>tag/2B7K.html</code>, which leads to the item wherever it "
+           "permanently, cite its tag (\u201cTag 2224\u201d) or link to "
+           '<a href="tag/2224.html"><code>tag/2224.html</code></a>, '
+           "which leads to the item wherever it "
            "currently is.  On each page the tag is shown in grey beside the "
            "item.</p>\n"
            '<table class="tags">\n<thead><tr><th>Tag</th><th>Chapter</th>'
