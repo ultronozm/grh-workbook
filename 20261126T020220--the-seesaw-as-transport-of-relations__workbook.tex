@@ -1,0 +1,233 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[tn-]{20261125T002100--definite-theta-lifts-and-norms__workbook}
+\externaldocument[ob-]{20261126T000000--the-objects-of-the-construction__workbook}
+\externaldocument[bp-]{20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook}
+
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T020220\endcsname
+  \chapnumber{20261126T020220}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\C}{\mathbb C}
+\newcommand{\Oc}{\mathcal O}
+\newcommand{\Ac}{\mathcal A}
+\newcommand{\per}{\operatorname{per}}
+\newcommand{\tail}{\operatorname{tail}}
+\newcommand{\up}{\operatorname{up}}
+\newcommand{\dn}{\operatorname{dn}}
+\newcommand{\Bper}{\operatorname{Bper}}
+\newcommand{\cTop}{c_{\mathrm{top}}}
+\newcommand{\cBot}{c_{\mathrm{bot}}}
+\newcommand{\tl}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\title{The seesaw as transport of relations}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+From Chapter~\ref{tn-chap}: the lift \(\Theta_\lambda\), the numbers \(c_a\) with Problems~\ref{tn-pr:ca} and~\ref{tn-pr:Fa}, and Section~\ref{tn-sec:seesaw}, in particular Problem~\ref{tn-pr:seesaw}.  From Chapter~\ref{ob-chap}: the ranks and spaces \(X_j\), \(Y_j\) of Section~\ref{ob-sec:spaces} with Problems~\ref{ob-pr:parity} and~\ref{ob-pr:complement}, the forms and lifts of Section~\ref{ob-sec:lifts}, and the period map (B) of Section~\ref{ob-sec:lattices}.  From Chapter~\ref{bp-chap}: the Bessel subgroup and the toy of Section~\ref{bp-sec:smallest}.  Valuations at finite places of a number field.
+
+\medskip
+The period map \(B_u\) of Chapter~\ref{ob-chap} lifts a form of level \(0\) along the chain \(K_m\cdots K_1\) and pairs the result at the top, along \(U(X')\subset U(X_m)\).  Chapter~\ref{bp-chap} turns a Bessel period at the bottom, along \(U(X_0)\subset U(Y_0)\), into an inner product with a Poincar\'e series.  How is a pairing at the top moved to the bottom?  By seesaw identities \cite{Ku}, one pair of levels at a time.  In the Lean formalization \cite{Lean} they are proved in a weaker form than identities with explicit constants: every linear relation among the values at one end holds among the values at the other.  This is all the argument needs, because the constants that an identity would carry only have to be nonzero, and units at the right places.
+
+\section{Transport of relations}\label{sec:transport}
+
+Let \(I\) be a set and \(x=(x_i)_{i\in I}\), \(y=(y_i)_{i\in I}\) families in complex vector spaces \(X\) and \(Y\).  We say that \emph{the relations of \(x\) pass to \(y\)} if \(\sum_i\alpha_ix_i=0\) implies \(\sum_i\alpha_iy_i=0\) for every finitely supported family \((\alpha_i)\) of complex numbers.
+
+\begin{problem}\label{pr:linear}
+The relations of \(x\) pass to \(y\) if and only if there is a linear map \(T\) from the span of the \(x_i\) to \(Y\) with \(Tx_i=y_i\) for all \(i\); such a \(T\) is unique.  If the relations also pass back from \(y\) to \(x\), then \(T\) is injective.
+\end{problem}
+
+\begin{problem}\label{pr:anchor}
+Let \(X=Y=\C\), suppose the relations of \(x\) pass to \(y\), and let \(x_{i_0}\ne0\).  Then \(y_ix_{i_0}=y_{i_0}x_i\) for every \(i\).  If moreover \(y_{i_0}\ne0\), then \(y=cx\) with \(c=y_{i_0}/x_{i_0}\ne0\).
+\end{problem}
+
+\begin{problem}\label{pr:compose}
+If the relations of \(x\) pass to \(y\) and those of \(y\) pass to \(z\), then those of \(x\) pass to \(z\).  If the relations of \(x\) pass to \(y\) and \(c_i\in\C\), then those of \((c_ix_i)\) pass to \((c_iy_i)\).
+\end{problem}
+
+The second half of Problem~\ref{pr:anchor} is how proportionality is recovered: one nonzero value at both ends fixes the constant.  The constants that arise must also have valuation zero at certain places.  Let \(S\) be a set of primes.  Following the formalization, call a pair \((x,y)\) of complex numbers an \emph{\(S\)-unit pair} if \(y\ne0\) and \((x/y)^n=\beta\) for some integer \(n\ge1\) and some \(\beta\in\Q^\times\) such that every prime \(p\) with \(v_p(\beta)\ne0\) lies in \(S\).
+
+\begin{problem}\label{pr:unit-ratio}
+Let \((x,y)\) be an \(S\)-unit pair, \(L\) a number field with an embedding \(\sigma\colon L\to\C\), \(a\in L\) with \(\sigma(a)=x/y\), and \(w\) a finite place of \(L\) above no prime of \(S\).  Then \(v_w(a)=0\).  For \(L=\Q(\mathrm i)\), \(a=1+\mathrm i\) and \(S=\{2\}\), \(n=4\) works, and \(v_w(a)\) is \(1\) at the place above \(2\).
+\end{problem}
+
+\section{The tower}\label{sec:tower}
+
+By Problems~\ref{ob-pr:parity} and~\ref{ob-pr:complement}, for \(j<m\) the complement of \(X_j\) in \(Y_j\) has rank \(m-1-j\).  A \emph{Bessel datum of rank \(\rho\)} at level \(j\) is a decomposition of this complement into \(\rho\) hyperbolic planes and an anisotropic line, as in Section~\ref{bp-sec:subgroup}; a \emph{Fourier--Jacobi datum of rank \(\rho\)} is a decomposition into \(\rho\) hyperbolic planes.  A Fourier--Jacobi period integrates over the unipotent radical of the stabilizer of an isotropic flag of length \(\rho\), against a character and a theta function of the Weil representation, instead of a character alone \cite[\S\S12, 23]{GGP}.
+
+\begin{problem}\label{pr:ranks}
+The complement of \(X_j\) in \(Y_j\) has the rank of a Bessel datum of rank \(\rho\) if and only if \(j+2\rho+2=m\), and the complement of \(X_{j+1}\) in \(Y_{j+1}\) has the rank of a Fourier--Jacobi datum of rank \(\rho\) if and only if \(j+2\rho+2=m\).  So Bessel periods occur at even levels and Fourier--Jacobi periods at odd levels.
+\end{problem}
+
+\begin{problem}\label{pr:signatures}
+Let \(j\) be even and \(j+2\rho+2=m\) (here \(\rho\) is a rank, not an embedding).  At every embedding, the signatures of Problem~\ref{ob-pr:complement} are \((\rho,\rho+1)\) at level \(j\) and \((\rho,\rho)\) at level \(j+1\): those of \(\rho\) hyperbolic planes and a negative line, and of \(\rho\) hyperbolic planes.
+\end{problem}
+
+The seesaw moves from a Bessel datum of rank \(\sigma+1\) at level \(j\), through the Fourier--Jacobi datum of rank \(\sigma+1\) at level \(j+1\), to the Bessel datum of rank \(\sigma\) at level \(j+2\): a \emph{double step}.
+
+\begin{problem}\label{pr:double-steps}
+The double step \((j,\sigma+1)\mapsto(j+2,\sigma)\) preserves \(j+2\rho+2=m\).  Starting from \((0,m/2-1)\) it reaches \((m-2,0)\) after \(m/2-1\) steps.  For \(m=6\) the Bessel data are at levels \(0,2,4\), of ranks \(2,1,0\), and the Fourier--Jacobi data at levels \(1,3,5\), of ranks \(2,1,0\).
+\end{problem}
+
+At level \(m-2\) the Bessel datum has rank \(0\): the period is a restriction along a line.  The last two lifts lead to \(X_m\), where the pairing is the restriction along \(X'=z^\perp\subset X_m\), of codimension one.  For the smallest ranks \((m,k,t_0)=(2,8,15)\) of Problem~\ref{ob-pr:smallest} there is no double step at all.
+
+\section{The definite seesaw}\label{sec:definite}
+
+Problem~\ref{tn-pr:seesaw} of Chapter~\ref{tn-chap} is the smallest seesaw.  For \(\varphi\in\Ac_{(a)}(1)\) and \(\xi\in\Ac_{(j)}(1)\), with the period \(P\) and the vector \(\theta_z\) defined there, it says
+\[
+ P(\Theta_{(a)}\varphi,\xi)=\bigl\langle\varphi,\,(\Theta_{(j)}\xi)\,\theta_z\bigr\rangle .
+\]
+The left side lifts \(\varphi\) and pairs at the bottom; the right side lifts \(\xi\) and pairs at the top.  Kudla's principle is that both sides integrate one theta kernel, of a decomposed space, in two orders \cite{Ku}.
+
+\begin{problem}\label{pr:value}
+For \(a=8\), \(j=4\) and \(\varphi(I_1)=\xi(I_1)=1\), both sides of the seesaw equal \(c_4^2/16=\vartheta_0^2(\varpi/2\pi)^8=0.0012814849\ldots\), with \(c_4=4\vartheta_0(\varpi/2\pi)^4=0.1431913370\ldots\).
+\end{problem}
+
+\begin{problem}\label{pr:toy-chain}
+With the Poincar\'e series \(P\xi\) of Section~\ref{bp-sec:smallest}, \(\langle\Theta_{(a)}\varphi,P\xi\rangle=\langle\varphi,(\Theta_{(j)}\xi)\theta_z\rangle\).  Hence, for fixed \(\xi\), the relations of the family \(\varphi\mapsto\langle\varphi,(\Theta_{(j)}\xi)\theta_z\rangle\) pass to \(\varphi\mapsto\langle\Theta_{(a)}\varphi,P\xi\rangle\), and back.
+\end{problem}
+
+So in the smallest case a period at the top of a chain is the inner product of the lifted form with a Poincar\'e series.  The rest of this chapter, with Chapter~\ref{bp-chap} and the next chapter, is this statement for the chain of the argument.
+
+\section{The seesaw in the argument}\label{sec:steps}
+
+We use the following data of the formalization, for one word and a family of twists \(t\) by Hecke characters; the dependence on \(t\) is not shown.  For each level \(j\le m\) there are \emph{column forms}, forms on \(U(X_j)\), with the twist \(S_j\) and the lift \(K_j\) from level \(j\) to level \(j+1\); and \emph{row forms}, a space \(C_j\) of automorphic forms on \(U(Y_j)\) inside a space of theta lifts, with maps \(\iota_j\colon C_{j+1}\to C_j\) (theta lifts down), a space \(C_T\) of forms on \(U(X')\), and \(\iota_T\colon C_T\to C_{m-1}\).  There are nonzero constants \(c_I(j)\), \(c_V(j)\), \(c_K(j)\), \(c_P\).  For \(j+2\rho+2=m\), a column form \(\psi\) of level \(j\) and \(G\in C_j\), let \(\per_j(\psi,G)\) be the Bessel period of rank \(\rho\) of \(G\) against theta functions of \(\psi\); it is a function of auxiliary variables, and ``\(=0\)'' below means identically.  For a column form \(\psi\) of level \(m\) and \(F\in C_T\), let \(\tail(\psi,F)\) be the restriction pairing along \(X'\subset X_m\).
+
+\begin{theorem}[double step]\label{thm:step}
+Let \(j+2(\sigma+1)+2=m\).  Let \(\psi_i\) be column forms of level \(j\), possibly for different twists, \(G_i\in C_{j+2}\), and \(\alpha_i\in\C\), for \(i\) in a finite set.  If
+\[
+ \sum_i\alpha_i\,c_V(j)c_K(j)c_K(j+1)\,\per_{j+2}\bigl(K_{j+1}K_jS_j\psi_i,\,G_i\bigr)=0,
+\]
+then \(\sum_i\alpha_i\,c_I(j)c_I(j+1)\,\per_j(\psi_i,\iota_j\iota_{j+1}G_i)=0\).
+\end{theorem}
+\noindent\emph{Status}: proved in the formalization from four laws.  (i) Unfolding of a double step: a Bessel period of rank \(\sigma+1\) of a function lifted twice from level \(j+2\) is an iterated integral, over a quotient of the Fourier--Jacobi subgroup of rank \(\sigma+1\) at level \(j+1\) and then over a quotient of the Bessel subgroup of rank \(\sigma\) at level \(j+2\), of a Bessel period of rank \(\sigma\); it is derived from the descent of Weil data.  (ii) The value of that integral for the column forms of the construction, which collapses the finite-adelic integrals to finite sums over cells and moves base points.  (iii) Two consecutive lifts of column forms compose with the constants \(c_K\).  (iv) Rapid decay of cusp forms.  We have read the statements of (i) and (ii) and the proof of (ii) down to named lemmas, not further.
+
+\begin{theorem}[last step]\label{thm:last}
+If \(\sum_i\alpha_i\,c_V c_K c'_K c_P\,\tail\bigl(K_{m-1}K_{m-2}S_{m-2}\psi_i,F_i\bigr)=0\), with \(c_V=c_V(m-2)\), \(c_K=c_K(m-2)\), \(c'_K=c_K(m-1)\), then \(\sum_i\alpha_i\,c_I(m-2)c_I(m-1)\,\per_{m-2}(\psi_i,\iota_{m-2}\iota_TF_i)=0\).
+\end{theorem}
+\noindent\emph{Status}: proved in the formalization in the same way, from the law for the last two lifts and the evaluation of the final restriction pairing; not followed further.
+
+Put
+\[
+ \up_0\psi:=\psi,\quad \up_{l+1}\psi:=K_{2l+1}K_{2l}S_{2l}\up_l\psi,\quad
+ W_l:=\prod_{i<l}c_V(2i)c_K(2i)c_K(2i+1),
+\]
+\(\cTop(l):=W_lc_P\), \(\cBot:=\prod_{j<m}c_I(j)\), and \(\dn_j:=\iota_0\iota_1\cdots\iota_{j-1}\colon C_j\to C_0\).
+
+\begin{problem}\label{pr:vanish}
+Assume Theorem~\ref{thm:step}, and let \(j+2(\sigma+1)+2=m\).  If \(\per_{j+2}(K_{j+1}K_jS_j\psi,G)=0\), then \(\per_j(\psi,\iota_j\iota_{j+1}G)=0\).  Hence a nonzero Bessel period at level \(j\) of \(\psi\) against \(\iota_j\iota_{j+1}G\) forces a nonzero Bessel period at level \(j+2\).
+\end{problem}
+
+\begin{problem}\label{pr:up}
+Assume Theorem~\ref{thm:step}, and let \(2l+2\rho+2=m\).  If \(\sum_i\alpha_iW_l\per_{2l}(\up_l\psi_i,G_i)=0\), then \(\sum_i\alpha_i\bigl(\prod_{j<2l}c_I(j)\bigr)\per_0(\psi_i,\dn_{2l}G_i)=0\).
+\end{problem}
+
+\begin{problem}\label{pr:main}
+Let \(m=2n+2\), and assume Theorems~\ref{thm:step} and~\ref{thm:last}.  If \(\sum_i\alpha_i\cTop(n+1)\tail(\up_{n+1}\psi_i,F_i)=0\), then \(\sum_i\alpha_i\cBot\per_0(\psi_i,\dn_{m-1}\iota_TF_i)=0\), where \(\per_0\) is the Bessel period of rank \(n\) at level \(0\).
+\end{problem}
+
+Problem~\ref{pr:main}, which rests on Problem~\ref{pr:up}, is the following statement.
+
+\begin{theorem}[the seesaw]\label{thm:seesaw}
+The relations of the family \(i\mapsto\cTop(n+1)\tail(\up_{n+1}\psi_i,F_i)\) pass to the family \(i\mapsto\cBot\per_0(\psi_i,\dn_{m-1}\iota_TF_i)\).
+\end{theorem}
+
+\begin{problem}\label{pr:identity-vs-relations}
+Suppose that instead of Theorem~\ref{thm:step} one had identities \(\per_j(\psi,\iota_j\iota_{j+1}G)=\kappa_j\per_{j+2}(K_{j+1}K_jS_j\psi,G)\) with \(\kappa_j\ne0\) independent of \(\psi\), \(G\) and the twist.  Then the relations of \(i\mapsto\per_{j+2}(K_{j+1}K_jS_j\psi_i,G_i)\) and \(i\mapsto\per_j(\psi_i,\iota_j\iota_{j+1}G_i)\) pass to each other.
+\end{problem}
+
+Theorem~\ref{thm:step} gives one direction only, but it allows the twists to vary within one relation, with the constants \(c_V,c_K,c_I\) of each twist; this is what the comparison between twists in Problem~\ref{pr:rel} uses.
+
+\section{From the top to the bottom}\label{sec:bottom}
+
+The theorem compares two abstract periods.  The formalization ties them to the objects of Chapter~\ref{ob-chap} by five conditions, for each word \(u\).  Write \(\mathrm{col}_0\varphi\) for the column form of level \(0\) and twist \(t\) attached to a form \(\varphi\in M_u\), the space of forms of level \(0\) of \(u\) ramified at \(T_u\) (Section~\ref{ob-sec:lattices}), \(\mathrm{col}_m:=K_{m-1}\cdots K_0\) for the chain (the chain \(K_m\cdots K_1\) of Chapter~\ref{ob-chap}, with the indexing of Section~\ref{sec:steps}), \(B_{u,t}\) for the period map (B) at the twist \(t\), and \(\Bper(\varphi,T)\) for the Bessel period at level \(0\) of the column form of \(\varphi\) against a row form \(T\).
+\begin{itemize}
+\item[(L1)] \(\per_0(\mathrm{col}_0\varphi,G)=\Bper(\varphi,G)\) at every twist \(t\); the right side does not depend on \(t\).
+\item[(L2)] To each row datum \(F\) of \(B_{u,t}\) corresponds \(\tilde F\in C_T\) with \(\tail(\mathrm{col}_m\mathrm{col}_0\varphi,\tilde F)=B_{u,t}(\varphi,F)\) for every \(\varphi\).
+\item[(L3)] There are a linear bijection \(A\) of \(M_u\) with \(\lVert A\varphi\rVert=\nu\lVert\varphi\rVert\) for some \(\nu>0\), and \(s\ne0\), such that \(\tail(\up_{n+1}\mathrm{col}_0\varphi,\tilde F)=s\,\tail(\mathrm{col}_m\mathrm{col}_0A\varphi,\tilde F)\) for every \(\tilde F\in C_T\) and every twist.
+\item[(L4)] The element \(\tilde F\) of (L2) can be chosen with \(\dn_{m-1}\iota_T\tilde F\) equal to a row form \(\mathrm{row}_t(F)\) at the base; and every row form at the base is \(\dn_{m-1}\iota_T\tilde F_0\) for some \(\tilde F_0\in C_T\) of the base twist \(t_0\).
+\item[(L5)] For each twist \(t\) there is a set \(S_t\) of primes such that \(\bigl(\cTop(n+1)/\cBot\bigr)_t\) and \(\bigl(\cTop(n+1)/\cBot\bigr)_{t_0}\) form an \(S_t\)-unit pair.
+\end{itemize}
+\emph{Status}: (L1)--(L5) and the laws behind Theorems~\ref{thm:step} and~\ref{thm:last} are fields of one package of the formalization, which is supplied when the family is constructed; we have not traced the proofs that the constructed family satisfies them.
+
+\begin{problem}\label{pr:rel}
+Assume Theorem~\ref{thm:seesaw} and (L1)--(L4), and put \(c_t:=\cTop(n+1)_ts/\cBot(t)\), with the constants of the twist \(t\).  For every row form \(T\) at the base there is a function \(p\) on \(M_u\) such that: if \(\alpha p(\varphi_0)+\alpha'c_tB_{u,t}(\varphi,F)=0\), then \(\alpha\Bper(A^{-1}\varphi_0,T)+\alpha'\Bper(A^{-1}\varphi,\mathrm{row}_t(F))=0\).
+\end{problem}
+
+\begin{problem}\label{pr:rel-units}
+\(c_t\ne0\).  Under (L5), if \(c_t/c_{t_0}=\sigma(a)\) with \(a\in L\), then \(v_w(a)=0\) at every finite place \(w\) of \(L\) above no prime of \(S_t\).
+\end{problem}
+
+Since \(\Bper\) is linear in its first argument, relations among the values at \(A^{-1}\varphi\) are relations among the values at \(U\varphi\), with \(U:=\nu A^{-1}\), an isometry of \(M_u\).  So Problems~\ref{pr:rel} and~\ref{pr:rel-units} prove the following.
+
+\begin{theorem}[relations at the bottom]\label{thm:bottom}
+For every word \(u\) there are a unitary operator \(U\) of \(M_u\) and nonzero constants \(c_t\), with \(c_t/c_{t_0}\) of valuation zero at the places above no prime of \(S_t\), such that for every row form \(T\) there is \(p\) with the following property: every relation \(\alpha p(\varphi_0)+\alpha'c_tB_{u,t}(\varphi,F)=0\) implies \(\alpha\Bper(U\varphi_0,T)+\alpha'\Bper(U\varphi,\mathrm{row}_t(F))=0\).
+\end{theorem}
+\noindent\emph{Status}: proved in the formalization from Theorem~\ref{thm:seesaw} and (L1)--(L5).  The corresponding statement in \cite{Adr} is a seesaw relation for an abstract period map, \cite[Hyp.~14.10]{Adr}, assumed there; the formalization does not state it.
+
+\begin{leanremark}
+\raggedright In \cite{Lean} the tower is \tl{GlobalTheory.SeeSaw.Comm} and \tl{Tup}, with \tl{per}, \tl{perF}, \tl{perT}, \tl{tail}, \tl{up}, \tl{dn}, \tl{cTop}, \tl{cBot}; the Bessel and Fourier--Jacobi data are \tl{BesLev} and \tl{JacLev}, with \tl{BesLev.per} and \tl{JacLev.per}.  Theorems~\ref{thm:step}, \ref{thm:last}, \ref{thm:seesaw} are \tl{StepX}, \tl{LastX}, \tl{MainX}; Problem~\ref{pr:up} is \tl{up\_ind}, Problem~\ref{pr:main} is \tl{mainX\_of\_stepX\_lastX}, and Theorem~\ref{thm:seesaw} is assembled by \tl{mainX\_of\_lawsX}.  The laws are \tl{LawsX}; (i)--(iv) are \tl{DoubleStep} (from \tl{besselPeriod\_double\_step\_unfolding\_of\_descent}), \tl{ValX} (proved by \tl{GlobalTheory.ValFin.valX}), \tl{TwoX} and \tl{RapidVal}.  The \(S\)-unit pairs are \tl{UnitRatio}, and Problem~\ref{pr:unit-ratio} is \tl{vw\_eq\_zero\_of\_unitRatio}.  (L1)--(L5) are \tl{LinkVanishes}, \tl{LinkTailCondition}, \tl{LinkCommutes}, \tl{LinkDescends} with \tl{LinkSurjective}, and \tl{FamilyRatioCondition}, fields of \tl{FamilyAllConditions}.  Theorem~\ref{thm:bottom} is \tl{JointCondition}, proved by \tl{joint\_of\_famAllQ\_alt} and \tl{rel\_of\_links\_alt}.
+\end{leanremark}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:transport}}
+\begin{description}
+\item[\ref{pr:linear}] Define \(T(\sum_i\alpha_ix_i):=\sum_i\alpha_iy_i\).
+\item[\ref{pr:anchor}] Use the relation \(x_{i_0}\cdot x_i-x_i\cdot x_{i_0}=0\).
+\item[\ref{pr:unit-ratio}] \(a^n=\beta\), and \(v_w(\beta)\) is a multiple of \(v_p(\beta)\).  \((1+\mathrm i)^4=-4\).
+\end{description}
+
+\subsection*{\S\ref{sec:tower}}
+\begin{description}
+\item[\ref{pr:ranks}] Compare \(2\rho+1\) and \(2\rho\) with \(m-1-j\) and \(m-2-j\).
+\item[\ref{pr:signatures}] Put \(m-j=2\rho+2\) in Problem~\ref{ob-pr:complement}.
+\end{description}
+
+\subsection*{\S\ref{sec:definite}}
+\begin{description}
+\item[\ref{pr:value}] Problems~\ref{tn-pr:ca} and~\ref{tn-pr:Fa}; \(\vartheta_0=1.1803405990\ldots\) and \(\varpi=2.6220575542\ldots\).
+\item[\ref{pr:toy-chain}] Problem~\ref{bp-pr:unfold} and Problem~\ref{tn-pr:seesaw}.
+\end{description}
+
+\subsection*{\S\ref{sec:steps}}
+\begin{description}
+\item[\ref{pr:vanish}] A family with one term.
+\item[\ref{pr:up}] Induction on \(l\), applying Theorem~\ref{thm:step} with \(j=2l-2\) to the coefficients \(\alpha_iW_{l-1}\).
+\item[\ref{pr:main}] Theorem~\ref{thm:last}, where \(m-2=2n\), then Problem~\ref{pr:up} with \(l=n\); note \(\dn_{2n}\iota_{2n}=\dn_{2n+1}\).
+\end{description}
+
+\subsection*{\S\ref{sec:bottom}}
+\begin{description}
+\item[\ref{pr:rel}] By (L4) choose \(\tilde F_0\) of the base twist with \(\dn_{m-1}\iota_T\tilde F_0=T\), and define \(p(\varphi_0)\) through the top pairing of \(\up_{n+1}\mathrm{col}_0A^{-1}\varphi_0\) with \(\tilde F_0\), at the base twist.  Apply Theorem~\ref{thm:seesaw} to a family of two terms, one for each twist, and use (L1)--(L4).
+\item[\ref{pr:rel-units}] \(s\) does not depend on the twist; Problem~\ref{pr:unit-ratio}.
+\end{description}
+
+\begin{thebibliography}{GGP}
+\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[GGP]{GGP} W.~T.~Gan, B.~H.~Gross and D.~Prasad, \emph{Symplectic local root numbers, central critical \(L\)-values, and restriction problems in the representation theory of classical groups}, Ast\'erisque \textbf{346} (2012), 1--109.
+\bibitem[Ku]{Ku} S.~S.~Kudla, \emph{Seesaw dual reductive pairs}, in: Automorphic Forms of Several Variables (Katata, 1983), Progr.\ Math.\ \textbf{46}, Birkh\"auser, Boston, 1984, 244--268.
+\bibitem[Lean]{Lean} The Lean community, \emph{riemann-hypothesis}, a Lean formalization of Alp\"oge's argument, \url{https://github.com/leanprover-community/riemann-hypothesis}.
+\end{thebibliography}
+\end{document}
