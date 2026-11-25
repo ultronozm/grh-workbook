@@ -15,11 +15,17 @@ Everything is read from the sources, so the chart follows the index:
     generalizes.  Which inputs (A1)-(A7), (V1)-(V3), (W1)-(W4) of the
     assembly a module supplies is read from its Deliverable paragraph
     and from the assembly's map of the inputs (the description list in
-    its section sec:map), keeping the labels on which both agree.
+    its section sec:map), keeping the labels on which both agree;
+  * a chapter of the last Part without a Deliverable paragraph whose
+    Prerequisites cite an earlier chapter of that Part is a development: it treats one input of that
+    chapter (its parent) in detail.  It supplies nothing to the assembly
+    directly, and is drawn in a band just below the modules, under its
+    parent where that column is free.
 
 The chart is a grid: one column per Part, the chapters of a Part stacked
 with the earliest at the bottom, the modules above the column that feeds
-them most, and the assembly on top.  Edges implied by a path are dropped
+them most, the developments just below their modules, and the assembly
+on top.  Edges implied by a path are dropped
 (transitive reduction).  The layout and the orthogonal edge routing are
 done here, so Graphviz is not needed; a DOT file is written as well, for
 reference.
@@ -167,7 +173,7 @@ def delivered(text):
 
 
 def read_sheets(sheets):
-    """Return (deps, incarnations, deliveries, inputs, assembly, modules)."""
+    """Return (deps, deliveries, inputs, assembly, modules, src, devs, parent)."""
     by_id = {s.id: s for s in sheets}
     pos = {s.id: k for k, s in enumerate(sheets)}
     main = [s for s in sheets if not s.side]
@@ -201,6 +207,21 @@ def read_sheets(sheets):
         if not para:
             warn(f"{s.tex} has no Prerequisites paragraph")
         deps[s.id] = resolve(s, prefixes(para), "Prerequisites")
+
+    # Developments: chapters of the last Part that build on an earlier
+    # one.  The parent is the earliest module reached through the
+    # chapters of the last Part that it cites.
+    devs, parent = [], {}
+    for s in modules:
+        cited = sorted((t for t in deps[s.id]
+                        if t in {x.id for x in modules}), key=pos.get)
+        if cited and not paragraph(src[s.id], "Deliverable"):
+            p = cited[0]
+            parent[s.id] = parent.get(p, p)
+            devs.append(s)
+    modules = [s for s in modules if s.id not in parent]
+
+    for s in sheets:
         if s in modules:
             for m in re.finditer(r"Simplest incarnation\}?:?(.*?)(?:Status|\n[ \t]*\n)",
                                  src[s.id], re.S):
@@ -243,13 +264,14 @@ def read_sheets(sheets):
         both = [l for l in a if l in b]
         deliveries[t] = sorted(both or a or b,
                                key=lambda l: ("AVWK".index(l[0]), int(l[1:])))
-    return deps, deliveries, inputs, assembly, modules, src
+    return deps, deliveries, inputs, assembly, modules, src, devs, parent
 
 
 # ---------------------------------------------------------------- graph
 
 def build_graph(sheets, parts):
-    deps, deliveries, inputs, assembly, modules, src = read_sheets(sheets)
+    (deps, deliveries, inputs, assembly, modules, src,
+     devs, parent) = read_sheets(sheets)
     mod_ids = {s.id for s in modules}
     edges = {}          # (u, v) -> kind: dep, inc, del
 
@@ -284,7 +306,8 @@ def build_graph(sheets, parts):
                if k == "del" or not reaches(e[0], e[1], skip=e)}
     unsupplied = [l for l in inputs if l not in supplier]
     return dict(edges=reduced, deliveries=deliveries, assembly=assembly,
-                modules=modules, unsupplied=unsupplied, src=src)
+                modules=modules, unsupplied=unsupplied, src=src,
+                devs=devs, parent=parent)
 
 
 # ---------------------------------------------------------------- layout
@@ -296,6 +319,7 @@ WIDTH = 1200
 MARGIN = 6
 LANE = 6             # spacing of parallel edges
 PAD = 7              # cluster padding
+DEV = -0.5           # the row of the developments, between modules and Parts
 
 
 def wrap(text, width_px, max_lines=4):
@@ -370,6 +394,28 @@ def layout(sheets, parts, g):
         col_of[m], row_of[m] = c, -1
     col_of[assembly.id], row_of[assembly.id] = C // 2, -2
 
+    # Developments, in a band just below the modules: under the parent
+    # if that column is free, else in the nearest free column.
+    dev_ids = [s.id for s in g["devs"]]
+    parent = g["parent"]
+    dev_cols = set()
+    for d in dev_ids:
+        free = [c for c in range(C) if c not in dev_cols]
+        if not free:
+            die("more developments than columns; extend the layout")
+        pc = col_of[parent[d]]
+        c = min(free, key=lambda c: (abs(c - pc), c))
+        dev_cols.add(c)
+        col_of[d], row_of[d] = c, DEV
+
+    def below(c, r):
+        """The row drawn directly below row r in column c."""
+        if r == -1:
+            return DEV if c in dev_cols else 0
+        if r == DEV:
+            return 0
+        return r + 1
+
     # Routing plan: for each edge, gutter and gap (lanes come later).
     # Gutter g lies left of column g.  Gap r lies below row r (gap -1:
     # between the modules and the first row of chapters).
@@ -378,7 +424,9 @@ def layout(sheets, parts, g):
         if k == "del":
             continue
         cu, ru, cv, rv = col_of[u], row_of[u], col_of[v], row_of[v]
-        if cu == cv and ru == rv + 1:
+        if v in dev_ids and (u in mod_ids or u in dev_ids):
+            plan[(u, v)] = ("near",)
+        elif cu == cv and ru == below(cv, rv):
             plan[(u, v)] = ("straight",)
         else:
             if cv > cu:
@@ -432,6 +480,8 @@ def layout(sheets, parts, g):
     entries = defaultdict(list)       # v -> [(sortkey, e)]
     for e, p in plan.items():
         u, v = e
+        if p[0] == "near":
+            continue
         if p[0] == "straight":
             entries[v].append((span_x(v)[0] + span_x(v)[1] / 2, e))
         else:
@@ -470,7 +520,15 @@ def layout(sheets, parts, g):
         return 10 + nlanes_h.get(gap, 0) * LANE
 
     gap_top = {-2: a_y + A_H + 2, -1: y}
-    y += gap_h(-1) + TITLE_H
+    y += gap_h(-1)
+    dev_y = DBH = None
+    if dev_ids:
+        DBH = max(len(lines[d]) for d in dev_ids) * LH + 10
+        dev_y = y + 4
+        y = dev_y + DBH + PAD
+        gap_top[DEV] = y
+        y += gap_h(DEV)
+    y += TITLE_H
     row_y = {}
     for r in range(rows):
         row_y[r] = y
@@ -492,6 +550,8 @@ def layout(sheets, parts, g):
             continue
         if i in mod_ids:
             box[i] = (col_x(col_of[i]), m_y, BW, MBH)
+        elif i in dev_ids:
+            box[i] = (col_x(col_of[i]), dev_y, BW, DBH)
         else:
             box[i] = (col_x(col_of[i]), row_y[row_of[i]], BW, BH)
     box[assembly.id] = (a_x, a_y, a_w, A_H)
@@ -514,6 +574,8 @@ def layout(sheets, parts, g):
         u, v = e
         vx, vy, vw, vh = box[v]
         ux, uy, uw, uh = box[u]
+        if p[0] == "near":
+            continue
         ex = entry_x[e]
         if p[0] == "straight":
             paths[e] = [(ex, uy), (ex, vy + vh)]
@@ -524,6 +586,27 @@ def layout(sheets, parts, g):
             hy = lane_y(gap, e)
             paths[e] = [(sx, exit_y[e]), (gx, exit_y[e]), (gx, hy),
                         (ex, hy), (ex, vy + vh)]
+
+    # From a module or development to a development: down from the
+    # parent, or sideways within the band.
+    for e, p in plan.items():
+        if p[0] != "near":
+            continue
+        u, v = e
+        ux, uy, uw, uh = box[u]
+        vx, vy, vw, vh = box[v]
+        right = vx > ux
+        if u in dev_ids:
+            yy = vy + vh / 2
+            paths[e] = ([(ux + uw, yy), (vx, yy)] if right
+                        else [(ux, yy), (vx + vw, yy)])
+        elif col_of[u] == col_of[v]:
+            x = ux + 0.07 * uw
+            paths[e] = [(x, uy + uh), (x, vy)]
+        else:
+            sx = ux + (0.93 * uw if right else 0.07 * uw)
+            tx = vx + (0.07 * vw if right else 0.93 * vw)
+            paths[e] = [(sx, uy + uh), (sx, vy - 6), (tx, vy - 6), (tx, vy)]
 
     # Delivery arrows: module tops to the bottom of the assembly.
     ax, ay, aw, ah = box[assembly.id]
@@ -541,8 +624,9 @@ def layout(sheets, parts, g):
         cl_boxes.append((name, min(xs) - PAD, min(ys) - TITLE_H,
                          BW + 2 * PAD, max(ye) - min(ys) + TITLE_H + PAD))
     p6_name = next((f"{k}. {n}" if n else k) for k, n, _ in parts if k == last_part)
+    p6_bottom = dev_y + DBH if dev_ids else m_y + MBH
     cl_boxes.insert(0, (p6_name, MARGIN, MARGIN, WIDTH - 2 * MARGIN,
-                        m_y + MBH + PAD - MARGIN))
+                        p6_bottom + PAD - MARGIN))
     return dict(box=box, lines=lines, paths=paths, clusters=cl_boxes,
                 width=WIDTH, height=height, col_of=col_of, row_of=row_of)
 
@@ -558,6 +642,7 @@ STYLE = """
 .fc .cl.top text { stroke: #fbf7ef; }
 .fc .n rect { fill: #fff; stroke: #8b95a3; stroke-width: 1; }
 .fc .n.mod rect { fill: #fff1d6; stroke: #b7791f; stroke-width: 1.4; }
+.fc .n.dev rect { fill: #fffaf0; stroke: #d6a85a; stroke-width: 1.2; }
 .fc .n.asm rect { fill: #fde2dc; stroke: #b4432f; stroke-width: 1.8; }
 .fc .n text { font-size: 11.5px; fill: #1f2933; }
 .fc .n text .num { font-weight: 700; }
@@ -626,6 +711,7 @@ def svg_path(pts, r=4):
 def render_svg(sheets, g, L):
     by_id = {s.id: s for s in sheets}
     mods = {s.id for s in g["modules"]}
+    devs = {s.id for s in g["devs"]}
     asm = g["assembly"].id
     W, H = L["width"], L["height"]
     out = [f'<svg class="fc" xmlns="http://www.w3.org/2000/svg" '
@@ -659,7 +745,8 @@ def render_svg(sheets, g, L):
         if s.id not in L["box"]:
             continue
         x, y, w, h = L["box"][s.id]
-        cls = "n asm" if s.id == asm else "n mod" if s.id in mods else "n"
+        cls = ("n asm" if s.id == asm else "n mod" if s.id in mods
+               else "n dev" if s.id in devs else "n")
         ls = L["lines"][s.id]
         fs = 13 if s.id == asm else FS
         lh = LH + (1.5 if s.id == asm else 0)
@@ -701,6 +788,7 @@ def render_svg(sheets, g, L):
 def render_dot(sheets, parts, g):
     by_id = {s.id: s for s in sheets}
     mods = {s.id for s in g["modules"]}
+    devs = {s.id for s in g["devs"]}
     asm = g["assembly"].id
     out = ["// Generated by scripts/make-flowchart.py; do not edit.",
            "digraph chapters {", '  rankdir=BT; node [shape=box, style="rounded,filled", '
@@ -711,7 +799,8 @@ def render_dot(sheets, parts, g):
                    'style=filled; color="#d5d9df"; fillcolor="#f5f6f8";')
         for i in ids:
             s = by_id[i]
-            fill = "#fde2dc" if i == asm else "#fff1d6" if i in mods else "white"
+            fill = ("#fde2dc" if i == asm else "#fff1d6" if i in mods
+                    else "#fffaf0" if i in devs else "white")
             label = f"{s.num}. {s.title}".replace('"', '\\"')
             out.append(f'    "{i}" [label="{label}", URL="{s.html}", fillcolor="{fill}"];')
         out.append("  }")
@@ -821,7 +910,9 @@ def render_page(sheets, g, svg):
            " read from the bottom up: a chapter sits above the chapters it"
            " builds on.  On top are the chapters of Part VI, each stating one"
            f" ingredient in general, and the final chapter, /{asm.title}/,"
-           " which assembles them.  Hover over a chapter to pick out its arrows.",
+           " which assembles them.  Just below a Part VI chapter are the"
+           " chapters that develop one of its inputs, in the form the Lean"
+           " formalization proves.  Hover over a chapter to pick out its arrows.",
            "",
            "#+BEGIN_EXPORT html",
            '<figure class="fc-fig">',
@@ -836,6 +927,9 @@ def render_page(sheets, g, svg):
            " of a Part VI chapter (from its /Prerequisites/, its"
            " /Simplest incarnation/ remarks, and the map of the inputs in"
            f" /{asm.title}/).",
+           "- Pale box below a Part VI chapter: a chapter that develops one"
+           " of its inputs (it cites an earlier Part VI chapter in its"
+           " /Prerequisites/); the arrow comes from the chapter it builds on.",
            "- Red arrow: a Part VI chapter supplies the inputs named on it to"
            " the assembly (where its /Deliverable/ paragraph and the map of the"
            " inputs agree).  The conditions (K1)–(K8) of a chain record are"
