@@ -3,25 +3,37 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{xr-hyper}
 \usepackage[hidelinks]{hyperref}
-\externaldocument[c14-]{20261124T214500--supersingular-theta-divisibility__workbook}
-\externaldocument[c15-]{20261124T214600--the-isotropic-plane__workbook}
-\externaldocument[c16-]{20261125T013700--pairings-on-a-formal-group-of-height-two__workbook}
-\externaldocument[c17-]{20261125T013500--hecke-nondegeneracy-on-the-tree__workbook}
-\externaldocument[c23-]{20261125T016500--hecke-operators-and-theta-lifts__workbook}
-\externaldocument[c24-]{20261125T016700--divisibility-along-the-chain__workbook}
+\externaldocument[ip-]{20261124T214600--the-isotropic-plane__workbook}
+\externaldocument[pf-]{20261125T013700--pairings-on-a-formal-group-of-height-two__workbook}
+\externaldocument[hn-]{20261125T013500--hecke-nondegeneracy-on-the-tree__workbook}
+\externaldocument[ho-]{20261125T016500--hecke-operators-and-theta-lifts__workbook}
+\externaldocument[dc-]{20261125T016700--divisibility-along-the-chain__workbook}
 \externaldocument[c32-]{20261126T030300--the-data__workbook}
+\externaldocument[c34-]{20261126T030400--the-seesaw-identity__workbook}
+\externaldocument[c36-]{20261126T030600--theorem-a-short-forms__workbook}
 
 \newcounter{chap}
-\input{chapters}
-\ifcsname chapters@20261126T030500\endcsname
-  \chapnumber{20261126T030500}
-\else
-  \renewcommand{\thechap}{?}
-\fi
+\input{chapters}\chapnumber{20261126T030500}
 \renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+
 \newcommand{\Z}{\mathbb Z}
 \newcommand{\Q}{\mathbb Q}
 \newcommand{\C}{\mathbb C}
+\newcommand{\Oc}{\mathcal O}
+\newcommand{\Cc}{\mathcal C}
+\newcommand{\gain}{\operatorname{gain}}
+\newcommand{\loss}{\operatorname{loss}}
+\newcommand{\err}{\operatorname{err}}
+\newcommand{\sfin}{s_{\mathrm{fin}}}
+\newcommand{\ram}{\mathrm{ram}}
+\newcommand{\tl}[1]{\texttt{#1}}
 \setlength{\emergencystretch}{3em}
 
 \title{Divisibility of the composite lift}
@@ -33,10 +45,254 @@
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-Chapters~\ref{c14-chap}--\ref{c17-chap}, \ref{c23-chap}, \ref{c24-chap} and~\ref{c32-chap}.
+The data of Chapter~\ref{c32-chap}: the field \(E\), its group \(\Phi\) of infinite places, the scales \(x < x_1 < b\) and \(a = xb\), the number \(m\) of lifts, the rank \(k\) and the level prime \(N\).  From Chapter~\ref{c34-chap}: twists, chain data and the composite lift.  The shape of the gain in Chapter~\ref{ip-chap}, Theorem~\ref{ip-thm:main}, and the count of Chapter~\ref{pf-chap}.  Chapter~\ref{hn-chap}, Theorem~\ref{hn-thm:vertex}, as a model of the elementary divisor theorem; Chapters~\ref{ho-chap} and~\ref{dc-chap} as models of Hecke operators passing through lifts.  Modules over a valuation ring; the elementary divisor theorem over \(\Z_p\); \(\C_p\) and its absolute value, with \(\lvert p\rvert_p = p^{-1}\).
 
 \medskip
-The composite lift is divisible at each prime \(p\) by the gain that the count of Part~III predicts, on a submodule of small colength, up to an error whose weighted sum over all primes is small.  The chapter states the count in general, separates split primes, collisions, exceptional primes and the level prime, and assembles the errors.  The simplest cases are those of Chapters~\ref{c14-chap}--\ref{c17-chap} and~\ref{c23-chap}--\ref{c24-chap}.
+Part~III shows, in small cases, that derivatives of CM theta functions are divisible at a prime inert in the CM field of the example, and Part~IV gives models of Hecke operators passing through lifts.  The rewritten proof of Theorem~A uses a valuation bound for the composite lift \(B_{\vartheta,\Psi}\) of Chapter~\ref{c34-chap} at every prime \(p\).  For each \(p\) and each embedding into \(\C_p\), one submodule of the integral ramified source forms serves all twists of level prime to \(p\) and all their chain data.  The divisibility predicted at \(p\) is a number \(\gain(p)\).  It holds up to an error \(\err(p)\), on a submodule of colength at most \(\err(p)\) times the dimension of the source, and the errors, weighted by \(\log p\), add up to at most \(fa(\log b)^3\).  We follow the four cases of the rewritten Lean proof \cite{GL}.  The inputs from \cite{GL} that the problems use are stated in the text; the final Lean remark identifies them.
 
-This chapter is being drafted.
+\section{The gain at a prime}\label{sec:gain}
+
+Recall from Chapter~\ref{c32-chap} that \(q_0\) is a multiple of \(18480\), that \(d\) is a prime with \(q_0 \mid 2(d+1)\) and \(q_0 \nmid d + 1\), that \(K = \Q(\sqrt{-d})\) and \(\chi(n) = (n/d)\).  The infinite places of \(E = K(\zeta_{q_1})\) form a group \(\Phi \cong (\Z/q_1)^\times\), where \(q_1\) is \(q_0\) times a product of powers of \(2\) and \(3\), and \(f = \#\Phi\).  For \(\nu \in \Z\) let \([\nu] \in \Phi\) be the place of the class of \(\nu\) if \(\nu\) is prime to \(q_1\), and the identity otherwise.  The \emph{\(a\)-places} \(\Phi_a\) are the places of class \(1\) modulo \(q_0\).  The weight \(w_\sigma\) of a place is \(b\) on a set \(\Phi_b\) of places of class \(-1\) modulo \(q_0\), and \(a/x_1\) elsewhere; it is an integer, and \(a/x_1 \le w_\sigma \le b \le a\).
+
+For a natural number \(p\), let \(c_p = 1/2\) if \(p = d\) and \(c_p = 1\) otherwise, and let \(I_p\) be the set of \(e \ge 1\) such that \(p = d\), or \(\chi(p) = -1\) and \(e\) is odd.  For \(y \in \mathbb R\) and \(\sigma \in \Phi\) put \(z_+ = \max(z, 0)\) and
+\[
+  s_p(y, \sigma) = c_p \sum_{e \in I_p} \Bigl(\frac{y}{p^e} - w_{[-p^e]\sigma}\Bigr)_+ ,
+  \qquad
+  \gain(p) = m\Bigl(\sum_{\tau \in \Phi_a} s_p(a, \tau) + k \sum_{\sigma \in \Phi} s_p(w_\sigma, \sigma)\Bigr) .
+\]
+The first sum records the \(a\) columns of height one at each \(a\)-place.  The second counts the local term at \(w_\sigma\) with multiplicity \(k\) at every place.
+
+\begin{problem}\label{pr:qone-split}
+Every prime dividing \(q_1\) splits in \(K\).  Hence a prime \(p \ne d\) with \(\chi(p) \ne 1\) is prime to \(q_1\), and \([-p^e]\) is the place of the class of \(-p^e\).
+\end{problem}
+
+\begin{problem}\label{pr:shape}
+Let \(p \ne d\) be inert in \(K\), \(\tau \in \Phi_a\), and suppose that \(w_{[-p^e]\tau} = w\) for every odd \(e\).  Then \(s_p(a, \tau) = \sum_{e\ \mathrm{odd}} (a/p^e - w)_+\), the first sum of Theorem~\ref{ip-thm:main} without the integer parts.  Evaluated at \(p = 13\), \(a = 13^4\) and \(w = 1\), the sum is \(2208\).
+\end{problem}
+
+\begin{problem}\label{pr:gain-zero}
+\(\gain(p) = 0\) if \(\chi(p) = 1\) or \(p \ge x_1\).
+\end{problem}
+
+Let \(\Lambda\) be the von Mangoldt function, and for \(y \in \mathbb R\), \(\sigma \in \Phi\) let
+\[
+  \sfin(y, \sigma) = \sum_{\nu = 1}^{a} \Lambda(\nu)\bigl(1 - \chi(\nu)\bigr)\Bigl(\frac{y}{\nu} - w_{[-\nu]\sigma}\Bigr)_+ .
+\]
+
+\begin{problem}\label{pr:part-at-p}
+Let \(p\) be prime and \(y \le a\).  The terms of \(\sfin(y, \sigma)\) with \(\nu\) a power of \(p\) add up to \(2 s_p(y, \sigma) \log p\).
+\end{problem}
+
+Summing over primes, \(2\sum_p \gain(p)\log p = m\sum_{\tau \in \Phi_a} \sfin(a, \tau) + mk \sum_{\tau \in \Phi} \sfin(w_\tau, \tau)\), the sum running over the primes \(p < x_1\) with \(\chi(p) \ne 1\).  The contribution of the powers of \(p\) to the right-hand side is \(2\gain(p)\log p\).
+
+\section{Collisions}\label{sec:collisions}
+
+In this section \(p\) is a prime.  The partner of a place \(\tau\) at the exponent \(e\) is \([-p^e]\tau\).  When \(e \in I_p\) and both places are \(a\)-places, the pair contributes \(a/p^e\) to \(C_p(\varnothing)\) below.  For a set \(V \subseteq \Phi\), a \emph{collision outside \(V\)} is a pair \((\tau, e)\) with \(e \in I_p\) and \(\tau, [-p^e]\tau \in \Phi_a \smallsetminus V\), and the \emph{collision sum} is
+\[
+  C_p(V) = \sum_{(\tau, e)\ \text{collision outside}\ V} \frac{a}{p^e} .
+\]
+Let \(o_p\) be the order of the image of \([-p]\) in \((\Z/q_0)^\times\), and let \(r_p\) be the least \(r \ge 0\) with \(m \le p^r\).  The prime \(p\) is \emph{exceptional} if \(\chi(p) = -1\), \(p \not\equiv \pm 1 \pmod m\), and \(o_p\) is odd with \(o_p \le r_p\).  The unit of loss at \(p\) is
+\[
+  \loss(p) = f(\log b)^2\, \frac{a}{p} \cdot \begin{cases} m & \text{if } m \mid p - 1 \text{ or } m \mid p + 1,\\ 1 & \text{otherwise.}\end{cases}
+\]
+
+\begin{problem}\label{pr:collision-odd}
+Let \(\chi(p) \ne 1\) and let \((\tau, e)\) be a collision outside some \(V\).  Then \(p \ne d\), \(e\) is odd, and \(o_p \mid e\); in particular \(o_p\) is odd.
+\end{problem}
+
+\begin{problem}\label{pr:o-example}
+Let \(q_0 = 18480\) and let \(p\) be a prime not dividing \(q_0\).  If \(o_p\) is odd, then \(p \equiv -1 \pmod{240}\) and \(o_p \in \{1, 3, 5, 15\}\).  For \(d = 138599\), the inert prime \(13\) has \(o_{13} = 20\).  Among the primes inert in \(\Q(\sqrt{-138599})\), the least with \(o_p\) odd is \(479\), with \(o_{479} = 15\), and the least with \(o_p = 1\) is \(55439\).
+\end{problem}
+
+\begin{problem}\label{pr:geometric}
+Let \(o \ge 0\) be an integer.  If every collision \((\tau, e)\) outside \(V\) has \(e \ge o\), then \(C_p(V) \le 2fa/p^o\).
+\end{problem}
+
+From Chapter~\ref{c32-chap} we use \((\log b)^2 \ge 15\) and \(m \ge 2\).
+
+\begin{problem}\label{pr:non-exceptional}
+Let \(p < x_1\) be a prime with \(\chi(p) \ne 1\) that is not exceptional.  Then \(m\, C_p(\varnothing) \le \loss(p)\).
+\end{problem}
+
+\begin{problem}\label{pr:why-mark}
+Let \(p\) be exceptional with \(o_p = 1\).  Then \(\#\Phi_a = f/\varphi(q_0)\) and \(m\, C_p(\varnothing) \ge m f a/(\varphi(q_0)\, p)\), which exceeds \(\loss(p)\) when \(m > \varphi(q_0)(\log b)^2\); here \(\varphi(q_0) = \#(\Z/q_0)^\times\).
+\end{problem}
+
+So at an exceptional prime the loss need not pay for the collisions.  For exceptional \(p < x_1\), Section~\ref{sec:exceptional} obtains the valuation bound on a submodule of the integral source forms.
+
+\section{The chain of lifts}\label{sec:chain}
+
+Fix a prime \(p\) and a ring map \(\iota\colon \C \to \C_p\), and let \(\Oc_\iota = \{z \in \C : \lvert\iota z\rvert_p \le 1\}\).  At a point \(g\) of the finite adelic group, the gauge \(\lVert\xi\rVert_g\) of a Weyl vector \(\xi\) is the largest absolute value of a coordinate of \(g^{-1}\cdot\iota(\xi)\), where at \(\tau\) the adelic matrix acts in the Weyl representation through the extension to finite adeles of \(u \mapsto \iota(\Phi_\tau(\bar u))\), and \(\Phi_\tau\) is the embedding of \(E\) selected by the CM type.  A form \(\varphi\) \emph{has valuation at least \(\beta\)} if \(\lVert\varphi(g)\rVert_g \le p^{-\beta}\) for every \(g\), and it is \emph{integral} if it has valuation at least \(0\).  Let \(X\) be the space of source forms, \(d_X = \dim_\C X\), \(M_\iota \subseteq X\) the \(\Oc_\iota\)-module of integral source forms, \(X_\ram \subseteq X\) the ramified source forms, and \(M_{\ram,\iota} = M_\iota \cap X_\ram\).  For a twist \(\vartheta\) let \(q_\vartheta\) be the product of the norms of the places in its set \(Q\).
+
+The composite lift \(B_{\vartheta,\Psi}\) of a chain datum \(\Psi\) glues the lifts in pairs (Chapter~\ref{c34-chap}).  Away from \(N\) the rewritten proof \cite{GL} uses the following expansion.  For every twist \(\vartheta\) and chain datum \(\Psi\) there is a weak chain datum \(\Psi'\) with \(B_{\vartheta,\Psi}\varphi = R_{\vartheta,\Psi'}\varphi\) for all \(\varphi \in X\).  Here \(R_{\vartheta,\Psi'}\) is the combination \(\sum_x \Psi'(x)\, \Theta^{x}_{m-1} \cdots \Theta^{x}_0\), followed by restriction to \(Y_m\), of chains of \(m\) lifts, the \(j\)th lift \(\Theta^x_j\) having as datum the integral vacuum of \(\operatorname{Hom}(X_j, X_{j+1})\) translated by the finite Heisenberg operator of \(x_j\).  We use the following estimates from \cite{GL} in the form needed for the chain.  In~(i) and~(ii), let \(\Psi'\) be a weak chain datum for \(\vartheta\) and suppose \(p \nmid q_\vartheta\).
+\begin{enumerate}
+\item[(i)] If \(p \ne N\) and \(p \ne d\), then \(R_{\vartheta,\Psi'}\) maps \(M_\iota\) to integral forms.
+\item[(ii)] Let \(p < x_1\) and \(\chi(p) \ne 1\), and let \(K^x_j(g, h)\) be the kernel of the \(j\)th lift with the datum translated by \(x_j\), from the Weyl space at \(g\) to the Weyl space at \(h\).  For every \(x\) in the support of \(\Psi'\), every \(0 \le j < m\), all \(g\), \(h\) and every Weyl vector \(\xi\), \(\lVert K^x_j(g, h)\xi\rVert_h \le p^{-\beta_j(\varnothing)}\lVert\xi\rVert_g\).  The restricted chain \(R_{\vartheta,\Psi'}\) maps \(M_\iota\) to forms of valuation at least \(\sum_{j<m} \beta_j(\varnothing)\).
+\item[(iii)] Here \(\beta_j(V)\), for \(V \subseteq \Phi\), is defined as follows.  Let \(n = n_{j+1}\) be the rank at stage \(j+1\).  Count only the columns of the diagram of the \(j\)th lift of height less than \(n\), and let \(B\) be their number of boxes.  Delete the columns of height one at the places of \(V\), leaving \(B'\) boxes, and let \(\Delta'\) be the predicted divisibility of the remaining diagram, in the notation of Theorem~\ref{pf-thm:count}.  Then \(\beta_j(V) = \Delta' + \gamma_p(B - B') - fn^3(1 + \log_p \max(B, 1))\), where \(\gamma_p = 1/(p-1) - \rho(d, p)\) is \(p/(p^2 - 1)\) at an inert prime and \(1/(2d - 2)\) at \(p = d\).  For every prime \(p < x_1\) with \(\chi(p) \ne 1\), every \(0 \le j < m\) and every \(V \subseteq \Phi\),
+\[
+  \beta_j(V) \ge \frac{\gain(p)}{m} - C_p(V) + c_p\, \#(\Phi_a \cap V)\,\frac{a}{x_1} - \frac{fa(\log b)^2}{mp} .
+\]
+\end{enumerate}
+The kernel estimate in~(ii) uses the count of jets along products of minors, Theorem~\ref{pf-thm:count}; Theorem~\ref{ip-thm:main} illustrates the shape of its gain in the plane.  Inequality~(iii) compares the predicted divisibility of the diagram with the prime sums that define \(\gain(p)\).  The following problem models the estimate of a finite sum of products of kernels.
+
+\begin{problem}\label{pr:gauge-chain}
+Let \(V_0, \dots, V_m\) be finite-dimensional \(\C_p\)-spaces with sup norms in fixed bases, let \(\Theta^x_j\colon V_j \to V_{j+1}\) satisfy \(\lVert\Theta^x_j u\rVert \le p^{\rho_j}\lVert u\rVert\) for \(x\) in a finite set, and let \(\Psi(x) \in \C_p\) have \(\lvert\Psi(x)\rvert_p \le 1\).  Then \(\bigl\lVert\sum_x \Psi(x)\Theta^x_{m-1}\cdots\Theta^x_0 u\bigr\rVert \le p^{\rho_0 + \dots + \rho_{m-1}}\lVert u\rVert\).
+\end{problem}
+
+\begin{problem}\label{pr:collision-chain}
+Let \(p < x_1\) be prime with \(\chi(p) \ne 1\), \(p \nmid q_\vartheta\), and \(\Psi\) a chain datum for \(\vartheta\).  For \(\varphi \in M_\iota\), \(B_{\vartheta,\Psi}\varphi\) has valuation at least \(\gain(p) - \loss(p) - m\, C_p(\varnothing)\).
+\end{problem}
+
+Let \(p \nmid q_\vartheta\) and let \(\Psi\) be a chain datum for \(\vartheta\).  If \(p < x_1\) is non-split and not exceptional, then by Problems~\ref{pr:non-exceptional} and~\ref{pr:collision-chain}, \(B_{\vartheta,\Psi}\) has valuation at least \(\gain(p) - 2\loss(p)\) on \(M_\iota\).  If \(p \ne N\) and either \(\chi(p) = 1\) or \(p \ge x_1\), then \(p \ne d\), as \(d < x_1\) by Chapter~\ref{c32-chap}; by~(i), \(B_{\vartheta,\Psi}\) maps \(M_\iota\) to integral forms, and \(\gain(p) = 0\).
+
+\section{Exceptional primes}\label{sec:exceptional}
+
+Let \(p\) be inert in \(K\).  Each place \(\sigma\), represented by the embedding \(\Phi_\sigma\) selected by the CM type, gives through \(\iota\) a prime \(v_\sigma\) of \(E\) above \(p\).  For \(e\) odd, \(v_{[-p^e]\sigma} = \bar v_\sigma\), the complex conjugate prime (read from \cite{GL}).  Let \(p < x_1\) be exceptional.  A \emph{mark} is a set \(\mathfrak M\) of primes of \(E\) above \(p\), each of the form \(v_\tau\) with \(\tau \in \Phi_a\), such that \(\bar v \notin \mathfrak M\) for \(v \in \mathfrak M\).  It is \emph{full} if it contains \(v_\tau\) or \(\bar v_\tau\) for each \(\tau \in \Phi_a\); a full mark exists for every exceptional \(p < x_1\) (read from \cite{GL}).  Let \(V_{\mathfrak M} = \{\sigma \in \Phi : v_\sigma \in \mathfrak M\}\).
+
+\begin{problem}\label{pr:full-mark}
+If \(\mathfrak M\) is a full mark, then \(C_p(V_{\mathfrak M}) = 0\).
+\end{problem}
+
+For \(v \in \mathfrak M\) let \(a_v = a \cdot \#\{\tau \in \Phi_a : v_\tau = v\}\), let \(T_v\) be the Hecke operator at the split pair \(v, \bar v\) of the double coset of \(\operatorname{diag}(\varpi_v 1_{r_p}, 1)\), and let \(Y_v = p^{a_v} T_v\) on \(X\).  Let \(Y_{\mathfrak M}\) be the product of the \(Y_v\), \(v \in \mathfrak M\).  The following is read from \cite{GL}: \emph{for a full mark \(\mathfrak M\), a weak chain datum \(\Psi'\) for \(\vartheta\) with \(p \nmid q_\vartheta\), and \(u \in M_\iota\), the form \(R_{\vartheta,\Psi'}(Y_{\mathfrak M}^m u)\) has valuation at least \(\gain(p) - 2\loss(p)\).}  The rewriting moves one factor \(Y_{\mathfrak M}\) into the datum of each lift using an identity with integral coefficients between split Hecke operators.  It combines~(iii) for \(V = V_{\mathfrak M}\) with a bound, proved in \cite{GL}, for the powers of \(p\) incurred in this transfer and for the low columns at the marked places.  Chapters~\ref{ho-chap} and~\ref{dc-chap} treat Hecke operators passing through lifts in model cases.
+
+Let \(j_p = \lceil 2mfa/p \rceil\).
+
+\begin{problem}\label{pr:crude}
+Under the hypotheses of Problem~\ref{pr:collision-chain}, \(B_{\vartheta,\Psi}(p^{j_p}\varphi)\) has valuation at least \(\gain(p) - \loss(p)\) for \(\varphi \in M_\iota\).
+\end{problem}
+
+\begin{problem}\label{pr:two-pieces}
+Let \(p < x_1\) be exceptional, \(\mathfrak M\) a full mark, \(p \nmid q_\vartheta\), and \(\Psi\) a chain datum for \(\vartheta\).  On \(S = Y_{\mathfrak M}^m M_\iota + p^{j_p} M_\iota\), \(B_{\vartheta,\Psi}\) has valuation at least \(\gain(p) - 2\loss(p)\).
+\end{problem}
+
+How large is \(S\) in \(M_\iota\)?  Over a commutative ring \(\Oc\), for submodules \(M_1\), \(M_2\) of an \(\Oc\)-module and \(z \in \Oc\), write \(\Cc(M_1, M_2; z)\) if for every finite family \(u_1, \dots, u_h\) in \(M_1\) there is a matrix \(A \in M_h(\Oc)\) with \(\det A \mid z\) and \(\sum_j A_{ij} u_j \in M_2\) for every \(i\).  An endomorphism \(Y\) with \(YM \subseteq M\) is \emph{onto modulo \(p^j\) up to colength \(c\)} if \(\Cc(M, YM + p^jM; p^l)\) for some natural number \(l \le c\).
+
+The next problem relates \(\Cc\) to lengths over \(\Z_p\); it is not used later.
+
+\begin{problem}\label{pr:colength-length}
+Let \(M_2 \subseteq M_1\) be free \(\Z_p\)-modules of the same finite rank.  Then \(\Cc(M_1, M_2; p^l)\) holds if the length of \(M_1/M_2\) is at most \(l\).
+\end{problem}
+
+The elementary divisor theorem of \cite{GL} concerns an edge Hecke operator whose coefficients are defined from a Frobenius cycle of ring maps.  Over a valuation domain of characteristic zero in which \(p\) is a nonunit, let \(F\) be a linear map from the coefficient module of this edge operator that intertwines it with an endomorphism \(Y\), and let \(L\) be the image of \(F\).  Under the theorem's size hypotheses, \(Y\) preserves \(L\), and the theorem bounds the colength of \(YL + p^jL\) in \(L\) for every \(j \in \mathbb N\).  Specialized to the marked primes it gives the following, read from \cite{GL}: \emph{for a mark \(\mathfrak M\), \(v \in \mathfrak M\) and every \(j \in \mathbb N\), \(Y_v\) keeps \(M_\iota\) and is onto modulo \(p^j\) up to colength \(\bigl(12a_v/(mp) + j/(m^2 f)\bigr) d_X\).}  A model is Theorem~\ref{hn-thm:vertex}: on the tree of \(\mathrm{GL}_2\), for \(Q > k\), the image \(S(L)\) of the normalized Hecke operator at a vertex satisfies
+\[
+  p^{\lfloor \log_p k \rfloor} H(L) \subseteq S(L) .
+\]
+
+\begin{problem}\label{pr:colength-add}
+Let \(\Oc\) be a commutative ring, \(p \in \Oc\), \(M\) a submodule of an \(\Oc\)-module \(W\), and \(Y_1\), \(Y_2\) \(\Oc\)-linear endomorphisms of \(W\) keeping \(M\), with \(\Cc(M, Y_iM + p^jM; p^{l_i})\) for \(i = 1, 2\).  Then \(Y_1Y_2\) keeps \(M\) and \(\Cc(M, Y_1Y_2M + p^jM; p^{l_1 + l_2})\).
+\end{problem}
+
+\begin{problem}\label{pr:budget}
+For a mark \(\mathfrak M\), \(\sum_{v \in \mathfrak M} a_v \le af\) and \(\#\mathfrak M \le f\), and
+\[
+  m \sum_{v \in \mathfrak M} \Bigl(\frac{12 a_v}{mp} + \frac{j_p}{m^2 f}\Bigr) \le \frac{14fa + p/m}{p} \le \loss(p) .
+\]
+\end{problem}
+
+For the module \(S\) of Problem~\ref{pr:two-pieces}, the operator \(Y_{\mathfrak M}^m\) is onto modulo \(p^{j_p}\) up to colength \(\loss(p)\, d_X\): there is a natural number \(l \le \loss(p)\, d_X\) with \(\Cc(M_\iota, S; p^l)\).
+
+\section{The level prime and the sum of the errors}\label{sec:sum}
+
+At the level prime \(N\), which is at least \(x_1\), the gain is \(0\).  The following is read from \cite{GL}: \emph{at \(p = N\) there are a natural number \(l \le mfb\, d_X\) and an \(\Oc_\iota\)-module \(S_N\) of source forms (the source forms \(\varphi\) for which \(\psi = \mathrm{Up}^{m/2}\varphi\) satisfies \(\lVert\psi(g)\rVert_{g\delta_0} \le 1\) for every \(g\), where \(\mathrm{Up}\) is an operator at \(N\) on the forms of stage zero and \(\delta_0\) an adelic point at \(N\), both fixed in \cite{GL} and named in the Lean remark) with \(\Cc(M_\iota, S_N; N^l)\), such that for every chain datum \(\Psi\) for a twist \(\vartheta\) and every ramified \(\varphi \in S_N\), \(B_{\vartheta,\Psi}\varphi\) has valuation at least \(-2mfb\).}
+
+The \emph{allowed loss} is
+\[
+  \err(p) = \begin{cases} 2\loss(p) & \text{if } p < x_1 \text{ is prime and } \chi(p) \ne 1,\\ 2mfb & \text{if } p = N,\\ 0 & \text{otherwise.} \end{cases}
+\]
+
+\begin{problem}\label{pr:pm-one}
+Let \(m \ge 2\), \(p \ge 2\), and \(p \equiv \pm 1 \pmod m\).  Then \(p = mc - 1\) or \(p = mc + 1\) for an integer \(c\) with \(1 \le c \le p\) and \(m \le 2p/c\).
+\end{problem}
+
+Let \(T = 4fa(\log b)^2\log x_1\).
+
+\begin{problem}\label{pr:term}
+For a prime \(p < x_1\) with \(\chi(p) \ne 1\) there is an integer \(1 \le c \le p\) with \(p \in \{mc - 1, c, mc + 1\}\) and \(\err(p)\log p \le T/c\).
+\end{problem}
+
+The term of \(N\) is also at most \(T\): the scale inequalities of Chapter~\ref{c32-chap} give \(2mfb\log N \le T\) (they include \(\log N \le 30\, m\log b\), \(m \le 2\sqrt{x}\) and \((\log b)\log x_1 \ge 60\)).  In sums over natural numbers we set \(\log 0 = 0\).
+
+\begin{problem}\label{pr:harmonic}
+For every finite set \(U\) of natural numbers, \(\sum_{p \in U} \err(p)\log p \le 4T(1 + \log x_1)\).
+\end{problem}
+
+\begin{problem}\label{pr:final}
+If \((\log x_1)^6 \le \log b\) and \(\log x_1 \ge 3\), then \(4T(1 + \log x_1) \le fa(\log b)^3\).
+\end{problem}
+
+Both hypotheses of Problem~\ref{pr:final} hold for the data of Chapter~\ref{c32-chap}.
+
+\section{The theorem}\label{sec:theorem}
+
+The four kinds of primes are: \(p \ne N\) split or at least \(x_1\), with \(S = M_\iota\) and \(l = 0\) (Section~\ref{sec:chain}); \(p < x_1\) non-split and not exceptional, with \(S = M_\iota\) and \(l = 0\) (Problems~\ref{pr:non-exceptional} and~\ref{pr:collision-chain}); \(p < x_1\) exceptional (Problem~\ref{pr:two-pieces} and the colength after Problem~\ref{pr:budget}); and \(p = N\).  These four cases give the following theorem for ramified inputs.
+
+\begin{theorem}\label{thm:one-prime}
+Let \(p\) be prime and \(\iota\colon \C \to \C_p\).  There are a natural number \(l \le \err(p)\, d_X\) and an \(\Oc_\iota\)-submodule \(S \subseteq X\) with \(\Cc(M_\iota, S; p^l)\) such that, for every twist \(\vartheta\), every chain datum \(\Psi\) for \(\vartheta\) with \(p \nmid q_\vartheta\), and every \(\varphi \in S \cap X_\ram\), the form \(B_{\vartheta,\Psi}\varphi\) has valuation at least \(\gain(p) - \err(p)\).
+\end{theorem}
+
+Intersecting \(S\) with \(M_{\ram,\iota}\) gives \(\Cc(M_{\ram,\iota}, S \cap M_{\ram,\iota}; p^l)\).  The definition of \(\err\) gives its nonnegativity and vanishing, and Problems~\ref{pr:harmonic} and~\ref{pr:final} bound its weighted sum.  This gives the theorem of this chapter.
+
+\begin{theorem}\label{thm:divisibility}
+There are real numbers \(e(p)\), \(p \in \mathbb N\), with the following properties.
+\begin{enumerate}
+\item[(a)] \(e(p) \ge 0\) for every \(p\).
+\item[(b)] If \(p \ne N\), and \(\chi(p) = 1\) or \(x_1 \le p\), then \(e(p) = 0\).
+\item[(c)] \(\sum_{p \in U} e(p)\log p \le fa(\log b)^3\) for every finite set \(U\) of natural numbers.
+\item[(d)] For every prime \(p\) and every \(\iota\colon \C \to \C_p\) there are a natural number \(l \le e(p)\, d_X\) and an \(\Oc_\iota\)-submodule \(S \subseteq M_{\ram,\iota}\) with \(\Cc(M_{\ram,\iota}, S; p^l)\), such that for every twist \(\vartheta\), every chain datum \(\Psi\) for \(\vartheta\) with \(p \nmid q_\vartheta\), and every \(\varphi \in S\), the form \(B_{\vartheta,\Psi}\varphi\) has valuation at least \(\gain(p) - e(p)\).
+\end{enumerate}
+\end{theorem}
+
+The proof in \cite{GL} takes \(e = \err\).  The dimension in~(d) is that of all source forms, while the colength is measured in the integral ramified ones; the module \(S\) depends on \(p\) and \(\iota\) and serves every twist of level prime to \(p\) and every chain datum for that twist.  Chapter~\ref{c36-chap} combines~(c) and~(d) with the seesaw identity and further inputs to bound the logarithmic index of finite families of translated normalized Poincar\'e images of ramified source forms.  Each source form is required to be integral at every prime \(\ell\) for every embedding \(\C \to \C_\ell\) induced by an isomorphism \(\C \simeq \overline{\Q}_\ell\).
+
+\begin{leanremark}
+Theorem~\ref{thm:divisibility} is \tl{New.Data.exists\_\allowbreak err\_\allowbreak gaugeLe\_\allowbreak compositeLift} and Theorem~\ref{thm:one-prime} is \tl{New.Data.exists\_\allowbreak colengthDvd\_\allowbreak gaugeLe\_\allowbreak compositeLift}, in \tl{grh/\allowbreak src/\allowbreak New/\allowbreak UpperBound/\allowbreak Divisibility/\allowbreak LocalDivisibility.lean} of \cite{GL}; there \(\err\) is \tl{New.Data.allowedLoss} (file \tl{New/\allowbreak UpperBound/\allowbreak Size/\allowbreak Estimates.lean}) and \(\Cc\) is \tl{New.ColengthDvd}.  The inputs read in the text are, in the namespace \tl{New.Data}: the gain and the collisions, \tl{gain}, \tl{collisionSum}, \tl{IsExceptional} (\tl{ShortColumns.lean}) and \tl{two\_\allowbreak mul\_\allowbreak sum\_\allowbreak gain\_\allowbreak mul\_\allowbreak log}; the expansion \tl{IsChainDatum.exists\_\allowbreak isWeakChainDatum\_\allowbreak compositeLift\_\allowbreak eq}; (i) \tl{IsWeakChainDatum.gaugeLe\_\allowbreak restrictedChain\_\allowbreak one}; (ii) \tl{mem\_\allowbreak raises\_\allowbreak neg\_\allowbreak divisibilityBound} and \tl{IsWeakChainDatum.gaugeLe\_\allowbreak restrictedChain\_\allowbreak of\_\allowbreak mem\_\allowbreak raises}; (iii) \tl{divisibilityBound} and \tl{le\_\allowbreak divisibilityBound}; the induced primes and full marks \tl{inducedPlace\_\allowbreak neg\_\allowbreak pow\_\allowbreak mul\_\allowbreak of\_\allowbreak odd} and \tl{exists\_\allowbreak isFullMark}; the full-mark valuation \tl{IsWeakChainDatum.gaugeLe\_\allowbreak restrictedChain\_\allowbreak of\_\allowbreak isFullMark}, resting on the transfer identity \tl{IsWeakChainDatum.exists\_\allowbreak sum\_\allowbreak heckeSplit\_\allowbreak lift\_\allowbreak eq\_\allowbreak smul}; one marked prime \tl{IsMarked.isOntoUpToColength\_\allowbreak scaledHeckeOperator}, from \tl{New.FrobeniusCycle.elementary\_\allowbreak divisors}; the level prime \tl{exists\_\allowbreak colengthDvd\_\allowbreak upIntegralForms\_\allowbreak pow} and \tl{gaugeLe\_\allowbreak compositeLift\_\allowbreak at\_\allowbreak N}; and the sum of the errors \tl{sum\_\allowbreak allowedLoss\_\allowbreak mul\_\allowbreak log\_\allowbreak le}; the cost of the transfer \tl{IsMarked.card\_\allowbreak mul\_\allowbreak transferExponent\_\allowbreak add\_\allowbreak sum\_\allowbreak lowColumns\_\allowbreak le}; the colength of \(Y_{\mathfrak M}^m\) after Problem~\ref{pr:budget} \tl{IsMarked.isOntoUpToColength\_\allowbreak prod\_\allowbreak scaledHeckeOperator\_\allowbreak pow} (for any mark).  The definitions used are \tl{localPrimeSum}, \tl{IsCollision}, \tl{o}\(_0\) (\(o_p\)), \tl{ceilLogLifts} (\(r_p\)), \tl{loss} and \tl{collisionExponent} (\(j_p\)); \tl{New.weylGauge} and \tl{New.GaugeLe}; \tl{translateDatum}, \tl{restrictedChain} and \tl{compositeLift}; \tl{inducedPlace}, \tl{IsMarked}, \tl{IsFullMark}, \tl{placesInducing} (\(V_{\mathfrak M}\)), \tl{heckeScalingExponent} (\(a_v\)) and \tl{IsMarked.scaledHeckeOperator} (\(Y_v\)); \tl{New.IsOntoUpToColength}; and at \(N\) the module \(S_N\) is the pullback of \tl{upIntegralForms}, with \(\mathrm{Up}\) = \tl{New.IsSplitLevel.upOperator} for \tl{formRepAtN 0} and \(\delta_0\) = \tl{diagPointN 0}.  The height-one column count is \tl{columnCount} in \tl{Weights.lean}.  The source modules and twist norm use \tl{SourceForm}, \tl{integralSourceForms}, \tl{ramifiedSourceForms}, \tl{New.embValRing} and \tl{TameChar.normQ}.  For the weak data and their sums see \tl{IsWeakChainDatum} and \tl{chainCombination} in \tl{Columns.lean}.  The application in~(ii) uses \tl{IsSmallNonsplit.not\_\allowbreak dvd\_\allowbreak M\_\allowbreak mul\_\allowbreak N} and \tl{IsWeakChainDatum.translateDatum\_\allowbreak mem\_\allowbreak standardData} in the proof of \tl{IsWeakChainDatum.gaugeLe\_\allowbreak restrictedChain\_\allowbreak collisionSum}.  The application in Chapter~\ref{c36-chap} uses \tl{indexLe\_\allowbreak normalizedPoincare}.
+\end{leanremark}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:gain}}
+\begin{description}
+\item[\ref{pr:qone-split}] Show \(d \equiv q_0/2 - 1 \pmod{q_0}\), so \(d \equiv -1\) modulo \(8\) and modulo each odd prime dividing \(q_0\).  Then quadratic reciprocity.
+\item[\ref{pr:shape}] \(I_p\) is the set of odd \(e \ge 1\), and \(c_p = 1\).
+\item[\ref{pr:gain-zero}] If \(\chi(p) = 1\), \(I_p\) is empty.  If \(p \ge x_1\), compare \(y/p^e\) with \(a/x_1\).
+\item[\ref{pr:part-at-p}] Compute \(1 - \chi(p^e)\) in the three cases inert, ramified, split.  For \(p^e > a\) the term of \(s_p\) vanishes.
+\end{description}
+
+\subsection*{\S\ref{sec:collisions}}
+\begin{description}
+\item[\ref{pr:collision-odd}] \(\tau\) and \([-p^e]\tau\) have class \(1\) modulo \(q_0\).  For \(p = d\), compute \(-d^e\) modulo \(q_0\) separately for even and odd \(e\), using \(4 \mid q_0\) and the congruence for \(d\) in the hint to Problem~\ref{pr:qone-split}.
+\item[\ref{pr:o-example}] Decompose \((\Z/18480)^\times\) by the Chinese remainder theorem and find its elements of odd order.  Use a prime search for the two minima.
+\item[\ref{pr:geometric}] At each of the \(f\) places, a geometric series of ratio at most \(1/2\).
+\item[\ref{pr:non-exceptional}] Two cases, according as \(p \equiv \pm 1 \pmod m\) (Problem~\ref{pr:geometric} with \(o = 1\)) or not; in the second, Problem~\ref{pr:collision-odd} and \(m \le p^{r_p}\).
+\item[\ref{pr:why-mark}] Every \((\tau, 1)\) with \(\tau \in \Phi_a\) is a collision.
+\end{description}
+
+\subsection*{\S\ref{sec:chain}}
+\begin{description}
+\item[\ref{pr:gauge-chain}] The sup norm is ultrametric.
+\item[\ref{pr:collision-chain}] Expand to a weak chain datum; (ii) and (iii) with \(V = \varnothing\).
+\end{description}
+
+\subsection*{\S\ref{sec:exceptional}}
+\begin{description}
+\item[\ref{pr:full-mark}] The relation \(v_{[-p^e]\sigma} = \bar v_\sigma\).
+\item[\ref{pr:crude}] Problem~\ref{pr:geometric} with \(o = 1\).
+\item[\ref{pr:two-pieces}] The ultrametric inequality.
+\item[\ref{pr:colength-length}] The rows of \(A\) can be a basis of the module of coefficient vectors \(c\) with \(\sum_j c_j u_j \in M_2\).
+\item[\ref{pr:colength-add}] A product of two matrices.
+\item[\ref{pr:budget}] Each \(\tau \in \Phi_a\) induces one prime.  Bound \(j_p\) by \(2mfa/p + 1\).
+\end{description}
+
+\subsection*{\S\ref{sec:sum}}
+\begin{description}
+\item[\ref{pr:pm-one}] \(mc \le p + 1 \le 2p\).
+\item[\ref{pr:term}] Problem~\ref{pr:pm-one}, or \(c = p\).
+\item[\ref{pr:harmonic}] Each \(c \le x_1\) serves at most the four numbers \(N\), \(mc - 1\), \(c\), \(mc + 1\); give \(N\) the value \(c = 1\).
+\item[\ref{pr:final}] Compare \(16\,t(1 + t)\) with \(t^6\).
+\end{description}
+
+\begin{thebibliography}{GL}
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\end{thebibliography}
+
 \end{document}
