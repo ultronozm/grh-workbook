@@ -3,14 +3,9 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{xr-hyper}
 \usepackage[hidelinks]{hyperref}
-\externaldocument[sm-]{20261125T000000--slope-method__workbook}
-\externaldocument[si-]{20261125T000100--slope-inequality-in-the-mean__workbook}
 \externaldocument[ds-]{20261125T004000--denominators-and-sha__workbook}
-\externaldocument[as-]{20261125T021500--assembly-at-one-scale__workbook}
-\externaldocument[pc-]{20261125T014700--pseudocharacters-and-the-length-bound__workbook}
 \externaldocument[mi-]{20261126T020430--the-minus-part-by-gauss-sums__workbook}
-\externaldocument[pl-]{20261126T020440--the-plus-part-by-congruences__workbook}
-\externaldocument[ws-]{20261126T020450--windows-of-scales__workbook}
+\externaldocument[da-]{20261126T030300--the-data__workbook}
 
 % Chapter number; \ref{chap} gives it.
 \newcounter{chap}
@@ -19,8 +14,11 @@
 
 \theoremstyle{definition}
 \newtheorem{problem}{Problem}[section]
+\newtheorem{definition}{Definition}[section]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
 
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\Q}{\mathbb{Q}}
@@ -31,24 +29,28 @@
 \newcommand{\Oc}{\mathcal{O}}
 \newcommand{\Gal}{\operatorname{Gal}}
 \newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\Cl}{\operatorname{Cl}}
+\newcommand{\len}{\operatorname{len}}
 \newcommand{\num}{\operatorname{num}}
 \newcommand{\Sha}{\mathrm{Sha}}
+\newcommand{\Shao}{\Sha^{\mathrm{odd}}}
+\newcommand{\tl}[1]{\texttt{#1}}
 
 \setlength{\emergencystretch}{2em}
 \title{Odd Tate twists}
 \author{}
-\date{November 25, 2026}
+\date{November 26, 2026}
 
 \begin{document}
 \maketitle
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-This chapter continues Chapter~\ref{ds-chap}, \emph{Denominators and the Stickelberger element}, whose notation \(A\), \(A^{(i)}\), \(A^\pm\), \(\omega\) (Section~\ref{ds-sec:stickelberger}, with \(p = \ell\)), Problem~\ref{ds-pr:subfield} and Theorem~\ref{ds-thm:HR} we use.  Continuous cohomology of profinite groups \cite[Ch.~I; Ch.~II, \S7]{NSW}, inflation--restriction, and the vanishing of \(H^q(G, M)\), \(q \ge 1\), for finite \(G\) of order invertible on \(M\) \cite[Ch.~VII--VIII]{SeL}.  The Artin isomorphism between the ideal class group of a number field and the Galois group of its Hilbert class field \cite[Ch.~VI]{Ne}.  The duality theorems for Galois cohomology of number fields are stated in the text with references.  Section~\ref{sec:budget} uses the ramps of Problem~\ref{si-pr:ramp} in \emph{The slope inequality in the mean}.  Throughout, \(\ell\) is an odd prime and \(\num(r)\) is the numerator of a rational number \(r\) in lowest terms.
+This chapter continues Chapter~\ref{ds-chap}, \emph{Denominators and the Stickelberger element}, whose notation \(A\), \(A^{(i)}\), \(A^\pm\), \(\omega\), \(\sigma_a\) (Section~\ref{ds-sec:stickelberger}, with \(p = \ell\)), Theorem~\ref{ds-thm:HR} and Problem~\ref{ds-pr:irregular} we use.  Continuous cohomology of profinite groups \cite[Ch.~I; Ch.~II, \S7]{NSW}, inflation--restriction, and the vanishing of \(H^q(G, M)\), \(q \ge 1\), for finite \(G\) of order invertible on \(M\) \cite[Ch.~VII--VIII]{SeL}.  Decomposition and inertia groups \cite[Ch.~I, \S9]{Ne}, and the Artin isomorphism between the ideal class group of a number field and the Galois group of its Hilbert class field \cite[Ch.~VI, \S6]{Ne}.  The duality theorems for Galois cohomology of number fields are stated in the text with references.  In Sections~\ref{sec:twists} and~\ref{sec:split}, \(\ell\) is an odd prime; \(\num(r)\) is the numerator of a rational number \(r\) in lowest terms.
 
 \section{Tate twists over \texorpdfstring{\(\Q\)}{Q}}\label{sec:twists}
 
-In the previous chapter the denominator that no twist removes was measured by an eigenspace of a class group.  Which Galois cohomology groups play this role for a Tate twist, and what are their orders?  Let \(\Q_S\) be the largest extension of \(\Q\) unramified outside \(\ell\) and \(\infty\), \(G_{\Q,\ell} := \Gal(\Q_S/\Q)\), and \(\chi_\ell \colon G_{\Q,\ell} \to \Zl^\times\) the cyclotomic character.  For \(k \in \Z\), \(\Zl(k)\) is \(\Zl\) with \(\sigma\) acting by \(\chi_\ell(\sigma)^k\), and similarly for \(\Ql(k)\), \(\Ql/\Zl(k)\) and \(\Z/\ell(k)\).  Let \(W_e := \Ql/\Zl(-e)\), and let \(G_\ell := \Gal(\overline{\Q}_\ell/\Q_\ell)\), mapped to \(G_{\Q,\ell}\) by restriction along a fixed embedding \(\overline{\Q} \to \overline{\Q}_\ell\).
+In the previous chapter Bernoulli values gave the orders of odd eigenspaces of a class group.  Which Galois cohomology groups account for the numerators and denominators of zeta values?  Let \(\Q_S\) be the largest extension of \(\Q\) unramified outside \(\ell\) and \(\infty\), \(G_{\Q,\ell} := \Gal(\Q_S/\Q)\), and \(\chi_\ell \colon \Gal(\overline{\Q}/\Q) \to \Zl^\times\) the cyclotomic character, which factors through \(G_{\Q,\ell}\).  For \(k \in \Z\), \(\Zl(k)\) is \(\Zl\) with \(\sigma\) acting by \(\chi_\ell(\sigma)^k\), and similarly for \(\Ql(k)\), \(\Ql/\Zl(k)\) and \(\Z/\ell(k)\).  Let \(W_e := \Ql/\Zl(-e)\), and let \(G_\ell := \Gal(\overline{\Q}_\ell/\Q_\ell)\), mapped to \(G_{\Q,\ell}\) by restriction along a fixed embedding \(\overline{\Q} \to \overline{\Q}_\ell\).
 
 \paragraph{Definition.}
 The \emph{Tate--Shafarevich group of the twist \(e\)} is
@@ -67,13 +69,13 @@ By von Staudt and Clausen \cite[Thm.~5.10]{Wa}, the denominator of \(B_k\), \(k 
 For even \(k \ge 2\), the power of \(\ell\) in the denominator of \(\zeta(1-k) = -B_k/k\) is \(\lvert H^0(G_{\Q,\ell}, \Ql/\Zl(k)) \rvert\).
 \end{problem}
 
-So the denominators of the values \(\zeta(1-k)\) are orders of \(H^0\); their numerators will be orders of \(\Sha\).
+For even \(k \ge 2\), the \(\ell\)-part of the denominator of \(\zeta(1-k)\) is the order of \(H^0(G_{\Q,\ell},\Ql/\Zl(k))\).  The \(\ell\)-part of its numerator will be the order of \(\Sha_\ell(\Q,k-1)\).
 
 \begin{problem}\label{pr:unram-zero}
 Let \(p \ne \ell\), \(e \ne 0\), and \(G_p := \Gal(\overline{\Q}_p/\Q_p)\).  Every unramified class in \(H^1(G_p, W_e)\) is zero.  Hence \(\Sha_\ell(\Q, e)\) is the group of classes in \(H^1(\Gal(\overline{\Q}/\Q), W_e)\) that vanish at every prime.
 \end{problem}
 
-To compute \(\Sha\), restrict to \(F = \Q(\zeta_\ell)\).
+Let \(F := \Q(\zeta_\ell)\).
 
 \begin{problem}\label{pr:mod-l}
 Suppose that \((\ell - 1) \nmid e\).  Then \(H^1(G_{\Q,\ell}, \Z/\ell(-e)) \to H^1(G_{\Q,\ell}, W_e)[\ell]\) is an isomorphism, and so is its analogue for \(G_\ell\).  Hence \(\Sha_\ell(\Q, e)[\ell]\) is the group of classes in \(H^1(G_{\Q,\ell}, \Z/\ell(-e))\) that vanish on \(G_\ell\).
@@ -89,15 +91,11 @@ Problems~\ref{pr:mod-l} and~\ref{pr:to-classgroup} prove the following.
 Let \((\ell - 1) \nmid e\).  Then \(\Sha_\ell(\Q, e)[\ell] \cong \Hom(A^{(-e)}, \F_\ell)\).  In particular \(\Sha_\ell(\Q, e) = 0\) if and only if \(A^{(-e)} = 0\).
 \end{theorem}
 
-\begin{problem}\label{pr:divisible-e}
-If \((\ell - 1) \mid e\) and \(e \ne 0\), then \(\Sha_\ell(\Q, e) = 0\).
-\end{problem}
-
 \begin{problem}\label{pr:odd-e}
 Let \(e \ge 1\) be odd.  Then \(\Sha_\ell(\Q, e) \ne 0\) if and only if \(\ell \mid \num(B_{e+1}/(e+1))\).  For example, \(\Sha_{691}(\Q, 11) \ne 0\) and \(\Sha_{37}(\Q, 31) \ne 0\).
 \end{problem}
 
-We state four inputs as black boxes.  By Soulé \cite{So}, \(H^2(G_{\Q,\ell}, \Zl(k))\) is finite for \(k \ge 2\).  By Poitou--Tate duality \cite[Ch.~VIII, \S6]{NSW}, \(\Sha_\ell(\Q, e)\) is dual to the kernel of \(H^2(G_{\Q,\ell}, \Zl(e+1)) \to H^2(G_\ell, \Zl(e+1))\), and by local duality \cite[Ch.~VII, \S2]{NSW} \(H^2(G_\ell, \Zl(k))\) is dual to \(H^0(G_\ell, \Ql/\Zl(1-k))\).  By Tate's global Euler characteristic formula \cite[Ch.~VIII, \S7]{NSW}, for every finite \(G_{\Q,\ell}\)-module \(M\) of \(\ell\)-power order, \(\lvert H^0(M) \rvert \lvert H^2(M) \rvert / \lvert H^1(M) \rvert = \lvert M^{c = 1} \rvert / \lvert M \rvert\), where \(c\) is a complex conjugation.  Since \(\ell\) is odd, \(G_{\Q,\ell}\) has \(\ell\)-cohomological dimension \(2\) \cite[Ch.~VIII, \S3]{NSW}, so \(H^3(G_{\Q,\ell}, M) = 0\) for every \(\ell\)-primary \(M\).
+We state four inputs as black boxes.  By Soulé \cite{So}, \(H^2(G_{\Q,\ell}, \Zl(k))\) is finite for \(k \ge 2\).  By Poitou--Tate duality \cite[Ch.~VIII, \S6]{NSW}, \(\Sha_\ell(\Q, e)\) is dual to the kernel of \(H^2(G_{\Q,\ell}, \Zl(e+1)) \to H^2(G_\ell, \Zl(e+1))\), and by local duality \cite[Ch.~VII, \S2]{NSW} \(H^2(G_\ell, \Zl(k))\) is dual to \(H^0(G_\ell, \Ql/\Zl(1-k))\).  By Tate's global Euler characteristic formula \cite[Ch.~VIII, \S7]{NSW}, for every finite \(G_{\Q,\ell}\)-module \(M\) of \(\ell\)-power order, \(\lvert H^0(M) \rvert \lvert H^2(M) \rvert / \lvert H^1(M) \rvert = \lvert M^{c = 1} \rvert / \lvert M \rvert\), where \(c\) is a complex conjugation.  Since \(\ell\) is odd, \(G_{\Q,\ell}\) has \(\ell\)-cohomological dimension at most \(2\) \cite[Ch.~VIII, \S3]{NSW}, so \(H^3(G_{\Q,\ell}, M) = 0\) for every \(\ell\)-primary \(M\).
 
 \begin{problem}\label{pr:sha2}
 Let \(e \ge 1\) be odd.  Then \(H^2(G_\ell, \Zl(e+1)) = 0\), and \(\Sha_\ell(\Q, e)\) is dual to \(H^2(G_{\Q,\ell}, \Zl(e+1))\).
@@ -124,13 +122,13 @@ Let \(k \ge 2\) be even.  Then
 For \(k = 12\) and \(\ell = 691\) both sides are \(691\).
 \end{problem}
 
-This is the simplest case of the Bloch--Kato conjecture \cite{BK}.  For odd \(k \ge 3\), that is for even \(e = k - 1\), the value \(\zeta(1-k)\) vanishes, \(H^1(G_{\Q,\ell}, \Zl(k))\) has rank one (Problem~\ref{pr:rank}), and \(\Sha_\ell(\Q, k-1)\) is dual to a subgroup of \(H^2(G_{\Q,\ell}, \Zl(k))\).  One expects the order of \(H^2(G_{\Q,\ell}, \Zl(k))\) to be the index in \(H^1(G_{\Q,\ell}, \Zl(k))\) of the subgroup generated by cyclotomic elements, as for \(A^+\); this chapter does not use it.
+This is the simplest case of the Bloch--Kato conjecture \cite{BK}.
 
-\section{The minus part and the plus part}\label{sec:split}
+\section{Odd characters}\label{sec:split}
 
-Over \(\Q\) the twists split by the parity of \(e\): odd \(e\) is controlled by a Bernoulli number, even \(e\) by the plus part of a class group.  How does this look over an abelian field, and what does it say about sums over all \(\ell\)?
+Over \(\Q\) the odd twists are controlled by Bernoulli numbers.  How does this look over an abelian field, and what does it say about sums over all \(\ell\)?
 
-Let \(E \subseteq \Q(\zeta_\ell)\) and \(\Delta_E := \Gal(E/\Q)\).  Then \(\Delta_E\) acts on \(\Sha_\ell(E, e)\), which is the direct sum of its \(\eta\)-parts over the characters \(\eta\) of \(\Delta_E\), with values in \(\mu_{\ell-1} \subset \Zl^\times\).  Let \(\Sha_\ell(\Q, e; \eta)\) be defined as \(\Sha_\ell(\Q, e)\), with \(W_e\) replaced by \(W_e \otimes \eta^{-1}\).  A character \(\eta\) is \emph{critical for \(e\)} if \(\eta(-1) = (-1)^{e+1}\), and \emph{plus for \(e\)} otherwise.  The \emph{minus part} and the \emph{plus part} of \(\Sha_\ell(E, e)\) are the sums of the \(\eta\)-parts over the critical and over the plus characters.
+Let \(E \subseteq \Q(\zeta_\ell)\) and \(\Delta_E := \Gal(E/\Q)\).  Then \(\Delta_E\) acts on \(\Sha_\ell(E, e)\), by \((\delta z)(g) := \tilde\delta\, z(\tilde\delta^{-1} g \tilde\delta)\) for a lift \(\tilde\delta\) of \(\delta\), which is the direct sum of its \(\eta\)-parts over the characters \(\eta\) of \(\Delta_E\), with values in \(\mu_{\ell-1} \subset \Zl^\times\).  Let \(\Sha_\ell(\Q, e; \eta)\) be defined as \(\Sha_\ell(\Q, e)\), with \(W_e\) replaced by \(W_e \otimes \eta^{-1}\).  A character \(\eta\) is \emph{critical for \(e\)} if \(\eta(-1) = (-1)^{e+1}\), and \emph{plus for \(e\)} otherwise.  The \emph{minus part} of \(\Sha_\ell(E, e)\) is the sum of the \(\eta\)-parts over the critical characters; it is the part on which complex conjugation acts by \((-1)^{e+1}\).
 
 \begin{problem}\label{pr:induced}
 The \(\eta\)-part of \(\Sha_\ell(E, e)\) is isomorphic to \(\Sha_\ell(\Q, e; \eta)\).  In particular \(\Sha_\ell(\Q, e)\) is the part fixed by \(\Delta_E\).
@@ -141,13 +139,13 @@ Let \(\eta = \omega^j\) with \((\ell - 1) \nmid (e + j)\).  Then \(\Sha_\ell(\Q,
 \end{problem}
 
 \begin{problem}\label{pr:parity}
-For every \(e \ne 0\), the minus part of \(\Sha_\ell(\Q(\zeta_\ell), e)\) has the same \(\ell\)-rank as \(A^-\), and the plus part has \(\ell\)-rank at least that of \(A^+\).
+For every \(e \ne 0\), the minus part of \(\Sha_\ell(\Q(\zeta_\ell), e)\) has the same \(\ell\)-rank as \(A^-\).
 \end{problem}
 
-So the critical eigenspaces see the minus part of a class group, where Stickelberger's theorem and Bernoulli numbers apply, and the plus eigenspaces see the plus part, where they do not.  On the minus side one number controls every \(\ell\) at once.
+Over \(\Q(\zeta_\ell)\) the critical characters account for the \(\ell\)-rank of \(A^-\).  Over \(\Q\), for each fixed positive odd \(e\), one Bernoulli numerator controls all odd primes.
 
 \begin{problem}\label{pr:one-number}
-For a nonzero integer \(N\), \(\sum_\ell v_\ell(N) \log \ell \le \log \lvert N \rvert\).  Hence, for odd \(e \ge 1\),
+For a nonzero integer \(Y\), \(\sum_\ell v_\ell(Y) \log \ell \le \log \lvert Y \rvert\).  Hence, for odd \(e \ge 1\),
 \[
   \sum_{\ell \text{ odd}} h_{\ell,e}(\Q) \log \ell \le \log \Bigl\lvert \num\Bigl(\frac{B_{e+1}}{e+1}\Bigr) \Bigr\rvert .
 \]
@@ -157,53 +155,110 @@ For a nonzero integer \(N\), \(\sum_\ell v_\ell(N) \log \ell \le \log \lvert N \
 For \(k \ge 1\), \(\log \lvert \num(B_{2k}/2k) \rvert \le 2k \log(2k) + 3\).
 \end{problem}
 
-On the plus side no such number is available.  One case is elementary.
+For the data of Chapter~\ref{da-chap}, the rewritten Lean proof \cite{GL} uses a CM subfield of a cyclotomic field and the twists \(0 \le e < 5r\), where \(r\) is the target rank of that chapter.  The counterpart of Problem~\ref{pr:one-number} there is Theorem~\ref{thm:oddsha} below.  It gives one positive integer \(X\) of controlled size such that, for every prime \(\ell\) and every coefficient ring \(\Oc\) allowed in the theorem, \(v_\Oc(X)\) bounds the \(\Oc\)-length of the module of cocycles of Definition~\ref{def:shaodd} at every level \(n\).  The rewritten Lean proof does not prove the main conjecture.
 
-\begin{problem}\label{pr:minkowski}
-If \(\ell \equiv 1 \pmod 4\), the class number of \(\Q(\sqrt\ell)\) is less than \(\ell\).
+\section{Odd cocycles}\label{sec:odd}
+
+In this section \(\ell\) is any prime.  Fix an embedding \(\overline{\Q} \subset \mathbb{C}\), and let \(c \in \Gal(\overline{\Q}/\Q)\) be complex conjugation.  Let \(E \subset \overline{\Q}\) be a CM field, \(G_E := \Gal(\overline{\Q}/E)\), and \(\chi := \chi_\ell|_{G_E}\).  Then \(c G_E c = G_E\) and \(\chi(cgc) = \chi(g)\).  For a place \(\mathfrak{P}\) of \(\overline{\Q}\) let \(D_{\mathfrak{P}} \supseteq I_{\mathfrak{P}}\) be its decomposition and inertia groups in \(G_E\).  Let \(\Oc\) be the ring of integers of a finite extension of \(\Ql\), with valuation \(v_\Oc\) normalized by \(v_\Oc(\pi) = 1\) on a uniformizer \(\pi\) and \(v_\Oc(0) = \infty\); for \(n \ge 0\) let \(\Oc_n := \Oc/\ell^n\Oc\), and write \(\Oc_n(-e)\) for this quotient with \(g \in G_E\) acting by \(\chi(g)^{-e}\).  We write \(\len\) for length over \(\Oc\), with values in \(\{0, 1, \dots, \infty\}\).
+
+\begin{definition}\label{def:shaodd}
+For integers \(e, n \ge 0\), \(\Shao_\ell(E, \Oc; e, n)\) is the \(\Oc\)-module of maps \(z \colon G_E \to \Oc_n\) such that:
+\begin{enumerate}
+\item[(a)] \(z\) is locally constant and \(z(gh) = z(g) + \chi(g)^{-e} z(h)\) for all \(g, h \in G_E\);
+\item[(b)] \(z = 0\) on \(I_{\mathfrak{P}}\) for every \(\mathfrak{P}\) above a prime other than \(\ell\);
+\item[(c)] for every \(\mathfrak{P}\) above \(\ell\): \(z = 0\) on \(I_{\mathfrak{P}}\) if \(e = 0\), and \(z = 0\) on \(D_{\mathfrak{P}} \cap \ker \chi\) if \(e > 0\);
+\item[(d)] if \(e > 0\), then \(z(cgc) = -z(g)\) for all \(g \in G_E\).
+\end{enumerate}
+\end{definition}
+
+These are cocycles, not classes: nothing is divided out.  In (c) the kernel is that of the \(\ell\)-adic character, not of its reduction modulo \(\ell^n\).  For \(e > 0\), the rewritten Lean proof \cite{GL} describes this module as a model for the odd part of \(\Sha^1(E,\Oc_n(-e))\) and records that the comparison with \(\Sha^1\) is not proved there.  Problems~\ref{pr:cob-odd} and~\ref{pr:c-action} explain the shape of the definition.
+
+\begin{problem}\label{pr:cob-odd}
+Let \(\ell\) be odd and \(e > 0\).  For \(b \in \Oc_n\), the coboundary \(z_b(g) := (\chi(g)^{-e} - 1) b\) satisfies (a)--(c), and it satisfies (d) only if \(z_b = 0\).
 \end{problem}
 
-\begin{problem}\label{pr:caseZ}
-Let \(e \ge 2\) be even with \((\ell - 1) \mid 2e\).  Then \(\Sha_\ell(\Q, e) = 0\).  For example \(\Sha_5(\Q, 2) = 0\).
+\begin{problem}\label{pr:c-action}
+For \(z\) satisfying (a)--(c) put \((c \cdot z)(g) := (-1)^e z(cgc)\).  Then \(c \cdot z\) satisfies (a)--(c) and \(c \cdot (c \cdot z) = z\).  For \(e > 0\), condition (d) is equivalent to \(c \cdot z = (-1)^{e+1}z\).  For odd \(\ell\) this is the sign of the minus part in Section~\ref{sec:split}.
 \end{problem}
 
-\begin{problem}\label{pr:vandiver}
-If \(\ell\) does not divide the class number of \(\Q(\zeta_\ell + \zeta_\ell^{-1})\), then \(\Sha_\ell(\Q, e) = 0\) for every even \(e \ne 0\).
+\paragraph{The twist \(e = 0\).}
+Then (a) says that \(z\) is a continuous homomorphism, (d) is void, and (b), (c) together say that \(z\) vanishes on every inertia group.
+
+\begin{problem}\label{pr:e0-hom}
+The Artin map identifies \(\Shao_\ell(E, \Oc; 0, n)\) with \(\Hom(\Cl(E), \Oc_n)\).
 \end{problem}
 
-Over \(\Q\) the pairs \((\ell, e)\) therefore fall into three cases: \(e\) odd, given by Theorem~\ref{thm:MW}; \(e\) even with \((\ell - 1) \mid 2e\), zero by Problem~\ref{pr:caseZ}; and \(e\) even with \((\ell - 1) \nmid 2e\), zero under Vandiver's conjecture and unknown in general.  The fields of the argument are abelian CM fields of large degree, and there the plus part is the difficulty; Alpöge's note speaks of the classes ``that we couldn't kill by twisting'' and of a ``significant weakening of Vandiver'' \cite[item~17]{Alp}.  No proof of such a bound has been published.  In \cite{Adr} the bound the argument needs is \cite[Hyp.~17.11]{Adr}; see the ledger in Section~\ref{as-sec:map} of Chapter~\ref{as-chap}.
-
-\section{The size of the bound}\label{sec:budget}
-
-How large may these groups be before they spoil the slope inequality?  For a number field \(E\) and an integer \(t \ge 2\) let
+\begin{problem}\label{pr:hom-length}
+Let \(C \cong \bigoplus_i \Z/m_i\Z\) be a finite abelian group.  Then
 \[
-  V(E, t) := \sum_\ell \log \ell \sum_{1 \le e < t} h_{\ell,e}(E) ,
+  \len \Hom(C, \Oc_n) = \sum_i \min\bigl(v_\Oc(m_i),\, n\, v_\Oc(\ell)\bigr) \le v_\Oc(\lvert C \rvert) ,
 \]
-the logarithm of the order of \(\bigoplus_{\ell, e} \Sha_\ell(E, e)\) when this group is finite.  By Problem~\ref{si-pr:ramp}, the divisibility at the inert and ramified primes, summed with weights \(\log p\), is \(w\) times a ramp sum at the scale \(x = a/w\).  In Alp\"oge's argument, as reconstructed in \cite{Adr}, the denominators left after gluing are paid for by \(V(E, t)\), for a CM field \(E\) whose degree and number of twists \(t\) are bounded by powers of \(x\), and the weight is \(w = b := \exp(x^\varepsilon)\) with a small fixed \(\varepsilon > 0\).  The bound that the argument needs is \(V(E, t) \le \sqrt b\).  In \cite{Adr} it follows, on suitable windows of scales, from the Selmer bound on windows by \cite[Prop.~18.4]{Adr}; in \cite{Adr} the Selmer bound is \cite[Hyp.~17.11]{Adr}, assumed there.  The Lean formalization proves it; Chapter~\ref{ws-chap} outlines the proof.  See (W3) and the ledger in Section~\ref{as-sec:map} of Chapter~\ref{as-chap}.
-
-\begin{problem}\label{pr:negligible}
-Suppose that \(b S \le b M + b R + V\) with real numbers \(S, M, R\) and \(0 \le V \le \sqrt b\).  Then \(S \le M + R + \exp(-x^\varepsilon/2)\), and \(\exp(-x^\varepsilon/2) = o(x^{-C})\) for every \(C\).
+with equality for all large \(n\).
 \end{problem}
 
-In the applications \(S\) is a ramp sum over primes, \(M\) its main term of size \(x \log x\), and \(R\) must be \(O(x^{1/2 + \varepsilon})\).
-
-\begin{problem}\label{pr:poly-small}
-If \(V(E, t) \le x^C\) for a constant \(C\), then \(V(E,t) \le \sqrt b\) for all large \(x\).  The same holds if \(V(E,t) \le \exp(x^{\varepsilon'})\) with \(\varepsilon' < \varepsilon\).  For \(c > 0\) and \(d \ge x\), on the other hand, \(\exp(\exp(c d)) > \sqrt b\) for all large \(x\).
+\begin{problem}\label{pr:e0-example}
+For \(E = \Q(\sqrt{-23})\), \(\ell = 3\) and \(\Oc = \Z_3\), the length of \(\Shao_3(E, \Z_3; 0, n)\) is \(\min(1, n)\); for \(\ell \ne 3\) and every \(\Oc\) it is \(0\).
 \end{problem}
 
-Through Soulé's Chern class maps \cite{So}, \(\Sha_\ell(E, e)\) is dual to a subquotient of \(K_{2e}(\Oc_E) \otimes \Zl\), so one expects \(V(E, t)\) to be polynomial in \(x\).  Over \(\Q\) this follows from Vandiver's conjecture.
+Let \(h_E := \lvert \Cl(E) \rvert\).  Problems~\ref{pr:e0-hom} and~\ref{pr:hom-length} prove the following.
 
-\begin{problem}\label{pr:Q-budget}
-Assume Vandiver's conjecture for every odd \(\ell\).  Then for \(t \ge 2\)
+\begin{theorem}\label{thm:e0}
+Let \(E \subset \overline{\Q}\) be a CM field, \(\ell\) a prime, \(\Oc\) the ring of integers of a finite extension of \(\Ql\), and \(n \ge 0\).  Then \(\len \Shao_\ell(E, \Oc; 0, n) \le v_\Oc(h_E)\).
+\end{theorem}
+
+\paragraph{The field \(\Q(\zeta_\ell)\) modulo \(\ell\).}
+Now let \(\ell\) be odd, \(E = F := \Q(\zeta_\ell)\), \(\Oc = \Zl\), \(n = 1\) and \(e > 0\), and let \(\lambda\) be the prime of \(F\) above \(\ell\).
+
+\begin{problem}\label{pr:F-hom}
+Every \(z \in \Shao_\ell(F, \Zl; e, 1)\) is a homomorphism \(G_F \to \F_\ell\).  The module \(\Shao_\ell(F, \Zl; e, 1)\) does not depend on \(e > 0\).
+\end{problem}
+
+\begin{problem}\label{pr:F-cyc}
+The map \(z_{\mathrm{cyc}}(g) := (\chi(g) - 1)/\ell \bmod \ell\) is a homomorphism \(G_F \to \F_\ell\) satisfying (b) and (c), it is nonzero on \(D_{\mathfrak{P}}\) for every \(\mathfrak{P}\) above \(\ell\), and \(z_{\mathrm{cyc}}(cgc) = z_{\mathrm{cyc}}(g)\).  So \(z_{\mathrm{cyc}} \notin \Shao_\ell(F, \Zl; e, 1)\).
+\end{problem}
+
+\begin{problem}\label{pr:F-split}
+Every \(z \in \Shao_\ell(F, \Zl; e, 1)\) vanishes on all of \(D_{\mathfrak{P}}\), for every \(\mathfrak{P}\) above \(\ell\).
+\end{problem}
+
+\begin{problem}\label{pr:F-minus}
+The Artin map identifies \(\Shao_\ell(F, \Zl; e, 1)\) with \(\Hom(A^-, \F_\ell)\), for every \(e > 0\).  Hence its length is the \(\ell\)-rank of \(A^-\).
+\end{problem}
+
+By Problem~\ref{pr:parity}, this is also the \(\ell\)-rank of the minus part of \(\Sha_\ell(F, e)\).  So in this case the odd cocycles see what the minus part sees modulo \(\ell\): condition (d) removes the plus part, and (c) and (d) together remove the cyclotomic homomorphism \(z_{\mathrm{cyc}}\).
+
+\paragraph{One integer for all \(\ell\).}
+For a CM field in \(\Q(\zeta_N)\), the following theorem gives one integer for every prime \(\ell\), every coefficient ring specified below, every \(0 \le e < t\), and every \(n \ge 0\).
+
+\begin{theorem}\label{thm:oddsha}
+Let \(N \ge 1\) and \(t \ge 0\) be integers, let \(d_N\) be the exponent of the group \((\Z/N\Z)^\times\), and let \(E \subset \overline{\Q}\) be a CM field contained in \(\Q(\zeta_N)\).  There is an integer \(X\) with
 \[
-  \sum_{\ell \text{ odd}} \log \ell \sum_{1 \le e < t} h_{\ell,e}(\Q) \le t^2 \log t + 3t .
+  1 \le X \le 2^{4(N + t + 3)^{27}} h_E
+\]
+such that for every prime \(\ell\) (including \(\ell = 2\)), every ring of integers \(\Oc\) of a finite extension of \(\Ql\) that contains a primitive \(d_N\)-th root of unity, every integer \(e\) with \(0 \le e < t\), and every \(n \ge 0\),
+\[
+  \len \Shao_\ell(E, \Oc; e, n) \le v_\Oc(X) .
+\]
+\end{theorem}
+
+In particular these lengths are finite.  For \(e = 0\) the proof first applies Theorem~\ref{thm:e0} with right-hand side \(v_\Oc(h_E)\); when \(t = 1\) its chosen integer is \(X = h_E\).  For \(0 < e < t\) the rewriting first constructs an integer \(1 \le X_e \le 2^{(N+e+3)^6}\) satisfying a divisibility condition at every prime and a congruence for twisted Stickelberger sums.  Its proof of the bound then uses Jacobi-type quotients of Gauss sums and Kolyvagin's derivative cocycles, and treats \(\ell \le (N+t+3)^2\) and \(\ell > (N+t+3)^2\) separately.  Chapter~\ref{mi-chap} illustrates the Gauss-sum method.  The rewritten Lean proof describes the result as a finite-level upper bound of explicit size, and proves no equality of characteristic ideals.  For the field \(E\) of the data of Chapter~\ref{da-chap} it chooses a witness with \(t = 5r\), and the first term of its denominator error at \(\ell\) is \(t\, v_\ell(X)\).
+
+\begin{leanremark}
+\raggedright In the rewritten Lean proof \cite{GL}, Theorem~\ref{thm:oddsha} is \tl{New.exists\_length\_shaOdd\_le} and Theorem~\ref{thm:e0} is \tl{New.length\_shaOdd\_zero\_le\_addVal\_classNumber}, both in \tl{grh/src/Lib/Cyclotomic/OddSha.lean}, Definition~\ref{def:shaodd} is the case \(\Lambda = \Oc\) of \tl{New.Selmer.shaOdd} in \tl{grh/src/Lib/GaloisRep/Main/SelmerModules.lean}, and the application to the data uses \tl{New.Selmer.oddClassBound} and \tl{New.Selmer.denominatorError} in \tl{grh/src/New/Congruences/FirstOrder/TraceRelations.lean} and \tl{New.Selmer.isNegligible\_padicValNat\_oddClassBound} in \tl{grh/src/New/Congruences/FitTwistsExist.lean}.  The proof chooses \(X_e\) using \tl{New.OddPart.exists\_isStickelbergerBound}.  The proof of \tl{New.OddPart.exists\_isJacobiFamily} constructs the Jacobi-type quotients of Gauss sums, and the proof of \tl{New.OddPart.exists\_isKolyvaginSystem} constructs the derivative cocycles.  The introduction to \tl{OddSha.lean} gives the status of the comparison with \(\Sha^1\) and of the finite-level bound.
+\end{leanremark}
+
+\begin{problem}\label{pr:37}
+Let \(E = \Q(\zeta_{37})\), \(N = 37\) and \(t \ge 2\).  Then \(\Z_{37}\) satisfies the hypotheses of Theorem~\ref{thm:oddsha}, and every integer \(X\) as in that theorem is divisible by \(37\).
+\end{problem}
+
+\begin{problem}\label{pr:sum-ell}
+Let \(N\), \(t\), \(d_N\), \(E\), \(X\) be as in Theorem~\ref{thm:oddsha}, and for each prime \(\ell\) let \(\Oc_{(\ell)}\) be the ring of integers of \(\Ql(\zeta_{d_N})\).  Then \(\Oc_{(\ell)}\) satisfies the hypotheses of the theorem, and for \(0 \le e < t\), \(n \ge 0\) and every finite set \(T\) of primes,
+\[
+  \sum_{\ell \in T} \frac{\len \Shao_\ell(E, \Oc_{(\ell)}; e, n)}{v_{\Oc_{(\ell)}}(\ell)} \log \ell \le \log X \le 4 (N + t + 3)^{27} \log 2 + \log h_E .
 \]
 \end{problem}
 
-The difficulty is therefore not the size of \(V(E,t)\) but its uniformity in \(\ell\), \(e\) and a field \(E\) that changes with \(x\).  On the minus part one Bernoulli number bounds all \(\ell\) at once (Problem~\ref{pr:one-number}); on the plus part no such number is available, already over \(\Q\).  Over \(\Q\) the minus part is given exactly by Theorem~\ref{thm:MW}.  Over the fields \(E\) of the argument the formalization needs only an upper bound, and obtains it without the main conjecture, by a one-sided Euler-system argument with Gauss sums (Chapter~\ref{mi-chap}); the plus part it bounds by congruences, case by case (Chapter~\ref{pl-chap}).
-
-\paragraph{Questions.}
-The following are not known to us.  Is \(A^+ = 0\) for every odd prime \(p\) (Vandiver's conjecture)?  Is there a constant \(C\) such that \(\sum_{\ell \text{ odd}} \log \ell \sum_{1 \le e < t,\ e \text{ even}} h_{\ell,e}(\Q) \le t^C\) for all \(t \ge 2\)?  A positive answer to the second question would give, for the plus part over \(\Q\), far more than the argument requires: it needs only \(V(E, t) \le \sqrt b\), with \(t\) a power of \(x\) and \(b = \exp(x^\varepsilon)\), and only on windows of scales.  In \cite{Adr} this requirement is \cite[\S17.3, Hyp.~17.11]{Adr}, assumed there; the formalization proves it (Chapter~\ref{ws-chap}); see the ledger in Section~\ref{as-sec:map} of Chapter~\ref{as-chap}.  It implies a bound toward Vandiver's conjecture stronger than the published ones \cite[Prop.~17.22]{Adr}.  The route to it sketched in \cite[\S17.4]{Adr} passes through an automorphy statement for residually reducible Galois representations of unitary type in three variables, (G3) there; its status is recorded in Section~\ref{pc-sec:model} of Chapter~\ref{pc-chap}.  The route of the formalization is that of Chapters~\ref{mi-chap}, \ref{pl-chap} and~\ref{ws-chap}.
+This is the analogue of Problem~\ref{pr:one-number}.  In the application to Chapter~\ref{da-chap}, the rewritten Lean proof sums \(v_\ell(X)\log\ell\) over a finite set of primes and uses the size bound for \(X\) in Theorem~\ref{thm:oddsha}.
 
 \section*{Hints}
 
@@ -211,38 +266,42 @@ The following are not known to us.  Is \(A^+ = 0\) for every odd prime \(p\) (Va
 \begin{description}
 \item[\ref{pr:H0}] \(\chi_\ell\) maps \(G_{\Q,\ell}\) and \(G_\ell\) onto \(\Zl^\times\).  Compute the least \(v_\ell(u^k - 1)\) over \(u \in \Zl^\times\).
 \item[\ref{pr:den-zeta}] Combine Problem~\ref{pr:H0} with the theorem of von Staudt and Clausen.  If \((\ell - 1) \nmid k\), then \(B_k/k\) is \(\ell\)-integral \cite[Cor.~5.14]{Wa}.
-\item[\ref{pr:unram-zero}] An unramified class lies in \(H^1(\hat{\Z}, W_e) = W_e/(\varphi - 1)W_e\), where Frobenius \(\varphi\) acts by \(p^{-e}\).  For the second statement, inflate from \(G_{\Q,\ell}\); conversely, by inflation--restriction a class that is unramified outside \(\ell\) comes from \(G_{\Q,\ell}\).
+\item[\ref{pr:unram-zero}] An unramified class lies in \(H^1(\hat{\Z}, W_e) = W_e/(\varphi - 1)W_e\), where Frobenius \(\varphi\) acts by \(p^{-e}\).  For the second statement, inflate from \(G_{\Q,\ell}\); conversely, by inflation--restriction a class that is unramified outside \(\ell\) comes from \(G_{\Q,\ell}\), since \(\Gal(\overline{\Q}/\Q_S)\) is generated as a closed normal subgroup by the inertia groups at primes \(p \ne \ell\).
 \item[\ref{pr:mod-l}] Use the sequence \(0 \to \Z/\ell(-e) \to W_e \xrightarrow{\ell} W_e \to 0\) and Problem~\ref{pr:H0}.
 \item[\ref{pr:to-classgroup}] Use inflation--restriction to \(G_F := \Gal(\Q_S/F)\), which acts trivially on \(\Z/\ell(-e)\).  The prime above \(\ell\) in \(F\) is principal, and \([F_\lambda : \Q_\ell] = \ell - 1\) is prime to \(\ell\).
-\item[\ref{pr:divisible-e}] Now \(\Z/\ell(-e)\) is trivial and \(\Q\) has class number \(1\).  Compare the images of \(H^0(W_e)/\ell\) globally and at \(\ell\) using Problem~\ref{pr:H0}.
 \item[\ref{pr:odd-e}] Let \(i \equiv -e \pmod{\ell - 1}\).  Use Theorem~\ref{thm:sha-class}, Theorem~\ref{ds-thm:HR}, and Kummer's congruence \(B_m/m \equiv B_n/n \pmod \ell\) for even \(m, n \ge 2\) with \(m \equiv n \not\equiv 0 \pmod{\ell-1}\) \cite[Ch.~5]{Wa}; treat \(i \equiv 1\) separately, using \(A^{(1)} = 0\) \cite[Prop.~6.16]{Wa}.
 \item[\ref{pr:sha2}] Problem~\ref{pr:H0} with \(k = -e\), and local duality.
-\item[\ref{pr:rank}] Apply the Euler characteristic formula to \(\Zl(k)/\ell^n\) and let \(n \to \infty\); since the groups \(H^i(G_{\Q,\ell}, \Zl(k)/\ell^n)\) are finite, their inverse limit is \(H^i(G_{\Q,\ell}, \Zl(k))\) \cite[Ch.~II, \S7]{NSW}.  For the upper bound on the rank, show that \(H^2(G_{\Q,\ell}, \Zl(k)/\ell^n) = H^2(G_{\Q,\ell}, \Zl(k))/\ell^n\), which is bounded by Soulé's theorem.  For the torsion, use \(0 \to \Zl(k) \to \Ql(k) \to \Ql/\Zl(k) \to 0\).
+\item[\ref{pr:rank}] Apply the Euler characteristic formula to \(\Zl(k)/\ell^n\) and let \(n \to \infty\); since the groups \(H^i(G_{\Q,\ell}, \Zl(k)/\ell^n)\) are finite, their inverse limit is \(H^i(G_{\Q,\ell}, \Zl(k))\) \cite[Ch.~II, \S7]{NSW}.  For the upper bound on the rank, show that \(H^2(G_{\Q,\ell}, \Zl(k)/\ell^n) = H^2(G_{\Q,\ell}, \Zl(k))/\ell^n\), which is bounded by Soulé's theorem.  For the torsion, use \(0 \to \Zl(k) \to \Ql(k) \to \Ql/\Zl(k) \to 0\).  The groups \(H^i(G_{\Q,\ell}, M)\) are finite for finite \(M\) \cite[Ch.~VIII, \S3]{NSW}; finite generation of \(H^1(G_{\Q,\ell}, \Zl(k))\) follows from finiteness of its reduction modulo \(\ell\) by Nakayama's lemma, and \(H^3 = 0\) passes to the limit.
 \item[\ref{pr:BK}] Problems~\ref{pr:sha2}, \ref{pr:rank} and~\ref{pr:den-zeta}, and Theorem~\ref{thm:MW} with \(e = k - 1\).
 \end{description}
 
 \subsection*{\S\ref{sec:split}}
 \begin{description}
 \item[\ref{pr:induced}] Shapiro's lemma for \(\mathrm{Ind}_{G_{E,\ell}}^{G_{\Q,\ell}} W_e \cong \bigoplus_\eta W_e \otimes \eta\).  The field \(E\) has one prime above \(\ell\).
-\item[\ref{pr:eta-rank}] Repeat Problems~\ref{pr:mod-l} and~\ref{pr:to-classgroup}; \(W_e \otimes \omega^{-j}\) is congruent to \(\omega^{-e-j}\) modulo \(\ell\).
-\item[\ref{pr:parity}] Sum Problem~\ref{pr:eta-rank} over \(j\), using \(A^{(0)} = 0\).  The one character \(\omega^{-e}\) not covered there is plus for \(e\).
+\item[\ref{pr:eta-rank}] Repeat Problems~\ref{pr:mod-l} and~\ref{pr:to-classgroup} with the twisted coefficients.  On \((W_e\otimes\eta^{-1})[\ell]\), the action is through the reduction of \(\omega^{-e-j}\).
+\item[\ref{pr:parity}] Sum Problem~\ref{pr:eta-rank} over the critical \(j\).  The one character \(\omega^{-e}\) not covered there is plus for \(e\).
 \item[\ref{pr:one-number}] For the second part, Theorem~\ref{thm:MW}.
 \item[\ref{pr:bernoulli-size}] \(B_{2k} = (-1)^{k+1} 2 (2k)! \zeta(2k)/(2\pi)^{2k}\), and bound the denominator by von Staudt--Clausen and \(\prod_{p \le n} p \le 4^n\).
-\item[\ref{pr:minkowski}] Minkowski's bound, and count integral ideals of small norm.
-\item[\ref{pr:caseZ}] If \((\ell-1) \mid e\), Problem~\ref{pr:divisible-e}.  Otherwise \(-e \equiv (\ell - 1)/2\); use Theorem~\ref{thm:sha-class}, Problem~\ref{ds-pr:subfield} and Problem~\ref{pr:minkowski}.
-\item[\ref{pr:vandiver}] Theorem~\ref{thm:sha-class} and Problem~\ref{ds-pr:subfield}; if \((\ell - 1) \mid e\), Problem~\ref{pr:divisible-e}.
 \end{description}
 
-\subsection*{\S\ref{sec:budget}}
+\subsection*{\S\ref{sec:odd}}
 \begin{description}
-\item[\ref{pr:poly-small}] Compare logarithms: \(\log \sqrt b = x^\varepsilon/2\).
-\item[\ref{pr:Q-budget}] The even \(e\) contribute nothing.  For odd \(e\), Problems~\ref{pr:one-number} and~\ref{pr:bernoulli-size} with \(2k = e + 1 \le t\).
+\item[\ref{pr:cob-odd}] \(\chi\) is trivial on inertia at primes other than \(\ell\), and \(\chi(cgc) = \chi(g)\); \(2\) is a unit in \(\Oc_n\).
+\item[\ref{pr:c-action}] \(\chi_\ell(c) = -1\).  Conjugation by \(c\) carries \(D_{\mathfrak{P}}\), \(I_{\mathfrak{P}}\) to \(D_{c\mathfrak{P}}\), \(I_{c\mathfrak{P}}\).
+\item[\ref{pr:e0-hom}] A homomorphism killing all inertia groups factors through the Galois group of the Hilbert class field; \(E\) has no real places.
+\item[\ref{pr:hom-length}] \(\Hom(\Z/m\Z, \Oc_n) \cong \Oc/(m, \ell^n)\), and \(\Oc/\pi^k\Oc\) has length \(k\).
+\item[\ref{pr:e0-example}] The class number of \(\Q(\sqrt{-23})\) is \(3\).
+\item[\ref{pr:F-hom}] \(\chi(g) \equiv 1 \pmod \ell\) on \(G_F\).
+\item[\ref{pr:F-cyc}] \(\chi(D_{\mathfrak{P}}) = 1 + \ell\Zl\), since \(\Q_\ell(\zeta_{\ell^2})\) has degree \(\ell\) over \(\Q_\ell(\zeta_\ell)\).
+\item[\ref{pr:F-split}] On \(D_{\mathfrak{P}}\), \(z\) factors through \(\chi(D_{\mathfrak{P}}) = 1 + \ell\Zl\), so it is a multiple of \(z_{\mathrm{cyc}}\) there.  Compare at \(\mathfrak{P}\) and \(c\mathfrak{P}\), which are conjugate under \(G_F\).
+\item[\ref{pr:F-minus}] Problems~\ref{pr:F-split} and~\ref{pr:c-action}; \(\lambda = (1 - \zeta_\ell)\) is principal, the Artin map satisfies \(\mathrm{Art}(\sigma \mathfrak{a}) = \tilde\sigma\, \mathrm{Art}(\mathfrak{a})\, \tilde\sigma^{-1}\), and \(c = \sigma_{-1}\) acts on \(A^{(i)}\) by \((-1)^i\).
+\item[\ref{pr:37}] Problems~\ref{pr:F-minus} and~\ref{ds-pr:irregular}.
+\item[\ref{pr:sum-ell}] \(v_\Oc(X) = v_\Oc(\ell)\, v_\ell(X)\), and Problem~\ref{pr:one-number}.
 \end{description}
 
 \begin{thebibliography}{NSW}
-\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
-\bibitem[Alp]{Alp} L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
 \bibitem[BK]{BK} S.~Bloch and K.~Kato, \emph{\(L\)-functions and Tamagawa numbers of motives}, in: The Grothendieck Festschrift, Vol.~I, Progr.\ Math.\ 86, Birkh\"auser, 1990, 333--400.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, \url{https://github.com/lsernau/grh-lean}.
 \bibitem[MW]{MW} B.~Mazur and A.~Wiles, \emph{Class fields of abelian extensions of \(\mathbf{Q}\)}, Invent.\ Math.\ \textbf{76} (1984), 179--330.
 \bibitem[Ne]{Ne} J.~Neukirch, \emph{Algebraic Number Theory}, Grundlehren Math.\ Wiss.\ 322, Springer, 1999.
 \bibitem[NSW]{NSW} J.~Neukirch, A.~Schmidt and K.~Wingberg, \emph{Cohomology of Number Fields}, 2nd ed., Grundlehren Math.\ Wiss.\ 323, Springer, 2008.
