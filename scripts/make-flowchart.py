@@ -9,26 +9,28 @@ Everything is read from the sources, so the chart follows the index:
     the references in its Prerequisites paragraph say which of them it
     builds on (references to later chapters are pointers, not
     prerequisites, and are dropped);
-  * the last Part holds the modules (the general statements) and, as
-    its last chapter, the assembly.  A module's Prerequisites and its
+  * the Parts after Part V (the later parts) state the ingredients in
+    general; the last of them holds only the assembly, the last chapter
+    of the main sequence.  In the other later parts, a chapter with a
+    Deliverable paragraph is a module: its Prerequisites and its
     "Simplest incarnation" remarks name the earlier chapters it
-    generalizes.  Which inputs (A1)-(A7), (V1)-(V3), (W1)-(W4) of the
-    assembly a module supplies is read from its Deliverable paragraph
-    and from the assembly's map of the inputs (the description list in
-    its section sec:map), keeping the labels on which both agree;
-  * a chapter of the last Part without a Deliverable paragraph, listed
-    after a chapter of that Part that has one, is a development: it
-    treats one input of the module listed last before it (its parent).
-    It supplies nothing to the assembly directly, and is drawn below its
-    parent, the developments of a module stacked in index order.
+    generalizes, and the inputs (A1)-(A7), (V1)-(V3), (W1)-(W4) of the
+    assembly that it supplies are read from its Deliverable paragraph and
+    from the assembly's map of the inputs (the description list in its
+    section sec:map), keeping the labels on which both agree.  The other
+    chapters of those parts develop inputs of the modules and supply
+    nothing to the assembly directly;
+  * the sentence opening a later part names the Part among I-V that
+    treats it in its simplest setting ("... what Part III treats ...").
 
 The chart has two grids.  Below, one column per Part I-V, the chapters
-of a Part stacked with the earliest at the bottom.  Above, the last Part:
-one column per module, its developments stacked below it, and the
-assembly on top; edges into the last Part enter boxes from the side.  Edges implied by a path are dropped
-(transitive reduction).  The layout and the orthogonal edge routing are
-done here, so Graphviz is not needed; a DOT file is written as well, for
-reference.
+of a Part stacked with the earliest at the bottom.  Above, one column per
+later part, placed over the column of its counterpart among Parts I-V,
+with its modules on top and its other chapters below in index order; the
+assembly is on top of everything.  Edges into the upper grid enter boxes
+from the side.  Edges implied by a path are dropped (transitive
+reduction).  The layout and the orthogonal edge routing are done here,
+so Graphviz is not needed; a DOT file is written as well, for reference.
 
 Outputs (in the current directory, or --outdir):
   flowchart.org   the page: the chart inline, a legend, the seminar plans
@@ -121,6 +123,22 @@ def read_index():
     return sheets, parts
 
 
+def read_counterparts():
+    """Map each Part whose opening sentence names another Part ("what
+    Part III treats") to that Part."""
+    with open(GUIDE, encoding="utf-8") as f:
+        lines = f.read().split("\n")
+    out = {}
+    for k, line in enumerate(lines[:-1]):
+        pm = re.match(r"^\* (Part [IVXLC]+)\.", line)
+        if not pm or lines[k + 1].startswith(("-", "*")):
+            continue
+        cm = re.search(r"what (Part [IVXLC]+) treats", lines[k + 1])
+        if cm:
+            out[pm.group(1)] = cm.group(1)
+    return out
+
+
 def paragraph(src, name):
     """The text of \\paragraph{NAME.} up to the next blank line or section."""
     m = re.search(r"\\paragraph\{" + name + r"\.?\}(?:\\label\{[^}]*\})?(.*?)"
@@ -176,9 +194,7 @@ def read_sheets(sheets):
     by_id = {s.id: s for s in sheets}
     pos = {s.id: k for k, s in enumerate(sheets)}
     main = [s for s in sheets if not s.side]
-    last_part = main[-1].part
     assembly = main[-1]
-    modules = [s for s in main if s.part == last_part and s is not assembly]
     src = {}
     pre = {}
     for s in sheets:
@@ -207,18 +223,17 @@ def read_sheets(sheets):
             warn(f"{s.tex} has no Prerequisites paragraph")
         deps[s.id] = resolve(s, prefixes(para), "Prerequisites")
 
-    # Developments: chapters of the last Part without a Deliverable
-    # paragraph that come after a module.  Each develops an input of the
-    # module listed last before it in the index (its parent).
-    devs, parent = [], {}
-    last_mod = None
-    for s in modules:
-        if paragraph(src[s.id], "Deliverable") or last_mod is None:
-            last_mod = s.id
-        else:
-            parent[s.id] = last_mod
-            devs.append(s)
-    modules = [s for s in modules if s.id not in parent]
+    # The later parts: from the first Part with a Deliverable paragraph
+    # to the Part of the assembly.  Their chapters other than the
+    # assembly are modules (with a Deliverable paragraph) or developments.
+    order = list(dict.fromkeys(s.part for s in main))
+    has_del = [s.part for s in main if s is not assembly
+               and paragraph(src[s.id], "Deliverable")]
+    first = order.index(has_del[0]) if has_del else order.index(assembly.part)
+    later = set(order[first:])
+    upper = [s for s in main if s.part in later and s is not assembly]
+    modules = [s for s in upper if paragraph(src[s.id], "Deliverable")]
+    devs = [s for s in upper if s not in modules]
 
     for s in sheets:
         if s in modules:
@@ -262,23 +277,27 @@ def read_sheets(sheets):
         both = [l for l in a if l in b]
         deliveries[t] = sorted(both or a or b,
                                key=lambda l: ("AVWK".index(l[0]), int(l[1:])))
-    return deps, deliveries, inputs, assembly, modules, src, devs, parent
+    return deps, deliveries, inputs, assembly, modules, src, devs
 
 
 # ---------------------------------------------------------------- graph
 
 def build_graph(sheets, parts):
     (deps, deliveries, inputs, assembly, modules, src,
-     devs, parent) = read_sheets(sheets)
+     devs) = read_sheets(sheets)
     mod_ids = {s.id for s in modules}
+    upper = mod_ids | {s.id for s in devs} | {assembly.id}
     edges = {}          # (u, v) -> kind: dep, inc, del
 
-    def kind_to(v):
-        return "inc" if v in mod_ids or v == assembly.id else "dep"
+    def kind(u, v):
+        """Light (inc) for an earlier part's chapter into a module or the
+        assembly, dark (dep) otherwise."""
+        return ("inc" if (v in mod_ids or v == assembly.id)
+                and u not in upper else "dep")
 
     for v, us in deps.items():
         for u in us:
-            edges[(u, v)] = kind_to(v)
+            edges[(u, v)] = kind(u, v)
     supplier = defaultdict(list)
     for mid, labs in deliveries.items():
         for lab in labs:
@@ -306,7 +325,7 @@ def build_graph(sheets, parts):
     unsupplied = [l for l in inputs if l not in supplier]
     return dict(edges=reduced, deliveries=deliveries, assembly=assembly,
                 modules=modules, unsupplied=unsupplied, src=src,
-                devs=devs, parent=parent)
+                devs=devs, counterpart=read_counterparts())
 
 
 # ---------------------------------------------------------------- layout
@@ -354,9 +373,9 @@ def assign_lanes(intervals):
 
 def layout(sheets, parts, g):
     """Two grids.  Below, one column per Part I-V, the chapters of a Part
-    stacked with the earliest at the bottom.  Above, the last Part: one
-    column per module, with its developments stacked below it in index
-    order, and the assembly on top.  Edges inside the lower grid run in
+    stacked with the earliest at the bottom.  Above, one column per later
+    part, over the column of its counterpart, its modules on top and its
+    other chapters below in index order; the assembly on top of all.  Edges inside the lower grid run in
     its gutters and in the gaps below the rows; edges into the last Part
     cross the transfer gap below it and enter boxes from the side through
     the gutters of the upper grid."""
@@ -364,10 +383,10 @@ def layout(sheets, parts, g):
     assembly, modules = g["assembly"], g["modules"]
     mod_ids = [s.id for s in modules]
     dev_ids = [s.id for s in g["devs"]]
-    parent = g["parent"]
     six = set(mod_ids) | set(dev_ids)
-    last_part = assembly.part
-    col_parts = [p for p in parts if p[0] != last_part
+    up_parts = [p for p in parts if any(i in six for i in p[2])]
+    up_keys = {p[0] for p in up_parts} | {assembly.part}
+    col_parts = [p for p in parts if p[0] not in up_keys
                  and not by_id[p[2][0]].side]
     side_parts = [p for p in parts if by_id[p[2][0]].side]
     C = len(col_parts)
@@ -386,17 +405,23 @@ def layout(sheets, parts, g):
         rows = max(rows, start + len(ids))
         clusters.append((f"{key}. {name}" if name else key, ids))
 
-    # The upper grid: column and level of each chapter of the last Part.
-    K = len(mod_ids)
+    # The upper grid: a column per later part, over its counterpart's
+    # column if the counterparts are distinct Parts I-V; modules first.
+    low_col = {k: c for c, (k, _, _) in enumerate(col_parts)}
+    cp = [low_col.get(g["counterpart"].get(k)) for k, _, _ in up_parts]
+    if (len(up_parts) == len(col_parts) and None not in cp
+            and len(set(cp)) == len(cp)):
+        up_col = cp
+    else:
+        up_col = list(range(len(up_parts)))
+    K = max(up_col) + 1 if up_col else 1
     col6, lvl = {}, {}
-    for k, m in enumerate(mod_ids):
-        col6[m], lvl[m] = k, 0
-    depth = defaultdict(int)
-    for d in dev_ids:
-        m = parent[d]
-        depth[m] += 1
-        col6[d], lvl[d] = col6[m], depth[m]
-    levels = 1 + max(depth.values(), default=0)
+    for (_, _, ids), c in zip(up_parts, up_col):
+        ids = ([i for i in ids if i in mod_ids]
+               + [i for i in ids if i not in mod_ids])
+        for L, i in enumerate(ids):
+            col6[i], lvl[i] = c, L
+    levels = 1 + max(lvl.values(), default=0)
 
     edges = g["edges"]
     plan = {}
@@ -406,6 +431,8 @@ def layout(sheets, parts, g):
         if v in six and u in six:
             if col6[u] == col6[v] and lvl[v] == lvl[u] + 1:
                 plan[(u, v)] = ("down",)
+            elif col6[u] == col6[v] and lvl[u] == lvl[v] + 1:
+                plan[(u, v)] = ("rise",)
             else:
                 plan[(u, v)] = ("six",)
         elif v in six:
@@ -498,7 +525,12 @@ def layout(sheets, parts, g):
         nlanes_g[gut] = n
     maxl = max(nlanes_g.values(), default=1)
     GW = max(36, 2 * PAD + 10 + maxl * LANE)
+    if K == C:
+        # One column grid for both, so that a later part sits exactly
+        # over its counterpart.
+        GW = GW6 = max(GW, GW6)
     BW = (WIDTH - 2 * MARGIN - (C + 1) * GW) / C
+    BW6 = (WIDTH - 2 * MARGIN - (K + 1) * GW6) / K
 
     def col_x(c):
         return MARGIN + GW + c * (BW + GW)
@@ -563,7 +595,8 @@ def layout(sheets, parts, g):
     DEL_H = 96
     y = MARGIN + PAD + 22
     a_y = y
-    y += A_H + DEL_H
+    TITLE6_H = 3 * 12.5 + 8
+    y += A_H + DEL_H + TITLE6_H
     lvl_y, hop_top = [], {}
     for L in range(levels):
         lvl_y.append(y)
@@ -661,6 +694,9 @@ def layout(sheets, parts, g):
         elif p[0] == "down":
             x = ux + uw / 2
             paths[e] = [(x, uy + uh), (x, vy)]
+        elif p[0] == "rise":
+            x = ux + uw / 2
+            paths[e] = [(x, uy), (x, vy + vh)]
         else:
             us, gu = six_side[(e, "u")]
             vs, gv = six_side[(e, "v")]
@@ -692,10 +728,18 @@ def layout(sheets, parts, g):
         ye = [box[i][1] + box[i][3] for i in ids]
         cl_boxes.append((name, min(xs) - PAD, min(ys) - TITLE_H,
                          BW + 2 * PAD, max(ye) - min(ys) + TITLE_H + PAD))
-    p6_name = next((f"{k}. {n}" if n else k) for k, n, _ in parts if k == last_part)
-    cl_boxes.insert(0, (p6_name, MARGIN, MARGIN, WIDTH - 2 * MARGIN,
-                        six_bottom - MARGIN))
+    top = []
+    for k, n, ids in up_parts:
+        xs = [box[i][0] for i in ids]
+        ye = [box[i][1] + box[i][3] for i in ids]
+        top.append((f"{k}. {n}" if n else k, min(xs) - PAD, lvl_y[0] - TITLE6_H,
+                    BW6 + 2 * PAD, max(ye) - lvl_y[0] + TITLE6_H + PAD))
+    a_name = next((f"{k}. {n}" if n else k) for k, n, _ in parts
+                  if k == assembly.part)
+    top.insert(0, (a_name, a_x - PAD, a_y - 22, a_w + 2 * PAD, A_H + 22 + PAD))
+    cl_boxes = top + cl_boxes
     return dict(box=box, lines=lines, paths=paths, clusters=cl_boxes,
+                n_top=len(top),
                 width=WIDTH, height=height, col_of=col_of, row_of=row_of)
 
 
@@ -707,7 +751,7 @@ STYLE = """
 .fc .cl.top rect { fill: #fbf7ef; stroke: #e2d3b4; }
 .fc .cl text { font-size: 11.5px; font-weight: 600; fill: #4a5361;
   paint-order: stroke; stroke: #f5f6f8; stroke-width: 4px; }
-.fc .cl.top text { stroke: #fbf7ef; }
+.fc .cl.top text { stroke: #fbf7ef; stroke-width: 6px; }
 .fc .n rect { fill: #fff; stroke: #8b95a3; stroke-width: 1; }
 .fc .n.mod rect { fill: #fff1d6; stroke: #b7791f; stroke-width: 1.4; }
 .fc .n.dev rect { fill: #fffaf0; stroke: #d6a85a; stroke-width: 1.2; }
@@ -794,14 +838,20 @@ def render_svg(sheets, g, L):
                    f'markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
                    f'<path d="M0,1 L10,5 L0,9 z" fill="{color}"/></marker>')
     out.append(f"</defs><style>/*<![CDATA[*/{STYLE}/*]]>*/</style>")
+    # Cluster boxes; the titles of the upper clusters go over the edges,
+    # which rise through them to the assembly.
+    late = []
     for k, (name, x, y, w, h) in enumerate(L["clusters"]):
-        cls = "cl top" if k == 0 else "cl"
-        tl = wrap(name, w - 2 * PAD, 2)
+        upper = k < L["n_top"]
+        cls = "cl top" if upper else "cl"
+        tl = wrap(name, w - 2 * PAD, 3 if upper else 2)
         texts = "".join(f'<tspan x="{x + PAD:.1f}" dy="{0 if j == 0 else 12.5}">{esc(t)}</tspan>'
                         for j, t in enumerate(tl))
+        title = (f'<g class="{cls}"><text x="{x + PAD:.1f}" y="{y + 15:.1f}">'
+                 f'{texts}</text></g>')
         out.append(f'<g class="{cls}"><rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" '
-                   f'height="{h:.1f}" rx="8"/><text x="{x + PAD:.1f}" y="{y + 15:.1f}">'
-                   f'{texts}</text></g>')
+                   f'height="{h:.1f}" rx="8"/></g>')
+        (late if upper else out).append(title)
     # Edges under the nodes; light ones first.
     order = {"inc": 0, "dep": 1, "del": 2}
     for (u, v), kind in sorted(g["edges"].items(), key=lambda kv: order[kv[1]]):
@@ -809,6 +859,7 @@ def render_svg(sheets, g, L):
         out.append(f'<path class="e {kind}" data-u="{u}" data-v="{v}" '
                    f'd="{svg_path(pts)}" marker-end="url(#ah-{kind})">'
                    f'<title>{esc(by_id[u].num)} → {esc(by_id[v].num)}</title></path>')
+    out += late
     for s in sheets:
         if s.id not in L["box"]:
             continue
@@ -974,13 +1025,15 @@ def render_page(sheets, g, svg):
            "",
            "Back to the [[file:index.html][index]].",
            "",
-           "Each box is a chapter and links to it.  Parts I–V are the columns,"
-           " read from the bottom up: a chapter sits above the chapters it"
-           " builds on.  On top are the chapters of Part VI, each stating one"
-           f" ingredient in general, and the final chapter, /{asm.title}/,"
-           " which assembles them.  Below each of the first Part VI chapters are"
-           " the chapters that develop its inputs, in the form the Lean"
-           " formalization proves.  Hover over a chapter to pick out its arrows.",
+           "Each box is a chapter and links to it.  Parts I–V are the lower"
+           " columns, read from the bottom up: a chapter sits above the chapters"
+           " it builds on.  Above them are the later parts, which state the"
+           " ingredients in general, each over the Part that treats it in its"
+           " simplest setting.  In each later part, the chapters that supply"
+           " inputs to the assembly are on top and the chapters that develop"
+           " those inputs from the Lean code are below them.  On top of"
+           f" everything is the final chapter, /{asm.title}/.  Hover over a"
+           " chapter to pick out its arrows.",
            "",
            "#+BEGIN_EXPORT html",
            '<figure class="fc-fig">',
@@ -991,15 +1044,17 @@ def render_page(sheets, g, svg):
            "*Legend.*",
            "- Dark arrow: the later chapter builds on the earlier one"
            " (from its /Prerequisites/).",
-           "- Light dashed arrow: the earlier chapter is a simplest incarnation"
-           " of a Part VI chapter (from its /Prerequisites/, its"
+           "- Light dashed arrow: a chapter of Parts I–V is a simplest"
+           " incarnation of a chapter of a later part (from its /Prerequisites/,"
+           " its"
            " /Simplest incarnation/ remarks, and the map of the inputs in"
            f" /{asm.title}/).",
-           "- Pale boxes below a Part VI chapter: the chapters listed after it"
-           " in the index, which develop its inputs in the form the Lean"
-           " formalization proves; arrows among them come from their"
+           "- Pale boxes: chapters of a later part without a /Deliverable/"
+           " paragraph, which set up the objects or develop inputs in the form"
+           " the Lean formalization proves; arrows to and from them come from"
            " /Prerequisites/.",
-           "- Red arrow: a Part VI chapter supplies the inputs named on it to"
+           "- Red arrow: a chapter of a later part supplies the inputs named on"
+           " it to"
            " the assembly (where its /Deliverable/ paragraph and the map of the"
            " inputs agree).  The conditions (K1)–(K8) of a chain record are"
            " counted as the inputs (A1)–(A7) they give.",
