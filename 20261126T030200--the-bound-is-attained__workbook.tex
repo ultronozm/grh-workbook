@@ -6,18 +6,26 @@
 \externaldocument[c4-]{20261125T005500--columns-from-a-sphere__workbook}
 \externaldocument[c14-]{20261124T214500--supersingular-theta-divisibility__workbook}
 \externaldocument[c15-]{20261124T214600--the-isotropic-plane__workbook}
+\externaldocument[p01-]{20261126T030300--the-data__workbook}
+\externaldocument[p07-]{20261126T030800--the-cost-of-one-lift__workbook}
 
 \newcounter{chap}
-\input{chapters}
-\ifcsname chapters@20261126T030200\endcsname
-  \chapnumber{20261126T030200}
-\else
-  \renewcommand{\thechap}{?}
-\fi
+\input{chapters}\chapnumber{20261126T030200}
 \renewcommand{\thesection}{\thechap.\arabic{section}}
-\newcommand{\Z}{\mathbb Z}
-\newcommand{\Q}{\mathbb Q}
-\newcommand{\C}{\mathbb C}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\sll}{\operatorname{sl}}
+
 \setlength{\emergencystretch}{3em}
 
 \title{The bound is attained}
@@ -29,10 +37,208 @@
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-Chapters~\ref{c4-chap}, \ref{c14-chap} and~\ref{c15-chap}.
+Chapter~\ref{c14-chap}, \emph{The invariant derivation at a supersingular prime}: the lemniscate curve with parameter \(X\), the lemniscate sine \(\sll\), the ring \(\Oc = \Z_p[\ii]\), the invariant derivation \(D\), and Problems~\ref{c14-pr:fg} and~\ref{c14-pr:D} (Section~\ref{c14-sec:lemniscate}); the function \(E_p\), the parameter \(T\), the unit \(\varepsilon\), the operator \(H\), Problems~\ref{c14-pr:Dq-unit} and~\ref{c14-pr:induction}, and Theorem~\ref{c14-thm:single} (Section~\ref{c14-sec:odd}).  For the last section: the shape of the bound in Theorem~\ref{c15-thm:main}, and the sparse sets of Chapter~\ref{c4-chap}.  Legendre's formula for \(v_p(n!)\).  The field \(\C_p\), its valuation \(v\) with \(v(p) = 1\), and its valuation ring.
 
-\medskip
-On one curve with complex multiplication the divisibility of derivatives proved in Chapter~\ref{c14-chap} cannot be improved: for every order \(n\) some power series has an \(n\)-th derivative at the origin whose valuation is close to the guaranteed one.  This chapter proves that for \(y^2 = x^3 - x\) at a prime \(p \equiv 3 \pmod 4\), in one variable, states the case of two variables used in the proof, and explains why the lower bound for the determinant needs it, and where the sparsity of the places of Chapter~\ref{c4-chap} enters.
+\section{The least valuation}\label{sec:least}
 
-This chapter is being drafted.
+Chapter~\ref{c14-chap} proves a lower bound for the divisibility of derivatives on the lemniscate.  Is it the truth, or does every function gain more?  Throughout this section and the next, \(p \equiv 3 \pmod 4\) is a prime, \(q := p^2\), \(\Oc = \Z_p[\ii]\), and \(D = d/du\) is the invariant derivation, so that \((D^n g)(0) = n!\,[u^n]\, g(\sll u)\) for \(g \in \Oc[[X]]\) (Problem~\ref{c14-pr:D}).  Recall Theorem~\ref{c14-thm:single}: for \(g \in \Oc[[X]]\) and every \(n \ge 0\),
+\[
+  v_p\bigl((D^n g)(0)\bigr) \ \ge\ E_p(n) = \sum_{i \ge 1,\ i \text{ odd}} \Bigl\lfloor \frac{n}{p^i} \Bigr\rfloor .
+\]
+Let \(\mu(n)\) be the least value of \(v_p((D^n g)(0))\) over \(g \in \Oc[[X]]\).  How far is \(\mu(n)\) from \(E_p(n)\)?
+
+\begin{problem}\label{pr:monomial}
+\(\mu(0) = 0\).  For \(n \ge 1\) the least value \(\mu(n)\) exists and is attained by a power \(X^i\) with \(1 \le i \le n\):
+\(\mu(n) = \min_{1 \le i \le n} v_p\bigl(n!\,[u^n]\, \sll^i u\bigr)\).
+\end{problem}
+
+\begin{problem}\label{pr:eleven}
+For \(p = 3\): \(\mu(11) = 4\), while \(E_3(11) = 3\).
+\end{problem}
+
+So the bound of Theorem~\ref{c14-thm:single} is not attained in every degree.  The rest of this section shows that \(\mu\) is superadditive; Section~\ref{sec:powers} computes it at the powers of \(q\).
+
+\begin{problem}\label{pr:split}
+Let \(g \in \Oc[[X]]\), and write \(g(X \oplus X') = \sum_{i, j} a_{ij} X^i X'^j\) with the group law \(\oplus\) of Problem~\ref{c14-pr:fg}.  Then \(a_{ij} \in \Oc\), and for all \(n, n' \ge 0\)
+\[
+  (D^{n+n'} g)(0) = \sum_{i, j} a_{ij}\, (D^n X^i)(0)\, (D^{n'} X^j)(0) .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:superadditive}
+\(\mu(n + n') \ge \mu(n) + \mu(n')\) for all \(n, n' \ge 0\).
+\end{problem}
+
+\begin{problem}\label{pr:fekete}
+Let \(\phi \colon \N \to \mathbb{R}_{\ge 0}\) be superadditive, and let \(\gamma' \ge 0\).  If \(\phi(N) \le \gamma' N\) for infinitely many \(N\), then \(\phi(n) \le \gamma' n\) for every \(n \ge 0\).
+\end{problem}
+
+\section{The powers of \texorpdfstring{\(q\)}{q}}\label{sec:powers}
+
+Let
+\[
+  \gamma := \frac{p}{p^2 - 1} = \frac1p + \frac1{p^3} + \frac1{p^5} + \dotsb .
+\]
+
+\begin{problem}\label{pr:Eq}
+\(E_p(n) \le \gamma n\) for every \(n \ge 0\), and \(E_p(q^j) = \gamma (q^j - 1)\) for every \(j \ge 0\).
+\end{problem}
+
+In the degrees \(q^j\) the function \(X\) itself attains the bound.
+
+\begin{problem}\label{pr:exact}
+\(v_p\bigl((D^{q^j}X)(0)\bigr) = E_p(q^j)\) for every \(j \ge 0\).  (For \(p = 3\): \((D^9X)(0) = 3024\), of valuation \(3\); and \(v_3((D^{81}X)(0)) = 30\).)
+\end{problem}
+
+\begin{problem}\label{pr:coeff}
+\(v_p\bigl([u^{q^j}]\, \sll u\bigr) = -(q^j - 1)/(q - 1)\) for every \(j \ge 0\).  (For \(p = 3\): \([u^9]\,\sll u = 1/120\); for \(p = 7\): \(v_7([u^{49}]\,\sll u) = -1\).)
+\end{problem}
+
+Thus \(\mu(q^j) = E_p(q^j) = \gamma(q^j - 1)\).  Problems~\ref{pr:superadditive}, \ref{pr:fekete} and~\ref{pr:exact}, with Theorem~\ref{c14-thm:single}, prove the following.
+
+\begin{theorem}\label{thm:rate}
+Let \(p \equiv 3 \pmod 4\).  For every \(n \ge 0\),
+\[
+  E_p(n) \ \le\ \mu(n) \ \le\ \gamma n ,
+\]
+and \(\mu(q^j) = E_p(q^j)\), attained by \(g = X\), for every \(j \ge 0\).
+\end{theorem}
+
+\begin{problem}\label{pr:gap}
+\(0 \le \gamma n - E_p(n) < h + 2\), where \(h\) is the number of positive odd integers \(i\) with \(p^i \le n\).  Hence \(\mu(n) = \gamma n + O(\log n)\).
+\end{problem}
+
+So \(\gamma\) is the exact rate, and Theorem~\ref{c14-thm:single} loses at most a logarithm in every degree.  A computation of \(\mu(n)\) by Problem~\ref{pr:monomial} gives, for instance,
+\begin{center}
+\begin{tabular}{c|cccccccc}
+\(p = 3\), \(n\) & 9 & 10 & 11 & 20 & 27 & 40 & 80 & 81 \\
+\hline
+\(E_3(n)\) & 3 & 3 & 3 & 6 & 10 & 14 & 28 & 30 \\
+\(\mu(n)\) & 3 & 3 & 4 & 7 & 10 & 14 & 29 & 30 \\
+\(3n/8\) & 3.375 & 3.75 & 4.125 & 7.5 & 10.125 & 15 & 30 & 30.375
+\end{tabular}
+\end{center}
+For \(p = 7\) one finds \(\mu(n) = E_7(n)\) for \(n \le 54\), and \(\mu(55) = 8 > E_7(55) = 7\).  We have checked \(E_p(n) \le \mu(n) \le \gamma n\) by machine for \(p = 3, 7\) and \(n \le 100\).
+
+\section{Curves with complex multiplication by \texorpdfstring{\(\Q(\sqrt{-d})\)}{Q(sqrt(-d))}}\label{sec:general}
+
+The proof works with curves whose complex multiplication is by \(K = \Q(\sqrt{-d})\) for a prime \(d \equiv 7 \pmod 8\), and with every prime \(p\), split, inert or ramified in \(K\).  The lemniscate is not among these curves, since \(\Q(\ii)\) is not of this form; it serves here as the simplest case.  Let \(q_p\) be the norm of a prime of \(K\) above \(p\): \(q_p = p^2\) if \(p\) is inert and \(q_p = p\) otherwise.  Let \(\pi_p := \sqrt{-d}\) if \(p = d\) and \(\pi_p := p\) otherwise.  In valuations and congruences we use its image under a chosen ring homomorphism \(\iota_p \colon \C \to \C_p\); then \(v(\pi_p) = \tfrac12\) if \(p = d\) and \(v(\pi_p) = 1\) otherwise.  Put
+\[
+  \rho_p := \frac{v(\pi_p)}{q_p - 1}, \qquad \gamma_p := \frac{1}{p-1} - \rho_p .
+\]
+
+\begin{problem}\label{pr:gamma-cases}
+\(\gamma_p = 0\), \(p/(p^2-1)\), \(1/(2(p-1))\) according as \(p\) is split, inert or ramified in \(K\).  The inert formula agrees with the expression for the rate \(\gamma\) of Section~\ref{sec:powers}.
+\end{problem}
+
+Let \(\Lambda \subset \C\) be a lattice with \(\Oc_K\Lambda \subseteq \Lambda\), let \(t \in \C\) with \(t \notin \Lambda\), \(2t \in \Lambda\), and \(\omega t, \bar\omega t \notin \Lambda\) for \(\omega = (1 + \sqrt{-d})/2\), and let \(a_1 \in \C\) with \(a_1^2 = 12\wp(t)\); assume the normalization \(g_2(\Lambda) = 12\wp(t)^2 - 4\).  Let \(y(z)\) be the Taylor series at \(0\) of \(\tfrac12\bigl(\wp'(z + t) - a_1(\wp(z + t) - \wp(t))\bigr)\), with \(\iota_p\) applied to its coefficients; it begins with \(z\).  Let \(\mathfrak o\) be the valuation ring of \(\C_p\), and \(\mathfrak o[[y]]\) the ring of series \(\Psi(y(z))\) with \(\Psi \in \mathfrak o[[W]]\).  The rewritten Lean proof proves the following.
+
+\begin{theorem}\label{thm:katz}
+Let \(d \equiv 7 \pmod 8\) be prime, \(\Lambda\), \(t\), \(a_1\) as above, \(p\) a prime and \(\iota_p \colon \C \to \C_p\) a ring homomorphism.  For every \(n \ge 0\) there is \(g \in \mathfrak o[[y]]\) with
+\[
+  v\bigl(n!\,[z^n] g\bigr) \ \le\ \gamma_p n .
+\]
+\end{theorem}
+
+\paragraph{In the Lean formalization.}
+In the rewritten Lean proof \cite{GL} this is \texttt{CMLattice.katz\_divisibility\_limit}, in \texttt{New/Derivatives/Sharpness/OneCurve.lean} of the readable edition, stated with norms: \(\lvert n!\,[z^n]g\rvert \ge (p^{-\gamma_p})^n\).  The rewriting proves it as in Sections~\ref{sec:least} and~\ref{sec:powers}: the greatest norm of \(n!\,[z^n]g\) over \(g \in \mathfrak o[[y]]\) is attained by a power of \(y\), it is submultiplicative in \(n\), and a lemma of Fekete's type (Problem~\ref{pr:fekete}, in multiplicative form) carries a bound at the degrees \(q_p^j\) to all degrees.  At those degrees it uses, in place of Problem~\ref{pr:exact}, the part \(y_1\) of \(y\) in degrees \(\equiv 1 \pmod{q_p - 1}\): the coefficient \([z^{q_p^j}]\, y_1\) has valuation \(-(q_p^j - 1)\rho_p\), as in Problem~\ref{pr:coeff}.  The rewriting proves this by rescaling: for some \(\varpi\) of valuation \(\rho_p\) the series \(y_1(\varpi z)/\varpi\) is integral and congruent to \(\sum_{j \ge 0} z^{q_p^j}\) modulo \(\pi_p\).
+
+The proof uses Theorem~\ref{thm:katz} in many variables, along a linear form whose coefficients are units.
+
+\begin{problem}\label{pr:many-variables}
+Return to the lemniscate of Section~\ref{sec:least}, with \(p \equiv 3 \pmod 4\) and \(\Oc = \Z_p[\ii]\).  Let \(g \in \Oc[[X]]\), let \(\beta_j \in \Oc^\times\) for \(j\) in a finite set \(J\), and let \(F\bigl((u_j)_{j \in J}\bigr) := g\bigl(\sll(\sum_{j \in J} \beta_j u_j)\bigr)\).  For every multi-index \(\nu\),
+\[
+  \nu!\,[u^\nu]\, F = \beta^\nu\, (D^{\lvert\nu\rvert} g)(0),
+\]
+so that \(v_p(\nu!\,[u^\nu]\, F) = v_p\bigl((D^{\lvert\nu\rvert}g)(0)\bigr)\); for every \(\nu\) there is such a \(g\) for which this value is at most \(\gamma\lvert\nu\rvert = p\lvert\nu\rvert/(p^2-1)\).
+\end{problem}
+
+\section{Many places}\label{sec:places}
+
+In the rewritten proof the one-copy variables are indexed by the infinite places of the CM field \(E = K(\zeta_{q_1})\), a cyclotomic extension of \(K\).  These places form a group \(\Phi \simeq (\Z/q_1)^\times\), and each \(\tau \in \Phi\) has a weight \(\kappa(\tau)\) (Chapter~\ref{p01-chap}).  For a prime \(p\) let \(I_p\) be the set of odd \(e \ge 1\) if \(p\) is inert, of all \(e \ge 1\) if \(p = d\), and empty if \(p\) splits.  For \(e \in I_p\) the \emph{partner} of \(\tau\) is \(-p^e\tau\), the product of \(\tau\) with the place given by the class of \(-p^e\) modulo \(q_1\) (the identity if this class is not a unit).  The predicted divisibility at \(p\) is
+\[
+  s_p(\kappa_0, \tau) := v(\pi_p) \sum_{e \in I_p} \Bigl( \frac{\kappa_0}{p^e} - \kappa(-p^e\tau) \Bigr)_+ ,
+  \qquad
+  S_p := \sum_{\tau \in \Phi} s_p\bigl(\kappa(\tau), \tau\bigr) .
+\]
+In the rewritten Lean proof these are \texttt{localPrimeSum} and \texttt{localPrimeSumTotal}.  Each term has the shape of the bound in Theorem~\ref{c15-thm:main}, with the weight of the partner in the place of \(w\).
+
+\begin{problem}\label{pr:prime-sum-rate}
+For real \(\kappa_0 \ge 0\), \(s_p(\kappa_0, \tau) \le \gamma_p \kappa_0\), with equality if \(\kappa\) vanishes at all partners of \(\tau\).  Hence \(S_p \le \gamma_p \sum_\tau \kappa(\tau)\).
+\end{problem}
+
+Setting all partner weights to zero in \(s_p(\kappa_0, \tau)\) gives \(\gamma_p\kappa_0\).  By Theorem~\ref{thm:katz}, a larger linear rate cannot hold as a divisibility bound for every series on one curve.  In independent variables the least valuations add.
+
+\begin{problem}\label{pr:product}
+Use the lemniscate, the prime \(p \equiv 3 \pmod 4\), the ring \(\Oc\) and the function \(\mu\) of Section~\ref{sec:least}.  For \(n, n' \ge 0\), the least value of \(v_p\bigl((D_1^n D_2^{n'} g)(0)\bigr)\) over \(g \in \Oc[[X_1, X_2]]\), with \(D_1\), \(D_2\) the invariant derivations in the two variables, is \(\mu(n) + \mu(n')\).
+\end{problem}
+
+If \(e \in I_p\) and both \(\kappa(\tau)\) and \(\kappa(-p^e\tau)\) are positive, then \(s_p(\kappa(\tau), \tau) < \gamma_p \kappa(\tau)\).  We use sparsity for the near pairs and the primes specified below.  A set \(B\) of places of weight \(b\) is chosen as in Chapter~\ref{c4-chap}, and the rewritten Lean proof uses that, for a prime \(p \le k = r + 1 - m\) that does not split and for \(0 < i < j < L_0\), with \(L_0\) a power of \(3\) fixed by the data, the places \(\tau\), \((-p)^i\tau\), \((-p)^j\tau\) are not all in \(B\) (\texttt{notMem\_bPlaces\_of\_two\_partners}).  A \emph{near pair} is \((\tau, e)\) with \(e \in I_p\), \(2e < L_0\), and both \(\tau\) and its partner in \(B\).
+
+\begin{problem}\label{pr:near-pairs}
+Let \(\Gamma\) be an abelian group, \(\xi \in \Gamma\), \(B \subseteq \Gamma\) and \(L \ge 1\), such that for no \(x \in \Gamma\) and \(0 < i < j < L\) are \(x\), \(\xi^ix\), \(\xi^jx\) all in \(B\).  Call \((x, e)\) near if \(0 < 2e < L\) and \(x, \xi^ex \in B\).  Then two near pairs with the same start, or with the same end, are equal, and the end of a near pair is never the start of one.
+\end{problem}
+
+For a nonsplit prime \(p \le k\), the corresponding statements for the places in \(B\) are \texttt{IsNearPair.exponent\_unique}, \texttt{IsNearPair.eq\_and\_eq\_of\_partner\_eq} and \texttt{IsNearPair.end\_ne\_start} of the rewritten Lean proof.  Here \(\xi\) is the place represented by \(-p\).  Near pairs occur only at inert primes, and by \texttt{IsNearPair.odd} and \texttt{IsNearPair.partner\_eq} the exponent of a near pair is odd and its end is \((-p)^e\tau\).  For a prime \(p \le k\) that does not split, the proof couples the near pairs on six copies of the variables and applies Theorem~\ref{thm:katz} along a linear form with unit coefficients on six more.  Fix the data of Chapter~\ref{p01-chap}, a prime \(p\), and a ring homomorphism \(\iota_p \colon \C \to \C_p\).  Write \(M = p_0p_1\) for the principal level and \(\widehat{\Oc}_E\) for the ring of integral finite adeles.  Let \(\mathfrak a\) be the finite idele of the Weil data, whose component generates the inverse relative different of \(E/K\) at the places dividing \((1 + \sqrt{-d})/2\) and is \(1\) elsewhere.  Let \(w_j \in E \cap \mathfrak a\widehat{\Oc}_E\) and \(c_j \in \N\), indexed by a finite set \(J\), form a tight frame with bound \(M\): writing \(\tau(w)\) for the image of \(w\) under the embedding of \(E\) over \(K\) at the place \(\tau\),
+\[
+  \sum_{j \in J} c_j\, \tau'(w_j)\, \overline{\tau(w_j)} = M \delta_{\tau'\tau} \qquad (\tau, \tau' \in \Phi).
+\]
+With \(\Omega_E\) the complex scalar \texttt{periodFactor} at this tower level, write \(\lambda_j(z) = \sum_\tau \iota_p\bigl(\Omega_E\, \overline{\tau(w_j)}\bigr) z_\tau\), and assume that for some \(j\) every coefficient of \(\lambda_j\) has norm one.  Use the chosen curve \texttt{cmCurve}, with lattice \(\Lambda = \Omega_0\Oc_K\), marked point \(t\), and parameter \(y\) as in Section~\ref{sec:general}, and let \(\sigma_\Lambda\) be the function \texttt{PeriodPair.}\(\sigma\) of the rewritten Lean proof (not the Weierstrass sigma function).  Let \(\theta_p\) be the Taylor series at zero of
+\[
+  z \longmapsto \exp\bigl(-\pi z\bar t/\operatorname{area}(\C/\Lambda)\bigr)\, \frac{\sigma_\Lambda(z + t)}{\sigma_\Lambda(t)},
+\]
+with \(\iota_p\) applied to its coefficients, and write \(\Theta(z) = \prod_{j \in J} \theta_p(\lambda_j(z))^{c_j}\).  For every \(l \colon \Phi \to \N\) with \(\kappa(\tau) \le l(\tau) \le \kappa(\tau) + x^{42}\) for all \(\tau\), \texttt{leastValLE\_twelve} gives twelve series \(G_i\), each an integral power series in the \(y(\lambda_j(z))\), and multi-indices \(\alpha_i\) with \(\sum_i \alpha_i = l\), such that
+\[
+  \sum_{i=1}^{12} v\bigl([z^{\alpha_i}](G_i\Theta)\bigr) + \sum_\tau v_p(l(\tau)!) \ \le\ S_p + 2\sum_\tau v_p\bigl(\Pi(l(\tau))\bigr) .
+\]
+Here \(\Pi(h)\) is the product of the \(\lceil 6b/k \rceil\) integers following \(\max(h - \lceil 6b/k \rceil, 0)\).  From this the rewriting deduces the following, which we state as read from the code.  It uses the normalized theta series \texttt{twelveTaylor} of \texttt{indicatorDatum} and the rank-one scalar \texttt{vacuumScale} of the readable edition~\cite{GL}.
+
+\begin{theorem}\label{thm:attained}
+Let the data of Chapter~\ref{p01-chap} be given: the field \(E\) with its set \(\Phi\) of infinite places, \(f = \#\Phi\), the weights \(\kappa\), the scales \(x\) and \(b\), the number \(m\) of lifts, the target rank \(r\), and the source rank \(k = r + 1 - m\).  Write \(\pi_M\) for the conjugate of the element of \(\Oc_K\) of norm \(M\) specified in those data, viewed also in \(\Oc_E\).  Let \(l \colon \Phi \to \N\) satisfy \(\kappa(\tau) \le l(\tau) \le \kappa(\tau) + x^{42}\) for every \(\tau\).  There is \(t_0 \in \C\), \(t_0 \ne 0\), with \(\lvert \varsigma(t_0) \rvert \le \exp(fmb/k)\) for every ring automorphism \(\varsigma\) of \(\C\), such that: for every modulus \(\mathfrak m\) of \(E\) with ideal \((\pi_M)\), every prime \(p\) and every ring homomorphism \(\iota_p \colon \C \to \C_p\), there are a multi-index \(\alpha\) in the variables \(z_{\tau, i}\) (\(\tau \in \Phi\), \(1 \le i \le 12\)) with \(\sum_i \alpha(\tau, i) = l(\tau)\) for every \(\tau\), and a class \(\eta \in (\Oc_E/\mathfrak m)^{12}\), such that
+\[
+  v\Bigl( \iota_p\Bigl( \frac{c_{\mathrm{vac}}^{12}}{t_0} \prod_{\tau \in \Phi} l(\tau)! \cdot [z^\alpha]\, J_\eta \Bigr) \Bigr) \ \le\ S_p ,
+\]
+where \(J_\eta\) is the Taylor series at zero, in the twelve copies \(z_{\tau, i}\), of \(z \mapsto \Theta_\eta(\pi_M \delta_0 z)\), with \(\delta_0\) a fixed complex period scale (\texttt{jetScale}) at the tower level of the data.  Here \(\Theta_\eta\) is the theta function for the datum on \(\operatorname{Hom}(E, E^{12})\) with the Gaussian at infinity, the indicator of \(\eta\) at the places dividing \(\mathfrak m\), and the vacuum at the other finite places.  The scalar \(c_{\mathrm{vac}}\) is the chosen nonzero rank-one \texttt{vacuumScale}, for which the scaled vacuum has integral values at finite adelic points and bounded conjugates over \(K\).
+\end{theorem}
+
+\paragraph{In the Lean formalization.}
+In the rewritten Lean proof \cite{GL} this is \texttt{Data.exists\_rpow\_neg\_localPrimeSumTotal\_le\_norm\_coeff}, in \texttt{New/Derivatives/Sharpness/BoundAttained.lean} of the readable edition, stated with norms; there \(J_\eta\) is \texttt{twelveTaylor (indicatorDatum \(\mathfrak m\) \(\eta\))} and \(c_{\mathrm{vac}}\) is \texttt{vacuumScale}.  The proof takes \(t_0 = M^{12f} \prod_\tau \Pi(l(\tau))^2 \cdot c_0\) with \(c_0\) a nonzero value of the integral vacuum; the one number \(t_0\) serves every prime.
+
+The height bound in Chapter~\ref{p07-chap} uses one multiplier for the whole family of primes and embeddings, with a bound on its complex conjugates (\texttt{HeightLe}).  The common factor \(t_0\) enters the multiplier for the pairings.  In \texttt{exists\_isTestForm\_le\_norm\_inner\_trivialLift}, fix \(1 \le j \le m\), a critical pair \(A = (\nu_A, z_A)\) main for \(j\), and a critical pair \(Q = (\nu_Q, 2)\) with empty row on four indices.  Write \(-c_A(\tau)\) for the weight of \(\nu_A\).  The proof applies Theorem~\ref{thm:attained} with \(l(\tau) = c_A(\tau) - z_A\).  There is \(c_0' \ne 0\) with \(\lvert \varsigma(c_0') \rvert \le \exp(fmb/k + 3x^{34})\) for every ring automorphism \(\varsigma\) of \(\C\).  For every prime \(\ell\), every ring homomorphism \(\iota_\ell \colon \C \to \C_\ell\), and every twist \(\vartheta\) with \(\ell\) prime to the product of the norms of its places, there is a test form \(\Xi\) whose pairing with the normalized lift of \(\nu_A\vartheta\), read through \(\iota_\ell\), has valuation at most \(v(\iota_\ell(c_0' R_Q(\vartheta))) + S_\ell\).  Here \(R_Q(\vartheta)\) is the ratio of the absolute Hecke values of \((\nu_Q\vartheta)^{-1}\) and \(\nu_Q^{-1}\) at \(2\).  Both values omit the Euler factors at the chosen places and their conjugates, and the numerator also omits the factors at the places of \(\vartheta\) and their conjugates.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:least}}
+\begin{description}
+\item[\ref{pr:monomial}] Write \(g = \sum_i a_i X^i\) with \(a_i \in \Oc\); \(\sll^i u\) begins with \(u^i\).  Use the ultrametric inequality.
+\item[\ref{pr:eleven}] \(\sll^i u\) has only exponents \(\equiv i \pmod 4\), and \([u^{11}]\,\sll^3 u = 11/200\).  As a numerical check, \((D^{11}X^3)(0) = 2195424\).
+\item[\ref{pr:split}] Expand \(g(\sll(u + w))\) in two ways and compare the coefficients of \(u^n w^{n'}\).
+\item[\ref{pr:superadditive}] Problem~\ref{pr:split}.
+\item[\ref{pr:fekete}] Treat \(n = 0\) separately.  For \(n > 0\), write \(N = sn + s'\) with \(0 \le s' < n\).
+\end{description}
+
+\subsection*{\S\ref{sec:powers}}
+\begin{description}
+\item[\ref{pr:Eq}] Geometric series.
+\item[\ref{pr:exact}] Start with \((DX)(0) = 1\).  For the induction step take \(j \ge 1\).  \(X \in \Oc[[T]]\); \(D^{q^j} = (p^p\varepsilon)^{q^{j-1}} H^{q^{j-1}}\) by Problem~\ref{c14-pr:Dq-unit}; compare \(H^{q^{j-1}}\) with \(D^{q^{j-1}}\) by Problem~\ref{c14-pr:induction} at level \(2j-2\).
+\item[\ref{pr:coeff}] Legendre's formula for \(v_p(q^j!)\).
+\item[\ref{pr:gap}] Write \(\gamma n - E_p(n)\) as a sum over odd \(i\) of \(n/p^i - \lfloor n/p^i \rfloor\), and bound the terms with \(p^i > n\) by a geometric series.
+\end{description}
+
+\subsection*{\S\ref{sec:general}}
+\begin{description}
+\item[\ref{pr:many-variables}] \((D^n g)(0) = n!\,[w^n]\, g(\sll w)\), and the multinomial theorem; Theorem~\ref{thm:rate}.
+\end{description}
+
+\subsection*{\S\ref{sec:places}}
+\begin{description}
+\item[\ref{pr:prime-sum-rate}] Compare each summand with its value when the partner has weight zero.
+\item[\ref{pr:product}] As in Problem~\ref{pr:monomial}, the least value is attained by a monomial \(X_1^iX_2^j\).
+\item[\ref{pr:near-pairs}] For a common end \(\xi^e x = \xi^{e'}x'\) with \(e < e'\), consider \(x'\), \(\xi^{e'-e}x'\), \(\xi^{e'}x'\).
+\end{description}
+
+\begin{thebibliography}{GL}
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\end{thebibliography}
+
 \end{document}
