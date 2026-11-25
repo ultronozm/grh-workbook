@@ -26,7 +26,7 @@ A sheet is added only after an independent solver, given just the sheet, its hin
 
 **Numbering.**
 The index `20261125T012000--grh-workbook__guide.org` is the only record of the chapter order; chapters are numbered 1, 2, 3, … in that order.  Never type a chapter, section, problem or theorem number.
-- To insert a chapter, add one line for it to the index at its place, e.g. `- [[file:ID--slug__workbook.html][Title]] \\`, and rebuild with `./preview-site.sh`.  The label's number is filled in, and later chapters are renumbered, by `scripts/make-chapters.py`, which also writes `chapters.tex`.  Commit both.  Side-series entries keep the names in their labels (`A3. Title`).
+- To insert a chapter, add one line for it to the index at its place, e.g. `- [[file:ID--slug__workbook.html][Title]] \\`, and rebuild with `./preview-site.sh`.  The label's number is filled in, and later chapters are renumbered, by `scripts/make-chapters.py`, which also writes `chapters.tex`.  Commit both.  Side-series entries keep the names in their labels (`S3. Title`).
 - A sheet takes its number from the table: after `\newcounter{chap}`, write `\input{chapters}\chapnumber{ID}`, with `ID` the timestamp at the start of its file name.
 - Never rename or delete a `pr:` label in a posted sheet; readers' solutions are keyed to them.  If a problem must go, keep its label on the replacement or note the change in the commit message.
 - In prose, refer to other sheets by `\ref{xx-chap}`, `\ref{xx-pr:label}` and so on, with `\externaldocument[xx-]{…}` in the preamble; in the index, link to the sheet by title.

@@ -5,7 +5,7 @@ The index (the guide) is the single source of the chapter order.  This
 script reads the links to sheets in the guide, in order, and
 
   * numbers the sheets of the main sequence 1, 2, ..., N;
-  * keeps the names of side-series sheets (A1, A2, ...), which are
+  * keeps the names of side-series sheets (S1, S2, ...), which are
     taken from the link labels under the "Side series" heading;
   * rewrites the number at the start of each link label in the guide,
     so that a new sheet can be listed without a number;
@@ -62,7 +62,7 @@ def main():
                 sm = SIDE_NAME.match(label)
                 if not sm:
                     die(f"side-series entry {ident} needs a name such as "
-                        f"'A3. Title' in its label, got {label!r}")
+                        f"'S3. Title' in its label, got {label!r}")
                 num = sm.group("name")
             else:
                 n += 1
