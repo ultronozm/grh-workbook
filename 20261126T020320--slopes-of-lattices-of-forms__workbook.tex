@@ -1,0 +1,251 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[sm-]{20261125T000000--slope-method__workbook}
+\externaldocument[cv-]{20261125T006000--covolumes__workbook}
+\externaldocument[hp-]{20261125T020300--heights-periods-and-the-auxiliary-prime__workbook}
+\externaldocument[fl-]{20261126T020330--the-cm-period-and-the-flat-line__workbook}
+\externaldocument[lc-]{20261126T020340--lower-slope-bounds-on-covers__workbook}
+
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T020320\endcsname
+  \chapnumber{20261126T020320}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\C}{\mathbb C}
+\newcommand{\Oc}{\mathcal O}
+\newcommand{\aaa}{\mathfrak a}
+\newcommand{\lcv}{\operatorname{lcv}}
+\newcommand{\rk}{\operatorname{rk}}
+\newcommand{\covol}{\operatorname{covol}}
+\newcommand{\mus}{\mu^\sharp}
+\newcommand{\musmax}{\mu^\sharp_{\max}}
+\newcommand{\Lt}{L_{\mathrm{type}}}
+\newcommand{\Lg}{L_{\mathrm{good}}}
+\newcommand{\Lb}{L_{\mathrm{bad}}}
+\newcommand{\La}{L_{\mathrm{all}}}
+\newcommand{\tl}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\title{Slopes of lattices of forms: the good part and descent}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+From Chapter~\ref{sm-chap}, \emph{The slope method}: normed spaces, degrees and slopes, \(\mus\) (Section~\ref{sm-sec:slopes}), Problems~\ref{sm-pr:deg-basic} and~\ref{sm-pr:additivity}, and Theorem~\ref{sm-thm:image}.  From Chapter~\ref{cv-chap}, \emph{Covolumes of lattices of sections}: the lattices \(E_D\) of binary forms with the Fubini--Study \(L^2\) norm (Section~\ref{cv-sec:P1}) and Problem~\ref{cv-pr:base-change}.  The covolume estimate we are after is the first display of Theorem~\ref{hp-in:A4} of Chapter~\ref{hp-chap}.
+
+Theorem~\ref{hp-in:A4} bounds the covolume of a lattice \(M_j\) attached to the \(j\)th lift of the chain.  In the Lean formalization \cite{Lean} the bound is proved, and the proof splits into two unequal parts.  The first part, treated here, is linear algebra: it reduces the covolume of \(M_j\) to a lower bound for the slope of a lattice of holomorphic automorphic forms.  The second part, which proves that lower bound with arithmetic geometry on covers of a Shimura variety, is the subject of Chapter~\ref{lc-chap}, and the period in the main term is the subject of Chapter~\ref{fl-chap}.  How much can one lose in passing from the lattice of all integral forms of a type to the part on which a finite group acts by a given character?
+
+\section{Normalized slopes and covolumes}\label{sec:lcv}
+
+Throughout, \(K\) is a number field.  A \emph{lattice} in a normed space \(V\) over \(K\) (Section~\ref{sm-sec:slopes}) is a finitely generated \(\Oc_K\)-submodule \(L \subseteq V\); we give \(L \otimes K\) the restricted archimedean norms and the unit lattices \(L \otimes \Oc_v\), and write \(\deg L\), \(\rk L\) for its degree and dimension.  All archimedean norms in this chapter are Hermitian.  For \(L \ne 0\) put
+\[
+  \mus(L) := \frac{2\deg L}{[K:\Q]\,\rk L} , \qquad \lcv(L) := -\rk(L)\,\mus(L) ,
+\]
+and let \(\musmax(L)\) be the largest \(\mus\) of a nonzero sublattice of \(L\).  We call \(\lcv\) the normalized logarithmic covolume.  This \(\mus\) is the one of Chapter~\ref{sm-chap}, and it does not change under extension of \(K\) (Problem~\ref{cv-pr:base-change}).
+
+\begin{problem}\label{pr:lcv-ideal}
+For a fractional ideal \(\aaa\) of \(K\) with the standard norms, \(\lcv(\aaa) = 2\log N\aaa/[K:\Q]\).  Over \(\Q\), \(\lcv(L) = 2\log\covol(L)\) for every Euclidean lattice \(L\).
+\end{problem}
+
+\begin{problem}\label{pr:rescale}
+Multiplying the norm at each archimedean place \(v\) by a constant \(c_v > 0\) adds \(-\frac{2}{[K:\Q]}\sum_v n_v\log c_v\) to \(\mus(L)\).  In particular, if \(\lvert\log c_v\rvert \le \epsilon\) for every \(v\), then \(\mus(L)\) moves by at most \(2\epsilon\); and if \(c_v \le 1\) for every \(v\), then \(\mus(L)\) does not decrease.
+\end{problem}
+
+\begin{problem}\label{pr:dilate}
+For an integer \(g \ge 1\), \(\mus(g^{-1}L) = \mus(L) + 2\log g\), and \(\musmax(g^{-1}L) = \musmax(L) + 2\log g\).
+\end{problem}
+
+\begin{problem}\label{pr:coordinates}
+Let \(b_1, \dots, b_D\) be a \(K\)-basis of \(L \otimes K\), let \(M \subseteq K^D\) be the lattice of coordinate vectors of the elements of \(L\), and give \(K^D\) the norms \(\lVert c \rVert_v := s\,\lVert \sum_i c_i b_i \rVert_v\) with \(0 < s \le 1\).  Then \(\lcv(M)/D \le -\mus(L)\), with equality if \(s = 1\).
+\end{problem}
+
+In the formalization \(M_j\) is such a coordinate lattice, and the problem is the first step of the proof: the covolume of \(M_j\) is bounded by minus the slope of a lattice \(L\) of forms.
+
+\section{The good part of a lattice}\label{sec:good}
+
+Let \(G\) be a finite group acting \(K\)-linearly on \(V\) by isometries at every archimedean place, and let \(\chi \colon G \to K^\times\) be a character.  Put \(e := \lvert G\rvert^{-1}\sum_{h \in G}\chi(h)^{-1}h\).
+
+\begin{problem}\label{pr:idempotent}
+\(e\) is idempotent, and at every archimedean place it is the orthogonal projection onto its image, so that \(\lVert ex + (y - ey) \rVert^2 = \lVert ex \rVert^2 + \lVert y - ey \rVert^2\).  If \(L\) is \(G\)-stable, then \(\lvert G\rvert\,e(L) \subseteq L\).
+\end{problem}
+
+From now on \(e\) is any idempotent endomorphism of \(V\) that is an orthogonal projection at every archimedean place, \(L\) is a lattice, and \(g \ge 1\) is an integer with \(g\,e(L) \subseteq L\).  Put
+\[
+  \Lg := L \cap eV , \qquad \Lb := L \cap \ker e .
+\]
+
+\begin{problem}\label{pr:split}
+\(L \otimes K\) is stable under \(e\), the lattices \(\Lg\) and \(\Lb\) are saturated in \(L\), and \(\rk\Lg + \rk\Lb = \rk L\).
+\end{problem}
+
+\begin{problem}\label{pr:quotient}
+The map \(x \mapsto x - ex\) induces an isometry from \(L/\Lg\), with the quotient norms, onto the lattice \((1-e)L\).  Hence \(\deg L = \deg\Lg + \deg\,(1-e)L\).
+\end{problem}
+
+\begin{problem}\label{pr:bad-slope}
+\((1-e)L \subseteq g^{-1}\Lb\).  Hence, if \((1-e)L \ne 0\) and \(L \subseteq \La\) for a lattice \(\La\), then \(\mus((1-e)L) \le \musmax(\La) + 2\log g\).
+\end{problem}
+
+\begin{problem}\label{pr:good-slope}
+Suppose \(\Lg \ne 0\) and \(L \subseteq \La\), and let \(0 \le \delta \le \frac1{12}\) and \(Q\) be real numbers with
+\[
+  \rk\Lb \le 3\delta\rk L ,\qquad \musmax(\La) \le Q ,\qquad -Q \le \mus(L) ,\qquad 2\log g \le Q .
+\]
+Then \(\mus(\Lg) \ge \mus(L) - 12\delta Q\).
+\end{problem}
+
+Problems~\ref{pr:split}--\ref{pr:good-slope} prove the following.
+
+\begin{theorem}[good part]\label{thm:good}
+Let \(L \subseteq \La\) be lattices, \(e\) an orthogonal idempotent with \(g\,e(L) \subseteq L\), and \(\delta, Q\) as in Problem~\ref{pr:good-slope}.  If the part of \(L\) killed by \(e\) has rank at most \(3\delta\rk L\), then removing it lowers the slope by at most \(12\delta Q\).
+\end{theorem}
+
+In the application \(G\) is a finite group of the construction, \(\delta\) is a negative exponential of a power of \(x\), and \(Q\) is a power of \(x\) times the error unit; so the loss \(12\delta Q\) is negligible.  The next two problems are the smallest cases.
+
+\begin{problem}\label{pr:Z2}
+Let \(L = \Z^2\) with the standard norm, \(G = \{1, \sigma\}\) acting by \(\sigma(x_1, x_2) = (x_2, x_1)\), and \(\chi = 1\), so \(g = 2\).  Then \(\mus(L) = 0\), \(\mus(\Lg) = -\log 2\), \(\mus(\Lb) = -\log 2\) and \(\mus((1-e)L) = \log 2\); the inclusion of Problem~\ref{pr:bad-slope} is an equality.
+\end{problem}
+
+\begin{problem}\label{pr:swap-ED}
+Let \(\sigma\) act on \(E_D\) by exchanging \(x\) and \(y\), and \(\chi = 1\).  For \(D = 4\),
+\[
+  \deg\Lg = \tfrac12\log750 , \qquad \deg\,(1-e)E_4 = \log 20 , \qquad \deg E_4 = \tfrac12\log300000 .
+\]
+For \(D = 10\) one finds \(\deg\Lg = 16.3474\ldots\) and \(\deg\,(1-e)E_{10} = 15.8495\ldots\), whose sum is \(\deg E_{10} = 32.1969\ldots\)
+\end{problem}
+
+\section{Descent along a family of maps}\label{sec:descent}
+
+The lower bound of Chapter~\ref{lc-chap} is proved on a cover of the Shimura variety and for a shifted weight.  To bring it back, one maps a lattice \(A\) into a lattice \(B\) by several maps at once.  How much slope survives?  Let \(A\) and \(B\) be nonzero lattices in normed spaces \(V\) and \(W\), let \(\varphi_1, \dots, \varphi_n \colon V \to W\) be \(K\)-linear with \(\varphi_h(A) \subseteq B\), and put \(\Psi := (\varphi_1, \dots, \varphi_n) \colon V \to W^n\), where \(W^n\) carries the orthogonal sum of the norms.
+
+\begin{problem}\label{pr:joint}
+Suppose \(\Psi\) is injective and \(\sum_h\lVert\varphi_hf\rVert_v^2 \le e^{2P}\lVert f\rVert_v^2\) for every archimedean \(v\) and every \(f\).  Then \(\mus(\Psi(A)) \ge \mus(A) - 2P\).
+\end{problem}
+
+\begin{problem}\label{pr:generated}
+If a lattice \(B'\) contains elements \(y_1, \dots, y_r\) that span \(B' \otimes K\) and have norm at most \(e^\Lambda\) at every archimedean place, then \(\mus(B') \ge -2\Lambda\).  The same holds for every nonzero quotient of \(B'\) with the quotient norms.
+\end{problem}
+
+\begin{problem}\label{pr:descent}
+In addition to the hypotheses of Problem~\ref{pr:joint}, suppose that \(B\) has a \(K\)-spanning set of elements of norm at most \(e^\Lambda\) at every archimedean place, with \(\Lambda \ge 0\), that \(n\rk B \le (1+\epsilon)\rk A\) with \(\epsilon \ge 0\), and that \(t \le \mus(A) - 2P\).  Then
+\[
+  \mus(B) \ge t - \epsilon\bigl(\lvert t\rvert + 2\Lambda\bigr) .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:descent-bost}
+For \(n = 1\) and \(\epsilon = 0\), Problem~\ref{pr:descent} is the inequality \(\mus(B) \ge \mus(A) - 2P\) for an injective map between lattices of the same rank, which is Theorem~\ref{sm-thm:image} in this normalization.
+\end{problem}
+
+\begin{problem}\label{pr:descent-P1}
+Multiplication by \(x^c\) maps \(E_D\) into \(E_{D+c}\) with operator norm at most \(1\), and \(E_{D+c}\) is spanned by monomials of norm at most \(1\).  So Problem~\ref{pr:descent} applies with \(n = 1\), \(P = \Lambda = 0\) and \(\epsilon = c/(D+1)\).  For \(D = 10\) and \(c = 1\) it gives \(\mus(E_{11}) \ge \frac{10}{11}\mus(E_{10}) = 5.3218\ldots\), while \(\mus(E_{11}) = 6.3925\ldots\)
+\end{problem}
+
+\begin{lemma}[descent]\label{lem:descent}
+Problems~\ref{pr:joint}--\ref{pr:descent} prove: if \(n\) maps \(A \to B\) are jointly injective with \(\sum_h\lVert\varphi_hf\rVert^2 \le e^{2P}\lVert f\rVert^2\), if \(B\) is spanned by elements of norm at most \(e^\Lambda\), and if \(n\rk B \le (1+\epsilon)\rk A\), then every \(t \le \mus(A) - 2P\) satisfies \(\mus(B) \ge t - \epsilon(\lvert t\rvert + 2\Lambda)\).
+\end{lemma}
+
+\section{The reduction}\label{sec:reduction}
+
+We now describe the data of the formalization at one point of the family and one lift \(j\), \(1 \le j \le m\).  We keep the notation of Chapter~\ref{hp-chap}: the scale \(x\), \(y = x^\varepsilon\), \(b = e^y\), \(B_0 = fmby\), the places \(\rho \in \Phi\), the weights \(w_j(\rho)\), the signature \((p_j, q_j) = (k+j-1, m-j)\) of the \(j\)th lift, and \(\log\Omega\) as in Theorem~\ref{hp-in:period}.  Put
+\[
+  u := B_0\log\log x , \qquad T_j := \sum_{\rho\in\Phi}(p_j - q_j)\,w_j(\rho)\log\Omega .
+\]
+The field \(K\) is totally complex.  The data are:
+\begin{itemize}
+\item a lattice \(M_j\) of rank \(D\), the lattice of the \(j\)th lift (this \(D\) is not the degree of \(E_D\) in the earlier sections);
+\item a normed space \(V\) of automorphic forms, lattices \(\Lt \subseteq \La\) (the integral forms of the auxiliary type, and all integral forms), and an idempotent \(e\) as in Section~\ref{sec:good}, with \(g\,e(\Lt) \subseteq \Lt\);
+\item the lattice \(L_{\mathrm{core}}\) of integral holomorphic cusp forms of the weight of the \(j\)th lift on the unitary Shimura variety of signature \((p_j, q_j)\), with the Petersson norms, defined over a subfield of \(K\); write \(\mu_{\mathrm{core}} := \mus(L_{\mathrm{core}})\).
+\end{itemize}
+They satisfy, for constants \(A_1\), \(C_P\) and \(\delta = e^{-x^c}\) with \(c > 0\):
+\begin{itemize}
+\item[(R1)] \(M_j\) is the coordinate lattice of \(\Lg := \Lt \cap eV\) in a basis, with metric \(s\) times that of \(V\), \(0 < s \le 1\);
+\item[(R2)] \(\rk(\Lt \cap \ker e) \le 3\delta\rk\Lt\), \(\musmax(\La) \le x^{A_1}b\), and \(2\log g \le b\);
+\item[(R3)] if \(K_0 \subseteq K\) is the field of definition of \(L_{\mathrm{core}}\), the map \(L_{\mathrm{core}} \otimes_{\Oc_{K_0}} \Oc_K \to V\) is injective with image \(\Lt\), and at every complex embedding \(\sigma\) of \(K\) the norm of \(V\) is \(c_\sigma\) times the Petersson norm at \(\sigma|_{K_0}\), with \(\lvert\log c_\sigma\rvert \le C_Pu\);
+\item[(R4)] \(1 \le b \le u\) and \(\lvert T_j\rvert \le x^{A_1}b\).
+\end{itemize}
+\emph{Status}: in the formalization (R1)--(R4) are hypotheses of the assembly, each proved separately for the constructed family.  We have read the statements of these proofs, not the proofs, except for (R1).  We have not traced how \(M_j\), \(V\) and the type correspond to the spaces of the theta correspondence in Chapter~\ref{hp-chap}.
+
+\begin{problem}\label{pr:core-transfer}
+Under (R3), \(\mus(\Lt) \ge \mu_{\mathrm{core}} - 2C_Pu\).
+\end{problem}
+
+\begin{problem}\label{pr:loss}
+For \(c > 0\) and real \(A_1, A_2, C\), \(12e^{-x^c}(x^{A_1} + x^{A_2} + C) \to 0\) as \(x \to \infty\).  For \(c = \frac17\) and \(A_1 = A_2 = C = 1\), the inequality \(12e^{-x^{1/7}}(2x + 1) \le 1\) holds for \(x \ge 1\) exactly when \(x \ge 7.9867\ldots\cdot10^{9}\).
+\end{problem}
+
+Combining Problems~\ref{pr:coordinates}, \ref{pr:good-slope} with \(Q := (2x^{A_1} + C)u\) and \(C := 2C_P + C_L + 1\), \ref{pr:core-transfer} and~\ref{pr:loss} gives the reduction.
+
+\begin{theorem}[reduction]\label{thm:reduction}
+Assume (R1)--(R4), \(D \ge 1\) and \(\mu_{\mathrm{core}} \ge -T_j - C_Lu\) with \(C_L \ge 0\).  Then for \(x\) large in terms of \(c\), \(A_1\), \(C_P\), \(C_L\),
+\[
+  \frac{\lcv(M_j)}{D} \le T_j + (2C_P + C_L + 1)\,u .
+\]
+\end{theorem}
+
+The hypothesis \(\mu_{\mathrm{core}} \ge -T_j - C_Lu\), with \(C_L\) independent of the point and the lift, is the lower bound proved in Chapter~\ref{lc-chap}, as Theorem~\ref{lc-thm:low}.  With it, Theorem~\ref{thm:reduction} is the covolume estimate in the first display of Theorem~\ref{hp-in:A4}: for every admissible family there are \(C\) and \(x_0\) with \(\lcv(M_j)/D \le \sum_\rho(p_j - q_j)w_j(\rho)\log\Omega + CB_0\log\log x\) for \(x \ge x_0\), at every point and every lift.  \emph{Status}: proved in the formalization, from the inputs listed at the end of Chapter~\ref{lc-chap}.
+
+Where is the bound used?  In the formalization the lattices \(M_1, \dots, M_m\) sit on the side of the construction at the auxiliary level, and a geometry-of-numbers inequality turns the sum of their covolume bounds into an upper bound for the slope of the dual of the target lattice at that level, with local index terms; a comparison between levels then gives the bound for \(\mu(R^\vee)\) in Theorem~\ref{hp-in:A4}.  \emph{Status}: we have read the statements of these two steps, not their proofs.  So the arithmetic geometry is applied neither to the initial lattices of the construction nor to the target itself, but to the lattices of the lifts, which control the target.
+
+\begin{leanremark}
+\raggedright In \cite{Lean} the covolume estimate is \tl{CovolumeBoundOfX}, the inequality \tl{(p.S false).L3 (p.N C CH)}, with \(\lcv\) the function \tl{Formalism.\allowbreak{}DivisionValues.\allowbreak{}lcv} and \(T_j\), \(u\) the numbers \tl{l3m}, \tl{l3u} of \tl{ZscOfNum}.  It is proved by \tl{topCovolSlim2\_\allowbreak{}use\_\allowbreak{}alt\_\allowbreak{}alt} through \tl{topCovolG\_\allowbreak{}alt\_\allowbreak{}alt}, whose last step is \tl{covolX\_\allowbreak{}of\_\allowbreak{}lift\_\allowbreak{}bounds\_\allowbreak{}and\_\allowbreak{}coreLe} with the inequality \tl{lcv\_\allowbreak{}le} (Theorem~\ref{thm:reduction}).  The inputs are \tl{RecAt} from \tl{lcv\_\allowbreak{}div\_\allowbreak{}le\_\allowbreak{}neg\_\allowbreak{}slope\_\allowbreak{}sq} (Problem~\ref{pr:coordinates}); \tl{slope\_\allowbreak{}good\_\allowbreak{}ge} (Problem~\ref{pr:good-slope}) with \tl{CutAt}, \tl{BadAt}, \tl{LamAt} ((R2)); \tl{CoreAt} from \tl{coreAt\_\allowbreak{}of} with \tl{GramAt}, \tl{MeasAt}, \tl{RatAt} ((R3), Problem~\ref{pr:core-transfer}); \tl{SizeAt} ((R4)); \tl{exists\_\allowbreak{}loss\_\allowbreak{}le} (Problem~\ref{pr:loss}); and \tl{LowAt} (Theorem~\ref{lc-thm:low}).  Lemma~\ref{lem:descent} is \tl{DescentFamily.\allowbreak{}descent}.  The use of the bound is \tl{IndefSide.\allowbreak{}boundsMu} followed by \tl{Passage}.
+\end{leanremark}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:lcv}}
+\begin{description}
+\item[\ref{pr:lcv-ideal}] Problem~\ref{sm-pr:ideal} and Problem~\ref{sm-pr:deg-Q}.
+\item[\ref{pr:rescale}] Problem~\ref{sm-pr:deg-basic}; a complex place has \(n_v = 2\).
+\item[\ref{pr:dilate}] Problem~\ref{sm-pr:ideal} with \(\aaa = g^{-1}\Oc_K\).
+\item[\ref{pr:coordinates}] The coordinate map is an isometry for \(s = 1\); then Problem~\ref{pr:rescale}.
+\end{description}
+
+\subsection*{\S\ref{sec:good}}
+\begin{description}
+\item[\ref{pr:idempotent}] Reindex the double sum for \(e^2\); for the projection, \(e\) commutes with the adjoint action since the \(h\) are isometries and \(\lvert\chi(h)\rvert = 1\).
+\item[\ref{pr:split}] \(x = ex + (x - ex)\), and a multiple of each part lies in \(L\).
+\item[\ref{pr:quotient}] The quotient norm of \(x\) modulo \(eV\) is \(\lVert x - ex\rVert\) by Problem~\ref{pr:idempotent}; then Problem~\ref{sm-pr:additivity}.
+\item[\ref{pr:bad-slope}] \(g(x - ex) \in L\), and \(e\) kills it.  Then Problem~\ref{pr:dilate}.
+\item[\ref{pr:good-slope}] Problems~\ref{pr:quotient} and~\ref{pr:bad-slope}, and \(\rk\Lg \ge \frac34\rk L\).
+\item[\ref{pr:Z2}] \(e(x_1, x_2) = \frac12(x_1 + x_2, x_1 + x_2)\).
+\item[\ref{pr:swap-ED}] The monomials are orthogonal (Problem~\ref{sm-pr:FS}); use the bases \(x^ay^{D-a} \pm x^{D-a}y^a\).
+\end{description}
+
+\subsection*{\S\ref{sec:descent}}
+\begin{description}
+\item[\ref{pr:joint}] Theorem~\ref{sm-thm:image} for \(\Psi \colon A \to \Psi(A)\); the finite places contribute at most \(0\).
+\item[\ref{pr:generated}] Choose a \(K\)-basis among the \(y_i\); Hadamard's inequality for its wedge product.
+\item[\ref{pr:descent}] Apply Problem~\ref{sm-pr:additivity} to the saturation of \(\Psi(A)\) in \(B^n\), and Problem~\ref{pr:generated} to the quotient.
+\item[\ref{pr:descent-P1}] \(\lvert z\rvert^{2c} \le (1 + \lvert z\rvert^2)^c\); for the values, Problem~\ref{cv-pr:degED}.
+\end{description}
+
+\subsection*{\S\ref{sec:reduction}}
+\begin{description}
+\item[\ref{pr:core-transfer}] Problem~\ref{cv-pr:base-change}, then Problem~\ref{pr:rescale}.
+\item[\ref{pr:loss}] Take logarithms; \(\log(12(2x+1)) - x^{1/7}\) increases up to \(x^{1/7} \approx 7\) and then decreases.
+\end{description}
+
+\begin{thebibliography}{Lean}
+\bibitem[Lean]{Lean} The Lean community, \emph{riemann-hypothesis}, a Lean formalization of Alp\"oge's argument, \url{https://github.com/leanprover-community/riemann-hypothesis}.
+\end{thebibliography}
+\end{document}
