@@ -6,6 +6,7 @@
 \externaldocument[dt-]{20261125T002000--definite-theta-lifts__workbook}
 \externaldocument[sw-]{20261125T015500--siegel-weil-in-the-smallest-case__workbook}
 \externaldocument[dn-]{20261125T002100--definite-theta-lifts-and-norms__workbook}
+\externaldocument[cl-]{20261126T030500--divisibility-of-the-composite-lift__workbook}
 
 % Chapter number; \ref{chap} gives it.
 \newcounter{chap}
@@ -194,7 +195,7 @@ The eigenvalues \(-2\) and \(-1\) are the traces of Frobenius of the elliptic cu
 
 \section{A split place}\label{sec:split}
 
-In the chain of lifts of Adriazola's reconstruction \cite[\S10]{Adr}, the kernel of a lift at a split place is the indicator of \(xL \subset L'\) for a matrix \(x\), and the Hecke operators are sums over edges of lattices.  The relation between them is a count of subspaces, of which Problems~\ref{pr:herm-count} and~\ref{pr:herm-eichler} are the case of rank one.
+Consider a theta lift at a split place whose local kernel is the indicator of \(xL \subset L'\) for a matrix \(x\); the Hecke operators are sums over edges of lattices.  The relation between them is a count of subspaces, of which Problems~\ref{pr:herm-count} and~\ref{pr:herm-eichler} are the case of rank one.
 
 Let \(Q\) be a power of \(p\), and let \(W\) be the unramified extension of \(\Z_p\) with residue field \(\F_Q\).  For lattices \(L'' \subset L\) in a \(W[1/p]\)-vector space, \((L'', L)\) is an \emph{edge of type \(i\)} if \(pL \subset L'' \subset L\) and \(\dim L/L'' = i\).  Let \(L \subset W[1/p]^N\) and \(L' \subset W[1/p]^{N+g}\) be lattices, let \(x\) be an \((N+g) \times N\) matrix with \(xL \subset L'\), and let \(\rho\) be the rank of \(x\) modulo \(p\) as a map \(L/pL \to L'/pL'\).
 
@@ -215,7 +216,7 @@ For \(N = 1\), \(i = 1\) and \(Q = p\) this is the first count of Problem~\ref{p
 For \(0 \le l \le g\), \(e_l(Q^{t/2}, Q^{t/2 - 1}, \dots, Q^{-t/2}) = Q^{-l(g-l)/2}\qbinom{g}{l}{Q}\), where \(t = g - 1\), the arguments step by \(Q^{-1}\), and \(e_l\) is the elementary symmetric polynomial.
 \end{problem}
 
-Summing Problem~\ref{pr:split-vandermonde} against a kernel that depends on \(x\) only through \(\mathbf 1_{L,L'}(x)\) and on the lengths of the lattices through a power of \(p\), and moving the sum over edges at the source to the other variable as in Problem~\ref{pr:nb-adjoint}, gives a relation of the form \(E_{j+1}(X)\, K = K\, P(X)\, E_j(uX)\) between the generating series \(E(X) = \sum_i \mathcal E_i X^i\) of normalized Hecke operators at the target and at the source.  Here \(u\) is a unit and \(P(X) = \prod_a (1 + aX)\) is scalar, with roots read off from Problem~\ref{pr:split-el}.  This is the relation for one lift in \cite[\S10.4]{Adr}.
+Summing Problem~\ref{pr:split-vandermonde} against a kernel that depends on \(x\) only through \(\mathbf 1_{L,L'}(x)\) and on the lengths of the lattices through a power of \(p\), and moving the sum over edges at the source to the other variable as in Problem~\ref{pr:nb-adjoint}, gives a relation of the form \(E_{j+1}(X)\, K = K\, P(X)\, E_j(uX)\) between the generating series \(E(X) = \sum_i \mathcal E_i X^i\) of normalized Hecke operators at the target and at the source.  Here \(u\) is a unit and \(P(X) = \prod_a (1 + aX)\) is scalar, with roots read off from Problem~\ref{pr:split-el}.  A relation of this form for one lift is derived in \cite[\S10.4]{Adr}.
 
 \begin{problem}\label{pr:split-chain}
 Suppose that \(E_{j+1}(X)\,K_j = K_j\, P_{j+1}(X)\, E_j(X)\) modulo \(X^{r+1}\) for \(0 \le j < m\), with \(P_{j+1}(X) = \prod_{a \in x_{j+1}}(1 + aX)\), and where \(E_j(X) = \sum_i \mathcal E^{(j)}_i X^i\), and let \(Y\) be the union of the families \(x_1, \dots, x_m\) and \(\mathcal K := K_{m-1}\cdots K_0\).  Then
@@ -223,7 +224,12 @@ Suppose that \(E_{j+1}(X)\,K_j = K_j\, P_{j+1}(X)\, E_j(X)\) modulo \(X^{r+1}\) 
 where \(h_l\) is the complete symmetric polynomial.
 \end{problem}
 
-So a Hecke operator at the source of a chain of lifts moves to the target as a polynomial in the Hecke operators there, with coefficients \(h_l(Y)\).  Problem~\ref{pr:commute} is an instance with one lift.  For divisibility along a chain, the valuations of these coefficients are what matter \cite[\S10.2]{Adr}.
+So a Hecke operator at the source of a chain of lifts moves to the target as a polynomial in the Hecke operators there, with coefficients \(h_l(Y)\).  Problem~\ref{pr:commute} is an instance with one lift.
+
+In Alp\"oge's proof Hecke operators are carried through a chain of lifts only at a few primes, the exceptional ones.  At the other primes that do not split in \(K\) and lie below the second scale, the bounds for single lifts add up to the divisibility asked of the chain, less a loss and a sum over collisions; at an exceptional prime the chain is applied to the image of a power of a product of Hecke operators at primes above \(p\).  Chapter~\ref{cl-chap}, \emph{Divisibility of the composite lift}, states the result.
+
+\paragraph{In the Lean formalization.}
+In the rewritten Lean proof \cite{GL} a prime \(p\) is exceptional (\texttt{IsExceptional}, in \texttt{New/UpperBound/Size/ShortColumns.lean} of the readable edition) if \(\chi_K(p) = -1\), \(p \not\equiv \pm1\) modulo the number \(m\) of lifts, and the order of \(-p\) modulo \(q_0\) is odd and at most the least \(\mathfrak r\) with \(m \le p^{\mathfrak r}\).  At such a prime \(p\) below the second scale, let \(\Lambda\) be a full mark, one prime from each conjugate pair of primes above \(p\) induced by certain infinite places, and let \(Y\) be the product over \(l \in \Lambda\) of suitably scaled Hecke operators at \(l\).  Then for every integral source form \(v\) the chain of lifts applied to \(Y^m v\) has valuation at least \(\mathrm{gain}(p) - 2\,\mathrm{loss}(p)\) (\texttt{IsWeakChainDatum.gaugeLe\_restrictedChain\_of\_isFullMark}, in \texttt{New/UpperBound/Divisibility/LocalDivisibility.lean}); here \(\mathrm{gain}(p)\) is the divisibility asked of the chain at \(p\), and \(\mathrm{loss}(p) = fa(\log b)^2/p\) at such a prime, with the number \(f\) of infinite places and the scales \(a\), \(b\) of the proof.
 
 \section*{Hints}
 
@@ -277,6 +283,7 @@ So a Hecke operator at the source of a chain of lifts moves to the target as a p
 \bibitem[CoS]{CoS} J.~H.~Conway and N.~J.~A.~Sloane, \emph{Sphere Packings, Lattices and Groups}, 3rd ed., Grundlehren Math.\ Wiss.\ 290, Springer, 1999.
 \bibitem[Ei52]{Ei52} M.~Eichler, \emph{Quadratische Formen und orthogonale Gruppen}, Grundlehren Math.\ Wiss.\ 63, Springer, 1952.
 \bibitem[Ei73]{Ei73} M.~Eichler, \emph{The basis problem for modular forms and the traces of the Hecke operators}, in \emph{Modular Functions of One Variable I}, Lecture Notes in Math.\ 320, Springer, 1973, 75--151.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
 \bibitem[Gr]{Gr} B.~H.~Gross, \emph{Heights and the special values of \(L\)-series}, in \emph{Number Theory (Montreal, 1985)}, CMS Conf.\ Proc.\ 7, Amer.\ Math.\ Soc., 1987, 115--187.
 \bibitem[Iw]{Iw} H.~Iwaniec, \emph{Topics in Classical Automorphic Forms}, Grad.\ Stud.\ Math.\ 17, Amer.\ Math.\ Soc., 1997.
 \bibitem[Kn]{Kn} M.~Kneser, \emph{Klassenzahlen definiter quadratischer Formen}, Arch.\ Math.\ \textbf{8} (1957), 241--250.
