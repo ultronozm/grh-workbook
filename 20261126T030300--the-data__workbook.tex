@@ -3,23 +3,34 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{xr-hyper}
 \usepackage[hidelinks]{hyperref}
-\externaldocument[c1-]{20261125T001000--zeros-to-ramp-sums__workbook}
 \externaldocument[c2-]{20261125T001100--inert-primes-and-estimate-b__workbook}
 \externaldocument[c3-]{20261125T005000--galois-fourier-and-averaging__workbook}
 \externaldocument[c4-]{20261125T005500--columns-from-a-sphere__workbook}
 \externaldocument[c7-]{20261125T003000--the-chain-and-the-square-root__workbook}
 
+% Chapter number; \ref{chap} gives it.
 \newcounter{chap}
-\input{chapters}
-\ifcsname chapters@20261126T030300\endcsname
-  \chapnumber{20261126T030300}
-\else
-  \renewcommand{\thechap}{?}
-\fi
+\input{chapters}\chapnumber{20261126T030300}
 \renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}[theorem]{Definition}
+
 \newcommand{\Z}{\mathbb Z}
 \newcommand{\Q}{\mathbb Q}
 \newcommand{\C}{\mathbb C}
+\newcommand{\Oc}{\mathcal O}
+\newcommand{\rd}{\mathrm{rd}}
+\newcommand{\CS}{\mathrm{CS}}
+\newcommand{\hdir}{h_{\mathrm{dir}}}
+\newcommand{\sfin}{s_{\mathrm{fin}}}
+\newcommand{\smain}{s_{\mathrm{main}}}
+\newcommand{\main}{\mathrm{main}}
+\newcommand{\rem}{\mathrm{rem}}
+
 \setlength{\emergencystretch}{3em}
 
 \title{The data}
@@ -31,10 +42,255 @@
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-Chapters~\ref{c1-chap}--\ref{c4-chap} and~\ref{c7-chap}.
+Cyclotomic fields: the degree of \(\Q(\zeta_n)\), the splitting of primes in it, and the conductor--discriminant formula \cite[Ch.~2--3]{Wa}.  The discriminant in a tower \cite[Ch.~III, \S2]{Ne}; finiteness of the class group \cite[Ch.~I, \S6]{Ne}.  Quadratic reciprocity \cite[Ch.~5]{IR}.  Chebyshev's function satisfies \(\psi(u) \le 2u\) for \(u \ge 1\) \cite[Thm.~12]{RS}.  From the earlier chapters: the character \(\chi_K\) and the weight \(1 - \chi_K\) (Chapter~\ref{c2-chap}), the infinite places of the CM field of Chapter~\ref{c3-chap} and the prime sums over them, sparse sets of places (Chapter~\ref{c4-chap}), and the chain of \(m \approx \sqrt x\) steps (Chapter~\ref{c7-chap}).
 
 \medskip
-The objects of the proof and their sizes: the modulus \(q_0\), the prime \(d\) and the field \(K = \Q(\sqrt{-d})\), the cyclotomic CM field \(E\) and its places, the scales \(x < x_1 < b\) and \(a = xb\), the number \(m\) of lifts, the ranks \(r\), \(k\), \(t\), and the level primes.  The chapter checks that the ranks and signs fit together and that the scale inequalities hold, defines the two amounts that the later chapters compare, and states that such data exist for every large \(x\).  No automorphic form is used.
+Every later chapter of this part works with one collection of objects: two integers \(q_0\) and \(d\), a CM field \(E\) obtained by adjoining a root of unity to \(\Q(\sqrt{-d})\), three scales \(x < x_1 < b\), the number \(m\) of lifts, the ranks \(r\) and \(k\) and the step size \(t\), a set of places of \(E\) with weights, and three large primes.  This chapter lists them as the rewritten Lean proof \cite{GL} of Alpöge's theorem \cite{Alp} does, checks that their sizes fit together, defines the direction amount, the main amount and the total remainder used in the later bounds, and states that such data exist for every large integer \(x\).  No automorphic form appears.  We write \(\log\) for the natural logarithm.
 
-This chapter is being drafted.
+\section{The modulus and the prime \texorpdfstring{\(d\)}{d}}\label{sec:parameters}
+
+How must \(d\) be chosen so that every prime dividing \(q_0\) splits in \(K = \Q(\sqrt{-d})\)?
+
+\begin{definition}\label{def:parameters}
+\emph{Parameters} are natural numbers \(q_0\) and \(d\) with \(18480 \mid q_0\), \(d\) prime, \(q_0 \mid 2(d+1)\) and \(q_0 \nmid d + 1\).
+\end{definition}
+
+Let \(K := \Q(\sqrt{-d}) \subset \C\), and let \(\chi_K(n) := \bigl(\frac nd\bigr)\) be the Legendre symbol.
+
+\begin{problem}\label{pr:class}
+\(18480 = 2^4 \cdot 3 \cdot 5 \cdot 7 \cdot 11\).  Parameters satisfy \(q_0 \ne 0\), \(d \equiv q_0/2 - 1 \pmod{q_0}\) and \(d \equiv 7 \pmod 8\).  For \(q_0 = 18480\) the least admissible \(d\) is \(9239\), and \(\varphi(18480) = 3840\).
+\end{problem}
+
+\begin{problem}\label{pr:split}
+Let \(c, s\) be nonnegative integers.  (i) Every prime \(p \mid 3^c 2^s q_0\) divides \((d+1)/4\), and \(\chi_K(p) = 1\).  (ii) A prime \(p\) with \(\chi_K(p) \ne 1\) satisfies \(p \ge 13\).
+\end{problem}
+
+Since \(d \equiv 3 \pmod 4\), \(\chi_K\) is the character of \(K\) (Problem~\ref{c2-pr:kronecker}), so the primes of Problem~\ref{pr:split}(i) split in \(K\).  For \(d = 9239\) the least prime \(p\) with \(\chi_K(p) = -1\) is \(19\).
+
+\section{The field and its places}\label{sec:field}
+
+For a nonnegative integer \(s\) let \(\lfloor \log_3 s \rfloor\) be the floor logarithm (zero for \(s = 0\)), and
+\[
+  l_0(s) := 3^{\lfloor \log_3 s \rfloor + 4}, \qquad
+  T(s) := 3^{\lfloor \log_3 s \rfloor + 5}\, 2^s, \qquad
+  q_1 := q_0 T(s), \qquad q_2 := (q_0 d)^{s+6}.
+\]
+Let \(E = E_s := K(\zeta_{q_1})\), with \(\zeta_{q_1}\) a primitive \(q_1\)-th root of unity, let \(\Phi\) be the set of infinite places of \(E\), \(f := \#\Phi\), and let \(\rd_E := \lvert \operatorname{disc} E \rvert^{1/[E:\Q]}\) be the root discriminant.  Fix an embedding \(E \to \C\) over \(K\).  Composing it with the elements of \(\mathrm{Gal}(E/K)\) gives a bijection between \(\mathrm{Gal}(E/K)\) and \(\Phi\), through which \(\Phi\) becomes a group; sending \(g\) to the unit \(u\) with \(g(\zeta_{q_1}) = \zeta_{q_1}^u\) identifies it with \((\Z/q_1)^\times\).  For \(\nu \in \Z\) let \([\nu] \in \Phi\) be the place of \(\nu \bmod q_1\) if \(\gcd(\nu, q_1) = 1\), and the identity otherwise.  The \emph{class} of \(\tau \in \Phi\) modulo \(n \mid q_1\) is its image in \((\Z/n)^\times\).  Let \(\Phi_a\) be the set of places of class \(1\) modulo \(q_0\).
+
+\begin{problem}\label{pr:l0}
+\(T(s) = 3 l_0(s) 2^s\), and \(27 s < l_0(s)\); if \(s \ge 1\), then \(l_0(s) \le 81 s\).
+\end{problem}
+
+\begin{problem}\label{pr:degree}
+\(\varphi(q_1) = T(s)\varphi(q_0)\), and \([E : K] = \varphi(q_1)\).  Hence \(f = T(s)\varphi(q_0)\), and exactly \(T(s)\) places have class \(1\) modulo \(q_0\), and exactly \(T(s)\) have class \(-1\).
+\end{problem}
+
+\begin{problem}\label{pr:rd}
+\(E \subset \Q(\zeta_{q_1 d})\), \(q_1 d \mid q_2\), and \(1 \le \rd_E \le q_1 d\).  A prime \(p \equiv 1 \pmod{q_1 d}\) splits completely in \(E\).
+\end{problem}
+
+\begin{problem}\label{pr:rd-lower}
+For \(s \ge 1\), \(\rd_E \ge \rd_{\Q(\zeta_{2^s})} = 2^{s-1}\).
+\end{problem}
+
+\section{Scales, ranks and signs}\label{sec:data}
+
+Let \(\gamma\) be Euler's constant, \(\CS(d) := \gamma - L'(1, \chi_K)/L(1, \chi_K)\), and
+\[
+  C := V + (2d + 6) + q_0 + \lvert \CS(d) \rvert + \sum_{w} \bigl\lvert \log \lvert \Phi_{q_0}'(w) \rvert \bigr\rvert ,
+\]
+the sum over the primitive \(q_0\)-th roots of unity \(w \in \C\), with \(\Phi_{q_0}\) the cyclotomic polynomial, and \(V \ge 0\) an integer that depends only on \(q_0\) and \(d\), fixed in the rewriting as follows: for every \(s\), a nonzero scalar multiple of the vacuum of the standard rank-one hermitian space over \(E_s\) has integral values at finite arguments, and all conjugates over \(K\) of these values have absolute value at most \(\exp(Vq_1^2)\).  In this chapter \(V\) enters only through \(C\).  For a finite set \(S \subset \Phi\) and a nonnegative integer \(H\), call \(S\) \emph{sparse up to \(H\)} if for every prime \(\ell \le H\) and all integers \(0 < i < j < l_0(s)\) there are no \(\sigma, \tau, \rho \in S\), distinct or not, with \(\tau/\sigma \equiv \pm \ell^i\) and \(\rho/\sigma \equiv \pm \ell^j\) (the two signs independent) modulo the largest divisor of \(q_1\) prime to \(\ell\).  For \(\kappa \colon \Phi \to \Z_{\ge 1}\), integers \(m \ge 0\) and \(M \ge 1\), and real \(L\), let
+\[
+  L_-(\kappa, m, M, L) := \frac mf \sum_{\tau \in \Phi} \log \kappa(\tau) + (m - 1) \log \frac{M \rd_E}{2\pi} - \frac{15}{2} L .
+\]
+It depends on \(s\) through \(\Phi\), \(f\) and \(\rd_E\).  (The rewritten Lean proof defines the same expression for all natural values of \(\kappa\) and \(M\), with the convention \(\log 0 := 0\); only positive values occur below.)
+
+\begin{definition}\label{def:data}
+\emph{Data} for parameters \((q_0, d)\) consist of the following.
+\begin{enumerate}
+\item Integers \(x, x_1, b \ge 1\) with \(10^{12} C \le \log\log b\), \((\log b)^{100} \le x\), \(x^{10^6} \le x_1\), \(x_1^{10^6} \le b\), and \((\log x_1)^6 \le \log b\).
+\item Integers \(m, r, s \ge 0\) with \(\sqrt x \le m \le 2\sqrt x\), \(x^5 \le r \le 3x^5\), \(m = 2^{e}\) and \(s = 22e\) for some integer \(e \ge 1\), \(r = 3^{e'}\) for some integer \(e' \ge 1\), \(s \le 32 \log x\), and \(q_1 x_1 \mid b\), where \(q_1 = q_0 T(s)\).  The field is \(E = E_s\).
+\item A set \(\Phi_b \subset \Phi\) of places of class \(-1\) modulo \(q_0\), with \(T(s) \le \#\Phi_b \log b\), sparse up to \((r + 1 - m) \cdot 5r\).
+\item The weight \(\kappa \colon \Phi \to \Z_{\ge 0}\): \(\kappa(\tau) = b\) for \(\tau \in \Phi_b\), and \(\kappa(\tau) = \lfloor xb/x_1 \rfloor\) otherwise.
+\item Distinct primes \(p_0, p_1 \equiv 1 \pmod{q_2^2}\) in \([b^{10}, b^{11}]\), and \(\alpha \in \Oc_K\) with \(\alpha\bar\alpha = p_0 p_1\).
+\item A prime \(N \equiv 1 \pmod{q_2^2}\) with \(L_- \le \log N \le L_- + \sqrt{\log b}\), where \(L_- := L_-(\kappa, m, p_0p_1, \log b)\), and \(\pi_N \in \Oc_E\) with \(\pi_N \bar\pi_N = N\).
+\end{enumerate}
+\end{definition}
+
+Write \(a := xb\), \(M := p_0 p_1\), \(k := r + 1 - m\), \(t := 5r\), and \(n_j := k + j(t + 1)\) for nonnegative integers \(j\).  In the rewritten Lean proof \(m\) is called the number of lifts in the chain, \(k\) the rank of the source and \(r\) the rank of the target; \(M\) is the principal level and \(N\) the level.
+
+\begin{problem}\label{pr:chain}
+\(\log\log b \ge 10^{12} \cdot 18480\), and \(\log b < x < x_1 < b\).
+\end{problem}
+
+\begin{problem}\label{pr:m-big}
+\(m \ge 10000\), \(2m \le r\), and \(r/2 \le k \le r\); in particular \(r + 1 = k + m\) with \(k \ge 1\).
+\end{problem}
+
+\begin{problem}\label{pr:T}
+\(x^{11} \le T(s) \le x^{11} (\log b)^{1/5}\), and \(x^{11} \varphi(q_0) \le f\).
+\end{problem}
+
+The ranks are those of a chain of hermitian spaces over \(E\).  For \(0 \le j < m\) let \(Y_j\) be the hermitian space whose Gram matrix, in suitable coordinates, is the orthogonal sum of the identity matrix of size \(n_j\) and the matrix \(S_j\) of size \(m - 1 - j\) with rows and columns indexed by \(0, \dots, m - 2 - j\), whose \((u, v)\) entry is \(0\) unless \(u + v = m - 2 - j\), is \(1\) if \(u + v = m - 2 - j\) and \(u \ne v\), and is \(-N\) if \(u = v = (m - 2 - j)/2\).  Let \(Y_m\) be the standard positive definite space of rank \(n_m - 1\).
+
+\begin{problem}\label{pr:signs}
+For \(0 \le j \le m\), \(Y_j\) has rank \(r + jt\) and exactly \(\lfloor (m - j)/2 \rfloor\) negative eigenvalues at each infinite place.  \(Y_0\) is the orthogonal sum of the identity of size \(k\), \(m/2 - 1\) hyperbolic planes and \(\langle -N \rangle\).  Formally, for matrices defined in the same way with \(m = 4\) (no data have \(m = 4\)), the numbers of negative eigenvalues of \(Y_0, \dots, Y_4\) are \(2, 1, 1, 0, 0\).
+\end{problem}
+
+\section{The weights and the two amounts}\label{sec:amounts}
+
+Let \(\Lambda_K(\nu) := \Lambda(\nu)(1 - \chi_K(\nu))\).  For real \(y\), \(\sigma \in \Phi\) and integers \(j \ge 0\) let
+\[
+  \sfin(y, \sigma) := \sum_{\nu = 1}^{a} \Lambda_K(\nu) \Bigl(\frac y\nu - \kappa([-\nu]\sigma)\Bigr)_+ ,
+  \qquad
+  s_\infty(j) := \log j! + j \log \frac M\Omega ,
+\]
+where \(\Omega := e^{\CS(d)}\, 2\pi/\rd_E\) and \([-\nu]\sigma\) is the product in the group \(\Phi\).  The rewriting calls \(s_\infty(j)\) the size of a derivative of order \(j\); at \(j = \kappa(\sigma)\) it describes \(\sfin(j, \sigma)\) as the prime sum that measures the guaranteed divisibility of that derivative.  The \emph{direction amount} and the \emph{main amount} are
+\[
+  \hdir := \sum_{\sigma \in \Phi} \bigl( s_\infty(\kappa(\sigma)) - \sfin(\kappa(\sigma), \sigma) \bigr),
+  \qquad
+  \main := m k\, \hdir .
+\]
+With \(c_1 := -1 - \CS(d)\), the \emph{main prime sum} and the \emph{total remainder} are
+\[
+  \smain := a \Bigl( \log a - \frac1f \sum_{\tau \in \Phi} \log \kappa(\tau) + c_1 \Bigr),
+  \qquad
+  \rem := \sum_{\tau \in \Phi_a} \bigl( \sfin(a, \tau) - \smain \bigr) .
+\]
+Chapter~\ref{c3-chap} expresses \(\rem\) through remainders of prime sums in progressions.
+
+\begin{problem}\label{pr:weights}
+\(x_1 \mid a\), and \(a/x_1 \le \kappa(\tau) \le b\) for every \(\tau \in \Phi\).
+\end{problem}
+
+\begin{problem}\label{pr:sfin}
+Let \(0 \le y \le a\).  The term of \(\sfin(y, \sigma)\) at \(\nu\) vanishes unless \(\nu < x_1\), and \(0 \le \sfin(y, \sigma) \le 2y\sum_{\nu \le x_1} \Lambda(\nu)/\nu \le 2y(\log x_1 + 2) \le y \log b\).
+\end{problem}
+
+\begin{problem}\label{pr:omega}
+\(\Omega \le 1\), and \(20 \log b \le \log(M/\Omega) \le 23 \log b\).
+\end{problem}
+
+\begin{problem}\label{pr:jet}
+For integers \(0 \le y \le a\), \(20 y \log b \le s_\infty(y) \le 25 y \log b\).  For every integer \(y \ge 1\) there is a real \(\theta = \theta_y\) such that
+\[
+  s_\infty(y) = y \log \frac{y M}{e\Omega} + \tfrac12 \log(2\pi y) + \frac{\theta}{12 y}, \qquad 0 < \theta < 1 .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:hdir}
+For every \(\tau \in \Phi\), \(\kappa(\tau)\log b \le s_\infty(\kappa(\tau)) - \sfin(\kappa(\tau), \tau) \le 25\kappa(\tau)\log b\).  Hence \(b\, \#\Phi_a \le \hdir \le 25 f b \log b\).
+\end{problem}
+
+\begin{problem}\label{pr:main}
+\(\main \ge x^4 f a\).
+\end{problem}
+
+\begin{problem}\label{pr:smain}
+With \(\delta := \#\Phi_b/f\), \(\smain = a\bigl(\log x_1 - \delta \log(x_1/x) + c_1\bigr)\), and \(1/(\varphi(q_0)\log b) \le \delta \le 1/\varphi(q_0)\).
+\end{problem}
+
+\section{The level primes}\label{sec:level}
+
+\begin{problem}\label{pr:alpha}
+Let \(h\) be the class number of \(K\), and let \(p'_0, \dots, p'_h\) be distinct primes that split in \(K\).  Then there are \(i \ne j\) and \(\alpha \in \Oc_K\) with \(\alpha\bar\alpha = p'_i p'_j\).
+\end{problem}
+
+\begin{problem}\label{pr:piN}
+\(\sqrt{-1} \in E\).  If \(N \equiv 1 \pmod 4\) is prime, then \(N = u^2 + v^2\) with \(u, v \in \Z\), and \(\pi_N := u + \sqrt{-1}\, v \in \Oc_E\) satisfies \(\pi_N \bar\pi_N = N\).
+\end{problem}
+
+\begin{problem}\label{pr:Lminus}
+Let \(m \ge 2\), \(L \ge 7\), \(1 \le \kappa(\tau) \le e^L\) for all \(\tau \in \Phi\), \(e^{20L} \le M \le e^{22L}\) and \(q_1 d \le e^L\).  Then \(mL \le L_-(\kappa, m, M, L) \le 24 mL\).
+\end{problem}
+
+\begin{problem}\label{pr:MN}
+For data, \(b^{20} \le M \le b^{22}\), \(m\log b \le \log N \le 30 m \log b\), and \(b < M < N\).
+\end{problem}
+
+\section{Existence}\label{sec:existence}
+
+How should the scales be chosen, as functions of \(x\), so that Definition~\ref{def:data}(1)--(2) hold?
+
+\begin{problem}\label{pr:least}
+Let \(x > 1\), let \(m\) be the least power of \(2\) with \(m \ge \sqrt x\), and \(r\) the least power of \(3\) with \(r \ge x^5\).  Then \(2 \le m < 2\sqrt x\) and \(3 \le r < 3x^5\).  If \(B \ge 0\) and \(b\) is the least multiple of an integer \(Q \ge 1\) with \(b > B\), then \(b \le B + Q\).
+\end{problem}
+
+\begin{problem}\label{pr:eps}
+Fix parameters and \(0 < \varepsilon < 1/100\), and for each \(x\) let \(x_1 = \lfloor \exp(x^{\varepsilon/6}) \rfloor\) and let \(b\) be an integer with \(x^\varepsilon \le \log b \le x^\varepsilon + 1\).  Then the five inequalities of Definition~\ref{def:data}(1) hold for all large \(x\).  If instead \(x_1 = \lfloor \exp(x^{\beta}) \rfloor\) with \(\beta > \varepsilon/6\), then \((\log x_1)^6 > \log b\) for all large \(x\).  If instead \(\varepsilon > 1/100\) and \(x^\varepsilon \le \log b \le x^\varepsilon + 1\), then \((\log b)^{100} > x\) for all large \(x\).
+\end{problem}
+
+The other choices need more.  The rewriting uses the following window theorem.  Fix integers \(Q_0 \ge 1\) and \(A \ge 0\) with \(4 \mid Q_0\).  For every sufficiently large real \(W\), every integer \(v > 1\) with \(Q_0^v \le W^A\), and every real \(U \in [W, W^A]\), there is a prime \(p \equiv 1 \pmod{Q_0^v}\) with \(U \le \log p \le U + W\).  Taking \(Q_0 = q_0 d\) and \(v = 2(s + 6)\) gives the modulus \(q_2^2\) for \(p_0, p_1, N\).  The proof combines these windows with the norm constructions of Problems~\ref{pr:alpha} and~\ref{pr:piN}.  It obtains the sparse set \(\Phi_b\) from Behrend's construction (Chapter~\ref{c4-chap}).  Its existence theorem is as follows.
+
+\begin{theorem}\label{thm:existence}
+Let \((q_0, d)\) be parameters and \(0 < \varepsilon < 1/100\).  For every sufficiently large integer \(x\) there are data for \((q_0, d)\) whose first scale is \(x\), such that (1)~\(x_1 = \lfloor \exp(x^{\varepsilon/6}) \rfloor\); (2)~\(b\) is the least natural number that is divisible by \(q_1 x_1\) and exceeds \(\exp(x^\varepsilon)\); (3)~\(m\) is the least power of \(2\) with \(\sqrt x \le m\), and \(r\) is the least power of \(3\) with \(x^5 \le r\); (4)~\(x^{\varepsilon/6} - 1 \le \log x_1\) and \(x^\varepsilon \le \log b \le x^\varepsilon + 1\).
+\end{theorem}
+
+``Sufficiently large'' depends on \((q_0, d)\) and \(\varepsilon\); the statement gives no explicit threshold.  In its proof \(m\), \(r\), \(s\) and \(b\) are taken as above; the digits of the exponents defining \(\Phi_b\) form vectors on a common sphere (Chapter~\ref{c4-chap}); and the windows used to choose the primes have length \(x^{\varepsilon/6}\) in \(\log p\).
+
+\paragraph{In the Lean formalization.}
+\begin{sloppypar}
+In the rewritten Lean proof \cite{GL}, Definition~\ref{def:parameters} is the structure \texttt{New.Parameters} in \texttt{New/Reduction/Data/FieldsAndPlaces.lean}, Definition~\ref{def:data} is the structure \texttt{New.Data} in \texttt{New/Reduction/Data/AdmissibleData.lean}, and Theorem~\ref{thm:existence} is \texttt{New.eventually\_exists\_data} in \texttt{New/Reduction/Data/Existence.lean}.  There \(C\), sparsity, \(L_-\), \(\sfin\), \(s_\infty\) and \(\hdir\) are \texttt{constantBound}, \texttt{IsSparse}, \texttt{logLevelMin}, \texttt{primeSum}, \texttt{jetSize} and \texttt{directionAmount} (in \texttt{AdmissibleData.lean}), and \(\main\), \(\smain\), \(\rem\) are \texttt{mainAmount}, \texttt{mainPrimeSum}, \texttt{totalRemainder} (in \texttt{New/Reduction/PrimeSums.lean}).  The rewriting also proves Problem~\ref{pr:split}(ii) as \texttt{thirteen\_le\_of\_chiK\_ne\_one}; the formula for \(f\) and the count of \(\Phi_a\) in Problem~\ref{pr:degree} as \texttt{New.Parameters.numInfPlaces\_E} and \texttt{New.Parameters.card\_placeClass\_eq\_one\_eq\_towerDeg}; the bounds \(m \ge 10000\), \(r + 1 = k + m\) and \(k \le r\) of Problem~\ref{pr:m-big} as \texttt{ten\_thousand\_le\_m}, \texttt{r\_add\_one} and \texttt{k\_le\_r}; the bounds \(0 \le \sfin(y, \sigma) \le y\log b\), Problem~\ref{pr:omega}, the first statement of Problem~\ref{pr:jet}, Problem~\ref{pr:hdir} and Problem~\ref{pr:main} as \texttt{primeSum\_mem\_Icc}, \texttt{bigOmega\_le\_one} with \texttt{log\_M\_div\_bigOmega\_mem\_Icc}, \texttt{jetSize\_mem\_Icc}, \texttt{jetSize\_sub\_primeSum\_mem\_Icc} with \texttt{directionAmount\_mem\_Icc}, and \texttt{le\_mainAmount}; Problem~\ref{pr:Lminus} as \texttt{Parameters.logLevelMin\_mem\_Icc}; and the first two statements of Problem~\ref{pr:MN} as \texttt{M\_mem\_Icc} and \texttt{log\_N\_mem\_Icc}.  For \(j<m\) the Gram matrix of \(Y_j\) is given by \texttt{spaceY\_gram\_eq}; at \(j=m\), standardness is \texttt{isStd\_spaceY\_of\_le} and the rank is \texttt{card\_Y\_m}; the negative count is \texttt{negCount\_gridSigns} at \(z=\mathrm{false}\), \(i=0\), by the definition \texttt{signsY}.  The place group and its classes are \texttt{galOfPlace}, \texttt{placeMulEquiv}, \texttt{placeOfInt} and \texttt{placeClass} in \texttt{FieldsAndPlaces.lean}; \(\chi_K\), \(\CS(d)\), \(\Lambda_K\) are \texttt{New.chiK}, \texttt{New.chowlaSelbergConst} and \texttt{New.lambdaKResidueClass} at modulus one, and \(c_1 = -1 - \CS(d)\) is \texttt{New.re\_logDerivMean\_one}.  The constant \(V\) is \texttt{New.Parameters.vacuumBoundConst}, the witness chosen from \texttt{New.Parameters.exists\_mul\_vacElem\_integral\_bounded}.  The names of \(m\), \(k\), \(r\), \(M\), \(N\), \(s_\infty\), \(\sfin\) are from the documentation of these declarations.  The window theorem is \texttt{New.exists\_prime\_modEq\_one\_log\_mem} (in \texttt{Lib/Analytic/Primes.lean}), the norm constructions are \texttt{New.Parameters.exists\_prime\_pair\_norm} and \texttt{New.Parameters.exists\_mul\_star\_eq\_prime}, and the sphere construction is \texttt{New.exists\_three\_term\_free}.
+\end{sloppypar}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:parameters}}
+\begin{description}
+\item[\ref{pr:class}] \(d + 1 > 0\); \(q_0/2\) divides \(d + 1\) with odd quotient, and \(8 \mid q_0/2\).
+\item[\ref{pr:split}] (i) Show \(d \equiv -1 \pmod{4p}\) and apply quadratic reciprocity; for \(p = 2\) use \(d \equiv 7 \pmod 8\).  (ii) Use (i) with \(18480 \mid q_0\).
+\end{description}
+
+\subsection*{\S\ref{sec:field}}
+\begin{description}
+\item[\ref{pr:l0}] For \(s \ge 1\), \(3^{\lfloor\log_3 s\rfloor} \le s < 3^{\lfloor\log_3 s\rfloor + 1}\); treat \(s = 0\) directly.
+\item[\ref{pr:degree}] The primes \(2, 3\) divide \(q_0\); \(K\) is ramified only at \(d\), and \(d \nmid q_1\).  Count the fibres of \((\Z/q_1)^\times \to (\Z/q_0)^\times\).
+\item[\ref{pr:rd}] \(K \subset \Q(\zeta_d)\) since \(d \equiv 3 \pmod 4\).  The conductor--discriminant formula.
+\item[\ref{pr:rd-lower}] \(\lvert\operatorname{disc} L\rvert = \lvert\operatorname{disc} F\rvert^{[L:F]} \, N_{F/\Q}(\mathfrak d_{L/F})\) for \(F \subset L\), with \(\mathfrak d_{L/F}\) the relative discriminant ideal.
+\end{description}
+
+\subsection*{\S\ref{sec:data}}
+\begin{description}
+\item[\ref{pr:chain}] \(C \ge q_0\).
+\item[\ref{pr:m-big}] \(\sqrt x \ge (\log b)^{50}\).
+\item[\ref{pr:T}] Problem~\ref{pr:l0} and \(s \le 32\log x\) bound the power of \(3\); \(\log b \ge (\log x_1)^6 \ge (10^6 \log x)^6\), and \(\log x \ge 100\log\log b\) is large.
+\item[\ref{pr:signs}] \(S_j\) is a sum of hyperbolic planes and, when \(m - 1 - j\) is odd, the middle entry.
+\end{description}
+
+\subsection*{\S\ref{sec:amounts}}
+\begin{description}
+\item[\ref{pr:weights}] \(q_1 x_1 \mid b\), and \(x \le x_1\).
+\item[\ref{pr:sfin}] \(0 \le \Lambda_K \le 2\Lambda\) and Problem~\ref{pr:weights}.  For an integer \(u \ge 1\), \(\log u! = \sum_{n \le u} \Lambda(n)\lfloor u/n \rfloor\), and Chebyshev's bound \(\psi(u) \le 2u\).
+\item[\ref{pr:omega}] Problems~\ref{pr:rd} and~\ref{pr:rd-lower}, \(\lvert\CS(d)\rvert \le C\), \(2^{s} = m^{22}\), and \(q_1 x_1 \mid b\).
+\item[\ref{pr:jet}] \(y! \le y^y\) and \(a \le b^2\).  Stirling's formula with Robbins' remainder \cite{Rob}.
+\item[\ref{pr:hdir}] Problems~\ref{pr:sfin} and~\ref{pr:jet}; on \(\Phi_b\) the weight is \(b\); Definition~\ref{def:data}(3) and Problem~\ref{pr:degree}.
+\item[\ref{pr:main}] Problems~\ref{pr:m-big}, \ref{pr:degree} and~\ref{pr:hdir}, and \(\varphi(q_0) \le C\).
+\item[\ref{pr:smain}] Write \(\log \kappa\) through \(\log a\), \(\log x\) and \(\log x_1\); Problem~\ref{pr:degree}.
+\end{description}
+
+\subsection*{\S\ref{sec:level}}
+\begin{description}
+\item[\ref{pr:alpha}] Pigeonhole on the classes of primes \(\mathfrak p_i \mid p'_i\).
+\item[\ref{pr:piN}] \(4 \mid q_1\).  Fermat's two-squares theorem.
+\item[\ref{pr:Lminus}] The mean of \(\log\kappa\) lies in \([0, L]\), and \(19L \le \log(M\rd_E/2\pi) \le 23L\) by Problem~\ref{pr:rd} and \(L \ge 7 > \log 2\pi\).
+\item[\ref{pr:MN}] Problem~\ref{pr:Lminus} with \(L = \log b\), using Problems~\ref{pr:weights} and~\ref{pr:m-big}, and \(q_1 d \le b\) from \(q_1 x_1 \mid b\) and \(d \le C < x_1\).
+\end{description}
+
+\subsection*{\S\ref{sec:existence}}
+\begin{description}
+\item[\ref{pr:eps}] Take logarithms to compare the five conditions; keep track of the floor in \(x_1\).
+\end{description}
+
+{\small
+\begin{thebibliography}{GL}
+\bibitem[Alp]{Alp} L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[IR]{IR} K.~Ireland and M.~Rosen, \emph{A Classical Introduction to Modern Number Theory}, 2nd ed., Grad.\ Texts in Math.\ 84, Springer, 1990.
+\bibitem[Ne]{Ne} J.~Neukirch, \emph{Algebraic Number Theory}, Grundlehren Math.\ Wiss.\ 322, Springer, 1999.
+\bibitem[RS]{RS} J.~B.~Rosser and L.~Schoenfeld, \emph{Approximate formulas for some functions of prime numbers}, Illinois J.~Math.\ \textbf{6} (1962), 64--94.
+\bibitem[Rob]{Rob} H.~Robbins, \emph{A remark on Stirling's formula}, Amer.\ Math.\ Monthly \textbf{62} (1955), 26--29.
+\bibitem[Wa]{Wa} L.~C.~Washington, \emph{Introduction to Cyclotomic Fields}, 2nd ed., Grad.\ Texts in Math.\ 83, Springer, 1997.
+\end{thebibliography}
+}
+
 \end{document}
