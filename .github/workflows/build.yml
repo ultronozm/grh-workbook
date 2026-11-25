@@ -39,6 +39,7 @@ on:
       - 'index.org'
       - 'tex2html.el'
       - 'scripts/**'
+      - 'tags.tsv'
 
 permissions:
   contents: write
@@ -125,10 +126,18 @@ jobs:
 
       # Chapter numbers come from the order of the index: regenerate
       # chapters.tex and the index labels, then refuse hand-typed numbers.
-      - name: Number chapters and check prose numbers
+      # Stable tags: fail if a tagged label vanished without being
+      # retired, a tag occurs twice, or (on push) a line of tags.tsv was
+      # changed or deleted.
+      - name: Number chapters and check prose numbers and tags
         run: |
           python3 scripts/make-chapters.py
           python3 scripts/check-numbers.py
+          if [ "${{ github.event_name }}" = "push" ]; then
+            python3 scripts/make-tags.py --check --since "${{ github.event.before }}"
+          else
+            python3 scripts/make-tags.py --check
+          fi
 
       - name: Determine files to build
         id: plan
@@ -161,6 +170,11 @@ jobs:
               stem=$(basename "${c%.*}")
               DEPS=$(grep -lF "{$stem}" $ALL </dev/null || true)
               FILES="$FILES $DEPS"
+            done
+            # A sheet whose lines in tags.tsv changed shows its tags anew.
+            for id in $(git diff -U0 "${{ github.event.before }}" "${{ github.event.after }}" -- tags.tsv |
+                        awk -F'\t' '/^\+[^+#]/ {print $2}' | sort -u); do
+              FILES="$FILES $(printf '%s\n' $ALL | grep "^$id--" || true)"
             done
             # If the committed chapters.tex was stale, the numbers changed
             # here: rebuild every sheet that reads it.
@@ -313,6 +327,11 @@ jobs:
         run: |
           python3 scripts/make-flowchart.py
           emacs --batch -l ./tex2html.el --eval '(progn (setq org-html-validation-link nil) (find-file "flowchart.org") (org-html-export-to-html))' </dev/null
+
+      # tag/TAG.html redirects to each tagged item, tags.html lists them
+      # (scripts/make-tags.py), with the numbers of the current build.
+      - name: Make the tag pages
+        run: python3 scripts/make-tags.py --site .
 
       - name: Check TeX links
         run: |

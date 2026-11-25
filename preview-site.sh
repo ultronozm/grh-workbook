@@ -24,6 +24,9 @@ cd "$root"
 # committed), and refuse hand-typed numbers in the prose.
 python3 scripts/make-chapters.py
 python3 scripts/check-numbers.py
+# Stable tags: fail if a tagged label vanished or a line of tags.tsv
+# was edited since HEAD (new tags are added by scripts/make-tags.py).
+python3 scripts/make-tags.py --check --since HEAD
 site="$root/_site.new"
 lock="$root/.preview.lock"
 until mkdir "$lock" 2>/dev/null; do echo "waiting for another preview build..." >&2; sleep 5; done
@@ -127,6 +130,13 @@ if python3 scripts/make-flowchart.py &&
   echo "OK: flowchart.html"
 else
   FAILED="$FAILED flowchart.html"; echo "FAILED: flowchart.html"
+fi
+
+# The tag pages: tag/TAG.html redirects to the item, tags.html lists them.
+if python3 scripts/make-tags.py --site . >/dev/null; then
+  echo "OK: tags.html"
+else
+  FAILED="$FAILED tags.html"; echo "FAILED: tags.html"
 fi
 
 # Check TeX links (warning-only); the report stays outside the site.

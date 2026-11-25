@@ -33,3 +33,10 @@ The index `20261125T012000--grh-workbook__guide.org` is the only record of the c
 - `scripts/check-numbers.py`, run by `./preview-site.sh` and CI, fails on typed numbers outside `\cite[…]` and the bibliography.  A number that refers to another work (e.g. a chapter of Davenport outside a `\cite`) is allowed by a comment on its line: `% check-numbers: ok (Davenport): Ch.~12; Ch.~17`.
 
 Build a sheet with `latexmk -pdf FILE.tex`; cross-sheet references use `xr`, so build earlier sheets first.  `./preview-site.sh` builds the whole site locally.
+
+**Tags.**
+Numbers change when chapters or problems are inserted; tags do not.  As in the Stacks project, every chapter, `\section` and labelled `problem`, `theorem`, `proposition`, `lemma` and `definition` of the settled parts (for now Parts I–V and S1–S2; the list is `STABLE_PARTS` and `STABLE_SIDE` in `scripts/make-tags.py`) has a four-character tag such as `2B7K`, recorded in `tags.tsv` as tag, sheet ID and label (empty for the chapter).  The HTML shows it in grey beside the item; `tag/2B7K.html` leads to the item wherever it is, and `tags.html` lists all tags.  The PDF does not show tags.
+- After adding an item to a settled part, run `scripts/make-tags.py`, which appends tags for the untagged items, and commit `tags.tsv` with the sheet.  Never edit, reorder or delete a line of `tags.tsv`, and never reuse a tag.
+- A tagged label must stay.  If its item must go, or changes beyond recognition, mark its line retired by adding a fourth column: `retired`, or `retired -> 2C3D` if the item `2C3D` replaces it, optionally followed by `; reason`.  A retired label may then be reused for a new item, which gets a new tag.
+- When a later part settles, add it to the stable list and run `scripts/make-tags.py`.
+- `scripts/make-tags.py --check`, run by `./preview-site.sh` and CI, fails if a tagged label has disappeared without being retired, if a tag or an item is listed twice, or if a committed line was changed or deleted; it warns about untagged items.  A line not yet committed may still be dropped.
