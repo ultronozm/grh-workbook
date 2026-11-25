@@ -37,6 +37,7 @@
 \externaldocument[mi-]{20261126T020430--the-minus-part-by-gauss-sums__workbook}
 \externaldocument[pl-]{20261126T020440--the-plus-part-by-congruences__workbook}
 \externaldocument[ws-]{20261126T020450--windows-of-scales__workbook}
+\externaldocument[lf-]{20261125T021600--the-accounting-in-the-lean-formalization__workbook}
 
 % Chapter number; \ref{chap} gives it.
 \newcounter{chap}
@@ -79,7 +80,7 @@
 From Chapter~\ref{zr-chap}: the functions \(G\) and \(G_\chi\) of~\eqref{zr-eq:G} and~\eqref{zr-eq:Gchi}, Theorem~\ref{zr-thm:intervals}, and Sections~\ref{zr-sec:dirichlet} and~\ref{zr-sec:real-pole}.  From Chapter~\ref{zi-chap}: Problem~\ref{zi-pr:Rqd} and Estimate~B (Section~\ref{zi-sec:estB}).  From Chapter~\ref{gf-chap}: the notation \(q, d, n, H, \Phi\), \(P_{t,w}(a)\), \(M_w(a)\), \(c_{\chi_d}\), \(\delta = \lvert T_2\rvert/n\), \(R_{q,d}\), Theorems~\ref{gf-thm:balance} and~\ref{gf-thm:two-scales}, and Section~\ref{gf-sec:subgroup}.  From Chapter~\ref{cs-chap}: the bound~\eqref{cs-eq:density}, Theorem~\ref{cs-thm:behrend} and Problem~\ref{cs-pr:size-T}.  From Chapter~\ref{ch-chap}: Theorem~\ref{ch-thm:chain} and Section~\ref{ch-sec:budget}.  Mertens' estimate \(\sum_{n \le x}\Lambda(n)/n = \log x + O(1)\).  From Chapters~\ref{af-chap}, \ref{di-chap}, \ref{sb-chap}, \ref{hp-chap} and~\ref{lt-chap}: the deliverable stated at the end of each, which Sections~\ref{sec:inputs} and~\ref{sec:window} match with the inputs, and the problems cited below.
 
 \medskip
-Chapter~\ref{ch-chap} balanced an error \(x/m + m\) for a model chain whose inputs were given.  What are the inputs in Alp\"oge's argument \cite{Alp}, what error must each achieve, and which of them pays for each term of the final bound?  We follow the reconstruction of Adriazola \cite{Adr}, with \cite[\S\S I.5--I.8]{Rub} and \cite[\S6]{Zh}.  Throughout, \(0 < \varepsilon < \frac1{52}\), the range in which \cite[Thms.~5.10 and~5.12]{Adr} construct the auxiliary primes of Section~\ref{sec:window}; no problem uses this bound.  Let
+Chapter~\ref{ch-chap} balanced an error \(x/m + m\) for a model chain whose inputs were given.  What are the inputs in Alp\"oge's argument \cite{Alp}, what error must each achieve, and which of them pays for each term of the final bound?  We state what the Lean formalization \cite{Lean} proves.  The expositions of Adriazola \cite{Adr}, Zhang \cite[\S\S4 and~6]{Zh} and Rubinstein \cite[\S\S I.5--I.8]{Rub} are cited as pointers; they agree with it except where noted.  Chapter~\ref{lf-chap} records the formalization's accounting in full.  Throughout, \(0 < \varepsilon < \frac1{52}\), the range in which \cite[Thms.~5.10 and~5.12]{Adr} construct the auxiliary primes of Section~\ref{sec:window}; no problem uses this bound.  Let
 \[
   y := x^\varepsilon , \qquad b := e^{y} , \qquad a := xb .
 \]
@@ -87,16 +88,17 @@ We treat \(\zeta\), so that the averaging of Chapter~\ref{gf-chap} is over all o
 
 \section{The accounting}\label{sec:acct}
 
-The data are: \(m\) lifts; a set \(T \subset H\) of \(N_T\) tops with weights \(a_t > 0\), and \(A := \sum_t a_t\); nodes \(w_j \colon \Phi \to (0,\infty)\) for \(1 \le j \le m\); a finite set \(\Wc\) of \emph{words}, and for \(u \in \Wc\) a source lattice \(N_u\) of rank \(d_u\), a base lattice \(M_u\), an auxiliary prime \(T_u\), and a bound \(h_u\) for the height of the period map \(B_u \colon N_u \to R^\vee\), where \(R^\vee\) is the target.  These objects are defined in Chapter~\ref{ob-chap}.  All lattices are hermitian lattices over the ring of integers of a coefficient field \(L \supset E\) (over \(\Oc_E\) in \cite[Def.~18.9]{Adr}), with the normalized slopes of Chapter~\ref{sm-chap}.  Let \(S := \sum_{t,j} P_{t,w_j}(a_t)\), let \(\Gamma\) be the total gain of the lifts at the inert primes, \(\Lc\) their common local terms and \(E_u\) their local terms at the level and twisted places.  Let \(\ph(t) := t\log t - t\), \(v := \frac12 \rd_E\), \(\log\Omega := \gamma + \log(\pi/v) - c_{\chi_d}\) (for \(E = \Q(\ii)\), with \(\chi_{-4}\) in place of \(\chi_d\), \(v = 1\) and \(\Omega\) is the \(\Omega\) of Problem~\ref{ec-pr:Omega}), let \(g := \log(g_0g_1)\) for two level primes \(g_0, g_1\), and write \(\langle X \rangle := \sum_u d_uX_u / \sum_u d_u\).  The inputs are seven inequalities, for every \(u \in \Wc\), with numbers \(e_1, \dots, e_7 \ge 0\):
+The data are: \(m\) lifts; a set \(T \subset H\) of \(N_T\) tops with weights \(a_t > 0\), and \(A := \sum_t a_t\); nodes \(w_j \colon \Phi \to (0,\infty)\) for \(1 \le j \le m\); a finite set \(\Wc\) of \emph{words}, and for \(u \in \Wc\) a source lattice \(N_u\) of rank \(d_u\), a base lattice \(M_u\), an auxiliary prime \(T_u\), and a bound \(h_u\) for the height of the period map \(B_u \colon N_u \to R^\vee\), where \(R^\vee\) is the target.  These objects are defined in Chapter~\ref{ob-chap}.  All lattices are hermitian lattices over the ring of integers of a coefficient field \(L \supset E\) (over \(\Oc_E\) in \cite[Def.~18.9]{Adr}), with the normalized slopes of Chapter~\ref{sm-chap}.  Let \(S := \sum_{t,j} P_{t,w_j}(a_t)\), let \(\Gamma\) be the total gain of the lifts at the inert primes, net of the colength of the Hecke image, \(\Lc\) their common local terms and \(E_u\) their local terms at the level and twisted places.  Let \(\ph(t) := t\log t - t\), \(v := \frac12 \rd_E\), \(\log\Omega := \gamma + \log(\pi/v) - c_{\chi_d}\) (for \(E = \Q(\ii)\), with \(\chi_{-4}\) in place of \(\chi_d\), \(v = 1\) and \(\Omega\) is the \(\Omega\) of Problem~\ref{ec-pr:Omega}), let \(g := \log(g_0g_1)\) for two level primes \(g_0, g_1\), and write \(\langle X \rangle := \sum_u d_uX_u / \sum_u d_u\).  The inputs are seven inequalities, for every \(u \in \Wc\), with numbers \(e_1, \dots, e_7 \ge 0\):
 \begin{align}
   S &\le \Gamma + e_1 , \tag{A1}\label{A1}\\
   \mu(M_u) + \Gamma + \Lc - E_u - e_2 &\le \mu(N_u) , \tag{A2}\label{A2}\\
   \langle \mu(N) - h \rangle - e_3 &\le \mu(R^\vee) , \tag{A3}\label{A3}\\
   \mu(R^\vee) + h_u - \Lc &\le \textstyle\sum_{t} \bigl( m\ph(a_t) - m a_t \log\Omega - a_t\log T_u \bigr) + e_4 , \tag{A4}\label{A4}\\
   E_u &\le mAg + e_5 , \tag{A5}\label{A5}\\
-  \log T_u &\ge \textstyle\sum_{j} \frac{1}{2n}\sum_{\rho\in\Phi} \log\bigl(w_j(\rho)v/\pi\bigr) + mg - e_6 , \tag{A6}\label{A6}\\
-  \mu(M_u) &\ge -e_7 . \tag{A7}\label{A7}
+  \log T_u &\ge \textstyle\sum_{j} \frac{1}{f}\sum_{\rho\in\Phi} \log\bigl(w_j(\rho)v/\pi\bigr) + mg - e_6 , \tag{A6}\label{A6}\\
+  \mu(M_u) &\ge -e_7 , \tag{A7}\label{A7}
 \end{align}
+where \(f := \lvert\Phi\rvert = 2n\).  In the formalization \(\Gamma\) is a weighted sum, over the inert places, of the gains \(\sum_j \mathrm{gain}_j(p)\) less the exponent \(\tau(p)\) of the Hecke image (Theorem~\ref{gl-thm:linkG} and Chapter~\ref{co-chap}).  So the colength of the Hecke image is paid inside \(\Gamma\), and appears in neither \(e_1\) nor \(e_2\).
 
 \begin{problem}\label{pr:A127}
 \(\Gamma \le \mu(N_u) - \Lc + E_u + e_2 + e_7\) for every \(u\).
@@ -134,7 +136,11 @@ What must each \(e_i\) be?  Put \(N_2 := \lvert T_2\rvert = \delta n\) and
 \[
   B_0 := 2nmby , \qquad N_c := \frac{N_2\,k\,b\,y^2}{n^2} ,
 \]
-where \(k\) is the dimension of the first hermitian space of the chain \cite[\S6.1]{Zh}.  In the following, \(C \ge 1\) and \(C_H \ge 0\) depend on \(\varepsilon\) but not on \(x\).  The data satisfy \(N_T \ge 1\), \(1 \le m \le k \le b\), \(mb \le a\) and \(a \le a_t \le a + b\) for \(t \in T\) \cite[Def.~18.5, Lemma~18.15]{Adr} (the bound \(k \le b\) holds for the choices of Section~\ref{sec:exponents} once \(x\) is large), and \(1 \le \lvert\Wc\rvert \le 2^{k-3}\) \cite[Def.~18.9(a)]{Adr}; so \(a_t \le 2a\) and \(\lvert a_t/b - x\rvert \le 1\).  The spread \(u_F := \max_u(\mumax(N_u) - h_u) - \langle\mu(N) - h\rangle\) satisfies \(0 \le u_F \le U := Cy\bigl(N_Ta(1 + m^2/k) + mB_0\bigr)\) \cite[Lemma~18.13]{Adr}.  The errors are those of \cite[Def.~18.9 and Prop.~18.14]{Adr}, and the earlier chapters of this part deliver them:
+where \(k\) is the dimension of the first hermitian space of the chain \cite[\S6.1]{Zh}.  In the following, \(C \ge 1\) and \(C_H \ge 0\) depend on \(\varepsilon\) but not on \(x\).  The data satisfy \(N_T \ge 1\), \(1 \le m \le k \le b\), \(mb \le a\) and \(a \le a_t \le a + b\) for \(t \in T\) \cite[Def.~18.5, Lemma~18.15]{Adr} (the bound \(k \le b\) holds once \(x\) is large, since \(k\) is at most a power of \(x\) and \(b = e^y\)), and \(1 \le \lvert\Wc\rvert \le 2^{k-3}\) \cite[Def.~18.9(a)]{Adr}; so \(a_t \le 2a\) and \(\lvert a_t/b - x\rvert \le 1\).  Let
+\[
+  U := 8Cy\bigl(N_Ta(1 + m^2/k) + mB_0\bigr) ;
+\]
+Problem~\ref{pr:spread-size} shows that it bounds the spread defined below.  The errors are those of \cite[Def.~18.9 and Prop.~18.14]{Adr}, and the earlier chapters of this part deliver them:
 \begin{itemize}
 \item \eqref{A1} and~\eqref{A2}, with \(e_1 \le CN_Tmb\) and \(e_2 \le Cy\bigl(N_Tmb + N_Ta\,m^2/k + a\bigr)\): Theorems~\ref{di-thm:K1} and~\ref{di-thm:K2}, with Problems~\ref{di-pr:aux} and~\ref{di-pr:record};
 \item \eqref{A3}, with \(e_3 = \log\lvert\Wc\rvert + 8\log(1 + x^{C_H})(U + b) + 12b\): Theorem~\ref{sb-thm:K3} and Problem~\ref{sb-pr:A3};
@@ -144,8 +150,30 @@ where \(k\) is the dimension of the first hermitian space of the chain \cite[\S6
 \end{itemize}
 Section~\ref{sec:map} records the status of each.
 
+The formalization assumes more than~\eqref{A1}--\eqref{A7}.  For all \(u, u' \in \Wc\) it also has
+\begin{align}
+  \mumax(N_u) &\le \mumax(M_u) + \Gamma + \Lc - E_u + e_2^+ , \tag{A2\(^+\)}\label{A2p}\\
+  E_u &\ge mAg - e_5 , \tag{A5\(^-\)}\label{A5m}\\
+  \mumax(M_u) &\le e_7^+ , \tag{A7\(^+\)}\label{A7p}\\
+  \bigl\lvert (h_u + A\log T_u) - (h_{u'} + A\log T_{u'}) \bigr\rvert &\le e_H , \tag{H}\label{H}\\
+  \lvert \log T_u - \log T_{u'} \rvert &\le e_T , \tag{A6\('\)}\label{A6v}
+\end{align}
+with \(e_2^+ \le CmB_0\), \(e_7^+ \le CyN_Ta\), \(e_H \le Cy(N_Ta + mB_0)\) and \(e_T \le C\log k\), and an upper bound for \(\log T_u\) (Chapter~\ref{lf-chap}).  These are further clauses of the statements that give~\eqref{A2}, \eqref{A4}, \eqref{A5}, \eqref{A6} and~\eqref{A7}; \eqref{A5m} is the other half of Theorem~\ref{lt-thm:local}.  With them the spread
+\[
+  u_F := \max_u\bigl(\mumax(N_u) - h_u\bigr) - \langle\mu(N) - h\rangle ,
+\]
+which enters~\eqref{A3} through \(e_3\), is bounded by a proved lemma; \cite[Lemma~18.13]{Adr} states the bound.
+
+\begin{problem}\label{pr:spread}
+Assume~\eqref{A2}, \eqref{A5}, \eqref{A7} and~\eqref{A2p}--\eqref{A6v}, and \(\mu(N_u) \le \mumax(N_u)\) for every \(u\).  Then \(0 \le u_F \le e_2 + e_2^+ + 2e_5 + e_7 + e_7^+ + e_H + Ae_T\).
+\end{problem}
+
+\begin{problem}\label{pr:spread-size}
+With the errors of this section and \(y \ge 1\), \(u_F \le U\).
+\end{problem}
+
 \begin{problem}\label{pr:e3}
-If \(\Wc\) is nonempty and \(\lvert\Wc\rvert \le 2^{k-3}\), then \(e_3 \le 8(1 + C_H)\,y\,(U + b) + 13b\) for large \(x\).
+If \(\Wc\) is nonempty, \(\lvert\Wc\rvert \le 2^{k-3}\) and \(k \le b\), then \(e_3 \le 8(1 + C_H)\,y\,(U + b) + 13b\) for large \(x\).
 \end{problem}
 
 \begin{problem}\label{pr:calB}
@@ -153,27 +181,72 @@ Let \(\Bc := N_Ta(1 + m^2/k) + m(B_0 + N_c)\), and suppose that the data satisfy
 \end{problem}
 
 \begin{theorem}\label{thm:M}
-Under the conditions on the data and the inputs~\eqref{A1}--\eqref{A7} with the errors of this section, for large \(x\),
+Under the conditions on the data and the inputs~\eqref{A1}--\eqref{A7} and~\eqref{A2p}--\eqref{A6v} with the errors of this section, for large \(x\),
 \(
-  \sum_{t,j}\bigl(P_{t,w_j}(a_t) - M_{w_j}(a_t)\bigr) \le x^{3\varepsilon}\,\Bc
-\).
+  \sum_{t,j}\bigl(P_{t,w_j}(a_t) - M_{w_j}(a_t)\bigr) \le x^{(e_D + e_L + 3)\varepsilon}\,\Bc
+\),
+where \(e_D := 2\) and \(e_L := 0\).
 \end{theorem}
 
-This is \cite[Thm.~A]{Adr}, and \cite[\S I.5, (M)]{Rub} before normalization.  Reading Problem~\ref{pr:calB} backwards shows which input pays for which term of \(\Bc\).  The term \(N_Ta\) collects costs incurred once for each top, not once for each lift: the base lattice (\(e_7\)), the precision \(\log(a\rd_E) \le 2y\) of the linear term of the norms (\(e_4\)), and the auxiliary prime (\(e_6\)).  The term \(N_Ta\,m^2/k\) is the colength and size of the auxiliary prime (\(e_2\), \(e_6\)).  The term \(mB_0\) collects the local losses of the \(m\) lifts (\(e_5\), and \(e_4\)); each is of size \(B_0\), which grows with \(m\) because the nodes of the \(j\)th lift grow with \(j\), as the cost of the \(k\)th identity did in Chapter~\ref{ch-chap}.  The term \(mN_c\) comes only from the congruence defects, through \(e_4\).  The spread \(U\) and hence \(e_3\) contain all but the last.
+This is the bound the formalization proves at each translate.  The numbers \(e_D\) and \(e_L\) are the powers of \(y\) in the errors of~\eqref{A4}, on the term \(m(B_0 + N_c)\), and of~\eqref{A1}; the formalization fixes them before \(\varepsilon\) (Section~\ref{sec:window}).  Problem~\ref{pr:calB} gives more, \(x^{3\varepsilon}\Bc\) for large \(x\); we keep the formalization's exponent, so that the exponents below are the ones it proves.  The bound is \cite[(4.11)]{Zh}, \cite[Thm.~A]{Adr}, and \cite[\S I.5, (M)]{Rub} before normalization.  Reading Problem~\ref{pr:calB} backwards shows which input pays for which term of \(\Bc\).  The term \(N_Ta\) collects costs incurred once for each top, not once for each lift: the base lattice (\(e_7\)), the precision \(\log(a\rd_E) \le 2y\) of the linear term of the norms (\(e_4\)), and the auxiliary prime (\(e_6\)).  The term \(N_Ta\,m^2/k\) is the colength and size of the auxiliary prime (\(e_2\), \(e_6\)).  The term \(mB_0\) collects the local losses of the \(m\) lifts (\(e_5\), and \(e_4\)); each is of size \(B_0\), which grows with \(m\) because the nodes of the \(j\)th lift grow with \(j\), as the cost of the \(k\)th identity did in Chapter~\ref{ch-chap}.  The term \(mN_c\) comes only from the congruence defects, through \(e_4\).  The spread \(U\) and hence \(e_3\) contain all but the last.
 
-\section{Normalization: the four terms}\label{sec:norm}
+\section{Normalization}\label{sec:norm}
 
 The averaging of Chapter~\ref{gf-chap} is over translates.  We write \(\tau \in H\) for the translate index, called \(u\) there, since \(u\) indexes words here; so the nodes of the \(j\)th lift at the translate \(\tau\) are \(w_{\tau,j} \colon \Phi \to (0,\infty)\).  Before averaging we need, for one \(x\):
 \begin{enumerate}
-\item[(V1)] for every \(\tau \in H\), data as in Section~\ref{sec:inputs} with the nodes \(w_{\tau,1}, \dots, w_{\tau,m}\), and with the same \(m, k, n, T, T_2\) and \(a_t\) for all \(\tau\), satisfying the conditions stated there and~\eqref{A1}--\eqref{A7} with the errors stated there, with the same \(C\), \(C_H\) and threshold for ``large \(x\)''; the words \(\Wc\) and the lattices may depend on \(\tau\);
+\item[(V1)] for every \(\tau \in H\), data as in Section~\ref{sec:inputs} with the nodes \(w_{\tau,1}, \dots, w_{\tau,m}\), and with the same \(m, k, n, T, T_2\) and \(a_t\) for all \(\tau\), satisfying the conditions stated there, \eqref{A1}--\eqref{A7} and~\eqref{A2p}--\eqref{A6v} with the errors stated there, with the same \(C\), \(C_H\) and threshold for ``large \(x\)''; the words \(\Wc\) and the lattices may depend on \(\tau\);
 \item[(V2)] for every \(t \in T\) and every \(j\), all hypotheses of Theorem~\ref{gf-thm:two-scales} for \(a = a_t\) and the family \((w_{\tau,j})_{\tau \in H}\): \(\lvert a_t/b - x\rvert \le 1\), the thick and thin conditions~\eqref{gf-eq:thick-thin} with numbers \(\Delta\) and \(X\), and the thin-scale bound \(\lvert G_\theta(y)\rvert \le \vartheta y\) for all \(\theta\) and \(y \ge X\);
-\item[(V3)] \(\displaystyle \frac{8n(x+1)\vartheta}{\delta} + \frac{2\Delta}{\delta b}\Bigl(2\sum_{r \le x+1}\Lambda(r) + x + 1\Bigr) \le 1\).
+\item[(V3)] \(2f(x+1)\vartheta \le 1/x\) and \(6f(x+1)(\Delta + 1) \le b/x\).
 \end{enumerate}
-By (V1) and Theorem~\ref{thm:M}, for every \(\tau\) the sum \(\sum_{t,j}\bigl(P_{t,w_{\tau,j}}(a_t) - M_{w_{\tau,j}}(a_t)\bigr)\) is at most \(x^{3\varepsilon}\Bc\), a bound that does not depend on \(\tau\), since \(\Bc\) does not involve the nodes.  By (V2) and (V3), Theorem~\ref{gf-thm:two-scales} for each pair \((t, j)\), averaged over the \(N_Tm\) pairs, bounds \(R_{q,d}(x)\) by
-\[
-  \frac{2}{N_Tmb\delta}\cdot\frac1n\sum_{\tau\in H}\sum_{t,j}\bigl(P_{t,w_{\tau,j}}(a_t) - M_{w_{\tau,j}}(a_t)\bigr)
-\]
-plus \(\mathcal{K}(x) + 1\) \cite[Thm.~4.2]{Adr}.  The divisor \(N_Tmb\delta/2\) counts the gain: \(N_T\) tops, \(m\) lifts, weight \(b\), at a proportion \(\delta/2\) of the places.  By Theorem~\ref{thm:M} what remains is to divide \(\Bc\) by it.
+(V3) is the form of the cost conditions in the formalization.  We use Chebyshev's bound \(\sum_{r \le y}\Lambda(r) \le 3y\) for \(y \ge 0\) \cite{RS}.
+
+\begin{problem}\label{pr:V3}
+Under (V3), the last two terms of Theorem~\ref{gf-thm:two-scales} add up to at most \(4/(\delta x)\).
+\end{problem}
+
+Let \(Q := N_Tmb\): \(N_T\) tops, \(m\) lifts, weight \(b\).
+
+\begin{problem}\label{pr:average}
+Under (V1)--(V3), for large \(x\),
+\(
+  Q\,\frac{\delta}{2}\bigl(R_{q,d}(x) - \mathcal{K}(x)\bigr) \le x^{(e_D+e_L+3)\varepsilon}\,\Bc + 2Q/x
+\).
+\end{problem}
+
+The factor \(Q\delta/2\) counts the gain: \(N_T\) tops, \(m\) lifts, weight \(b\), at a proportion \(\delta/2\) of the places.  What remains is to divide \(\Bc\) by it.  The formalization does not form the quotient.  It bounds the four terms of \(\Bc\) one at a time by \(Q\) times a power of \(x\), and uses only the inequalities
+\begin{equation}\label{eq:S}\tag{S}
+  \begin{gathered}
+  a \le 2xb, \quad N_T \ge \tfrac12 x^{-\varepsilon/8}n, \quad x^{-\varepsilon} \le \delta, \quad N_2 \le n, \\
+  x^{1/2-\varepsilon} \le m \le x^{1/2+\varepsilon/2}, \quad xm \le k \le n^2x^{1/2-\varepsilon} .
+  \end{gathered}
+\end{equation}
+In Problems~\ref{pr:size-ends}--\ref{pr:size-defects} assume~\eqref{eq:S}, \(x \ge 1\), \(\varepsilon > 0\), and let \(Y := x^{1/2+13\varepsilon/8}\).
+
+\begin{problem}\label{pr:size-ends}
+\(N_Ta \le 2YQ\) and \(N_Ta\,m^2/k \le 2Q\).
+\end{problem}
+
+\begin{problem}\label{pr:size-steps}
+\(mB_0 \le 4YQ\).
+\end{problem}
+
+\begin{problem}\label{pr:size-defects}
+\(mN_c \le 2YQ\).  Hence \(\Bc \le 10YQ\).
+\end{problem}
+
+\begin{theorem}[normalization]\label{thm:size}
+Let \(x \ge 3\), \(\varepsilon > 0\), \(C \ge 0\) and \(x^{3\varepsilon/8} \ge 26\).  Let \(n, N_T, N_2, m\) be positive integers and \(b > 0\), and assume~\eqref{eq:S}.  If a real number \(G\) satisfies
+\(
+  Q\,\frac{\delta}{2}\bigl(G - 4x^{1/2+\varepsilon}\bigr) \le x^{C\varepsilon}\,\Bc + 2Q/x
+\),
+then \(G \le x^{1/2+(C+3)\varepsilon}\).
+\end{theorem}
+
+\begin{problem}\label{pr:size-divide}
+Under the hypotheses of Theorem~\ref{thm:size}, \(\delta(G - 4x^{1/2+\varepsilon}) \le 22x^{C\varepsilon}Y\), and \(G \le 26x^{1/2+(C+21/8)\varepsilon}\).  This proves the theorem.
+\end{problem}
+
+Theorem~\ref{thm:size} is \cite[Lemma~6.1]{Zh}, with the same constants, as the formalization proves it.  Why the inequalities~\eqref{eq:S}?  Dividing \(\Bc\) by the gain shows which input pays for which term.  This is how \cite[\S4.3]{Adr} and \cite[\S I.5, (M), and \S I.6, Thm.~A]{Rub} state the normalization; the arithmetic is correct, but it is not how the formalization argues.
 
 \begin{problem}\label{pr:divide}
 \(\displaystyle \frac{\Bc}{N_Tmb\delta/2} = \frac{2x}{\delta}\Bigl(\frac1m + \frac mk\Bigr) + \frac{4nmy}{N_T\delta} + \frac{2ky^2}{nN_T}\).
@@ -183,60 +256,37 @@ plus \(\mathcal{K}(x) + 1\) \cite[Thm.~4.2]{Adr}.  The divisor \(N_Tmb\delta/2\)
 If \(\delta \ge x^{-\varepsilon}\) and \(N_T \ge \frac12 x^{-\varepsilon/8}n\), the quotient of Problem~\ref{pr:divide} is at most \(8x^{17\varepsilon/8}\bigl(x/m + xm/k + m + k/n^2\bigr)\).
 \end{problem}
 
-\begin{theorem}\label{thm:four}
-Assume (V1)--(V3), \(\delta \ge x^{-\varepsilon}\) and \(N_T \ge \frac12 x^{-\varepsilon/8}n\).  For large \(x\), \(R_{q,d}(x) \le x^{C_{\mathrm{abs}}\varepsilon}\bigl(x/m + xm/k + m + k/n^2\bigr) + \mathcal{K}(x) + 1\), with \(C_{\mathrm{abs}}\) absolute.
-\end{theorem}
-
-The hypothesis \(\delta \ge x^{-\varepsilon}\) is~\eqref{cs-eq:density}, which Behrend's set of columns satisfies (Theorem~\ref{cs-thm:behrend}, and Problem~\ref{af-pr:behrend} at the scale of the argument).  The hypothesis \(N_T \ge \frac12 x^{-\varepsilon/8}n\) holds with high probability for the random tops of density \(\delta_1 = x^{-\varepsilon/8}\) (Problem~\ref{cs-pr:size-T}, and Theorem~\ref{af-thm:sizes}(iv)).
-This is the four-term error of \cite[\S I.5, (M), and \S I.6, Thm.~A]{Rub}.  Adriazola writes the fourth term as \(kx^{c\varepsilon}/(nN_T)\) \cite[\S4.3]{Adr}, the same up to \(n/N_T \le 2x^{\varepsilon/8}\); Zhang's Lemma~6.1 \cite{Zh} has the same four terms.  So \(x/m\) is paid at the ends, \(xm/k\) at the auxiliary primes, \(m\) by the local losses of the steps, and \(k/n^2\) by the congruence defects.  Rubinstein \cite[\S I.8]{Rub} describes \(x/m\) and \(m\) in the same way, and calls \(xm/k\) and \(k/n^2\) the costs of the auxiliary parameters \(k\) and \(n\); for the last term we follow \cite[\S\S16--18]{Adr}. % check-numbers: ok (Zhang): Lemma~6.1
+So \(x/m\) is paid at the ends, \(xm/k\) at the auxiliary primes, \(m\) by the local losses of the steps, and \(k/n^2\) by the congruence defects: the four bounds of Problems~\ref{pr:size-ends}--\ref{pr:size-defects}, in order.  Adriazola writes the fourth term as \(kx^{c\varepsilon}/(nN_T)\) \cite[\S4.3]{Adr}, the same up to \(n/N_T \le 2x^{\varepsilon/8}\).  Rubinstein \cite[\S I.8]{Rub} describes \(x/m\) and \(m\) in the same way, and calls \(xm/k\) and \(k/n^2\) the costs of the auxiliary parameters \(k\) and \(n\); for the last term we follow \cite[\S\S16--18]{Adr}.  The hypothesis \(\delta \ge x^{-\varepsilon}\) is~\eqref{cs-eq:density}, which Behrend's set of columns satisfies (Theorem~\ref{cs-thm:behrend}, and Problem~\ref{af-pr:behrend} at the scale of the argument).  The hypothesis \(N_T \ge \frac12 x^{-\varepsilon/8}n\) holds with high probability for the random tops of density \(\delta_1 = x^{-\varepsilon/8}\) (Problem~\ref{cs-pr:size-T}, and Theorem~\ref{af-thm:sizes}(iv)).
 
 Why must the constants in~\eqref{A4} be exact, when a long chain absorbs so much else?  Change one input and follow it.
 
 \begin{problem}\label{pr:eta-error}
-Let every \(a_t = xb\), and keep all inputs as they are except that the right side of~\eqref{A4} carries an additional \(\eta mA\), \(\eta > 0\), as it would if \(\log\Omega\) were known only to within \(\eta\).  (i) The bound of Theorem~\ref{thm:acct} increases by \(\eta mA\), and the bound for \(R_{q,d}(x)\) above by \(2\eta x/\delta\), whatever \(m\) is; this is at most \(C\sqrt x\) exactly when \(\eta \le \frac12 C\delta x^{-1/2}\).  (ii) If instead the additional term is \(\eta A\), a cost paid once for each top rather than once for each lift, the bound for \(R_{q,d}(x)\) increases by \(2\eta x/(m\delta)\).
+Let every \(a_t = xb\), and keep all inputs as they are except that the right side of~\eqref{A4} carries an additional \(\eta mA\), \(\eta > 0\), as it would if \(\log\Omega\) were known only to within \(\eta\).  (i) The bound of Theorem~\ref{thm:acct} increases by \(\eta mA\), and the bound for \(R_{q,d}(x) - \mathcal{K}(x)\) given by Problem~\ref{pr:average} by \(2\eta x/\delta\), whatever \(m\) is; this is at most \(C\sqrt x\) exactly when \(\eta \le \frac12 C\delta x^{-1/2}\).  (ii) If instead the additional term is \(\eta A\), a cost paid once for each top rather than once for each lift, that bound increases by \(2\eta x/(m\delta)\).
 \end{problem}
 
-So a long chain divides a cost paid at its ends by \(m\), but an error in the linear term is paid by every lift, and dividing by the \(m\) lifts that pay it gains nothing.  With \(\delta \ge x^{-\varepsilon}\), an error \(\eta\) in \(\log\Omega\) is harmless only if \(\eta \le x^{-1/2-\varepsilon}\) up to a constant.  This is why \(\log\Omega\) must cancel exactly against \(\gamma\) and \(c_{\chi_d}\) in Problem~\ref{pr:levels}, and why the Chowla--Selberg formula, not an estimate of the period, is used.
+So a long chain divides a cost paid at its ends by \(m\), but an error in the linear term is paid by every lift, and dividing by the \(m\) lifts that pay it gains nothing.  Since \(x^{-\varepsilon} \le \delta \le 1\), an error \(\eta\) in \(\log\Omega\) is harmless if \(\eta \le \frac12 Cx^{-1/2-\varepsilon}\), and only if \(\eta \le \frac12 Cx^{-1/2}\).  This is why \(\log\Omega\) must cancel exactly against \(\gamma\) and \(c_{\chi_d}\) in Problem~\ref{pr:levels}, and why the Chowla--Selberg formula, not an estimate of the period, is used.
 
 \section{The exponents}\label{sec:exponents}
 
-Why \(m \approx x^{1/2}\), \(k \approx x^{9/2}\) and \(n \approx x^2\)?  Put \(\delta_1 := x^{-\varepsilon/8}\).
+The normalization needs of \(m\), \(k\) and \(n\) only the inequalities~\eqref{eq:S}.  The formalization chooses them when it builds the family of data, as \cite[Prop.~5.15]{Adr} does.  Why \(m \approx x^{1/2}\), \(k \approx x^{9/2}\) and \(n \approx x^2\)?  The four terms of Problem~\ref{pr:four} explain it.  Put \(\delta_1 := x^{-\varepsilon/8}\).
 
 \begin{problem}\label{pr:m}
 If \(\sqrt{x\delta_1} \le m \le 2\sqrt{x\delta_1}\), then \(x/m \le x^{1/2 + \varepsilon/16}\) and \(m \le 2x^{1/2 - \varepsilon/16}\).  If instead \(m = x^{1/2 + \kappa}\), then \(x/m + m \ge x^{1/2 + \lvert\kappa\rvert}\).
 \end{problem}
 
-\begin{problem}\label{pr:compatible}
-A number \(k\) with \(xm/k \le 1\) and \(k/n^2 \le x^{1/2-\varepsilon}\) exists if and only if \(n^2 \ge m\,x^{1/2+\varepsilon}\).  With \(m \ge x^{1/2-\varepsilon/16}\) this forces \(n \ge x^{1/2}\).
-\end{problem}
-
-The lower bound for \(k\) comes from the rank hypothesis.  The sources must have total rank at least \(x^{C_H}\) times the dimension of the target, each has rank at most \(C_0\) times that dimension divided by \(\Gamma_0^2 = \exp(4C_\Gamma m^5ny)\), the constant of near orthogonality (Theorem~\ref{sb-thm:near}), and there are at most \(2^{k-3}\) of them; so \(k \ge m^5n\) for large \(x\) (Problem~\ref{sb-pr:words}).
-
-\begin{problem}\label{pr:x2}
-If \(k \ge m^5n\), \(k \le n^2x^{1/2}\) and \(m \ge x^{1/2-\varepsilon/16}\), then \(n \ge x^{2-5\varepsilon/16}\) and \(k \ge x^{9/2-5\varepsilon/8}\).
-\end{problem}
-
-The choices of \cite[Prop.~5.15]{Adr} and \cite[\S I.5]{Rub} are \(m \in [\sqrt{x\delta_1}, 2\sqrt{x\delta_1}]\), \(k \in [x^{9/2+10\varepsilon}, 2x^{9/2+10\varepsilon}]\) and \(n \in [x^{2+8\varepsilon}, 2x^{2+8\varepsilon}]\), with \(n\) a power of \(2\) times a bounded integer.
-
-\begin{problem}\label{pr:substitute}
-With these choices, \(x/m\), \(xm/k\), \(m\) and \(k/n^2\) are at most \(x^{1/2+\varepsilon/16}\), \(2x^{-3-161\varepsilon/16}\), \(2x^{1/2-\varepsilon/16}\) and \(2x^{1/2-6\varepsilon}\); for \(\varepsilon = \frac1{100}\) the exponents are \(0.500625\), \(-3.100625\), \(0.499375\) and \(0.44\).  Moreover \(xm \le k \le n^2x^{1/2-\varepsilon}\) for large \(x\).
-\end{problem}
-
-\begin{problem}\label{pr:139}
-With these choices, \(4C_\Gamma m^5ny \le 256\,C_\Gamma\,x^{9/2+139\varepsilon/16}\).  Since \(\frac{139}{16} < 10\), the inequality of Problem~\ref{sb-pr:words} holds for large \(x\).
-\end{problem}
-
-Thus \(m\) balances \(x/m\) against \(m\), the rank hypothesis makes \(k\) about \(m^5n\), and \(k/n^2 \le x^{1/2}\) then makes \(n\) about \(x^2\).  The terms \(xm/k\) and \(k/n^2\) never compete with the balance.  It remains to bound the constant \(\mathcal{K}(x)\) of Theorem~\ref{thm:four}, which contains \(\lvert c_\chi\rvert\) for \(\chi = \chi_q, \chi_d, \chi_q\chi_d\), uniformly in \(q\) and \(d\).
+Thus \(m\) balances \(x/m\) against \(m\).  The rank hypothesis behind~\eqref{A3} makes \(k\) at least about \(m^5n\) (Problem~\ref{sb-pr:words}), and \(k/n^2 \le x^{1/2}\) then makes \(n\) about \(x^2\); Chapter~\ref{lf-chap} works this out, and checks that the choices of \cite[Prop.~5.15]{Adr}, which the formalization makes, satisfy~\eqref{eq:S}.  The terms \(xm/k\) and \(k/n^2\) never compete with the balance.  It remains to bound the constant \(\mathcal{K}(x)\) of Problem~\ref{pr:average}, which contains \(\lvert c_\chi\rvert\) for \(\chi = \chi_q, \chi_d, \chi_q\chi_d\), uniformly in \(q\) and \(d\).
 
 \begin{problem}\label{pr:cchi}
 Let \(\chi\) be a primitive nonprincipal character with \(\lvert G_\chi(x)\rvert \le x\).  Then \(\lvert c_\chi\rvert \le 1 + \sum_{n \le x}\Lambda(n)/n\).  Hence, if Estimate~B ((W1) below) holds at \(x\), then \(\mathcal{K}(x) \le C''\log x\) for \(x \ge 3\), with \(C''\) absolute.
 \end{problem}
 
-By Theorem~\ref{thm:four} and Problem~\ref{pr:cchi}:
+In the formalization the bound \(\lvert L'/L(1,\chi)\rvert \le C_L\log x\) is one of the conditions on the data at \(x\), not derived from Estimate~B as here.  By Problems~\ref{zi-pr:Rqd}, \ref{pr:average} and~\ref{pr:cchi}, and Theorem~\ref{thm:size} with \(C = e_D + e_L + 3\):
 
 \begin{theorem}[Estimate A]\label{thm:A}
-Assume (V1)--(V3), \(\delta \ge x^{-\varepsilon}\), \(N_T \ge \frac12 x^{-\varepsilon/8}n\), the choices of \(m\), \(k\) and \(n\) of this section, and (W1) of Section~\ref{sec:window}.  For large \(x\), \(R_{q,d}(x) \le x^{1/2 + C'\varepsilon}\), with \(C'\) absolute.  In \cite{Adr}, \(C' = 6\).
+Assume (V1)--(V3), \eqref{eq:S}, and (W1) of Section~\ref{sec:window}.  For large \(x\), \(G(x) \le x^{1/2 + (e_D + e_L + 6)\varepsilon}\).
 \end{theorem}
+
+The formalization proves the bound \(x^{1/2+(e_D+e_L+7)\varepsilon} = x^{1/2+9\varepsilon}\) for the positive combination of \(G\) and the \(G_{\psi'}\) attached to a character \(\psi\) (Section~\ref{sec:window}), one \(\varepsilon\) more: it pays for the characters that are not trivial on the subgroup of the averaging (Chapter~\ref{lf-chap}).
 
 If the local loss of the \(j\)th lift grew like \(j^2\) instead of \(j\), the term \(m\) would become \(m^2\), and the balance \(x/m + m^2\) would give only the exponent \(\frac23\) (Problem~\ref{ch-pr:two-thirds}; \cite[step~14]{Alp}).
 
@@ -247,7 +297,7 @@ Theorem~\ref{zr-thm:intervals} needs \(G(x) \le x^\theta\) at every point of \([
 \item[(W1)] Estimate~B: \(\lvert G_\chi(x)\rvert \le x^{1/2+\varepsilon}\) for \(\chi = \chi_q, \chi_d, \chi_q\chi_d\);
 \item[(W2)] the thin-scale bound \(\lvert G_\theta(y')\rvert \le y'\exp(-x^{\varepsilon/8})\) for the \(4n\) characters \(\theta\) of Chapter~\ref{gf-chap} and all \(y' \ge \frac13\exp(x^{\varepsilon/3})\);
 \item[(W3)] \(\sum_{1 \le i < x^{400}} \sum_\ell h_{\ell,i}(E)\log\ell \le \exp(\frac12x^\varepsilon)\) for the field \(E\) of Chapter~\ref{gf-chap} at \(x\), where \(h_{\ell,i}(E)\) is the length of \(\Sha_\ell(E,i)\) as in Chapter~\ref{ts-chap} (there the twist is called \(e\); here \(e\) is the error of Theorem~\ref{thm:acct});
-\item[(W4)] data \(n, m, k, T, T_2\), weights, nodes and lattices satisfying (V1)--(V3) of Section~\ref{sec:norm}, with \(X = \frac13\exp(x^{\varepsilon/3})\) and \(\vartheta = \exp(-x^{\varepsilon/8})\) as in (W2), and with \(\delta \ge x^{-\varepsilon}\), \(N_T \ge \frac12 x^{-\varepsilon/8}n\) and the choices of Section~\ref{sec:exponents}; the constants \(C\), \(C_H\) and the threshold for ``large \(x\)'' do not depend on \(x\), \(Y\), \(Y_0\), \(q\) or \(d\).
+\item[(W4)] data \(n, m, k, T, T_2\), weights, nodes and lattices satisfying (V1)--(V3) of Section~\ref{sec:norm}, with \(X = \frac13\exp(x^{\varepsilon/3})\) and \(\vartheta = \exp(-x^{\varepsilon/8})\) as in (W2), and with~\eqref{eq:S}; the constants \(C\), \(C_H\) and the threshold for ``large \(x\)'' do not depend on \(x\), \(Y\), \(Y_0\), \(q\) or \(d\).
 \end{enumerate}
 The data of (W4) depend on \(x\); the pair \(q, d\) depends only on \(Y_0\).  Chapter~\ref{af-chap} delivers (W1) (Problems~\ref{af-pr:estB-base} and~\ref{af-pr:twists}) and (W2) (Problem~\ref{af-pr:thin}).  (W3) is Theorem~\ref{lt-thm:W3}, and it is what fixes the position of the window.  (W4) is the deliverables of Chapters~\ref{di-chap}--\ref{lt-chap} at every \(x\) of the window, with the data of Theorem~\ref{af-thm:sizes}.
 
@@ -256,14 +306,14 @@ If \(Y_0 \le Y\) and \(Y^2 \le Y_0^J\), then \([Y, Y^{3/2}] \subset [Y_0, Y_0^J]
 \end{problem}
 
 \begin{problem}\label{pr:G}
-Under (W1)--(W4), \(G(x) \le x^{1/2+C'\varepsilon} + 3x^{1/2+\varepsilon}\) for every \(x\) in the window, once \(Y\) is large.
+Under (W1)--(W4), \(G(x) \le x^{1/2+(e_D+e_L+6)\varepsilon}\) for every \(x\) in the window, once \(Y\) is large.
 \end{problem}
 
 \begin{problem}\label{pr:close}
 Let \(0 < c(\varepsilon) < \frac12\) for small \(\varepsilon > 0\), and suppose that for every small \(\varepsilon\) there are arbitrarily large \(Y\) with \(G(x) \le x^{1/2+c(\varepsilon)}\) for all \(x \in [Y, Y^{3/2}]\).  Then \(\zeta(s) \ne 0\) for \(\Re s > \frac12 + \liminf_{\varepsilon\to0} c(\varepsilon)\).
 \end{problem}
 
-By Problem~\ref{pr:G}, \(c(\varepsilon) = (C' + 1)\varepsilon\) for large \(Y\), with \(C'\) independent of \(\varepsilon\).  Problem~\ref{pr:close} then gives the Riemann hypothesis.  This is why the constant \(C'\) of Theorem~\ref{thm:A} must not depend on \(\varepsilon\), while \(J\), \(C\), \(C_H\) and the threshold for \(x\) may.
+By Problem~\ref{pr:G}, \(c(\varepsilon) = (e_D + e_L + 6)\varepsilon\) for large \(Y\); the formalization's statement has \(c(\varepsilon) = (e_D + e_L + 7)\varepsilon = 9\varepsilon\).  Problem~\ref{pr:close} then gives the Riemann hypothesis.  This is why \(e_D\) and \(e_L\) must not depend on \(\varepsilon\), while \(J\), \(C\), \(C_H\) and the threshold for \(x\) may.  The formalization chooses in this order: first \(e_D = 2\), \(e_L = 0\) and a bound \(\varepsilon_1\); then, for each \(\varepsilon < \varepsilon_1\), a single family of data and the constants (in the proof the constants come first, and the family is chosen large relative to them); then a threshold \(x_0\).  At every \(x \ge x_0\) in the set of scales of that family it proves (W4).  That set contains \([Y, Y^{3/2}]\) for arbitrarily large \(Y\).  Given \(s\) with \(\Re s > \frac12\), it takes \(\varepsilon\) with \((e_D + e_L + 7)\varepsilon \le \frac12\min(\Re s - \frac12, \frac12)\).
 
 \begin{theorem}\label{thm:RH}
 Assume (W1)--(W4).  Then \(\zeta(s) \ne 0\) for \(\Re s > \frac12\).
@@ -273,31 +323,31 @@ For \(L(s, \psi)\) one averages over \(A_0 = \ker\psi\) (Section~\ref{gf-sec:sub
 
 \section{The example \texorpdfstring{\(\psi = \chi_8\)}{psi = chi8}}\label{sec:chi8}
 
-Take the example \(\psi = \chi_8\) at the end of Chapter~\ref{af-chap}, with \(R^\psi\) and \(G^\psi = G + \frac17G_{\chi_8}\) as in Problem~\ref{af-pr:chi8-shares}.  How does the argument exclude a zero of \(L(s, \chi_8)\)?
+Take the example \(\psi = \chi_8\) at the end of Chapter~\ref{af-chap}, with \(R^\psi\) and \(G^\psi = G + \frac17G_{\chi_8}\) as in Problem~\ref{af-pr:chi8-shares}.  This is the formalization's combination for a character of order \(o = 2\), whose weights are \(1/(3o+1)\).  How does the argument exclude a zero of \(L(s, \chi_8)\)?
 
 \begin{problem}\label{pr:chi8-zero}
-Suppose that for every small \(\varepsilon > 0\) there are arbitrarily large \(Y\) such that, at every \(x \in [Y, Y^{3/2}]\), \(R^\psi(x) \le x^{1/2+C'\varepsilon}\) and the six characters of Problem~\ref{af-pr:chi8-twists} satisfy Estimate~B.
+Suppose that for every small \(\varepsilon > 0\) there are arbitrarily large \(Y\) such that, at every \(x \in [Y, Y^{3/2}]\), \(R^\psi(x) \le x^{1/2+c\varepsilon}\), with \(c\) independent of \(\varepsilon\), and the six characters of Problem~\ref{af-pr:chi8-twists} satisfy Estimate~B.
 (i) Then \(\zeta(s) \ne 0\) and \(L(s, \chi_8) \ne 0\) for \(\Re s > \frac12\).
 (ii) If \(\zeta(s)^7 L(s, \chi_8)\) had a real zero \(\beta > \frac12\) of multiplicity \(\mu\), and no zero of larger real part, the transform of \(G^\psi\) would have residue \(\mu/(7\beta(1 - \beta)) > 0\) at \(\beta\).  The argument of Problem~\ref{zr-pr:real-excluded}, with this residue, then excludes \(\beta\).
 \end{problem}
 
 \section{The status of the inputs}\label{sec:map}
 
-The Lean formalization \cite{Lean} proves the final theorem.  Its intermediate statements are organized differently from those of \cite{Adr}, and we have not checked that they are the hypotheses of \cite{Adr} named below; where a difference is known, from a comparison of the statements, the ledger records it.  Each input is \emph{classical}, with a reference; \emph{proved in \cite{Adr}}; or \emph{a hypothesis of \cite{Adr}}: the formalization proves the final theorem, and the corresponding step in \cite{Adr} is the hypothesis named, assumed there, with no published human-readable proof.  Where a chapter of this part develops the proof that the formalization gives for an input, the ledger names it and the gaps it records; these accounts follow the formalization, and \cite{Adr} is cited for comparison.  The accounting, the normalization, the exponents and the window are proved in this chapter, on the models of Chapters~\ref{sm-chap}, \ref{ch-chap}, \ref{sp-chap} and~\ref{od-chap}.  For each input we name the deliverable that supplies it.
+The Lean formalization \cite{Lean} proves the final theorem.  Its intermediate statements are organized differently from those of \cite{Adr}, and we have not checked that they are the hypotheses of \cite{Adr} named below; where a difference is known, from a comparison of the statements, the ledger records it.  Each input is \emph{classical}, with a reference; \emph{proved in \cite{Adr}}; or \emph{a hypothesis of \cite{Adr}}: the formalization proves the final theorem, and the corresponding step in \cite{Adr} is the hypothesis named, assumed there, with no published human-readable proof.  Where a chapter of this part develops the proof that the formalization gives for an input, the ledger names it and the gaps it records; these accounts follow the formalization, and \cite{Adr} is cited for comparison.  The accounting, the normalization, the exponents and the window are proved in this chapter, in the form the formalization proves them (Chapter~\ref{lf-chap} gives its record in full), on the models of Chapters~\ref{sm-chap}, \ref{ch-chap}, \ref{sp-chap} and~\ref{od-chap}.  For each input we name the deliverable that supplies it.
 
 {\small
 \begin{description}
-\item[\eqref{A1}, \eqref{A2}] Theorems~\ref{di-thm:K1} and~\ref{di-thm:K2}, for the lifts of Theorem~\ref{di-thm:true-lifts}.  The formalization proves the final theorem by a different arrangement at this step (Chapter~\ref{gl-chap}).  Its counterpart of~\eqref{A1} is an inequality between explicit numbers at each inert prime, Theorem~\ref{gl-thm:linkG}, proved with the chain of lifts replaced by the zero chain.  The divisibility of the lifts on the Hecke image is Theorem~\ref{gl-thm:gain}, proved on a separate branch from an input on the lifts, and the two meet only in the source lattices \(N_u\), whose slopes give~\eqref{A2}.  On the divisibility branch the formalization proves conditions (a)--(c) of Theorem~\ref{di-thm:true-lifts}: the normalized kernel law, for kernels built from one theta function of the CM curve normalized to take the value \(1\) at the origin (Chapter~\ref{nk-chap}), and the unit scalars and the dual frames at the odd positions (Chapter~\ref{fo-chap}).  The Hecke image is controlled by a nondegeneracy condition at one edge (Chapter~\ref{ea-chap}) and its colength bound (Chapter~\ref{co-chap}).  These chapters give a human-readable account, with these gaps: the proofs of the nondegeneracy theorems for small primes and for primes of class~I are large and not developed (Chapter~\ref{ea-chap}); we have not followed the covering lemma behind the colength bound (Chapter~\ref{co-chap}), the proof of the input on the lifts, part~(ii) of Theorem~\ref{gl-thm:linkG}, or how the size conditions give the bound for the rejected primes (Chapter~\ref{gl-chap}); nor the proof that the values at the origin entering the one-copy step are \(p\)-integral, the computation with coset averages for lattices standard at \(p\), or the passage to the torus-averaged exponent (Chapter~\ref{nk-chap}); and we have not matched the formalization's description of the lattices at the odd positions with the dual model weights of \cite[\S11.1]{Adr}, nor compared its scalars with those of \cite[Def.~11.23]{Adr} (Chapter~\ref{fo-chap}).  \cite[Thms.~12.27 and~12.21]{Adr} derive~\eqref{A1} and~\eqref{A2} from \cite[Hyps.~11.22, 11.38, 11.42 and~12.12]{Adr}, assumed there; \cite[Prop.~11.27]{Adr} proves \cite[Hyp.~11.22]{Adr} for its own step normalization.  The three engines of \cite[Hyp.~12.12]{Adr} are not separate statements in the formalization.
-\item[\eqref{A3}] Theorem~\ref{sb-thm:K3}.  The frame theorem and its application to the period maps are proved in \cite[Thms.~13.8 and~13.15]{Adr}.  The Gram conditions, \cite[Thms.~14.1--14.3]{Adr}, are derived there from hypotheses of \cite[\S14]{Adr}, assumed there.  The formalization does not state \cite[Hyp.~14.10]{Adr}, a period map with a seesaw relation; it states and proves the Bessel identity for the period maps directly (Theorem~\ref{sb-thm:bessel}).  Chapters~\ref{bp-chap}, \ref{sx-chap} and~\ref{bi-chap} give a human-readable account: Bessel--Poincar\'e series and their Gram operators, the seesaw as a transport of linear relations, and the identity.  The gaps they record: we have not followed the proofs of the decay statement and of the four bounds behind the off-diagonal estimate, which use the Siegel--Weil formula in its convergent range, nor checked that the terms of the expansion of the Gram operator are the double cosets of the model (Chapter~\ref{bp-chap}); we have not traced how the constructed family is shown to satisfy the laws of the seesaw package (Chapter~\ref{sx-chap}); and we have not traced how the classification of discrete series used for the multiplicity statement is supplied, nor read the proof of the unfolding step (Chapter~\ref{bi-chap}).
+\item[\eqref{A1}, \eqref{A2}] Theorems~\ref{di-thm:K1} and~\ref{di-thm:K2}, for the lifts of Theorem~\ref{di-thm:true-lifts}.  The formalization proves the final theorem by a different arrangement at this step (Chapter~\ref{gl-chap}).  Its counterpart of~\eqref{A1} is an inequality between explicit numbers at each inert prime, Theorem~\ref{gl-thm:linkG}, proved with the chain of lifts replaced by the zero chain.  The divisibility of the lifts on the Hecke image is Theorem~\ref{gl-thm:gain}, proved on a separate branch from an input on the lifts, and the two meet only in the source lattices \(N_u\), whose slopes give~\eqref{A2}.  On the divisibility branch the formalization proves conditions (a)--(c) of Theorem~\ref{di-thm:true-lifts}: the normalized kernel law, for kernels built from one theta function of the CM curve normalized to take the value \(1\) at the origin (Chapter~\ref{nk-chap}), and the unit scalars and the dual frames at the odd positions (Chapter~\ref{fo-chap}).  The Hecke image is controlled by a nondegeneracy condition at one edge (Chapter~\ref{ea-chap}) and its colength bound (Chapter~\ref{co-chap}).  These chapters give a human-readable account, with these gaps: the proofs of the nondegeneracy theorems for small primes and for primes of class~I are large and not developed (Chapter~\ref{ea-chap}); we have not followed the covering lemma behind the colength bound (Chapter~\ref{co-chap}), the proof of the input on the lifts, part~(ii) of Theorem~\ref{gl-thm:linkG}, or how the size conditions give the bound for the rejected primes (Chapter~\ref{gl-chap}); nor the proof that the values at the origin entering the one-copy step are \(p\)-integral, the computation with coset averages for lattices standard at \(p\), or the passage to the torus-averaged exponent (Chapter~\ref{nk-chap}); and we have not matched the formalization's description of the lattices at the odd positions with the dual model weights of \cite[\S11.1]{Adr}, nor compared its scalars with those of \cite[Def.~11.23]{Adr} (Chapter~\ref{fo-chap}).  \cite[Thms.~12.27 and~12.21]{Adr} derive~\eqref{A1} and~\eqref{A2} from \cite[Hyps.~11.22, 11.38, 11.42 and~12.12]{Adr}, assumed there; \cite[Prop.~11.27]{Adr} proves \cite[Hyp.~11.22]{Adr} for its own step normalization.  The three engines of \cite[Hyp.~12.12]{Adr} are not separate statements in the formalization.  In the formalization \(\Gamma\) is net of the colength of the Hecke image, and~\eqref{A2} and~\eqref{A2p} come from the source lattices by an exact computation (Chapter~\ref{lf-chap}).  The sublattice of \(M_u\) at level \(T_u\) has slope \(\mu(M_u) - f\log(T_u - 1)/(T_u - 2)\) and rank \((1 - 1/(T_u - 1))^f\) times that of \(M_u\).  The slope of \(N_u\) differs from that of the Hecke image twisted by the gains by at most a multiple of \(X''\); the formalization proves this from the divisibility branch.
+\item[\eqref{A3}] Theorem~\ref{sb-thm:K3}.  The bound for the spread is Problem~\ref{pr:spread}, from the further inputs, as in the formalization; \cite[Lemma~18.13]{Adr} states it.  The frame theorem and its application to the period maps are proved in \cite[Thms.~13.8 and~13.15]{Adr}.  The Gram conditions, \cite[Thms.~14.1--14.3]{Adr}, are derived there from hypotheses of \cite[\S14]{Adr}, assumed there.  The formalization does not state \cite[Hyp.~14.10]{Adr}, a period map with a seesaw relation; it states and proves the Bessel identity for the period maps directly (Theorem~\ref{sb-thm:bessel}).  Chapters~\ref{bp-chap}, \ref{sx-chap} and~\ref{bi-chap} give a human-readable account: Bessel--Poincar\'e series and their Gram operators, the seesaw as a transport of linear relations, and the identity.  The gaps they record: we have not followed the proofs of the decay statement and of the four bounds behind the off-diagonal estimate, which use the Siegel--Weil formula in its convergent range, nor checked that the terms of the expansion of the Gram operator are the double cosets of the model (Chapter~\ref{bp-chap}); we have not traced how the constructed family is shown to satisfy the laws of the seesaw package (Chapter~\ref{sx-chap}); and we have not traced how the classification of discrete series used for the multiplicity statement is supplied, nor read the proof of the unfolding step (Chapter~\ref{bi-chap}).
 \item[\eqref{A4}, \eqref{A6}, \eqref{A7}] Theorems~\ref{hp-in:A4}, \ref{hp-in:A6} and~\ref{hp-in:A7}.  The CM period is classical \cite{CS} (Theorem~\ref{kl-thm:cs}), with a correction proved in \cite[Props.~15.3 and~15.6]{Adr}; the mass formula is classical \cite{GHY}; \eqref{A7} is proved in \cite[Thm.~15.33]{Adr}.  For the height and target bounds of~\eqref{A4}, the corresponding steps in \cite{Adr} are \cite[Hyps.~15.10--15.12, 15.16 and~15.18]{Adr}, assumed there.  The formalization proves the covolume estimate of Theorem~\ref{hp-in:A4} for the lattices of forms of the lifts, and Chapters~\ref{sg-chap}, \ref{fl-chap} and~\ref{lc-chap} give a human-readable account: reduction to a lower slope bound for holomorphic forms by linear algebra and descent, the period through the flat line, and the slope bound on covers by an effective arithmetic Hilbert--Samuel inequality.  The gaps they record: we have not traced how the lattices of forms correspond to the spaces of the theta correspondence (Chapter~\ref{sg-chap}), nor the anchor bound for the flat line (Chapter~\ref{fl-chap}); we have not read the proof for the last lift, the tower-and-volume argument, or below resolution of singularities and the Poincar\'e--Lelong formula, and we have not checked the normalization of the height (Chapter~\ref{lc-chap}); and of the step that turns the bounds for the lattices of the lifts into the bound for the target we have read the statements only.  For~\eqref{A6}, Theorem~\ref{hp-in:A6} states the input in the form the formalization proves: the rank of the source and the dimension budget are given exactly by the mass formula, and the auxiliary prime is bounded below through critical levels.  Chapter~\ref{cl-chap} gives a human-readable account, with these gaps: we have read the statements of the mass ratio and of the two counts in the formalization but not their proofs, we have not checked the Vandermonde count at a top by hand, and we have not traced where the formalization uses the lower bound for \(\log T_u\) or how it constructs a prime in its window.  The corresponding step in \cite{Adr} is the inequality \cite[Hyp.~15.23]{Adr}, assumed there.  See also the remark below.
-\item[\eqref{A5}, and \(mN_c\) in~\eqref{A4}] Theorems~\ref{lt-thm:local} and~\ref{lt-thm:congruence}.  Theorem~\ref{lt-thm:local} states~\eqref{A5} in the form the formalization proves, with the local exponents given by formulas.  Chapter~\ref{lx-chap} gives a human-readable account, with these gaps: we have not traced how the family the formalization constructs is shown to satisfy the size conditions, we have not re-derived the row exponents and the Fock degree, we have not followed the congruence behind the bound for the primes whose Frobenius has odd order, and we have not traced how the orbit losses enter the gain inequality at the inert primes.  The corresponding steps in \cite{Adr} are \cite[Hyps.~16.13 and~16.14]{Adr}, assumed there, from which \cite[Thm.~16.6]{Adr} derives~\eqref{A5}.  The congruence defects, Theorem~\ref{lt-thm:congruence}, are derived in \cite[Thm.~17.37]{Adr} from \cite[Hyps.~17.24 and~17.36]{Adr} and (W3), assumed there.
-\item[(V1)--(V3), (W1), (W2)] Chapter~\ref{af-chap}.  (V1) is~\eqref{A1}--\eqref{A7} for every translate; the rest is proved in \cite[\S\S4--6]{Adr} from classical theorems \cite{Gal}, \cite{Pa}, \cite[Ch.~14]{Dav}.
+\item[\eqref{A5}, and \(mN_c\) in~\eqref{A4}] Theorems~\ref{lt-thm:local} and~\ref{lt-thm:congruence}.  Theorem~\ref{lt-thm:local} states~\eqref{A5} and~\eqref{A5m} in the form the formalization proves, with the local exponents given by formulas.  Chapter~\ref{lx-chap} gives a human-readable account, with these gaps: we have not traced how the family the formalization constructs is shown to satisfy the size conditions, we have not re-derived the row exponents and the Fock degree, we have not followed the congruence behind the bound for the primes whose Frobenius has odd order, and we have not traced how the orbit losses enter the gain inequality at the inert primes.  The corresponding steps in \cite{Adr} are \cite[Hyps.~16.13 and~16.14]{Adr}, assumed there, from which \cite[Thm.~16.6]{Adr} derives~\eqref{A5}.  The congruence defects, Theorem~\ref{lt-thm:congruence}, are derived in \cite[Thm.~17.37]{Adr} from \cite[Hyps.~17.24 and~17.36]{Adr} and (W3), assumed there.
+\item[(V1)--(V3), (W1), (W2)] Chapter~\ref{af-chap}.  (V1) is the inputs of Section~\ref{sec:inputs} for every translate; the rest is proved in \cite[\S\S4--6]{Adr} from classical theorems \cite{Gal}, \cite{Pa}, \cite[Ch.~14]{Dav}.  (V3) is the formalization's form of the cost conditions, and the normalization is Theorem~\ref{thm:size}, \cite[Lemma~6.1]{Zh} as the formalization proves it.
 \item[(W3)] Theorem~\ref{lt-thm:W3}, from the Selmer bound on windows, Theorem~\ref{lt-hyp:window}.  Over \(\Q\) the odd twists are classical \cite{MW}; the bound for the even twists is not known even over \(\Q\) (Section~\ref{ts-sec:split}).  The Galois representations are classical \cite{HT}, \cite{Shi}, \cite{CH}, \cite{Car1}.  Over \(E\), the corresponding step in \cite{Adr} is \cite[Hyp.~17.11]{Adr}, assumed there; as \cite[\S17.4]{Adr} notes, it implies more towards Vandiver's conjecture than any published result.  The formalization proves the Selmer bound on windows, and Chapter~\ref{ws-chap} outlines the proof (Theorem~\ref{ws-thm:vwin}): the minus part is bounded at every scale by a one-sided Euler-system argument with Gauss sums, without the main conjecture (Chapter~\ref{mi-chap}); the plus part by congruences, case by case, given a bound on fixed layers at finitely many bad primes (Chapter~\ref{pl-chap}); and a window of scales is chosen on which those layers and the prime \(2\) contribute little, by Iwasawa theory along cyclotomic towers (Chapter~\ref{tw-chap}).  The gaps they record: we have not read the proofs of the bound for \(H^2\) and of the Ferrero--Washington step, nor identified the Iwasawa module behind the exceptional twists (Chapter~\ref{tw-chap}); we have not transcribed the condition at \(\ell\) in the Stickelberger bound or read its proof (Chapter~\ref{mi-chap}); we have not read the treatment of the bad primes, the cases that use forms on \(\mathrm{GSp}_4\), or how Kato's bound is established (Chapter~\ref{pl-chap}); and we have not followed how the constants are made independent of \(q\) and \(d\), nor the passage to ranges of scales with exponent \(3/2\) (Chapter~\ref{ws-chap}).
-\item[(W4)] The deliverables of Chapters~\ref{di-chap}--\ref{lt-chap} at every \(x\) of the window, with constants independent of \(x\), \(Y\), \(Y_0\), \(q\), \(d\).  The corresponding step in \cite{Adr} is \cite[Hyp.~18.10]{Adr}, assumed there for every admissible datum; even given the hypotheses of \cite[\S\S11--17]{Adr}, \cite[\S18.3]{Adr} does not derive it.  The formalization proves a weaker statement, which is what the window argument of this chapter uses (Section~\ref{gl-sec:scale} of Chapter~\ref{gl-chap}): for each primitive character and every small \(\varepsilon\) there is one family of data, and \(x_0\), such that at every \(x \ge x_0\) in its window set a chain record exists; the record at \(x\) ties together one member of the family for each translate, sharing the frame, \(m\), \(f\), \(q\), \(d\) and the top weights, with \(e_D = 2\) and \(e_L = 0\).
+\item[(W4)] The deliverables of Chapters~\ref{di-chap}--\ref{lt-chap} at every \(x\) of the window, with constants independent of \(x\), \(Y\), \(Y_0\), \(q\), \(d\).  The corresponding step in \cite{Adr} is \cite[Hyp.~18.10]{Adr}, assumed there for every admissible datum; even given the hypotheses of \cite[\S\S11--17]{Adr}, \cite[\S18.3]{Adr} does not derive it.  The formalization proves a weaker statement, which is what the window argument of this chapter uses (Section~\ref{gl-sec:scale} of Chapter~\ref{gl-chap}): for each primitive character and every small \(\varepsilon\) there is one family of data, and \(x_0\), such that at every \(x \ge x_0\) in its window set a chain record exists; the record at \(x\) ties together one member of the family for each translate, sharing the frame, \(m\), \(f\), \(q\), \(d\) and the top weights, with \(e_D = 2\) and \(e_L = 0\) fixed before \(\varepsilon\), and the constants before the family (Section~\ref{sec:window}).
 \end{description}
 }
 
-\paragraph{Remark: where the arithmetic geometry enters.}  The public sources differ here, and the formalization follows neither.  Zhang \cite[\S4.3]{Zh} applies the moduli schemes, the arithmetic Hilbert--Samuel theorem, Moriwaki's criterion for small sections and Fargues's estimates for Hodge--Tate maps to the covolumes of the initial lattices, the analogues of the base lattices \(M_u\) (his bound \(\mu(M_\alpha) \ge -E_{\mathrm{sl}}\)).  Adriazola \cite[\S15]{Adr} applies the Hilbert--Samuel theorem to the target in~\eqref{A4}, and obtains~\eqref{A7} for the base lattices from a computation with Weyl modules.  The formalization applies the arithmetic geometry to the lattices of forms of the \(m\) lifts, on the Shimura varieties of the lifts, and turns their bounds into the bound for the target (Chapters~\ref{sg-chap} and~\ref{lc-chap}).  Likewise the periods in \cite{Zh} are periods of CM abelian varieties, after Anderson, and Zhang lists Shimura--Taniyama reciprocity and the integrality theorem of Deligne and Ribet among the results used for them.  In the formalization only elliptic curves with complex multiplication by \(\Oc_K\) enter this step: \(\Omega\) is the Chowla--Selberg period of such a curve (Theorem~\ref{kl-thm:cs}), and it reaches the lattices of forms through the degree of one metrized line at points built from two such curves (Chapter~\ref{fl-chap}).  Chapter~\ref{hp-chap} repeats this remark.
+The public sources and the formalization differ on where the arithmetic geometry enters; see the remark at the end of Chapter~\ref{hp-chap}.
 
 \section*{Hints}
 
@@ -311,29 +361,35 @@ The Lean formalization \cite{Lean} proves the final theorem.  Its intermediate s
 
 \subsection*{\S\ref{sec:inputs}}
 \begin{description}
+\item[\ref{pr:spread}] For the upper bound compare a word \(u\) with each word \(u'\), using~\eqref{A2p} and~\eqref{A7p} for \(u\) and~\eqref{A2} and~\eqref{A7} for \(u'\); then take the weighted mean over \(u'\).
+\item[\ref{pr:spread-size}] \(N_Tmb \le N_Ta\), \(a \le N_Ta\), \(m \le k \le b\), \(A \le 2N_Ta\) and \(\log k \le y\).
 \item[\ref{pr:e3}] Problem~\ref{sb-pr:logW} and \(k \le b\); and \(\log(1 + x^{C_H}) \le (1 + C_H)\log x \le (1 + C_H)y\).
 \item[\ref{pr:calB}] Bound each \(e_i\) separately, using \(b \le a \le N_Ta\), \(A \le 2N_Ta\) and Problem~\ref{pr:e3}.
 \end{description}
 
 \subsection*{\S\ref{sec:norm}}
 \begin{description}
+\item[\ref{pr:V3}] \(8n = 4f\), and \(f \ge 2\).
+\item[\ref{pr:average}] Theorem~\ref{gf-thm:two-scales} for each pair \((t,j)\), Theorem~\ref{thm:M} for each \(\tau\), and Problem~\ref{pr:V3}; average over the \(N_Tm\) pairs.
+\item[\ref{pr:size-ends}] \(x \le x^{1/2+\varepsilon}m\), and \(m^2/k \le m/x\).
+\item[\ref{pr:size-steps}] \(n \le 2x^{\varepsilon/8}N_T\).
+\item[\ref{pr:size-defects}] \(N_2 \le n\) and \(k \le n^2x^{1/2-\varepsilon}\).
+\item[\ref{pr:size-divide}] Problem~\ref{pr:size-defects}, \(4/x \le 2\) and \(1/\delta \le x^\varepsilon\).
 \item[\ref{pr:divide}] \(N_2 = \delta n\) and \(a = xb\).
 \item[\ref{pr:four}] \(n/N_T \le 2x^{\varepsilon/8}\) and \(1/\delta \le x^\varepsilon\).
-\item[\ref{pr:eta-error}] Follow the extra term through Problem~\ref{pr:heights} and Theorem~\ref{thm:acct}, then divide by \(N_Tmb\delta/2\) as in Problem~\ref{pr:divide}; here \(A = N_Txb\).
+\item[\ref{pr:eta-error}] Follow the extra term through Problem~\ref{pr:heights} and Theorem~\ref{thm:acct}, then divide by \(Q\delta/2\) as in Problem~\ref{pr:average}; here \(A = N_Txb\).
 \end{description}
 
 \subsection*{\S\ref{sec:exponents}}
 \begin{description}
-\item[\ref{pr:m}] One of the two terms is at least \(x^{1/2+\lvert\kappa\rvert}\).
-\item[\ref{pr:x2}] Eliminate \(k\).
-\item[\ref{pr:139}] \(m \le 2x^{1/2-\varepsilon/16}\) and \(n \le 2x^{2+8\varepsilon}\).
+\item[\ref{pr:m}] Compare each of \(x/m\) and \(m\) with \(x^{1/2}\).
 \item[\ref{pr:cchi}] Solve~\eqref{zr-eq:Gchi} for \(c_\chi\).  For \(\mathcal{K}(x)\) use Mertens' estimate.
 \end{description}
 
 \subsection*{\S\ref{sec:window}}
 \begin{description}
 \item[\ref{pr:window}] \(Y^{3/2} \le Y^2\) and \(Y_0 \le x\).
-\item[\ref{pr:G}] Theorem~\ref{thm:A} and Problem~\ref{zi-pr:Rqd}.
+\item[\ref{pr:G}] Theorem~\ref{thm:A} at each \(x\); by (W4) its threshold does not depend on \(x\).
 \item[\ref{pr:close}] Theorem~\ref{zr-thm:intervals} for each \(\varepsilon\).
 \end{description}
 
@@ -355,6 +411,7 @@ The Lean formalization \cite{Lean} proves the final theorem.  Its intermediate s
 \bibitem[Lean]{Lean} The Lean community, \emph{riemann-hypothesis}, a Lean formalization of Alp\"oge's argument, \url{https://github.com/leanprover-community/riemann-hypothesis}.
 \bibitem[MW]{MW} B.~Mazur and A.~Wiles, \emph{Class fields of abelian extensions of \(\mathbf{Q}\)}, Invent.\ Math.\ \textbf{76} (1984), 179--330.
 \bibitem[Pa]{Pa} A.~Page, \emph{On the number of primes in an arithmetic progression}, Proc.\ London Math.\ Soc.\ (2) \textbf{39} (1935), 116--141.
+\bibitem[RS]{RS} J.~B.~Rosser and L.~Schoenfeld, \emph{Approximate formulas for some functions of prime numbers}, Illinois J.\ Math.\ \textbf{6} (1962), 64--94.
 \bibitem[Rub]{Rub} \emph{The Alp\"oge--Claude proof of the Riemann hypothesis explained for the Riemann zeta function}, written by AI models at the behest of M.~O.~Rubinstein, working draft, 21 November 2026, \url{https://www.math.uwaterloo.ca/~mrubinst/alpoge_claude_grh/zeta-paper.pdf}.
 \bibitem[Shi]{Shi} S.~W.~Shin, \emph{Galois representations arising from some compact Shimura varieties}, Ann.\ of Math.\ (2) \textbf{173} (2011), 1645--1741.
 \bibitem[Zh]{Zh} R.~Zhang, \emph{A preliminary note on Alp\"oge's proposed proof of the generalized Riemann hypothesis}, preprint, 2026, hexagon:2611.00809.

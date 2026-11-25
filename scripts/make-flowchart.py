@@ -211,7 +211,8 @@ def read_sheets(sheets):
                 warn(f"{s.tex}: {where} cites prefix {p} without "
                      "\\externaldocument")
             elif t not in by_id:
-                warn(f"{s.tex}: {where} cites {t}, which is not in the index")
+                if t not in AFTER_ASSEMBLY:
+                    warn(f"{s.tex}: {where} cites {t}, which is not in the index")
             elif pos[t] < pos[s.id]:
                 out.add(t)
         return out
@@ -1094,11 +1095,33 @@ def render_page(sheets, g, svg):
     return "\n".join(out) + "\n"
 
 
+AFTER_ASSEMBLY = set()
+
+
+def drop_after_assembly(sheets, parts):
+    """Leave out the chapters of the main sequence after the assembly (the
+    last chapter with a map of the inputs, section sec:map): they comment
+    on the assembly and supply nothing to it."""
+    main = [s for s in sheets if not s.side]
+    asm = []
+    for s in main:
+        with open(s.tex, encoding="utf-8") as f:
+            if r"\label{sec:map}" in f.read():
+                asm.append(s)
+    if not asm:
+        return sheets, parts
+    drop = {s.id for s in main[main.index(asm[-1]) + 1:]}
+    AFTER_ASSEMBLY.update(drop)
+    sheets = [s for s in sheets if s.id not in drop]
+    parts = [(k, n, [i for i in ids if i not in drop]) for k, n, ids in parts]
+    return sheets, [p for p in parts if p[2]]
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--outdir", default=".")
     args = ap.parse_args()
-    sheets, parts = read_index()
+    sheets, parts = drop_after_assembly(*read_index())
     g = build_graph(sheets, parts)
     for m in g["modules"]:
         if (paragraph(g["src"][m.id], "Deliverable")
