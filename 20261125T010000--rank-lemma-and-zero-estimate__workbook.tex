@@ -3,8 +3,8 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{xr-hyper}
 \usepackage[hidelinks]{hyperref}
-\externaldocument[mn-]{20261125T000100--slope-inequality-in-the-mean__workbook}
 \externaldocument[ps-]{20261125T010500--poincare-series-and-near-orthogonality__workbook}
+\externaldocument[bp-]{20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook}
 
 % Chapter number; \ref{chap} gives it.
 \newcounter{chap}
@@ -16,38 +16,42 @@
 \newtheorem{problem}{Problem}[section]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
 
 \newcommand{\Z}{\mathbb{Z}}
-\newcommand{\Q}{\mathbb{Q}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
-\newcommand{\HH}{\mathbb{H}}
 \newcommand{\Hc}{\mathcal{H}}
-\newcommand{\ii}{\mathrm{i}}
 \newcommand{\tr}{\operatorname{tr}}
-\newcommand{\codim}{\operatorname{codim}}
 \newcommand{\rank}{\operatorname{rank}}
+\newcommand{\im}{\operatorname{im}}
 \newcommand{\HS}{\mathrm{HS}}
 \newcommand{\E}{\mathbb{E}}
+\newcommand{\tl}[1]{\texttt{#1}}
 
 \setlength{\emergencystretch}{2em}
 
 \title{Few translates span}
 \author{}
-\date{November 25, 2026}
+\date{November 26, 2026}
 
 \begin{document}
 \maketitle
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-Section~\ref{mn-sec:gram} of Chapter~\ref{mn-chap}, \emph{The slope inequality in the mean}: Problem~\ref{mn-pr:rank}, Theorem~\ref{mn-thm:rank}, and their notation.  Finite-dimensional spectral theory and Schur's lemma.  Binary quadratic forms and their reduction \cite[\S2]{Cox}.  For Section~\ref{sec:rtf} only, the spectral expansion of an automorphic kernel on \(\mathrm{SL}_2(\Z) \backslash \HH\), where \(\HH\) is the upper half-plane \cite[Ch.~7]{Iw}.
+Finite-dimensional complex inner product spaces: adjoints, orthogonal projections, the spectral theorem for self-adjoint maps, and the trace.  Schur's lemma, and Haar measure on the unitary group, for Problem~\ref{pr:random} only.  No earlier chapter is used.
 
-Theorem~\ref{mn-thm:rank} bounds the codimension of a sum of many images by a second moment.  Where can such a bound come from?  In this chapter it comes from Gram matrices, from evaluations at points, and from a relative trace formula, each in its simplest case.
+In the rewritten Lean proof \cite{GL} of Alp\"oge's theorem \cite{Alp}, Theorem~B bounds how many translates of a map between spaces of automorphic forms are needed for their images to span almost all of the target.  The translates are indexed by a finite group.  When do a few translates of one map span?  Section~\ref{sec:gram} bounds the rank of a sum of images from below by a second moment.  The rest of the chapter turns a second moment over the group into a choice of few translates, by Cauchy--Schwarz and a greedy choice.  All spaces are finite-dimensional, and inner products are linear in the second variable.
 
 \section{Gram matrices}\label{sec:gram}
 
-As in Section~\ref{mn-sec:gram}, let \(\Hc\) be a complex inner product space, now of dimension \(D' > 0\).  Let \(B_i \colon X_i \to \Hc\), \(i \in I\), be linear maps from inner product spaces of dimensions \(r_i\), with \(R := \sum_i r_i > 0\), let \(\gamma_i > 0\), and let \(K_i := \gamma_i B_i^* B_i\) and \(Q := \sum_i \gamma_i B_i B_i^*\).  Let \(X := \bigoplus_i X_i\) and \(B \colon X \to \Hc\), \(B(x_i)_i := \sum_i \sqrt{\gamma_i} B_i x_i\), so that \(Q = BB^*\).  The \emph{Gram matrix} of the family is \(G := B^*B\).  Its blocks are \(G_{ij} = \sqrt{\gamma_i\gamma_j}\, B_i^* B_j \colon X_j \to X_i\), and \(G_{ii} = K_i\).  When every \(X_i\) is a line spanned by a unit vector \(\xi_i\), \(G\) is the Gram matrix of the vectors \(\sqrt{\gamma_i} B_i \xi_i\).
+For a linear map \(A\) between inner product spaces, \(\lVert A \rVert_\HS^2 := \tr(A^*A)\) is the squared Hilbert--Schmidt norm.  Let \(\Hc\) be a complex inner product space of dimension \(D' > 0\).  Let \(B_i \colon X_i \to \Hc\), \(i \in I\), be a finite family of linear maps from inner product spaces of dimensions \(r_i\), with \(R := \sum_i r_i > 0\), let \(\gamma_i > 0\), and let \(K_i := \gamma_i B_i^* B_i\) and \(Q := \sum_i \gamma_i B_i B_i^*\).  Let \(X := \bigoplus_i X_i\) and \(\Phi \colon X \to \Hc\), \(\Phi((x_i)_i) := \sum_i \sqrt{\gamma_i} B_i x_i\), so that \(Q = \Phi\Phi^*\).  The \emph{Gram matrix} of the family is \(G := \Phi^*\Phi\).  Its blocks are \(G_{ij} = \sqrt{\gamma_i\gamma_j}\, B_i^* B_j \colon X_j \to X_i\), and \(G_{ii} = K_i\).  When every \(X_i\) is a line spanned by a unit vector \(\xi_i\), \(G\) is the Gram matrix of the vectors \(\sqrt{\gamma_i} B_i \xi_i\).
+
+\begin{problem}\label{pr:rank-trace}
+If \(Q \ne 0\), then \(\rank Q \ge (\tr Q)^2/\tr Q^2\), with equality exactly when \(Q\) is a multiple of an orthogonal projection.
+\end{problem}
 
 \begin{problem}\label{pr:image}
 \(Q(\Hc) = \sum_i B_i(X_i)\).
@@ -57,7 +61,7 @@ As in Section~\ref{mn-sec:gram}, let \(\Hc\) be a complex inner product space, n
 \(Q\) and \(G\) have the same nonzero eigenvalues, with multiplicities.  Hence \(\tr Q = \sum_i \tr K_i\) and \(\tr Q^2 = \sum_{i,j} \lVert G_{ij} \rVert_\HS^2\).
 \end{problem}
 
-With Problem~\ref{mn-pr:rank} this proves the following.
+Problems~\ref{pr:rank-trace}--\ref{pr:gram} prove the following.
 
 \begin{theorem}\label{thm:gram}
 If some \(B_i\) is nonzero, then
@@ -66,184 +70,218 @@ If some \(B_i\) is nonzero, then
 \]
 \end{theorem}
 
-Unlike the left side, the right side changes little when the \(B_i\) are perturbed.
+For lines this is a form of Welch's bound \cite{We}.  Unlike the left side, the right side changes little when the \(B_i\) are perturbed.
 
 \begin{problem}\label{pr:two-lines}
 Let \(v, w \in \C^2\) be unit vectors, \(X_1 = X_2 = \C\), \(B_1(1) = v\), \(B_2(1) = w\) and \(\gamma_1 = \gamma_2 = 1\).  The right side of Theorem~\ref{thm:gram} is \(2/(1 + \lvert \langle v, w \rangle \rvert^2)\).
 \end{problem}
 
-So two nearly parallel lines count as about one direction.  Suppose now that each weighted map is an isometry, \(K_i = 1\), and that for some \(\eta_0 \ge 0\)
+So two nearly parallel lines count as about one direction.  Suppose now that each weighted map is an isometry, \(K_i = 1_{X_i}\), and that for some \(\eta_0 \ge 0\)
 \begin{equation}\label{eq:pair}
   \lVert G_{ij} \rVert_\HS^2 \le (1 + \eta_0) \frac{r_i r_j}{D'} \qquad (i \ne j) .
 \end{equation}
-This is hypothesis (G1) of \cite[Prop.~13.11]{Adr}, with \(D'\) replaced there by a number close to \(\dim\Hc\).
 
 \begin{problem}\label{pr:pair}
-Under~\eqref{eq:pair} and \(K_i = 1\) for all \(i\), \(\tr Q^2 \le (1 + \eta_0 + D'/R)(\tr Q)^2/D'\).
+Under~\eqref{eq:pair} and \(K_i = 1_{X_i}\) for all \(i\), \(\tr Q^2 \le (1 + \eta_0 + D'/R)(\tr Q)^2/D'\).  Hence \(\dim \sum_i B_i(X_i) \ge D'/(1 + \eta_0 + D'/R)\).
 \end{problem}
-
-Combining Problem~\ref{pr:pair} with Theorem~\ref{mn-thm:rank}, for \(e = 0\), gives a zero estimate from pairwise bounds.
-
-\begin{theorem}\label{thm:pair}
-Assume~\eqref{eq:pair} and \(K_i = 1\) for all \(i\).  Let \(Y_i \subseteq X_i\) be subspaces with \(\sum_i \codim Y_i \le \alpha R\), where \(0 \le \alpha \le 1\).  Then
-\[
-  \codim_\Hc \sum_i B_i(Y_i) \le \Bigl( \eta_0 + \frac{D'}{R} + 4\alpha \Bigr) D' .
-\]
-\end{theorem}
 
 The constant \(r_i r_j/D'\) in~\eqref{eq:pair} is an average over relative positions.
 
 \begin{problem}\label{pr:random}
-Let \(B \colon \C^r \to \Hc\) and \(B' \colon \C^{r'} \to \Hc\) be isometries, and let \(u\) be distributed according to Haar measure on the unitary group of \(\Hc\).  Then \(\E \lVert B^* u B' \rVert_\HS^2 = r r'/D'\).
+Let \(B_1 \colon \C^{r_1} \to \Hc\) and \(B_2 \colon \C^{r_2} \to \Hc\) be isometries, and let \(u\) be distributed according to Haar measure on the unitary group of \(\Hc\).  Then \(\E \lVert B_1^* u B_2 \rVert_\HS^2 = r_1 r_2/D'\).
 \end{problem}
 
-So~\eqref{eq:pair} asks that no two images overlap, in the Hilbert--Schmidt norm, by more than \(1 + \eta_0\) times this average.  The number of maps by itself proves nothing.
+For \(i\ne j\), \eqref{eq:pair} bounds the squared Hilbert--Schmidt overlap by \(1+\eta_0\) times its Haar mean.  Pairwise bounds of this kind are the subject of Chapter~\ref{ps-chap}.  The corresponding hypothesis in the rewritten Lean proof concerns translates of one map under a finite group.  It bounds the sum of the squared overlaps with the original map over all group elements, including the identity (Theorem~\ref{thm:spread} below).
 
-\begin{problem}\label{pr:bad}
-Let \(\Hc = \C^{D'}\) with \(D' \ge 2\) and standard basis \(e_1, \dots, e_{D'}\).  Let \(X_0 = \C^{D'}\) with \(B_0 = 1\), and for \(1 \le i \le N\) let \(X_i = \C\) with \(B_i(1) = e_1\); let all \(\gamma_i = 1\).  Then \(B_0\) is onto, but omitting \(X_0\), a proportion \(D'/(N + D')\) of the source directions, leaves a sum of images of codimension \(D' - 1\).  The ratio \(D' \tr Q^2/(\tr Q)^2\) equals \(D'\bigl((N+1)^2 + D' - 1\bigr)/(N + D')^2\).
+\section{Translates and the second moment}\label{sec:translates}
+
+From now on \(S\) and \(T\) are finite-dimensional complex inner product spaces, \(\Gamma\) is a finite group, and \(\rho\) is a representation of \(\Gamma\) on \(T\) with \(\langle \rho(s)x, \rho(s)y \rangle = \langle x, y \rangle\) for all \(s \in \Gamma\) and \(x, y \in T\).  Let \(B \colon S \to T\) be linear.  For a subspace \(W \subseteq T\) let \(P_W\) be the orthogonal projection of \(T\) onto \(W\), as a map \(T \to T\).  The \emph{second moment} of \(B\) is \(\sum_{s \in \Gamma} \lVert B^*\rho(s)B \rVert_\HS^2\).  Write \(\langle A, A' \rangle_\HS := \tr(A^*A')\) for linear maps \(A, A'\) with the same source and target.
+
+\begin{problem}\label{pr:hs}
+For every orthonormal basis \((e_k)\) of \(S\) and all \(A, A' \colon S \to T\), \(\langle A, A' \rangle_\HS = \sum_k \langle Ae_k, A'e_k \rangle\).  For every subspace \(W \subseteq T\), \(\lVert P_W \rVert_\HS^2 = \dim W\) and \(\lVert P_W A \rVert_\HS^2 = \langle P_W, AA^* \rangle_\HS\).
 \end{problem}
 
-For large \(N\) this ratio is close to \(D'\), and Theorem~\ref{mn-thm:rank} gives nothing, as it must.  Here~\eqref{eq:pair} fails by a factor \(D'\) for every pair \(i, j \ge 1\).
+Consider the family of all translates, \(I = \Gamma\), \(X_s = S\), \(B_s = \rho(s)B\) and \(\gamma_s = 1\), in the notation of Section~\ref{sec:gram}.
 
-\section{Evaluation at points}\label{sec:points}
-
-The simplest maps are evaluations at points.  Let \(\nu\) be a probability measure on a space \(\mathcal{X}\), and let \(\Hc \subset L^2(\mathcal{X}, \nu)\) be a space of bounded continuous functions of dimension \(D'\), with an orthonormal basis \(\varphi_1, \dots, \varphi_{D'}\).  Its reproducing kernel is \(K(x, y) := \sum_n \varphi_n(x) \overline{\varphi_n(y)}\).  For points \(x_1, \dots, x_N \in \mathcal{X}\) and weights \(\gamma_i > 0\), let \(X_i = \C\) and \(B_i(1) := K(\cdot, x_i)\).  Problem~\ref{mn-pr:roots} is an example.
-
-\begin{problem}\label{pr:eval}
-\(B_i^* f = f(x_i)\), so that \(\langle Qf, f \rangle = \sum_i \gamma_i \lvert f(x_i) \rvert^2\), and \(G_{ij} = \sqrt{\gamma_i\gamma_j}\, K(x_i, x_j)\).  Moreover \(\int_{\mathcal{X}} K(x, x) \, d\nu(x) = D'\).
-\end{problem}
-
-\begin{problem}\label{pr:matrix}
-\(\langle Q\varphi_n, \varphi_m \rangle = \sum_i \gamma_i (\varphi_n \overline{\varphi_m})(x_i)\).  Hence \(Q = 1\) exactly when the measure \(\sum_i \gamma_i \delta_{x_i}\) integrates every \(\varphi_n \overline{\varphi_m}\) as \(\nu\) does.
-\end{problem}
-
-\begin{problem}\label{pr:zero}
-The functions \(f \in \Hc\) that vanish at every \(x_i\) form a space of dimension at most \(\lVert Q - 1 \rVert_\HS^2\).
-\end{problem}
-
-In particular, if the weighted points integrate every \(\varphi_n \overline{\varphi_m}\) exactly, no nonzero \(f \in \Hc\) vanishes at all of them.  The simplest families with \(Q\) exactly scalar are orbits of a group.
-
-\begin{problem}\label{pr:schur}
-Let a finite group \(\Gamma\) act unitarily and irreducibly on \(\Hc\), and let \(Y \subseteq \Hc\) be a subspace of dimension \(r\) with inclusion \(\iota\).  For \(g \in \Gamma\) let \(B_g := g\iota \colon Y \to \Hc\) with weight \(1/\lvert \Gamma \rvert\).  Then \(Q = (r/D') \cdot 1\).
-\end{problem}
-
-For instance, let \(\nu\) be the normalized rotation-invariant measure on the sphere \(S^2 \subset \R^3\), and let \(\Hc\) be the space of restrictions of linear forms.  Since \(\int x_k^2 \, d\nu = 1/3\), the functions \(\sqrt3\, x_k\) are an orthonormal basis, and \(K(x, y) = 3\langle x, y \rangle\).  The rotation group of a regular tetrahedron acts irreducibly on \(\Hc\), and the orbit of the line spanned by \(K(\cdot, x_0)\), for a vertex \(x_0\), gives, up to the factor \(K(x_0, x_0) = 3\), the evaluations at the four vertices.
-
-\begin{problem}\label{pr:tetra}
-Let \(x_1, \dots, x_4\) be the vertices of a regular tetrahedron inscribed in \(S^2\), and \(\gamma_i = 1/4\).  Then \(G = 1 - J/4\), where \(J\) is the \(4 \times 4\) matrix of ones, and \(Q = 1\).  For the points \(\pm e_1, \pm e_2\) instead, with \(\gamma_i = 1/4\), \(\rank Q = (\tr Q)^2/\tr Q^2 = 2\).
-\end{problem}
-
-\section{Heegner points}\label{sec:heegner}
-
-The simplest point sets with arithmetic meaning are CM points.  On the modular curve their equidistribution is a theorem of Duke.  Let \(\mathcal{X} := \mathrm{SL}_2(\Z) \backslash \HH\) with the probability measure \(d\nu = (3/\pi) \, y^{-2} \, dx \, dy\).  A primitive positive definite form \([a, b, c] = ax^2 + bxy + cy^2\) of discriminant \(b^2 - 4ac = -d\) has the root \(z_{[a,b,c]} := (-b + \ii\sqrt d)/(2a)\) in \(\HH\), and the map from forms to roots is \(\mathrm{SL}_2(\Z)\)-equivariant.  For \(d > 4\) let \(\mathcal{H}_d \subset \mathcal{X}\) be the set of these roots.  Every form is equivalent to exactly one reduced form \cite[Thm.~2.8]{Cox}, so \(\mathcal{H}_d\) has \(h(-d)\) points, one for each reduced form, where \(h(-d)\) is the class number, the number of classes of primitive positive definite forms of discriminant \(-d\).
-
-\begin{problem}\label{pr:23}
-\(h(-23) = 3\), and \(\mathcal{H}_{23}\) consists of \((-1 + \ii\sqrt{23})/2\) and \((\pm 1 + \ii\sqrt{23})/4\).
-\end{problem}
-
-\begin{theorem}[Duke]\label{thm:duke}
-Let \(d \to \infty\) through integers for which \(-d\) is a fundamental discriminant.  Then for every continuous compactly supported function \(F\) on \(\mathcal{X}\),
+\begin{problem}\label{pr:translate-gram}
+\(G_{st} = B^*\rho(s^{-1}t)B\), and \(\langle \rho(s)BB^*\rho(s)^*, \rho(t)BB^*\rho(t)^* \rangle_\HS = \lVert B^*\rho(s^{-1}t)B \rVert_\HS^2\).  Hence
 \[
-  \frac{1}{h(-d)} \sum_{z \in \mathcal{H}_d} F(z) \to \int_{\mathcal{X}} F \, d\nu .
+  \Bigl\lVert \sum_{s \in \Gamma} \rho(s)BB^*\rho(s)^* \Bigr\rVert_\HS^2 = \sum_{s, t \in \Gamma} \lVert G_{st} \rVert_\HS^2 = \#\Gamma \sum_{s \in \Gamma} \lVert B^*\rho(s)B \rVert_\HS^2 .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:all-translates}
+Let \(S \ne 0\), let \(B\) be an isometry, and let \(\varepsilon \ge 0\).  If \(\dim T \cdot \sum_s \lVert B^*\rho(s)B \rVert_\HS^2 \le \#\Gamma\,(1 + \varepsilon)(\dim S)^2\), then the images \(\rho(s)B(S)\), \(s \in \Gamma\), together span a subspace of dimension at least \(\dim T/(1 + \varepsilon)\).
+\end{problem}
+
+Problem~\ref{pr:all-translates} uses all \(\#\Gamma\) translates.  For \(0<\varepsilon<1/16\), Theorem~\ref{thm:few} will give a span of at least \((1-16\varepsilon)\dim T\) dimensions in this setting, using at most \(\frac52(1+\log(1/(16\varepsilon)))\dim T/\dim S\) translates.  The first step is a bound for one subspace at a time.
+
+\begin{problem}\label{pr:cs}
+For every subspace \(W \subseteq T\),
+\[
+  \Bigl( \sum_{s \in \Gamma} \lVert P_W\rho(s)B \rVert_\HS^2 \Bigr)^2 \le \dim W \cdot \#\Gamma \sum_{s \in \Gamma} \lVert B^*\rho(s)B \rVert_\HS^2 .
+\]
+\end{problem}
+
+An isometry condition on the projected map gives a lower bound for the second moment.  Let \(p \colon T \to T\) be a linear map with \(p^2 = p\) and \(p^* = p\), commuting with every \(\rho(s)\), and let \(T_0 := \im p\).
+
+\begin{problem}\label{pr:moment-min}
+\(T_0\) and \(T_0^\perp\) are stable under \(\Gamma\), and \(p = P_{T_0}\).  If \(pB\) is an isometry, then \(\#\Gamma\,(\dim S)^2 \le \dim T_0 \cdot \sum_s \lVert B^*\rho(s)B \rVert_\HS^2\).
+\end{problem}
+
+When \(T=T_0\ne0\) and \(B\) is an isometry, Problem~\ref{pr:random} gives the Haar mean \((\dim S)^2/\dim T_0\).  This is also the lower bound for the finite-group mean in Problem~\ref{pr:moment-min}.  For \(\dim T_0>0\), the hypothesis below requires the finite-group mean to be at most \(1+\varepsilon\) times this benchmark.
+
+\section{One translate}\label{sec:spread}
+
+Let \(A \colon S \to T\) be linear and \(\varepsilon \in \R\).  We say that \(A\) is a \emph{near isometry with error \(\varepsilon\)} if \(\dim U - \varepsilon \dim S \le \lVert A P_U \rVert_\HS^2\) for every subspace \(U \subseteq S\), where now \(P_U \colon S \to S\) is the orthogonal projection onto \(U\).  This is a lower bound in mean square only.
+
+\begin{problem}\label{pr:near-isom}
+If \(\varepsilon \ge 0\) and \(\lVert A^*A - 1 \rVert_\HS^2 \le \varepsilon^2 \dim S\), then \(A\) is a near isometry with error \(\varepsilon\).
+\end{problem}
+
+Let \(\Theta\) be a set, let \(V\) and \(Y\) be finite-dimensional complex vector spaces, and let \(C_\theta \colon V \to Y\), \(\theta \in \Theta\), be linear maps.  For \(\eta \in \R\), we say that the family \((C_\theta)\) \emph{spreads with error \(\eta\)} if for every subspace \(F \subseteq Y\), with \(\alpha := \dim F/\dim Y\) (and \(\alpha := 0\) if \(Y = 0\)), there is \(\theta \in \Theta\) with
+\[
+  \dim C_\theta^{-1}(F) \le \Bigl( \frac{1 + \alpha}{2} + \eta \Bigr) \dim V .
+\]
+The index \(\theta\) may depend on \(F\).
+
+Now return to Section~\ref{sec:translates}, and let \(C_s := p\rho(s)B\), viewed as a map \(S \to T_0\).  Assume that \(\varepsilon \ge 0\), that \(pB\) is a near isometry with error \(\varepsilon\), and that
+\begin{equation}\label{eq:moment}
+  \dim T_0 \cdot \sum_{s \in \Gamma} \lVert B^*\rho(s)B \rVert_\HS^2 \le \#\Gamma\,(1 + \varepsilon)(\dim S)^2 .
+\end{equation}
+Let \(W \subseteq T_0\) be a subspace and let \(\alpha := \dim W/\dim T_0\), with \(\alpha := 0\) if \(T_0=0\).
+
+\begin{problem}\label{pr:one-translate}
+Some \(s \in \Gamma\) has \(\lVert P_W\rho(s)B \rVert_\HS^2 \le \frac12(1 + \alpha + \varepsilon)\dim S\).
+\end{problem}
+
+\begin{problem}\label{pr:preimage}
+For every \(s \in \Gamma\), let \(U := C_s^{-1}(W) \subseteq S\).  Then \(\lVert pBP_U \rVert_\HS^2 \le \lVert P_W\rho(s)B \rVert_\HS^2\).  For \(s\) as in Problem~\ref{pr:one-translate}, \(\dim U \le \bigl(\frac{1+\alpha}{2} + \frac32\varepsilon\bigr)\dim S\).
+\end{problem}
+
+Problems~\ref{pr:cs}, \ref{pr:one-translate} and~\ref{pr:preimage} prove the following, which is a statement of the rewritten Lean proof.
+
+\begin{theorem}\label{thm:spread}
+Let \(S\) and \(T\) be finite-dimensional complex inner product spaces, \(\Gamma\) a finite group, and \(\rho\) a representation of \(\Gamma\) on \(T\) with \(\langle \rho(s)x, \rho(s)y \rangle = \langle x, y \rangle\) for all \(s \in \Gamma\) and \(x, y \in T\).  Let \(p \colon T \to T\) be linear with \(p^2 = p\), \(p^* = p\) and \(p\rho(s) = \rho(s)p\) for every \(s \in \Gamma\).  Let \(B \colon S \to T\) be linear and \(\varepsilon \in \R\), with \(\varepsilon \ge 0\), such that \(pB\) is a near isometry with error \(\varepsilon\) and~\eqref{eq:moment} holds with \(T_0 := \im p\).  Then the maps \(p\rho(s)B \colon S \to T_0\), \(s \in \Gamma\), spread with error \(\frac32\varepsilon\).
+\end{theorem}
+
+Here \(T_0 = 0\) and \(\varepsilon = 0\) are allowed.
+
+\section{The greedy choice}\label{sec:greedy}
+
+Return to maps \(C_\theta \colon V \to Y\), \(\theta \in \Theta\), as in Section~\ref{sec:spread}.  For a subspace \(F \subseteq Y\) let \(c(F) := \dim Y - \dim F\) be its codimension.  In Problems~\ref{pr:greedy-step}--\ref{pr:rate} assume that \(\dim Y > 0\), that \(0 < \varepsilon < 1/16\), and that the family spreads with error \(\frac32\varepsilon\), and put \(\kappa := 2\dim V/(5\dim Y)\).
+
+\begin{problem}\label{pr:rank-add}
+For every linear \(A \colon V \to Y\) and every subspace \(F \subseteq Y\), \(\dim(F + A(V)) + \dim A^{-1}(F) = \dim F + \dim V\).
+\end{problem}
+
+\begin{problem}\label{pr:greedy-step}
+If \(c(F) > 16\varepsilon\dim Y\), then some \(\theta\) has \(c(F + C_\theta(V)) \le (1 - \kappa)\,c(F)\).
+\end{problem}
+
+\begin{problem}\label{pr:greedy-iterate}
+For every integer \(\ell \ge 0\) there is a set \(t \subseteq \Theta\) with \(\#t \le \ell\) and \(c\bigl(\sum_{\theta \in t} C_\theta(V)\bigr) \le \max\bigl(16\varepsilon, e^{-\ell\kappa}\bigr)\dim Y\).
+\end{problem}
+
+\begin{problem}\label{pr:rate}
+If \(V \ne 0\), then \(0 < \kappa \le 1\).
+\end{problem}
+
+\begin{problem}\label{pr:stopping}
+Under the hypotheses of Problem~\ref{pr:rate}, with \(V\ne0\), there is an integer \(\ell\ge0\) such that \(e^{-\ell\kappa}\le16\varepsilon\) and \(\ell\kappa\le1+\log(1/(16\varepsilon))\), where \(\log\) is the natural logarithm.
+\end{problem}
+
+Problems~\ref{pr:greedy-iterate} and~\ref{pr:stopping} give the following theorem of the rewritten Lean proof.
+
+\begin{theorem}\label{thm:few}
+Let \(\Theta\) be a set, let \(V\) and \(Y\) be finite-dimensional complex vector spaces, let \(C_\theta \colon V \to Y\), \(\theta \in \Theta\), be linear maps, and let \(\varepsilon \in \R\).  Assume that \(V \ne 0\), that the family spreads with error \(\frac32\varepsilon\), that \(\dim Y > 0\), and that \(0 < \varepsilon < 1/16\).  Then there is a finite set \(t \subseteq \Theta\) with
+\[
+  \#t \cdot \dim V \le \frac52 \Bigl( 1 + \log \frac{1}{16\varepsilon} \Bigr) \dim Y
+  \quad\text{and}\quad
+  (1 - 16\varepsilon)\dim Y \le \dim \sum_{\theta \in t} C_\theta(V) .
 \]
 \end{theorem}
 
-See \cite[Thm.~1]{Du}, where it is proved, with a rate, for convex sets; continuous \(F\) follow by approximation.  The proof rests on Iwaniec's bound for the Fourier coefficients of forms of half-integral weight \cite{Iw87}.
+Applied with \(\Theta = \Gamma\), \(V = S\), \(Y = T_0\) and \(C_s = p\rho(s)B\), Theorems~\ref{thm:spread} and~\ref{thm:few} say: if \(S \ne 0\), \(T_0 \ne 0\), \(0 < \varepsilon < 1/16\), \(pB\) is a near isometry with error \(\varepsilon\) and~\eqref{eq:moment} holds, then the images of at most \(\frac52(1 + \log(1/(16\varepsilon)))\dim T_0/\dim S\) of the maps \(p\rho(s)B\) span at least \((1 - 16\varepsilon)\dim T_0\) dimensions of \(T_0\).  In the application to automorphic forms (Chapter~\ref{bp-chap}), \(b\) is a large parameter, the weight at certain places.  The rewriting applies Theorem~\ref{thm:spread} to a rescaled map of automorphic forms and its translates under a finite group, transfers the conclusion to the projected translates on the full source space, and applies Theorem~\ref{thm:few} with \(\varepsilon=1/(8b^2)\); this gives a span of dimension at least \((1-2/b^2)d_T\), where \(d_T\) is the target dimension.  After restriction to the subspace of ramified source forms, of dimension \(d_R\), Theorem~B gives \(d_T>0\) and a set \(t\) of translates with \(\#t\,d_R\le 5d_T\log(1+2b^2)\) whose images span at least \((1-4/b^2)d_T\) dimensions.  These last steps use the sizes of the data and are not worked here.  For a related logarithmic bound in greedy submodular covering, see Wolsey~\cite{Wo}.
 
-\begin{problem}\label{pr:bounded}
-Theorem~\ref{thm:duke} holds for every bounded continuous \(F\).
+\begin{leanremark}
+In the rewritten Lean proof \cite{GL}, file \tl{grh/src/New/Spanning/SecondMoment/FewTranslates.lean}, Theorem~\ref{thm:spread} is \tl{New.isSpread\_of\_second\_moment} and Theorem~\ref{thm:few} is \tl{New.IsSpread.exists\_few\_le\_finrank\_iSup\_range}; spreading and near isometry are \tl{New.IsSpread} and \tl{New.IsNearIsometry}.  The transfer from the scaled Poincar\'e map to the projected translates on the full source is in \tl{New.Data.isSpread\_goodPoincare}, in \tl{grh/src/New/Spanning/SecondMoment/SpanningTheorem.lean}.  The selection on the full source and the restriction to ramified forms are in the proof of \tl{New.Data.exists\_le\_finrank\_iSup\_range\_normalizedPoincare}, in \tl{grh/src/New/Reduction/ShortAndEnough.lean}.  Theorem~B is \tl{New.Data.enough\_forms} in the same file.
+\end{leanremark}
+
+\section{Translations of a cyclic group}\label{sec:cyclic}
+
+Let \(\Gamma = \Z/N\Z\), \(T = \C^{\Gamma}\) with \(\langle f, g \rangle = \sum_x \overline{f(x)} g(x)\), \((\rho(s)f)(x) = f(x - s)\), and \(1 \le M \le N\).  Let \(S = \C^M\) with standard basis \(e_0, \dots, e_{M-1}\), and \(I := \{0, 1, \dots, M-1\} \subseteq \Z/N\Z\).
+
+\begin{problem}\label{pr:points}
+Let \(Be_j := \delta_j\), the indicator function of \(\{j\}\).  Then \(\lVert B^*\rho(s)B \rVert_\HS^2 = \#(I \cap (I + s))\), and the second moment is \(M^2\).  Hence, with \(p = 1\),~\eqref{eq:moment} holds with \(\varepsilon = 0\), with equality.
 \end{problem}
 
-\begin{problem}\label{pr:duke-zero}
-Let \(\Hc\) be as in Section~\ref{sec:points} on \(\mathcal{X}\), for instance the span of \(1\) and finitely many Maass cusp forms.  Let \(Q_d\) be the operator of the evaluations at the points of \(\mathcal{H}_d\) with weights \(1/h(-d)\).  Then \(Q_d \to 1\) as \(d \to \infty\) as in Theorem~\ref{thm:duke}.  Hence, for all large such \(d\), no nonzero \(f \in \Hc\) vanishes on \(\mathcal{H}_d\).
+\begin{problem}\label{pr:points-count}
+In Problem~\ref{pr:points}, for \(0 < \varepsilon < 1/16\), the least number of translates \(\rho(s)B\) whose images span at least \((1 - 16\varepsilon)N\) dimensions is \(\lceil (1 - 16\varepsilon)N/M \rceil\).  For \(N = 12\), \(M = 3\), \(\varepsilon = 1/128\) it is \(4\), while the bound of Theorem~\ref{thm:few} is \(10(1 + \log 8) \approx 30.79\).
 \end{problem}
 
-\section{What a relative trace formula supplies}\label{sec:rtf}
+Every translate of \(B(S)\) is orthogonal to any \(\Gamma\)-stable subspace orthogonal to \(B(S)\).
 
-How can one verify~\eqref{eq:pair}?  A block \(G_{ij}\) is a sum over an orthonormal basis of \(\Hc\) of products of values, by Problem~\ref{pr:eval}.  A trace formula turns such a sum into a sum over the group.  Begin with the circle.  Let \(\mathcal{X} = \R/\Z\) with Lebesgue measure, \(e(t) := e^{2\pi\ii t}\), and let \(\Hc\) be spanned by the \(e(kx)\) with \(\lvert k \rvert < n\).  Then \(D' = 2n - 1\), and \(K(x, y) = D_n(x - y)\) with \(D_n(t) := \sum_{\lvert k \rvert < n} e(kt)\).  For points \(x_1, \dots, x_N\) with \(\gamma_i = 1/N\), let \(W(k) := N^{-1} \sum_i e(kx_i)\); then \(\tr Q = D'\).
-
-\begin{problem}\label{pr:circle}
-\(\displaystyle \tr Q^2 = \frac{1}{N^2} \sum_{i,j} \lvert D_n(x_i - x_j) \rvert^2 = \sum_{\lvert k \rvert < D'} (D' - \lvert k \rvert) \lvert W(k) \rvert^2 .\)
+\begin{problem}\label{pr:frequencies}
+Let \(Be_j(x) := N^{-1/2}e^{2\pi \mathrm{i} jx/N}\), \(0 \le j < M\).  Then \(B\) is an isometry, every \(B^*\rho(s)B\) is diagonal and unitary, the second moment is \(NM\), and the images of any nonempty set of translates span exactly \(B(S)\).  With \(p = 1\), \eqref{eq:moment} holds exactly when \(N \le (1 + \varepsilon)M\).  The subspace \(B(S)\) is \(\Gamma\)-stable, and with \(p = P_{B(S)}\), \eqref{eq:moment} holds with \(\varepsilon = 0\).
 \end{problem}
 
-The middle term is a sum over pairs of points, and is large when many pairs lie at distance less than \(1/D'\).  The right side is a sum over frequencies.  So \(Q\) is almost scalar when the Weyl sums are small up to frequency \(D'\), or equivalently when there are not too many close pairs.
-
-\begin{problem}\label{pr:circle-random}
-If the \(x_i\) are independent and uniformly distributed, then \(\E \tr Q^2 = D' + D'(D'-1)/N\).
+\begin{problem}\label{pr:missed}
+In the setting of Section~\ref{sec:translates}, let \(S \ne 0\), let \(B\) be an isometry, and let \(T_1 \subseteq T\) be a \(\Gamma\)-stable subspace orthogonal to \(B(S)\).  If~\eqref{eq:moment} holds with \(p = 1\), then \(\dim T_1 \le \varepsilon\dim T/(1 + \varepsilon)\).
 \end{problem}
 
-Here \(K_i = D'/N\).  After rescaling to \(\gamma_i = 1/D'\), so that \(K_i = 1\), the ratio \(D' \tr Q^2/(\tr Q)^2\), which does not depend on the scaling, is \(1 + (D'-1)/N\) in the mean, within the value \(1 + D'/N\) that Problem~\ref{pr:pair} allows for \(\eta_0 = 0\) and \(R = N\).
-
-In the argument the maps are periods, not evaluations.  On \(\mathcal{X} = \mathrm{SL}_2(\Z) \backslash \HH\), with \(\Hc\) as in Problem~\ref{pr:duke-zero}, let \(P_d(f) := \sum_{z \in \mathcal{H}_d} f(z)\).  For \(d > 4\) let \(X_d = \C\), let \(\gamma_d > 0\), and let \(B_d \colon \C \to \Hc\) be the map with \(B_d^* = P_d\).  The family \((B_d)\), over a set of \(d\), satisfies a zero estimate if few \(f \in \Hc\) have all their periods zero.
-
-\begin{problem}\label{pr:period-gram}
-\(\displaystyle G_{dd'} = \sqrt{\gamma_d \gamma_{d'}} \sum_{z \in \mathcal{H}_d} \sum_{w \in \mathcal{H}_{d'}} K(z, w) = \sqrt{\gamma_d \gamma_{d'}} \sum_n P_d(\varphi_n) \overline{P_{d'}(\varphi_n)} .\)
-\end{problem}
-
-Now replace \(K\) by an automorphic kernel.  Let \(\rho\) be the hyperbolic distance, \(\cosh \rho(z, w) = 1 + \lvert z - w \rvert^2/(2 \operatorname{Im} z \operatorname{Im} w)\), let \(k\) be a smooth compactly supported function on \([1, \infty)\), and let \(K_k(z, w) := \sum_{g \in \mathrm{PSL}_2(\Z)} k(\cosh \rho(z, gw))\).
-
-\begin{problem}\label{pr:cosh}
-For forms \([a, b, c]\) and \([a', b', c']\) of discriminants \(-d\) and \(-d'\), \(\cosh \rho(z_{[a,b,c]}, z_{[a',b',c']}) = (2ac' + 2a'c - bb')/\sqrt{dd'}\).
-\end{problem}
-
-\begin{problem}\label{pr:unfold}
-For \(d, d' > 4\),
-\[
-  \sum_{z \in \mathcal{H}_d} \sum_{w \in \mathcal{H}_{d'}} K_k(z, w) = \sum_{[a,b,c]} \sum_{[a',b',c']} k\Bigl( \frac{2ac' + 2a'c - bb'}{\sqrt{dd'}} \Bigr) ,
-\]
-where \([a, b, c]\) runs over the reduced forms of discriminant \(-d\), and \([a', b', c']\) over all primitive positive definite forms of discriminant \(-d'\).
-\end{problem}
-
-The right side counts integral points.  The left side has a spectral expansion.  By Selberg's pre-trace formula \cite[Thm.~7.4]{Iw}, \(K_k(z, w) = \sum_j h(t_j) u_j(z) \overline{u_j(w)}\) plus an integral over the Eisenstein series, where \(u_j\) runs over a basis of Maass forms orthonormal for the measure \(y^{-2}\,dx\,dy = (\pi/3)\,d\nu\), and \(h\) is the Selberg--Harish-Chandra transform of \(k\) for that measure.  So, apart from the continuous spectrum, the left side of Problem~\ref{pr:unfold} is \(\sum_j h(t_j) P_d(u_j) \overline{P_{d'}(u_j)}\).  If \(h(t_j) > 0\) for the \(u_j\) spanning \(\Hc\), and \(\Hc\) is given the inner product for which the \(\sqrt{h(t_j)}\, u_j\) are orthonormal, then by Problem~\ref{pr:period-gram}, whose proof uses only that \(K\) is the reproducing kernel of \(\Hc\), this is the Gram block \(G_{dd'}\), up to the factor \(\sqrt{\gamma_d \gamma_{d'}}\) and the contribution of the other \(u_j\).  A bound of the form~\eqref{eq:pair} thus becomes a count of pairs of forms with \(2ac' + 2a'c - bb'\) in a given range.
-
-This is the simplest case of a relative trace formula.  For a reductive group \(G\) over \(\Q\) with subgroups \(H_1\) and \(H_2\), one integrates the automorphic kernel \(\sum_{\gamma \in G(\Q)} f(x^{-1}\gamma y)\) over \(x \in H_1(\Q) \backslash H_1(\mathbb{A})\) and \(y \in H_2(\Q) \backslash H_2(\mathbb{A})\).  Spectrally one obtains a sum over automorphic forms \(\varphi\) of products of an \(H_1\)-period of \(\varphi\) and the conjugate of an \(H_2\)-period.  Geometrically one obtains a sum over the double cosets \(H_1(\Q) \backslash G(\Q) / H_2(\Q)\) of orbital integrals.  For \(G = \mathrm{PGL}_2\) and \(H_1\), \(H_2\) tori, which contains Problem~\ref{pr:unfold}, Jacquet used this identity to prove Waldspurger's formula \cite{Ja}.  In Alp\"oge's argument \cite{Alp}, see also \cite{Zh}, the maps are Bessel periods on unitary groups \cite{GGP}, and the pairwise bounds do not come from equidistribution of CM points but from near orthogonality of Poincar\'e series of large weight; Chapter~\ref{ps-chap} treats it, and its last section describes the form it takes in the argument.
+Thus a stable subspace orthogonal to \(B(S)\) gives a lower bound for the second moment.  Choosing \(p=P_{T_1^\perp}\) removes \(T_1\) from the target.  In general the theorems bound the dimension spanned inside the chosen target \(T_0=\im p\).
 
 \section*{Hints}
 
 \subsection*{\S\ref{sec:gram}}
 \begin{description}
-\item[\ref{pr:image}] \(\ker B^* = (\operatorname{im} B)^\perp\).
-\item[\ref{pr:gram}] If \(Gx = \lambda x\) with \(\lambda \ne 0\), then \(Q(Bx) = \lambda Bx\).  Then expand \(\tr G^2\) by blocks.
-\item[\ref{pr:two-lines}] \(G\) is the \(2 \times 2\) matrix with diagonal entries \(1\) and off-diagonal entries \(\langle w, v \rangle\) and \(\langle v, w \rangle\).
-\item[\ref{pr:pair}] \(\lVert G_{ii} \rVert_\HS^2 = r_i\), and \(\sum_{i \ne j} r_i r_j \le R^2\).
-\item[\ref{pr:random}] Schur's lemma.
-\item[\ref{pr:bad}] \(Q\) is diagonal.
+\item[\ref{pr:rank-trace}] \(Q = \Phi\Phi^* \ge 0\).  Cauchy--Schwarz for the nonzero eigenvalues of \(Q\).
+\item[\ref{pr:image}] \(\ker \Phi^* = (\im \Phi)^\perp\).
+\item[\ref{pr:gram}] If \(Gx = \lambda x\) with \(\lambda \ne 0\), then \(Q(\Phi x) = \lambda \Phi x\).  Then expand \(\tr G^2\) by blocks.
+\item[\ref{pr:two-lines}] \(G\) is the \(2 \times 2\) matrix with diagonal entries \(1\) and off-diagonal entries \(\langle v, w \rangle\) and \(\langle w, v \rangle\).
+\item[\ref{pr:pair}] \(\lVert G_{ii} \rVert_\HS^2 = r_i\), and \(\sum_{i \ne j} r_i r_j \le R^2\).  Then Theorem~\ref{thm:gram}.
+\item[\ref{pr:random}] Schur's lemma, applied to \(\E\, u B_2B_2^* u^*\).
 \end{description}
 
-\subsection*{\S\ref{sec:points}}
+\subsection*{\S\ref{sec:translates}}
 \begin{description}
-\item[\ref{pr:eval}] \(\langle f, K(\cdot, x) \rangle = f(x)\) for \(f \in \Hc\).
-\item[\ref{pr:zero}] Compare \(Q\) with \(1\) on that space, using Problem~\ref{pr:eval}.
-\item[\ref{pr:schur}] \(Q\) commutes with \(\Gamma\), and \(\tr Q = r\).
-\item[\ref{pr:tetra}] Use Problem~\ref{pr:gram}.  The vertices satisfy \(\langle x_i, x_j \rangle = -1/3\) for \(i \ne j\).  For the second family, consider the function \(x_3\).
+\item[\ref{pr:hs}] For the last identity, \(\tr(XY) = \tr(YX)\) and \(P_W^2 = P_W = P_W^*\).
+\item[\ref{pr:translate-gram}] \(\rho(s)^* = \rho(s^{-1})\); then Problem~\ref{pr:gram}, and count the pairs \((s, t)\) with given \(s^{-1}t\).
+\item[\ref{pr:all-translates}] Theorem~\ref{thm:gram} and Problem~\ref{pr:translate-gram}.
+\item[\ref{pr:cs}] Sum Problem~\ref{pr:hs} over \(s\), apply Cauchy--Schwarz for \(\langle\cdot,\cdot\rangle_\HS\), and use Problem~\ref{pr:translate-gram}.
+\item[\ref{pr:moment-min}] Problem~\ref{pr:cs} with \(W = T_0\).
 \end{description}
 
-\subsection*{\S\ref{sec:heegner}}
+\subsection*{\S\ref{sec:spread}}
 \begin{description}
-\item[\ref{pr:23}] A reduced form has \(\lvert b \rvert \le a \le c\), so \(a \le \sqrt{d/3}\).
-\item[\ref{pr:bounded}] Approximate \(1\) from below by compactly supported functions.
-\item[\ref{pr:duke-zero}] Apply Problem~\ref{pr:bounded} to the functions of Problem~\ref{pr:matrix}, and then use Problem~\ref{pr:zero}.
+\item[\ref{pr:near-isom}] \(\lVert AP_U \rVert_\HS^2 = \dim U + \langle P_U, A^*A - 1 \rangle_\HS\).
+\item[\ref{pr:one-translate}] Problem~\ref{pr:cs}, with \(W\) viewed inside \(T\), and \(\sqrt{ab} \le (a + b)/2\).
+\item[\ref{pr:preimage}] Compare \(\rho(s)pB\) and \(P_W\rho(s)B\) on \(U\).
 \end{description}
 
-\subsection*{\S\ref{sec:rtf}}
+\subsection*{\S\ref{sec:greedy}}
 \begin{description}
-\item[\ref{pr:circle}] \(\lvert D_n(t) \rvert^2 = \sum_{\lvert k \rvert < D'} (D' - \lvert k \rvert) e(kt)\).
-\item[\ref{pr:circle-random}] \(\E \lvert W(k) \rvert^2 = 1/N\) for \(k \ne 0\).
-\item[\ref{pr:period-gram}] By Problem~\ref{pr:eval}, \(B_d(1) = \sum_{w \in \mathcal{H}_d} K(\cdot, w)\).
-\item[\ref{pr:cosh}] \(\operatorname{Im} z_{[a,b,c]} = \sqrt d/(2a)\).  Expand \(\lvert z - z' \rvert^2\) and use \(b^2 - 4ac = -d\).
-\item[\ref{pr:unfold}] For \(d' > 4\) a form has trivial stabilizer in \(\mathrm{PSL}_2(\Z)\).  Use Problem~\ref{pr:cosh}.
+\item[\ref{pr:rank-add}] Rank--nullity for the restriction of \(A\) to \(A^{-1}(F)\), and \(\dim(F + A(V)) + \dim(F \cap A(V)) = \dim F + \dim A(V)\).
+\item[\ref{pr:greedy-step}] Problem~\ref{pr:rank-add} with \(A = C_\theta\).  Compare \(\frac{1+\alpha}{2} + \frac32\varepsilon\) with \(1 - \frac25(1 - \alpha)\).
+\item[\ref{pr:greedy-iterate}] Induction on \(\ell\), and \(1 - \kappa \le e^{-\kappa}\).
+\item[\ref{pr:rate}] Problem~\ref{pr:greedy-step} with \(F = 0\).
+\item[\ref{pr:stopping}] Round \(\log(1/(16\varepsilon))/\kappa\) up to an integer.
 \end{description}
 
-\begin{thebibliography}{GGP}
-\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\subsection*{\S\ref{sec:cyclic}}
+\begin{description}
+\item[\ref{pr:points}] Count the pairs \((j, k) \in I \times I\) with \(j - k = s\).
+\item[\ref{pr:points-count}] The images are spanned by indicator functions of points.
+\item[\ref{pr:frequencies}] Each \(Be_j\) is an eigenvector of every \(\rho(s)\).
+\item[\ref{pr:missed}] Problem~\ref{pr:moment-min} with \(p = P_{T_1^\perp}\).
+\end{description}
+
+\begin{thebibliography}{GL}
 \bibitem[Alp]{Alp} L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
-\bibitem[Cox]{Cox} D.~A.~Cox, \emph{Primes of the form \(x^2 + ny^2\): Fermat, class field theory, and complex multiplication}, Wiley, New York, 1989.
-\bibitem[Du]{Du} W.~Duke, \emph{Hyperbolic distribution problems and half-integral weight Maass forms}, Invent.\ Math.\ \textbf{92} (1988), 73--90.
-\bibitem[GGP]{GGP} W.~T.~Gan, B.~H.~Gross and D.~Prasad, \emph{Symplectic local root numbers, central critical \(L\)-values, and restriction problems in the representation theory of classical groups}, Ast\'erisque \textbf{346} (2012), 1--109.
-\bibitem[Iw1]{Iw87} H.~Iwaniec, \emph{Fourier coefficients of modular forms of half-integral weight}, Invent.\ Math.\ \textbf{87} (1987), 385--401.
-\bibitem[Iw2]{Iw} H.~Iwaniec, \emph{Spectral methods of automorphic forms}, 2nd ed., Grad.\ Stud.\ Math.\ \textbf{53}, Amer.\ Math.\ Soc., Providence, 2002.
-\bibitem[Ja]{Ja} H.~Jacquet, \emph{Sur un r\'esultat de Waldspurger}, Ann.\ Sci.\ \'Ecole Norm.\ Sup.\ (4) \textbf{19} (1986), 185--229.
-\bibitem[Zh]{Zh} R.~Zhang, \emph{A preliminary note on Alp\"oge's proposed proof of the generalized Riemann hypothesis}, preprint, 2026, hexagon:2611.00809.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}.
+\bibitem[We]{We} L.~R.~Welch, \emph{Lower bounds on the maximum cross correlation of signals}, IEEE Trans.\ Inform.\ Theory \textbf{20} (1974), 397--399.
+\bibitem[Wo]{Wo} L.~A.~Wolsey, \emph{An analysis of the greedy algorithm for the submodular set covering problem}, Combinatorica \textbf{2} (1982), 385--393.
 \end{thebibliography}
 
 \end{document}
