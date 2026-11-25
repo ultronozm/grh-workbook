@@ -4,6 +4,7 @@
 \usepackage{xr-hyper}
 \usepackage[hidelinks]{hyperref}
 \externaldocument[gf-]{20261125T005000--galois-fourier-and-averaging__workbook}
+\externaldocument[cs-]{20261125T005500--columns-from-a-sphere__workbook}
 \externaldocument[sm-]{20261125T000000--slope-method__workbook}
 \externaldocument[ch-]{20261125T003000--the-chain-and-the-square-root__workbook}
 \externaldocument[fk-]{20261125T009500--fock-model-and-theta-intertwiners__workbook}
@@ -15,6 +16,9 @@
 \externaldocument[pf-]{20261125T013700--pairings-on-a-formal-group-of-height-two__workbook}
 \externaldocument[ho-]{20261125T016500--hecke-operators-and-theta-lifts__workbook}
 \externaldocument[dc-]{20261125T016700--divisibility-along-the-chain__workbook}
+\externaldocument[nk-]{20261126T020110--the-normalized-kernel-law__workbook}
+\externaldocument[fo-]{20261126T020120--frames-at-odd-positions-and-unit-scalars__workbook}
+\externaldocument[as-]{20261125T021500--assembly-at-one-scale__workbook}
 
 \newcounter{chap}
 \input{chapters}
@@ -45,7 +49,7 @@
 
 \paragraph{Prerequisites.}
 Chapters~\ref{cm-chap}, \ref{st-chap} and \ref{ip-chap} on inert CM reduction and invariant derivatives;
-Chapter~\ref{pf-chap} on formal pairings; Chapters~\ref{hn-chap} and \ref{dc-chap} on the integral Hecke image and the composite of lifts. We recall the prime sum of Chapter~\ref{gf-chap} and use the convention \(v_p(p)=1\), \((z)_+=\max(z,0)\).
+Chapter~\ref{pf-chap} on formal pairings; Chapters~\ref{hn-chap} and \ref{dc-chap} on the integral Hecke image and the composite of lifts.  The simplest incarnations below recall Chapter~\ref{gf-chap} (the prime sum), Chapter~\ref{cs-chap} (the tops), Chapters~\ref{sm-chap} and~\ref{ch-chap} (the slope method and the chain), Chapter~\ref{fk-chap} (theta intertwiners), Chapter~\ref{od-chap} (one CM determinant) and Chapter~\ref{ho-chap} (Hecke operators and theta lifts).  We use the convention \(v_p(p)=1\), \((z)_+=\max(z,0)\).  This chapter states results of \cite[\S\S8--12]{Adr} in the form used later and checks them on examples; it does not reproduce their definitions in full, and the reader needs \cite[\S\S8--12]{Adr} open.
 
 Which powers of \(p\) gained by differentiating a theta kernel survive the chain of lifts, and what is the index of the source on which they survive?
 
@@ -65,14 +69,14 @@ Let \(M\) be a positive definite hermitian \(\Oc_K\)-lattice, \(L_M=M\otimes_{\O
 \]
 Here \(\beta\) is the coboundary of the one-variable theta correction in \cite[Eq.~(8.6)]{Adr}.
 \end{theorem}
-\noindent \emph{Status}: proved in \cite{Adr}. Simplest incarnation: Theorem~\ref{ip-thm:line} gives an integral restriction \(\widehat P(X)\) to one isotropic line for \(K=\Q(i)\), \(p\equiv3\bmod8\). Theorem~\ref{st-thm:single} gives \(v_p(D^n f(0))\ge\sum_{i>0,\ i\ {\rm odd}}\lfloor n/p^i\rfloor\) for an integral series \(f\) and its invariant derivation \(D\).
+\noindent \emph{Status}: proved in \cite{Adr}.  The theorem says nothing about the scalar \(c\).  For the kernels of the Lean formalization \cite{Lean}, built from one theta function of the CM curve normalized to take the value \(1\) at the origin, it holds with \(c=1\) (Theorem~\ref{nk-thm:B} of Chapter~\ref{nk-chap}).  Simplest incarnation: Theorem~\ref{ip-thm:line} gives an integral restriction \(\widehat P(X)\) to one isotropic line for \(K=\Q(i)\), \(p\equiv3\bmod8\). Theorem~\ref{st-thm:single} gives \(v_p(D^n f(0))\ge\sum_{i>0,\ i\ {\rm odd}}\lfloor n/p^i\rfloor\) for an integral series \(f\) and its invariant derivation \(D\).
 
 \begin{problem}\label{pr:line}
 In one hyperbolic plane \(\beta(x,0)=0\). Show that \(c^{-1}\Theta(x,0)\) is integral. In the Gaussian model with its integral line series \(\widehat P\), show that \(v_p(D^{p^3}\widehat P(0))\ge p^2+1\) for \(p\equiv3\bmod8\).
 \end{problem}
 
 \section{What a minor can absorb}\label{sec:minors}
-Index the planes by \(0\le r<\nu,\ 0\le a<r_0,\ 0\le b<r_1\). After the trace-dual change of coordinates, the variable matrices \(X_s=(X_{s,a,b})\) have positions \(s\in\Z/(2\nu)\). For \(\varpi_p^{p^2-1}=p\), put
+Index the planes by \(0\le r<\nu,\ 0\le a<r_0,\ 0\le b<r_1\). The \emph{positions} \(s\in\Z/(2\nu)\) number the places of the CM type above \(p\) in one Frobenius orbit, so that Frobenius followed by complex conjugation moves the place at \(s\) to the place at \(s+1\) \cite[\S11.1]{Adr}; Section~\ref{fo-sec:positions} of Chapter~\ref{fo-chap} gives the details.  After the trace-dual change of coordinates, the variable matrices \(X_s=(X_{s,a,b})\) are indexed by the positions. For \(\varpi_p^{p^2-1}=p\), put
 \[
  \mathsf S_{s,a,b}=\sum_{k\ge0}(-1)^k X_{s-2k,a,b}^{p^{2k}},
  \qquad h_\upsilon=\sum_{s,a,b}\upsilon_s\mathsf S_{s,a,b}^p\mathsf S_{s+1,a,b}.
@@ -96,13 +100,13 @@ where \(\upsilon_s=z\) for odd \(s\) and \(-\sigma(z)\) for even \(s\). Applying
 Work modulo \(p\). In \(\mathsf S_{s,a,b}^p\mathsf S_{s+1,a,b}\), take the \(k\)-th term from the first factor after Frobenius and the linear term from the second. Its exponents are \(p^{2k+1}\) and \(1\); its positions differ by \(2k+1\) modulo \(2\nu\).
 \end{problem}
 
-At each position choose columns of heights \(h_c\le r_0\), with a list \(I_c\) of \(h_c\) column indices for each. Use the first \(h_c\) rows of a common frame \(Y_sX_s\) and the columns \(I_c\) to form a determinant; \(P_I\) is their product over columns and positions. Pair by \(\langle P_I,F\rangle=P_I(\partial)F(0)\), a polynomial in the frame entries.
+A \emph{shape} consists of a set \(\mathcal T\) of positions, called \emph{tops}, and at each position a list of columns of heights \(h_c\le r_0\), with a list \(I_c\) of \(h_c\) column indices for each \cite[\S9]{Adr}. Use the first \(h_c\) rows of a common frame \(Y_sX_s\) and the columns \(I_c\) to form a determinant; \(P_I\) is their product over columns and positions. Pair by \(\langle P_I,F\rangle=P_I(\partial)F(0)\), a polynomial in the frame entries.
 
 \begin{problem}\label{pr:cap}
 For a square minor of \(X+tuv^{\mathsf T}\), the coefficient of \(t^d\) vanishes for \(d\ge2\). Deduce that a product of \(w\) framed minors has degree at most \(w\) along any rank-one direction, whatever their heights.
 \end{problem}
 
-Problem~\ref{pr:cap} explains why each remaining column costs one. Fix a set \(\mathcal T\) of tops. At a top \(s\), count its height-one columns as \(\alpha_s\); set \(\alpha_s=0\) elsewhere. Write \(\capn_s,\lambda_s\) for the numbers of remaining columns and boxes at \(s\). Put \(\operatorname{len}_p(0)=0\), and let \(\operatorname{len}_p(n)\) count base-\(p\) digits for \(n>0\). For a top \(s\), let \(E(s)\) consist of the least nonnegative residues of \(s'-s\) for tops \(s'\) of opposite parity. For positive odd \(i\) put \(A_{s,i}=(\alpha_s/p^i-\capn_{s+i})_+\). The bounds of \cite[Thm.~9.6]{Adr} use
+Problem~\ref{pr:cap} explains why each remaining column costs one. At a top \(s\), count its columns of height one as \(\alpha_s\); set \(\alpha_s=0\) at the other positions.  The \emph{remaining} columns at \(s\) are the others: all columns if \(s\) is not a top, and the columns of height at least two if it is.  Write \(\capn_s\) for their number and \(\lambda_s\) for their number of boxes, the sum of their heights; thus \(\lambda_s\) does not count the columns of height one at a top. Put \(\operatorname{len}_p(0)=0\), and let \(\operatorname{len}_p(n)\) count base-\(p\) digits for \(n>0\). For a top \(s\), let \(E(s)\) consist of the least nonnegative residues of \(s'-s\) for tops \(s'\) of opposite parity. For positive odd \(i\) put \(A_{s,i}=(\alpha_s/p^i-\capn_{s+i})_+\). The bounds of \cite[Thm.~9.6]{Adr} use
 \begin{align*}
  \Delta&=\sum_s\big(r_1\operatorname{len}_p(\alpha_s)+r_0r_1\operatorname{len}_p(\lambda_s)\big)+\sum_{s\in\mathcal T}\operatorname{len}_p(\alpha_s)^2,\\
  g^A&=\sum_{s\in\mathcal T}\sum_{i\notin E(s)} A_{s,i}-\Delta,\\
@@ -121,7 +125,7 @@ for every set \(J\) of column indices. Here \(N_J\) counts height-one top column
 \noindent \emph{Status}: proved in \cite{Adr}. Simplest incarnation: Theorem~\ref{ip-thm:main} gives the directional bound \(\sum_i(\lfloor a/p^i\rfloor-w)_+\) on the Gaussian plane; Theorem~\ref{pf-thm:two} gives an entry bound both before and after multiplication by \(p^w\) for one formal pair.
 
 \begin{problem}\label{pr:digits}
-Use the Gaussian plane for comparison and take \(p=11,\ \nu=r_0=r_1=1\), one even top with \(a=2\cdot11^3\) columns and one column at the other position. The directional bound of Theorem~\ref{ip-thm:main} is \(242\). Show that the two contributing levels in \(g^A+\Delta\) give the same \(242\), while the first inequality of Theorem~\ref{thm:valuation} gives \(221\).
+Use the Gaussian plane for comparison and take \(p=11,\ \nu=r_0=r_1=1\), one even top with \(a=2\cdot11^3\) columns and one column at the other position. The directional bound of Theorem~\ref{ip-thm:main} is \(242\). Show that the two contributing levels in \(g^A+\Delta\) give the same \(242\), while the first inequality of Theorem~\ref{thm:valuation} gives \(221\), since \(\lambda_s\) at the top is zero.
 \end{problem}
 
 \section{What survives composition}\label{sec:chain}
@@ -139,14 +143,14 @@ For \([E:\Q]=2f\) and ranks \(N_j\le N_m\), the common denominator \(D_\Gamma=M(
 Write \(\mathcal V\) for the finite set of Frobenius orbits. At orbit \(v\) and step \(j\), \(g^0,g^1\) are the two entry bounds and \(\mathrm{Pr}\) is the price of commuting the normalized Hecke operator \(y_v\) through the composite. More precisely, the nontrivial Hecke terms have bound \(g^1\), the trivial term has bound \(\max(g^0,g^1-\alpha)\); the commutation polynomial has integral coefficients and constant coefficient of valuation at least \(\alpha\). The price bounds the valuation of the scalar in this commutation \cite[Defs.~10.4 and~10.5, Thm.~10.7]{Adr}.
 
 \begin{theorem}[Gain on the source]\label{thm:chain}
-For a chain datum with the Hecke commutation data and orbit bounds of \cite[Thm.~10.7]{Adr}, choose served orbits \(B\subseteq\mathcal V\) and \(S_v\ge\sum_{j=1}^m(g^1-\mathrm{Pr}-g^0)_+(v,j)\) on \(B\). The composite maps the span of
+For a chain datum with the Hecke commutation data and orbit bounds of \cite[Thm.~10.7]{Adr}, choose a set \(B\subseteq\mathcal V\) of orbits, the \emph{served} orbits, and numbers \(S_v\ge\sum_{j=1}^m(g^1-\mathrm{Pr}-g^0)_+(v,j)\) on \(B\). The composite maps the span of
 \[
  \left(\prod_{v\in B'}y_v\right)^m p^{\sum_{v\in B\setminus B'} S_v}\Int_0
  \quad(B'\subseteq B)
 \]
-into \(p^T\Int_m\), where \(p^z\) on a lattice denotes the valuation filtration at \(z\), and
+into \(p^{g^{\rm tot}}\Int_m\), where \(p^z\) on a lattice denotes the valuation filtration at \(z\), and
 \[
- T=\sum_{j=1}^m\left(\sum_{v\in B}\max(g^0,g^1-\mathrm{Pr})(v,j)
+ g^{\rm tot}=\sum_{j=1}^m\left(\sum_{v\in B}\max(g^0,g^1-\mathrm{Pr})(v,j)
                   +\sum_{v\notin B}g^0(v,j)\right)-\sum_{j=0}^{m-1}d_j .
 \]
 \end{theorem}
@@ -157,32 +161,43 @@ Serve one orbit for two steps. Take \(d_j=g^0=0\), \(g^1=(3,2)\), \(\mathrm{Pr}=
 \end{problem}
 
 \begin{theorem}[True lifts]\label{thm:true-lifts}
-For \(p\ge5\) inert in \(K\) and unramified in the CM field \(E\) of the lift data of \cite[Defs.~11.5, 11.7 and~11.10]{Adr}, assume (N1)--(N3). The true lifts form a chain datum on the integral frame lattices with \(d_j=v_p(D_\Gamma)\), commuting normalized Hecke operators, and orbit bounds \((g^A,g^B,\alpha_{\rm ev})\), where \(\alpha_{\rm ev}\) counts the height-one columns at even tops. Theorem~\ref{thm:chain} applies with the prices of \cite[Prop.~11.32, Thm.~11.45]{Adr}.
+Let \(p\ge5\) be inert in \(K\) and unramified in the CM field \(E\) of the lift data of \cite[Defs.~11.5, 11.7 and~11.10]{Adr}.  Suppose that
+\begin{enumerate}
+\item[(a)] every step kernel satisfies Theorem~\ref{thm:kernel} with \(c=1\): in the hyperbolic coordinates there, it is \(\exp(-\sum_e\beta(x_e,y_e))\,U\) with \(U\) integral;
+\item[(b)] the scalar normalizing each step changes only by \(p\)-adic units when the lattice at one orbit changes;
+\item[(c)] at the odd positions the frames are the duals of the frames at the even positions, and entry estimates pass to inclusions of lattices there as at the even positions, with determinant factors of the opposite sign.
+\end{enumerate}
+Then the true lifts form a chain datum on the integral frame lattices with \(d_j=v_p(D_\Gamma)\), commuting normalized Hecke operators, and orbit bounds \((g^A,g^B,\alpha_{\rm ev})\), where \(\alpha_{\rm ev}\) counts the height-one columns at even tops. Theorem~\ref{thm:chain} applies with the prices of \cite[Prop.~11.32, Thm.~11.45]{Adr}.
 \end{theorem}
-\noindent \emph{Status}: proved in the Lean formalization \cite{Lean}; in \cite{Adr} it rests on (N2) and (N3) below, not yet written out in the published expositions. Simplest incarnation: Theorem~\ref{ho-thm:eichler} expresses a sum over neighbours as a Hecke translate plus a scalar multiple of the original theta series; Chapter~\ref{fk-chap} composes the two theta intertwiners in Theorem~\ref{fk-thm:compose}.
+\noindent \emph{Status}: derived in \cite[Thm.~11.45]{Adr} from three hypotheses on the lifts, which are (a)--(c) in the form given there: (N3), \cite[Hyp.~11.42]{Adr}, for (a); (N1), \cite[Hyp.~11.22]{Adr}, for (b); and (N2), \cite[Hyp.~11.38]{Adr}, for (c).  Of these, (N1) is proved in \cite[Prop.~11.27]{Adr} for the step normalization of \cite[Def.~11.23]{Adr}, and (N2) and (N3) are assumed there.  The Lean formalization \cite{Lean} proves the final theorem through statements of the form (a)--(c), which Chapters~\ref{nk-chap} and~\ref{fo-chap} develop.  Its kernels are built from one theta function of the CM curve, normalized to take the value \(1\) at the origin, and for them (a) is Theorem~\ref{nk-thm:B}.  Its scalars are \(p\)-adic units, which gives (b) (Section~\ref{fo-sec:N1}).  Its frames at the odd positions are the duals of those at the even positions, and Section~\ref{fo-sec:N2} carries out for them the bookkeeping of (c) that \cite[Rem.~11.39]{Adr} leaves to be written.  We have not checked that the chain datum of the formalization is the one of \cite[Thm.~11.45]{Adr}.  Simplest incarnation: Theorem~\ref{ho-thm:eichler} expresses a sum over neighbours as a Hecke translate plus a scalar multiple of the original theta series; Chapter~\ref{fk-chap} composes the two theta intertwiners in Theorem~\ref{fk-thm:compose}.
 
-(N1) fixes the scalar change with lattice length; \cite[Prop.~11.27]{Adr} gives it for the step normalization of \cite[Def.~11.23]{Adr}. (N2) transfers entry estimates into the odd-position lattices with the required determinant factor under a frame change. (N3) requires an integral scalar in Theorem~\ref{thm:kernel} for the prescribed normalized step kernel at every pair of lattice tuples \cite[Hyps.~11.38 and~11.42]{Adr}.
+Theorem~\ref{thm:kernel} alone does not give (a), since it allows an unknown scalar for each pair of lattice tuples.
 \begin{problem}\label{pr:normalization}
-Multiplying a kernel with corrected constant term \(1\) by \(p^{-1}\) preserves boundedness in Theorem~\ref{thm:kernel} and prevents any expression with both \(c\) and \(U\) integral. Deduce that applying the boundedness theorem separately to every tuple does not give (N3).
+Multiplying a kernel with corrected constant term \(1\) by \(p^{-1}\) preserves boundedness in Theorem~\ref{thm:kernel} and prevents any expression with both \(c\) and \(U\) integral. Deduce that applying the boundedness theorem separately to every tuple does not give (a) of Theorem~\ref{thm:true-lifts}.
 \end{problem}
 
 \section{The price of passing to the Hecke image}\label{sec:image}
+From here on \(x\) is the scale, \(0<\varepsilon<1/52\), \(y=x^\varepsilon\), \(b=e^y\), \(a=xb\), \(k\) is the rank and \(n\) the number of columns, as in \cite[\S5]{Adr}.  Put \(X'=\exp(x^{\varepsilon/3})\), \(b'=a/X'\), \(X''=xnX'\) and \(p_*=k^2x^{26}\) \cite[\S12.1]{Adr}.
+
 For a representation \(V\) of highest weight data \(\lambda\) at a single orbit and \(c_*\ge4(D+1)\), \(\LP(r,\lambda;t,D,\kappa,c_*)\) asks for the following at every target lattice. Choose incoming \(r\)-edges and integral source vectors in their prescribed depth-\(t\) lattices. Each vector vanishes to order \(c_*\) in the edge lattice of every other edge out of its source (order measured in the local uniformizer). Integral combinations of their pairings with tests in the depth-\(t\) target lattice must give \(p^D I_n\) on \(n\ge(1-\kappa)\dim V\) independent tests \cite[Def.~12.6]{Adr}. Thus \(\kappa\) measures a fraction of the dimension.
 
 \begin{theorem}[Hecke nondegeneracy]\label{thm:LP}
-Class I means that odd Frobenius powers from a top land in the top half of the places \cite[\S12.1]{Adr}. Fix a good orbit \(t_0\) of a class I prime with orbit length \(n_p\ge x^{\varepsilon/4}\), in the weight windows and size range (Z) of \cite[Thm.~12.11]{Adr}. Assume \cite[Hyp.~12.12]{Adr}: (A) sufficient rank of the reduced segment symbols, (B) detection by the twisted Fock pairing at the stated depth, (C) the mean bound for bad segment shares. For \(13\le p<p_*\), the asserted property is \(\LP(r_0,\lambda;\lceil t_{\rm II}\rceil,D_{\rm II},\kappa_{\rm II},8(D_{\rm II}+1))\).
-For \(p_*\le p<X'\) outside the bands \(|p^i-X'|\le\rho_B X'\), the mean least share for the corresponding \(r=1\) property in the windows is at most \(K_m N(t_0)\nu_1 x^{-13}\), where \(N(t_0)\) counts the tops on the orbit and \(\nu_1\) is the good-orbit parameter of \cite[\S12.2]{Adr}. The proof in \cite[Thm.~12.11]{Adr} is an outline; it also calls on a Pieri splitting and a passage from segment shares to \(\kappa\).
+Let \(p\) be a prime of \emph{class~I}, meaning that odd Frobenius powers from a top land in the top half of the places \cite[\S12.1]{Adr}, whose Frobenius orbits on the columns have length \(n_p\ge x^{\varepsilon/4}\).  Let \(t_0\) be such an orbit that is \emph{good}, that is, satisfies the spacing conditions of \cite[Def.~5.19]{Adr} on the tops along it, and let \(N(t_0)\) be the number of tops on it.  Assume the size conditions of \cite[\S12.6]{Adr} and the three engines of \cite[Hyp.~12.12]{Adr}: (A) sufficient rank of the reduced segment symbols, (B) detection by the twisted Fock pairing at the stated depth, (C) the mean bound for bad segment shares.  Then for large \(x\) the following holds at every target lattice, with \(r\), \(t\), \(D\) and the share \(\kappa=\kappa(a,b)\) of \cite[Thm.~12.11]{Adr}, where \((a,b)\) are the weights.
+\begin{enumerate}
+\item[(i)] If \(13\le p<p_*\), then \(\LP(r,\lambda;\lceil t\rceil,D,\kappa,8(D+1))\) holds with \(\kappa\le N(t_0)x^{-12}\) for all weights in the windows.
+\item[(ii)] If \(p_*\le p<X'\) and no power \(p^i\) lies in the band \(\lvert p^i-X'\rvert\le x^{-2}X'\), let \(\kappa\) be the least share for which \(\LP(1,\lambda;\lceil t\rceil,D,\kappa,8(D+1))\) holds.  Its mean over the weights in the windows is at most \(N(t_0)x^{-12}\).
+\end{enumerate}
 \end{theorem}
-\noindent \emph{Status}: proved in the Lean formalization; in \cite{Adr} it rests on the engines (A)--(C) of \cite[Hyp.~12.12]{Adr}, not yet written out in the published expositions. Simplest incarnation: at one tree vertex, Theorem~\ref{hn-thm:vertex} diagonalizes the image on degree-\(k\) polynomials. For residue size \(Q>k\) the exponent of \(x^{k-j}y^j\) is
+\noindent \emph{Status}: derived in \cite[Thm.~12.11, Cor.~12.13]{Adr} from the engines \cite[Hyp.~12.12]{Adr}, assumed there.  The proof in \cite[Thm.~12.11]{Adr} is an outline; it also calls on a Pieri splitting and a passage from segment shares to \(\kappa\).  The formalization proves the final theorem; the three engines are not separate statements in it, and we have not matched them to its lemmas (Section~\ref{as-sec:map} of Chapter~\ref{as-chap}).  Simplest incarnation: at one tree vertex, Theorem~\ref{hn-thm:vertex} diagonalizes the image on degree-\(k\) polynomials. For residue size \(Q>k\) the exponent of \(x^{k-j}y^j\) is
 \[
  \varepsilon_j=\min\left(k-j,\ \min_{0\le i\le j}
               \left(i+v_p{\binom{k-i}{j-i}}\right)\right).
 \]
 \begin{problem}\label{pr:vertex}
-For \(p=k=5,\ q=25\), the six exponents are \(0,1,1,1,1,0\). Deduce that the image has rank two after reduction in the target modulo \(5\), but its integral colength over the unramified valuation ring is only four. For every \(q>k\) this colength is at most \(\sum_{j=0}^k v_p\binom kj\).
+For \(p=k=5,\ Q=25\), the six exponents are \(0,1,1,1,1,0\). Deduce that the image has rank two after reduction in the target modulo \(5\), but its integral colength over the unramified valuation ring is only four. For every \(Q>k\) this colength is at most \(\sum_{j=0}^k v_p\binom kj\).
 \end{problem}
 
-For each candidate prime, first sum \(\Sig(p)=m\sum_{v\ {\rm good}}\kappa_v\) over all its good orbits. The candidates are the class I primes \(p<X'\) with \(n_p\ge x^{\varepsilon/4}\), subject to the power-band exclusion above for \(p\ge p_*\). Serve the good orbits only when \(\Sig(p)\le x^{-\varepsilon}\); otherwise the served set \(\mathcal V_p\) is empty. Noncandidates have empty served set as well.
+For each candidate prime, first sum \(\Sig(p)=m\sum_{v\ {\rm good}}\kappa_v\) over all its good orbits. The candidates are the class I primes \(p<X'\) with \(n_p\ge x^{\varepsilon/4}\), subject to the power-band exclusion of Theorem~\ref{thm:LP}(ii) for \(p\ge p_*\).  Here \(\kappa_v\) is the share of Theorem~\ref{thm:LP} at the orbit \(v\), and \(t_v\), \(D_p\) are its exponents.  Serve the good orbits only when \(\Sig(p)\le x^{-\varepsilon}\); otherwise the served set \(\mathcal V_p\) is empty. Noncandidates have empty served set as well.
 
 Write \(P(M)\) for the sum of the Hecke images with scalar alternatives in Theorem~\ref{thm:chain}, and \(M^{\rm ram}=M\cap V^{\rm ram}\) for the saturated lattice in the chosen ramified subspace. For \(\mathcal V_p\ne\varnothing\), put
 \[
@@ -192,7 +207,7 @@ Write \(P(M)\) for the sum of the Hecke images with scalar alternatives in Theor
 Here \(e_p\) is the exponent comparing the two integral structures. For an empty served set put \(\tau(p)=\io(p)=0\); a rejected candidate retains its original \(\Sig(p)\).
 
 \begin{theorem}[Colength]\label{thm:colength}
-At \(w\mid p\) for a served class I prime \(p\le X''\), \(p\ne T_u\), under the lattice and Hecke hypotheses (F1)--(F5) of \cite[\S12.3]{Adr}, assume \(\LP\) at every served orbit with parameters \(\lceil t_v\rceil,D_p,\kappa_v,8(D_p+1)\), and \(\Sig(p)\le1/2\).
+At \(w\mid p\) for a served class I prime \(p\le X''\), \(p\ne T_u\), take the lattices and Hecke operators at \(w\) given by the chain datum at level zero \cite[\S12.3, (F1)--(F5)]{Adr}, and assume \(\LP\) at every served orbit with parameters \(\lceil t_v\rceil,D_p,\kappa_v,8(D_p+1)\), and \(\Sig(p)\le1/2\).
 Then \(N\!P_w=P(M)\cap p^{\lceil\tau(p)\rceil}M\cap V^{\rm ram}\) lies in \(p^{\lceil\tau(p)\rceil}M^{\rm ram}\), and
 \[
  \operatorname{length}_{\Oc_w}(M^{\rm ram}/N\!P_w)
@@ -202,11 +217,11 @@ with \(v_w\) the uniformizer valuation \cite[Thm.~12.18]{Adr}. For an empty serv
 \end{theorem}
 \noindent \emph{Status}: proved in \cite{Adr}. Simplest incarnation: Theorem~\ref{hn-thm:vertex} charges the sum of the exponents on a single vertex. Theorem~\ref{sm-thm:one} charges the logarithmic index of a source sublattice divided by its rank.
 \begin{problem}\label{pr:share}
-Use the inclusion and length bound as a numerical model on a lattice of rank eight, with full ramified part, \(v_w(p)=2\) as in (F2), \(m=2\), one served orbit and \(S_v=3\). For \(\kappa_v=1/8\) and integral \(\tau\), show that the length lies between \(16\tau\) and \(16\tau+24\). With \(\kappa_v=0\), deduce that \(N\!P_w=p^\tau M^{\rm ram}\).
+Use the inclusion and length bound as a numerical model on a lattice of rank eight, with full ramified part, \(v_w(p)=2\), \(m=2\), one served orbit and \(S_v=3\). For \(\kappa_v=1/8\) and integral \(\tau\), show that the length lies between \(16\tau\) and \(16\tau+24\). With \(\kappa_v=0\), deduce that \(N\!P_w=p^\tau M^{\rm ram}\).
 \end{problem}
 
 \section{The prime sum and the slope}\label{sec:global}
-Let \(T\) be the set of \(N_T\) tops, \(m\) the chain length, \(a_t\) the top weights, \(w_j\) the bottom weights. In the notation of Section~\ref{gf-sec:balance},
+Let \(T\) be the set of \(N_T\) tops (Section~\ref{cs-sec:tops}), \(m\) the chain length, \(a_t\) the top weights, \(w_j\) the bottom weights. In the notation of Section~\ref{gf-sec:balance},
 \[
  S=\sum_{t\in T}\sum_{j=1}^m P_{t,w_j}(a_t),\qquad
  P_{t,w}(a)=\sum_r\Lambda_d(r)\big(a/r-w(\operatorname{cell}_t(r))\big)_+ .
@@ -216,16 +231,16 @@ In particular an admitted unramified inert prime contributes \(2\log p\) times t
  \Gamma=\sum_{p\in\mathcal P}2\log p\left(\sum_{j=1}^m\mathrm{gain}^{\mathcal D}_j(p)-\tau(p)\right),
  \qquad I=\IO=\sum_{p\in\mathcal P}\io(p)\log p .
 \]
-Here \(\mathcal P\) is the set of admitted inert primes of \cite[\S12.1]{Adr}. The uniform scaling \(\tau\) has already been deducted in \(\Gamma\). The global inputs (L1)--(L3) identify the local structures and orbit bounds; (L4)--(L5) specify the base lattice and its ramified part; (L6)--(L8) control the nodes, auxiliary prime, and support of the local terms \cite[\S12.6]{Adr}.
+Here \(\mathcal P\) is the set of admitted inert primes of \cite[\S12.1]{Adr}. The uniform scaling \(\tau\) has already been deducted in \(\Gamma\).  As in Chapter~\ref{as-chap}, \(\Gamma\) is the total gain; it is not the Galois group of Chapter~\ref{gf-chap}.  The two theorems below use the following \emph{global inputs}, which \cite[\S12.6, (L1)--(L8)]{Adr} takes from the constructions of the lifts and of the auxiliary prime: at each served place, the local lattices, Hecke operators and orbit bounds of Theorem~\ref{thm:colength}; the base lattice \(M_u\) and its saturated ramified part; the auxiliary prime \(T_u\ge X'\), the nodes and their weights; a sublattice at \(T_u\) of colength at most \(\lambda_T\) times the rank, with \(\lambda_T\) as in Theorem~\ref{thm:K2}; and finite supports for the local terms, with residue characteristics whose logarithms sum to at most \(X''\).
 
 \begin{theorem}[Prime sum (A1)]\label{thm:K1}
-Assume (L1)--(L8), the size conditions (Z) of \cite[\S12.6]{Adr}, and weights in the prescribed windows with \(\mathrm{lhsW}\le x^{-9}\). Here \(\mathrm{lhsW}\) sums \( (2\mathbf1_{\Sig(p)>x^{-\varepsilon}}+4\Sig(p))\log p/p\) over candidate primes. Then
+Assume the global inputs, the size conditions of \cite[\S12.6]{Adr}, and weights in the prescribed windows with \(\mathrm{lhsW}\le x^{-9}\). Here \(\mathrm{lhsW}\) sums \( (2\mathbf1_{\Sig(p)>x^{-\varepsilon}}+4\Sig(p))\log p/p\) over candidate primes. Then
 \[
  S-\Gamma\le(2\log4+1)N_Tmb,\qquad 0\le I\le N_Tmb
 \]
-\cite[Thm.~12.27]{Adr}. The bad-orbit count (L9) comes from \cite[Prop.~5.20]{Adr}; choosing weights with small \(\mathrm{lhsW}\) uses the engines.
+\cite[Thm.~12.27]{Adr}. The count of tops on orbits that are not good comes from \cite[Prop.~5.20]{Adr}; choosing weights with small \(\mathrm{lhsW}\) uses the engines.
 \end{theorem}
-\noindent \emph{Status}: proved in the Lean formalization; in \cite{Adr} it rests on the engines of \cite[Hyp.~12.12]{Adr} and the inputs (L1)--(L8), not all of which are yet written out in the published expositions. Simplest incarnation: Theorem~\ref{ip-thm:main} supplies the positive parts for one inert prime; Theorem~\ref{od-thm:mod4} sums \(\log p/p\) over \(p\equiv3\bmod4\) with main term \(\frac12\log X\).
+\noindent \emph{Status}: derived in \cite[Thm.~12.27]{Adr} from the engines \cite[Hyp.~12.12]{Adr} and from the global inputs, which rest there on (N2) and (N3) through Theorem~\ref{thm:true-lifts}; these hypotheses are assumed there.  The formalization proves the final theorem; at this step it proves (a)--(c) of Theorem~\ref{thm:true-lifts} in place of (N1)--(N3) (Chapters~\ref{nk-chap} and~\ref{fo-chap}), and the engines are not separate statements in it.  Simplest incarnation: Theorem~\ref{ip-thm:main} supplies the positive parts for one inert prime; Theorem~\ref{od-thm:mod4} sums \(\log p/p\) over \(p\equiv3\bmod4\) with main term \(\frac12\log X\).
 
 \begin{problem}\label{pr:offset}
 The node offset costs \(b'/x\) per top and step at served primes \(p<X'=xb/b'\). From \(\sum_{p\le X}\log p\le X\log4\), show that its total cost is at most \(2\log4\,N_Tmb\). If the other losses together cost at most \(N_Tmb\), this gives the first inequality of Theorem~\ref{thm:K1}.
@@ -239,15 +254,15 @@ Of \(2n\) places, \(N_2=\delta n\) carry weight \(b\). Average their total weigh
 
 For each chain index \(u\), \(M_u\) is the original hermitian lattice and \(N_u\) is the rescaled source obtained using \(N\!P_w\) and the auxiliary lattice at \(T_u\) \cite[Def.~12.20]{Adr}. Write \(\mu,\mu_{\max}\) for mean and maximal slopes. In the chain record \(L\) is the common real shift and \(E_u=\sum_jE_{u,j}\) the sum of the step corrections.
 \begin{theorem}[Slope (A2)]\label{thm:K2}
-Under (L1)--(L8) and (Z), with \(\Sig(p)\le1/2\) at every served prime,
+Under the global inputs and the size conditions, with \(\Sig(p)\le1/2\) at every served prime,
 \begin{align*}
  \mu(M_u)+\Gamma+L-E_u-e_{2,u}&\le\mu(N_u),\\
  \mu_{\max}(N_u)&\le\mu_{\max}(M_u)+\Gamma+L-E_u .
 \end{align*}
 Here \(e_{2,u}=4I+4\lambda_T\log T_u+R_X+1\),
-\(4\lambda_T=C_T N_Tm(a/k+b')\), and \(R_X\le6X''+2\log T_u\), with \(k\) the base rank and \(X''\) the upper prime cutoff \cite[Thm.~12.21]{Adr}.
+\(4\lambda_T=C_T N_Tm(a/k+b')\), and \(R_X\le6X''+2\log T_u\), with \(k\) the base rank \cite[Thm.~12.21]{Adr}.
 \end{theorem}
-\noindent \emph{Status}: proved in the Lean formalization; in \cite{Adr} it rests on the engines of \cite[Hyp.~12.12]{Adr} and the inputs (L1)--(L8), not all of which are yet written out in the published expositions. Simplest incarnation: Theorem~\ref{ch-thm:chain} bounds the sum of finite gains by the difference of the two end slopes plus the archimedean step heights.
+\noindent \emph{Status}: derived in \cite[Thm.~12.21]{Adr} from the same hypotheses as Theorem~\ref{thm:K1}, assumed there; the formalization proves the final theorem, by the route described after Theorem~\ref{thm:K1}.  Simplest incarnation: Theorem~\ref{ch-thm:chain} bounds the sum of finite gains by the difference of the two end slopes plus the archimedean step heights.
 
 \begin{problem}\label{pr:aux}
 If \(\log T_u\le Cmy\), then the \(a/k\) part of \(4\lambda_T\log T_u\) is at most \(CC_T\,yN_Ta\,m^2/k\). Under \(N_Tm(a/k+b')\ge1\), show that
@@ -262,16 +277,23 @@ Take \(e_L=0\) and enlarge \(C_*\) to at least \(2\log4+1\). Theorem~\ref{thm:K1
 \end{problem}
 
 \paragraph{Deliverable.}
-Theorems~\ref{thm:K1} and~\ref{thm:K2} supply (K1) and (K2) of \cite[Def.~18.9]{Adr} with \(I=\IO\) and \(e_L=0\); they are proved in the Lean formalization \cite{Lean}, and in \cite{Adr} they rest on the stated inputs. Alongside (N2), (N3) and the three engines, \cite[\S18.7]{Adr} singles out the comparisons between levels and the test systems, the Weyl lattice model in \cite[Cor.~12.65]{Adr}, the polynomial bound for \(c_G\) in \cite[Prop.~12.67]{Adr}, and the auxiliary-prime colength (L7).
+Theorems~\ref{thm:K1} and~\ref{thm:K2} supply (K1) and (K2) of \cite[Def.~18.9]{Adr} with \(I=\IO\) and \(e_L=0\).  In \cite{Adr} they are derived from (N1)--(N3) and the engines of \cite[Hyp.~12.12]{Adr}, of which (N2), (N3) and the engines are assumed there.  The formalization proves the final theorem; at this step it proves the kernel law, the unit scalars and the dual frames of Theorem~\ref{thm:true-lifts} (Chapters~\ref{nk-chap} and~\ref{fo-chap}), and the engines are not separate statements in it; see Section~\ref{as-sec:map} of Chapter~\ref{as-chap}.  Alongside (N2), (N3) and the three engines, \cite[\S18.7]{Adr} singles out the comparisons between levels and the test systems, the Weyl lattice model in \cite[Cor.~12.65]{Adr}, the polynomial bound for \(c_G\) in \cite[Prop.~12.67]{Adr}, and the colength at the auxiliary prime among the global inputs.
 
 \section*{Hints}
-\noindent\emph{Section~\ref{sec:minors}.} \ref{pr:cap}. Use multilinearity in the columns.
-\ref{pr:digits}. Count digits at the two positions separately.
-
-\noindent\emph{Section~\ref{sec:chain}.} \ref{pr:minkowski}. Sum a geometric series.
-
-\noindent\emph{Section~\ref{sec:image}.} \ref{pr:vertex}. Separate \(i=0\) from \(i\ge1\).
-\ref{pr:share}. Use additivity through \(p^\tau M^{\rm ram}\).
+\subsection*{\S\ref{sec:minors}}
+\begin{description}
+\item[\ref{pr:cap}] Use multilinearity in the columns.
+\item[\ref{pr:digits}] Count digits at the two positions separately.
+\end{description}
+\subsection*{\S\ref{sec:chain}}
+\begin{description}
+\item[\ref{pr:minkowski}] Sum a geometric series.
+\end{description}
+\subsection*{\S\ref{sec:image}}
+\begin{description}
+\item[\ref{pr:vertex}] Separate \(i=0\) from \(i\ge1\).
+\item[\ref{pr:share}] Use additivity through \(p^\tau M^{\rm ram}\).
+\end{description}
 
 \begin{thebibliography}{Adr}
 \bibitem[Adr]{Adr}
