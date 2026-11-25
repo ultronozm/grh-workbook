@@ -14,6 +14,8 @@
 ;; - Accents on expanded macros (\bar\F) and nested aligned blocks
 ;;   are repaired for MathJax.
 ;; - Table-of-contents entries repeat the numbered heading text.
+;; - Items with a stable tag in tags.tsv (scripts/make-tags.py) show it,
+;;   small and grey, linking to tag/TAG.html.
 
 ;;; Code:
 
@@ -231,10 +233,58 @@ genuine aligned nested in another display environment; restore those."
           (goto-char text-beg)
           (insert text))))))
 
+(defun tex2html-local--tags (sheet)
+  "Return the live tags of SHEET in tags.tsv as (TAG . LABEL) pairs.
+SHEET is a Denote timestamp; LABEL is \"\" for the chapter itself."
+  (when (file-exists-p "tags.tsv")
+    (with-temp-buffer
+      (insert-file-contents "tags.tsv")
+      (let (tags)
+        (dolist (line (split-string (buffer-string) "\n" t))
+          (unless (string-prefix-p "#" line)
+            (let ((cols (split-string line "\t")))
+              (when (and (equal (string-trim (or (nth 1 cols) "")) sheet)
+                         (string-empty-p (string-trim (or (nth 3 cols) ""))))
+                (push (cons (string-trim (nth 0 cols))
+                            (string-trim (or (nth 2 cols) "")))
+                      tags)))))
+        (nreverse tags)))))
+
+(defun tex2html-local-add-tags (auxfile)
+  "Show the stable tags of AUXFILE's sheet beside their items.
+The chapter's tag goes in the title, a section's in its heading, and a
+result's at the top of its box, each as a link to tag/TAG.html."
+  (let ((sheet (substring (file-name-nondirectory auxfile) 0
+                          (min 15 (length (file-name-nondirectory auxfile))))))
+    (dolist (tag (tex2html-local--tags sheet))
+      (let ((link (format (concat "<a class=\"stable-tag\" href=\"tag/%s.html\""
+                                  " title=\"Stable tag: cite as Tag %s\">Tag %s</a>")
+                          (car tag) (car tag) (car tag))))
+        (goto-char (point-min))
+        (cond
+         ((string-empty-p (cdr tag))
+          (when (re-search-forward "<h1 class=\"title\"[^>]*>" nil t)
+            (when (search-forward "</h1>" nil t)
+              (goto-char (match-beginning 0))
+              (insert " " link))))
+         ((re-search-forward
+           (format "<\\(h[1-6]\\|div\\)\\b[^>]* id=\"%s\"[^>]*>"
+                   (regexp-quote (cdr tag)))
+           nil t)
+          (if (equal (match-string 1) "div")
+              (insert link)
+            (when (search-forward (format "</%s>" (match-string 1)) nil t)
+              (goto-char (match-beginning 0))
+              (insert " " link))))
+         (t (message "Warning: no element for tag %s (%s)"
+                     (car tag) (cdr tag))))))))
+
 (add-hook 'tex2html-postprocess-html-functions #'tex2html-local-fix-theorem-numbers)
 (add-hook 'tex2html-postprocess-html-functions #'tex2html-local-fix-bibliography t)
 (add-hook 'tex2html-postprocess-html-functions #'tex2html-local-fix-math t)
 (add-hook 'tex2html-postprocess-html-functions #'tex2html-local-fix-toc t)
+;; After the table of contents, which copies the headings' text.
+(add-hook 'tex2html-postprocess-html-functions #'tex2html-local-add-tags t)
 
 (provide 'tex2html-local)
 ;;; tex2html-local.el ends here
