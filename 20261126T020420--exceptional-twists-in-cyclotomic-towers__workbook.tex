@@ -1,0 +1,249 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[tt-]{20261125T004100--tate-twists-and-sha__workbook}
+\externaldocument[ds-]{20261125T004000--denominators-and-sha__workbook}
+
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T020420\endcsname
+  \chapnumber{20261126T020420}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Zl}{\Z_\ell}
+\newcommand{\Ql}{\Q_\ell}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Gal}{\operatorname{Gal}}
+\newcommand{\Cl}{\operatorname{Cl}}
+\newcommand{\len}{\operatorname{len}}
+\newcommand{\num}{\operatorname{num}}
+\newcommand{\Sha}{\mathrm{Sha}}
+\newcommand{\tl}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\title{Exceptional twists in cyclotomic towers}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Chapter~\ref{tt-chap}, \emph{Tate--Shafarevich groups of Tate twists}: the modules \(W_e=\Ql/\Zl(-e)\), the groups \(\Sha_\ell(F,e)\) and their lengths \(h_{\ell,e}(F)\), Problems~\ref{tt-pr:H0} and~\ref{tt-pr:induced}, and Theorem~\ref{tt-thm:MW}.  Iwasawa's theory of \(\Zl\)-extensions and \(\Lambda=\Zl[[T]]\)-modules \cite[Ch.~13]{Wa}; continuous cohomology and the duality theorems of Poitou and Tate \cite[Ch.~VII--VIII]{NSW}.  In this chapter \(\ell\) is any prime, \(2\) included.  For a number field \(F\), \(G_{F,\ell}\) is the Galois group of the largest extension of \(F\) unramified outside \(\ell\) and \(\infty\), and \(\Sha_\ell(F,e)\) is the group of classes in \(H^1(G_{F,\ell},W_e)\) that vanish on the decomposition groups at all places above \(\ell\).  We write \(\mu'_\ell=\mu_\ell\) if \(\ell\) is odd and \(\mu'_2=\mu_4\).
+
+\section{Layers}\label{sec:layers}
+
+In Alp\"oge's argument the twist \(e\) runs up to a power of the scale \(x\), and the field changes with \(x\).  Along which fields do the lengths \(h_{\ell,e}\) stay small uniformly in \(e\), and how does this fail?  Iwasawa's answer: along a cyclotomic tower they grow linearly with the layer, except at twists \(e\) that are \(\ell\)-adically close to finitely many points.
+
+Let \(L_0\) be a number field inside a fixed algebraic closure of \(\Q\).  A \emph{layer of degree \(\ell^m\)} over \(L_0\) is a field \(L_0(\zeta_{\ell^k})\), \(k\ge0\), with \([L_0(\zeta_{\ell^k}):L_0]=\ell^m\).
+
+\begin{problem}\label{pr:layer-tower}
+Suppose \(\mu'_\ell\subset L_0\).  Then \(L_\infty:=L_0(\mu_{\ell^\infty})\) is a \(\Zl\)-extension of \(L_0\), and for every \(m\ge0\) there is exactly one layer \(L_m\) of degree \(\ell^m\) over \(L_0\): the fixed field of \(\Gal(L_\infty/L_0)^{\ell^m}\).
+\end{problem}
+
+\begin{problem}\label{pr:Qi}
+Over \(L_0=\Q\) and \(\ell=2\) the layers are the fields \(\Q(\zeta_{2^k})\).  The layer of degree \(2\) is \(\Q(i)\), which does not lie in the cyclotomic \(\Z_2\)-extension of \(\Q\), the union of the real fields \(\Q(\zeta_{2^k}+\zeta_{2^k}^{-1})\).
+\end{problem}
+
+This is why \(\mu_4\) is required when \(\ell=2\).  The discriminants of the layers are controlled by the conductor.
+
+\begin{problem}\label{pr:root-degree}
+If a number field \(L\) contains a primitive \(\ell^k\)-th root of unity, then \(\ell^k\le2[L:\Q]\).
+\end{problem}
+
+\begin{problem}\label{pr:cond-disc}
+If \(L\subseteq\Q(\zeta_N)\), then \(\lvert\Delta_L\rvert\le N^{[L:\Q]}\).
+\end{problem}
+
+\begin{problem}\label{pr:layer-disc}
+Let \(L_0\subseteq\Q(\zeta_{N_0P})\) with \([L_0:\Q]\le n_1\), and let \(L\) be a layer of degree \(\ell^j\) over \(L_0\).  Then \([L:\Q]\le n_1\ell^j\) and \(\log(2\lvert\Delta_L\rvert)\le C(1+\log P)\), with \(C\) depending only on \(\ell\), \(j\), \(n_1\) and \(N_0\).
+\end{problem}
+
+In the application \(P=qd\) is the product of the two auxiliary primes, and \(\log P\) is at most a small power of the scale.
+
+\section{Where the lengths grow}\label{sec:model}
+
+Let \(\ell\) be odd, let \(\kappa\in1+\ell\Zl\) with \(v_\ell(\kappa-1)=1\), and for \(y\in\Zl\) put \(\kappa^y=\exp(y\log\kappa)\).  In a \(\Zl\)-extension a generator \(\gamma\) of the Galois group acts on \(\Zl(-e)\) by such a power of \(\kappa\), and Iwasawa's theory compares the groups at the \(m\)-th layer with the coinvariants of \(\gamma^{\ell^m}\) on a module attached to the whole tower \cite[Ch.~13]{Wa}.  Here is a model.
+
+\begin{problem}\label{pr:val-power}
+For \(y\in\Zl\), \(v_\ell(\kappa^y-1)=1+v_\ell(y)\).
+\end{problem}
+
+\begin{problem}\label{pr:rank-one}
+Let \(s\in\Zl\), \(e\in\Z\), \(m\ge0\), and let \(\gamma\) act on \(X=\Zl\) by \(\kappa^{s-e}\).  Then \(\len_{\Zl}X/(\gamma^{\ell^m}-1)X=m+1+v_\ell(s-e)\), infinite if \(s=e\).
+\end{problem}
+
+\begin{problem}\label{pr:triangular}
+Let \(\gamma\) act on \(X=\Zl^r\) by an upper triangular matrix with diagonal entries \(\kappa^{s_1-e},\dots,\kappa^{s_r-e}\).  If \(v_\ell(s_i-e)\le B\) for all \(i\), then \(\len_{\Zl}X/(\gamma^{\ell^m}-1)X\le r(m+1+B)\).
+\end{problem}
+
+So the length is linear in the layer \(m\) and in \(B\), and blows up only for twists \(e\) near one of the \emph{centres} \(s_i\).  Near how many twists?
+
+\begin{problem}\label{pr:one-near}
+Let \(s\) lie in a field containing \(\Ql\) with an absolute value \(\lvert\cdot\rvert_\ell\) extending that of \(\Ql\), let \(Z\ge1\), and \(B=\lfloor\log_\ell Z\rfloor\).  At most one integer \(1\le e\le Z\) satisfies \(\lvert s-e\rvert_\ell<\ell^{-B}\).
+\end{problem}
+
+\begin{problem}\label{pr:one-near-example}
+For \(\ell=5\), \(s=-1/3\in\Z_5\) and \(Z=10^4\) one has \(B=5\); the only \(e\le Z\) with \(v_5(s-e)>5\) is \(e=5208\), with \(v_5(s-e)=6\), while \(v_5(s-2083)=5\).
+\end{problem}
+
+Exceptional twists are not an artefact of the model.  By Theorem~\ref{tt-thm:MW}, for odd \(e\) with \((\ell-1)\nmid(e+1)\),
+\[
+ h_{\ell,e}(\Q)=v_\ell\bigl(\num(B_{e+1}/(e+1))\bigr).
+\]
+
+\begin{problem}\label{pr:37}
+Let \(1\le e<49284\) be odd with \(e\equiv31\pmod{36}\).  Then \(h_{37,e}(\Q)=1\) unless \(e\equiv283\pmod{1332}\), and then \(h_{37,e}(\Q)\ge2\).  The only such \(e\) with \(h_{37,e}(\Q)\ge3\) is \(e=37579\), where \(h_{37,e}(\Q)=3\).
+\end{problem}
+
+\begin{problem}\label{pr:37-layer}
+For every \(e\ge1\), \(h_{37,e}(\Q(\zeta_{37}))\ge h_{37,e}(\Q)\).  Hence over \(L_0=\Q(\zeta_{37})\), which contains \(\mu_{37}\), the lengths at the bottom layer are at least \(3\) at \(e=37579\).
+\end{problem}
+
+\section{Ferrero--Washington and the tower bound}\label{sec:fw}
+
+What makes the lengths along a tower linear rather than exponential in \(m\) is the vanishing of Iwasawa's \(\mu\)-invariant.  Let \(\Lambda=\Zl[[T]]\) and \(\omega_m=(1+T)^{\ell^m}-1\).
+
+\begin{problem}\label{pr:nakayama}
+Let \(X\) be a finitely generated \(\Lambda\)-module with \(\dim_{\F_\ell}X/(\ell,\omega_m)X\le r\) for all \(m\).  Then \(X\) is generated by \(r\) elements as a \(\Zl\)-module.
+\end{problem}
+
+For the class groups of the layers, Iwasawa's theory turns a bound for their \(\ell\)-ranks into such a bound for the inverse limit of their \(\ell\)-parts \cite[Ch.~13]{Wa}.  The bound for the ranks is the theorem of Ferrero and Washington, in the following form.
+
+\begin{theorem}[Ferrero--Washington]\label{thm:fw}
+Let \(K\) be an abelian number field with \(\mu'_\ell\subset K\).  There is \(r\) such that \(\lvert\Cl(K')/\Cl(K')^\ell\rvert\le\ell^r\) for every layer \(K'\) over \(K\).
+\end{theorem}
+
+\noindent\emph{Status}: Ferrero and Washington proved \(\mu=0\) for abelian fields \cite{FW}; Sinnott gave another proof \cite{Si}; the bounded-rank form follows by Iwasawa's theory \cite[Ch.~13]{Wa}.  The Lean formalization \cite{Lean} proves Theorem~\ref{thm:fw} itself.  The names of its steps (Stickelberger annihilation, an \(\ell\)-adic independence lemma of Sinnott, Kummer reflection) indicate Sinnott's route; we have not read that proof.
+
+The formalization deduces from this a bound along the tower.  Put \(j_0=\lfloor\log_\ell R\rfloor+3\).
+
+\begin{lemma}[tower bound]\label{lem:tower}
+Let \(L_0\) be totally imaginary with \(\mu'_\ell\subset L_0\), with layers \(L_m\), and suppose that a certain Iwasawa module of \(L_\infty\) is generated by \(R\ge1\) elements over \(\Zl\).
+\begin{itemize}
+\item[(a)] There are \(c_0\ge0\) with \(\mu_{\ell^{c_0}}\subset L_0\), \(r\le R\), and \(s_1,\dots,s_r\) in a field containing \(\Ql\), such that for all \(e\ge1\), \(m\ge0\) and integers \(B\ge0\) with \(\lvert s_i-e\rvert_\ell\ge\ell^{-B}\) for every \(i\), \(h_{\ell,e}(L_m)\le r(\max(m,j_0)+c_0+B)\).
+\item[(b)] For all \(e\ge1\) and \(m\ge0\), \(h_{\ell,e}(L_m)\le\len_{\Zl}H^2(G_{L_{j_0},\ell},\Zl(e+1))+R\max(m-j_0,0)\).
+\end{itemize}
+\end{lemma}
+
+\noindent\emph{Status}: proved in the Lean formalization, from the generator bound, Poitou--Tate duality and local Tate duality.  For abelian \(L_0\) the generator bound is deduced there from Theorem~\ref{thm:fw}.  We have not identified the Iwasawa module, and we have not read how the centres \(s_i\) arise; the formalization does not say that they are the zeros of a characteristic power series, as Problem~\ref{pr:triangular} suggests.  Part~(a) is stated in this form in \cite[\S5.5]{Zh}.
+
+Part~(b) compares \(\Sha\) with \(H^2\).  Let \(L\) be totally imaginary, or \(\ell\) odd, and \(e\ge1\).  By Poitou--Tate duality and local duality \cite[Ch.~VII, \S2; Ch.~VIII, \S6]{NSW}, when all lengths are finite,
+\begin{equation}\label{eq:pt}
+ \len H^2(G_{L,\ell},\Zl(e+1))+\len H^0(G_{L,\ell},W_e)=h_{\ell,e}(L)+\sum_{v\mid\ell}\len H^0(G_v,W_e).
+\end{equation}
+
+For \(e\ge1\) the group \(H^2(G_{L,\ell},\Zl(e+1))\) is finite \cite{So79}, and \(\Sha_\ell(L,e)\) is dual to a subgroup of it, so all lengths in~\eqref{eq:pt} are finite.
+
+\begin{problem}\label{pr:H0-layer}
+Let \(\ell\) be odd, \(\mu_\ell\subset L\), and \(\ell^c=\lvert\mu_{\ell^\infty}(L)\rvert\).  For \(e\ne0\), \(\len H^0(G_{L,\ell},W_e)=c+v_\ell(e)\).
+\end{problem}
+
+\begin{problem}\label{pr:sha-H2}
+In Problem~\ref{pr:H0-layer}, for \(e\ge1\), \(h_{\ell,e}(L)\le\len H^2(G_{L,\ell},\Zl(e+1))+c+v_\ell(e)\).
+\end{problem}
+
+\section{Second cohomology and the exceptional twists}\label{sec:H2}
+
+At the exceptional twists only a bound for the whole group \(H^2\) is available.
+
+\begin{theorem}[bound for \(H^2\)]\label{thm:H2}
+There is an absolute constant \(C_H\) such that for every prime \(\ell\), every totally imaginary number field \(L\) with \(\mu'_\ell\subset L\), and every \(e\ge1\), the group \(H^2(G_{L,\ell},\Zl(e+1))\) is finite and
+\[
+ \log\bigl\lvert H^2(G_{L,\ell},\Zl(e+1))\bigr\rvert\le\exp\bigl((2e[L:\Q])^{C_H}\log(2\lvert\Delta_L\rvert)\bigr).
+\]
+\end{theorem}
+
+\noindent\emph{Status}: finiteness is due to Soul\'e \cite{So79}.  Soul\'e also bounds these groups through the torsion in the homology of \(\mathrm{GL}_n(\Oc_L)\) \cite{So03}, but only for \(\ell\) large compared with \(e\) and \([L:\Q]\); we know no published estimate covering every \(\ell\), as noted in \cite[\S III.9]{Rub}.  The Lean formalization proves Theorem~\ref{thm:H2}, by way of a rank bound for the homology of \(\mathrm{GL}_n(\Oc_L)\) of Borel's type; we have not read that proof.  The bound is stated in \cite[\S5.5]{Zh}.
+
+The bound is doubly exponential in \(e\).  It is useful only for small twists.
+
+\begin{problem}\label{pr:H2-small}
+Let \(\ell\) and \(L\) be as in Theorem~\ref{thm:H2}, \(x\ge1\), \(\varepsilon>0\), \([L:\Q]\le n_0\), \(\log(2\lvert\Delta_L\rvert)\le c_1x^{\varepsilon/4}\), and \(1\le e\le x^{\varepsilon/(2C_H)}\).  Then \(\len H^2(G_{L,\ell},\Zl(e+1))\le2\exp(Cx^{3\varepsilon/4})\) with \(C=(2n_0)^{C_H}c_1\).
+\end{problem}
+
+\begin{problem}\label{pr:H2-large}
+Let \(C_H\ge1\), \(b=\exp(x^\varepsilon)\) with \(0<\varepsilon<1\), and \(e\ge x\).  Then the right side of Theorem~\ref{thm:H2} exceeds \(\sqrt b\) for every \(x\ge1\), whatever \(L\).
+\end{problem}
+
+Compare Problem~\ref{tt-pr:poly-small}: the target in the argument is a bound by \(\sqrt b\) for a sum of \(\log\ell\) times lengths.  Problem~\ref{pr:one-near}, Lemma~\ref{lem:tower} and Theorem~\ref{thm:H2} give the following.
+
+\begin{theorem}[twists along a tower]\label{thm:point}
+Let \(L_0\) and \(R\) be as in Lemma~\ref{lem:tower}, and \(n=[L_{j_0}:\Q]\).  For every \(Z\ge1\) there is a set \(\mathcal E\) of at most \(R\) integers in \([1,Z]\) such that for every \(m\ge0\) and \(1\le e\le Z\),
+\[
+ h_{\ell,e}(L_m)\le
+ \begin{cases}
+ R(\max(m,j_0)+c_0+\log_\ell Z), & e\notin\mathcal E,\\
+ Rm+\exp\bigl((2en)^{C_H}\log(2\lvert\Delta_{L_{j_0}}\rvert)\bigr)/\log\ell, & e\in\mathcal E.
+ \end{cases}
+\]
+\end{theorem}
+
+The set \(\mathcal E\) depends on \(Z\) but not on \(m\).  The first bound is logarithmic in \(Z\); the second is affordable only when \(e\) is a small power of the scale, by Problems~\ref{pr:H2-small} and~\ref{pr:H2-large}.  The exceptional twists cannot be moved, so the scale must be moved: this is the origin of the windows.
+
+\begin{leanremark}
+\raggedright In \cite{Lean} a layer is \tl{IsLayer}; Problems~\ref{pr:layer-tower}--\ref{pr:layer-disc} correspond to \tl{exists\_\allowbreak{}cyclotomic\_\allowbreak{}layer\_\allowbreak{}of\_\allowbreak{}primitiveRoot}, \tl{layeriso}, \tl{rootdeg}, \tl{disc} and \tl{layerdisc}.  Theorem~\ref{thm:fw} is \tl{Published.\allowbreak{}FerreroWashington}, proved by \tl{FW.\allowbreak{}ferreroWashington}.  The hypothesis of Lemma~\ref{lem:tower} is \tl{Tower.\allowbreak{}IsTower}; parts (a) and~(b) are the two clauses of \tl{Win.\allowbreak{}ABound}, the second being \tl{SecondBound}, and the lemma is \tl{PropA.\allowbreak{}aBound\_\allowbreak{}of\_\allowbreak{}isTower}; \(j_0\) is \tl{jZero}.  The identity~\eqref{eq:pt} is the statement \tl{VFormula}.  Theorem~\ref{thm:H2} is \tl{LemmaK}, supplied by \tl{lemmaK\_\allowbreak{}of\_\allowbreak{}litN\_\allowbreak{}alt} through \tl{BOdd}.  Problem~\ref{pr:one-near} is \tl{Win.\allowbreak{}exc} with \tl{FirstBound}, and Theorem~\ref{thm:point} combines it with \tl{Win.\allowbreak{}point}.
+\end{leanremark}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:layers}}
+\begin{description}
+\item[\ref{pr:layer-tower}] The cyclotomic character embeds \(\Gal(L_\infty/L_0)\) as an infinite closed subgroup of \(1+\ell\Zl\) (of \(1+4\Z_2\) if \(\ell=2\)).
+\item[\ref{pr:Qi}] Complex conjugation.
+\item[\ref{pr:root-degree}] \(\varphi(\ell^k)\le[L:\Q]\).
+\item[\ref{pr:cond-disc}] The conductor--discriminant formula \cite[Ch.~3]{Wa}.
+\item[\ref{pr:layer-disc}] \(L\subseteq\Q(\zeta_{\ell^kN_0P})\); apply Problems~\ref{pr:root-degree} and~\ref{pr:cond-disc}.
+\end{description}
+
+\subsection*{\S\ref{sec:model}}
+\begin{description}
+\item[\ref{pr:val-power}] \(v_\ell(\log\kappa)=1\), and \(\exp\) preserves valuations on \(\ell\Zl\).
+\item[\ref{pr:rank-one}] Problem~\ref{pr:val-power}.
+\item[\ref{pr:triangular}] The length of the cokernel of an injective endomorphism of \(\Zl^r\) is the valuation of its determinant.
+\item[\ref{pr:one-near}] The ultrametric inequality, applied to the difference of two such integers.
+\item[\ref{pr:37}] Kummer's congruences: for \(k\not\equiv0\pmod{36}\), \((1-37^{k-1})B_k/k\bmod37^n\) depends only on \(k\bmod36\cdot37^{n-1}\) \cite[Ch.~5]{Wa}.  Compute \(v_{37}(B_k/k)\) for one \(k\) in each class.
+\item[\ref{pr:37-layer}] Problem~\ref{tt-pr:induced}.
+\end{description}
+
+\subsection*{\S\ref{sec:fw}}
+\begin{description}
+\item[\ref{pr:nakayama}] Modulo \(\ell\), \(\omega_m\equiv T^{\ell^m}\); bound \(\dim X/\ell X\), then use Nakayama's lemma for compact \(\Zl\)-modules.
+\item[\ref{pr:H0-layer}] The image of the cyclotomic character.
+\item[\ref{pr:sha-H2}] The identity~\eqref{eq:pt}.
+\end{description}
+
+\subsection*{\S\ref{sec:H2}}
+\begin{description}
+\item[\ref{pr:H2-large}] Compare logarithms; \(\log(2\lvert\Delta_L\rvert)\ge\log2\).
+\end{description}
+
+\begin{thebibliography}{NSW}
+\bibitem[FW]{FW} B.~Ferrero and L.~C.~Washington, \emph{The Iwasawa invariant \(\mu_p\) vanishes for abelian number fields}, Ann.\ of Math.\ (2) \textbf{109} (1979), 377--395.
+\bibitem[Lean]{Lean} The Lean community, \emph{riemann-hypothesis}, a Lean formalization of Alp\"oge's argument, \url{https://github.com/leanprover-community/riemann-hypothesis}.
+\bibitem[NSW]{NSW} J.~Neukirch, A.~Schmidt and K.~Wingberg, \emph{Cohomology of Number Fields}, 2nd ed., Grundlehren Math.\ Wiss.\ 323, Springer, 2008.
+\bibitem[Rub]{Rub} \emph{The Alp\"oge--Claude proof of the Riemann hypothesis explained for the Riemann zeta function}, written by AI models at the behest of M.~O.~Rubinstein, working draft, 21 November 2026, \url{https://www.math.uwaterloo.ca/~mrubinst/alpoge_claude_grh/zeta-paper.pdf}.
+\bibitem[Si]{Si} W.~Sinnott, \emph{On the \(\mu\)-invariant of the \(\Gamma\)-transform of a rational function}, Invent.\ Math.\ \textbf{75} (1984), 273--282.
+\bibitem[So79]{So79} C.~Soul\'e, \emph{\(K\)-th\'eorie des anneaux d'entiers de corps de nombres et cohomologie \'etale}, Invent.\ Math.\ \textbf{55} (1979), 251--295.
+\bibitem[So03]{So03} C.~Soul\'e, \emph{A bound for the torsion in the \(K\)-theory of algebraic integers}, Doc.\ Math.\ Extra Vol.\ Kazuya Kato's Fiftieth Birthday (2003), 761--788.
+\bibitem[Wa]{Wa} L.~C.~Washington, \emph{Introduction to Cyclotomic Fields}, 2nd ed., Grad.\ Texts in Math.\ 83, Springer, 1997.
+\bibitem[Zh]{Zh} R.~Zhang, \emph{A preliminary note on Alp\"oge's proposed proof of the generalized Riemann hypothesis}, 22 November 2026, \url{https://hexagonmath.org/pdf/2611.00809v1}.
+\end{thebibliography}
+
+\end{document}
