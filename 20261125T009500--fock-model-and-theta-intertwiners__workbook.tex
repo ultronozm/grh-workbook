@@ -3,7 +3,6 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{xr-hyper}
 \usepackage[hidelinks]{hyperref}
-\externaldocument[sm-]{20261125T000000--slope-method__workbook}
 \externaldocument[ec-]{20261124T223000--elliptic-curves-for-the-proof__workbook}
 
 % Chapter number; \ref{chap} gives it.
@@ -35,7 +34,7 @@
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-Fourier series of entire periodic functions.  Quadratic Gauss sums: for an odd prime \(p\) and \(p \nmid a\), \(\sum_{t \bmod p} e^{2\pi\ii a t^2/p} = \leg{a}{p}\varepsilon_p\sqrt p\), with \(\varepsilon_p = 1\) for \(p \equiv 1 \pmod 4\) and \(\varepsilon_p = \ii\) for \(p \equiv 3 \pmod 4\) \cite[Ch.~2]{Dav}.  From Chapter~\ref{ec-chap}, \emph{Complex tori, theta functions and periods}: Jacobi's function and its quasi-periodicity (Section~\ref{ec-sec:theta}, Problem~\ref{ec-pr:jacobi-qp}).  From Chapter~\ref{sm-chap}, \emph{The slope method}: the Gaussian norm of Problem~\ref{sm-pr:fock}.
+Fourier series of entire periodic functions.  Quadratic Gauss sums: for an odd prime \(p\) and \(p \nmid a\), \(\sum_{t \bmod p} e^{2\pi\ii a t^2/p} = \leg{a}{p}\varepsilon_p\sqrt p\), with \(\varepsilon_p = 1\) for \(p \equiv 1 \pmod 4\) and \(\varepsilon_p = \ii\) for \(p \equiv 3 \pmod 4\) \cite[Ch.~2]{Dav}.  From Chapter~\ref{ec-chap}, \emph{Complex tori, theta functions and periods}: Jacobi's function and its quasi-periodicity (Section~\ref{ec-sec:theta}, Problem~\ref{ec-pr:jacobi-qp}).
 
 The theta lifts of later chapters are built from theta functions of many lattices at once, and a lift changes the lattice.  How does a theta function of one lattice become a theta function of another, and what is lost when one does this twice?  The answer is a finite sum of translation operators, and the loss is a root of unity given by a Gauss sum.  We work in one complex variable, with \(\Z[\ii]\) and its neighbours of index \(2\) and \(p\).
 
@@ -58,7 +57,7 @@ Each \(U_x\) is a unitary operator on \(\Fc\), and
 The monomials \(z^n\) are orthogonal in \(\Fc\), with \(\lVert z^n\rVert^2 = n!/\pi^n\).
 \end{problem}
 
-So \(f \mapsto f(\sqrt\pi\, z)\) is an isometry from \(\C[z]\) with the norm of Problem~\ref{sm-pr:fock}, where \(\lVert z^n\rVert^2 = n!\), into \(\Fc\).
+So \(f \mapsto f(\sqrt\pi\, z)\) is an isometry from \(\C[z]\) with the Gaussian norm \(\lVert f\rVert^2 := \pi^{-1}\int_\C \lvert f(z)\rvert^2 e^{-\lvert z\rvert^2}\,dA(z)\), for which \(\lVert z^n\rVert^2 = n!\), into \(\Fc\).
 
 The representation of the Heisenberg group on \(\Fc\) is irreducible, and by the Stone--von Neumann theorem it is the only irreducible unitary representation on which \(e^{\ii s}\) acts by \(e^{\ii s}\) \cite[Ch.~1]{LV}, \cite[Ch.~2]{Pol}.  A theta function is an entire function fixed by a maximal commutative subgroup that comes from a lattice.
 
@@ -228,6 +227,9 @@ So \(\mu\) is a fourth root of unity for neighbours of odd index and a primitive
 \paragraph{Unitary changes of variable.}
 Constants of the same kind appear when a lattice is moved by a unitary map \(\varrho\) of \(V\).  If \(\varrho\) preserves \(\Lambda\) and \(\alpha\), as \(z \mapsto \ii z\) does for \((\Z[\ii],\alpha_0)\), then \(G \circ \varrho^{-1}\) lies in the same line; for \(z \mapsto \ii z\) the constant is \(1\) by Problem~\ref{pr:G-rot}.  In general \(G \circ \varrho^{-1}\) is a Gauss sum times \(I_{\Lambda \to \varrho\Lambda}\,G\); this is Weil's transformation law \cite{We}, in the form used in \cite[\S7.1, (W3), and Lemma~7.8]{Adr}.  In the theta chain of \cite[\S7]{Adr} this is what makes the kernels covariant under the unitary groups.  The constants \(\mu\) are, in lattice form, the constants that define Weil's metaplectic double cover of \(\mathrm{Sp}_2 = \mathrm{SL}_2\) \cite{We}, which is the case \(n = 2\) of Kubota's \(n\)-fold covers of \(\mathrm{SL}_2\).
 
+\paragraph{In the Lean formalization.}
+In the rewritten Lean proof \cite{GL} the kernels of the theta lifts are, like the intertwiners of Section~\ref{sec:intertwiners}, finite combinations of translates of one vector, the integral vacuum, by Heisenberg operators.  The composite lift (\texttt{compositeLift}, in \texttt{New/UpperBound/Objects/Columns.lean} of the readable edition) is a chain of double lifts whose data are such a combination, with coefficients subject to the conditions of a chain datum (\texttt{IsChainDatum}), followed by a restriction of forms.
+
 \section*{Hints}
 
 \subsection*{\S\ref{sec:fock}}
@@ -276,6 +278,7 @@ Constants of the same kind appear when a lattice is moved by a unitary map \(\va
 \bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
 \bibitem[Dav]{Dav} H.~Davenport, \emph{Multiplicative Number Theory}, 3rd ed., Grad.\ Texts in Math.\ 74, Springer, 2000.
 \bibitem[Fo]{Fo} G.~B.~Folland, \emph{Harmonic Analysis in Phase Space}, Ann.\ of Math.\ Stud.\ 122, Princeton Univ.\ Press, 1989.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
 \bibitem[LV]{LV} G.~Lion and M.~Vergne, \emph{The Weil Representation, Maslov Index and Theta Series}, Progr.\ Math.\ 6, Birkh\"auser, 1980.
 \bibitem[Mu]{Mu} D.~Mumford, \emph{Tata Lectures on Theta I}, Progr.\ Math.\ 28, Birkh\"auser, 1983.
 \bibitem[Pol]{Pol} A.~Polishchuk, \emph{Abelian Varieties, Theta Functions and the Fourier Transform}, Cambridge Tracts in Math.\ 153, Cambridge Univ.\ Press, 2003.
