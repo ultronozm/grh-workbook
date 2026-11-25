@@ -1,0 +1,224 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[zr-]{20261125T001000--zeros-to-ramp-sums__workbook}
+\externaldocument[gf-]{20261125T005000--galois-fourier-and-averaging__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T001100}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\newcommand{\one}{\mathbf{1}}
+
+\setlength{\emergencystretch}{2em}
+
+\title{Inert primes and Estimate~B}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+
+\paragraph{Prerequisites.}
+Chapter~\ref{zr-chap}, \emph{From zeros to a one-sided ramp sum} (Sections~\ref{zr-sec:ramp}--\ref{zr-sec:dirichlet}): the functions $G$ and $G_\chi$ of its equations \eqref{zr-eq:G} and \eqref{zr-eq:Gchi}, the argument of Problem~\ref{zr-pr:real-zero}, and Theorem~\ref{zr-thm:intervals}.  Quadratic reciprocity with its supplements, and the splitting of primes in an imaginary quadratic field.  Orthogonality of Dirichlet characters and the prime number theorem in progressions to a fixed modulus \cite[Ch.~4 and~20]{Dav}.
+
+\medskip
+The arithmetic gives upper bounds for ramp sums over odd powers of primes inert in an imaginary quadratic field, not for the full ramp sum $S$.  How far is such a sum from $G$, and what must be known about the quadratic characters involved to recover a bound for $G$?
+
+\section{Inert primes and a quadratic character}\label{sec:inert}
+
+Let $d \equiv 3 \pmod 4$ be a prime, let $K := \Q(\sqrt{-d})$, and let $\chi_d(n) := \bigl(\frac{n}{d}\bigr)$ be the Legendre symbol.
+
+\begin{problem}\label{pr:kronecker}
+(i) For every prime $p$, $\chi_d(p)$ is $1$, $-1$ or $0$ according as $p$ splits, is inert, or ramifies in $K$.
+(ii) For a prime power $r = p^h$, $1 - \chi_d(r)$ is $2$ if $p$ is inert and $h$ is odd, $1$ if $p = d$, and $0$ otherwise.
+\end{problem}
+
+The ramp sum over odd powers of inert primes, with weight $2$, and over powers of $d$, with weight $1$, is therefore
+\[
+  S_d(x) := \sum_r \Lambda(r) \bigl(1 - \chi_d(r)\bigr) \Bigl(\frac{x}{r} - 1\Bigr)_+ .
+\]
+For a primitive nonprincipal character $\chi$ let $\Psi_\chi(t) := \sum_{n \le t} \Lambda(n) \chi(n)$, and let $c_\chi$ and $G_\chi$ be as in \eqref{zr-eq:Gchi}.
+
+\begin{problem}\label{pr:Gchi-min}
+$G_\chi(x) = -\sum_n \Lambda(n) \chi(n) \min(1, x/n) = -x \int_x^\infty \Psi_\chi(t) \, t^{-2} \, d t$.
+\end{problem}
+
+\begin{problem}\label{pr:G-minus}
+$S_d(x) - x \log x + (1 + \gamma - c_{\chi_d}) x = G(x) - G_{\chi_d}(x)$.
+\end{problem}
+
+The arithmetic thus bounds $G - G_{\chi_d}$, not $G$.  How much does such a bound say about the zeros of $\zeta$?
+
+\begin{problem}\label{pr:fixed-d}
+Let $0 < \theta < 1$.  Suppose that $L(s, \chi_d)$ has no real zero in $(\theta, 1)$, and that $G(x) - G_{\chi_d}(x) \le x^\theta$ for all large $x$.  Then every zero of $\zeta(s)$ or of $L(s, \chi_d)$ in $\Re s > \theta$ is a zero of both, with the same multiplicity.
+\end{problem}
+
+A one-sided bound for $G - G_{\chi_d}$ thus cannot exclude a zero of $\zeta$ that $L(s, \chi_d)$ shares, and the argument needs a separate hypothesis on real zeros of $L(s, \chi_d)$.  The way out is to bound $G_{\chi_d}(x)$ from both sides, for one well-chosen $d$ and for $x$ in a given range only (\S\ref{sec:estB}).
+
+A second quadratic character enters through a table of residue classes.  Let $q \equiv 3 \pmod 8$ and $d \equiv 7 \pmod 8$ be primes with $q \mid d + 1$.
+
+\begin{problem}\label{pr:congruences}
+$\chi_d(2) = \chi_d(q) = 1$.  Hence $1 - \chi_d(r)$ vanishes at every power of $2$ and of $q$.
+\end{problem}
+
+Let $n$ be a power of $2$, let $N := 4n$, and let $H := (\Z/N\Z)^\times/\{\pm 1\}$, a group of order $n$; write $[r]$ for the class of an odd integer $r$.  Assign an odd prime power $r$ prime to $q$ to the \emph{cell} $(v(r), [r])$, where $v(r) := \frac12(1 + \chi_q(r))$ is the \emph{row}.  There are $2n$ cells.  To each cell $i$ attach a weight $w_i > 0$, and consider
+\[
+  P := \sum_r \Lambda(r) \bigl(1 - \chi_d(r)\bigr) \Bigl(\frac{a}{r} - w_{\mathrm{cell}(r)}\Bigr)_+ .
+\]
+As in Section~\ref{zr-sec:smoothing}, cell $i$ contributes $w_i$ times its own ramp sum at $a/w_i$.  Problem~\ref{gf-pr:table} of Chapter~\ref{gf-chap} fills in the table for $q = 11$, $d = 1319$ and $N = 16$.
+
+Let $b > 0$ and $T_2 \subset H$, and let $\delta := \lvert T_2 \rvert/n$.  For $u \in H$, call the cells $(1, s)$ with $s \in u T_2$ \emph{distinguished}, give them weight $b$, and give the others weights so small that $a/w_i$ is enormous.  Averaging over the translates $u$ removes the column condition:
+
+\begin{problem}\label{pr:translates}
+For every odd $r$ prime to $q$,
+\(
+  \frac1n \sum_{u \in H} \one\bigl[v(r) = 1,\ [r] \in u T_2\bigr] = \frac{\delta}{2}\bigl(1 + \chi_q(r)\bigr)
+\).
+\end{problem}
+
+So the average over $u$ of the distinguished part of $P$ is $\frac{\delta b}{2} S_{q,d}(a/b)$, where
+\[
+  S_{q,d}(x) := \sum_r \Lambda(r) \bigl(1 + \chi_q(r)\bigr)\bigl(1 - \chi_d(r)\bigr)\Bigl(\frac{x}{r} - 1\Bigr)_+ .
+\]
+
+\begin{problem}\label{pr:Rqd}
+Let $\eta := \chi_q \chi_d$.  Then
+\[
+  S_{q,d}(x) - x \log x + (1 + \gamma + c_{\chi_q} - c_{\chi_d} - c_\eta) x
+  = G(x) + G_{\chi_q}(x) - G_{\chi_d}(x) - G_\eta(x) .
+\]
+\end{problem}
+
+The function $G$ appears with coefficient $+1$, so an upper bound for the left side and two-sided bounds for $G_{\chi_q}$, $G_{\chi_d}$ and $G_\eta$ give an upper bound for $G$.  The other cells test primes at the enormous scales $a/w_i$.  There the remainder of each cell must be small with a saving better than any power of $x$, and for this one expands the cell in characters.  By Problem~\ref{gf-pr:cell-expansion} of Chapter~\ref{gf-chap}, for $r$ prime to $2qd$ the function $r \mapsto \bigl(1 - \chi_d(r)\bigr)\one[\mathrm{cell}(r) = (v, s)]$ is a linear combination $\sum_\chi f_\chi \chi(r)$ of the $4n$ characters $\xi \chi_q^i \chi_d^j$, $\xi$ a character of $H$ and $i, j \in \{0, 1\}$, with $\sum_\chi \lvert f_\chi \rvert = 2$.
+
+Hence, apart from explicit terms from the powers of $2$, $q$ and $d$, the remainder of a cell is a combination, with total mass $2$, of the functions $G_{\chi^*}$, where $\chi^*$ is the primitive character inducing $\chi$ and $G_{\chi^*} := G$ for $\chi$ principal; and a uniform bound $\lvert G_{\chi^*}(y) \rvert \le \vartheta y$, with $\vartheta > 0$ small, for these characters at the large scales makes the other cells negligible.  Such a bound comes from a zero-free region for the $L(s, \chi)$ \cite[Ch.~14]{Dav}, which is effective here, even if there is an exceptional real zero \cite[Ch.~14, (12)]{Dav}, because the large scales may be taken with $\log y > qdN$.
+
+
+\section{Estimate B in a simple form}\label{sec:estB}
+
+Problem~\ref{pr:Rqd} asks for two-sided bounds $\lvert G_\chi(x) \rvert \le x^{1/2 + \varepsilon}$ for $\chi = \chi_q$, $\chi_d$ and $\chi_q\chi_d$.  For one fixed character and all large $x$ this is as hard as the problem we started from:
+
+\begin{problem}\label{pr:fixed-chi}
+Let $\chi$ be primitive and nonprincipal, and $0 < \theta < 1$.  If $\lvert G_\chi(x) \rvert \le x^\theta$ for all large $x$, then $L(s, \chi) \ne 0$ for $\Re s > \theta$.
+\end{problem}
+
+What is needed is weaker: the bound for $x$ in one interval $[Y, Y^{3/2}]$, for some $q$ and $d$ that may be chosen after $Y$.  One takes the moduli enormous, with $\log q$ and $\log d$ powers of $Y$.  For most of them a character sum of length far below the modulus behaves like a random sum, of size about $\sqrt{x}$, and one good choice suffices.
+
+For $1 \le x \le Z$ let $a_n(x) := \Lambda(n)\min(1, x/n)$, and for a nonprincipal $\chi$ let
+\[
+  S_Z(x, \chi) := \sum_{n \le Z} a_n(x) \chi(n) ,
+  \qquad
+  t_\chi(Z) := \sum_{n > Z} \frac{\Lambda(n) \chi(n)}{n} .
+\]
+By Problem~\ref{pr:Gchi-min}, $G_\chi(x) = -S_Z(x, \chi) - x\, t_\chi(Z)$.
+
+\begin{problem}\label{pr:diag}
+$\sum_{n \le Z} a_n(x)^2 \le C x \log x$ for $2 \le x \le Z$, with $C$ absolute.
+\end{problem}
+
+\begin{problem}\label{pr:all-chars}
+Let $Q > Z$ be prime, and let $b_n$ be complex numbers.  Then $\frac{1}{Q - 1}\sum_{\chi \bmod Q} \bigl\lvert \sum_{n \le Z} b_n \chi(n) \bigr\rvert^2 = \sum_{n \le Z} \lvert b_n \rvert^2$.  Hence at most $C (Q - 1) x^{-2\varepsilon} \log x$ characters $\chi$ modulo $Q$ satisfy $\lvert S_Z(x, \chi) \rvert > x^{1/2 + \varepsilon}$.
+\end{problem}
+
+The characters of the argument are quadratic.  For an odd prime $q$ let $\chi_q(n) := \bigl(\frac{n}{q}\bigr)$, and let $\mathcal{P}(U)$ be the set of primes in $(U, 2U]$.
+
+\begin{problem}\label{pr:recip}
+Let $m \ge 1$ be an integer that is not a square.  There is a nonprincipal Dirichlet character $\omega_m$ modulo $4m$ with $\bigl(\frac{m}{q}\bigr) = \omega_m(q)$ for every odd prime $q \nmid m$.
+\end{problem}
+
+\begin{problem}\label{pr:quad-ms}
+Fix $2 \le x \le Z$ and real numbers $b_n$ with $\lvert b_n \rvert \le a_n(x)$.  As $U \to \infty$,
+\[
+  \frac{1}{\lvert \mathcal{P}(U) \rvert} \sum_{q \in \mathcal{P}(U)} \Bigl( \sum_{n \le Z} b_n \chi_q(n) \Bigr)^2
+  \ \longrightarrow\ \sum_{\substack{n, n' \le Z \\ n n' = \square}} b_n b_{n'}
+  \ \le\ C x \log x .
+\]
+\end{problem}
+
+Problem~\ref{pr:quad-ms} and Chebyshev's inequality give the following.
+
+\begin{theorem}\label{thm:good-q}
+Let $2 \le x \le Z$ and $\varepsilon > 0$.  For all $U$ large in terms of $Z$, the proportion of $q \in \mathcal{P}(U)$ with $\lvert S_Z(x, \chi_q) \rvert > x^{1/2 + \varepsilon}$ is at most $C x^{-2\varepsilon} \log x$, with $C$ absolute.
+\end{theorem}
+
+A good modulus at one point $x$ is not yet enough; one wants the bound at all $x$ of an interval simultaneously.
+
+\begin{problem}\label{pr:derivative}
+As a function of $y \in [1, Z]$, $S_Z(y, \chi)$ is continuous and piecewise linear, and off the integers its derivative $D(y)$ satisfies $y D(y) = \sum_{y < n \le Z} a_n(y) \chi(n)$.
+\end{problem}
+
+\begin{problem}\label{pr:block}
+For $W \ge 1$ and $y \in [W, 2W]$, $\lvert S_Z(y, \chi) \rvert^2 \le 2 \lvert S_Z(W, \chi) \rvert^2 + 2W \int_W^{2W} \lvert D(t) \rvert^2 \, d t$.
+\end{problem}
+
+By Problem~\ref{pr:derivative}, Problem~\ref{pr:quad-ms} applies to $y D(y)$ as well.  Applying Problems~\ref{pr:quad-ms} and \ref{pr:block} on the blocks $[2^k Y, \min(2^{k+1} Y, Y^A)]$ and summing over $k$ gives:
+
+\begin{theorem}\label{thm:good-q-interval}
+Let $Y \ge 2$, $A \ge 1$, $Z \ge Y^A$ and $\varepsilon > 0$.  For all $U$ large in terms of $Z$, the proportion of $q \in \mathcal{P}(U)$ for which $\lvert S_Z(y, \chi_q) \rvert > y^{1/2 + \varepsilon}$ for some $y \in [Y, Y^A]$ is $O_\varepsilon(Y^{-\varepsilon})$.
+\end{theorem}
+
+
+It remains to make $x\, t_{\chi_q}(Z)$ small.  For a fixed character $t_\chi(Z) \to 0$, but at a rate governed by the zeros of $L(s, \chi)$ near $\Re s = 1$, and here $q$ is far larger than $Z$.  One needs a box $\Re s > 1 - \delta_0$, $\lvert \Im s \rvert \le T$ free of zeros of $L(s, \chi_q)$ for all but a small proportion of $q \in \mathcal{P}(U)$; zero-density estimates near $\Re s = 1$ give such boxes for most moduli \cite[Theorem~12.2]{Mon}.  To have $\log q$ a small power of $Y$, instead of letting $U \to \infty$, one needs primes in progressions to large moduli \cite[Thm.~7]{Gal}, and Page's theorem that at most one real character of conductor at most \(R\) has a real zero within \(c/\log R\) of \(1\) \cite{Pa}, \cite[Ch.~14]{Dav}.
+
+The statement wanted, which we call \emph{Estimate B}, is this: for every small $\varepsilon > 0$ and every large $Y$ there are primes $q \equiv 3 \pmod 8$ and $d \equiv 7 \pmod{16}$ with $q \mid d + 1$ such that $\lvert G_\chi(x) \rvert \le x^{1/2 + \varepsilon}$ for $\chi = \chi_q$, $\chi_d$, $\chi_q\chi_d$ and all $x \in [Y, Y^{3/2}]$.  One chooses $q$ first and then $d$, and the mean squares over $d$ involve the twists by $\chi_q$.  We do not carry out this combination here, and we do not know a published proof of Estimate B.  Adriazola \cite[\S5, Thms.~5.10 and~5.12]{Adr} proves it, for most \(q\) and then most \(d\) in suitable ranges with \(\log q\) of size \(Y^{\varepsilon/5}\) and \(\log d\) of size \(Y^{\varepsilon/5}\log^2 Y\), from the inputs named above; there \(d\) is also taken \(\equiv -1\) modulo every odd prime up to \(Y^{\varepsilon/5}\).  There is no circularity: the route sketched above uses only mean squares and zero-free boxes near $\Re s = 1$ for most $q$, and nothing about zeros near the critical line.  For the function $G^\psi$ of Section~\ref{zr-sec:dirichlet}, Estimate B is needed for all the twists $\xi \chi_q^i \chi_d^j$ with $\xi$ a character modulo $M$ and $(i, j) \ne (0, 0)$.
+
+\section*{Hints}
+
+
+\subsection*{\S\ref{sec:inert}}
+\begin{description}
+\item[\ref{pr:kronecker}] For odd $p \ne d$ compare $\bigl(\frac{-d}{p}\bigr)$ with $\bigl(\frac{p}{d}\bigr)$ by reciprocity.  For $p = 2$ use $\mathcal{O}_K = \Z[(1 + \sqrt{-d})/2]$.
+\item[\ref{pr:Gchi-min}] Use $\sum_n \Lambda(n)\chi(n)/n = -c_\chi$, convergent by the prime number theorem for $\chi$.
+\item[\ref{pr:G-minus}] Write $S_d$ as the ramp sum with coefficient $1$ minus the one with coefficient $\chi_d$, and use \eqref{zr-eq:G} and \eqref{zr-eq:Gchi}.
+\item[\ref{pr:fixed-d}] The Mellin transform of $G - G_{\chi_d}$ is $F(s) + \frac{L'}{L}(s, \chi_d)/(s(s-1)) - c_{\chi_d}/(s-1)$.  Follow Problem~\ref{zr-pr:real-zero}: a real zero of $\zeta$ gives the residue sign of that problem, but a real zero of $L(s, \chi_d)$ gives the opposite sign.
+\item[\ref{pr:congruences}] $d \equiv 7 \pmod 8$ settles $2$.  For $q$ use reciprocity with $q, d \equiv 3 \pmod 4$ and $d \equiv -1 \pmod q$.
+\item[\ref{pr:Rqd}] Expand $(1 + \chi_q)(1 - \chi_d)$, and check the primes $q$ and $d$ separately.
+\end{description}
+
+\subsection*{\S\ref{sec:estB}}
+\begin{description}
+\item[\ref{pr:fixed-chi}] The bound gives absolute convergence of the Mellin transform of $G_\chi$ in $\Re s > \theta$.  Compute that transform as in Problem~\ref{zr-pr:F}.
+\item[\ref{pr:diag}] Split at $n = x$ and use Chebyshev's bound and partial summation on each part.
+\item[\ref{pr:all-chars}] Expand the square; since $Q > Z$, distinct $n, n' \le Z$ are distinct modulo $Q$.
+\item[\ref{pr:recip}] Write $m = 2^e m'$ with $m'$ odd and use the Jacobi symbol.  For nontriviality, separate the cases where $m'$ is a square and where it is not.
+\item[\ref{pr:quad-ms}] Expand the square and apply Problem~\ref{pr:recip} with $m = n n'$ and the prime number theorem modulo $4nn'$.  For the bound, $n$ and $n'$ are prime powers; the pairs with $n = n'$ are covered by Problem~\ref{pr:diag}.  Group the pairs by prime, and treat the even powers separately.
+\item[\ref{pr:block}] Use Problem~\ref{pr:derivative}.
+\end{description}
+
+\begin{thebibliography}{Gal}
+
+\bibitem[Adr]{Adr}
+J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+
+\bibitem[Dav]{Dav}
+H.~Davenport, \emph{Multiplicative Number Theory}, 3rd ed., revised by H.~L.~Montgomery, Grad. Texts in Math. \textbf{74}, Springer, 2000.
+
+\bibitem[Gal]{Gal}
+P.~X.~Gallagher, \emph{A large sieve density estimate near $\sigma = 1$}, Invent. Math. \textbf{11} (1970), 329--339.
+
+\bibitem[Mon]{Mon}
+H.~L.~Montgomery, \emph{Topics in Multiplicative Number Theory}, Lecture Notes in Math. \textbf{227}, Springer, 1971.
+
+\bibitem[Pa]{Pa}
+A.~Page, \emph{On the number of primes in an arithmetic progression}, Proc. London Math. Soc. (2) \textbf{39} (1935), 116--141.
+
+\end{thebibliography}
+
+\end{document}

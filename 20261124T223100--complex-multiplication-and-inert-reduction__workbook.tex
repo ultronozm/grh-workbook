@@ -1,0 +1,201 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[ec-]{20261124T223000--elliptic-curves-for-the-proof__workbook}
+\externaldocument[st-]{20261124T214500--supersingular-theta-divisibility__workbook}
+\externaldocument[od-]{20261125T008000--one-cm-determinant__workbook}
+\externaldocument[ip-]{20261124T214600--the-isotropic-plane__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261124T223100}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\End}{\operatorname{End}}
+
+\setlength{\emergencystretch}{2em}
+
+\title{Complex multiplication and reduction at an inert prime}
+\author{}
+\date{November 24, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Chapter~\ref{ec-chap}, \emph{Complex tori, theta functions and periods}, Section~\ref{ec-sec:tori}: the Weierstrass functions, Problems~\ref{ec-pr:zeta-add} and~\ref{ec-pr:square}, and the lemniscatic lattice \(\varpi\Z[\ii]\) of the curve \(E \colon y^2 = x^3 - x\).  Orders in imaginary quadratic fields.  Elliptic curves over a field at the level of \cite[Ch.~III]{Si1}, and the statements, not the proofs, of \cite[Ch.~IV, \S\S V.1--V.4, Ch.~VI]{Si1}.
+
+\section{Complex multiplication}\label{sec:cm}
+
+Which tori have endomorphisms other than \(u \mapsto nu\)?  Every holomorphic map \(\C/\Lambda \to \C/\Lambda\) that fixes \(0\) is \(u \mapsto \alpha u\) with \(\alpha\Lambda \subseteq \Lambda\) \cite[Thm.~VI.4.1]{Si1}.  So if \(E\) corresponds to \(\Lambda\), then \(\End(E) = \{\alpha \in \C : \alpha\Lambda \subseteq \Lambda\}\), and we write \([\alpha]\) for \(u \mapsto \alpha u\).
+
+\begin{problem}\label{pr:cm-order}
+If \(\End(E) \ne \Z\), then \(K := \Q(\alpha)\) is imaginary quadratic for every \(\alpha \in \End(E) \smallsetminus \Z\), \(\End(E)\) is an order in \(K\), and \(\Lambda\) is homothetic to a lattice contained in \(K\).
+\end{problem}
+
+We then say that \(E\) has \emph{complex multiplication} by that order.
+
+\begin{problem}\label{pr:cm-examples}
+\(\End(\C/\Z[\ii]) = \Z[\ii]\), \(\End(\C/\Z[2\ii]) = \Z[2\ii]\), and \(\End(\C/\Z[\rho]) = \Z[\rho]\) with \(\rho = e^{2\pi\ii/3}\).
+\end{problem}
+
+\begin{problem}\label{pr:deg}
+For \(\alpha \in \End(E)\), \(\alpha \ne 0\), the kernel of \([\alpha]\) on \(\C/\Lambda\) has \(\lvert\alpha\rvert^2\) elements.
+\end{problem}
+
+The function \(\wp(\alpha u)\) is even and elliptic for \(\Lambda\), so it is a rational function of \(\wp(u)\), and \([\alpha]\) is a rational map of the curve.
+
+\begin{problem}\label{pr:one-plus-i}
+For the lemniscatic lattice, \(\wp((1+\ii)u) = \dfrac{\wp(u)^2 - 1}{2\ii\, \wp(u)}\).
+\end{problem}
+
+\begin{problem}\label{pr:i-action}
+On \(E \colon y^2 = x^3 - x\), \([\ii](x, y) = (-x, \ii y)\).  For every \(\alpha \in \End(E)\), \([\alpha]^*(dx/2y) = \alpha\, dx/2y\).
+\end{problem}
+
+\begin{problem}\label{pr:j1728}
+For \(a, b \in \C^\times\), the curve \(y^2 = x^3 + ax\) has complex multiplication by \(\Z[\ii]\), and \(y^2 = x^3 + b\) has complex multiplication by \(\Z[\rho]\).
+\end{problem}
+
+The endomorphisms of \(E \colon y^2 = x^3 - x\) have coefficients in \(\Z[\ii, \tfrac12]\), so they can be reduced modulo an odd prime \(p\).  What do they look like near the origin?  There an endomorphism is a power series in a local parameter, and this is the formal group.
+
+\section{The formal group}\label{sec:formal}
+
+Let \(E\) be given by a Weierstrass equation over a ring \(R\), and let \(z := -x/y\).  The group law, written in \(z\), is a formal group law \(F(z_1, z_2) \in R[[z_1, z_2]]\), and every endomorphism defined over \(R\) becomes a series \([\alpha](z) \in R[[z]]\) \cite[\S\S IV.1--IV.2]{Si1}.  The invariant differential becomes \(\omega(z) = \sum_{n \ge 1} c_n z^{n-1}\, d z\) with \(c_1 = 1\) and \(c_n\) integral over the coefficients, and the \emph{logarithm} \(\ell(z) := \sum_{n \ge 1} c_n z^n/n\) satisfies \(F(z_1, z_2) = \ell^{-1}(\ell(z_1) + \ell(z_2))\) \cite[\S\S IV.4--IV.5]{Si1}.  Over \(\C\), \(\ell(z(u)) = u\).  The \emph{invariant derivation} is \(D := d/du = \ell'(z)^{-1}\, d/dz\).
+
+For a one-parameter formal group over \(\Z_p\), either \([p](z) \equiv 0 \pmod p\) or \([p](z) \equiv g(z^{p^h}) \pmod p\) with \(g'(0) \not\equiv 0\); the integer \(h\) is the \emph{height} \cite[\S IV.7]{Si1}.  For an elliptic curve with good reduction at \(p\), \(h \in \{1, 2\}\), and \(h = 2\) exactly when the reduction is supersingular \cite[Thm.~V.3.1]{Si1}.  The two extreme models are \(\hat G_a(X, Y) = X + Y\) and \(\hat G_m(X, Y) = X + Y + XY\).
+
+\begin{problem}\label{pr:Gm}
+For \(\hat G_m\), \(\ell(X) = \log(1+X)\), \([p](X) \equiv X^p \pmod p\), and the height is \(1\).
+\end{problem}
+
+\begin{problem}\label{pr:Dp-models}
+As operators on \(\Z_p[[X]]\) modulo \(p\): for \(\hat G_a\), \(D^p \equiv 0\); for \(\hat G_m\), \(D = (1+X)\,d/dX\) and \(D^p \equiv D\).
+\end{problem}
+
+For any formal group over \(\Z_p\) one has \(D^p \equiv \lambda D \pmod p\) for a constant \(\lambda\): modulo \(p\), \(D^p\) is a derivation by Leibniz's rule, it commutes with translations because \(D\) does, and over a field of characteristic \(p\) every continuous derivation of \(k[[z]]\) that commutes with translations is a constant multiple of \(D\).  (Chapter~\ref{st-chap} sets these steps as Problems~\ref{st-pr:Dp-derivation} and~\ref{st-pr:invariant}.)  Which constant is \(\lambda\)?
+
+\begin{problem}\label{pr:lambda}
+Let \(\hat G\) be the formal group of a Weierstrass equation over \(\Z_{(p)}\), with \(D^p \equiv \lambda D \pmod p\).  Then \((D^n z)(0) = n!\, [u^n]\, \ell^{-1}(u)\) for every \(n\), and \(\lambda \equiv c_p \pmod p\).
+\end{problem}
+
+\begin{problem}\label{pr:coef-p}
+For \(\hat G\) as in Problem~\ref{pr:lambda}, the coefficient of \(z^p\) in \([p](z)\) is congruent to \(c_p\) modulo \(p\).  Hence the height is \(1\) exactly when \(p \nmid c_p\).
+\end{problem}
+
+Now we compute \(c_n\) for \(E \colon y^2 = x^3 - x\).  Let \(w := -1/y\).
+
+\begin{problem}\label{pr:w-z}
+For \(y^2 = x^3 - x\), \(w + z w^2 = z^3\), and \(\omega(z) = d z / \sqrt{1 + 4z^4}\).
+\end{problem}
+
+\begin{problem}\label{pr:log}
+For \(y^2 = x^3 - x\), \(\ell(z) = \sum_{m \ge 0} (-1)^m \binom{2m}{m} z^{4m+1}/(4m+1)\).  For odd \(n\), \(c_n\) is the coefficient of \(x^{n-1}\) in \((x^3 - x)^{(n-1)/2}\).
+\end{problem}
+
+For a curve \(y^2 = f(x)\) over \(\F_p\) with \(f\) cubic, the coefficient \(A_p\) of \(x^{p-1}\) in \(f^{(p-1)/2}\) is the \emph{Hasse invariant}, and the curve is supersingular exactly when \(A_p = 0\) \cite[Thm.~V.4.1(a)]{Si1}.  By Problem~\ref{pr:log}, \(c_p = A_p\) for \(y^2 = x^3 - x\), and Problems~\ref{pr:lambda} and~\ref{pr:coef-p} recover the criterion for this curve.  When \(c_p = 0\), the first term of \([p](z)\) modulo \(p\) lies beyond \(z^p\).  To find it one needs the Frobenius endomorphism.
+
+\section{Reduction at an inert prime}\label{sec:reduction}
+
+Which primes are supersingular for a curve with complex multiplication?  Deuring's answer \cite{Deu41}: if \(E\) has complex multiplication by an order in \(K\) and good reduction at a prime above \(p\), the reduction is supersingular if and only if \(p\) does not split in \(K\).  For \(y^2 = x^3 - x\) these are the \(p \equiv 3 \pmod 4\).  We check this by hand.
+
+\begin{problem}\label{pr:count}
+Let \(p \equiv 3 \pmod 4\).  Then \(\#E(\F_p) = p + 1\), that is, \(a_p := p + 1 - \#E(\F_p) = 0\).
+\end{problem}
+
+\begin{problem}\label{pr:hasse-x3x}
+For \(p = 4m+1\), \(A_p = (-1)^m \binom{2m}{m} \not\equiv 0 \pmod p\).  For \(p \equiv 3 \pmod 4\), \(A_p = 0\).
+\end{problem}
+
+For \(p \equiv 1 \pmod 4\) one has \(a_p = \gamma + \bar\gamma\), where \(\gamma \in \Z[\ii]\) has \(\gamma\bar\gamma = p\) and \(\gamma \equiv 1 \pmod{2 + 2\ii}\) \cite[Ch.~18]{IR}.
+
+\begin{problem}\label{pr:ap-split}
+\(a_5 = -2\) and \(a_{13} = 6\), in agreement with \(\gamma = -1 + 2\ii\) and \(\gamma = 3 + 2\ii\).
+\end{problem}
+
+Now let \(p \equiv 3 \pmod 4\), let \(\phi(x, y) := (x^p, y^p)\) be the Frobenius endomorphism of \(E\) over \(\F_p\), and reduce \([\ii]\) modulo \(p\) into \(\F_{p^2}\).
+
+\begin{problem}\label{pr:frob}
+\(\phi^2 = [-p]\) and \(\phi \circ [\ii] = [-\ii] \circ \phi\).  Hence \(\End(E_{\bar\F_p})\) is not commutative.
+\end{problem}
+
+\begin{problem}\label{pr:p-series}
+Let \(p \equiv 3 \pmod 4\).  In the parameter \(z = -x/y\), \([p](z) \equiv -z^{p^2} \pmod p\), and \([\ii](z) = \ii z\).
+\end{problem}
+
+For instance \([3](z) \equiv -z^9 \pmod 3\).  So modulo \(p\) the multiplication by \(-p\) is exactly the \(p^2\)-power map.  This is the situation of Lubin and Tate \cite{LT}.  Let \(\Oc\) be the ring of integers of a finite extension of \(\Q_p\), with uniformizer \(\pi\) and residue field of order \(q\).  Lubin and Tate prove:
+(i) each \(f \in \Oc[[X]]\) with \(f(X) \equiv \pi X \bmod X^2\) and \(f(X) \equiv X^q \bmod \pi\) is an endomorphism of a unique formal group \(F_f\) over \(\Oc\);
+(ii) each \(a \in \Oc\) gives a unique endomorphism \([a]_f\) of \(F_f\) with linear term \(aX\), and \(a \mapsto [a]_f\) is a ring homomorphism;
+(iii) for two such \(f\), \(g\) there is a unique isomorphism \(\theta \colon F_f \to F_g\) over \(\Oc\) with linear term \(X\), and it commutes with the \([a]\).
+By Hazewinkel's functional-equation lemma \cite[I.2.2]{Ha}, the \emph{model logarithm} \(\ell_\pi(X) := X + X^q/\pi + X^{q^2}/\pi^2 + \dotsb\) is the logarithm of such an \(F_f\).
+
+Let \(p \equiv 3 \pmod 4\) and \(\Oc := \Z_p[\ii]\), so that \(\pi := -p\) is a uniformizer and \(q = p^2\).
+
+\begin{problem}\label{pr:LT}
+The series \(f := [-p]\) satisfies the hypotheses of (i), the formal group \(\hat E\) of \(y^2 = x^3 - x\) is \(F_f\), and \([a]_f\) extends \(\alpha \mapsto [\alpha]\) from \(\Z[\ii]\) to \(\Oc\).
+\end{problem}
+
+\begin{problem}\label{pr:model-log}
+There is \(\theta \in z + z^2\Oc[[z]]\) with \(\ell = \ell_{-p} \circ \theta\).  Consequently the coefficients of \(\ell\) in degrees less than \(p^2\) are \(p\)-integral, and \(p \cdot [z^{p^2}]\, \ell \equiv -1 \pmod p\).
+\end{problem}
+
+For \(p = 3\): \([z^9]\,\ell = \tfrac23\), and \(3 \cdot \tfrac23 \equiv -1 \pmod 3\).  Chapter~\ref{st-chap} proves the same congruence for the lemniscate with binomial coefficients (Problem~\ref{st-pr:log-q}).
+
+In the model logarithm the denominators occur only in the degrees \(q, q^2, \dotsc\), and there they are \(p, p^2, \dotsc\).  Divisibility of derivatives at inert primes comes from this sparseness.  The functions whose derivatives one needs are not functions on \(E\), however; they are theta functions.  Chapter~\ref{od-chap} uses \(D^p\) in a single determinant; theta functions are the subject of Chapters~\ref{st-chap} and~\ref{ip-chap}.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:cm}}
+\begin{description}
+\item[\ref{pr:cm-order}] Write \(\alpha\omega_1 = a\omega_1 + b\omega_2\) and \(\alpha\omega_2 = c\omega_1 + d\omega_2\) with integers \(a, b, c, d\).  Then \(\alpha\) is a root of \(x^2 - (a+d)x + ad - bc\).  If \(\alpha \notin \mathbb{R}\), then \(\omega_2/\omega_1 \in \Q(\alpha)\).
+\item[\ref{pr:cm-examples}] \(\alpha \cdot 1 \in \Lambda\).
+\item[\ref{pr:deg}] The kernel is \(\alpha^{-1}\Lambda/\Lambda\).  Its order is the index of \(\alpha\Lambda\) in \(\Lambda\), a determinant.
+\item[\ref{pr:one-plus-i}] Apply Problem~\ref{ec-pr:zeta-add} with \(v = \ii u\), using Problem~\ref{ec-pr:square} and \(\wp'^2 = 4\wp^3 - 4\wp\).
+\item[\ref{pr:i-action}] \(x = \wp(u)\) and \(y = \wp'(u)/2\).
+\item[\ref{pr:j1728}] Find automorphisms of the curves of order \(4\) and \(3\).
+\end{description}
+
+\subsection*{\S\ref{sec:formal}}
+\begin{description}
+\item[\ref{pr:Gm}] \([p](X) = (1+X)^p - 1\).
+\item[\ref{pr:Dp-models}] \(D(1+X)^k = k(1+X)^k\).  For \(\hat G_a\), \((d/dX)^p X^n = n(n-1)\dotsm(n-p+1)X^{n-p}\).
+\item[\ref{pr:lambda}] \(D = d/du\) in the coordinate \(u = \ell(z)\).  For \(\lambda\), apply \(D^p \equiv \lambda D\) to the truncated logarithm \(u_p := \sum_{n < p} c_n z^n/n\), for which \(D u_p = 1 - c_p z^{p-1} + O(z^p)\); evaluate at \(0\) and use \((p-1)! \equiv -1\).
+\item[\ref{pr:coef-p}] Compare \(\ell([p](z)) = p\,\ell(z)\) modulo \((p, z^{p+1})\).
+\item[\ref{pr:w-z}] Substitute \(x = z/w\) and \(y = -1/w\).  Solve the quadratic for \(w\), and compute \(dx/2y = -\tfrac{z}{2}\, d\log x\).
+\item[\ref{pr:log}] The binomial series of \((1 + 4z^4)^{-1/2}\).  For the second statement, \((x^3 - x)^{2m} = x^{2m}(x^2 - 1)^{2m}\).
+\end{description}
+
+\subsection*{\S\ref{sec:reduction}}
+\begin{description}
+\item[\ref{pr:count}] \(x^3 - x\) is odd, and \(-1\) is not a square modulo \(p\).
+\item[\ref{pr:hasse-x3x}] Problem~\ref{pr:log}.  For the non-vanishing, \(2m < p\).
+\item[\ref{pr:ap-split}] Count the solutions of \(y^2 = x^3 - x\) over \(\F_5\) and \(\F_{13}\).
+\item[\ref{pr:frob}] \(\phi^2 - a_p\phi + p = 0\) in \(\End(E)\) \cite[\S V.2]{Si1}, and Problem~\ref{pr:count}.  For the second relation, \(\ii^p = -\ii\) in \(\F_{p^2}\).
+\item[\ref{pr:p-series}] In the parameter \(z\), \(\phi\) acts on the formal group over \(\F_p\) by \(z \mapsto z^p\), and \([-1](z) = -z\).
+\item[\ref{pr:LT}] Problem~\ref{pr:p-series}.  For the last statement, use the uniqueness in (ii).
+\item[\ref{pr:model-log}] Use (iii).  A formal group over a \(\Q\)-algebra has only one logarithm with linear term \(z\).  For the consequence, expand \(\ell_{-p}(\theta(z))\) up to degree \(q\).
+\end{description}
+
+\begin{thebibliography}{Deu}
+\bibitem[Deu]{Deu41} M.~Deuring, \emph{Die Typen der Multiplikatorenringe elliptischer Funktionenk\"orper}, Abh.\ Math.\ Sem.\ Hansischen Univ.\ \textbf{14} (1941), 197--272.
+\bibitem[Ha]{Ha} M.~Hazewinkel, \emph{Formal Groups and Applications}, Academic Press, 1978.
+\bibitem[IR]{IR} K.~Ireland and M.~Rosen, \emph{A Classical Introduction to Modern Number Theory}, 2nd ed., Grad.\ Texts in Math.\ 84, Springer, 1990.
+\bibitem[LT]{LT} J.~Lubin and J.~Tate, \emph{Formal complex multiplication in local fields}, Ann.\ of Math.\ \textbf{81} (1965), 380--387.
+\bibitem[Si1]{Si1} J.~H.~Silverman, \emph{The Arithmetic of Elliptic Curves}, 2nd ed., Grad.\ Texts in Math.\ 106, Springer, 2009.
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,280 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[ec-]{20261124T223000--elliptic-curves-for-the-proof__workbook}
+\externaldocument[mn-]{20261125T000100--slope-inequality-in-the-mean__workbook}
+\externaldocument[rl-]{20261125T010000--rank-lemma-and-zero-estimate__workbook}
+\externaldocument[dt-]{20261125T002000--definite-theta-lifts__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T010500}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\HH}{\mathbb{H}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\Ac}{\mathcal{A}}
+\newcommand{\Hc}{\mathcal{H}}
+\newcommand{\Pt}{\widetilde{P}}
+\newcommand{\vol}{\operatorname{vol}}
+
+\setlength{\emergencystretch}{2em}
+
+\title{Poincar\'e series and near orthogonality}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Modular forms for \(\mathrm{SL}_2(\Z)\): \(q\)-expansions, the cusp form \(\Delta\) and the dimension formula \cite[Ch.~VII, \S3]{SeA}.  The residue theorem and the mean value property of holomorphic functions.  The power series \(J_\nu(x) = \sum_{j \ge 0} (-1)^j (x/2)^{\nu + 2j}/(j!\,\Gamma(\nu + j + 1))\).  Gershgorin's theorem on the eigenvalues of a matrix.  From Chapter~\ref{rl-chap}, \emph{The rank lemma and the zero estimate}, Section~\ref{rl-sec:gram} and the bound~\eqref{rl-eq:pair}, and Theorem~\ref{mn-thm:rank} of Chapter~\ref{mn-chap}, for the closing paragraphs only.
+
+Chapter~\ref{rl-chap} asked for a family of vectors in a space of automorphic forms whose Gram matrix is close to a scalar.  Equidistribution of CM points gives such families only with a rate that amounts to a subconvex bound.  There is a cheaper source.  If the weight is large, Poincar\'e series of small index are almost orthogonal, and Petersson's formula proves it with nothing more than a bound for a Bessel function.  This chapter works it out on \(\mathrm{SL}_2(\Z)\), where the vectors are holomorphic Poincar\'e series and their inner products are Fourier coefficients.
+
+Throughout, \(k \ge 4\) is even, \(\Gamma := \mathrm{SL}_2(\Z)\), \(\Gamma_\infty := \{\pm\begin{pmatrix}1 & n\\ 0 & 1\end{pmatrix}\}\), \(j(\gamma,z) := cz + d\) for \(\gamma = \begin{pmatrix}a & b\\ c & d\end{pmatrix}\), \(e(z) := e^{2\pi\ii z}\), and \(d\nu := y^{-2}\,dx\,dy\) on the upper half-plane \(\HH\).
+
+\section{Poincar\'e series}\label{sec:poincare}
+
+Let \(S_k\) be the space of cusp forms of weight \(k\) for \(\Gamma\), with the Petersson inner product \(\langle f, g\rangle := \int_{\Gamma\backslash\HH} f(z)\overline{g(z)}\,y^k\,d\nu(z)\).  For \(f \in S_k\) write \(f(z) = \sum_{n \ge 1} a_f(n)\,e(nz)\).  For \(m \ge 1\) the \emph{Poincar\'e series}
+\[
+  P_m(z) := \sum_{\gamma \in \Gamma_\infty\backslash\Gamma} j(\gamma,z)^{-k}\, e(m\gamma z)
+\]
+converges absolutely and uniformly on compact sets, and \(P_m \in S_k\) \cite[\S\S3.1--3.2]{Iw}.
+
+\begin{problem}\label{pr:unfold}
+For \(f \in S_k\) and \(m \ge 1\),
+\[
+  \langle f, P_m\rangle = \frac{\Gamma(k-1)}{(4\pi m)^{k-1}}\, a_f(m) .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:span}
+The series \(P_m\), \(m \ge 1\), span \(S_k\).
+\end{problem}
+
+So \(P_m = 0\) for \(k \in \{4, 6, 8, 10, 14\}\), where \(S_k = 0\), although no term of the series vanishes.  The first nonzero case is \(k = 12\), where \(S_{12} = \C\Delta\) with \(\Delta = \sum_{n \ge 1}\tau(n)\,e(nz)\).
+
+\begin{problem}\label{pr:k12}
+For \(k = 12\),
+\[
+  P_m = \frac{10!\;\tau(m)}{(4\pi m)^{11}\,\lVert\Delta\rVert^2}\,\Delta .
+\]
+In particular \(P_1\) and \(P_2\) are proportional.
+\end{problem}
+
+So distinct Poincar\'e series need not be independent.  Petersson's formula, in the next section, measures how far they are from orthogonal.
+
+\section{Petersson's formula}\label{sec:petersson}
+
+What is the Fourier expansion of \(P_m\)?  For integers \(m, n\) and \(c \ge 1\) let
+\[
+  S(m,n;c) := \sum_{\substack{d \bmod c\\ (d,c) = 1}} e\Bigl(\frac{m\bar d + nd}{c}\Bigr), \qquad d\bar d \equiv 1 \pmod c,
+\]
+be the Kloosterman sum.  It is real, and \(S(m,n;c) = S(n,m;c)\).
+
+\begin{problem}\label{pr:cosets}
+The map \(\gamma \mapsto (c,d)\) induces a bijection from \(\Gamma_\infty\backslash\Gamma\) onto the set of pairs of coprime integers modulo \(\pm1\).  If \(c \ne 0\), then \(\gamma z = \frac ac - \frac{1}{c(cz+d)}\).
+\end{problem}
+
+\begin{problem}\label{pr:lipschitz}
+Let \(\ell \ge 2\) be an integer, \(\beta \in \R\) and \(y > 0\).  Then
+\[
+  \int_{\ii y - \infty}^{\ii y + \infty} z^{-\ell}\, e(-\beta z)\, dz =
+  \begin{cases} (-2\pi\ii)^\ell\, \beta^{\ell-1}/(\ell-1)! & \beta > 0,\\ 0 & \beta \le 0. \end{cases}
+\]
+\end{problem}
+
+\begin{problem}\label{pr:bessel-int}
+Let \(\alpha > 0\), \(\beta \in \R\) and \(y > 0\).  Then \(\int_{\ii y - \infty}^{\ii y + \infty} z^{-k}\, e(-\alpha/z - \beta z)\, dz\) vanishes for \(\beta \le 0\), and for \(\beta > 0\) equals
+\[
+  2\pi\ii^{-k} \Bigl(\frac\beta\alpha\Bigr)^{(k-1)/2} J_{k-1}\bigl(4\pi\sqrt{\alpha\beta}\bigr) .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:fourier}
+\(P_m(z) = \sum_{n \ge 1} p_m(n)\, e(nz)\), where
+\[
+  p_m(n) = \delta(m,n) + 2\pi\ii^{-k} \Bigl(\frac nm\Bigr)^{(k-1)/2} \sum_{c \ge 1} \frac{S(m,n;c)}{c}\, J_{k-1}\Bigl(\frac{4\pi\sqrt{mn}}{c}\Bigr) .
+\]
+\end{problem}
+
+Problems~\ref{pr:unfold} and~\ref{pr:fourier} together give Petersson's formula \cite{Pe}, \cite[\S3.2]{Iw}, \cite[\S2]{ILS}.  Let
+\[
+  T_k(m,n) := 2\pi\ii^{-k} \sum_{c \ge 1} \frac{S(m,n;c)}{c}\, J_{k-1}\Bigl(\frac{4\pi\sqrt{mn}}{c}\Bigr) ,
+\]
+a real symmetric function of \(m, n \ge 1\).
+
+\begin{theorem}[Petersson]\label{thm:petersson}
+For every orthonormal basis \((f_j)\) of \(S_k\) and all \(m, n \ge 1\),
+\[
+  \frac{\Gamma(k-1)}{(4\pi\sqrt{mn})^{k-1}} \sum_j \overline{a_{f_j}(m)}\, a_{f_j}(n) = \delta(m,n) + T_k(m,n) .
+\]
+\end{theorem}
+
+\begin{problem}\label{pr:vanishing}
+For \(k \in \{4, 6, 8, 10, 14\}\) and all \(m, n \ge 1\),
+\[
+  \sum_{c \ge 1} \frac{S(m,n;c)}{c}\, J_{k-1}\Bigl(\frac{4\pi\sqrt{mn}}{c}\Bigr) = -\frac{\ii^k}{2\pi}\,\delta(m,n) .
+\]
+\end{problem}
+
+Numerically, for \(m = n = 1\) the partial sums over \(c \le 800\) reproduce these values to within \(3 \cdot 10^{-8}\) for \(k = 4\) and \(10^{-13}\) for \(k \ge 6\).  For \(k = 12\) one finds \(1 + T_{12}(1,1) = 2.84028\ldots\), which by Theorem~\ref{thm:petersson} is \(10!/\bigl((4\pi)^{11}\lVert\Delta\rVert^2\bigr)\), so that \(\lVert\Delta\rVert^2 = 1.03536\ldots \cdot 10^{-6}\).
+
+\section{Near orthogonality}\label{sec:near}
+
+Normalize the Poincar\'e series by
+\[
+  \Pt_m := \frac{(4\pi m)^{(k-1)/2}}{\Gamma(k-1)^{1/2}}\, P_m ,
+\]
+and for \(M \ge 1\) let \(G_M\) be the \(M \times M\) Gram matrix \(\bigl(\langle \Pt_m, \Pt_n\rangle\bigr)_{1 \le m,n \le M}\).
+
+\begin{problem}\label{pr:gram}
+\(\langle \Pt_m, \Pt_n\rangle = \delta(m,n) + T_k(m,n)\).
+\end{problem}
+
+So \(G_M\) is the identity plus the matrix of Kloosterman terms, and the question is how small \(J_{k-1}\) is.  We use Poisson's integral
+\[
+  J_\nu(x) = \frac{(x/2)^\nu}{\sqrt\pi\,\Gamma(\nu + \frac12)} \int_{-1}^1 (1 - t^2)^{\nu - 1/2} \cos(xt)\, dt \qquad (\nu > -\tfrac12,\ x > 0),
+\]
+see \cite[(10.9.4)]{DLMF}.
+
+\begin{problem}\label{pr:J-bound}
+For \(\nu > -\frac12\) and \(x \ge 0\), \(\lvert J_\nu(x)\rvert \le (x/2)^\nu/\Gamma(\nu + 1)\).
+\end{problem}
+
+\begin{problem}\label{pr:T-bound}
+\(\lvert T_k(m,n)\rvert \le 2\pi\,\zeta(k-1)\,(2\pi\sqrt{mn})^{k-1}/(k-1)!\).
+\end{problem}
+
+\begin{problem}\label{pr:gershgorin}
+If \(1 \le M \le (k-1)/(4\pi e)\), then every eigenvalue of \(G_M\) lies within \(k\,2^{-k}\) of \(1\).
+\end{problem}
+
+Problems~\ref{pr:gram}--\ref{pr:gershgorin} prove the following.
+
+\begin{theorem}\label{thm:near}
+If \(1 \le M \le (k-1)/(4\pi e)\), then \(\lVert G_M - 1\rVert \le k\,2^{-k}\).  In particular \(P_1, \dots, P_M\) are linearly independent, and \(\dim S_k \ge \lfloor (k-1)/(4\pi e)\rfloor\).
+\end{theorem}
+
+Here \(e = 2.718\ldots\) is Euler's number, and \(4\pi e = 34.15\ldots\).  The threshold is not the true one.  For \(x < \nu\) the function \(J_\nu(x)\) is exponentially small in \(\nu\), and Siegel's inequality makes this precise: for \(\nu \ge 0\) and \(0 < x \le 1\),
+\[
+  \lvert J_\nu(\nu x)\rvert \le \Bigl(\frac{x\, e^{\sqrt{1 - x^2}}}{1 + \sqrt{1 - x^2}}\Bigr)^{\nu}
+\]
+\cite[(10.14.5)]{DLMF}.  The base is increasing in \(x\) and equals \(1\) at \(x = 1\).
+
+\begin{problem}\label{pr:siegel}
+Let \(0 < \theta < 1/(4\pi)\).  There are \(\varrho < 1\) and \(C\), depending only on \(\theta\), such that \(\lVert G_M - 1\rVert \le C k\varrho^k\) whenever \(1 \le M \le \theta(k-1)\).
+\end{problem}
+
+So for large \(k\) the \(\Pt_m\) with \(m < (k-1)/(4\pi)\) are almost orthonormal.  For \(m\) near \((k-1)/(4\pi)\) the argument \(4\pi m\) of the term \(c = 1\) of \(T_k(m,m)\) reaches the transition region \(x \approx \nu\) of \(J_\nu\), where \(J_\nu(x)\) is of size about \(\nu^{-1/3}\), and the diagonal is no longer close to \(1\).  For \(k = 100\), where \((k-1)/(4\pi) = 7.87\ldots\) and \(\dim S_{100} = 8\), a computation of the Kloosterman terms gives the following.  The eigenvalues of \(G_7\) lie in \([0.99999, 1.0094]\).  Those of \(G_8\) lie in \([0.982, 1.808]\), so \(P_1, \dots, P_8\) are a basis of \(S_{100}\) but far from an orthogonal one.  \(G_9\) is singular, as it must be.
+
+\section{The dimension as formal degree times covolume}\label{sec:dim}
+
+How large a proportion of \(S_k\) does Theorem~\ref{thm:near} fill?  Let \(\Gamma\backslash\HH\) carry the measure \(\nu\).
+
+\begin{problem}\label{pr:vol}
+\(\nu(\Gamma\backslash\HH) = \pi/3\).
+\end{problem}
+
+\begin{problem}\label{pr:dim}
+\(\bigl\lvert \dim S_k - \frac{k-1}{12}\bigr\rvert \le \frac{13}{12}\) for every even \(k \ge 4\).
+\end{problem}
+
+So the series of Problem~\ref{pr:siegel} span a proportion close to \(12/(4\pi) = 3/\pi = 0.954\ldots\) of \(S_k\), and those of Theorem~\ref{thm:near} a proportion \(3/(\pi e) = 0.351\ldots\).  Where does \((k-1)/12\) come from?  It is the product of \(\pi/3\) and a constant attached to the weight alone.
+
+Let \(G := \mathrm{PSL}_2(\R)\), acting on \(\HH\), and fix the Haar measure \(dg\) on \(G\) with \(\int_G F(g\ii)\,dg = \int_\HH F\,d\nu\); then \(\mathrm{PSO}(2)\) has volume \(1\), and \(\vol(\mathrm{PSL}_2(\Z)\backslash G) = \pi/3\).  Let \(\Ac_k\) be the space of holomorphic functions \(f\) on \(\HH\) with \(\lVert f\rVert^2 := \int_\HH \lvert f\rvert^2 y^k\,d\nu < \infty\), on which \(G\) acts unitarily by \((\pi(g)f)(z) := f(g^{-1}z)\,j(g^{-1},z)^{-k}\).  This is the holomorphic discrete series of weight \(k\).  For \(w \in \HH\) put
+\[
+  h_w(z) := \Bigl(\frac{z - \bar w}{2\ii}\Bigr)^{-k} .
+\]
+For a unit vector \(u\) of an irreducible unitary representation \(\pi\) with square-integrable matrix coefficients, the \emph{formal degree} \(d_\pi\) is defined by \(\int_G \lvert\langle\pi(g)u, u\rangle\rvert^2\,dg = 1/d_\pi\).  It does not depend on \(u\), by the Schur orthogonality relations for such representations \cite{HC}.  We compute it with \(u\) proportional to \(h_\ii\).
+
+\begin{problem}\label{pr:cayley}
+\(h_w \in \Ac_k\), and \(\langle f, h_\ii\rangle = \frac{4\pi}{k-1}\, f(\ii)\) for every \(f \in \Ac_k\).
+\end{problem}
+
+\begin{problem}\label{pr:covariance}
+\(\pi(g)h_w = \overline{j(g,w)}^{\,-k}\, h_{gw}\) for \(g \in \mathrm{SL}_2(\R)\) and \(w \in \HH\).
+\end{problem}
+
+\begin{problem}\label{pr:formal-degree}
+Let \(u := h_\ii/\lVert h_\ii\rVert\), and \(w := g\ii\).  Then \(\lvert\langle\pi(g)u, u\rangle\rvert^2 = \bigl(4\operatorname{Im} w/\lvert w + \ii\rvert^2\bigr)^k\), and the formal degree of \(\pi\) is \((k-1)/(4\pi)\).
+\end{problem}
+
+With Problem~\ref{pr:vol} this gives
+\[
+  d_\pi \cdot \vol(\mathrm{PSL}_2(\Z)\backslash G) = \frac{k-1}{4\pi}\cdot\frac\pi3 = \frac{k-1}{12} ,
+\]
+which is \(\dim S_k\) up to the bounded error of Problem~\ref{pr:dim}.  This is not a coincidence.  As in Problem~\ref{pr:unfold}, and using Problems~\ref{pr:cayley} and~\ref{pr:covariance}, one checks that the reproducing kernel \(B(z,w) := \sum_j f_j(z)\overline{f_j(w)}\) of \(S_k\), for an orthonormal basis \((f_j)\), is
+\[
+  B(z,w) = \frac{k-1}{4\pi} \sum_{\gamma \in \mathrm{PSL}_2(\Z)} j(\gamma,z)^{-k}\, h_w(\gamma z) .
+\]
+Since \(\dim S_k = \int_{\Gamma\backslash\HH} B(z,z)\,y^k\,d\nu(z)\), the term \(\gamma = 1\) contributes exactly the formal degree times the covolume, and by Problem~\ref{pr:dim} all other terms together contribute a bounded amount.  On a definite unitary group the formal degree is the Weyl dimension of the representation at infinity, and the count of forms in Chapter~\ref{dt-chap} is the same product.
+
+In the notation of Section~\ref{rl-sec:gram}, take \(\Hc = S_k\), \(D = \dim S_k\), and the maps \(B_m \colon \C \to S_k\), \(1 \mapsto \Pt_m\).  The bound~\eqref{rl-eq:pair} asks for \(\lvert\langle\Pt_m, \Pt_n\rangle\rvert^2 \le (1 + \eta_0)/D\), about \(12/k\).  Theorem~\ref{thm:near} gives far more, an exponentially small bound, but only for \(m\) up to a fixed proportion of \(D\).  The images of these maps therefore do not fill \(S_k\), and the Poincar\'e series of larger index, which do fill it, are not nearly orthogonal.  So Theorem~\ref{thm:near} alone does not give the hypothesis of Theorem~\ref{mn-thm:rank} for \(S_k\).  The argument uses many families at once, each of small rank, whose mutual correlations are only as small as those of random subspaces.
+
+\paragraph{The analogue in the argument.}
+In the reconstruction \cite[\S14]{Adr} of Alp\"oge's argument \cite{Alp}, see also \cite{Zh}, \(\mathrm{SL}_2\) is replaced by a unitary group \(G = \mathrm{U}(V)\) of a hermitian space \(V\) over a CM extension \(E/F\), and \(\Ac_k\) by a holomorphic discrete series of large weight at each real place.  The Fourier coefficient \(a_f(m)\), an integral of \(f\) against a character of the unipotent group \(\Gamma_\infty\), becomes a Bessel period: an integral against a character of a subgroup \(S = \mathrm{U}(W) \ltimes N\), where \(W \subset V\) is a nondegenerate subspace and \(N\) is unipotent, as in the conjectures of Gan, Gross and Prasad \cite{GGP}.  To each word \(u\) of the construction corresponds a space of Bessel Poincar\'e series, obtained by summing over \(S(F)\backslash G(F)\) the analogue of \(j(\gamma,z)^{-k}e(m\gamma z)\), and unfolding their inner products is the analogue of Problem~\ref{pr:unfold} \cite[Prop.~14.5]{Adr}.  The near orthogonality of the Gram operators \cite[Thm.~14.1]{Adr}, the bound~\eqref{rl-eq:pair} for families whose size grows with a parameter \(x\) and with \(\eta_0 \le \exp(-x^{c})\) for some \(c > 0\), is the analogue of Theorem~\ref{thm:near}, and as there no subconvex bound enters.  The decay that replaces Problem~\ref{pr:J-bound} is that of the matrix coefficients of the discrete series, as in Problem~\ref{pr:formal-degree}, and the number \(D^*\) of \cite[\S14.1]{Adr} is the formal degree times the volume of \(G(F)\backslash G(\mathbb{A})\) times the value at \(1\) of the level idempotent.  The deduction of the near orthogonality, and of \(\dim\Hc \approx D^*\), from counting and pre-trace statements is carried out there, but these statements themselves are stated as hypotheses that are not proved \cite[Hyps.~14.61 and 14.71--14.77]{Adr}.  This completes the method.  It needs maps whose values are divisible at the inert primes and of controlled size; the next part, from Chapter~\ref{ec-chap} on, finds the divisibility in theta functions with complex multiplication.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:poincare}}
+\begin{description}
+\item[\ref{pr:unfold}] Unfold the sum over \(\Gamma_\infty\backslash\Gamma\) to the strip \(0 \le x \le 1\), \(y > 0\), and integrate in \(x\) first.
+\item[\ref{pr:span}] Problem~\ref{pr:unfold}.
+\item[\ref{pr:k12}] Expand \(P_m\) in the basis \(\Delta\) and use Problem~\ref{pr:unfold}.  Note that \(\tau(1) = 1\), \(\tau(2) = -24\).
+\end{description}
+
+\subsection*{\S\ref{sec:petersson}}
+\begin{description}
+\item[\ref{pr:cosets}] The bottom row of a matrix in \(\Gamma\) is coprime, and two matrices with the same bottom row differ by left multiplication by an element of \(\Gamma_\infty\).
+\item[\ref{pr:lipschitz}] Close the contour in the half-plane where \(e(-\beta z)\) decays.
+\item[\ref{pr:bessel-int}] Expand \(e(-\alpha/z)\) in its power series and apply Problem~\ref{pr:lipschitz} term by term.  For \(\beta \le 0\), \(\lvert e(-\alpha/z)\rvert \le 1\) in \(\HH\).
+\item[\ref{pr:fourier}] The terms with \(c > 0\) and fixed \(c\) are indexed by \(d \in \Z\) coprime to \(c\); group them by \(d \bmod c\).  Each group is a sum over translates \(z \mapsto z + r\), \(r \in \Z\), so its \(n\)-th Fourier coefficient is an integral over a whole horizontal line.  Use Problems~\ref{pr:cosets} and~\ref{pr:bessel-int}.
+\item[\ref{pr:vanishing}] Theorem~\ref{thm:petersson}.
+\end{description}
+
+\subsection*{\S\ref{sec:near}}
+\begin{description}
+\item[\ref{pr:gram}] Problem~\ref{pr:unfold} with \(f = P_m\), and Problem~\ref{pr:fourier}.
+\item[\ref{pr:J-bound}] Bound \(\lvert\cos(xt)\rvert\) by \(1\) and evaluate the Beta integral.
+\item[\ref{pr:T-bound}] \(\lvert S(m,n;c)\rvert \le c\).
+\item[\ref{pr:gershgorin}] \((k-1)! \ge ((k-1)/e)^{k-1}\).  Then Gershgorin's theorem.
+\item[\ref{pr:siegel}] Treat the term \(c = 1\) with Siegel's inequality and the terms \(c \ge 2\) with Problem~\ref{pr:J-bound}.
+\end{description}
+
+\subsection*{\S\ref{sec:dim}}
+\begin{description}
+\item[\ref{pr:vol}] The standard fundamental domain \(\lvert x\rvert \le \frac12\), \(\lvert z\rvert \ge 1\); integrate in \(y\) first.
+\item[\ref{pr:dim}] Write \(k = 12j + r\) with \(0 \le r < 12\) and use the dimension formula.
+\item[\ref{pr:cayley}] Put \(\zeta := (z - \ii)/(z + \ii)\) and \(F(\zeta) := f(z)\bigl((z+\ii)/2\ii\bigr)^k\).  Express \(\lvert f\rvert^2 y^k\,d\nu\) in terms of \(F\) and \(\zeta\), and use the mean value property on the circles \(\lvert\zeta\rvert = r\).
+\item[\ref{pr:covariance}] \(gz - \overline{gw} = (z - \bar w)/\bigl(j(g,z)\overline{j(g,w)}\bigr)\).
+\item[\ref{pr:formal-degree}] Problems~\ref{pr:cayley} and~\ref{pr:covariance}.  For the integral, use geodesic polar coordinates about \(\ii\), in which \(4\operatorname{Im} w/\lvert w + \ii\rvert^2 = \cosh^{-2}(\rho/2)\).
+\end{description}
+
+\begin{thebibliography}{GGP}
+\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[Alp]{Alp} L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
+\bibitem[DLMF]{DLMF} F.~W.~J.~Olver, D.~W.~Lozier, R.~F.~Boisvert and C.~W.~Clark (eds.), \emph{NIST Handbook of Mathematical Functions}, Cambridge Univ.\ Press, 2010; \url{https://dlmf.nist.gov}, Ch.~10.
+\bibitem[GGP]{GGP} W.~T.~Gan, B.~H.~Gross and D.~Prasad, \emph{Symplectic local root numbers, central critical \(L\)-values, and restriction problems in the representation theory of classical groups}, Ast\'erisque \textbf{346} (2012), 1--109.
+\bibitem[HC]{HC} Harish-Chandra, \emph{Harmonic analysis on semisimple Lie groups}, Bull.\ Amer.\ Math.\ Soc.\ \textbf{76} (1970), 529--551.
+\bibitem[ILS]{ILS} H.~Iwaniec, W.~Luo and P.~Sarnak, \emph{Low lying zeros of families of \(L\)-functions}, Publ.\ Math.\ IH\'ES \textbf{91} (2000), 55--131.
+\bibitem[Iw]{Iw} H.~Iwaniec, \emph{Topics in Classical Automorphic Forms}, Grad.\ Stud.\ Math.\ \textbf{17}, Amer.\ Math.\ Soc., Providence, 1997.
+\bibitem[Pe]{Pe} H.~Petersson, \emph{\"Uber die Entwicklungskoeffizienten der automorphen Formen}, Acta Math.\ \textbf{58} (1932), 169--215.
+\bibitem[SeA]{SeA} J.-P.~Serre, \emph{A Course in Arithmetic}, Grad.\ Texts in Math.\ 7, Springer, 1973.
+\bibitem[Zh]{Zh} R.~Zhang, \emph{A preliminary note on Alp\"oge's proposed proof of the generalized Riemann hypothesis}, preprint, 2026, hexagon:2611.00809.
+\end{thebibliography}
+
+\end{document}

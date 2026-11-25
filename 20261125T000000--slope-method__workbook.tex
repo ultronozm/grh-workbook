@@ -1,0 +1,317 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[st-]{20261124T214500--supersingular-theta-divisibility__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T000000}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Hc}{\mathcal{H}}
+\newcommand{\pp}{\mathfrak{p}}
+\newcommand{\aaa}{\mathfrak{a}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\mumax}{\mu_{\max}}
+\newcommand{\mumin}{\mu_{\min}}
+\newcommand{\covol}{\operatorname{covol}}
+\newcommand{\codim}{\operatorname{codim}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\HS}{\mathrm{HS}}
+
+\setlength{\emergencystretch}{2em}
+
+\title{The slope method}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Linear algebra over \(\R\) and \(\C\): the spectral theorem, the Hilbert--Schmidt norm \(\lVert A \rVert_\HS^2 = \tr(A^*A)\), exterior powers, and Hadamard's inequality \(\lvert \det(v_1, \dots, v_n) \rvert \le \lVert v_1 \rVert \cdots \lVert v_n \rVert\).  Lattices in a Euclidean space \cite[Ch.~I, \S4]{Ne}.  Dedekind domains, the absolute norm of a fractional ideal, ramification indices and residue degrees, the Frobenius element of an unramified prime, and the product formula \cite[Ch.~I and Ch.~III]{Ne}.  Legendre's formula \(v_p(n!) = \sum_{e \ge 1} \lfloor n/p^e \rfloor\), Stirling's formula, and the von Mangoldt function \(\Lambda\).  No earlier chapter is used; one remark in Section~\ref{sec:image} points to Chapter~\ref{st-chap}.  The next chapter, \emph{The slope inequality in the mean}, continues this one with many maps into one target.
+
+\section{Divisibility against size}\label{sec:chebyshev}
+
+How can a divisibility statement bound a sum over primes?  Chebyshev's answer uses one integer \cite{Ch}.  Let \(\theta(x) := \sum_{p \le x} \log p\).
+
+\begin{problem}\label{pr:binomial}
+Every prime \(p\) with \(n < p \le 2n\) divides \(\binom{2n}{n}\), and \(\binom{2n}{n} \le 4^n\).  Hence \(\theta(2n) - \theta(n) \le n \log 4\).
+\end{problem}
+
+The principle is the following.  If a nonzero integer \(\Delta\) is divisible by \(p^{e_p}\) for each prime \(p\) in a set \(S\), then
+\begin{equation}\label{eq:det}
+  \sum_{p \in S} e_p \log p \le \log \lvert \Delta \rvert .
+\end{equation}
+
+For \(\Delta = n!\) both sides of~\eqref{eq:det} are known exactly.
+
+\begin{problem}\label{pr:legendre}
+\(\log n! = \sum_{r \le n} \Lambda(r) \lfloor n/r \rfloor\).
+\end{problem}
+
+By Stirling's formula the left side is \(n\log n - n + O(\log n)\).  Without the floor function the right side would be \(n \sum_{r \le n} \Lambda(r)/r\).  The fractional parts contribute \(\sum_{r \le n} \Lambda(r) \{n/r\}\), which by Chebyshev's bounds is of size \(n\), the size of the term \(-n\) on the left.  So the identity cannot see \(\psi(n) - n\).  To do better one needs an object whose exponent at \(p^e\) is a smooth function of \(p^e\), such as the ramp \((x/p^e - 1)_+\), where \(t_+ := \max(t, 0)\), and whose size is known with an error much smaller than its linear term.
+
+The integer \(\Delta\) will be a minor of a matrix.
+
+\begin{problem}\label{pr:hadamard-det}
+Let \(A \in M_r(\Z)\) with \(\det A \ne 0\), and suppose that the \(j\)th column \(A_j\) is divisible by the positive integer \(g_j\).  Then
+\[
+  g_1 \cdots g_r \le \lvert \det A \rvert \le \lVert A_1 \rVert \cdots \lVert A_r \rVert .
+\]
+For the columns \((6, 6)\) and \((10, 20)\) the three numbers are \(60\), \(60\) and \(60\sqrt{10}\).
+\end{problem}
+
+The same principle holds over a number field \(K\), where the product formula accounts for the size of a number at every place.  At a finite place \(v\) write \(\Oc_v\), \(\pp_v\) and \(q_v\) for the valuation ring, its maximal ideal and the size of its residue field, and let \(\lvert x \rvert_v := q_v^{-\operatorname{ord}_v x}\).  At an archimedean place use the usual modulus.  Let \(n_v := 2\) at complex places and \(n_v := 1\) at the other places.  Then \(\sum_v n_v \log \lvert c \rvert_v = 0\) for \(c \in K^\times\).  Hence, if \(\delta \in K^\times\) satisfies \(\lvert \delta \rvert_v \le \exp(b_v - g_v)\) at every place, where \(b_v\) and \(g_v\) are real and vanish for almost all \(v\), then
+\begin{equation}\label{eq:scalar}
+  \sum_v n_v g_v \le \sum_v n_v b_v .
+\end{equation}
+Typically \(\delta\) is a minor of a matrix, \(b_v\) bounds it through the sizes of the entries, and \(g_v\) records an improvement from a congruence.  The minor is chosen once over \(K\), but the basis in which one proves the congruence may vary with \(v\).
+
+
+\section{A minor of a jet evaluation map}\label{sec:minor}
+
+Where does a minor with many prime factors come from?  One source is Frobenius.  Let \(K = \Q(\ii)\), so that a prime \(p \equiv 3 \pmod 4\) is inert and \(\Z[\ii]/p\) is the field with \(p^2\) elements.
+
+\begin{problem}\label{pr:frob}
+If \(p \equiv 3 \pmod 4\) and \(u \in \Z[\ii]\), then \(\bar u \equiv u^p \pmod p\).
+\end{problem}
+
+Thus complex conjugation is the Frobenius at every inert prime.  Let \(u_1, \dots, u_I \in \Z[\ii]\), let \(\mathcal{T} \subset \Z_{\ge 0}^2\) be a finite set of \(s\) exponents, and let \(J \ge 1\).  On the span of the monomials \(X^a Y^b\), \((a,b) \in \mathcal{T}\), consider the jet evaluation map
+\[
+  \mathrm{ev} \colon f \longmapsto \bigl( (\partial_X^j f)(u_i, \bar u_i) \bigr)_{1 \le i \le I,\ 0 \le j < J} .
+\]
+Its matrix has entries in \(\Z[\ii]\).  Let \(g := X^p - Y\).
+
+\begin{problem}\label{pr:frob-deriv}
+Let \(p \equiv 3 \pmod 4\).  For \(f \in \Z[\ii][X, Y]\), \(u \in \Z[\ii]\) and integers \(j, k \ge 0\), the number \(\bigl(\partial_X^j (g^k f)\bigr)(u, \bar u)\) is divisible by \(p^k\).
+\end{problem}
+
+\begin{problem}\label{pr:minor-div}
+Let \(p \equiv 3 \pmod 4\), and suppose that \((a - p, b + 1) \in \mathcal{T}\) whenever \((a, b) \in \mathcal{T}\) and \(a \ge p\).  Then every \(s \times s\) minor of the matrix of \(\mathrm{ev}\) is divisible by \(p^{N_p}\), where \(N_p := \sum_{(a,b) \in \mathcal{T}} \lfloor a/p \rfloor\).  The set \(\mathcal{T} = \{(a,b) : a + 2b \le N\}\) satisfies the hypothesis for every \(p\).
+\end{problem}
+
+Let \(\beta := \max(1, \lvert u_1 \rvert, \dots, \lvert u_I \rvert)\), \(D := \sum_{\mathcal{T}} (a + b)\) and \(A_* := \max(\{1\} \cup \{a : (a,b) \in \mathcal{T}\})\).  An entry in the column of \(X^aY^b\) has absolute value at most \(A_*^{J-1}\beta^{a+b}\), so every \(s \times s\) minor has absolute value at most \(s!\,A_*^{s(J-1)}\beta^D\).  With Problem~\ref{pr:minor-div}, the inequality~\eqref{eq:scalar} for one nonzero minor proves the following.
+
+\begin{theorem}\label{thm:minor}
+Suppose that \(\mathrm{ev}\) is injective, and let \(P\) be a set of primes \(p \equiv 3 \pmod 4\) for which \(\mathcal{T}\) satisfies the hypothesis of Problem~\ref{pr:minor-div}.  Then
+\[
+  \sum_{p \in P} \log p \sum_{(a,b) \in \mathcal{T}} \Bigl\lfloor \frac{a}{p} \Bigr\rfloor \le D \log\beta + \log s! + s(J-1)\log A_* .
+\]
+\end{theorem}
+
+Over a function field this is the mechanism of Stepanov's proof of the Riemann hypothesis for curves \cite{Bom}.
+
+\section{Normed spaces and slopes}\label{sec:slopes}
+
+The minor \(\delta\) of Section~\ref{sec:minor} is the top exterior power of a linear map, written in chosen bases.  To let the bases vary with the place, one puts norms on the spaces.
+
+Let \(K\) be a number field, with the conventions of Section~\ref{sec:chebyshev}.  A \emph{normed space} over \(K\) is a finite-dimensional \(K\)-vector space \(V\) with a norm on each \(V_v := V \otimes_K K_v\): a Euclidean or Hermitian norm at each archimedean place, and at each finite place the sup norm of a full \(\Oc_v\)-lattice \(L_v\), the \emph{unit lattice}.  Almost everywhere \(L_v\) is the \(\Oc_v\)-span of a fixed basis.  Subspaces carry the restricted norms, quotients the quotient norms, the dual \(V^\vee\) the dual norms, and exterior powers the induced norms.  For \(e \ne 0\) in \(V\) let \(h(e) := \sum_v n_v \log \lVert e \rVert_v\), and for a nonzero linear map \(\varphi \colon V \to F\) of normed spaces let
+\[
+  h(\varphi) := \sum_v n_v \log \lVert \varphi \rVert_v ,
+\]
+with the operator norms, and \(h_\infty(\varphi)\) for the sum over the archimedean places alone.  For \(r = \dim V > 0\) and a generator \(\omega\) of \(\det V := \wedge^r V\), let
+\[
+  \deg V := -h(\omega) , \qquad \mu(V) := \deg V / r .
+\]
+By the product formula \(\deg V\) does not depend on \(\omega\).  These are the \emph{degree} and the \emph{slope} of \(V\).  We follow Bost \cite{Bo96} and do not divide by \([K:\Q]\).
+
+\begin{problem}\label{pr:deg-Q}
+Over \(\Q\), the lattice \(L := V \cap \bigcap_p L_p\) has \(L \otimes \Z_p = L_p\) for every \(p\), and \(\deg V = -\log \covol(L)\).
+\end{problem}
+
+So over \(\Q\) a normed space is a Euclidean lattice.
+
+\begin{problem}\label{pr:deg-basic}
+Let \(\tau \in \C\) with \(\operatorname{Im}\tau > 0\), and give \(\C = \R^2\) its usual norm.  Then \(\deg(\Z + \Z\tau) = -\log \operatorname{Im}\tau\).  If \(M \subseteq L\) is a sublattice of index \(N\), then \(\deg M = \deg L - \log N\).  Multiplying the norm of \(L\) by \(c > 0\) subtracts \(r \log c\) from \(\deg L\).
+\end{problem}
+
+\begin{problem}\label{pr:additivity}
+If \(U \subseteq V\) is a subspace, then \(\deg V = \deg U + \deg(V/U)\).
+\end{problem}
+
+The domain of the slope method is a lattice of sections of a line bundle, or of automorphic forms.  The simplest case is the projective line.  For \(D \ge 0\) let \(E_D\) be the lattice of homogeneous polynomials \(f \in \Z[x, y]\) of degree \(D\), with
+\[
+  \lVert f \rVert^2 := \int_\C \frac{\lvert f(z, 1) \rvert^2}{(1 + \lvert z \rvert^2)^D} \, \frac{d A(z)}{\pi (1 + \lvert z \rvert^2)^2} .
+\]
+This is the \(L^2\) norm of a section of \(\Oc(D)\) for the Fubini--Study metric and the Fubini--Study probability measure.
+
+\begin{problem}\label{pr:FS}
+The monomials are orthogonal, and \(\lVert x^a y^{D-a} \rVert^2 = a!\,(D-a)!/(D+1)!\).
+\end{problem}
+
+\begin{problem}\label{pr:HS-P1}
+\(\mu(E_D) = D/4 + O(\log D)\).
+\end{problem}
+
+Problem~\ref{pr:HS-P1} is the simplest case of the arithmetic Hilbert--Samuel theorem \cite[Thm.~8]{GS2}.
+
+\begin{problem}\label{pr:ideal}
+Let \(\aaa\) be a fractional ideal of \(K\), with unit lattices \(\aaa\Oc_v\) and \(\lVert x \rVert_v = \lvert x \rvert_v\) at the archimedean places.  Then \(\deg \aaa = -\log N\aaa\).  Replacing every unit lattice \(L_v\) of \(V\) by \(\aaa L_v\) lowers \(\mu(V)\) by \(\log N\aaa\).
+\end{problem}
+
+To compare slopes over fields of different degrees, one normalizes by the degree, and many authors also use squared norms.  Let
+\[
+  \mu^\sharp := \frac{2}{[K:\Q]}\, \mu , \qquad h^\sharp := \frac{2}{[K:\Q]}\, h .
+\]
+For a prime \(\pp\) of \(K\) above \(p\), with ramification index \(e_\pp\), let \(c_\pp := 2 e_\pp \log N\pp/[K:\Q]\).
+
+\begin{problem}\label{pr:normalization}
+\(\sum_{\pp \mid p} c_\pp = 2\log p\).  If every unit lattice \(L_\pp\), \(\pp \mid p\), is replaced by \(p^{-e} L_\pp\), then \(\mu^\sharp\) increases by \(2e\log p\).
+\end{problem}
+
+So a divisibility by \(p^e\) at every place above \(p\) is worth \(2e\log p\) in the normalized slopes.
+
+
+\section{The height inequality for an image}\label{sec:image}
+
+How does a linear map compare the slopes of its source and target?  Let \(\varphi \colon V \to F\) be an injective map of normed spaces with image \(U\), and let \(r = \dim V > 0\).  On determinant lines it induces \(\wedge^r\varphi \colon \det V \to \det U\).
+
+\begin{problem}\label{pr:wedge}
+\(\sum_v n_v \log \lVert \wedge^r \varphi \rVert_v = r\bigl(\mu(V) - \mu(U)\bigr)\), and \(\lVert \wedge^r\varphi \rVert_v \le \lVert \varphi \rVert_v^r\) at every place.
+\end{problem}
+
+Summing local bounds gives the following.
+
+\begin{theorem}\label{thm:image}
+Suppose that \(\log \lVert \wedge^r\varphi \rVert_v \le b_v - g_v\) at every place, with \(b_v = g_v = 0\) almost everywhere.  Then
+\[
+  \sum_v n_v g_v \le \sum_v n_v b_v + r\bigl(\mu(U) - \mu(V)\bigr) .
+\]
+In particular \(\mu(V) \le \mu(U) + h(\varphi) \le \mumax(F) + h(\varphi)\), where \(\mumax(F)\) is the supremum of the slopes of the nonzero subspaces of \(F\).
+\end{theorem}
+
+The last inequality is the slope inequality of Bost \cite{Bo96}, \cite[Prop.~4.5]{Bo01}.  For \(V = F = K\) with the standard norms and \(\varphi\) the multiplication by \(\delta\), Theorem~\ref{thm:image} is~\eqref{eq:scalar}.
+
+Over \(\Q\) the local norms at the primes are divisibilities.
+
+\begin{problem}\label{pr:hfin}
+Let \(L\) and \(M\) be Euclidean lattices and \(\varphi \colon L_\Q \to M_\Q\) nonzero.  Then \(\lVert \varphi \rVert_p = p^{-e}\) for the largest integer \(e\) with \(\varphi(L) \subseteq p^e (M \otimes \Z_{(p)})\).  In particular \(\sum_p \log\lVert\varphi\rVert_p \le 0\) when \(\varphi(L) \subseteq M\), with every divisibility of the values making it smaller.
+\end{problem}
+
+When the ranks agree, an identity replaces the inequality.
+
+\begin{problem}\label{pr:index-det}
+Suppose that \(\dim L_\Q = \dim M_\Q\), that \(\varphi\) is injective, and that \(\varphi(L) \subseteq M\).  Then
+\[
+  \deg M - \deg L = \log [M : \varphi(L)] - \log \lvert \det \varphi_\R \rvert ,
+\]
+where \(\det \varphi_\R\) is computed in orthonormal bases.
+\end{problem}
+
+Where do divisible values and controlled norms come from together?  The simplest example is the \(a\)th derivative at \(0\) of a polynomial with integer coefficients, which is divisible by \(a!\), on a space of polynomials with a Gaussian norm.  For \(f \in \C[z]\) let
+\[
+  \lVert f \rVert^2 := \frac{1}{\pi} \int_\C \lvert f(z) \rvert^2 e^{-\lvert z \rvert^2} \, d A(z) .
+\]
+
+\begin{problem}\label{pr:fock}
+The monomials are orthogonal, and \(\lVert z^a \rVert^2 = a!\).
+\end{problem}
+
+\begin{problem}\label{pr:fock-height}
+Let \(a < D\), let \(L\) be the lattice of polynomials in \(\Z[z]\) of degree less than \(D\) with the norm above, and let \(\varphi(f) := f^{(a)}(0) \in \Z\), with \(\Z\) the standard lattice.  Then \(\sum_p \log\lVert\varphi\rVert_p = -\log a!\) and \(h_\infty(\varphi) = \tfrac12 \log a!\).
+\end{problem}
+
+By Problem~\ref{pr:legendre} the gain \(\log a!\) at the finite places is a sum over primes, and the cost at infinity is half of it.  In the applications the function is a theta function with complex multiplication, and at a supersingular prime the divisibility that one proves is only about \(a \sum_{e\ \mathrm{odd}} p^{-e}\) of the \(v_p(a!) \approx a \sum_{e \ge 1} p^{-e}\) (Chapter~\ref{st-chap}, Theorem~\ref{st-thm:single}).
+
+\section{Divisibility of a pairing as a change of lattice}\label{sec:pairing}
+
+In the applications the values of the map are periods, that is, values of a bilinear pairing.  Let \(P \colon V \times W \to K\) be a bilinear pairing of normed spaces, with unit lattices \(L_v\) and \(R_v\), and let \(\varphi_P \colon V \to W^\vee\) be the induced map.
+
+\begin{problem}\label{pr:pairing-norm}
+At a finite place, if \(P \ne 0\), then \(\lVert \varphi_P \rVert_v = q_v^{-k}\) for the largest \(k\) with \(P(L_v, R_v) \subseteq \pp_v^k\).  Multiplying the norms of \(W\) at the archimedean places by constants \(\lambda_v > 0\) adds \(\sum_v n_v \log\lambda_v\) to \(\mu(W^\vee)\) and subtracts it from \(h(\varphi_P)\).
+\end{problem}
+
+So only \(h(\varphi_P) + \mu(W^\vee)\) is independent of the normalization of \(W\).  To estimate \(P\) at different places one may use different factorizations.
+
+\begin{problem}\label{pr:chain}
+Suppose that \(P(x, w) = c_v\, P'_v(A_{m,v} \cdots A_{1,v}\, x,\ C_{m,v} \cdots C_{1,v}\, w)\) at a place \(v\), where \(c_v \in K_v^\times\), the intermediate spaces carry norms and \(P'_v\) has the bilinear operator norm.  Then
+\[
+  \log \lVert \varphi_P \rVert_v \le \log \lvert c_v \rvert_v + \log \lVert P'_v \rVert_v + \sum_{j=1}^m \bigl( \log \lVert A_{j,v} \rVert_v + \log \lVert C_{j,v} \rVert_v \bigr) .
+\]
+At a finite place, an inclusion \(A_{j,v} L_{j-1} \subseteq \pp_v^k L_j\) of unit lattices contributes \(-k\log q_v\), for every integer \(k\).
+\end{problem}
+
+Thus local gains add along a chain of maps, while the slopes of \(V\) and \(W^\vee\) enter only once.  Now record a gain as a change of the unit lattice of \(V\).
+
+\begin{problem}\label{pr:lattice-change}
+Let \(v\) be finite, let \(L'_v \subseteq L_v\) be a full sublattice, and let \(k\) be an integer with \(P(L'_v, R_v) \subseteq \pp_v^k\).  Replace \(L_v\) by \(N_v := \pp_v^{-k} L'_v\).  Then the new norm of \(\varphi_P\) at \(v\) is at most \(1\), and \(\deg V\) increases by \(\log q_v \bigl( k\dim V - \operatorname{length}_{\Oc_v}(L_v/L'_v) \bigr)\).
+\end{problem}
+
+Problem~\ref{pr:lattice-change} and Theorem~\ref{thm:image} prove the following.
+
+\begin{theorem}\label{thm:one}
+Let \(P \colon V \times W \to K\) be a pairing with \(\varphi_P\) injective and \(r = \dim V > 0\).  For each finite place \(v\) let \(L'_v \subseteq L_v\) be a full sublattice and \(k_v\) an integer with \(P(L'_v, R_v) \subseteq \pp_v^{k_v}\), where \(L'_v = L_v\) and \(k_v = 0\) almost everywhere.  Then
+\[
+  \sum_{v \nmid \infty} k_v \log q_v \le h_\infty(\varphi_P) + \mumax(W^\vee) - \mu(V) + \frac1r \sum_{v \nmid \infty} \log\, [L_v : L'_v] .
+\]
+\end{theorem}
+
+For \(V = W = K\) with the standard norms and \(P(x, y) = cxy\), \(c \in \Oc_K\), this is the product formula for \(c\), with equality.  The left side is the unknown sum over primes.  The right side involves \(\mumax\) of the target, so a single map sees only the part of the target that contains its image; the sequel removes this by using many maps.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:chebyshev}}
+\begin{description}
+\item[\ref{pr:binomial}] Write \(\binom{2n}{n} = (2n)!/(n!)^2\).  For the size, expand \((1+1)^{2n}\).
+\item[\ref{pr:legendre}] Count the multiples of \(p^e\) up to \(n\).
+\item[\ref{pr:hadamard-det}] Divide each column by \(g_j\).
+\end{description}
+
+\subsection*{\S\ref{sec:minor}}
+\begin{description}
+\item[\ref{pr:frob}] The binomial theorem modulo \(p\).
+\item[\ref{pr:frob-deriv}] Problem~\ref{pr:frob} and the Leibniz rule.
+\item[\ref{pr:minor-div}] Write \(a = kp + t\) with \(0 \le t < p\), and consider the polynomials \(X^tY^bg^k\).
+\end{description}
+
+\subsection*{\S\ref{sec:slopes}}
+\begin{description}
+\item[\ref{pr:deg-Q}] For almost all \(p\), \(L_p\) is the \(\Z_p\)-span of a fixed basis of \(V\), and every \(L_p\) lies between \(p^{k}\) and \(p^{-k}\) times that span for some \(k\).  Then take \(\omega = e_1 \wedge \dots \wedge e_r\) for a basis \((e_j)\) of \(L\).
+\item[\ref{pr:deg-basic}] A fundamental domain of \(M\) is a union of \(N\) translates of one for \(L\).
+\item[\ref{pr:additivity}] At a finite place, extend a basis of the saturated lattice \(U_v \cap L_v\).  At an archimedean place, use an orthogonal complement.
+\item[\ref{pr:FS}] Use polar coordinates and \(t = \lvert z \rvert^2\).  The result is a Beta integral.
+\item[\ref{pr:HS-P1}] Compute \(\deg E_D\) from Problem~\ref{pr:FS}, then use Stirling's formula.
+\item[\ref{pr:ideal}] Take \(\omega = x \in \aaa\), and use \(\sum_{v \mid \infty} n_v \log \lvert x \rvert_v = \log \lvert N_{K/\Q}(x) \rvert\).
+\item[\ref{pr:normalization}] \(\sum_{\pp \mid p} e_\pp f_\pp = [K:\Q]\), where \(N\pp = p^{f_\pp}\).
+\end{description}
+
+\subsection*{\S\ref{sec:image}}
+\begin{description}
+\item[\ref{pr:wedge}] The norm of a map of lines is \(\lVert (\wedge^r\varphi)\omega \rVert_v / \lVert \omega \rVert_v\).  For the second statement use Hadamard's inequality at the archimedean places, and at a finite place a basis of the unit lattice.
+\item[\ref{pr:hfin}] The unit ball of \(M \otimes \Q_p\) is \(M \otimes \Z_p\).
+\item[\ref{pr:index-det}] Compute \(\deg \varphi(L)\) in two ways.
+\item[\ref{pr:fock}] Polar coordinates.
+\item[\ref{pr:fock-height}] Problems~\ref{pr:hfin} and~\ref{pr:fock}.
+\end{description}
+
+\subsection*{\S\ref{sec:pairing}}
+\begin{description}
+\item[\ref{pr:pairing-norm}] The local norm of \(\varphi_P\) is the supremum of \(\lvert P(x, w) \rvert_v\) over unit vectors.
+\item[\ref{pr:chain}] Operator norms are submultiplicative.
+\item[\ref{pr:lattice-change}] Compare the top exterior powers of \(L_v\), \(L'_v\) and \(N_v\).
+\end{description}
+
+\begin{thebibliography}{Bom}
+\bibitem[Bo1]{Bo96} J.-B.~Bost, \emph{P\'eriodes et isog\'enies des vari\'et\'es ab\'eliennes sur les corps de nombres (d'apr\`es D.~Masser et G.~W\"ustholz)}, S\'eminaire Bourbaki, Exp.~795, Ast\'erisque \textbf{237} (1996), 115--161.
+\bibitem[Bo2]{Bo01} J.-B.~Bost, \emph{Algebraic leaves of algebraic foliations over number fields}, Publ.\ Math.\ IH\'ES \textbf{93} (2001), 161--221.
+\bibitem[Bom]{Bom} E.~Bombieri, \emph{Counting points on curves over finite fields (d'apr\`es S.~A.~Stepanov)}, S\'eminaire Bourbaki, Exp.~430, Lecture Notes in Math.\ 383, Springer, 1974, 234--241.
+\bibitem[Ch]{Ch} P.~L.~Chebyshev, \emph{M\'emoire sur les nombres premiers}, J.\ Math.\ Pures Appl.\ \textbf{17} (1852), 366--390.
+\bibitem[GS2]{GS2} H.~Gillet and C.~Soul\'e, \emph{An arithmetic Riemann--Roch theorem}, Invent.\ Math.\ \textbf{110} (1992), 473--543.
+\bibitem[Ne]{Ne} J.~Neukirch, \emph{Algebraic Number Theory}, Grundlehren Math.\ Wiss.\ 322, Springer, 1999.
+\end{thebibliography}
+
+\end{document}

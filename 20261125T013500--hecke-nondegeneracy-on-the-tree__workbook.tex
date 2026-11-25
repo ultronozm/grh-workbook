@@ -1,0 +1,255 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[ip-]{20261124T214600--the-isotropic-plane__workbook}
+\externaldocument[pf-]{20261125T013700--pairings-on-a-formal-group-of-height-two__workbook}
+\externaldocument[kl-]{20261125T009000--kronecker-limit-and-chowla-selberg__workbook}
+\externaldocument[sm-]{20261125T000000--slope-method__workbook}
+\externaldocument[ho-]{20261125T016500--hecke-operators-and-theta-lifts__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T013500}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Sym}{\operatorname{Sym}}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\GL}{\mathrm{GL}}
+\newcommand{\len}{\operatorname{length}}
+
+\setlength{\emergencystretch}{2em}
+
+\title{Hecke nondegeneracy on the tree}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Modules over a discrete valuation ring and the elementary divisor theorem \cite[Ch.~III, \S7]{La}.  Unramified extensions of \(\Q_p\) and Teichm\"uller representatives.  The tree of \(\GL_2\) over a local field \cite[Ch.~II, \S1]{SeT}.  Legendre's formula \(v_p(m!) = (m - s_p(m))/(p-1)\), where \(s_p(m)\) is the sum of the base-\(p\) digits of \(m\).  From Chapter~\ref{sm-chap}, \emph{The slope method}: Problems~\ref{sm-pr:fock} and~\ref{sm-pr:lattice-change}, and Theorem~\ref{sm-thm:one}.  The language of dual Weyl modules \cite[II.2, II.4]{Ja} is used only in remarks.
+
+In Chapter~\ref{sm-chap} a gain at a prime was recorded by passing to a sublattice, and Theorem~\ref{sm-thm:one} charges for it the length of the quotient.  When the sublattice is spanned by images of a Hecke operator, how long is that quotient?  We answer the question for \(\GL_2\), weight \(k\), and the operator that sums over the neighbours of a vertex of the tree.  The answer is in terms of binomial coefficients, and Kummer's theorem bounds it.  This is the simplest case of the loss in the reconstruction of Adriazola \cite[\S12]{Adr}.
+
+Why Hecke operators?  In the argument the maps of a chain are theta lifts, and the sublattices to which Problem~\ref{sm-pr:lattice-change} is applied are spanned by images of Hecke operators.  Hecke operators are attached to theta lifts only in Chapter~\ref{ho-chap}, \emph{Hecke operators and theta lifts}: there a Hecke operator on a class set is a sum over the neighbours of a lattice, as the operator here is a sum over the neighbours of a vertex, and the theta lift carries it to a Hecke operator on modular forms.  This chapter uses nothing from Chapter~\ref{ho-chap}.
+
+Throughout, \(K\) is the unramified extension of \(\Q_p\) of degree \(f\), with ring of integers \(W\), residue field \(\F_Q\) where \(Q = p^f\), and valuation \(v\) normalized by \(v(p) = 1\).  We fix an integer \(k \ge 1\).
+
+\section{The tree and the integral forms}\label{sec:tree}
+
+A \emph{lattice} is a free \(W\)-submodule of rank \(2\) of \(K^2\).  For a lattice \(L\), its \emph{sources} are the lattices \(L''\) with \(pL \subset L'' \subset L\) and \(L/L'' \cong \F_Q\).  The vertices of the tree are the classes of lattices up to homothety, and the neighbours of the class of \(L\) are the classes of its sources \cite[Ch.~II, \S1]{SeT}.
+
+\begin{problem}\label{pr:sources}
+The sources of \(L\) correspond to the lines of \(L/pL \cong \F_Q^2\).  There are \(Q + 1\) of them, and their classes are pairwise distinct.
+\end{problem}
+
+Let \(V\) be the space of homogeneous polynomial functions of degree \(k\) on \(K^2\), on which \(\GL_2(K)\) acts by \((gF)(u) = F(g^{-1}u)\).  For a lattice \(L\) with dual \(L^\vee = \Hom_W(L, W)\), put
+\[
+  H(L) := \Sym^k(L^\vee) \subset V .
+\]
+If \(x, y\) is the basis of \(L^\vee\) dual to a basis of \(L\), then \(H(L) = \bigoplus_{j=0}^k W x^{k-j} y^j\).  Over \(\Q_p\), \(H(\Z_p^2)\) is the standard integral form of the dual Weyl module \(\nabla(\lambda)\) with \(\lambda = (0, -k)\) for this action; its reduction modulo \(p\) is \(\nabla(\lambda)\) over \(\F_p\), because \(H^1(\mathbb P^1, \mathcal O(k)) = 0\), the case of \(\GL_2\) in Kempf's vanishing theorem \cite[II.2, II.4]{Ja}.  For \(\GL_n\) the analogous integral bases are the standard bideterminants of De Concini, Eisenbud and Procesi \cite{DEP}; see also \cite{Gr}.  In rank \(2\) they are the monomials.
+
+\begin{problem}\label{pr:equivariance}
+\(H(gL) = gH(L)\) for \(g \in \GL_2(K)\), and \(H(cL) = c^{-k} H(L)\) for \(c \in K^\times\).  If \(L'' \subset L\), then \(H(L) \subset H(L'')\).
+\end{problem}
+
+\begin{problem}\label{pr:one-edge}
+Let \(L''\) be a source of \(L\).  There is a basis \(x, y\) of \(L^\vee\) such that \(L''^\vee = Wx + Wp^{-1}y\).  Hence the elementary divisors of \(H(L)\) in \(H(L'')\) are \(1, p, \dots, p^k\), we have \(p^k H(L'') \subset H(L)\), and \(\len_W H(L'')/H(L) = k(k+1)/2\).
+\end{problem}
+
+A \emph{form} is a function \(F\) from lattices to \(V\).  It is \emph{integral} if \(F(L) \in H(L)\) for every \(L\).  The Hecke operator and its normalization are
+\[
+  (TF)(L) := \sum_{L''} F(L''), \qquad Y := p^k T ,
+\]
+where the sum runs over the \(Q + 1\) sources of \(L\).  Let
+\[
+  S(L) := \sum_{L''} p^k H(L'') \subset H(L) .
+\]
+
+\begin{problem}\label{pr:hecke-integral}
+\(Y\) maps integral forms to integral forms, and \(\{(YF)(L) : F \text{ integral}\} = S(L)\).
+\end{problem}
+
+\begin{problem}\label{pr:dual-side}
+\(S(L) = \sum_M \Sym^k(M)\), the sum over the \(Q + 1\) lattices \(M\) with \(pL^\vee \subset M \subset L^\vee\) and \(L^\vee/M \cong \F_Q\).
+\end{problem}
+
+\begin{problem}\label{pr:small}
+For \(Q = 2\) and \(k = 2\), \(S(L) = Wx^2 + 2Wxy + Wy^2\).  For \(k = 1\) and every \(Q\), \(S(L) = H(L)\).
+\end{problem}
+
+The \emph{loss} at \(L\) is \(\len_W H(L)/S(L)\).  By Problem~\ref{sm-pr:lattice-change} it is the price of recording a gain of the operator \(Y\) as a change of lattice at \(L\).  It does not depend on \(L\), by Problem~\ref{pr:equivariance}.  By Problem~\ref{pr:one-edge} a single source costs \(k(k+1)/2\).  The question is how much the \(Q + 1\) sources save together.
+
+\section{Elementary divisors}\label{sec:smith}
+
+Let \(S \subset H\) be a submodule of full rank \(n\) of a free \(W\)-module.  By the elementary divisor theorem \cite[Ch.~III, \S7]{La} there is a basis \(h_1, \dots, h_n\) of \(H\) with \(S = \bigoplus_i p^{e_i} W h_i\), and the exponents \(e_1 \le \dots \le e_n\) are unique.  Then \(\len_W H/S = e_1 + \dots + e_n\).  We say that \(S\) is \emph{nondegenerate up to \(p^D\) on a share \(\rho\)} when \(\#\{i : e_i \le D\} \ge \rho n\).
+
+\begin{problem}\label{pr:minors}
+Let \(A\) be a matrix whose rows are the coordinates, in a basis of \(H\), of a generating set of \(S\).  Then \(e_1 + \dots + e_l\) is the least valuation of an \(l \times l\) minor of \(A\).  In particular the \(e_i\) do not change under a finite unramified extension of \(W\).
+\end{problem}
+
+\begin{problem}\label{pr:good-count}
+\(\#\{i : e_i \le D\}\) is the largest \(N\) for which there are \(s_1, \dots, s_N \in S\) and \(\varphi_1, \dots, \varphi_N \in \Hom_W(H, W)\) with \(\varphi_a(s_b) = p^D \delta_{ab}\).
+\end{problem}
+
+The vectors \(s_b\) are \emph{witnesses} and the functionals \(\varphi_a\) are \emph{tests}.  In practice one finds a test for each witness and then assembles them.  The next problem does the assembly.
+
+\begin{problem}\label{pr:detect}
+Let \(\Lambda\) be a \(W\)-module and \(\varphi_1, \dots, \varphi_M \colon \Lambda \to W\) linear maps.  Suppose that for every \(c \in W^M\) with some \(c_i\) a unit there is \(G \in \Lambda\) with \(v\bigl(\sum_i c_i \varphi_i(G)\bigr) \le D\).  Then the image of \(G \mapsto (\varphi_i(G))_i\) contains \(p^D W^M\).
+\end{problem}
+
+\begin{problem}\label{pr:trunc}
+Let \(A, A'\) be \(n \times n\) matrices over \(W\) with \(A \equiv A' \pmod{p^T}\), with exponents \(e_i\) and \(e'_i\) (where \(e_i = \infty\) for the zero elementary divisors).  Then \(\min(e_i, T) = \min(e'_i, T)\) for every \(i\).
+\end{problem}
+
+Problem~\ref{pr:trunc} lets one compute exponents below \(T\) modulo \(p^T\).  The manuscript \cite[\S12]{Adr} uses Problems~\ref{pr:detect} and~\ref{pr:trunc} to reduce nondegeneracy to tests on single edges.
+
+\section{Kummer's theorem}\label{sec:kummer}
+
+The exponents will be valuations of binomial coefficients.
+
+\begin{problem}\label{pr:kummer}
+For \(0 \le j \le n\), \(v_p\binom{n}{j} = \bigl(s_p(j) + s_p(n-j) - s_p(n)\bigr)/(p-1)\), and this is the number of carries in the addition of \(j\) and \(n - j\) in base \(p\).
+\end{problem}
+
+This is due to Kummer \cite{Ku}; see \cite{Gra} for a survey.
+
+\begin{problem}\label{pr:kummer-bound}
+For \(1 \le j \le n\), \(v_p\binom{n}{j} \le \lfloor \log_p n \rfloor - v_p(j)\).  In particular \(p^{v_p\binom nj} \le n\).
+\end{problem}
+
+\begin{problem}\label{pr:kummer-cases}
+Every \(\binom{Q-1}{j}\) with \(0 \le j \le Q-1\) is prime to \(p\).  For \(0 < j < p^m\), \(v_p\binom{p^m}{j} = m - v_p(j)\), so Problem~\ref{pr:kummer-bound} is sharp.
+\end{problem}
+
+\section{The Fock form}\label{sec:fock}
+
+For \(F = \sum_m F_m x^m\) and \(G = \sum_m G_m x^m\) in \(K[x_1, \dots, x_n]\), with multi-indices \(m\) and \(m! = \prod_s m_s!\), let
+\[
+  \langle F, G \rangle := \sum_m F_m G_m\, m! ,
+  \qquad\text{that is,}\qquad
+  \langle x^m, x^{m'} \rangle = m!\, \delta_{m m'} .
+\]
+In one variable over \(\C\), with complex conjugation on \(G\), this is the Gaussian inner product of Problem~\ref{sm-pr:fock}; it is the inner product of the Fock model \cite{Ba}.
+
+\begin{problem}\label{pr:fock-adj}
+\(\langle x_s F, G \rangle = \langle F, \partial_s G \rangle\) for every \(s\).  Hence \(\langle F, G \rangle = \bigl(F(\partial) G\bigr)(0)\), where \(F(\partial)\) is \(F\) with each \(x_s\) replaced by \(\partial/\partial x_s\).
+\end{problem}
+
+\begin{problem}\label{pr:fock-power}
+For \(F \in K[x, y]\) homogeneous of degree \(k\) and \(a, b \in K\), \(\langle (ax + by)^k, F \rangle = k!\, F(a, b)\).
+\end{problem}
+
+Let \(H = \bigoplus_{j=0}^k W x^{k-j} y^j\), and let \(H^\sharp := \{G \in K[x,y] \text{ homogeneous of degree } k : \langle G, F \rangle \in k!\, W \text{ for all } F \in H\}\).
+
+\begin{problem}\label{pr:fock-dual}
+\(H^\sharp = \bigoplus_{j=0}^k \binom kj W x^{k-j} y^j\), and \(p^{\lfloor \log_p k \rfloor} H \subset H^\sharp \subset H\).
+\end{problem}
+
+So \(\langle \cdot, \cdot \rangle / k!\) is a perfect pairing between \(H^\sharp\) and \(H\).  Measured against \(H\), it is nondegenerate up to \(p^{\lfloor \log_p k \rfloor}\) on all of the rank.  This is the mechanism: Kummer's theorem turns a factorial normalization into a logarithmic loss.
+
+\section{The span at a vertex}\label{sec:vertex}
+
+Fix \(L\) and a basis \(x, y\) of \(L^\vee\).  The lattices \(M\) of Problem~\ref{pr:dual-side} are \(M_a := W(x + ay) + pL^\vee\) for \(a \in W\), which depends only on \(a\) modulo \(p\), and \(M_\infty := Wy + pL^\vee\).
+
+\begin{problem}\label{pr:powers}
+Suppose \(Q > k\).  The \(W\)-span of \(\{\lambda^k : \lambda \in L^\vee\}\) is \(H(L)^\sharp\).  For \(Q = 2\) and \(k = 3\) the span is a sublattice of colength \(1\) in \(H(L)^\sharp = H(L)\).
+\end{problem}
+
+\begin{problem}\label{pr:span-i}
+\(\Sym^k(M_a)\) is spanned by the \((x + ay)^{k-i}(py)^i\) with \(0 \le i \le k\).  If \(Q > k\), then for each \(i\) the \(W\)-span of \(\{(x + ay)^{k-i} y^i : a \in W\}\) is \(\bigoplus_{j=i}^k \binom{k-i}{j-i} W x^{k-j} y^j\).
+\end{problem}
+
+Problems~\ref{pr:dual-side} and~\ref{pr:span-i}, together with \(\Sym^k(M_\infty) = \bigoplus_j p^{k-j} W x^{k-j} y^j\), prove the following.  Then Problem~\ref{pr:kummer-bound} gives the corollary.
+
+\begin{theorem}\label{thm:vertex}
+Suppose \(Q > k\).  Then \(S(L) = \bigoplus_{j=0}^k p^{\varepsilon_j} W x^{k-j} y^j\), where the exponent \(\varepsilon_j\) of the monomial \(x^{k-j}y^j\) is
+\[
+  \varepsilon_j = \min\Bigl(k - j,\ \min_{0 \le i \le j} \Bigl(i + v_p\binom{k-i}{j-i}\Bigr)\Bigr) .
+\]
+In particular \(\varepsilon_j \le \min\bigl(j,\, k-j,\, v_p\binom kj\bigr) \le \lfloor \log_p k \rfloor\).  So \(p^{\lfloor \log_p k \rfloor} H(L) \subset S(L)\), and the loss is at most \(\sum_j v_p\binom kj\).
+\end{theorem}
+
+When \(Q > k\), the normalized Hecke operator is therefore nondegenerate up to \(p^{\lfloor \log_p k \rfloor}\) on all of the rank.  The bound \(\varepsilon_j \le v_p\binom kj\) uses only the source \(i = 0\), that is, the \(k\)th powers of Problem~\ref{pr:powers}.  The other sources lower the exponents further.
+
+\begin{problem}\label{pr:check}
+\(\varepsilon_j = \varepsilon_{k-j}\).  For \(k = Q - 1\) the loss is \(0\).  For \(k = p < Q\) the loss is \(p - 1\).  For \(p = 3\), \(k = 6\) and \(Q \ge 9\) the \(\varepsilon_j\), in the order \(j = 0, \dots, k\), are \(0, 1, 1, 0, 1, 1, 0\).  For \(p = 2\), \(k = 8\) and \(Q \ge 16\) they are \(0, 1, 1, 1, 1, 1, 1, 1, 0\), so the loss is \(7\), although \(\sum_j v_2\binom 8j = 17\).
+\end{problem}
+
+What if there are few edges?
+
+\begin{problem}\label{pr:few-edges}
+If \(Q \le k\), then at most \(Q + 1\) of the exponents of \(S(L)\) in \(H(L)\) vanish, and the loss is at least \(k - Q\).
+\end{problem}
+
+The loss then grows linearly in \(k\).  For \(Q = 2\) and \(k = 15\), a Smith form computation gives the exponents \(0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5\), a loss of \(35\).  For \(Q = 3\) and \(k = 15\) it gives \(0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 4\).  We do not know a closed formula for the exponents when \(Q \le k\).
+
+A vertex must therefore have more edges than the dimension of the representation, or at least comparably many, before the operator \(Y\) loses only a logarithm.  In the manuscript \cite[\S12]{Adr} the residue field is \(\F_Q\) with \(Q = p^{n'}\) and \(n'\) large.  There the edges are \(r\)-edges in the building of \(\GL_k\), and a vertex has at least \(Q^{r(k-r)}\) of them.  Each edge has to carry only a share \(Q^{-r(k-r)}\) of the rank, and the tests are pairings with a twisted form of the Fock form of Section~\ref{sec:fock}.  With the gain of Chapters~\ref{ip-chap} and~\ref{pf-chap} and this loss, the divisibility side is in place; the next part, from Chapter~\ref{kl-chap} on, turns to the sizes: periods, norms of theta lifts and covolumes.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:tree}}
+\begin{description}
+\item[\ref{pr:sources}] \(L'' \mapsto L''/pL\).  Two sources are homothetic only if they are equal, since both contain \(pL\) with index \(Q\).
+\item[\ref{pr:equivariance}] \((gL)^\vee = (g^{-1})^{\mathsf T} L^\vee\) under the pairing.  An inclusion of lattices reverses on duals.
+\item[\ref{pr:one-edge}] Choose a basis \(u_1, u_2\) of \(L\) with \(L'' = Wu_1 + Wpu_2\), by the elementary divisor theorem.
+\item[\ref{pr:hecke-integral}] For the image, take \(F\) supported on the sources of \(L\).
+\item[\ref{pr:dual-side}] \(p^k \Sym^k(L''^\vee) = \Sym^k(pL''^\vee)\), and \(L'' \mapsto pL''^\vee\) is a bijection onto the lattices \(M\).
+\item[\ref{pr:small}] List the three lattices \(M\) and expand.
+\end{description}
+
+\subsection*{\S\ref{sec:smith}}
+\begin{description}
+\item[\ref{pr:minors}] Multiplying \(A\) on either side by an invertible matrix does not change the ideal generated by its \(l \times l\) minors.
+\item[\ref{pr:good-count}] For \(\ge\), use the dual basis of \((h_i)\).  For \(\le\), the matrix \((\varphi_a(s_b))\) factors through \(S\).
+\item[\ref{pr:detect}] The image is a submodule of \(W^M\); compare it with \(p^D W^M\).
+\item[\ref{pr:trunc}] Compare the cokernels of \(A\) and \(A'\) after tensoring with \(W/p^T W\).
+\end{description}
+
+\subsection*{\S\ref{sec:kummer}}
+\begin{description}
+\item[\ref{pr:kummer}] Legendre's formula, and each carry lowers the digit sum by \(p - 1\).
+\item[\ref{pr:kummer-bound}] The digits of \(j\) below position \(v_p(j)\) vanish, so no carry occurs there.  A carry out of the top digit of \(n\) is impossible.
+\item[\ref{pr:kummer-cases}] Problem~\ref{pr:kummer}.
+\end{description}
+
+\subsection*{\S\ref{sec:fock}}
+\begin{description}
+\item[\ref{pr:fock-adj}] Check it on monomials.  Then induct on the degree of \(F\).
+\item[\ref{pr:fock-power}] Problem~\ref{pr:fock-adj}, or expand both sides.
+\item[\ref{pr:fock-dual}] The monomials are orthogonal.  For the inclusions, Problem~\ref{pr:kummer-bound}.
+\end{description}
+
+\subsection*{\S\ref{sec:vertex}}
+\begin{description}
+\item[\ref{pr:powers}] The Teichm\"uller representatives are distinct modulo \(p\), so their Vandermonde determinant is a unit.  For \(Q = 2\), look for a cubic form that takes values in \(2\Z_2\) on \(\Z_2^2\).
+\item[\ref{pr:span-i}] The same Vandermonde argument, applied to the vectors \(\bigl(\binom{k-i}{j-i} a^{j-i}\bigr)_j\).
+\item[\ref{pr:check}] The symmetry \(x \leftrightarrow y\) of \(H(L)\) permutes the lattices \(M\).  Then Problem~\ref{pr:kummer-cases}.
+\item[\ref{pr:few-edges}] Reduce modulo \(p\).  Only the \(k\)th powers of \(Q + 1\) linear forms survive.
+\end{description}
+
+\begin{thebibliography}{DEP}
+\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[Ba]{Ba} V.~Bargmann, \emph{On a Hilbert space of analytic functions and an associated integral transform, Part~I}, Comm.\ Pure Appl.\ Math.\ \textbf{14} (1961), 187--214.
+\bibitem[DEP]{DEP} C.~De Concini, D.~Eisenbud and C.~Procesi, \emph{Young diagrams and determinantal varieties}, Invent.\ Math.\ \textbf{56} (1980), 129--165.
+\bibitem[Gr]{Gr} J.~A.~Green, \emph{Polynomial Representations of \(\mathrm{GL}_n\)}, Lecture Notes in Math.\ 830, Springer, 1980.
+\bibitem[Gra]{Gra} A.~Granville, \emph{Arithmetic properties of binomial coefficients I: Binomial coefficients modulo prime powers}, in: Organic Mathematics (Burnaby, 1995), CMS Conf.\ Proc.\ \textbf{20}, Amer.\ Math.\ Soc., 1997, 253--276.
+\bibitem[Ja]{Ja} J.~C.~Jantzen, \emph{Representations of Algebraic Groups}, 2nd ed., Math.\ Surveys Monogr.\ 107, Amer.\ Math.\ Soc., 2003.
+\bibitem[Ku]{Ku} E.~E.~Kummer, \emph{\"Uber die Erg\"anzungss\"atze zu den allgemeinen Reciprocit\"atsgesetzen}, J.\ reine angew.\ Math.\ \textbf{44} (1852), 93--146.
+\bibitem[La]{La} S.~Lang, \emph{Algebra}, rev.\ 3rd ed., Grad.\ Texts in Math.\ 211, Springer, 2002.
+\bibitem[SeT]{SeT} J.-P.~Serre, \emph{Trees}, Springer, 1980.
+\end{thebibliography}
+
+\end{document}

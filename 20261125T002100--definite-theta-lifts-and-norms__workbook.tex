@@ -1,0 +1,294 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[sm-]{20261125T000000--slope-method__workbook}
+\externaldocument[dt-]{20261125T002000--definite-theta-lifts__workbook}
+\externaldocument[ec-]{20261124T223000--elliptic-curves-for-the-proof__workbook}
+\externaldocument[st-]{20261124T214500--supersingular-theta-divisibility__workbook}
+\externaldocument[fm-]{20261125T009500--fock-model-and-theta-intertwiners__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T002100}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Sc}{\mathbb{S}}
+\newcommand{\Ac}{\mathcal{A}}
+\newcommand{\Fc}{\mathcal{F}}
+\newcommand{\Cl}{\mathrm{Cl}}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\Sym}{\operatorname{Sym}}
+\newcommand{\tr}{\operatorname{tr}}
+
+\setlength{\emergencystretch}{2em}
+
+\title{Definite theta lifts and their norms}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Chapter~\ref{dt-chap}, \emph{Masses and the count of forms}: the class sets \(\Cl_n\), the groups \(\Gamma_L\), the representations \(V_\lambda(L) = \Sc_\lambda(L_\C)\), the notation \(e^\nu\) in \(\Sym^a\), and the spaces of forms \(\Ac_\lambda(n)\) with their norm (Sections~\ref{dt-sec:lattices} and~\ref{dt-sec:forms}).  From Chapter~\ref{ec-chap}: Theorem~\ref{ec-thm:LL} and Problem~\ref{ec-pr:Omega}.  From Chapter~\ref{st-chap}: Section~\ref{st-sec:moments} and Problem~\ref{st-pr:gauss}.  Stirling's formula.
+
+Since a definite unitary group has a finite class set, a theta lift between two such groups is a finite matrix.  What are its entries, and how large is it?  We compute both in the smallest cases.
+
+
+\section{The theta kernel}\label{sec:kernel}
+
+How does one map forms on one class set to forms on another?  The idea is to sum over all homomorphisms between the two lattices, with a Gaussian weight.
+
+Let \(L\) and \(L'\) be Hermitian lattices of ranks \(n\) and \(n'\).  For \(x \in \Hom_\Oc(L, L')\) let \(x^* \in \Hom(L'_\C, L_\C)\) be its adjoint, and let \(h(x,y) := \tr(y^* x)\).  Let
+\[
+  \Theta_{L,L'}(Z) := \sum_{x \in \Hom_\Oc(L,L')} e^{-\pi h(x,x) + \tr(Z x)},
+  \qquad Z \in \Hom(L'_\C, L_\C) .
+\]
+For a polynomial \(P\) in the entries of \(x\), let \(P(\partial)\) be the differential operator obtained by replacing \(x_{\beta\alpha}\) with \(\partial/\partial Z_{\alpha\beta}\).  For a weight \(\lambda\) define
+\[
+  \vartheta_\lambda(L, L') := \sum_{x \in \Hom_\Oc(L,L')} \Sc_\lambda(x)\, e^{-\pi h(x,x)} \colon V_\lambda(L) \to V_\lambda(L'),
+\]
+and, for the class sets \(\Cl_n\) and \(\Cl_{n'}\), the \emph{lift} \(\Theta_\lambda \colon \Ac_\lambda(n) \to \Ac_\lambda(n')\),
+\begin{equation}\label{eq:lift}
+  (\Theta_\lambda \varphi)(L') := \sum_{L \in \Cl_n} \frac{1}{\lvert\Gamma_L\rvert}\, \vartheta_\lambda(L, L')\, \varphi(L) .
+\end{equation}
+In bases, \(\Theta_\lambda\) is a finite matrix whose blocks are the \(\vartheta_\lambda(L, L')\), weighted by \(1/\lvert\Gamma_L\rvert\).  For a matrix coefficient \(P\) of \(\Sc_\lambda\), the series \(\sum_x P(x)\, q^{h(x,x)}\) is a classical theta series with polynomial coefficients, and the corresponding entry of \(\vartheta_\lambda\) is its value at \(q = e^{-\pi}\).
+
+Thus \(\Theta_{L,L'}\) is a theta function of the Hermitian lattice \(\Hom_\Oc(L,L')\), which is unimodular of rank \(nn'\) by Problem~\ref{pr:hom} below.  Chapter~\ref{fm-chap}, \emph{The Fock model and theta intertwiners}, treats such functions in one variable, for \(\Z[\ii]\) and its neighbours, and shows how a theta function of one lattice is carried to one of a commensurable lattice by an intertwiner, up to a root of unity given by a Gauss sum.  The problems of this chapter use only the series itself.
+
+\begin{problem}\label{pr:hom}
+If \(L\) and \(L'\) are unimodular, then with \(h(x,y) = \tr(y^*x)\), \(\Hom_\Oc(L, L')\) is a unimodular Hermitian lattice of rank \(nn'\), and \(\Hom_\Oc(I_n, I_{n'}) \cong I_{nn'}\).
+\end{problem}
+
+\begin{problem}\label{pr:jet}
+\(\Theta_{L,L'}\) is entire, and \(P(\partial)\Theta_{L,L'}(0) = \sum_x P(x)\, e^{-\pi h(x,x)}\).  If \(\Theta_{L,L'}(Z) = \sum_\nu c_\nu Z^\nu\) and \(P(x) = \sum_\nu P_\nu x^\nu\), with the matching indexing of the entries of \(Z\) and of \(x\), this equals \(\sum_\nu P_\nu\, \nu!\, c_\nu\).
+\end{problem}
+
+\begin{problem}\label{pr:entries}
+In bases of \(V_\lambda(L)\) and \(V_\lambda(L')\) built from \(\Oc\)-bases of \(L\) and \(L'\), each entry of \(\vartheta_\lambda(L,L')\) is \(P(\partial)\Theta_{L,L'}(0)\) for a polynomial \(P\), homogeneous of degree \(\lvert\lambda\rvert\), with rational coefficients.  Moreover \(\vartheta_\lambda(L, L') = 0\) unless \(4 \mid \lvert\lambda\rvert\).
+\end{problem}
+
+\begin{problem}\label{pr:equiv}
+For \(\gamma \in \Gamma_L\) and \(\gamma' \in \Gamma_{L'}\), \(\Sc_\lambda(\gamma')\, \vartheta_\lambda(L,L') = \vartheta_\lambda(L,L') = \vartheta_\lambda(L,L')\, \Sc_\lambda(\gamma)\).  Hence \eqref{eq:lift} is a form on \(\Cl_{n'}\), and it does not depend on the lattices chosen in the classes.
+\end{problem}
+
+\begin{problem}\label{pr:adjoint}
+\(\vartheta_\lambda(L,L')^* = \vartheta_\lambda(L',L)\).  Hence the lift \(\Theta'_\lambda \colon \Ac_\lambda(n') \to \Ac_\lambda(n)\) in the other direction is the adjoint of \(\Theta_\lambda\): \(\langle \Theta_\lambda \varphi, \psi \rangle = \langle \varphi, \Theta'_\lambda \psi \rangle\).
+\end{problem}
+
+\section{The smallest examples}\label{sec:smallest}
+
+What are these matrices for \(\mathrm{U}(1) \times \mathrm{U}(1)\) and \(\mathrm{U}(1) \times \mathrm{U}(2)\)?  By Problem~\ref{dt-pr:class-one} each class set has one element, and the lift is a single block.  Everything is expressed through the Gaussian moments
+\[
+  c_a := \sum_{\alpha \in \Oc} \alpha^a e^{-\pi\lvert\alpha\rvert^2} \qquad (a \ge 0) .
+\]
+Let \(\varpi\), \(\vartheta_0\) and \(F = \sigma^2\wp\) be as in \S\ref{st-sec:moments}.
+
+\begin{problem}\label{pr:ca}
+\(c_a\) is real, \(c_a = 0\) unless \(4 \mid a\), and \(c_a = \vartheta_0\, (\varpi/2\pi)^a F^{(a)}(0)\).
+\end{problem}
+
+\begin{problem}\label{pr:Fa}
+For \(a = 0, 4, 8, 12, 16\) the rational numbers \(F^{(a)}(0)\) are \(1\), \(4\), \(272\), \(-7104\), \(3203328\).
+\end{problem}
+
+\begin{problem}\label{pr:U1U1}
+For \(n = n' = 1\), \(\Theta_{(a)}\) is multiplication by \(c_a/4\) on the line \(\Ac_{(a)}(1)\).
+\end{problem}
+
+For \(n = 1\) and \(n' = 2\), \(\Hom_\Oc(I_1, I_2) = \Oc^2\) is the space of columns \(x = (x_1, x_2)\), and \(\Sym^a(x)\) sends the basis vector \(1 \in \Sym^a(\C)\) to \((x_1 e_1 + x_2 e_2)^a\).
+
+\begin{problem}\label{pr:U1U2}
+For \(\varphi \in \Ac_{(a)}(1)\),
+\[
+  (\Theta_{(a)}\varphi)(I_2) = \frac{\varphi(I_1)}{4} \sum_{j} \binom{a}{j} c_j c_{a-j}\, e_1^j e_2^{a-j} .
+\]
+For \(a = 8\) this is \(4\varphi(I_1)\, \vartheta_0^2 (\varpi/2\pi)^8 \bigl(17 e_1^8 + 70 e_1^4 e_2^4 + 17 e_2^8\bigr)\).
+\end{problem}
+
+\begin{problem}\label{pr:U2U1}
+The lift \(\Theta'_{(a)} \colon \Ac_{(a)}(2) \to \Ac_{(a)}(1)\) is
+\[
+  (\Theta'_{(a)}\psi)(I_1) = \frac{1}{32} \sum_j c_j c_{a-j}\, \psi_j,
+  \qquad \text{where } \psi(I_2) = \sum_j \psi_j\, e_1^j e_2^{a-j} .
+\]
+\end{problem}
+
+How large are these entries?  The terms of \(c_a\) are largest near \(\lvert\alpha\rvert^2 = a/2\pi\).
+
+\begin{problem}\label{pr:ca-size}
+\(\log c_a^2 \le a \log a - a(1 + \log 2\pi) + O(\log a)\).
+\end{problem}
+
+Numerically the bound is attained up to \(O(\log a)\): for \(a = 40, 80, \dots, 240\) the left side exceeds the right side without the \(O(\log a)\) by between \(1.7\) and \(4.8\).  The scale \(2\pi\) belongs to the Gaussian; the rational part \(F^{(a)}(0)\) of \(c_a\) sees instead the period.  By Problem~\ref{ec-pr:Omega}, \(\varpi^2/2\pi = \Omega/4\) with \(\Omega = 2\varpi^2/\pi\), and by Theorem~\ref{ec-thm:LL}, \(\log \Omega = \gamma + \log \pi - L'(1,\chi)/L(1,\chi)\).  Combining these with Problems~\ref{pr:ca} and~\ref{pr:ca-size} gives
+\begin{equation}\label{eq:F-size}
+  \log F^{(a)}(0)^2 \le a \log a - a\Bigl(1 + \gamma + \log\frac{\pi}{4} - \frac{L'(1,\chi)}{L(1,\chi)}\Bigr) + O(\log a) .
+\end{equation}
+This is how Euler's constant and \(L'(1,\chi)/L(1,\chi)\) enter the linear term of a size bound.
+
+\section{The Gaussian norm and the norm of the lift}\label{sec:norm}
+
+The size of an entry is one thing; the size of the lift is measured by its operator norm.  What is \(\lVert \Theta_{(a)} \rVert\) in the smallest case?
+
+Let \(\Fc_m\) be the space of entire functions on \(\C^m\) with
+\[
+  \lVert f \rVert^2 := \pi^{-m}\int_{\C^m} \lvert f(z) \rvert^2 e^{-\lvert z\rvert^2} \, dA(z) < \infty .
+\]
+
+For \(m = 1\) this is the norm of Chapter~\ref{sm-chap}, in which the monomials are orthogonal and \(\lVert z^a \rVert^2 = a!\) (Problem~\ref{sm-pr:fock}).
+
+\begin{problem}\label{pr:fock}
+The monomials \(z^\nu\) are orthogonal in \(\Fc_m\), and \(\lVert z^\nu \rVert^2 = \nu!\).
+\end{problem}
+
+By Problems~\ref{dt-pr:sym-norm} and~\ref{pr:fock}, sending \(e^\nu\) to \(z^\nu\) identifies \(\Sym^a(\C^m)\) with the homogeneous polynomials of degree \(a\) in \(\Fc_m\), the squared norm being divided by \(a!\).  In this normalization the size of a derivative is controlled as follows.
+
+\begin{problem}\label{pr:CS}
+If \(\Theta(Z) = \sum_\nu c_\nu Z^\nu\) and \(P = \sum_\nu P_\nu x^\nu\), then
+\[
+  \lvert P(\partial)\Theta(0) \rvert^2 \le \lVert P \rVert_{\Fc}^2 \sum_{\nu \in \operatorname{supp} P} \nu!\, \lvert c_\nu \rvert^2 .
+\]
+\end{problem}
+
+The norm of the lift itself is computed by composing it with its adjoint.
+
+\begin{problem}\label{pr:rallis}
+For \(\Theta_{(a)} \colon \Ac_{(a)}(1) \to \Ac_{(a)}(2)\) and \(\varphi \ne 0\),
+\[
+  \frac{\lVert \Theta_{(a)}\varphi \rVert^2}{\lVert \varphi \rVert^2}
+  = \frac{1}{128} \sum_{x, y \in \Oc^2} h(x,y)^a e^{-\pi(\lvert x\rvert^2 + \lvert y\rvert^2)}
+  = \frac{1}{128} \sum_j \binom{a}{j} c_j^2 c_{a-j}^2 .
+\]
+For \(a = 4\) and \(a = 8\) it equals \(\tfrac14 \vartheta_0^4 (\varpi/2\pi)^8\) and \(1296\, \vartheta_0^4 (\varpi/2\pi)^{16}\).
+\end{problem}
+
+The middle expression is a theta sum over \(\Hom_\Oc(I_1 \oplus I_1, I_2)\), the lattice of pairs \((x, y)\).  This is the structure of the Rallis inner product formula \cite{Ra}.  By Problem~\ref{pr:adjoint}, the diagonal entry \(K(L, L)\) of the kernel of \(\Theta'_\lambda\Theta_\lambda\) is
+\[
+  \sum_{L' \in \Cl_{n'}} \frac{1}{\lvert\Gamma_{L'}\rvert} \sum_{x, y \in \Hom(L, L')} \Sc_\lambda(y^* x)\, e^{-\pi(h(x,x) + h(y,y))},
+\]
+an average over the genus of \(L'\) of theta series of the doubled lattice \(\Hom(L \oplus L, L')\).  By the Siegel--Weil formula \cite{We65} such averages are Eisenstein series, and on a Hecke eigenform Rallis's formula gives \(\Theta'_\lambda\Theta_\lambda\) as an \(L\)-value times the identity; in the smallest case the source is a line and Problem~\ref{pr:rallis} is the whole statement.
+
+Problems~\ref{pr:U1U1}, \ref{pr:ca-size} and~\ref{pr:rallis}, together with \(\binom{a}{j}\, j!\,(a-j)! = a!\), prove the following.
+
+\begin{theorem}\label{thm:norm}
+For the lifts \(\Theta_{(a)} \colon \Ac_{(a)}(1) \to \Ac_{(a)}(n')\) with \(n' = 1, 2\), one has \(\lVert \Theta_{(a)} \rVert^2 = c_a^2/16\) and \(\lVert \Theta_{(a)} \rVert^2 = \tfrac{1}{128}\sum_j \binom{a}{j} c_j^2 c_{a-j}^2\) respectively, and in both cases
+\[
+  \log \lVert \Theta_{(a)} \rVert^2 \le a \log a - a(1 + \log 2\pi) + O(\log a) .
+\]
+\end{theorem}
+
+So the squared norm of the lift has the size of one factorial, \(\lVert z^a \rVert^2 = a!\), times \((2\pi)^{-a}\).  Numerically, for \(n' = 2\) and \(a = 40, 80, \dots, 240\), the left side exceeds the right side without the \(O(\log a)\) by an amount growing from \(1.5\) to \(5.1\), roughly like \(2\log a\).
+
+\section{The seesaw}\label{sec:seesaw}
+
+A seesaw computes one period in two ways: lift to a large group and restrict to a subgroup, or restrict first and lift between smaller groups \cite{Ku}.  For definite groups the seesaw comes from an orthogonal decomposition \(L' = L_1 \perp L_2\), and \(\Hom(L, L_1 \perp L_2) = \Hom(L, L_1) \perp \Hom(L, L_2)\).
+
+\begin{problem}\label{pr:factor}
+\(\Theta_{L, L_1 \perp L_2}(Z_1, Z_2) = \Theta_{L, L_1}(Z_1)\, \Theta_{L, L_2}(Z_2)\).
+\end{problem}
+
+Here is the smallest case.  Write \(I_2 = Y \perp \Oc z\) with \(Y = \Oc e_1\) and \(z = e_2\), and let \(4 \mid j\) and \(4 \mid a - j\).  For \(\psi \in \Ac_{(a)}(2)\) and \(\xi \in \Ac_{(j)}(1)\), viewed as a form on the class set of \(Y\), the \emph{period} of \(\psi\) along \(Y\) is
+\[
+  P(\psi, \xi) := \frac{1}{\lvert\Gamma_Y\rvert} \bigl\langle \psi(Y \perp \Oc z),\; \xi(Y)\, e_2^{a-j} \bigr\rangle .
+\]
+On the other side let \(\theta_z := \vartheta_{(a-j)}(\Oc z, I_1)\, e_2^{a-j} \in \Sym^{a-j}(\C)\), the vector obtained from \(\Oc z\) alone.
+
+\begin{problem}\label{pr:seesaw}
+For \(\varphi \in \Ac_{(a)}(1)\) and \(\xi \in \Ac_{(j)}(1)\),
+\[
+  P(\Theta_{(a)}\varphi, \xi) = \bigl\langle \varphi,\; (\Theta_{(j)}\xi)\, \theta_z \bigr\rangle ,
+\]
+where the product on the right is that of \(\Sym^j(\C) \otimes \Sym^{a-j}(\C) \to \Sym^a(\C)\).  Both sides equal \(\varphi(I_1)\overline{\xi(I_1)}\, c_j c_{a-j}/16\).
+\end{problem}
+
+The left side lifts \(\varphi\) to \(\mathrm{U}(2)\) and integrates along \(\mathrm{U}(1)\).  The right side lifts \(\xi\) to \(\mathrm{U}(1)\) and pairs with \(\varphi\) there; it depends on \(\xi\) only through \(\Theta_{(j)}\xi\).  In a chain of lifts the same identity, with exact constants, makes the value of the chain at a form depend only on the image of that form.
+
+\section{Chains}\label{sec:chain}
+
+The argument composes many lifts.  What survives composition?
+
+\begin{problem}\label{pr:compose}
+The composite \(\Ac_\lambda(n) \to \Ac_\lambda(n') \to \Ac_\lambda(n'')\) of two lifts has the kernel
+\[
+  K(L, L'') = \sum_{L' \in \Cl_{n'}} \frac{1}{\lvert\Gamma_{L'}\rvert}\, \vartheta_\lambda(L', L'')\, \vartheta_\lambda(L, L') .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:rational}
+In the bases \(e^\mu\) of \(\Sym^a(\C^n)\) and \(\Sym^a(\C^{n'})\), every entry of \(\vartheta_{(a)}(I_n, I_{n'})\) lies in \(\vartheta_0^{nn'} (\varpi/2\pi)^a\, \Q\).
+\end{problem}
+
+So for the standard lattices the transcendental factor of a lift is uniform, a power of the period fixed by the degree; and through a chain of \(m\) lifts of degree \(a\) it is \((\varpi/2\pi)^{ma}\) times a power of \(\vartheta_0\).  The weights \(1/\lvert\Gamma_L\rvert\) are the only other denominators.
+
+\begin{problem}\label{pr:clear}
+Let \(S \subset R\) be commutative rings and \(D_1, \dots, D_m \in R\).  Suppose that in a composite of \(m\) maps \((T_j f)(i') = \sum_i h_j(i)\, K_j(i, i')\, f(i)\), with finite sums and \(h_j(i) \in R\), all \(K_j(i,i')\) and all starting values lie in \(S\), and that \(D_j h_j(i) \in S\) for all \(i\).  Then \(D_1 \cdots D_m\) times every final value lies in \(S\).
+\end{problem}
+
+Beyond the smallest cases a chain needs more: in large rank \(\Cl_n\) is large (Section~\ref{dt-sec:mass}), and the norm of a lift on a Hecke eigenform comes from the Rallis inner product formula \cite{Ra} instead of Problem~\ref{pr:rallis}; the rational parts of the entries, here \(F^{(a)}(0)\), must be divisible by high powers of inert primes uniformly along the chain, as in Chapter~\ref{st-chap} for one entry; and the seesaw, masses and periods must be compared with exact constants, since an error of a constant factor per derivative changes the linear term.
+
+\section{Questions}\label{sec:questions}
+
+We do not know whether \(c_a \ne 0\) for every \(a\) divisible by \(4\); equivalently, whether \(F^{(a)}(0) \ne 0\).  We also do not know whether the bound of Problem~\ref{pr:ca-size} is attained up to \(O(\log a)\) for every such \(a\), as the computations of \S\ref{sec:smallest} suggest.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:kernel}}
+\begin{description}
+\item[\ref{pr:hom}] In bases, \(h(x,y) = \sum_{\alpha,\beta} x_{\beta\alpha} \bar y_{\beta\alpha}\) when \(L\) and \(L'\) are standard.  In general, if \(G\) and \(G'\) are the Gram matrices of \(L\) and \(L'\), so that \(h(u,v) = \bar v^{t} G u\), then \(y^* = G^{-1}\bar y^{t} G'\); compute the Gram matrix of \(\Hom(L,L')\) and its determinant.
+\item[\ref{pr:jet}] Differentiate under the sum; \(\partial/\partial Z_{\alpha\beta}\) brings down \(x_{\beta\alpha}\).
+\item[\ref{pr:entries}] The entries of \(x^{\otimes k}\) are monomials in the entries of \(x\).  For the vanishing, replace \(x\) by \(\ii x\).
+\item[\ref{pr:equiv}] Substitute \(x \mapsto \gamma' x\) and \(x \mapsto x\gamma\); both preserve \(\Hom_\Oc(L,L')\) and \(h(x,x)\).
+\item[\ref{pr:adjoint}] \(\Sc_\lambda(x)^* = \Sc_\lambda(x^*)\), and, since \(L\) and \(L'\) are unimodular, \(x \mapsto x^*\) is a bijection \(\Hom(L,L') \to \Hom(L',L)\) preserving \(h(x,x)\).  Then exchange the two finite sums.
+\end{description}
+
+\subsection*{\S\ref{sec:smallest}}
+\begin{description}
+\item[\ref{pr:ca}] For reality, substitute \(\alpha \mapsto \bar\alpha\); for the vanishing, \(\alpha \mapsto \ii\alpha\).  Differentiate Problem~\ref{st-pr:gauss} \(a\) times at \(z = 0\).
+\item[\ref{pr:Fa}] Expand \(\sigma\) and \(\wp\) with \(g_2 = 4\), \(g_3 = 0\) further than in Problem~\ref{st-pr:F}.
+\item[\ref{pr:U1U1}] \(\Gamma_{I_1} = \mu_4\), and \(\Sym^a(x)\) is multiplication by \(x^a\).
+\item[\ref{pr:U1U2}] Expand by the binomial theorem; the sum over \(\Oc^2\) factors.
+\item[\ref{pr:U2U1}] \(\Hom(I_2, I_1)\) consists of rows \(y\), and \(\Sym^a(y)\, e_1^j e_2^{a-j} = y_1^j y_2^{a-j}\).  Alternatively use Problems~\ref{pr:adjoint} and~\ref{dt-pr:sym-norm}.
+\item[\ref{pr:ca-size}] \(\lvert c_a \rvert \le \sum_\alpha f(\alpha)\) with \(f(z) := \lvert z\rvert^a e^{-\pi\lvert z\rvert^2}\).  Bound the \(O(a)\) terms with \(\lvert\alpha\rvert^2 \le a\) by \(\max f\), attained at \(\lvert z\rvert^2 = a/2\pi\), and the others by a geometric series.
+\end{description}
+
+\subsection*{\S\ref{sec:norm}}
+\begin{description}
+\item[\ref{pr:fock}] The norm is a product over the variables; apply Problem~\ref{sm-pr:fock} in each.
+\item[\ref{pr:CS}] Problem~\ref{pr:jet}, and the Cauchy--Schwarz inequality.
+\item[\ref{pr:rallis}] \(\lVert\Theta\varphi\rVert^2 = \langle \Theta'\Theta\varphi, \varphi\rangle\); use Problems~\ref{pr:U1U2} and~\ref{pr:U2U1}.  For the middle expression use \(\langle u^a, v^a \rangle = \langle u, v\rangle^a\).
+\end{description}
+
+\subsection*{\S\ref{sec:seesaw}}
+\begin{description}
+\item[\ref{pr:factor}] For \(x = (x_1, x_2)\), \(h(x,x) = h(x_1,x_1) + h(x_2,x_2)\) and \(\tr(Zx) = \tr(Z_1 x_1) + \tr(Z_2 x_2)\).
+\item[\ref{pr:seesaw}] Problems~\ref{pr:U1U1}, \ref{pr:U1U2} and~\ref{dt-pr:sym-norm}.
+\end{description}
+
+\subsection*{\S\ref{sec:chain}}
+\begin{description}
+\item[\ref{pr:compose}] Substitute \eqref{eq:lift} into itself.
+\item[\ref{pr:rational}] Expand \(\Sym^a(x)\, e^\mu\); the coefficients are rational polynomials in the entries of \(x\), and the sum over \(x \in \Oc^{n'n}\) of a monomial factors into moments \(c_k\).  Then use Problem~\ref{pr:ca}.
+\item[\ref{pr:clear}] Induction on \(m\): move \(D_1\) inside the first sum.
+\end{description}
+
+\begin{thebibliography}{We65}
+\bibitem[Ku]{Ku} S.~S.~Kudla, \emph{Seesaw dual reductive pairs}, in \emph{Automorphic Forms of Several Variables (Katata, 1983)}, Progr.\ Math.\ 46, Birkh\"auser, 1984, 244--268.
+\bibitem[Ra]{Ra} S.~Rallis, \emph{Injectivity properties of liftings associated to Weil representations}, Compositio Math.\ \textbf{52} (1984), 139--169.
+\bibitem[We65]{We65} A.~Weil, \emph{Sur la formule de Siegel dans la th\'eorie des groupes classiques}, Acta Math.\ \textbf{113} (1965), 1--87.
+\end{thebibliography}
+
+\end{document}

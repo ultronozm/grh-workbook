@@ -1,0 +1,277 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[st-]{20261124T214500--supersingular-theta-divisibility__workbook}
+\externaldocument[cm-]{20261124T223100--complex-multiplication-and-inert-reduction__workbook}
+\externaldocument[kl-]{20261125T009000--kronecker-limit-and-chowla-selberg__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261124T223000}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\Oc}{\mathcal{O}}
+
+\setlength{\emergencystretch}{2em}
+
+\title{Complex tori, theta functions and periods}
+\author{}
+\date{November 24, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Complex analysis: Liouville's theorem, the argument principle, Weierstrass products, and Euler's Gamma function with the Beta integral and the reflection formula.  The Gaussian integers.  Elliptic curves over \(\C\) at the level of the statements of \cite[Ch.~VI]{Si1}.  No earlier chapter is used.  Chapter~\ref{cm-chap}, \emph{Complex multiplication and reduction at an inert prime}, continues this one.
+
+\section{Complex tori}\label{sec:tori}
+
+How does one compute on a curve of genus one over \(\C\)?  One uniformizes it.  Let \(\Lambda \subset \C\) be a lattice, and for \(k \ge 3\) let \(G_k(\Lambda) := \sum'_{\omega \in \Lambda} \omega^{-k}\), where the prime means that \(\omega = 0\) is omitted.  The Weierstrass function
+\[
+  \wp(u) := \frac{1}{u^2} + \sum_{\omega \in \Lambda}{}' \Bigl( \frac{1}{(u - \omega)^2} - \frac{1}{\omega^2} \Bigr)
+\]
+is elliptic, that is meromorphic and \(\Lambda\)-periodic.  Let \(g_2 := 60 G_4(\Lambda)\) and \(g_3 := 140 G_6(\Lambda)\).  The map \(u \mapsto (\wp(u), \wp'(u))\) is an analytic isomorphism of groups from \(\C/\Lambda\) onto the curve \(y^2 = 4x^3 - g_2 x - g_3\), and every elliptic curve over \(\C\) arises in this way \cite[\S\S VI.3--VI.5]{Si1}.
+
+\begin{problem}\label{pr:wp-laurent}
+\(\wp(u) = u^{-2} + \sum_{k \ge 1} (2k+1) G_{2k+2}(\Lambda)\, u^{2k}\), and \(\wp'^2 = 4\wp^3 - g_2\wp - g_3\).
+\end{problem}
+
+Let
+\[
+  \zeta(u) := \frac1u + \sum_{\omega \in \Lambda}{}' \Bigl( \frac{1}{u - \omega} + \frac{1}{\omega} + \frac{u}{\omega^2} \Bigr),
+  \qquad
+  \sigma(u) := u \prod_{\omega \in \Lambda}{}' \Bigl(1 - \frac{u}{\omega}\Bigr) e^{u/\omega + u^2/2\omega^2} .
+\]
+Then \(\zeta' = -\wp\) and \(\sigma'/\sigma = \zeta\).  The function \(\sigma\) is entire and odd, with simple zeros exactly at the points of \(\Lambda\).
+
+\begin{problem}\label{pr:eta}
+There is a \(\Z\)-linear map \(\eta \colon \Lambda \to \C\) with \(\zeta(u + \omega) = \zeta(u) + \eta(\omega)\).
+\end{problem}
+
+\begin{problem}\label{pr:legendre}
+If \(\omega_1, \omega_2\) is a basis of \(\Lambda\) with \(\operatorname{Im}(\omega_2/\omega_1) > 0\), then \(\eta(\omega_1)\omega_2 - \eta(\omega_2)\omega_1 = 2\pi\ii\).
+\end{problem}
+
+This is Legendre's relation.
+
+\begin{problem}\label{pr:sigma-qp}
+\(\sigma(u + \omega) = \psi(\omega)\, e^{\eta(\omega)(u + \omega/2)} \sigma(u)\) for \(\omega \in \Lambda\), where \(\psi(\omega) = 1\) if \(\omega \in 2\Lambda\) and \(\psi(\omega) = -1\) otherwise.
+\end{problem}
+
+\begin{problem}\label{pr:sigma-add}
+\(\dfrac{\sigma(u+v)\,\sigma(u-v)}{\sigma(u)^2\,\sigma(v)^2} = \wp(v) - \wp(u)\).
+\end{problem}
+
+\begin{problem}\label{pr:zeta-add}
+\(\zeta(u+v) - \zeta(u) - \zeta(v) = \dfrac12 \, \dfrac{\wp'(u) - \wp'(v)}{\wp(u) - \wp(v)}\).  Consequently
+\[
+  \wp(u+v) = \frac14 \Bigl( \frac{\wp'(u) - \wp'(v)}{\wp(u) - \wp(v)} \Bigr)^2 - \wp(u) - \wp(v) .
+\]
+\end{problem}
+
+Now let \(\Lambda\) be \emph{square}, that is \(\ii\Lambda = \Lambda\).
+
+\begin{problem}\label{pr:square}
+If \(\ii\Lambda = \Lambda\), then \(\wp(\ii u) = -\wp(u)\), \(g_3 = 0\), and \(\eta(\ii\omega) = -\ii\,\eta(\omega)\).
+\end{problem}
+
+\begin{problem}\label{pr:square-g2}
+There is exactly one real \(\lambda > 0\) with \(g_2(\lambda\Z[\ii]) = 4\).
+\end{problem}
+
+Let \(\varpi := 2 \int_0^1 (1 - t^4)^{-1/2}\, d t = 2.62205\ldots\) be the lemniscate constant.
+
+\begin{problem}\label{pr:varpi}
+The lattice \(\varpi\Z[\ii]\) has \(g_2 = 4\) and \(g_3 = 0\).  Moreover \(\varpi = \Gamma(\tfrac14)^2 / (2\sqrt{2\pi})\).
+\end{problem}
+
+From now on, \emph{the lemniscatic lattice} is \(\varpi\Z[\ii]\), and \(\wp\), \(\zeta\), \(\sigma\) without further mention are its Weierstrass functions.  With \(x = \wp\) and \(y = \wp'/2\) it is the lattice of the curve \(E \colon y^2 = x^3 - x\), and \(dx/2y\) pulls back to \(d u\).
+
+\section{Theta functions}\label{sec:theta}
+
+The function \(\sigma\) is not periodic, but by Problem~\ref{pr:sigma-qp} it changes by an exponential factor under the lattice.  Entire functions with such a law are theta functions.  How many are there, and how are they made?
+
+Let \(\tau\) lie in the upper half-plane, and let \(\vartheta(z) := \sum_{n \in \Z} e^{\pi\ii n^2\tau + 2\pi\ii n z}\).
+
+\begin{problem}\label{pr:jacobi-qp}
+\(\vartheta(z+1) = \vartheta(z)\), \(\vartheta(z + \tau) = e^{-\pi\ii\tau - 2\pi\ii z}\vartheta(z)\), and \(\vartheta(-z) = \vartheta(z)\).
+\end{problem}
+
+\begin{problem}\label{pr:jacobi-zero}
+In each period parallelogram of \(\Z + \Z\tau\), \(\vartheta\) has exactly one zero.  It is simple, and it lies at \((1+\tau)/2\) modulo \(\Z + \Z\tau\).
+\end{problem}
+
+\begin{problem}\label{pr:sigma-theta}
+Let \(\sigma\) and \(\eta\) belong to \(\Lambda = \Z + \Z\tau\).  Then there is a constant \(c\) with
+\[
+  \sigma(u) = c\, e^{\eta(1) u^2/2 + \pi\ii u}\, \vartheta\bigl(u + \tfrac{1+\tau}{2}\bigr) .
+\]
+\end{problem}
+
+The theta functions of Chapter~\ref{st-chap} are built from the Gaussian integers:
+\[
+  \Theta(z) := \sum_{\lambda \in \Z[\ii]} e^{-\pi\lvert\lambda\rvert^2 + \lambda z},
+  \qquad
+  \theta(z) := \sum_{a \in \Z} e^{-\pi a^2 + a z} .
+\]
+
+\begin{problem}\label{pr:Theta-law}
+\(\Theta(z) = \theta(z)\,\theta(\ii z)\), \(\Theta(\ii z) = \Theta(z)\), and for \(\beta \in \Z[\ii]\)
+\[
+  \Theta(z + 2\pi\beta) = e_\beta(z)\, \Theta(z),
+  \qquad
+  e_\beta(z) := e^{\pi\lvert\beta\rvert^2 + \bar\beta z} .
+\]
+\end{problem}
+
+Let \(T\) be the space of entire functions \(f\) with \(f(z + 2\pi\beta) = e_\beta(z) f(z)\) for all \(\beta \in \Z[\ii]\).
+
+\begin{problem}\label{pr:T-dim}
+\(\dim T = 2\), and every \(f \in T\) is even.
+\end{problem}
+
+\begin{problem}\label{pr:T-zeros}
+A nonzero \(f \in T\) has exactly two zeros, counted with multiplicity, in each period parallelogram of \(2\pi\Z[\ii]\).
+\end{problem}
+
+\begin{problem}\label{pr:T-fixed}
+If \(f \in T\), then \(f(\ii z) \in T\).  The \(f \in T\) with \(f(\ii z) = f(z)\) form the line \(\C\,\Theta\).
+\end{problem}
+
+The last fact about \(\sigma\) that we need is the theorem of the cube \cite[\S6, \S10]{Mu}, which for \(\sigma\) takes the following elementary form.
+
+\begin{problem}\label{pr:cube}
+The function
+\[
+  \Xi(x, y, w) := \frac{\sigma(x+y+w)\,\sigma(x)\,\sigma(y)\,\sigma(w)}{\sigma(x+y)\,\sigma(y+w)\,\sigma(w+x)}
+\]
+is elliptic in each variable separately, and \(1/\Xi = \zeta(x) + \zeta(y) + \zeta(w) - \zeta(x+y+w)\).
+\end{problem}
+
+The Taylor coefficients of \(\Theta\) at \(0\) are not rational.  Chapter~\ref{st-chap} expresses \(\Theta\) through \(\sigma\) and \(\wp\) (Problem~\ref{st-pr:gauss}); then the \(n\)th derivative at \(0\) is \(\Theta(0)\) times a rational multiple of \((\varpi/2\pi)^n\).  So one needs to know \(\varpi\), and the rational numbers that \(\wp\) produces.
+
+\section{Periods}\label{sec:periods}
+
+By Problem~\ref{pr:wp-laurent}, the Laurent coefficients of \(\wp\) are the lattice sums \(G_k\).  For the lemniscatic lattice they are rational.  Write \(\mu\) for an element of \(\Z[\ii]\).
+
+\begin{problem}\label{pr:hurwitz}
+\(G_k(\varpi\Z[\ii]) \in \Q\) for every \(k \ge 3\), and \(G_k = 0\) unless \(4 \mid k\).  Define the Hurwitz numbers \(H_{4k}\) by
+\[
+  \sum_{\mu}{}' \mu^{-4k} = \frac{(2\varpi)^{4k}}{(4k)!}\, H_{4k} .
+\]
+Then \(H_4 = \tfrac{1}{10}\) and \(H_8 = \tfrac{3}{10}\).
+\end{problem}
+
+When \(\bar\mu\) also appears, \(\pi\) enters.  Summed first over \(m\) and then over \(n\), Eisenstein's series \(G_2(\tau) := \sum_n \sum_m{}' (m + n\tau)^{-2}\) satisfies \(G_2(-1/\tau) = \tau^2 G_2(\tau) - 2\pi\ii\tau\) \cite{We}.
+
+\begin{problem}\label{pr:G2}
+\(G_2(\ii) = \pi\).
+\end{problem}
+
+For integers \(j \ge 0\) and \(k > j + 2\), let \(S(j, k) := \sum'_\mu \bar\mu^j \mu^{-k}\).
+
+\begin{problem}\label{pr:S-vanish}
+\(S(j, k) = 0\) unless \(j + k \equiv 0 \pmod 4\), and \(S(0, k) = \varpi^k G_k(\varpi\Z[\ii])\).
+\end{problem}
+
+Damerell proved that \(S(j, k)\) is an algebraic multiple of \(\varpi^{j+k}\pi^{-j}\) \cite{Dam}; for instance \(S(1, 7) = \tfrac{2}{315}\varpi^8/\pi\).
+
+How big is \(\varpi\) in terms of classical constants?  Let \(\chi\) be the non-trivial character modulo \(4\).  In the rest of this section, \(\eta(\tau) := e^{\pi\ii\tau/12}\prod_{n \ge 1}(1 - e^{2\pi\ii n\tau})\) is Dedekind's function, and \(\zeta(s)\), with argument \(s\), is Riemann's.
+
+\begin{problem}\label{pr:epstein}
+For \(\operatorname{Re} s > 1\), \(\sum'_\mu \lvert\mu\rvert^{-2s} = 4\,\zeta(s)\,L(s, \chi)\).
+\end{problem}
+
+Kronecker's first limit formula states that, for \(\tau = x + \ii y\) with \(y > 0\),
+\[
+  \sum_{(m,n) \ne (0,0)} \frac{y^s}{\lvert m + n\tau\rvert^{2s}} = \frac{\pi}{s-1} + 2\pi\bigl(\gamma - \log 2 - \log(\sqrt{y}\,\lvert\eta(\tau)\rvert^2)\bigr) + O(s-1)
+\]
+\cite[Ch.~20]{La}; Theorem~\ref{kl-thm:klf} of Chapter~\ref{kl-chap} proves it.
+
+\begin{problem}\label{pr:LL-eta}
+\(L'(1, \chi)/L(1, \chi) = \gamma - 2\log 2 - 4\log\eta(\ii)\).
+\end{problem}
+
+The discriminant \(\Delta(\Lambda) := g_2^3 - 27g_3^2\) satisfies \(\Delta(\lambda\Lambda) = \lambda^{-12}\Delta(\Lambda)\) and \(\Delta(\Z + \Z\tau) = (2\pi)^{12}\eta(\tau)^{24}\) \cite[\S VII.4.4]{SeA}.
+
+\begin{problem}\label{pr:eta-i}
+\(\eta(\ii)^2 = \varpi/(\sqrt2\,\pi)\), and so \(\eta(\ii) = \Gamma(\tfrac14)/(2\pi^{3/4})\).
+\end{problem}
+
+Problems~\ref{pr:varpi}, \ref{pr:LL-eta} and~\ref{pr:eta-i} prove the following.
+
+\begin{theorem}\label{thm:LL}
+\(\dfrac{L'(1, \chi)}{L(1, \chi)} = \gamma + 2\log 2 + 3\log\pi - 4\log\Gamma(\tfrac14) = 0.24560\ldots\)
+\end{theorem}
+
+Chowla and Selberg found the general form \cite{CS}.  Chapter~\ref{kl-chap} proves it, together with Kronecker's limit formula, and states the period relation of Gross \cite{Gr}: the periods of an elliptic curve over \(\bar\Q\) with complex multiplication by \(\Oc_K\) are algebraic multiples of an explicit product \(\Omega_K\) of values of \(\Gamma\).  For \(K = \Q(\ii)\) this product is \(\sqrt\pi\, \Gamma(\tfrac14)/\Gamma(\tfrac34)\).
+
+\begin{problem}\label{pr:Omega}
+\(\sqrt\pi\, \Gamma(\tfrac14)/\Gamma(\tfrac34) = 2\varpi\).  Moreover
+\[
+  \Omega := \frac{2\varpi^2}{\pi} = \frac{\Gamma(\tfrac14)^4}{4\pi^2} = 4\pi\,\eta(\ii)^4 .
+\]
+\end{problem}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:tori}}
+\begin{description}
+\item[\ref{pr:wp-laurent}] Expand \((u - \omega)^{-2} - \omega^{-2}\) in powers of \(u\).  The function \(\wp'^2 - 4\wp^3 + g_2\wp + g_3\) is elliptic, has no poles, and vanishes at \(0\).
+\item[\ref{pr:eta}] The derivative of \(\zeta(u+\omega) - \zeta(u)\) is \(0\).
+\item[\ref{pr:legendre}] Integrate \(\zeta\) around a period parallelogram whose boundary avoids \(\Lambda\).
+\item[\ref{pr:sigma-qp}] The logarithmic derivative of \(\sigma(u+\omega)/\sigma(u)\) is \(\eta(\omega)\).  To find the constant, use that \(\sigma\) is odd.
+\item[\ref{pr:sigma-add}] Both sides are elliptic in \(u\) with the same zeros and poles.  Compare the leading terms at \(u = 0\).
+\item[\ref{pr:zeta-add}] Take the logarithmic derivative of Problem~\ref{pr:sigma-add} in \(u\) and in \(v\), and add.  For the second formula, differentiate the first in \(u\).
+\item[\ref{pr:square}] \(G_k(\ii\Lambda) = \ii^{-k} G_k(\Lambda)\).
+\item[\ref{pr:square-g2}] \(g_2(\lambda\Lambda) = \lambda^{-4} g_2(\Lambda)\), and the values of \(\wp\) at the three half-periods of a rectangular lattice are real, distinct, and are the roots of \(4x^3 - g_2 x - g_3\).
+\item[\ref{pr:varpi}] Let \(\lambda\) be as in Problem~\ref{pr:square-g2}.  Then \(\wp(\ii\lambda/2) = -\wp(\lambda/2)\) and \(\wp((1+\ii)\lambda/2) = 0\).  On \((0, \lambda/2]\), \(\wp\) is real and decreasing, and \(\wp'^2 = 4\wp^3 - 4\wp\).  Substitute \(x = t^{-2}\).  For the Gamma value use the Beta integral and \(\Gamma(\tfrac14)\Gamma(\tfrac34) = \pi\sqrt2\).
+\end{description}
+
+\subsection*{\S\ref{sec:theta}}
+\begin{description}
+\item[\ref{pr:jacobi-qp}] Replace \(n\) by \(n + 1\) and by \(-n\).
+\item[\ref{pr:jacobi-zero}] Argument principle, as in Problem~\ref{pr:legendre}.  At \(z = (1+\tau)/2\), pair the terms \(n\) and \(-1-n\).
+\item[\ref{pr:sigma-theta}] Both sides have simple zeros exactly at \(\Lambda\), and the same law under \(u \mapsto u+1\) and \(u \mapsto u + \tau\), by Problem~\ref{pr:sigma-qp} and Legendre's relation.
+\item[\ref{pr:Theta-law}] Write \(\lambda = a + b\ii\).  For the law, substitute \(\lambda = \mu + \bar\beta\) and note \(\operatorname{Im}(\mu\beta) \in \Z\).
+\item[\ref{pr:T-dim}] \(e^{-z^2/4\pi} f(z)\) has period \(2\pi\).  Expand it in a Fourier series \(\sum_n a_n e^{\ii n z}\), and use \(\beta = \ii\).
+\item[\ref{pr:T-zeros}] Integrate \(f'/f\) around a parallelogram with sides \(2\pi\) and \(2\pi\ii\).
+\item[\ref{pr:T-fixed}] If \(f(\ii z) = f(z)\), only powers \(z^{4k}\) occur in the Taylor series of \(f\).  Use Problem~\ref{pr:T-zeros} and \(\Theta(0) > 0\).
+\item[\ref{pr:cube}] Use Problem~\ref{pr:sigma-qp} in \(x\).  Both \(\Xi\) and \(1/(\zeta(x) + \zeta(y) + \zeta(w) - \zeta(x+y+w))\) are elliptic in \(x\) with zeros at \(0\), \(-y-w\) and poles at \(-y\), \(-w\).
+\end{description}
+
+\subsection*{\S\ref{sec:periods}}
+\begin{description}
+\item[\ref{pr:hurwitz}] \(g_2 = 4\) and \(g_3 = 0\).  Differentiate \(\wp'^2 = 4\wp^3 - 4\wp\) to get \(\wp'' = 6\wp^2 - 2\), and compare coefficients in Problem~\ref{pr:wp-laurent}.
+\item[\ref{pr:S-vanish}] Replace \(\mu\) by \(\ii\mu\).
+\item[\ref{pr:epstein}] Count the \(\mu\) of norm \(n\) by unique factorization in \(\Z[\ii]\).
+\item[\ref{pr:LL-eta}] Take \(\tau = \ii\), and compare with the Laurent expansion of \(4\zeta(s)L(s, \chi)\) at \(s = 1\).  \(L(1, \chi) = \pi/4\).
+\item[\ref{pr:eta-i}] \(\Delta(\varpi\Z[\ii]) = 64\), and \(\eta(\ii) > 0\).
+\item[\ref{pr:Omega}] \(\Gamma(\tfrac14)\Gamma(\tfrac34) = \pi\sqrt2\), and Problems~\ref{pr:varpi} and~\ref{pr:eta-i}.
+\end{description}
+
+\begin{thebibliography}{Dam}
+\bibitem[CS]{CS} S.~Chowla and A.~Selberg, \emph{On Epstein's zeta-function}, J.\ reine angew.\ Math.\ \textbf{227} (1967), 86--110.
+\bibitem[Dam]{Dam} R.~M.~Damerell, \emph{\(L\)-functions of elliptic curves with complex multiplication.~I}, Acta Arith.\ \textbf{17} (1970), 287--301.
+\bibitem[Gr]{Gr} B.~H.~Gross, \emph{On the periods of abelian integrals and a formula of Chowla and Selberg}, Invent.\ Math.\ \textbf{45} (1978), 193--211.
+\bibitem[La]{La} S.~Lang, \emph{Elliptic Functions}, 2nd ed., Grad.\ Texts in Math.\ 112, Springer, 1987.
+\bibitem[Mu]{Mu} D.~Mumford, \emph{Abelian Varieties}, Tata Inst.\ Fund.\ Res.\ Stud.\ Math.\ 5, Oxford Univ.\ Press, 1970.
+\bibitem[SeA]{SeA} J.-P.~Serre, \emph{A Course in Arithmetic}, Grad.\ Texts in Math.\ 7, Springer, 1973.
+\bibitem[Si1]{Si1} J.~H.~Silverman, \emph{The Arithmetic of Elliptic Curves}, 2nd ed., Grad.\ Texts in Math.\ 106, Springer, 2009.
+\bibitem[We]{We} A.~Weil, \emph{Elliptic Functions according to Eisenstein and Kronecker}, Ergeb.\ Math.\ Grenzgeb.\ 88, Springer, 1976.
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,245 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[zr-]{20261125T001000--zeros-to-ramp-sums__workbook}
+\externaldocument[sm-]{20261125T000000--slope-method__workbook}
+\externaldocument[ch-]{20261125T003000--the-chain-and-the-square-root__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T007000}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\OF}{\mathcal{O}_F}
+\newcommand{\T}{\mathcal{T}}
+\newcommand{\ord}{\operatorname{ord}}
+
+\setlength{\emergencystretch}{2em}
+
+\title{Stepanov without multiplicity: a determinant against Siegel zeros}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Fermat's little theorem, Euler's criterion, Legendre's formula for \(\ord_p n!\), Stirling's formula, the Euler--Maclaurin formula, Mertens' estimate \(\sum_{p \le x} \log p/p = \log x + O(1)\), and Chebyshev's bound \(\vartheta(N) := \sum_{p \le N} \log p \le N \log 4\).  Quadratic fields and the Kronecker symbol \(\chi_D\); every primitive real character is a \(\chi_D\) \cite[Ch.~5]{Dav}.  Section~\ref{sec:graph} uses Section~\ref{sm-sec:minor} of Chapter~\ref{sm-chap}.  We follow \cite[\S\S2--8, App.~D]{N}.  Section~\ref{sec:block} uses the function \(G\) of~\eqref{zr-eq:G} in Chapter~\ref{zr-chap}.  Sections~\ref{sec:block}--\ref{sec:bombieri} refer to Sections~\ref{ch-sec:aux}--\ref{ch-sec:budget} of Chapter~\ref{ch-chap}.
+
+\section{Chebyshev's determinant}\label{sec:chebyshev}
+
+How much can the size and divisibility of one integer say about primes?  For \(N \ge 2\) let \(V_N := \det(u^a)_{1 \le u \le N,\, 0 \le a < N} = \prod_{1 \le i < j \le N} (j - i)\).
+
+\begin{problem}\label{pr:vandermonde}
+\(V_N = \prod_{a < N} a!\), and \(\log V_N \le \frac12 N(N-1) \log N\).
+\end{problem}
+
+\begin{problem}\label{pr:ordVN}
+\(\ord_p V_N \ge \sum_{a < N} \lfloor a/p \rfloor \ge N^2/(2p) - N/2\).  For \(N = 4\), \(p = 2\) the first inequality is an equality.
+\end{problem}
+
+\begin{problem}\label{pr:mertens-upper}
+\(\sum_{p \le N} \log p/p \le \log N + 2\).
+\end{problem}
+
+Each prime is seen through the single congruence \(u^p \equiv u \pmod p\), once for each complete block of \(p\) exponents.  This proof is given in \cite[App.~A]{N}, which credits the observation to Pascadi and to Tao \cite{Tao}.
+
+\section{The Frobenius graph}\label{sec:graph}
+
+Let \(D\) be a fundamental discriminant, \(F := \Q(\sqrt D) \subset \C\), \(\sigma\) the nontrivial automorphism, and \(\OF = \Z[\omega]\) with \(\omega = (1 + \sqrt D)/2\) or \(\sqrt D/2\).  We want \(\sum_{p \le t,\, \chi_D(p) = -1} \log p/p \le (\frac12 + o(1)) \log t\).
+
+\begin{problem}\label{pr:frob}
+If \(p\) is odd and \(\chi_D(p) = -1\), then \(u^p \equiv \sigma(u) \pmod{p\OF}\) for all \(u \in \OF\).  For instance, \((1 + i)^3 \equiv 1 - i \pmod 3\).
+\end{problem}
+
+So modulo such \(p\) the points \((u, \sigma(u))\) lie on the graph \(Y = X^p\).  This is all that Section~\ref{sm-sec:minor} of Chapter~\ref{sm-chap} used about \(\Z[i]\), and we now run that section with \(\Z[i]\), \(\bar u\) and the primes \(p \equiv 3 \pmod 4\) replaced by \(\OF\), \(\sigma(u)\) and the odd primes \(p\) with \(\chi_D(p) = -1\).  For integers \(t \ge 2\), \(H \ge 1\) let \(\T := \{(a, b) \in \Z_{\ge 0}^2 : a + Hb < t\}\), \(T := \lvert \T \rvert\), \(A := \sum_\T a\).
+
+\begin{problem}\label{pr:jet-div}
+Problem~\ref{sm-pr:frob-deriv} holds in this setting: if \(\chi_D(p) = -1\), \(f \in \OF[X, Y]\) and \(u \in \OF\), then \(\bigl(\partial_X^j ((X^p - Y)^k f)\bigr)(u, \sigma(u)) \in p^k \OF\) for all \(j, k \ge 0\).
+\end{problem}
+
+Let \(u_1, \dots, u_I \in \OF\), \(J \ge 1\), and let \(M\) be the \(IJ \times T\) matrix with entries \((\partial_X^j X^a Y^b)(u_i, \sigma(u_i))\), \(0 \le j < J\).  Let \(P_H\) be the set of odd \(p \ge H\) with \(\chi_D(p) = -1\), and \(k_p := \sum_\T \lfloor a/p \rfloor\).
+
+\begin{problem}\label{pr:minor-div}
+For \(p \in P_H\), the set \(\T\) satisfies the hypothesis of Problem~\ref{sm-pr:minor-div}, and every \(T \times T\) minor of \(M\) lies in \(p^{k_p} \OF\).
+\end{problem}
+
+\begin{problem}\label{pr:norm}
+Let \(\lvert u_i \rvert, \lvert \sigma(u_i) \rvert \le B\) with \(B \ge 1\), and let \(\delta\) be a nonzero \(T \times T\) minor.  Then \(\delta\sigma(\delta)\) is a nonzero integer divisible by \(p^{2k_p}\) for \(p \in P_H\), and \(\lvert \delta \rvert, \lvert \sigma(\delta) \rvert \le T^T t^{T(J-1)} B^{\sum_\T (a + b)}\).
+\end{problem}
+
+Problems~\ref{pr:frob}--\ref{pr:norm} prove the following, which for \(\Z[i]\) also follows from Theorem~\ref{sm-thm:minor}.
+
+\begin{theorem}\label{thm:star}
+If \(\lvert u_i \rvert, \lvert \sigma(u_i) \rvert \le B\), \(B \ge 1\), and \(M\) has rank \(T\), then
+\begin{equation}\label{eq:star}
+  \sum_{p \in P_H} k_p \log p \le \Bigl( \sum_\T (a + b) \Bigr) \log B + T\log T + T(J - 1)\log t .
+\end{equation}
+\end{theorem}
+
+\begin{problem}\label{pr:points}
+If \(I \ge \lvert D \rvert\), there are \(I\) distinct \(u \in \OF\) with \(\lvert u \rvert, \lvert \sigma(u) \rvert \le 4 I^{1/2} \lvert D \rvert^{1/4}\).
+\end{problem}
+
+\section{Density one half}\label{sec:density}
+
+Without derivatives, \eqref{eq:star} gives nothing in a quadratic field \cite[Ex.~24]{N}.
+
+\begin{problem}\label{pr:no-derivatives}
+Distinct \(u_i \in \OF\) with \(\lvert u_i \rvert, \lvert \sigma(u_i) \rvert \le B\) number at most \(25B^2\).  Hence if \(J = 1\) and \(M\) has rank \(T\), then \(\log B \ge \log t - \frac12\log H - 3\).
+\end{problem}
+
+So for \(J = 1\) the bound from~\eqref{eq:star} for \(\sum_{H \le p \le t,\, \chi_D(p) = -1} \log p/p\) is at least \(\log t - \frac12 \log H - 3\), worse than Mertens' \(\log(t/H) + O(1)\).  Derivatives let \(I\) be about \(T/J\) \cite{Gr}.  The interpolation input, by a Wronskian argument that \cite[proof of Thm.~1]{Ko} and \cite[Lemma~17]{N} credit to Barreto: if the \(u_i\) are distinct, \(I = 2t\) and \(J = 2\lfloor (t-1)/H \rfloor + 1\), then \(M\) has rank \(T\).  For \(t \ge 6\), \(1 \le H \le t/2\) one has \(T \le t^2/H\), \(A \ge t^3/(8H)\) and \(\sum_\T b \le 8A/H\).
+
+\begin{problem}\label{pr:normalize}
+Under the hypotheses of Theorem~\ref{thm:star}, with \(t \ge 6\) and \(H \le t/2\),
+\(\sum_{p \in P_H,\, p \le t} \log p/p \le (1 + 8/H)\log B + (8/t)\bigl(\log T + (J-1)\log t\bigr) + 16\).
+\end{problem}
+
+\begin{problem}\label{pr:density}
+For \(t \ge \max(16, \lvert D \rvert/2)\), \(H = \lceil \log t \rceil\), \(I = 2t\), \(J = 2\lfloor (t-1)/H \rfloor + 1\) and the points of Problem~\ref{pr:points},
+\[
+  \sum_{p \le t,\ \chi_D(p) = -1} \frac{\log p}{p} \le \frac12 \log t + \frac14 \log\lvert D \rvert + \log\log(3t) + 50 .
+\]
+\end{problem}
+
+A primitive real \(\chi\) of conductor \(q\) has no real zero in \((1 - c/\log 2q, 1)\), with \(c\) effective and depending only on \(\kappa, B_0\), provided \(\sum_{p \le x,\, \chi(p) = -1} \log p/p \le \kappa\log x + B_0\log 2q\) for all \(x \ge 2\) and some \(\kappa < 1\) \cite[Lemma~2, App.~F]{N}.
+
+\begin{problem}\label{pr:kappa}
+Problems~\ref{pr:mertens-upper} and~\ref{pr:density} give this with \(\kappa = \frac34\), \(B_0 = 30\).
+\end{problem}
+
+Thus we have proved the following.
+
+\begin{theorem}\label{thm:siegel}
+There is an effective absolute \(c > 0\) such that \(L(s, \chi) \ne 0\) for real \(s > 1 - c/\log(2q)\), for every primitive real character \(\chi\) of conductor \(q\).
+\end{theorem}
+
+This was first proved in \cite{OAI}, with three variables in a biquadratic field; the proof here follows \cite{Gr} and \cite{N}.
+
+\section{One congruence per block}\label{sec:block}
+
+Alpöge called this argument ``Stepanov without multiplicity'' \cite[p.~2]{Alp}.  What does it lose?  For \(V_N\) both sides are exact.  Let \(r_n\) be the remainder of \(N\) modulo \(n\), and \(W(N) := \sum_{n \le N} \Lambda(n)\, r_n(n - r_n)/(2n)\).
+
+\begin{problem}\label{pr:sawtooth}
+\(\sum_{a < N} \lfloor a/n \rfloor = \frac N2 \bigl(\frac Nn - 1\bigr) + \frac{r_n(n - r_n)}{2n}\).  Hence \(\log V_N = \frac N2 \sum_{n \le N} \Lambda(n)\bigl(\frac Nn - 1\bigr) + W(N)\), with \(0 \le W(N) \le N\psi(N)/8\).
+\end{problem}
+
+\begin{problem}\label{pr:G-chebyshev}
+For \(G\) as in~\eqref{zr-eq:G} of Chapter~\ref{zr-chap}, \(G(N) = (\gamma - \frac12)N - 2W(N)/N + O(1)\).  In particular \(G(N) \le (\gamma - \frac12)N + O(1)\).
+\end{problem}
+
+For \(N = 10^4\), \(G(N) = 1.749\ldots\) while \((\gamma - \frac12)N = 772.15\ldots\).  The determinant gives a one-sided bound for \(G\) with error of order \(N\), and nothing more: the rest is the sawtooth sum \(W(N)\).  In Section~\ref{sec:graph} the floors \(\lfloor a/p \rfloor\) cost the constant \(16\) of Problem~\ref{pr:normalize} in the same way.  An error \(O(1)\) in \(\sum \log p/p\) is Chebyshev strength.  It suffices for Theorem~\ref{thm:siegel}, where a real zero would change the main term by a constant factor.  It is far from \(G(x) \le x^{1/2 + \varepsilon}\), which the Riemann hypothesis needs.  One determinant is a chain of length \(m = 1\) in Problem~\ref{ch-pr:toy}.
+
+\section{Multiplicity in Bombieri's form}\label{sec:bombieri}
+
+Stepanov's polynomial vanishes to order about \(\sqrt q\) (Theorem~\ref{ch-thm:stepanov}); order one gives nothing (Problem~\ref{ch-pr:order-one}).  Bombieri gets multiplicity from a \(Q\)-th power \cite{Bom74}, \cite[App.~D]{N}.
+
+Let \(k\) be a finite field of odd characteristic, \(f \in k[X]\) of degree \(d = 2g + 1\), \(g \ge 1\), and \(R := k[x, y]\) with \(y^2 = f(x)\).  For \(\phi = a(x) + b(x)y\) let \(\lambda(\phi) := \deg(a^2 - b^2 f)\), and \(R_\ell := \{\phi : \lambda(\phi) \le \ell\}\).
+
+\begin{problem}\label{pr:hyp-degree}
+\(\lambda(a + by) = \max(2\deg a, 2\deg b + d)\) and \(\lambda(\phi\psi) = \lambda(\phi) + \lambda(\psi)\); \(\dim_k R_\ell = \ell + 1 - g\) for \(\ell \ge 2g\).
+\end{problem}
+
+\begin{problem}\label{pr:hyp-zeros}
+A nonzero \(\phi \in R\) vanishes at no more than \(\lambda(\phi)\) points \((\xi, \eta)\) over a finite extension of \(k\).
+\end{problem}
+
+Let \(Q\) be a power of \(\lvert k \rvert\), and \(N\) the number of \((\xi, \eta) \in \F_{Q^2}^2\) with \(\eta^2 = f(\xi)\).  Let \(2g \le \ell_1 < Q\), \(\ell_2 \ge 2g\), and \((x_i)\), \((y_j)\) bases of \(R_{\ell_1}\), \(R_{\ell_2}\) with distinct \(\lambda\).  For \(c_{ij} \in k\) let \(f_c := \sum c_{ij} x_i y_j^Q\) and \(\tilde f_c := \sum c_{ij} x_i^Q y_j\).
+
+\begin{problem}\label{pr:bomb-power}
+If \(c \ne 0\) and \(\tilde f_c = 0\), then \(f_c \ne 0\), \(f_c\) vanishes at all \(N\) points, and \(N \le \ell_1 + Q\ell_2\).
+\end{problem}
+
+\begin{problem}\label{pr:bomb-count}
+Such \(c\) exists for \(\ell_1 = Q - 1\), \(\ell_2 = Q + 2g\) if \(Q > (g+1)^2\).  Hence \(N \le Q^2 + (2g+1)Q - 1\).
+\end{problem}
+
+For \(f = X^3 - X\) over \(\F_3\) and \(Q = 27\), \(N = 783\) and the bound is \(809\).  The function \(f_c^Q\) vanishes to order \(Q\) at every point, for free, because \((\sum c\phi)^Q = \sum c^Q\phi^Q\), \(c^Q = c\), and all points share the Frobenius \(\xi \mapsto \xi^{Q^2}\).
+
+\begin{problem}\label{pr:wieferich}
+\((X + Y)^p - X^p - Y^p \in p\Z[X, Y] \setminus p^2\Z[X, Y]\).  The primes \(p < 4000\) with \(2^p \equiv 2 \pmod{p^2}\) are \(1093\) and \(3511\).
+\end{problem}
+
+Over \(\Z\) the \(p\)-th power is additive and fixes integers only modulo \(p\), and \(p\) varies.  The determinant of Section~\ref{sec:graph} is nonzero by interpolation, handles all \(p \ge H\) because \(\T\) is stable under \(X^p \mapsto Y\), and sees \(p\) because \(X^p - Y\) vanishes at \((u, \sigma u)\) to first order modulo \(p\).  In Alpöge's argument \cite{Alp} the multiplicity returns through a chain of \(m\) maps (Theorem~\ref{ch-thm:chain}), and the budget \(x/m + m\) of Problem~\ref{ch-pr:half} balances at \(m \approx \sqrt x\), as \(\ell\) and \(Q\) do above.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:chebyshev}}
+\begin{description}
+\item[\ref{pr:ordVN}] Use \(u^p \equiv u \pmod p\) to change the columns by a unitriangular matrix.  For the second inequality, split \([0, N)\) into blocks of length \(p\).
+\item[\ref{pr:mertens-upper}] Sum Problem~\ref{pr:ordVN} over \(p \le N\) with weight \(\log p\), and use Chebyshev's bound.
+\end{description}
+
+\subsection*{\S\ref{sec:graph}}
+\begin{description}
+\item[\ref{pr:frob}] Write \(2u = x + y\sqrt D\) and use Euler's criterion for \(D^{(p-1)/2}\).
+\item[\ref{pr:jet-div}] Problem~\ref{pr:frob} and the Leibniz rule, as for Problem~\ref{sm-pr:frob-deriv}.
+\item[\ref{pr:minor-div}] \(p \ge H\).  Then the proof of Problem~\ref{sm-pr:minor-div}, with Problem~\ref{pr:jet-div}.
+\item[\ref{pr:points}] Take \(x + y\omega\) in a box with \(\lvert x \rvert \approx \lvert y \rvert \sqrt{\lvert D \rvert}\); note \(\lvert \omega \rvert, \lvert \sigma\omega \rvert \le \sqrt{\lvert D \rvert}\).
+\end{description}
+
+\subsection*{\S\ref{sec:density}}
+\begin{description}
+\item[\ref{pr:no-derivatives}] Count the possible values of \(u + \sigma u\) and \((u - \sigma u)/\sqrt D\).  For the second claim compare \(T\) with \(I\).
+\item[\ref{pr:normalize}] \(\lfloor a/p \rfloor \ge a/p - 1\), and \(\vartheta(t) \le 2t\).
+\item[\ref{pr:density}] Insert Problem~\ref{pr:points} into Problem~\ref{pr:normalize}, and treat the primes below \(H\) by Problem~\ref{pr:mertens-upper}.
+\item[\ref{pr:kappa}] Absorb \(\log\log(3t)\) into \(\frac14\log t\) plus a constant.
+\end{description}
+
+\subsection*{\S\ref{sec:block}}
+\begin{description}
+\item[\ref{pr:sawtooth}] Split \([0, N)\) into blocks of length \(n\).  Then \(\log a! = \sum_n \Lambda(n)\lfloor a/n \rfloor\).
+\item[\ref{pr:G-chebyshev}] Show \(\frac2N \log V_N = N\log N - \frac32 N + O(1)\) by Stirling and Euler--Maclaurin.
+\end{description}
+
+\subsection*{\S\ref{sec:bombieri}}
+\begin{description}
+\item[\ref{pr:hyp-degree}] Parity of \(2\deg a\) and \(2\deg b + d\); \(a^2 - b^2 f\) is \(\phi\) times its conjugate.
+\item[\ref{pr:hyp-zeros}] Count the roots of \(a^2 - b^2 f\) with multiplicity.
+\item[\ref{pr:bomb-power}] The \(\lambda(x_i y_j^Q)\) are distinct.  At the points, \(f_c^Q = \sum c\, x_i^Q y_j^{Q^2}\) takes the value of \(\tilde f_c\).
+\item[\ref{pr:bomb-count}] \(\tilde f_c \in R_{Q\ell_1 + \ell_2}\); compare dimensions.
+\item[\ref{pr:wieferich}] The coefficient of \(X^{p-1}Y\) is \(p\).
+\end{description}
+
+\begin{thebibliography}{OAI}
+
+\bibitem[Alp]{Alp}
+L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
+
+\bibitem[Bom74]{Bom74}
+E.~Bombieri, \emph{Counting points on curves over finite fields (d'apr\`es S.~A.~Stepanov)}, S\'eminaire Bourbaki, Exp.~430, Lecture Notes in Math. \textbf{383}, Springer, 1974, 234--241.
+
+\bibitem[Dav]{Dav}
+H.~Davenport, \emph{Multiplicative Number Theory}, 3rd ed., revised by H.~L.~Montgomery, Grad. Texts in Math. \textbf{74}, Springer, 2000.
+
+\bibitem[Gr]{Gr}
+B.~Green, \emph{On Landau--Siegel zeros}, Hexagon preprint hexagon:2610.00311v2, 2026, \url{https://hexagonmath.org/2610.00311v2}.
+
+\bibitem[Ko]{Ko}
+S.~D.~Kominers, \emph{Small algebraic integers and Frobenius prime sums}, Hexagon preprint hexagon:2610.00451v1, 2026, \url{https://hexagonmath.org/2610.00451v1}.
+
+\bibitem[N]{N}
+P.~D.~Nelson, \emph{Some notes on recent results on Landau--Siegel zeros}, note, 2026, \url{https://ultronozm.github.io/math/20261020T163023--siegel-zeros.html}.
+
+\bibitem[OAI]{OAI}
+OpenAI, \emph{Uniform exclusion of Landau--Siegel zeros}, OpenAI Math Release preprint, 1 October 2026, \url{https://github.com/openai/math/blob/main/preprints/Uniform-exclusion-of-Landau-Siegel-zeros-October-1-2026/paper.pdf}.
+
+\bibitem[Tao]{Tao}
+T.~Tao, \emph{A sketch of the proof of non-existence of Siegel zeroes}, What's new, 19 October 2026, \url{https://terrytao.wordpress.com/2026/10/19/a-sketch-of-the-proof-of-non-existence-of-siegel-zeroes/}.
+
+\end{thebibliography}
+
+\end{document}

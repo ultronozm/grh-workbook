@@ -1,0 +1,212 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[ds-]{20261125T004000--denominators-and-sha__workbook}
+\externaldocument[ps-]{20261125T010500--poincare-series-and-near-orthogonality__workbook}
+\externaldocument[ec-]{20261124T223000--elliptic-curves-for-the-proof__workbook}
+\externaldocument[sm-]{20261125T000000--slope-method__workbook}
+\externaldocument[si-]{20261125T000100--slope-inequality-in-the-mean__workbook}
+\externaldocument[cv-]{20261125T006000--covolumes__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T006500}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Pb}{\mathbb{P}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Hc}{\mathcal{H}}
+\newcommand{\Ac}{\mathcal{A}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\mumax}{\mu_{\max}}
+\newcommand{\mumin}{\mu_{\min}}
+\newcommand{\covol}{\operatorname{covol}}
+\newcommand{\Cl}{\mathrm{Cl}}
+\newcommand{\Sym}{\operatorname{Sym}}
+\newcommand{\hF}{h_{\mathrm{F}}}
+\newcommand{\cc}{\hat{c}_1}
+
+\setlength{\emergencystretch}{2em}
+
+\title{Covolumes and periods}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Weierstrass functions and theta functions of one variable, and \(\Delta(\Z + \Z\tau) = (2\pi)^{12}\eta(\tau)^{24}\) \cite[\S VII.4.4]{SeA}.  Modular forms for \(\mathrm{SL}_2(\Z)\), \(q\)-expansions and the valence formula \cite[Ch.~VII]{SeA}.  From Chapter~\ref{ec-chap}: Sections~\ref{ec-sec:tori}, \ref{ec-sec:theta} and~\ref{ec-sec:periods}.  From Chapter~\ref{sm-chap}, \emph{The slope method}: Section~\ref{sm-sec:slopes}.  From Chapter~\ref{cv-chap}: Theorem~\ref{cv-thm:HS}, Problems~\ref{cv-pr:bergman}, \ref{cv-pr:base-change} and~\ref{cv-pr:L2-sup}, and Section~\ref{cv-sec:definite}.
+
+In Chapter~\ref{cv-chap} the leading term of a covolume was an arithmetic self-intersection.  For theta functions on an elliptic curve it vanishes, and a period takes its place.  Where does the period come from, and how does it enter lattices of modular forms and of forms on a definite group?
+
+\section{Theta functions on an elliptic curve}\label{sec:theta}
+
+Let \(\Lambda \subset \C\) be a lattice, with \(\sigma\), \(\wp\) and the quasi-period map \(\eta\) as in Section~\ref{ec-sec:tori}.  Let \(A(\Lambda)\) be the area of \(\C/\Lambda\), and \(\Delta(\Lambda) = g_2^3 - 27g_3^2\).
+
+\begin{problem}\label{pr:s2}
+There is a unique \(s_2 \in \C\) with \(\eta(\lambda) = s_2\lambda + \pi\bar\lambda/A(\Lambda)\) for all \(\lambda \in \Lambda\).
+\end{problem}
+
+\begin{problem}\label{pr:F}
+The function
+\[
+  F(z) := \lvert \sigma(z) \rvert \exp\Bigl( -\tfrac12 \operatorname{Re}(s_2 z^2) - \frac{\pi \lvert z \rvert^2}{2A(\Lambda)} \Bigr)
+\]
+is \(\Lambda\)-periodic, and \(F(z)/\lvert z \rvert \to 1\) as \(z \to 0\).
+\end{problem}
+
+\begin{problem}\label{pr:F-dup}
+\(F(-z) = F(z)\) and \(F(2z) = \lvert\wp'(z)\rvert\, F(z)^4\).
+\end{problem}
+
+Let \(E = \C/\Lambda\), and let \(\omega\) be its cotangent space at the origin.  Since the fiber of \(\Oc([0])\) at the origin is the tangent space, \(\Oc([0]) \otimes \omega\) is trivial there.  By Problem~\ref{pr:F} it has a metric, trivial at the origin and with translation-invariant curvature, for which the canonical section (pulled back to \(\sigma\) on \(\C\)) tensored with \(dz\) has norm \(F\); this is the cubist metric of Moret-Bailly \cite{MB85}.
+
+For a differential \(\omega = c\,dz\), let \(\Lambda_\omega = c\Lambda\) be its period lattice, \(x_\omega := c^{-2}\wp\) and \(y_\omega := c^{-3}\wp'/2\), so that \(dx_\omega/2y_\omega = \omega\) and the Weierstrass equation of \((x_\omega, y_\omega)\) has discriminant \(\Delta(\Lambda_\omega)\).  Let \(f_0 := 1\), \(f_2 := x_\omega\), \(f_3 := y_\omega\), \(f_4 := x_\omega^2\), and so on, with \(f_j\) of pole order \(j\); for \(k \ge 1\), \(f_0, f_2, \dots, f_k\) span the elliptic functions with poles of order at most \(k\) at \(\Lambda\) only.  Put
+\[
+  \lVert f\,\omega^{k} \rVert^2 := \frac{\lvert c \rvert^{2k}}{A(\Lambda)} \int_{\C/\Lambda} \lvert f \rvert^2 F^{2k} \, dA ,
+\]
+the \(L^2\) norm of a section of \((\Oc([0]) \otimes \omega)^{\otimes k}\), and let \(G_k(\omega)\) be the Gram determinant of \(f_0\omega^k, f_2\omega^k, \dots, f_k\omega^k\).
+
+For the next problem let \(\Lambda = \Z + \Z\tau\), let \(\vartheta\) be as in Section~\ref{ec-sec:theta}, and for \(0 \le a < k\) let \(\vartheta_{k,a}(z) := \sum_{n \in \Z} e^{\pi\ii k\tau(n + a/k)^2 + 2\pi\ii k z(n + a/k)}\).
+
+\begin{problem}\label{pr:theta-norm}
+The functions \(\vartheta_{k,a}\), \(0 \le a < k\), are orthogonal for the weight \(e^{-2\pi k (\operatorname{Im} z)^2/\operatorname{Im}\tau}\) on \(\C/\Lambda\) with the measure \(dA/\operatorname{Im}\tau\), and each has norm squared \((2k\operatorname{Im}\tau)^{-1/2}\).
+\end{problem}
+
+Jacobi's derivative formula reads \(\lvert \vartheta'(\tfrac{1+\tau}{2}) \rvert = e^{\pi\operatorname{Im}\tau/4} (2\pi)^{-1/2} \lvert \Delta(\Z + \Z\tau) \rvert^{1/8}\) \cite[Ch.~I, \S\S13--14]{MuT}.
+
+\begin{problem}\label{pr:norm-k1}
+\(G_1(\omega) = \lVert \omega \rVert^2 = \sqrt2\,\pi\, A(\Lambda_\omega)^{-1/2} \lvert \Delta(\Lambda_\omega) \rvert^{-1/4}\).
+\end{problem}
+
+\begin{theorem}\label{thm:Gk}
+For every nonzero differential \(\omega\) on \(E\) and every \(k \ge 1\),
+\[
+  -\tfrac12 \log G_k(\omega) = \frac{k}{4}\log A(\Lambda_\omega) + \frac{k^2 + 2}{24} \log\lvert \Delta(\Lambda_\omega) \rvert + \frac{k}{4}\log\frac{k}{2\pi^2} .
+\]
+\end{theorem}
+
+For \(k = 1\) this is Problem~\ref{pr:norm-k1}; for general \(k\) it follows from Moret-Bailly's key formula \cite[Ch.~VIII]{MB85}, \cite{MB90}, in the metrized form of Bost \cite[Thm.~4.10(v)]{Bo96}.  We have checked it numerically for \(k \le 6\).
+
+\begin{problem}\label{pr:homog}
+\(A(c\Lambda) \lvert \Delta(c\Lambda) \rvert^{1/6} = A(\Lambda) \lvert \Delta(\Lambda) \rvert^{1/6}\).  Moreover \(G_k(c\,\omega) = \lvert c \rvert^{2N_k} G_k(\omega)\) with \(N_k = (k^2 - k + 2)/2\), and the right side of Theorem~\ref{thm:Gk} also changes by \(-N_k\log\lvert c \rvert\) when \(\omega\) is replaced by \(c\,\omega\).
+\end{problem}
+
+Now let \(E\) be an elliptic curve over a number field \(K\) with a Weierstrass equation over \(\Oc_K\) of unit discriminant \(\Delta_E\), and \(\omega = dx/(2y + a_1x + a_3)\); a curve with complex multiplication has such an equation over a finite extension \cite{ST68}, \cite[\S VIII.8]{Si1}.  Let \(\Lambda_\sigma\) be the period lattice of \(\omega^\sigma\) for \(\sigma \colon K \to \C\).  The \emph{Faltings height}, in Deligne's normalization \cite{De85}, is
+\[
+  \hF(E) := -\frac{1}{2[K:\Q]} \sum_\sigma \log A(\Lambda_\sigma) = -\frac{1}{2[K:\Q]} \sum_\sigma \log\bigl(A(\Lambda_\sigma)\lvert\Delta(\Lambda_\sigma)\rvert^{1/6}\bigr),
+\]
+the second form by the product formula; by Problem~\ref{pr:homog} it does not change under extension of \(K\).  Let \(M_k\) be the \(\Oc_K\)-lattice with basis \(f_0\omega^k, f_2\omega^k, \dots, f_k\omega^k\), the sections of \((\Oc([0]) \otimes \omega)^{\otimes k}\) on the Weierstrass model.  Theorem~\ref{thm:Gk} gives:
+
+\begin{theorem}\label{thm:Mk}
+\(\displaystyle \frac{\deg M_k}{[K:\Q]} = -\frac{k}{2}\,\hF(E) + \frac{k}{4}\log\frac{k}{2\pi^2}\), and hence \(\mu^\sharp(M_k) = -\hF(E) + \tfrac12\log\dfrac{k}{2\pi^2}\).
+\end{theorem}
+
+The degree has no term in \(k^2\): \(\cc(\bar L)^2 = 0\) for the cubist metric, because \([2]^*\bar L \cong \bar L^{\otimes 4}\) (compare Problem~\ref{pr:F-dup}) and \([2]\) has degree \(4\).  The period takes the place of the leading term of Theorem~\ref{cv-thm:HS}.
+
+\begin{problem}\label{pr:hF-i}
+Let \(E\) have complex multiplication by \(\Z[\ii]\), and let \(\Omega\) be as in Problem~\ref{ec-pr:Omega}.  Then \(\hF(E) = -\tfrac12\log(\pi\Omega) = -2\log\Gamma(\tfrac14) + \tfrac12\log 4\pi = -1.31053\ldots\)
+\end{problem}
+
+\begin{problem}\label{pr:hF-CS}
+For \(E\) as in Problem~\ref{pr:hF-i}, \(\hF(E) = \tfrac12\, L'(1,\chi)/L(1,\chi) - \tfrac12\gamma - \log\pi\), where \(\chi\) is the character modulo \(4\).  Hence \(\mu^\sharp(M_k) = \tfrac12\bigl(\log\tfrac{k}{2} + \gamma - L'(1,\chi)/L(1,\chi)\bigr)\).
+\end{problem}
+
+So Euler's constant and \(L'(1,\chi)/L(1,\chi)\), which enter the slope method through the heights at infinity (Section~\ref{si-sec:inputs} of \emph{The slope inequality in the mean}), also enter the slope of the lattice of forms whose dual is the target.
+
+\section{Cusp forms of level one}\label{sec:modular}
+
+Let \(M_k(\Z)\) be the lattice of modular forms of weight \(k\) for \(\mathrm{SL}_2(\Z)\) with \(q\)-expansion in \(\Z[[q]]\), \(S_k(\Z)\) its cusp forms, and \(\Delta(\tau) := q\prod_{n \ge 1}(1-q^n)^{24} = (2\pi)^{-12}\Delta(\Z + \Z\tau)\).  The Petersson norm is \(\lVert f \rVert^2 := \int_{\mathrm{SL}_2(\Z)\backslash\Hc} \lvert f \rvert^2 y^{k-2} \, dx\,dy\).
+
+\begin{problem}\label{pr:Sk}
+\(S_k(\Z) = \Delta\cdot M_{k-12}(\Z)\), and \(S_k(\Z)\) is a lattice of rank \(\dim S_k\).
+\end{problem}
+
+\begin{problem}\label{pr:Sk-one}
+\(S_k(\Z)\) has rank one exactly for \(k \in \{12, 16, 18, 20, 22, 26\}\), and then \(S_k(\Z) = \Z\,\Delta E_{k-12}\), where \(E_0 = 1\), \(E_4\), \(E_6\), \(E_8 = E_4^2\), \(E_{10} = E_4E_6\) and \(E_{14} = E_4^2E_6\) are the normalized Eisenstein series.
+\end{problem}
+
+For example \(\lVert\Delta\rVert^2 = 1.035362\ldots \cdot 10^{-6}\) (Section~\ref{ps-sec:petersson} of Chapter~\ref{ps-chap}), so \(\deg S_{12}(\Z) = 6.8904\ldots\)  How fast do the slopes grow with \(k\)?
+
+\begin{problem}\label{pr:Sk-lambda}
+Every nonzero \(f \in S_k(\Z)\) has \(\lVert f \rVert^2 \ge 3e^{-\pi k/3}/(\pi k)\).  Hence \(\mumax(S_k(\Z)) \le \pi k/6 + O(\log k)\).
+\end{problem}
+
+This linear growth is what Theorem~\ref{cv-thm:HS} predicts for the Hodge bundle \(\omega\), but the Petersson metric is singular at the cusp; its self-intersection was computed by K\"uhn \cite{Ku01}.  Problem~\ref{pr:Sk-lambda} does not use this self-intersection: it compares the Petersson norm with a norm on the half-strip \(y \ge 1\), as Problems~\ref{cv-pr:bergman} and~\ref{cv-pr:L2-sup} compare norms.
+
+A form \(f\) gives the section \(f(\tau)(2\pi\ii\,dz)^k\) of \(\omega^k\) on \(E_\tau = \C/(\Z + \Z\tau)\), and \(2\pi\ii\,dz\) is the integral differential \(dt/t\) of the Tate curve \cite{Ka73}; the Petersson metric is \(\lVert dz \rVert^2 = y\).
+
+\begin{problem}\label{pr:pet-cm}
+The function \(y^6\lvert\Delta(\tau)\rvert\) is invariant under \(\mathrm{SL}_2(\Z)\).  If \(\Z + \Z\tau\) is the ring of integers of an imaginary quadratic field of class number one and \(E_\tau\) is as above, then
+\[
+  \hF(E_\tau) = -\tfrac{1}{12}\log\bigl(y^6\lvert\Delta(\tau)\rvert\bigr) - \log 2\pi .
+\]
+In particular \(\Delta(\ii) = (\Omega/4\pi)^6\).
+\end{problem}
+
+So the Petersson norm of \(\Delta\) at a point with complex multiplication is the Faltings height, and \(-\log 2\pi\) is the change from \(dz\) to \(2\pi\ii\,dz\).  Such normalizations move terms linear in the weight, as the main terms are, and must be fixed once.
+
+\section{The period on a definite group}\label{sec:definite-period}
+
+The lattice \(V_\lambda(L)_\Z\) of Section~\ref{cv-sec:definite} is defined by \(L\), the homology of the torus \(L_\C/L\); the algebraic structure is defined by differentials.  For \(L = I_n\) the torus is \(E^n\) with \(E = \C/\Oc\); since \(\Oc\) is a principal ideal domain, every \(L\) is free over \(\Oc\) and every \(L_\C/L\) is isomorphic to \(E^n\).  Let \(\omega = c\,dz\) be the invariant differential of a Weierstrass equation for \(E\), let \(V_\lambda(L)^{\mathrm{alg}}\) be the image of the tensor powers of \(c^{-1}L\) (for \(L = I_n\), the \(\Oc\)-span of the \(\partial_k := c^{-1}e_k\)), and let \(\Ac_\lambda(n)^{\mathrm{alg}}\) be the corresponding lattice of forms.
+
+\begin{problem}\label{pr:dR-shift}
+\(\mu\bigl(\Ac_\lambda(n)^{\mathrm{alg}}\bigr) = \mu\bigl(\Ac_\lambda(n)_\Z\bigr) + \lvert\lambda\rvert\log A(c\,\Oc)\).  For \(y^2 = x^3 - x\) and \(\omega = dx/2y\), \(A(c\,\Oc) = \varpi^2 = \pi\Omega/2\).
+\end{problem}
+
+Over a field where \(E\) has an equation of unit discriminant, Problems~\ref{pr:hF-i} and~\ref{cv-pr:base-change} give instead an increase of \(\mu^\sharp\) by \(-2\lvert\lambda\rvert\hF(E) = \lvert\lambda\rvert\log(\pi\Omega) = \lvert\lambda\rvert(\gamma + 2\log\pi - L'(1,\chi)/L(1,\chi))\); the difference \(\lvert\lambda\rvert\log 2\) comes from the prime above \(2\).  So the period enters the slope of the lattice of forms linearly in the weight.  In Alpöge's argument \cite{Alp}, \cite{Zh} the lattices are of forms on unitary groups of signature \((p,q)\), and the period enters with coefficient \(p - q\) times the weight \cite[Hyp.~15.58]{Adr}.  These groups are indefinite, and their Shimura varieties have positive dimension; Section~\ref{sec:modular}, on \(X(1)\), is the closer model, and the definite case of this section is a model only.  What the sizes do not account for are the denominators of maps that do not respect integral structures; the next part, from Chapter~\ref{ds-chap} on, measures them.
+
+\section*{Hints}
+\paragraph{Section~\ref{sec:theta}.}
+\begin{description}
+\item[\ref{pr:s2}] \(\eta\) is \(\Z\)-linear, so it extends to an \(\R\)-linear map \(\C \to \C\), and such a map is \(z \mapsto \alpha z + \beta\bar z\).  Legendre's relation (Problem~\ref{ec-pr:legendre}) determines \(\beta\).
+\item[\ref{pr:F}] Use Problem~\ref{ec-pr:sigma-qp} and Problem~\ref{pr:s2}.
+\item[\ref{pr:F-dup}] \(\sigma\) is odd.  Let \(v \to u\) in Problem~\ref{ec-pr:sigma-add} to get \(\sigma(2u) = -\wp'(u)\sigma(u)^4\).
+\item[\ref{pr:theta-norm}] Integrate first over \(\operatorname{Re} z \in [0,1]\), then unfold the sum over \(n\) against the integral over \(\operatorname{Im} z \in [0, \operatorname{Im}\tau]\).
+\item[\ref{pr:norm-k1}] Both sides depend only on \((E, \omega)\), and change by the same factor when \(\omega\) is multiplied by a constant.  So one may take \(\Lambda = \Z + \Z\tau\) and \(\omega = dz\).  Write \(\sigma\) through \(\vartheta(z + \tfrac{1+\tau}{2})\) (Problem~\ref{ec-pr:sigma-theta}); the constant is fixed by \(\sigma'(0) = 1\).  Note \(\eta(1) = s_2 + \pi/\operatorname{Im}\tau\) and \(\operatorname{Re}(z^2) - \lvert z \rvert^2 = -2(\operatorname{Im} z)^2\).
+\item[\ref{pr:homog}] \(\Delta(c\Lambda) = c^{-12}\Delta(\Lambda)\), and \(f_j\) for \(c\,\omega\) is \(c^{-j}\) times \(f_j\) for \(\omega\).
+\item[\ref{pr:hF-i}] Every conjugate of \(E\) is isomorphic to \(\C/\Z[\ii]\).  Take \(\Lambda = \Z[\ii]\) in the invariant form of \(\hF\), and use Problems~\ref{ec-pr:eta-i} and~\ref{ec-pr:Omega}.
+\item[\ref{pr:hF-CS}] Theorem~\ref{ec-thm:LL}.
+\end{description}
+\paragraph{Section~\ref{sec:modular}.}
+\begin{description}
+\item[\ref{pr:Sk}] \(1/\Delta = q^{-1}\prod_{n \ge 1}(1-q^n)^{-24}\) has integral coefficients.  For the rank, \(S_k\) has a basis of products of \(\Delta\), \(E_4\) and \(E_6\) \cite[\S VII.3]{SeA}, and \(f \mapsto (a_1, \dots, a_d)\), \(d = \dim S_k\), is injective by the valence formula.
+\item[\ref{pr:Sk-one}] \(\dim S_k = \dim M_{k-12}\), and \(M_{k-12}\) is spanned by a form with \(q\)-expansion \(1 + O(q)\) when it is one-dimensional.
+\item[\ref{pr:Sk-lambda}] The half-strip \(\lvert x \rvert \le \tfrac12\), \(y \ge 1\) lies in the fundamental domain.  If the first nonzero coefficient of \(f\) is \(a_m\), integrate \(\lvert f \rvert^2\) over \(x\) by Parseval and use \(y^{k-2} \ge 1\).  The valence formula gives \(m \le k/12\).  For the slope, Minkowski's theorem gives a nonzero vector of length at most \(\sqrt{s}\,\covol(V)^{1/s}\) in a lattice \(V\) of rank \(s\).
+\item[\ref{pr:pet-cm}] Use the invariant form of \(\hF\) in Section~\ref{sec:theta}, with \(\Lambda = \Z + \Z\tau\).  For \(\Delta(\ii)\), Problem~\ref{ec-pr:Omega}.
+\end{description}
+\paragraph{Section~\ref{sec:definite-period}.}
+\begin{description}
+\item[\ref{pr:dR-shift}] The period lattice of \(\omega\) is \(c\,\Oc\).  Scale each basis vector by \(c^{-\lvert\lambda\rvert}\).  For the curve, use Problem~\ref{ec-pr:varpi}: the period lattice of \(dx/2y\) is \(\varpi\Z[\ii]\).
+\end{description}
+
+\begin{thebibliography}{MB1}
+\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[Alp]{Alp} L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
+\bibitem[Bo]{Bo96} J.-B.~Bost, \emph{Intrinsic heights of stable varieties and abelian varieties}, Duke Math.\ J.\ \textbf{82} (1996), 21--70.
+\bibitem[De]{De85} P.~Deligne, \emph{Preuve des conjectures de Tate et de Shafarevitch (d'apr\`es G.~Faltings)}, S\'eminaire Bourbaki, Exp.~616, Ast\'erisque \textbf{121--122} (1985), 25--41.
+\bibitem[Ka]{Ka73} N.~M.~Katz, \emph{\(p\)-adic properties of modular schemes and modular forms}, in \emph{Modular Functions of One Variable~III}, Lecture Notes in Math.\ 350, Springer, 1973, 69--190.
+\bibitem[K\"u]{Ku01} U.~K\"uhn, \emph{Generalized arithmetic intersection numbers}, J.\ reine angew.\ Math.\ \textbf{534} (2001), 209--236.
+\bibitem[MB1]{MB85} L.~Moret-Bailly, \emph{Pinceaux de vari\'et\'es ab\'eliennes}, Ast\'erisque \textbf{129} (1985).
+\bibitem[MB2]{MB90} L.~Moret-Bailly, \emph{Sur l'\'equation fonctionnelle de la fonction th\^eta de Riemann}, Compositio Math.\ \textbf{75} (1990), 203--217.
+\bibitem[MuT]{MuT} D.~Mumford, \emph{Tata Lectures on Theta~I}, Progr.\ Math.\ 28, Birkh\"auser, 1983.
+\bibitem[SeA]{SeA} J.-P.~Serre, \emph{A Course in Arithmetic}, Grad.\ Texts in Math.\ 7, Springer, 1973.
+\bibitem[Si]{Si1} J.~H.~Silverman, \emph{The Arithmetic of Elliptic Curves}, 2nd ed., Grad.\ Texts in Math.\ 106, Springer, 2009.
+\bibitem[ST]{ST68} J.-P.~Serre and J.~Tate, \emph{Good reduction of abelian varieties}, Ann.\ of Math.\ \textbf{88} (1968), 492--517.
+\bibitem[Zh]{Zh} R.~Zhang, \emph{A preliminary note on Alp\"oge's proposed proof of the generalized Riemann hypothesis}, preprint, 2026, hexagon:2611.00809.
+\end{thebibliography}
+
+\end{document}

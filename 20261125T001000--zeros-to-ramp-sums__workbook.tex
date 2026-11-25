@@ -1,0 +1,343 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[ip-]{20261124T214600--the-isotropic-plane__workbook}
+\externaldocument[gf-]{20261125T005000--galois-fourier-and-averaging__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T001000}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\newcommand{\one}{\mathbf{1}}
+
+\setlength{\emergencystretch}{2em}
+
+\title{From zeros to a one-sided ramp sum}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+
+\paragraph{Prerequisites.}
+The zeta function and Dirichlet $L$-functions as in \cite{Dav}: the Hadamard product and the constant $B$ (Ch.~12), the explicit formula for $\psi(x)$ and its contour shift (Ch.~17), and their analogues for $L(s, \chi)$ (Ch.~12 and~19), with $L(1, \chi) \ne 0$ (Ch.~4).  Chebyshev's bound $\psi(x) \ll x$.  Mellin transforms.  The theorems of Landau and of Kaczorowski--Pintz are stated in \S\ref{sec:landau}.  Chapter~\ref{ip-chap} is used only for motivation, in \S\ref{sec:smoothing}. % check-numbers: ok (Davenport): Ch.~12; Ch.~17; Ch.~12 and~19; Ch.~4
+
+\medskip
+A comparison of divisibility with size, as in Chebyshev's method, gives upper bounds for weighted sums over primes, and nothing else.  Can an upper bound for a sum over primes prove the Riemann hypothesis?  This chapter shows that it can, for a suitable weight, following the reduction used in Alp\"oge's argument \cite{Alp}.  The upper bound itself is not treated here.
+
+\section{The ramp sum}\label{sec:ramp}
+
+Write $v_+ := \max(v, 0)$ for real $v$, and let $\Lambda$ be the von Mangoldt function.  The \emph{ramp} at $x$ is the function $n \mapsto (x/n - 1)_+$: it is large for small $n$, decreases, and vanishes for $n \ge x$.  Let
+\begin{equation}\label{eq:G}
+  S(x) := \sum_{n} \Lambda(n) \Bigl(\frac{x}{n} - 1\Bigr)_+ ,
+  \qquad
+  G(x) := S(x) - x \log x + (1 + \gamma) x ,
+\end{equation}
+where $\gamma$ is Euler's constant, and let $\psi(x) := \sum_{n \le x} \Lambda(n)$.  The two subtracted terms are the main term of $S$, as the problems show.
+
+\begin{problem}\label{pr:ramp-mellin}
+For $n \ge 1$ and $\Re s > 1$,
+\(
+  \int_1^\infty (x/n - 1)_+ \, x^{-s-1} \, d x = n^{-s}/\bigl(s(s-1)\bigr)
+\).
+\end{problem}
+
+\begin{problem}\label{pr:S-integral}
+$S(x) = x \int_1^x \psi(t) \, t^{-2} \, d t$.  Hence $G(x) \ll x \log x$ for $x \ge 2$.
+\end{problem}
+
+\begin{problem}\label{pr:F}
+For $\Re s > 1$,
+\begin{equation}\label{eq:F}
+  F(s) := \int_1^\infty G(x)\, x^{-s-1} \, d x
+  = -\frac{\zeta'}{\zeta}(s) \, \frac{1}{s(s-1)} - \frac{1}{(s-1)^2} + \frac{1 + \gamma}{s - 1} .
+\end{equation}
+\end{problem}
+
+\begin{problem}\label{pr:F-poles}
+$F$ is meromorphic in $\C$ and regular at $s = 1$.  Its poles in $\Re s > 0$ are the zeros $\rho$ of $\zeta$ in the critical strip, and a zero of multiplicity $m$ gives residue $-m/\bigl(\rho(\rho - 1)\bigr)$.
+\end{problem}
+
+\begin{problem}\label{pr:residue-zero}
+The residue of $F(s) x^s$ at $s = 0$ is $\log 2\pi$.
+\end{problem}
+
+Problems~\ref{pr:F}--\ref{pr:residue-zero} and a contour shift as in \cite[Ch.~17]{Dav}, where now every integral converges absolutely because of the factor $1/(s(s-1))$, give the following.
+
+\begin{theorem}\label{thm:explicit}
+For $x > 1$,
+\[
+  G(x) = \log 2\pi - \sum_\rho \frac{x^\rho}{\rho(\rho - 1)} + O(x^{-2}) ,
+\]
+where $\rho$ runs over the zeros of $\zeta$ in the critical strip with multiplicity, and the sum converges absolutely.
+\end{theorem}
+
+\begin{problem}\label{pr:sum-rho}
+$\sum_\rho 1/\bigl(\rho(1 - \rho)\bigr) = 2 + \gamma - \log 4\pi = 0.0461\ldots$, with multiplicity.
+\end{problem}
+
+\begin{problem}\label{pr:rh-bound}
+If the Riemann hypothesis holds, then $\lvert G(x) - \log 2\pi \rvert \le (2 + \gamma - \log 4\pi)\sqrt{x} + O(x^{-2})$.
+\end{problem}
+
+For instance $G(10^4) = 1.749$, $G(10^5) = 3.671$, $G(10^6) = 11.040$ and $G(2 \cdot 10^6) = -12.268$, to be compared with $\log 2\pi = 1.838$ and $0.0462 \sqrt{10^6} = 46.2$.
+
+\begin{problem}\label{pr:one-pair}
+Let $\rho = \beta + i\gamma_0$ with $\gamma_0 \ne 0$, and let $c := -1/\bigl(\rho(\rho-1)\bigr)$.  The joint term $c x^\rho + \bar c x^{\bar\rho}$ of $\rho$ and $\bar\rho$ in Theorem~\ref{thm:explicit} exceeds $\lvert c \rvert x^\beta$ for all $x$ in a set whose image under $\log$ has density $1/3$ in $[0, \infty)$, and it is less than $-\lvert c \rvert x^\beta$ on another such set.
+\end{problem}
+
+A zero off the critical line therefore pushes $G$ out in both directions.  A comparison of divisibility with size sees only one of them.  The next section shows that one is enough.
+
+\section{One side suffices}\label{sec:landau}
+
+The following theorem is due to Landau \cite{Lan}; see \cite[Lemma~15.1]{MV}.  Let $A \colon [1, \infty) \to \R$ be bounded on compact sets, with $A(x) \ge 0$ for $x \ge X_0$.  Let $\sigma_c$ be the infimum of the real $\sigma$ with $\int_1^\infty \lvert A(x) \rvert x^{-\sigma-1} \, d x < \infty$, and suppose that $-\infty < \sigma_c < \infty$.  Then $H(s) := \int_1^\infty A(x) x^{-s-1} \, d x$ is holomorphic in $\Re s > \sigma_c$, and it has no holomorphic continuation to a neighborhood of $\sigma_c$.
+
+\begin{problem}\label{pr:below}
+In this situation $H(\sigma)$ is bounded below for real $\sigma \in (\sigma_c, \sigma_c + 1]$.
+\end{problem}
+
+Fix $0 < \theta < 1$, suppose that $G(x) \le x^\theta$ for all large $x$, and let $A(x) := x^\theta - G(x)$.
+
+\begin{problem}\label{pr:H}
+$-\infty < \sigma_c \le 1$, and $H(s) = 1/(s - \theta) - F(s)$ for $\Re s > 1$.
+\end{problem}
+
+\begin{problem}\label{pr:zeta-negative}
+$\zeta(\sigma) < 0$ for $0 < \sigma < 1$.
+\end{problem}
+
+\begin{problem}\label{pr:real-zero}
+If $\sigma_c > \theta$, then $\sigma_c$ is a real zero of $\zeta$, and $H(\sigma) \to -\infty$ as $\sigma \downarrow \sigma_c$.  Hence $\sigma_c \le \theta$.
+\end{problem}
+
+By Problem~\ref{pr:zeta-negative} the real zeros do not exist, but Problem~\ref{pr:real-zero} does not use this, and in \S\ref{sec:dirichlet} the same argument will be applied where real zeros cannot be excluded in advance.  By Problem~\ref{pr:real-zero}, $F = 1/(s-\theta) - H$ is holomorphic in $\Re s > \theta$, and by Problem~\ref{pr:F-poles} this excludes zeros there.
+
+\begin{theorem}\label{thm:one-sided}
+Let $0 < \theta < 1$.  If $G(x) \le x^\theta$ for all large $x$, then $\zeta(s) \ne 0$ for $\Re s > \theta$.
+\end{theorem}
+
+An upper bound obtained arithmetically will hold only for $x$ in certain long intervals.  The following theorem of Kaczorowski and Pintz \cite[Theorem~1 and Corollary~1]{KP}, a quantitative form of Landau's theorem, handles this.
+
+\begin{theorem}\label{thm:kp}
+Let $f \colon (0, \infty) \to \R$ be locally integrable, and suppose that $\Phi(s) := \int_0^\infty f(x) x^{-s-1} \, d x$ converges absolutely for $\Re s$ large.  Suppose that $\Phi$ is regular in $\Re s > \Theta$ but in no half-plane $\Re s > \Theta - \eta$ with $\eta > 0$, that $\Phi$ is meromorphic in $\Re s \ge \Theta - c_0$ for some $c_0 > 0$, and that $\Phi$ is regular at the real point $\Theta$.  Then for every $\alpha > 0$ and every $T \ge T_0(f, \alpha)$ there are points of $[T^{1-\alpha}, T]$ at which $f$ is nonzero and of opposite signs.
+\end{theorem}
+
+The last hypothesis is needed: $f(x) = x^\Theta$ for $x \ge 1$ and $f(x) = 0$ for $x < 1$ satisfy the others, with $\Phi(s) = 1/(s - \Theta)$.
+
+\begin{problem}\label{pr:kp-apply}
+Let $0 < \theta < 1$ and suppose that $\zeta$ has a zero with real part greater than $\theta$.  Let $\Theta$ be the supremum of the real parts of the zeros of $\zeta$.  Let $f(x) := G(x) - 2x^\theta$ for $x \ge 1$ and $f(x) := 0$ for $x < 1$.  Then $f$ and $\Theta$ satisfy the hypotheses of Theorem~\ref{thm:kp}.
+\end{problem}
+
+If moreover $G(x) \le x^\theta$ on $[Y, Y^{3/2}]$, then $f(x) \le -x^\theta < 0$ there.  Theorem~\ref{thm:kp} with $\alpha = 1/4$ and $T = Y^{3/2}$ finds a positive value of $f$ in $[Y^{9/8}, Y^{3/2}]$ once $Y$ is large.  This proves the following; the exponent $3/2$ may be replaced by any number greater than $1$.
+
+\begin{theorem}\label{thm:intervals}
+Let $0 < \theta < 1$.  If there are arbitrarily large $Y$ such that $G(x) \le x^\theta$ for all $x \in [Y, Y^{3/2}]$, then $\zeta(s) \ne 0$ for $\Re s > \theta$.
+\end{theorem}
+
+\begin{problem}\label{pr:rh-from}
+If for every $\varepsilon > 0$ there are arbitrarily large $Y$ with $G(x) \le x^{1/2 + \varepsilon}$ for all $x \in [Y, Y^{3/2}]$, then the Riemann hypothesis holds.
+\end{problem}
+
+
+\section{Smoothing, and the triangle weight}\label{sec:smoothing}
+
+Why the ramp, and not another weight?  Let $\phi \colon (0, \infty) \to \R$ vanish on $(1, \infty)$, be bounded on compact subsets of $(0, 1]$, and satisfy $\phi(t) = O(1/t)$ as $t \to 0$.  Let
+\[
+  \psi_\phi(x) := \sum_n \Lambda(n) \phi(n/x) ,
+  \qquad
+  \tilde\phi(s) := \int_0^\infty \phi(t) t^{s-1} \, d t \quad (\Re s > 1) .
+\]
+The sharp cutoff $\phi = \one_{(0,1]}$ gives $\psi_\phi = \psi$ and $\tilde\phi(s) = 1/s$.  The ramp is $\phi(t) = (1/t - 1)_+$, with $\tilde\phi(s) = 1/(s(s-1))$ by Problem~\ref{pr:ramp-mellin}.  The \emph{triangle weight} is $\phi(t) = (1 - t)_+$, with $\psi_\phi(x) = x^{-1}\int_0^x \psi(t) \, d t$.
+
+\begin{problem}\label{pr:smooth-mellin}
+For $\Re s > 1$, $\int_0^\infty \psi_\phi(x) x^{-s-1} \, d x = -\frac{\zeta'}{\zeta}(s) \, \tilde\phi(s)$.
+\end{problem}
+
+\begin{problem}\label{pr:triangle-mellin}
+For the triangle weight $\tilde\phi(s) = 1/(s(s+1))$.  If $\phi_1(t) := \phi(t)/t$, then $\tilde\phi_1(s) = \tilde\phi(s - 1)$; the ramp is the triangle weight divided by $t$.
+\end{problem}
+
+The following theorem is proved as Theorem~\ref{thm:explicit}: by Problem~\ref{pr:smooth-mellin} with $\tilde\phi(s) = 1/(s(s+1))$, shift the line of integration to $\Re s = -3/2$ as in \cite[Ch.~17]{Dav}, along horizontal segments at heights $T$ where $\zeta'/\zeta \ll \log^2 T$.  The factor $1/(s(s+1))$ makes every integral converge absolutely, and the poles of $-\frac{\zeta'}{\zeta}(s)\, x^s/(s(s+1))$ to the right of $-3/2$ are at $1$, $0$, $-1$ and the zeros $\rho$.
+
+\begin{theorem}\label{thm:triangle}
+For $x > 1$,
+\[
+  \sum_{n \le x} \Lambda(n) \Bigl(1 - \frac{n}{x}\Bigr) = \frac{x}{2} - \log 2\pi - \sum_\rho \frac{x^\rho}{\rho(\rho + 1)} + O\Bigl(\frac1x\Bigr) .
+\]
+\end{theorem}
+
+As a check, the left side minus $x/2 - \log 2\pi$ is $0.106$, $7.975$ and $-12.115$ at $x = 10^4$, $10^6$ and $2 \cdot 10^6$.  For the ramp and the triangle weight $\lvert \tilde\phi(\rho) \rvert \ll \lvert \rho \rvert^{-2}$, so the sums over zeros converge absolutely.  For the sharp cutoff they do not, since $\sum_\rho 1/\lvert \rho \rvert$ diverges.
+
+\begin{problem}\label{pr:triangle-one-sided}
+Let $0 < \theta < 1$.  If $\sum_{n \le x} \Lambda(n)(1 - n/x) \le x/2 + x^\theta$ for all large $x$, then $\zeta(s) \ne 0$ for $\Re s > \theta$.
+\end{problem}
+
+
+The two smooth weights differ in one respect.  A real zero $\beta \in (0,1)$ contributes $-x^\beta/(\beta(\beta - 1)) > 0$ to $G(x)$, but $-x^\beta/(\beta(\beta+1)) < 0$ to the sum of Theorem~\ref{thm:triangle}, so an upper bound for the latter does not see it.  For $\zeta$ this is harmless by Problem~\ref{pr:zeta-negative}; for Dirichlet $L$-functions it is not (\S\ref{sec:dirichlet}).
+
+The ramp itself is forced by the arithmetic.  Theorem~\ref{ip-thm:main} gives, at primes $p \equiv 3 \pmod 8$, lower bounds for $p$-adic valuations of the form $\sum_{i \text{ odd}} (\lfloor a/p^i \rfloor - w)_+$.  Up to an error of $1$ for each odd $i$ with $p^i \le a$, and with $a = wx$, the summand is $(a/p^i - w)_+ = w(x/p^i - 1)_+$, which is $w$ times the ramp at $x$.  Summed with weights $\log p$, such bounds give the ramp sum over odd powers of primes inert in an imaginary quadratic field; this is the subject of the sequel, \emph{Inert primes and Estimate~B}.
+
+\section{Dirichlet \texorpdfstring{$L$}{L}-functions}\label{sec:dirichlet}
+
+What replaces $G$ for a Dirichlet $L$-function?  For a primitive nonprincipal Dirichlet character $\chi$ let $c_\chi := \frac{L'}{L}(1, \chi)$ and
+\begin{equation}\label{eq:Gchi}
+  G_\chi(x) := \sum_{n \le x} \Lambda(n) \chi(n) \Bigl(\frac{x}{n} - 1\Bigr) + c_\chi x .
+\end{equation}
+Let $\psi$ be a primitive Dirichlet character of conductor $M$ and order $o$; from here on $\psi$ is this character, not Chebyshev's function.  For $1 \le j < o$ let $\psi_j$ be the primitive character inducing $\psi^j$.  Let
+\[
+  G^\psi(y) := G(y) + \frac{1}{3o + 1} \sum_{j=1}^{o-1} \Re G_{\psi_j}(y) .
+\]
+The weight $1/(3o+1)$ is the one that arises from averaging over a subgroup in \emph{Fourier analysis on the Galois group} (Problem~\ref{gf-pr:coef-shares}); the positivity of the coefficients in Problems~\ref{pr:coef} and \ref{pr:coef-bad} only uses that it is less than $1$.
+
+\begin{problem}\label{pr:coef}
+For $n$ prime to $M$, the coefficient of $\Lambda(n)(y/n - 1)_+$ in $G^\psi(y)$ is $4o/(3o + 1)$ if $\psi(n) = 1$, and $3o/(3o + 1)$ otherwise.  For a character of order $4$ modulo $5$ these are $16/13$ and $12/13$.
+\end{problem}
+
+\begin{problem}\label{pr:coef-bad}
+For $n = p^h$ with $p \mid M$ the coefficient is at least $3o/(3o + 1)$.  In particular every coefficient is positive.
+\end{problem}
+
+\begin{problem}\label{pr:product}
+$(3o+1)$ times the Mellin transform of $G^\psi$ has, in $\Re s > 0$, simple poles only, at the zeros of $E(s) := \zeta(s)^{3o+1} \prod_{j=1}^{o-1} L(s, \psi_j)$ in the critical strip.  At a zero $\rho$ of $E$ of multiplicity $m$ the residue is $-m/\bigl(\rho(\rho - 1)\bigr)$.
+\end{problem}
+
+The multiplicities of the factors of $E$ add, so no zero of $\zeta$ or of an $L(s, \psi_j)$ is cancelled.  A real zero $\beta \in (0, 1)$ of some $L(s, \psi_j)$ cannot be excluded in advance, but its residue $m/(\beta(1-\beta))$ is positive, and Problem~\ref{pr:real-zero} applies to it unchanged.  As in Problem~\ref{pr:H}, $\sigma_c > -\infty$ because the nonreal zeros of $\zeta$ are poles.  The argument of \S\ref{sec:landau} therefore gives:
+
+\begin{theorem}\label{thm:dirichlet}
+Let $0 < \theta < 1$.  If $G^\psi(y) \le y^\theta$ for all large $y$, then $\zeta(s)$ and every $L(s, \psi_j)$, $1 \le j < o$, are nonzero for $\Re s > \theta$.
+\end{theorem}
+
+
+For $o = 1$ this is Theorem~\ref{thm:one-sided}.  The version on intervals follows from Theorem~\ref{thm:kp} as before, unless the supremum $\Theta$ of the real parts of the zeros of $E$ is itself a real zero in $(\theta, 1)$; then the last hypothesis of Theorem~\ref{thm:kp} fails.  The next section treats that case.
+
+\section{A real zero on windows}\label{sec:real-pole}
+
+Suppose that $G^\psi(y) \le y^\theta$ for all $y \in [Y, Y^{3/2}]$, for arbitrarily large $Y$, and that $\Theta = \beta \in (\theta, 1)$ is a real zero of $E$, of multiplicity $m$.  Let $\mathcal{A}(s) := \int_1^\infty G^\psi(y) y^{-s-1} \, d y$, and for $\sigma_1 > 2$ and integers $k \ge 0$ let
+\[
+  T_k := \frac{(-1)^k}{k!} \mathcal{A}^{(k)}(\sigma_1) , \qquad r := \sigma_1 - \beta , \qquad a := \sigma_1 - 2 .
+\]
+We follow \cite[Thm.~2.4 and Cor.~2.5]{Adr}, where the nearest pole may also be a pair of complex zeros, and \cite[\S I.10 and Part~II, \S1]{Rub}.
+
+\begin{problem}\label{pr:taylor}
+(i) $\lvert G^\psi(y) \rvert \le B y^2$ for $y \ge 1$, with $B$ a constant.
+(ii) $T_k = \int_0^\infty G^\psi(e^u) \, e^{-\sigma_1 u} u^k/k! \, d u$.
+(iii) For $p \ne \sigma_1$, the signed Taylor coefficient $\frac{(-1)^k}{k!} \frac{d^k}{d s^k} (s - p)^{-1}$ at $s = \sigma_1$ is $(\sigma_1 - p)^{-k-1}$.
+\end{problem}
+
+\begin{problem}\label{pr:nearest}
+For every real $\sigma_1 > 1$, $\beta$ is the only zero of $E$ in the closed disc $\lvert s - \sigma_1 \rvert \le \sigma_1 - \beta$.  The residue of $\mathcal{A}$ at $\beta$ is $R := m/\bigl((3o+1)\beta(1 - \beta)\bigr) > 0$.
+\end{problem}
+
+\begin{problem}\label{pr:positive}
+There are $r'' > r$ and $C$ with $\lvert T_k - R r^{-k-1} \rvert \le C r''^{-k}$ for all $k$.  Hence $T_k \ge \frac12 R r^{-k-1}$ for all large $k$.
+\end{problem}
+
+So the nearest real pole contributes a positive term to \emph{every} signed Taylor coefficient.  A conjugate pair $p, \bar p$ would contribute $2 \lvert c \rvert r^{-k-1} \cos(\alpha + (k+1)\varphi)$, of both signs, where $c = \lvert c \rvert e^{i\alpha}$ is the residue and $\sigma_1 - p = r e^{-i\varphi}$; compare Problem~\ref{pr:one-pair}.  An upper bound for $G^\psi$ bounds every $T_k$ from above, because the kernel $e^{-\sigma_1 u}u^k/k!$ is positive.  Only the window $[L, \frac32 L]$, $L := \log Y$, is controlled; but for $k$ near $\frac65 a L$ the kernel $e^{-au} u^k/k!$ is concentrated near $u = k/a$, inside the window.
+
+\begin{problem}\label{pr:tails}
+Let $U \ge 0$ and $a > 0$.  If $b > a$, then $\int_0^U e^{-au} u^k/k! \, d u \le e^{(b - a)U} b^{-k-1}$.  If $0 < b < a$, then $\int_U^\infty e^{-au} u^k/k! \, d u \le e^{-(a - b)U} b^{-k-1}$.
+\end{problem}
+
+\begin{problem}\label{pr:window-taylor}
+Let $\sigma_1 \ge 302$, let $L = \log Y \ge 1$ for one of the $Y$ above, and let $k + 1 := \lceil \frac65 a L \rceil$.  Then
+\[
+  T_k \le (\sigma_1 - \theta)^{-k-1} + 2 B e^{-L} r^{-k-1} .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:real-excluded}
+Problems~\ref{pr:positive} and~\ref{pr:window-taylor} contradict each other as $Y \to \infty$.  So the window bound excludes a real zero $\beta = \Theta$ in $(\theta, 1)$.
+\end{problem}
+
+With Theorem~\ref{thm:kp} for the other case, this proves the version on intervals of Theorem~\ref{thm:dirichlet}.
+
+\begin{theorem}\label{thm:dirichlet-intervals}
+Let $0 < \theta < 1$.  If there are arbitrarily large $Y$ such that $G^\psi(y) \le y^\theta$ for all $y \in [Y, Y^{3/2}]$, then $\zeta(s)$ and every $L(s, \psi_j)$, $1 \le j < o$, are nonzero for $\Re s > \theta$.
+\end{theorem}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:ramp}}
+\begin{description}
+\item[\ref{pr:S-integral}] Integrate each step of $\psi$.  For the bound use Chebyshev's estimate.
+\item[\ref{pr:F}] Use Problem~\ref{pr:ramp-mellin} termwise, and compute the transforms of $x \log x$ and $x$.
+\item[\ref{pr:F-poles}] Use $-\zeta'/\zeta(s) = 1/(s-1) - \gamma + O(s - 1)$ and expand $1/(s(s-1))$ at $s = 1$.
+\item[\ref{pr:residue-zero}] The functional equation gives $\zeta'/\zeta(0) = \log 2\pi$.
+\item[\ref{pr:sum-rho}] Write $1/(\rho(1-\rho)) = 1/\rho + 1/(1 - \rho)$ and use the value of $B$ in \cite[Ch.~12]{Dav}.
+\end{description}
+
+\subsection*{\S\ref{sec:landau}}
+\begin{description}
+\item[\ref{pr:below}] Split the integral at $X_0$.
+\item[\ref{pr:H}] Use Problem~\ref{pr:S-integral} for $\sigma_c \le 1$ and Problem~\ref{pr:F} for the formula for $H$.  If $\sigma_c = -\infty$, then $H$ is entire, so $F = 1/(s - \theta) - H$ has no pole other than $\theta$; but by Problem~\ref{pr:F-poles} $F$ has a pole at every zero $\rho$, and $\zeta$ has nonreal zeros.
+\item[\ref{pr:zeta-negative}] Consider $(1 - 2^{1-\sigma})\zeta(\sigma) = \sum_{n \ge 1} (-1)^{n-1} n^{-\sigma}$.
+\item[\ref{pr:real-zero}] By Landau's theorem $\sigma_c$ is a singularity of $H$.  Of the real points in $(\theta, 1]$, only real zeros of $\zeta$ can be singular (Problem~\ref{pr:F-poles}).  Find the sign of the residue of $F$ at a real zero $\beta \in (0,1)$, and compare with Problem~\ref{pr:below}.
+\item[\ref{pr:kp-apply}] $\Phi(s) = F(s) - 2/(s - \theta)$.  For regularity at $\Theta$ use Problem~\ref{pr:zeta-negative}, and remember $s = 1$.
+\item[\ref{pr:rh-from}] Use Theorem~\ref{thm:intervals} and the symmetry $\rho \mapsto 1 - \rho$.
+\end{description}
+
+\subsection*{\S\ref{sec:smoothing}}
+\begin{description}
+\item[\ref{pr:smooth-mellin}] Substitute $x = n/t$ in each term.
+\item[\ref{pr:triangle-one-sided}] Repeat \S\ref{sec:landau} with $\tilde\phi(s) = 1/(s(s+1))$, including the argument for $\sigma_c > -\infty$ in Problem~\ref{pr:H}, and compare the sign of the residue at a real zero with that in Problem~\ref{pr:real-zero}.
+\end{description}
+
+\subsection*{\S\ref{sec:dirichlet}}
+\begin{description}
+\item[\ref{pr:coef}] $\sum_{j=0}^{o-1} \psi(n)^j$ is $o$ or $0$.
+\item[\ref{pr:coef-bad}] Factor $\psi$ into its $p$-component and the rest, and decide for which $j$ the value $\psi_j(p)$ is nonzero.
+\item[\ref{pr:product}] Write the coefficients of $(3o+1)G^\psi$ as those of $-E'/E$, and handle the pole at $s = 1$ as in Problem~\ref{pr:F-poles}.
+\end{description}
+
+\subsection*{\S\ref{sec:real-pole}}
+\begin{description}
+\item[\ref{pr:taylor}] (i) Problem~\ref{pr:S-integral} and Chebyshev's bound.  (ii) Substitute $y = e^u$ and differentiate under the integral.
+\item[\ref{pr:nearest}] Compare $\lvert \sigma_1 - \rho \rvert^2$ with $(\sigma_1 - \beta)^2$ for $\Re \rho \le \beta$; then Problem~\ref{pr:product}.
+\item[\ref{pr:positive}] Subtract the principal part at $\beta$ and use Cauchy's estimate on a slightly larger disc; Problem~\ref{pr:taylor}(iii).
+\item[\ref{pr:tails}] Compare $e^{-au}$ with $e^{-bu}$ on the range, and use $\int_0^\infty e^{-bu} u^k/k! \, d u = b^{-k-1}$.
+\item[\ref{pr:window-taylor}] Split at $L$ and $\frac32 L$.  On the outer ranges use Problem~\ref{pr:taylor}(i) and Problem~\ref{pr:tails} with $b = \frac54 r$ and $b = \frac34 a$, and $a < r < a + 2$.
+\item[\ref{pr:real-excluded}] $\theta < \beta$, and $k \to \infty$ with $L$.
+\end{description}
+
+\begin{thebibliography}{Alp}
+
+\bibitem[Adr]{Adr}
+J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+
+\bibitem[Alp]{Alp}
+L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
+
+\bibitem[Dav]{Dav}
+H.~Davenport, \emph{Multiplicative Number Theory}, 3rd ed., revised by H.~L.~Montgomery, Grad. Texts in Math. \textbf{74}, Springer, 2000.
+
+\bibitem[KP]{KP}
+J.~Kaczorowski and J.~Pintz, \emph{Oscillatory properties of arithmetical functions.~I}, Acta Math. Hungar. \textbf{48} (1986), 173--185.
+
+\bibitem[Lan]{Lan}
+E.~Landau, \emph{\"Uber einen Satz von Tschebyschef}, Math. Ann. \textbf{61} (1905), 527--550.
+
+\bibitem[MV]{MV}
+H.~L.~Montgomery and R.~C.~Vaughan, \emph{Multiplicative Number Theory~I. Classical Theory}, Cambridge Stud. Adv. Math. \textbf{97}, Cambridge University Press, 2007.
+
+\bibitem[Rub]{Rub}
+\emph{The Alp\"oge--Claude proof of the Riemann hypothesis explained for the Riemann zeta function}, written by AI models at the behest of M.~O.~Rubinstein, working draft, 21 November 2026, \url{https://www.math.uwaterloo.ca/~mrubinst/alpoge_claude_grh/zeta-paper.pdf}.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,249 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[mn-]{20261125T000100--slope-inequality-in-the-mean__workbook}
+\externaldocument[ps-]{20261125T010500--poincare-series-and-near-orthogonality__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T010000}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\numberwithin{equation}{section}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\HH}{\mathbb{H}}
+\newcommand{\Hc}{\mathcal{H}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\codim}{\operatorname{codim}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\HS}{\mathrm{HS}}
+\newcommand{\E}{\mathbb{E}}
+
+\setlength{\emergencystretch}{2em}
+
+\title{The rank lemma and the zero estimate}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Section~\ref{mn-sec:gram} of Chapter~\ref{mn-chap}, \emph{The slope inequality in the mean}: Problem~\ref{mn-pr:rank}, Theorem~\ref{mn-thm:rank}, and their notation.  Finite-dimensional spectral theory and Schur's lemma.  Binary quadratic forms and their reduction \cite[\S2]{Cox}.  For Section~\ref{sec:rtf} only, the spectral expansion of an automorphic kernel on \(\mathrm{SL}_2(\Z) \backslash \HH\) \cite[Ch.~7]{Iw}.
+
+Theorem~\ref{mn-thm:rank} bounds the codimension of a sum of many images by a second moment.  Where can such a bound come from?  In this chapter it comes from Gram matrices, from evaluations at points, and from a relative trace formula, each in its simplest case.
+
+\section{Gram matrices}\label{sec:gram}
+
+As in Section~\ref{mn-sec:gram}, let \(\Hc\) be a complex inner product space, now of dimension \(D' > 0\).  Let \(B_i \colon X_i \to \Hc\), \(i \in I\), be linear maps from inner product spaces of dimensions \(r_i\), with \(R := \sum_i r_i > 0\), let \(\gamma_i > 0\), and let \(K_i := \gamma_i B_i^* B_i\) and \(Q := \sum_i \gamma_i B_i B_i^*\).  Let \(X := \bigoplus_i X_i\) and \(B \colon X \to \Hc\), \(B(x_i)_i := \sum_i \sqrt{\gamma_i} B_i x_i\), so that \(Q = BB^*\).  The \emph{Gram matrix} of the family is \(G := B^*B\).  Its blocks are \(G_{ij} = \sqrt{\gamma_i\gamma_j}\, B_i^* B_j \colon X_j \to X_i\), and \(G_{ii} = K_i\).  When every \(X_i\) is a line spanned by a unit vector \(\xi_i\), \(G\) is the Gram matrix of the vectors \(\sqrt{\gamma_i} B_i \xi_i\).
+
+\begin{problem}\label{pr:image}
+\(Q(\Hc) = \sum_i B_i(X_i)\).
+\end{problem}
+
+\begin{problem}\label{pr:gram}
+\(Q\) and \(G\) have the same nonzero eigenvalues, with multiplicities.  Hence \(\tr Q = \sum_i \tr K_i\) and \(\tr Q^2 = \sum_{i,j} \lVert G_{ij} \rVert_\HS^2\).
+\end{problem}
+
+With Problem~\ref{mn-pr:rank} this proves the following.
+
+\begin{theorem}\label{thm:gram}
+If some \(B_i\) is nonzero, then
+\[
+  \dim \sum_i B_i(X_i) \ge \frac{\bigl( \sum_i \tr K_i \bigr)^2}{\sum_{i,j} \lVert G_{ij} \rVert_\HS^2} .
+\]
+\end{theorem}
+
+Unlike the left side, the right side changes little when the \(B_i\) are perturbed.
+
+\begin{problem}\label{pr:two-lines}
+Let \(v, w \in \C^2\) be unit vectors, \(X_1 = X_2 = \C\), \(B_1(1) = v\), \(B_2(1) = w\) and \(\gamma_1 = \gamma_2 = 1\).  The right side of Theorem~\ref{thm:gram} is \(2/(1 + \lvert \langle v, w \rangle \rvert^2)\).
+\end{problem}
+
+So two nearly parallel lines count as about one direction.  Suppose now that each weighted map is an isometry, \(K_i = 1\), and that for some \(\eta_0 \ge 0\)
+\begin{equation}\label{eq:pair}
+  \lVert G_{ij} \rVert_\HS^2 \le (1 + \eta_0) \frac{r_i r_j}{D'} \qquad (i \ne j) .
+\end{equation}
+This is hypothesis (G1) of \cite[Prop.~13.11]{Adr}, with \(D'\) replaced there by a number close to \(\dim\Hc\).
+
+\begin{problem}\label{pr:pair}
+Under~\eqref{eq:pair} and \(K_i = 1\) for all \(i\), \(\tr Q^2 \le (1 + \eta_0 + D'/R)(\tr Q)^2/D'\).
+\end{problem}
+
+Combining Problem~\ref{pr:pair} with Theorem~\ref{mn-thm:rank}, for \(e = 0\), gives a zero estimate from pairwise bounds.
+
+\begin{theorem}\label{thm:pair}
+Assume~\eqref{eq:pair} and \(K_i = 1\) for all \(i\).  Let \(Y_i \subseteq X_i\) be subspaces with \(\sum_i \codim Y_i \le \alpha R\), where \(0 \le \alpha \le 1\).  Then
+\[
+  \codim_\Hc \sum_i B_i(Y_i) \le \Bigl( \eta_0 + \frac{D'}{R} + 4\alpha \Bigr) D' .
+\]
+\end{theorem}
+
+The constant \(r_i r_j/D'\) in~\eqref{eq:pair} is an average over relative positions.
+
+\begin{problem}\label{pr:random}
+Let \(B \colon \C^r \to \Hc\) and \(B' \colon \C^{r'} \to \Hc\) be isometries, and let \(u\) be distributed according to Haar measure on the unitary group of \(\Hc\).  Then \(\E \lVert B^* u B' \rVert_\HS^2 = r r'/D'\).
+\end{problem}
+
+So~\eqref{eq:pair} asks that no two images overlap, in the Hilbert--Schmidt norm, by more than \(1 + \eta_0\) times this average.  The number of maps by itself proves nothing.
+
+\begin{problem}\label{pr:bad}
+Let \(\Hc = \C^{D'}\) with \(D' \ge 2\) and standard basis \(e_1, \dots, e_{D'}\).  Let \(X_0 = \C^{D'}\) with \(B_0 = 1\), and for \(1 \le i \le N\) let \(X_i = \C\) with \(B_i(1) = e_1\); let all \(\gamma_i = 1\).  Then \(B_0\) is onto, but omitting \(X_0\), a proportion \(D'/(N + D')\) of the source directions, leaves a sum of images of codimension \(D' - 1\).  The ratio \(D' \tr Q^2/(\tr Q)^2\) equals \(D'\bigl((N+1)^2 + D' - 1\bigr)/(N + D')^2\).
+\end{problem}
+
+For large \(N\) this ratio is close to \(D'\), and Theorem~\ref{mn-thm:rank} gives nothing, as it must.  Here~\eqref{eq:pair} fails by a factor \(D'\) for every pair \(i, j \ge 1\).
+
+\section{Evaluation at points}\label{sec:points}
+
+The simplest maps are evaluations at points.  Let \(\nu\) be a probability measure on a space \(\mathcal{X}\), and let \(\Hc \subset L^2(\mathcal{X}, \nu)\) be a space of bounded continuous functions of dimension \(D'\), with an orthonormal basis \(\varphi_1, \dots, \varphi_{D'}\).  Its reproducing kernel is \(K(x, y) := \sum_n \varphi_n(x) \overline{\varphi_n(y)}\).  For points \(x_1, \dots, x_N \in \mathcal{X}\) and weights \(\gamma_i > 0\), let \(X_i = \C\) and \(B_i(1) := K(\cdot, x_i)\).  Problem~\ref{mn-pr:roots} is an example.
+
+\begin{problem}\label{pr:eval}
+\(B_i^* f = f(x_i)\), so that \(\langle Qf, f \rangle = \sum_i \gamma_i \lvert f(x_i) \rvert^2\), and \(G_{ij} = \sqrt{\gamma_i\gamma_j}\, K(x_i, x_j)\).  Moreover \(\int_{\mathcal{X}} K(x, x) \, d\nu(x) = D'\).
+\end{problem}
+
+\begin{problem}\label{pr:matrix}
+\(\langle Q\varphi_n, \varphi_m \rangle = \sum_i \gamma_i (\varphi_n \overline{\varphi_m})(x_i)\).  Hence \(Q = 1\) exactly when the measure \(\sum_i \gamma_i \delta_{x_i}\) integrates every \(\varphi_n \overline{\varphi_m}\) as \(\nu\) does.
+\end{problem}
+
+\begin{problem}\label{pr:zero}
+The functions \(f \in \Hc\) that vanish at every \(x_i\) form a space of dimension at most \(\lVert Q - 1 \rVert_\HS^2\).
+\end{problem}
+
+In particular, if the weighted points integrate every \(\varphi_n \overline{\varphi_m}\) exactly, no nonzero \(f \in \Hc\) vanishes at all of them.  The simplest families with \(Q\) exactly scalar are orbits of a group.
+
+\begin{problem}\label{pr:schur}
+Let a finite group \(\Gamma\) act unitarily and irreducibly on \(\Hc\), and let \(Y \subseteq \Hc\) be a subspace of dimension \(r\) with inclusion \(\iota\).  For \(g \in \Gamma\) let \(B_g := g\iota \colon Y \to \Hc\) with weight \(1/\lvert \Gamma \rvert\).  Then \(Q = (r/D') \cdot 1\).
+\end{problem}
+
+For instance, let \(\nu\) be the normalized rotation-invariant measure on the sphere \(S^2 \subset \R^3\), and let \(\Hc\) be the space of restrictions of linear forms.  Since \(\int x_k^2 \, d\nu = 1/3\), the functions \(\sqrt3\, x_k\) are an orthonormal basis, and \(K(x, y) = 3\langle x, y \rangle\).  The rotation group of a regular tetrahedron acts irreducibly on \(\Hc\), and the orbit of the line spanned by \(K(\cdot, x_0)\), for a vertex \(x_0\), gives, up to the factor \(K(x_0, x_0) = 3\), the evaluations at the four vertices.
+
+\begin{problem}\label{pr:tetra}
+Let \(x_1, \dots, x_4\) be the vertices of a regular tetrahedron inscribed in \(S^2\), and \(\gamma_i = 1/4\).  Then \(G = 1 - J/4\), where \(J\) is the \(4 \times 4\) matrix of ones, and \(Q = 1\).  For the points \(\pm e_1, \pm e_2\) instead, with \(\gamma_i = 1/4\), \(\rank Q = (\tr Q)^2/\tr Q^2 = 2\).
+\end{problem}
+
+\section{Heegner points}\label{sec:heegner}
+
+The simplest point sets with arithmetic meaning are CM points.  On the modular curve their equidistribution is a theorem of Duke.  Let \(\mathcal{X} := \mathrm{SL}_2(\Z) \backslash \HH\) with the probability measure \(d\nu = (3/\pi) \, y^{-2} \, dx \, dy\).  A primitive positive definite form \([a, b, c] = ax^2 + bxy + cy^2\) of discriminant \(b^2 - 4ac = -d\) has the root \(z_{[a,b,c]} := (-b + \ii\sqrt d)/(2a)\) in \(\HH\), and the map from forms to roots is \(\mathrm{SL}_2(\Z)\)-equivariant.  For \(d > 4\) let \(\mathcal{H}_d \subset \mathcal{X}\) be the set of these roots.  Every form is equivalent to exactly one reduced form \cite[Thm.~2.8]{Cox}, so \(\mathcal{H}_d\) has \(h(-d)\) points, one for each reduced form.
+
+\begin{problem}\label{pr:23}
+\(h(-23) = 3\), and \(\Lambda_{23}\) consists of \((-1 + \ii\sqrt{23})/2\) and \((\pm 1 + \ii\sqrt{23})/4\).
+\end{problem}
+
+\begin{theorem}[Duke]\label{thm:duke}
+Let \(d \to \infty\) through integers for which \(-d\) is a fundamental discriminant.  Then for every continuous compactly supported function \(F\) on \(\mathcal{X}\),
+\[
+  \frac{1}{h(-d)} \sum_{z \in \mathcal{H}_d} F(z) \to \int_{\mathcal{X}} F \, d\nu .
+\]
+\end{theorem}
+
+See \cite[Thm.~1]{Du}, where it is proved, with a rate, for convex sets; continuous \(F\) follow by approximation.  The proof rests on Iwaniec's bound for the Fourier coefficients of forms of half-integral weight \cite{Iw87}.
+
+\begin{problem}\label{pr:bounded}
+Theorem~\ref{thm:duke} holds for every bounded continuous \(F\).
+\end{problem}
+
+\begin{problem}\label{pr:duke-zero}
+Let \(\Hc\) be as in Section~\ref{sec:points} on \(\mathcal{X}\), for instance the span of \(1\) and finitely many Maass cusp forms.  Let \(Q_d\) be the operator of the evaluations at the points of \(\mathcal{H}_d\) with weights \(1/h(-d)\).  Then \(Q_d \to 1\) as \(d \to \infty\) as in Theorem~\ref{thm:duke}.  Hence, for all large such \(d\), no nonzero \(f \in \Hc\) vanishes on \(\mathcal{H}_d\).
+\end{problem}
+
+\section{What a relative trace formula supplies}\label{sec:rtf}
+
+How can one verify~\eqref{eq:pair}?  A block \(G_{ij}\) is a sum over an orthonormal basis of \(\Hc\) of products of values, by Problem~\ref{pr:eval}.  A trace formula turns such a sum into a sum over the group.  Begin with the circle.  Let \(\mathcal{X} = \R/\Z\) with Lebesgue measure, \(e(t) := e^{2\pi\ii t}\), and let \(\Hc\) be spanned by the \(e(kx)\) with \(\lvert k \rvert < n\).  Then \(D' = 2n - 1\), and \(K(x, y) = D_n(x - y)\) with \(D_n(t) := \sum_{\lvert k \rvert < n} e(kt)\).  For points \(x_1, \dots, x_N\) with \(\gamma_i = 1/N\), let \(W(k) := N^{-1} \sum_i e(kx_i)\); then \(\tr Q = D'\).
+
+\begin{problem}\label{pr:circle}
+\(\displaystyle \tr Q^2 = \frac{1}{N^2} \sum_{i,j} \lvert D_n(x_i - x_j) \rvert^2 = \sum_{\lvert k \rvert < D'} (D' - \lvert k \rvert) \lvert W(k) \rvert^2 .\)
+\end{problem}
+
+The middle term is a sum over pairs of points, and is large when many pairs lie at distance less than \(1/D'\).  The right side is a sum over frequencies.  So \(Q\) is almost scalar when the Weyl sums are small up to frequency \(D'\), or equivalently when there are not too many close pairs.
+
+\begin{problem}\label{pr:circle-random}
+If the \(x_i\) are independent and uniformly distributed, then \(\E \tr Q^2 = D' + D'(D'-1)/N\).
+\end{problem}
+
+Here \(K_i = D'/N\).  After rescaling to \(\gamma_i = 1/D'\), so that \(K_i = 1\), the ratio \(D' \tr Q^2/(\tr Q)^2\), which does not depend on the scaling, is \(1 + (D'-1)/N\) in the mean, within the value \(1 + D'/N\) that Problem~\ref{pr:pair} allows for \(\eta_0 = 0\) and \(R = N\).
+
+In the argument the maps are periods, not evaluations.  On \(\mathcal{X} = \mathrm{SL}_2(\Z) \backslash \HH\), with \(\Hc\) as in Problem~\ref{pr:duke-zero}, let \(P_d(f) := \sum_{z \in \mathcal{H}_d} f(z)\).  For \(d > 4\) let \(X_d = \C\), let \(\gamma_d > 0\), and let \(B_d \colon \C \to \Hc\) be the map with \(B_d^* = P_d\).  The family \((B_d)\), over a set of \(d\), satisfies a zero estimate if few \(f \in \Hc\) have all their periods zero.
+
+\begin{problem}\label{pr:period-gram}
+\(\displaystyle G_{dd'} = \sqrt{\gamma_d \gamma_{d'}} \sum_{z \in \mathcal{H}_d} \sum_{w \in \mathcal{H}_{d'}} K(z, w) = \sqrt{\gamma_d \gamma_{d'}} \sum_n P_d(\varphi_n) \overline{P_{d'}(\varphi_n)} .\)
+\end{problem}
+
+Now replace \(K\) by an automorphic kernel.  Let \(\rho\) be the hyperbolic distance, \(\cosh \rho(z, w) = 1 + \lvert z - w \rvert^2/(2 \operatorname{Im} z \operatorname{Im} w)\), let \(k\) be a continuous compactly supported function on \([1, \infty)\), and let \(K_k(z, w) := \sum_{g \in \mathrm{PSL}_2(\Z)} k(\cosh \rho(z, gw))\).
+
+\begin{problem}\label{pr:cosh}
+For forms \([a, b, c]\) and \([a', b', c']\) of discriminants \(-d\) and \(-d'\), \(\cosh \rho(z_{[a,b,c]}, z_{[a',b',c']}) = (2ac' + 2a'c - bb')/\sqrt{dd'}\).
+\end{problem}
+
+\begin{problem}\label{pr:unfold}
+For \(d, d' > 4\),
+\[
+  \sum_{z \in \mathcal{H}_d} \sum_{w \in \mathcal{H}_{d'}} K_k(z, w) = \sum_{[a,b,c]} \sum_{[a',b',c']} k\Bigl( \frac{2ac' + 2a'c - bb'}{\sqrt{dd'}} \Bigr) ,
+\]
+where \([a, b, c]\) runs over the reduced forms of discriminant \(-d\), and \([a', b', c']\) over all primitive positive definite forms of discriminant \(-d'\).
+\end{problem}
+
+The right side counts integral points.  The left side has a spectral expansion.  By Selberg's pre-trace formula \cite[Thm.~7.4]{Iw}, \(K_k(z, w) = \sum_j h(t_j) u_j(z) \overline{u_j(w)}\) plus an integral over the Eisenstein series, where \(u_j\) runs over an orthonormal basis of Maass forms and \(h\) is the Selberg--Harish-Chandra transform of \(k\).  So, apart from the continuous spectrum, the left side of Problem~\ref{pr:unfold} is \(\sum_j h(t_j) P_d(u_j) \overline{P_{d'}(u_j)}\).  If \(h(t_j) > 0\) for the \(u_j\) spanning \(\Hc\), and \(\Hc\) is given the inner product for which the \(\sqrt{h(t_j)}\, u_j\) are orthonormal, then by Problem~\ref{pr:period-gram}, whose proof uses only that \(K\) is the reproducing kernel of \(\Hc\), this is the Gram block \(G_{dd'}\), up to the factor \(\sqrt{\gamma_d \gamma_{d'}}\) and the contribution of the other \(u_j\).  A bound of the form~\eqref{eq:pair} thus becomes a count of pairs of forms with \(2ac' + 2a'c - bb'\) in a given range.
+
+This is the simplest case of a relative trace formula.  For a reductive group \(G\) over \(\Q\) with subgroups \(H_1\) and \(H_2\), one integrates the automorphic kernel \(\sum_{\gamma \in G(\Q)} f(x^{-1}\gamma y)\) over \(x \in H_1(\Q) \backslash H_1(\mathbb{A})\) and \(y \in H_2(\Q) \backslash H_2(\mathbb{A})\).  Spectrally one obtains a sum over automorphic forms \(\varphi\) of products of an \(H_1\)-period of \(\varphi\) and the conjugate of an \(H_2\)-period.  Geometrically one obtains a sum over the double cosets \(H_1(\Q) \backslash G(\Q) / H_2(\Q)\) of orbital integrals.  For \(G = \mathrm{PGL}_2\) and \(H_1\), \(H_2\) tori, which contains Problem~\ref{pr:unfold}, Jacquet used this identity to prove Waldspurger's formula \cite{Ja}.  In Alp\"oge's argument \cite{Alp}, see also \cite{Zh}, the maps are Bessel periods on unitary groups \cite{GGP}, and the pairwise bounds do not come from equidistribution of CM points but from near orthogonality of Poincar\'e series of large weight; Chapter~\ref{ps-chap} treats it, and its last section describes the form it takes in the argument.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:gram}}
+\begin{description}
+\item[\ref{pr:image}] \(\ker B^* = (\operatorname{im} B)^\perp\).
+\item[\ref{pr:gram}] If \(Gx = \lambda x\) with \(\lambda \ne 0\), then \(Q(Bx) = \lambda Bx\).  Then expand \(\tr G^2\) by blocks.
+\item[\ref{pr:two-lines}] \(G\) is the \(2 \times 2\) matrix with diagonal entries \(1\) and off-diagonal entries \(\langle w, v \rangle\) and \(\langle v, w \rangle\).
+\item[\ref{pr:pair}] \(\lVert G_{ii} \rVert_\HS^2 = r_i\), and \(\sum_{i \ne j} r_i r_j \le R^2\).
+\item[\ref{pr:random}] Schur's lemma.
+\item[\ref{pr:bad}] \(Q\) is diagonal.
+\end{description}
+
+\subsection*{\S\ref{sec:points}}
+\begin{description}
+\item[\ref{pr:eval}] \(\langle f, K(\cdot, x) \rangle = f(x)\) for \(f \in \Hc\).
+\item[\ref{pr:zero}] Compare \(Q\) with \(1\) on that space, using Problem~\ref{pr:eval}.
+\item[\ref{pr:schur}] \(Q\) commutes with \(\Gamma\), and \(\tr Q = r\).
+\item[\ref{pr:tetra}] Use Problem~\ref{pr:gram}.  The vertices satisfy \(\langle x_i, x_j \rangle = -1/3\) for \(i \ne j\).  For the second family, consider the function \(x_3\).
+\end{description}
+
+\subsection*{\S\ref{sec:heegner}}
+\begin{description}
+\item[\ref{pr:23}] A reduced form has \(\lvert b \rvert \le a \le c\), so \(a \le \sqrt{d/3}\).
+\item[\ref{pr:bounded}] Approximate \(1\) from below by compactly supported functions.
+\item[\ref{pr:duke-zero}] Apply Problem~\ref{pr:bounded} to the functions of Problem~\ref{pr:matrix}, and then use Problem~\ref{pr:zero}.
+\end{description}
+
+\subsection*{\S\ref{sec:rtf}}
+\begin{description}
+\item[\ref{pr:circle}] \(\lvert D_n(t) \rvert^2 = \sum_{\lvert k \rvert < D'} (D' - \lvert k \rvert) e(kt)\).
+\item[\ref{pr:circle-random}] \(\E \lvert W(k) \rvert^2 = 1/N\) for \(k \ne 0\).
+\item[\ref{pr:period-gram}] By Problem~\ref{pr:eval}, \(B_d(1) = \sum_{w \in \mathcal{H}_d} K(\cdot, w)\).
+\item[\ref{pr:cosh}] \(\operatorname{Im} z_{[a,b,c]} = \sqrt d/(2a)\).  Expand \(\lvert z - z' \rvert^2\) and use \(b^2 - 4ac = -d\).
+\item[\ref{pr:unfold}] For \(d' > 4\) a form has trivial stabilizer in \(\mathrm{PSL}_2(\Z)\).  Use Problem~\ref{pr:cosh}.
+\end{description}
+
+\begin{thebibliography}{GGP}
+\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[Alp]{Alp} L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
+\bibitem[Cox]{Cox} D.~A.~Cox, \emph{Primes of the form \(x^2 + ny^2\)}, Wiley, New York, 1989.
+\bibitem[Du]{Du} W.~Duke, \emph{Hyperbolic distribution problems and half-integral weight Maass forms}, Invent.\ Math.\ \textbf{92} (1988), 73--90.
+\bibitem[GGP]{GGP} W.~T.~Gan, B.~H.~Gross and D.~Prasad, \emph{Symplectic local root numbers, central critical \(L\)-values, and restriction problems in the representation theory of classical groups}, Ast\'erisque \textbf{346} (2012), 1--109.
+\bibitem[Iw1]{Iw87} H.~Iwaniec, \emph{Fourier coefficients of modular forms of half-integral weight}, Invent.\ Math.\ \textbf{87} (1987), 385--401.
+\bibitem[Iw2]{Iw} H.~Iwaniec, \emph{Spectral methods of automorphic forms}, 2nd ed., Grad.\ Stud.\ Math.\ \textbf{53}, Amer.\ Math.\ Soc., Providence, 2002.
+\bibitem[Ja]{Ja} H.~Jacquet, \emph{Sur un r\'esultat de Waldspurger}, Ann.\ Sci.\ \'Ecole Norm.\ Sup.\ (4) \textbf{19} (1986), 185--229.
+\bibitem[Zh]{Zh} R.~Zhang, \emph{A preliminary note on Alp\"oge's proposed proof of the generalized Riemann hypothesis}, preprint, 2026, hexagon:2611.00809.
+\end{thebibliography}
+
+\end{document}

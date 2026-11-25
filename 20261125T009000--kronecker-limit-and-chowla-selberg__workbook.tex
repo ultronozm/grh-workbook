@@ -1,0 +1,293 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[ec-]{20261124T223000--elliptic-curves-for-the-proof__workbook}
+\externaldocument[cp-]{20261125T006500--covolumes-and-periods__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T009000}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Beta}{\mathrm{B}}
+
+\setlength{\emergencystretch}{2em}
+
+\title{The Kronecker limit formula and Chowla--Selberg}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Euler's Gamma function: the reflection and duplication formulas, the Beta integral, and \(\psi := \Gamma'/\Gamma\) with \(\psi(1) = -\gamma\).  Poisson summation.  Dirichlet \(L\)-functions: the functional equation \cite[Ch.~9]{Dav}, the class number formula and binary quadratic forms \cite[Ch.~6]{Dav}.  The Hurwitz zeta function \cite[Ch.~12]{Ap}.  Compact Riemann surfaces and their holomorphic differentials, for Section~\ref{sec:periods} only.  From Chapter~\ref{ec-chap}, \emph{Complex tori, theta functions and periods}: Section~\ref{ec-sec:periods}, in particular Problems~\ref{ec-pr:varpi}, \ref{ec-pr:epstein} and~\ref{ec-pr:Omega} and Theorem~\ref{ec-thm:LL}, with Problems~\ref{ec-pr:LL-eta} and~\ref{ec-pr:eta-i}.
+
+Chapter~\ref{ec-chap} took Kronecker's limit formula from the literature and computed \(L'(1,\chi)/L(1,\chi)\) for the character \(\chi\) modulo \(4\) through the discriminant of the lemniscatic lattice.  Here we prove the limit formula and reach the same value through \(s = 0\), where no elliptic functions appear.  Comparing the two routes is the method of Chowla and Selberg \cite{CS}.  It shows that, for the character \(\chi\) of every imaginary quadratic field, \(e^{\gamma - L'(1,\chi)/L(1,\chi)}\) is, up to an algebraic factor, the square of a period of an elliptic curve with complex multiplication divided by \(\pi^2\).
+
+\section{Eisenstein series and Kronecker's limit formula}\label{sec:klf}
+
+What is the constant term at \(s = 1\) of \(\sum'_{\mu \in \Z[\ii]} \lvert\mu\rvert^{-2s}\)?  The answer comes from letting the lattice vary.  For \(\tau = x + \ii y\) with \(y > 0\) and \(\operatorname{Re} s > 1\), let
+\[
+  E(\tau, s) := \sum_{(m,n) \ne (0,0)} \frac{y^s}{\lvert m + n\tau\rvert^{2s}} .
+\]
+Let \(q := e^{2\pi\ii\tau}\), let \(\eta(\tau) := q^{1/24}\prod_{n \ge 1}(1 - q^n)\) be Dedekind's function, and let \(\sigma_t(n) := \sum_{e \mid n} e^t\).  For \(z > 0\), let \(K_\nu(z) := \tfrac12 \int_0^\infty t^{\nu - 1} e^{-z(t + t^{-1})/2} \, d t\).
+
+\begin{problem}\label{pr:E-inv}
+\(E(g\tau, s) = E(\tau, s)\) for every \(g \in \mathrm{SL}_2(\Z)\).
+\end{problem}
+
+\begin{problem}\label{pr:poisson}
+For real \(x\), \(y > 0\) and \(\operatorname{Re} s > \tfrac12\),
+\[
+  \sum_{m \in \Z} \frac{1}{((m + x)^2 + y^2)^{s}} = \frac{\sqrt\pi\, \Gamma(s - \frac12)}{\Gamma(s)\, y^{2s-1}} + \frac{4\pi^s}{\Gamma(s)} \sum_{k \ge 1} \Bigl(\frac{k}{y}\Bigr)^{s - \frac12} \! K_{s - \frac12}(2\pi k y) \cos(2\pi k x) .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:fourier}
+\(E(\tau, s)\) equals
+\begin{multline*}
+  2\zeta(2s) y^s + \frac{2\sqrt\pi\, \Gamma(s - \frac12)}{\Gamma(s)} \zeta(2s - 1) y^{1-s} \\
+  + \frac{8\pi^s \sqrt y}{\Gamma(s)} \sum_{n \ge 1} n^{s - \frac12} \sigma_{1 - 2s}(n) K_{s - \frac12}(2\pi n y) \cos(2\pi n x) .
+\end{multline*}
+In particular \(E(\tau, s)\) continues meromorphically to \(\operatorname{Re} s > \tfrac12\), with only a simple pole at \(s = 1\).
+\end{problem}
+
+\begin{problem}\label{pr:K-half}
+\(K_{1/2}(z) = \sqrt{\pi/2z}\; e^{-z}\).
+\end{problem}
+
+\begin{problem}\label{pr:q-terms}
+At \(s = 1\) the last term in Problem~\ref{pr:fourier} is \(-4\pi \log \bigl\lvert \prod_{n \ge 1} (1 - q^n) \bigr\rvert\).
+\end{problem}
+
+\begin{problem}\label{pr:const}
+As \(s \to 1\),
+\[
+  \frac{2\sqrt\pi\, \Gamma(s - \frac12)}{\Gamma(s)} \zeta(2s - 1) y^{1-s} = \frac{\pi}{s - 1} + 2\pi\bigl(\gamma - \log 2 - \tfrac12 \log y\bigr) + O(s - 1) .
+\]
+\end{problem}
+
+Since \(2\zeta(2) y = \pi^2 y/3 = -4\pi \log\lvert q^{1/24}\rvert\), Problems~\ref{pr:fourier}--\ref{pr:const} prove the following \cite{We}, \cite[Ch.~20, 21]{La}.
+
+\begin{theorem}[Kronecker's first limit formula]\label{thm:klf}
+\(E(\tau, s) = \dfrac{\pi}{s - 1} + 2\pi\bigl(\gamma - \log 2 - \log(\sqrt y\, \lvert\eta(\tau)\rvert^2)\bigr) + O(s - 1)\).
+\end{theorem}
+
+\begin{problem}\label{pr:eta-mod}
+\(\lvert\eta(-1/\tau)\rvert = \lvert\tau\rvert^{1/2} \lvert\eta(\tau)\rvert\).
+\end{problem}
+
+\begin{problem}\label{pr:Zi}
+Let \(Z(s) := \sum'_{\mu \in \Z[\ii]} \lvert\mu\rvert^{-2s}\), and let \(\chi\) be the non-trivial character modulo \(4\).  Then \(Z(s) = \pi/(s-1) + 2\pi(\gamma - \log 2 - 2\log\eta(\ii)) + O(s-1)\), and
+\[
+  \frac{L'(1, \chi)}{L(1, \chi)} = \gamma - 2\log 2 - 4\log\eta(\ii) .
+\]
+\end{problem}
+
+This is Problem~\ref{ec-pr:LL-eta}, now with a proof.  It expresses \(L'/L(1,\chi)\) through a value of a modular form.  To see Gamma values instead, we move to \(s = 0\), where \(L(s,\chi)\) is a finite combination of Hurwitz zeta functions.
+
+\section{Lerch's formula and the functional equation}\label{sec:lerch}
+
+For \(x > 0\) and \(\operatorname{Re} s > 1\), let \(\zeta(s, x) := \sum_{n \ge 0} (n + x)^{-s}\).  Euler--Maclaurin summation gives
+\[
+  \zeta(s, x) = \frac{x^{1-s}}{s - 1} + \frac{x^{-s}}{2} - s \int_0^\infty \frac{\{t\} - \frac12}{(t + x)^{s+1}} \, d t ,
+\]
+which continues \(\zeta(s, x)\) to \(\operatorname{Re} s > -1\) with a single pole at \(s = 1\).  Write \(\zeta'(s, x)\) for \(\partial_s \zeta(s, x)\).
+
+\begin{problem}\label{pr:hz0}
+\(\zeta(0, x) = \frac12 - x\), and \(\zeta(s, \frac12) = (2^s - 1)\zeta(s)\).
+\end{problem}
+
+\begin{problem}\label{pr:lerch-diff}
+\(\partial_x^2\, \zeta'(0, x) = \zeta(2, x) = (\log\Gamma)''(x)\), and \(\zeta'(0, x+1) - \zeta'(0, x) = \log x\).
+\end{problem}
+
+Problems~\ref{pr:hz0} and~\ref{pr:lerch-diff}, with \(\zeta(0) = -\frac12\) and \(\Gamma(\frac12) = \sqrt\pi\), prove the following.
+
+\begin{theorem}[Lerch]\label{thm:lerch}
+\(\zeta'(0, x) = \log\Gamma(x) - \frac12\log 2\pi\) for \(x > 0\).
+\end{theorem}
+
+\begin{problem}\label{pr:L0}
+Let \(\chi\) be an odd character modulo \(N\).  Then \(L(0, \chi) = -\frac1N \sum_{a=1}^{N} a\,\chi(a)\), and
+\[
+  L'(0, \chi) = \sum_{a=1}^{N-1} \chi(a) \log\Gamma(a/N) - L(0, \chi) \log N .
+\]
+\end{problem}
+
+Let \(\chi\) be a primitive odd character modulo \(N\), and let
+\[
+  \Lambda(s, \chi) := (N/\pi)^{(s+1)/2}\, \Gamma\bigl(\tfrac{s+1}{2}\bigr) L(s, \chi) .
+\]  Then \(\Lambda(s, \chi) = W(\chi)\Lambda(1 - s, \bar\chi)\) with \(\lvert W(\chi)\rvert = 1\) \cite[Ch.~9]{Dav}; moreover \(W(\chi) = \tau(\chi)/(\ii\sqrt N)\), which is \(1\) if \(\chi\) is real, because then the Gauss sum is \(\tau(\chi) = \ii\sqrt N\) \cite[Ch.~6]{Dav}.
+
+\begin{problem}\label{pr:FE}
+\(\dfrac{L'(1, \chi)}{L(1, \chi)} + \dfrac{L'(0, \bar\chi)}{L(0, \bar\chi)} = \gamma + \log\dfrac{2\pi}{N}\).
+\end{problem}
+
+\begin{problem}\label{pr:LL4}
+For the character modulo \(4\), Problems~\ref{pr:L0} and~\ref{pr:FE} give Theorem~\ref{ec-thm:LL}:
+\[
+  \frac{L'(1, \chi)}{L(1, \chi)} = \gamma + 2\log 2 + 3\log\pi - 4\log\Gamma(\tfrac14) = 0.24560\ldots
+\]
+\end{problem}
+
+\begin{problem}\label{pr:eta-i}
+\(\eta(\ii) = \Gamma(\frac14)/(2\pi^{3/4})\).
+\end{problem}
+
+Chapter~\ref{ec-chap} found this value from \(\Delta(\varpi\Z[\ii]) = 64\) (Problem~\ref{ec-pr:eta-i}).  Here it comes from computing one constant, \(L'(1,\chi)/L(1,\chi)\), in two ways: through \(s = 1\) by Theorem~\ref{thm:klf}, and through \(s = 0\) by Theorem~\ref{thm:lerch}.  The argument used only that \(Z(s)\) is both an Eisenstein series and \(4\zeta(s)L(s,\chi)\); the next section runs it for every imaginary quadratic field.
+
+\section{The general odd character}\label{sec:general}
+
+Let \(K\) be an imaginary quadratic field of discriminant \(-d\), with class number \(h\) and \(w\) roots of unity, and let \(\chi\) be its character, a primitive real odd character modulo \(d\).  The class number formula is \(L(1, \chi) = 2\pi h/(w\sqrt d)\).  For each class of positive definite forms of discriminant \(-d\), choose the reduced representative \(Q = [a, b, c]\), so that \(Q(m,n) = am^2 + bmn + cn^2\), \(b^2 - 4ac = -d\), \(\lvert b\rvert \le a \le c\), and \(b \ge 0\) if \(\lvert b\rvert = a\) or \(a = c\).  Let \(\tau_Q := (-b + \ii\sqrt d)/2a\) and \(y_Q := \operatorname{Im}\tau_Q\).  The forms \(Q\) together represent each \(n \ge 1\) exactly \(w \sum_{e \mid n} \chi(e)\) times \cite[Ch.~6]{Dav}, so
+\[
+  \sum_Q \sum_{(m,n) \ne (0,0)} Q(m,n)^{-s} = w\, \zeta(s) L(s, \chi)
+  \qquad (\operatorname{Re} s > 1) .
+\]
+The sum over \(Q\) has \(h\) terms.
+
+\begin{problem}\label{pr:L0-gen}
+\(L(0, \chi) = 2h/w\).  For \(d = 3, 4, 7, 23\) this is \(\frac13, \frac12, 1, 3\).
+\end{problem}
+
+\begin{problem}\label{pr:lerch-gen}
+\(\displaystyle \frac{L'(1, \chi)}{L(1, \chi)} = \gamma + \log 2\pi - \frac{w}{2h} \sum_{a=1}^{d-1} \chi(a) \log\Gamma\Bigl(\frac ad\Bigr)\).  For \(d = 3, 7, 23\) it is \(0.36828\ldots\), \(0.01563\ldots\) and \(-0.42212\ldots\).
+\end{problem}
+
+\begin{problem}\label{pr:form-E}
+\(Q(m, n) = \dfrac{\sqrt d}{2 y_Q}\lvert m - n\tau_Q\rvert^2\), and so
+\[
+  \sum_Q E(\tau_Q, s) = w \Bigl(\frac{\sqrt d}{2}\Bigr)^{s} \zeta(s) L(s, \chi) .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:LL-eta-gen}
+\(\displaystyle \frac{L'(1, \chi)}{L(1, \chi)} = \gamma - \log 2 - \frac12\log d - \frac2h \sum_Q \log\bigl(\sqrt{y_Q}\, \lvert\eta(\tau_Q)\rvert^2\bigr)\).
+\end{problem}
+
+Problems~\ref{pr:lerch-gen} and~\ref{pr:LL-eta-gen} prove the formula of Chowla and Selberg \cite{CS}.
+
+\begin{theorem}[Chowla--Selberg]\label{thm:cs}
+\[
+  \prod_Q \sqrt{y_Q}\, \lvert\eta(\tau_Q)\rvert^2 = (4\pi\sqrt d)^{-h/2} \prod_{a=1}^{d-1} \Gamma\Bigl(\frac ad\Bigr)^{w\chi(a)/4} .
+\]
+\end{theorem}
+
+\begin{problem}\label{pr:eta-rho}
+Let \(\rho := e^{2\pi\ii/3}\).  Then \(\lvert\eta(\rho)\rvert^2 = 3^{1/4}\, \Gamma(\frac13)^3/4\pi^2\).
+\end{problem}
+
+\section{Periods}\label{sec:periods}
+
+Why should \(\prod_a \Gamma(a/d)^{\chi(a)}\) be a period?  Because values of \(\Gamma\) at rational numbers come, up to algebraic numbers and powers of \(\pi\), from integrals of algebraic differentials on Fermat curves.
+
+Let \(N \ge 3\), and let \(F_N\) be the smooth projective curve with affine equation \(u^N + v^N = 1\).  For integers \(a, b \ge 1\) with \(a + b \le N - 1\), the differential \(\omega_{a,b} := u^{a-1}v^{b-N}\, d u\) is holomorphic on \(F_N\), as one checks at the points with \(v = 0\) and at infinity.  Let \(\kappa\) be the path \(u \mapsto (u, (1 - u^N)^{1/N})\), \(0 \le u \le 1\), from \((0,1)\) to \((1,0)\).  Let \(\zeta_N := e^{2\pi\ii/N}\), and let \(A(u,v) := (\zeta_N u, v)\) and \(B(u,v) := (u, \zeta_N v)\).
+
+\begin{problem}\label{pr:beta-path}
+\(\int_\kappa \omega_{a,b} = \frac1N \Beta(\frac aN, \frac bN)\).
+\end{problem}
+
+\begin{problem}\label{pr:cycle}
+The chain \((1 - A)(1 - B)\kappa\) is a closed cycle on \(F_N\), and the integral of \(\omega_{a,b}\) over it is \(\frac1N (1 - \zeta_N^a)(1 - \zeta_N^b)\, \Beta(\frac aN, \frac bN)\).
+\end{problem}
+
+So each \(\Beta(\frac aN, \frac bN)\) with \(a, b \ge 1\) and \(a + b \le N - 1\) is, up to an algebraic factor, a period of a holomorphic differential on \(F_N\) defined over \(\Q\).
+
+\begin{problem}\label{pr:gamma-N}
+For integers \(a \ge 1\), \(\Gamma(\frac aN)^N = \Gamma(a) \prod_{j=1}^{N-1} \Beta(\frac aN, \frac{ja}N)\).
+\end{problem}
+
+Since \(\Beta(x, y+1) = \Beta(x, y)\, y/(x+y)\), every \(\Beta(\frac aN, \frac bN)\) with \(a, b \ge 1\) is a rational multiple of one with \(1 \le a, b \le N\), which is \(N\) times an integral of the algebraic differential \(\omega_{a,b}\) along \(\kappa\) (Problem~\ref{pr:beta-path}).  So by Problem~\ref{pr:gamma-N}, \(\Gamma(\frac aN)^N\) is, up to a rational factor, a product of such integrals.
+
+\begin{problem}\label{pr:quartic}
+The map \((u, v) \mapsto (u, v^2)\) from \(F_4\) to the curve \(y^2 = 1 - t^4\) pulls \(d t / y\) back to \(\omega_{1,2}\), and \(\Beta(\frac14, \frac12) = 2\varpi\).
+\end{problem}
+
+For \(K\) as in Section~\ref{sec:general}, let
+\[
+  \Omega_K := \sqrt\pi \prod_{a=1}^{d-1} \Gamma\Bigl(\frac ad\Bigr)^{w\chi(a)/4h} .
+\]
+For \(K = \Q(\ii)\), \(\Omega_K = 2\varpi\) (Problem~\ref{ec-pr:Omega}, where \(\Omega\) denotes \(\Omega_K^2/2\pi = 2\varpi^2/\pi\)), which by Problems~\ref{pr:cycle} and~\ref{pr:quartic} is a period of \(d t / y\) on \(y^2 = 1 - t^4\) up to a factor in \(\bar\Q^\times\).
+
+\begin{problem}\label{pr:Omega3}
+For \(K = \Q(\sqrt{-3})\),
+\[
+  \Omega_K = \sqrt\pi\, \bigl(\Gamma(\tfrac13)/\Gamma(\tfrac23)\bigr)^{3/2} = 3^{1/4}2^{-1/2}\, \Beta(\tfrac13, \tfrac13) .
+\]
+\end{problem}
+
+Here \(F_3\) is itself a curve of genus one, \(\omega_{1,1}\) is its holomorphic differential, and \(A\) multiplies \(\omega_{1,1}\) by \(\zeta_3\): the curve has complex multiplication by \(\Z[\rho]\).  This is the general pattern.  Chowla and Selberg deduced the following from Theorem~\ref{thm:cs} \cite{CS}; we give it in the formulation of Gross \cite{Gr}.  Every nonzero period of a nonzero holomorphic differential defined over \(\bar\Q\) on an elliptic curve over \(\bar\Q\) with complex multiplication by \(\Oc_K\) lies in \(\bar\Q^\times\, \Omega_K\).  Gross proved this period relation geometrically, by relating such curves to Jacobians of Fermat curves, whose periods are Beta values by Problem~\ref{pr:cycle} \cite{Gr}.
+
+\begin{problem}\label{pr:cm-period}
+\(e^{\gamma - L'(1,\chi)/L(1,\chi)} = \Omega_K^2/2\pi^2\).  For \(K = \Q(\ii)\) this is \(2\varpi^2/\pi^2 = \Gamma(\frac14)^4/4\pi^3 = 1.39320\ldots\)
+\end{problem}
+
+Thus \(e^{\gamma - L'(1,\chi)/L(1,\chi)} = -2\,(\Omega_K/2\pi\ii)^2\), the square of a period of an elliptic curve with complex multiplication by \(\Oc_K\) divided by \(2\pi\ii\), the period of \(d z/z\) on the multiplicative group, up to a factor in \(\bar\Q^\times\).  In Chapter~\ref{cp-chap}, \emph{Covolumes and periods}, the two constants enter in this form, through the Faltings height of such a curve (Problem~\ref{cp-pr:hF-CS}).
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:klf}}
+\begin{description}
+\item[\ref{pr:E-inv}] For \(g = \bigl(\begin{smallmatrix} a & b \\ c & d \end{smallmatrix}\bigr)\), write \(m + n\, g\tau\) as \((m' + n'\tau)/(c\tau + d)\), and use \(\operatorname{Im}(g\tau) = y/\lvert c\tau + d\rvert^2\).
+\item[\ref{pr:poisson}] Apply Poisson summation in \(m\).  To find the Fourier transform of \((t^2 + y^2)^{-s}\), write it as an integral of Gaussians in \(t\) by means of \(\Gamma(s)\).
+\item[\ref{pr:fourier}] Separate \(n = 0\).  For \(n \ne 0\) apply Problem~\ref{pr:poisson} with \(nx\) and \(\lvert n\rvert y\), and collect the terms with \(kn = N\).
+\item[\ref{pr:K-half}] Substitute \(t = e^{2v}\), and reduce to a Gaussian integral.
+\item[\ref{pr:q-terms}] \(\sum_{n \ge 1} \sigma_{-1}(n)\, q^n = -\sum_{m \ge 1}\log(1 - q^m)\).
+\item[\ref{pr:const}] \(\zeta(2s - 1) = \frac{1}{2(s-1)} + \gamma + O(s-1)\), and \(\psi(\frac12) = -\gamma - 2\log 2\) by the duplication formula.
+\item[\ref{pr:eta-mod}] Theorem~\ref{thm:klf} and Problem~\ref{pr:E-inv}.
+\item[\ref{pr:Zi}] \(Z(s) = E(\ii, s)\) and \(\eta(\ii) > 0\).  Then compare with the Laurent expansion of \(4\zeta(s)L(s,\chi)\), using \(L(1, \chi) = \pi/4\).
+\end{description}
+
+\subsection*{\S\ref{sec:lerch}}
+\begin{description}
+\item[\ref{pr:hz0}] Set \(s = 0\) in the continuation formula.  For the second statement, split \(\zeta(s)\) into even and odd \(n\).
+\item[\ref{pr:lerch-diff}] \(\partial_x \zeta(s, x) = -s\, \zeta(s+1, x)\).  Differentiate twice in \(x\), then in \(s\) at \(s = 0\).  For the second statement, \(\zeta(s, x+1) = \zeta(s, x) - x^{-s}\).
+\item[\ref{pr:L0}] \(L(s, \chi) = N^{-s}\sum_{a=1}^{N} \chi(a)\, \zeta(s, a/N)\), and \(\sum_a \chi(a) = 0\).
+\item[\ref{pr:FE}] Take the logarithmic derivative of the functional equation at \(s = 1\), and use \(\psi(\frac12)\) as in Problem~\ref{pr:const}.  Here \(L(0, \bar\chi) \ne 0\), since \(\Lambda(0, \bar\chi)\) is a nonzero multiple of \(\Lambda(1, \chi)\).
+\item[\ref{pr:LL4}] \(\Gamma(\frac14)\Gamma(\frac34) = \pi\sqrt2\).
+\end{description}
+
+\subsection*{\S\ref{sec:general}}
+\begin{description}
+\item[\ref{pr:L0-gen}] Compare \(\Lambda(0, \chi)\) with \(\Lambda(1, \chi)\), and use the class number formula.
+\item[\ref{pr:lerch-gen}] Problems~\ref{pr:L0}, \ref{pr:FE} and~\ref{pr:L0-gen}.
+\item[\ref{pr:form-E}] Expand \(a\lvert m - n\tau_Q\rvert^2\).  Then replace \(n\) by \(-n\).
+\item[\ref{pr:LL-eta-gen}] Expand both sides of Problem~\ref{pr:form-E} at \(s = 1\) by Theorem~\ref{thm:klf}.  The residues agree by the class number formula; compare the constant terms.
+\item[\ref{pr:eta-rho}] Theorem~\ref{thm:cs} with \(d = 3\), and the reflection formula.
+\end{description}
+
+\subsection*{\S\ref{sec:periods}}
+\begin{description}
+\item[\ref{pr:beta-path}] Substitute \(t = u^N\) in \(\Beta(\frac aN, \frac bN) = \int_0^1 t^{a/N - 1}(1-t)^{b/N - 1}\, d t\).
+\item[\ref{pr:cycle}] \(A^*\omega_{a,b} = \zeta_N^a\, \omega_{a,b}\) and \(B^*\omega_{a,b} = \zeta_N^b\, \omega_{a,b}\).  For the boundary, \(A\) fixes the points with \(u = 0\) and \(B\) those with \(v = 0\).
+\item[\ref{pr:gamma-N}] \(\Beta(x, y) = \Gamma(x)\Gamma(y)/\Gamma(x+y)\); the product telescopes.
+\item[\ref{pr:quartic}] Problem~\ref{pr:beta-path} and the definition of \(\varpi\) in Chapter~\ref{ec-chap}.
+\item[\ref{pr:Omega3}] \(h = 1\), \(w = 6\), and the reflection formula as in Problem~\ref{pr:eta-rho}.
+\item[\ref{pr:cm-period}] Problem~\ref{pr:lerch-gen}.
+\end{description}
+
+\begin{thebibliography}{CS}
+\bibitem[Ap]{Ap} T.~M.~Apostol, \emph{Introduction to Analytic Number Theory}, Undergrad.\ Texts Math., Springer, 1976.
+\bibitem[CS]{CS} S.~Chowla and A.~Selberg, \emph{On Epstein's zeta-function}, J.\ reine angew.\ Math.\ \textbf{227} (1967), 86--110.
+\bibitem[Dav]{Dav} H.~Davenport, \emph{Multiplicative Number Theory}, 3rd ed., Grad.\ Texts in Math.\ 74, Springer, 2000.
+\bibitem[Gr]{Gr} B.~H.~Gross, \emph{On the periods of abelian integrals and a formula of Chowla and Selberg}, with an appendix by D.~E.~Rohrlich, Invent.\ Math.\ \textbf{45} (1978), 193--211.
+\bibitem[La]{La} S.~Lang, \emph{Elliptic Functions}, 2nd ed., Grad.\ Texts in Math.\ 112, Springer, 1987.
+\bibitem[We]{We} A.~Weil, \emph{Elliptic Functions according to Eisenstein and Kronecker}, Ergeb.\ Math.\ Grenzgeb.\ 88, Springer, 1976.
+\end{thebibliography}
+
+\end{document}

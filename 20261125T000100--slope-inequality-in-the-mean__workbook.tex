@@ -1,0 +1,281 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[sm-]{20261125T000000--slope-method__workbook}
+\externaldocument[ec-]{20261124T223000--elliptic-curves-for-the-proof__workbook}
+\externaldocument[st-]{20261124T214500--supersingular-theta-divisibility__workbook}
+\externaldocument[ip-]{20261124T214600--the-isotropic-plane__workbook}
+\externaldocument[cm-]{20261124T223100--complex-multiplication-and-inert-reduction__workbook}
+\externaldocument[ps-]{20261125T010500--poincare-series-and-near-orthogonality__workbook}
+\externaldocument[as-]{20261125T021500--assembly-at-one-scale__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T000100}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Hc}{\mathcal{H}}
+\newcommand{\pp}{\mathfrak{p}}
+\newcommand{\aaa}{\mathfrak{a}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\mumax}{\mu_{\max}}
+\newcommand{\mumin}{\mu_{\min}}
+\newcommand{\covol}{\operatorname{covol}}
+\newcommand{\codim}{\operatorname{codim}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\HS}{\mathrm{HS}}
+
+\setlength{\emergencystretch}{2em}
+
+\title{The slope inequality in the mean}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Chapter~\ref{sm-chap}, \emph{The slope method}, whose notation we keep: normed spaces over a number field \(K\), their degrees and slopes, the heights \(h\) and \(h_\infty\) of a linear map, and Theorems~\ref{sm-thm:image} and~\ref{sm-thm:one}.  The spectral theorem and the Hilbert--Schmidt norm \(\lVert A \rVert_\HS^2 = \tr(A^*A)\).  Northcott's theorem: a projective space over \(K\) has only finitely many points of bounded height.  The prime number theorem, also in arithmetic progressions.  Section~\ref{sec:inputs} refers to Chapters~\ref{ec-chap}, \ref{cm-chap}, \ref{st-chap} and~\ref{ip-chap}, but proves nothing from them.
+
+Theorem~\ref{sm-thm:one} bounds a sum over primes by \(\mumax\) of the target.  Which part of the target can the image of one map reach, and how do many maps reach its mean slope?
+
+
+\section{The Harder--Narasimhan filtration}\label{sec:hn}
+
+Theorem~\ref{sm-thm:image} has \(\mumax(F)\) on the right, not \(\mu(F)\).  This cannot be avoided.
+
+\begin{problem}\label{pr:need-max}
+Let \(T > 0\).  Let \(L = \Z\) with \(\lVert 1 \rVert = e^{-T}\), and let \(M = \Z e_1 \oplus \Z e_2\) with \(e_1 \perp e_2\), \(\lVert e_1 \rVert = e^{-T}\) and \(\lVert e_2 \rVert = e^T\).  The map \(\varphi(1) = e_1\) is injective with \(h(\varphi) = 0\), while \(\mu(L) = T\) and \(\mu(M) = 0\).
+\end{problem}
+
+The image of one map is a subspace, and only \(\mumax\) bounds the slope of a subspace.  To see which part of the target the image can reach, one filters the target by slopes.  A nonzero normed space \(V\) is \emph{semistable} if \(\mu(U) \le \mu(V)\) for every nonzero subspace \(U\).  Set \(\deg 0 := 0\).
+
+\begin{problem}\label{pr:submodular}
+For subspaces \(U, U'\) of \(V\), \(\deg(U \cap U') + \deg(U + U') \ge \deg U + \deg U'\).
+\end{problem}
+
+\begin{problem}\label{pr:destab}
+The slopes of the nonzero subspaces of \(V\) have a largest value, and among the subspaces of that slope there is one that contains all the others.
+\end{problem}
+
+Applying Problem~\ref{pr:destab} to the quotient by that subspace, and so on, one obtains a filtration.
+
+\begin{theorem}[Stuhler, Grayson]\label{thm:hn}
+A nonzero normed space \(V\) has a unique chain of subspaces \(0 = V_0 \subsetneq V_1 \subsetneq \dots \subsetneq V_l = V\) whose successive quotients are semistable with \(\mu(V_1/V_0) > \dots > \mu(V_l/V_{l-1})\).  Every nonzero subspace of \(V\) has slope at most \(\mu(V_1)\), and every nonzero quotient of \(V\) has slope at least \(\mu(V/V_{l-1})\).
+\end{theorem}
+
+See \cite{St}, \cite{Gr}, and \cite{Ga} for global fields; for function fields this is the theorem of Harder and Narasimhan.  The \emph{slopes} of \(V\) are the numbers \(d_1 \ge \dots \ge d_r\) in which \(\mu(V_i/V_{i-1})\) occurs \(\dim(V_i/V_{i-1})\) times.  Their sum is \(\deg V\).  Write \(\mumax(V) := d_1\) and \(\mumin(V) := d_r\).  For real \(\lambda\) let \(V^{\ge\lambda}\) be the largest \(V_i\) all of whose slopes are at least \(\lambda\).  By uniqueness, the filtrations of \(V_i\) and of \(V/V_i\) are induced by that of \(V\).  Hence, when the spaces in question are nonzero,
+\begin{equation}\label{eq:trunc}
+  \dim V/V^{\ge\lambda} = \#\{j : d_j < \lambda\} , \qquad \mumin(V^{\ge\lambda}) \ge \lambda , \qquad \mumax(V/V^{\ge\lambda}) < \lambda .
+\end{equation}
+
+\begin{problem}\label{pr:tau}
+Let \(\tau\) lie in the usual fundamental domain, \(\lvert \tau \rvert \ge 1\) and \(\lvert \operatorname{Re}\tau \rvert \le \tfrac12\).  Then \(\Z + \Z\tau \subset \C\) is semistable if and only if \(\operatorname{Im}\tau \le 1\).  Otherwise \(V_1\) is the line spanned by \(1\).
+\end{problem}
+
+\begin{problem}\label{pr:layer}
+Let \(\dim V = D\), and let \(s\) and \(H \ge 0\) be real with \(\mumin(V) \ge s - H\).  Then
+\[
+  s - \mu(V) \le \frac1D \sum_j (s - d_j)_+ = \int_0^H \frac{\#\{j : d_j < s - t\}}{D} \, d t .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:slope-map}
+Let \(\varphi \colon V \to F\) be a nonzero map of normed spaces.  Then \(\mumin(V) \le \mumax(F) + h(\varphi)\).  If \(U \subseteq V\) is a nonzero subspace with \(\mumin(U) \ge \lambda + h(\varphi)\), then \(\varphi(U) \subseteq F^{\ge\lambda}\).
+\end{problem}
+
+So a map sends the parts of large slope of its source into the parts of large slope of its target.
+
+\section{Several maps to the same target}\label{sec:mean}
+
+Theorem~\ref{sm-thm:one} involves \(\mumax(W^\vee)\): a map of small rank sees only the part of its target that contains its image.  To reach the mean slope of a target \(F\), one uses a family of maps into \(F\).  A line of large slope in \(F\) could contain the image of every member of the family, so the number of maps alone gives nothing.  What is needed is a bound for the codimension of the span of the images that survives when the sources are cut down.
+
+Let \(F\) be a normed space of dimension \(D > 0\).  Let \(\varphi_i \colon V_i \to F\), \(i \in I\), be linear maps from nonzero normed spaces, and let \(h_i\) be real numbers with \(h(\varphi_i) \le h_i\) whenever \(\varphi_i \ne 0\).  Let \(r_i := \dim V_i\) and \(R := \sum_i r_i\).  The \emph{adjusted slopes} of the family are the \(R\) numbers \(d - h_i\), where \(d\) runs over the slopes of \(V_i\).  Let \(s\) be real, \(u > 0\) and \(H \ge 0\), with
+\begin{equation}\label{eq:suH}
+  \sum_i r_i \bigl( \mu(V_i) - h_i \bigr) \ge Rs , \qquad \max_i \bigl( \mumax(V_i) - h_i \bigr) \le s + u , \qquad \mumin(F) \ge s - H .
+\end{equation}
+Thus the adjusted slopes have mean at least \(s\) and are at most \(s + u\), and no slope of \(F\) lies more than \(H\) below \(s\).  The family satisfies the \emph{rank hypothesis} with constants \(\theta, c \ge 0\) if, for all subspaces \(U_i \subseteq V_i\),
+\begin{equation}\label{eq:rank}
+  \codim_F \sum_i \varphi_i(U_i) \le \Bigl( \theta + \frac{c}{R} \sum_i \codim_{V_i} U_i \Bigr) D .
+\end{equation}
+For \(t > 0\) let \(U_i(t) := V_i^{\ge s - t + h_i}\).
+
+\begin{problem}\label{pr:markov}
+The number \(k(t) := \sum_i \codim U_i(t)\) of adjusted slopes below \(s - t\) satisfies \(k(t) \le Ru/(u + t)\).
+\end{problem}
+
+\begin{problem}\label{pr:images}
+\(\varphi_i(U_i(t)) \subseteq F^{\ge s - t}\) for every \(i\).  Hence, under~\eqref{eq:rank}, the number of slopes of \(F\) below \(s - t\) is at most \(\bigl(\theta + cu/(u+t)\bigr) D\).
+\end{problem}
+
+Inserting Problem~\ref{pr:images} in Problem~\ref{pr:layer}, and using \(\int_0^H u/(u+t) \, d t = u\log(1 + H/u)\), proves the following.
+
+\begin{theorem}\label{thm:mean}
+Assume~\eqref{eq:suH} and~\eqref{eq:rank}.  Then
+\[
+  \mu(F) \ge s - \theta H - c\, u \log\Bigl( 1 + \frac{H}{u} \Bigr) .
+\]
+\end{theorem}
+
+Statements of this kind are part of Alpöge's argument \cite{Alp}.  Theorem~\ref{thm:mean}, with this proof, is \cite[Prop.~4.3]{Zh}.
+
+\begin{problem}\label{pr:one-map}
+Let \(\varphi \colon V \to F\) be bijective with \(V\) semistable, and take \(h_1 = h(\varphi)\).  Then~\eqref{eq:rank} holds with \(\theta = 0\) and \(c = 1\), and Theorem~\ref{thm:mean} with \(u \to 0\) gives \(\mu(F) \ge \mu(V) - h(\varphi)\).
+\end{problem}
+
+This is Theorem~\ref{sm-thm:image} for \(\varphi\), with \(U = F\).  If \(V\) is not semistable, then \(u \ge \mumax(V) - \mu(V)\), and the theorem is weaker by \(u\log(1 + H/u)\): this is the price of using only the dimensions of the spans.  The share \(u/(u+t)\) of discarded directions in Problem~\ref{pr:markov} varies with the level, and the integration uses this.
+
+\begin{problem}\label{pr:threshold}
+Let \(\theta = 0\).  Using in Problem~\ref{pr:layer} the trivial bound \(D\) for \(t < t_0\) and the bound of Problem~\ref{pr:images} at \(t_0\) for \(t \ge t_0\), where \(0 < t_0 \le H\), gives the loss \(t_0 + cu(H - t_0)/(u + t_0)\), which is at least \(2\sqrt{cu(H + u)} - (1+c)u\).
+\end{problem}
+
+So when the a priori bound \(H\) is much larger than \(u\), a single threshold costs about \(\sqrt{uH}\), whereas Theorem~\ref{thm:mean} costs \(u\log(H/u)\).
+
+\begin{problem}\label{pr:toy}
+Let \(D\) be even, let \(F = \bigoplus_{k=1}^D \Z v_k\) with orthogonal \(v_k\) of lengths \(e^{-s_k}\), where \(s_k = 0\) for half of the \(k\) and \(s_k = T > 0\) for the others.  Let \(V_k = \Z\) with \(\lVert 1 \rVert = e^{-s_k}\), and \(\varphi_k(1) := v_k\).  Then~\eqref{eq:rank} holds with \(\theta = 0\) and \(c = 1\), and Theorem~\ref{thm:mean} with \(s = u = H = T/2\) gives \(\mu(F) \ge (1 - \log 2)\,T/2\).
+\end{problem}
+
+Here \(\mu(F) = T/2\).  The surjection \(\bigoplus_k V_k \to F\), through Theorem~\ref{thm:hn}, gives only \(\mu(F) \ge \min_k s_k = 0\).
+
+\section{The rank hypothesis from Gram matrices}\label{sec:gram}
+
+How can one verify~\eqref{eq:rank} when \(R\) is much larger than \(D\)?  By a second moment at one complex place.  Let \(\Hc\) be a complex inner product space of dimension \(D' > 0\).  Let \(B_i \colon X_i \to \Hc\), \(i \in I\), be linear maps from inner product spaces of dimensions \(r_i\), with \(R := \sum_i r_i > 0\), and let \(\gamma_i > 0\).  Let
+\[
+  K_i := \gamma_i B_i^* B_i , \qquad Q := \sum_i \gamma_i B_i B_i^* ,
+\]
+and suppose that
+\begin{equation}\label{eq:gram}
+  \sum_i \lVert K_i - 1 \rVert_\HS^2 \le eR , \qquad \tr(Q^2) \le (1 + \eta) \frac{(\tr Q)^2}{D'} ,
+\end{equation}
+with \(0 \le e \le \tfrac14\) and \(\eta \ge 0\).  The first condition says that each weighted map nearly preserves lengths.
+
+\begin{problem}\label{pr:rank}
+If \(Q \ge 0\) and \(Q \ne 0\), then \(\operatorname{rank} Q \ge (\tr Q)^2/\tr Q^2\), with equality exactly when \(Q\) is a multiple of a projection.  Moreover \(\lVert Q - \tr Q/D' \rVert_\HS^2 = \tr Q^2 - (\tr Q)^2/D'\).
+\end{problem}
+
+So the second condition in~\eqref{eq:gram} says that \(Q\) is nearly scalar.  Let \(v_1, \dots, v_R\) be the images under the maps \(\sqrt{\gamma_i} B_i\) of orthonormal bases of the \(X_i\).  Then \(Q = \sum_k v_k v_k^*\) and \(\tr Q^2 = \sum_{k, l} \lvert\langle v_k, v_l \rangle\rvert^2\), so \(Q\) is scalar exactly when the \(v_k\) form a tight frame of \(\Hc\).  Benedetto and Fickus characterize the tight frames of unit vectors as the minimizers of \(\sum_{k,l} \lvert\langle v_k, v_l \rangle\rvert^2\) \cite{BF}, and Zhang compares~\eqref{eq:gram} with tight frames \cite[\S4.4]{Zh}.  When the \(B_i^*\) are evaluations at points \(x_i\), \(\langle Q f, f \rangle = \sum_i \gamma_i \lvert f(x_i) \rvert^2\), and \(Q\) is scalar exactly when the weighted points form a cubature formula that is exact on the functions \(\lvert f \rvert^2\), \(f \in \Hc\), as a spherical design is exact on polynomials of bounded degree \cite{DGS}.
+
+\begin{problem}\label{pr:roots}
+Let \(\Hc\) be the space of polynomials in \(\C[z]\) of degree less than \(D'\), with \(\lVert f \rVert^2 := \int_0^1 \lvert f(e^{2\pi\ii\theta}) \rvert^2 \, d\theta\).  Let \(N \ge D'\) and \(\zeta := e^{2\pi\ii/N}\).  For \(0 \le j < N\) let \(X_j = \C\), let \(B_j(1)\) be the polynomial with \(\langle f, B_j(1) \rangle = f(\zeta^j)\) for all \(f\), and \(\gamma_j := 1/D'\).  Then~\eqref{eq:gram} holds with \(e = \eta = 0\), and \(Q = N/D'\).
+\end{problem}
+
+Now let \(Y_i \subseteq X_i\) be subspaces with \(\sum_i \codim Y_i \le \alpha R\), where \(0 \le \alpha \le 1\).  Let \(Z\) be the orthogonal complement of \(\sum_i B_i(Y_i)\), let \(w := \dim Z\), let \(\Pi\) be the orthogonal projection onto \(Z\), and let \(\tau := \tr Q\).
+
+\begin{problem}\label{pr:trace-R}
+\(\lvert \tau - R \rvert \le R\sqrt e\), so that \(\tau \ge R/2\).
+\end{problem}
+
+\begin{problem}\label{pr:trace-up}
+\(\tr(\Pi Q) \le R\bigl(\alpha + \sqrt{\alpha e}\bigr)\).
+\end{problem}
+
+\begin{problem}\label{pr:trace-low}
+\(\tr(\Pi Q) \ge \tau w/D' - \tau\sqrt{\eta w/D'}\).
+\end{problem}
+
+Combining Problems~\ref{pr:trace-R}--\ref{pr:trace-low}, and using \(\sqrt{\eta D' w} \le (w + \eta D')/2\), gives the following.
+
+\begin{theorem}\label{thm:rank}
+Under~\eqref{eq:gram}, \(\codim_\Hc \sum_i B_i(Y_i) \le \bigl(\eta + 4\alpha + 4\sqrt e\bigr) D'\).
+\end{theorem}
+
+This is \cite[Lemma~4.2]{Zh}.  To apply it to maps \(\varphi_i \colon V_i \to F\) of normed spaces, fix an embedding \(\sigma \colon K \to \C\), and suppose that there are a surjection \(\pi \colon \Hc \to F \otimes_\sigma \C\) and isomorphisms \(\iota_i \colon X_i \to V_i \otimes_\sigma \C\) with \(\pi B_i = (\varphi_i \otimes 1)\iota_i\).  If \(D \ge (1 - \delta) D'\) with \(0 \le \delta < 1\), then the rank hypothesis~\eqref{eq:rank} holds with \(\theta = (\eta + 4\sqrt e)/(1 - \delta)\) and \(c = 4/(1-\delta)\), since a surjection does not increase codimension.  The inner products on \(\Hc\) and \(X_i\) need not be related to the norms that define the slopes: only dimensions are transferred.  But the positivity of \(Q\) is essential, and so is the complex place.
+
+
+\section{The inputs}\label{sec:inputs}
+
+The slope method is due to Bost \cite{Bo96}, \cite{Bo01}; see \cite[\S\S1.3--1.5]{CL} for an account that compares it with the classical ingredients of a transcendence proof, and \cite[\S2.3]{CDT} for a recent use with lattices of polynomials.  Alpöge's argument for the Riemann hypothesis for Dirichlet \(L\)-functions \cite{Alp}, see also \cite[\S\S3--4]{Zh} and the reconstruction \cite{Adr}, can be organized around Theorems~\ref{sm-thm:one}, \ref{thm:mean} and~\ref{thm:rank}; in the reconstruction the inputs are the inequalities (A1)--(A7) of \cite[Prop.~3.1]{Adr}.  The sources are spaces \(V_\alpha\) of algebraic automorphic forms on a definite unitary group for an imaginary quadratic field \(K_0\), the target \(F\) is the dual of a space of test forms, and the maps come from periods computed through a chain of theta lifts.  The status in \cite{Adr} of each input below is recorded in Sections~\ref{as-sec:window} and~\ref{as-sec:map} of Chapter~\ref{as-chap}.
+
+\emph{The finite places.}  At a prime \(p\) inert in \(K_0\), a jet of a theta function of order \(a\), and of order \(w\) at the conjugate place, is divisible by about \(p\) to the power \(\sum_{e\ \mathrm{odd}} (a/p^e - w)_+\); the simplest cases are Theorems~\ref{st-thm:single} and~\ref{ip-thm:main} of Chapters~\ref{st-chap} and~\ref{ip-chap}, and Section~\ref{cm-sec:reduction} of Chapter~\ref{cm-chap}.  The gains are recorded as in Problems~\ref{sm-pr:chain}, \ref{sm-pr:lattice-change} and~\ref{sm-pr:normalization}.  Let \(\chi\) be the quadratic character of \(K_0\).
+
+\begin{problem}\label{pr:ramp}
+Let \(a \ge w > 0\) and \(x := a/w\).  Then
+\begin{multline*}
+  2 \sum_{\chi(p) = -1} \log p \sum_{e\ \mathrm{odd}} \Bigl( \frac{a}{p^e} - w \Bigr)_+ + \sum_{\chi(p) = 0} \log p \sum_{e \ge 1} \Bigl( \frac{a}{p^e} - w \Bigr)_+ \\
+  = w \sum_{n \le x} \Lambda(n) \bigl(1 - \chi(n)\bigr) \Bigl( \frac{x}{n} - 1 \Bigr) .
+\end{multline*}
+\end{problem}
+
+So the exponents are ramps in \(p^e\), as asked for in Section~\ref{sm-sec:chebyshev}, and only the primes inert or ramified in \(K_0\) occur.
+
+\begin{problem}\label{pr:main-term}
+\(\sum_{n \le x} \Lambda(n) \bigl(1 - \chi(n)\bigr) (x/n - 1) = x \bigl( \log x - 1 - \gamma + \tfrac{L'}{L}(1, \chi) \bigr) + o(x)\), where \(\gamma\) is Euler's constant.
+\end{problem}
+
+The error term in Problem~\ref{pr:main-term} carries the information on the zeros of \(\zeta(s)L(s, \chi)\).
+
+\emph{The infinite places.}  The bound for \(h_\infty(\varphi_\alpha)\) is a Gaussian norm as in Problem~\ref{sm-pr:fock}, together with the \(a\)th power of a period, which brings in \(\gamma\) and \(\tfrac{L'}{L}(1, \chi)\) by the Chowla--Selberg formula (Chapter~\ref{ec-chap}, Theorem~\ref{ec-thm:LL}).
+
+\emph{The slopes of the sources.}  By~\eqref{eq:suH}, Theorem~\ref{thm:mean} needs two bounds on the sources: a lower bound \(s\) for the mean of the adjusted slopes, and an upper bound \(s + u\) for their maximum, which enters the loss through \(u\).  The slope of a source is that of a base lattice raised by the gains at the finite places, so the gains enter the lower bound; for the base lattice see \cite[(A2), (A7) and \S15.7]{Adr}.
+
+\emph{The target.}  Theorem~\ref{thm:mean} bounds \(\mu(F)\) from below, so the argument also needs an upper bound for \(\mu(F)\), that is, for the covolume of the lattice of test forms whose dual is \(F\).  The analogue for sections of a line bundle is the arithmetic Hilbert--Samuel theorem \cite[Thm.~8]{GS2}, whose simplest case is Problem~\ref{sm-pr:HS-P1}; here the bound is needed with explicit errors while the groups and the field grow \cite[\S15.4]{Adr}.  Theorem~\ref{thm:mean} also uses the a priori bound \(\mumin(F) \ge s - H\), and by Problem~\ref{pr:threshold} the logarithm in Theorem~\ref{thm:mean} makes a large \(H\) cheap.  In the reconstruction these inputs enter through \cite[(A3)]{Adr}, which comes from its frame theorem, and the height inequality \cite[(A4)]{Adr}, which bounds the slope \(\mu^C\) of the target together with the heights of the period maps.
+
+\emph{The rank hypothesis.}  This is Theorem~\ref{thm:rank} for the family of periods, whose simplest case is Problem~\ref{pr:roots}.  In the argument it comes from near orthogonality of Poincar\'e series of large weight, not from equidistribution of CM points; see Chapter~\ref{ps-chap}, Section~\ref{ps-sec:dim}.
+
+The main term in Problem~\ref{pr:main-term} has size \(x\log x\), and to reach the exponent \(\tfrac12\) every error term must be \(O(x^{1/2+\varepsilon})\) for each \(\varepsilon > 0\) \cite[\S6 and Remark~6.2]{Zh}.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:hn}}
+\begin{description}
+\item[\ref{pr:submodular}] The map \(U/(U \cap U') \to (U + U')/U'\) is bijective and has norm at most \(1\) at every place.  Use Theorem~\ref{sm-thm:image}.
+\item[\ref{pr:destab}] A subspace \(U\) of dimension \(k\) is a point of \(\mathbb{P}(\wedge^k V)\), and \(-\deg U\) is its height for the induced norms, which differs from the standard height by a bounded amount; use Northcott's theorem.  Then use Problem~\ref{pr:submodular}.
+\item[\ref{pr:tau}] In the fundamental domain, the shortest nonzero vector of \(\Z + \Z\tau\) is \(1\).
+\item[\ref{pr:layer}] The layer-cake formula.
+\item[\ref{pr:slope-map}] Apply Theorem~\ref{sm-thm:image} to the bijection from \(V/\ker\varphi\) to \(\varphi(V)\).  For the second statement, compose with \(F \to F/F^{\ge\lambda}\) and use~\eqref{eq:trunc}.
+\end{description}
+
+\subsection*{\S\ref{sec:mean}}
+\begin{description}
+\item[\ref{pr:markov}] Markov's inequality.
+\item[\ref{pr:images}] Problem~\ref{pr:slope-map} with \(\lambda = s - t\), and~\eqref{eq:trunc} for \(F\).
+\item[\ref{pr:one-map}] Here \(R = D\), and \(\codim \varphi(U) = \codim U\).  For a semistable \(V\) one may take \(s = \mu(V) - h(\varphi)\).
+\item[\ref{pr:threshold}] The arithmetic--geometric mean inequality.
+\item[\ref{pr:toy}] \(h(\varphi_k) = 0\), and the adjusted slopes are the \(s_k\).  For \(\mumin(F) \ge 0\), note that every quotient of \(F\) is spanned by images of the \(v_k\), which have length at most \(1\).
+\end{description}
+
+\subsection*{\S\ref{sec:gram}}
+\begin{description}
+\item[\ref{pr:rank}] Apply the Cauchy--Schwarz inequality to the nonzero eigenvalues.
+\item[\ref{pr:roots}] Orthogonality of the characters of \(\Z/N\Z\).
+\item[\ref{pr:trace-R}] Express \(\tau\) through the \(K_i\), then use the Cauchy--Schwarz inequality.
+\item[\ref{pr:trace-up}] \(\tr(\Pi Q) = \sum_i \tr(\gamma_i B_i^*\Pi B_i)\), and \(\gamma_i B_i^* \Pi B_i\) is at most \(K_i\) and vanishes on \(Y_i\).
+\item[\ref{pr:trace-low}] Write \(Q = \tau/D' + (Q - \tau/D')\), and use Problem~\ref{pr:rank} and \(\lVert \Pi \rVert_\HS = \sqrt w\).
+\end{description}
+
+\subsection*{\S\ref{sec:inputs}}
+\begin{description}
+\item[\ref{pr:ramp}] Sort the prime powers by the splitting of \(p\) in \(K_0\).
+\item[\ref{pr:main-term}] \(\sum_{n \le x} \Lambda(n)/n = \log x - \gamma + o(1)\) and \(\sum_{n \le x} \Lambda(n)\chi(n)/n = -\tfrac{L'}{L}(1, \chi) + o(1)\), by the prime number theorem with its classical error term.
+\end{description}
+
+\begin{thebibliography}{CDT}
+\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[Alp]{Alp} L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
+\bibitem[Bo1]{Bo96} J.-B.~Bost, \emph{P\'eriodes et isog\'enies des vari\'et\'es ab\'eliennes sur les corps de nombres (d'apr\`es D.~Masser et G.~W\"ustholz)}, S\'eminaire Bourbaki, Exp.~795, Ast\'erisque \textbf{237} (1996), 115--161.
+\bibitem[Bo2]{Bo01} J.-B.~Bost, \emph{Algebraic leaves of algebraic foliations over number fields}, Publ.\ Math.\ IH\'ES \textbf{93} (2001), 161--221.
+\bibitem[CDT]{CDT} F.~Calegari, V.~Dimitrov and Y.~Tang, \emph{Arithmetic holonomy bounds and effective Diophantine approximation}, preprint, 2025, arXiv:2510.04156.
+\bibitem[BF]{BF} J.~J.~Benedetto and M.~Fickus, \emph{Finite normalized tight frames}, Adv.\ Comput.\ Math.\ \textbf{18} (2003), 357--385.
+\bibitem[CL]{CL} A.~Chambert-Loir, \emph{Th\'eor\`emes d'alg\'ebricit\'e en g\'eom\'etrie diophantienne (d'apr\`es J.-B.~Bost, Y.~Andr\'e, D.~\& G.~Chudnovsky)}, S\'eminaire Bourbaki, Exp.~886, Ast\'erisque \textbf{282} (2002), 175--209.
+\bibitem[DGS]{DGS} P.~Delsarte, J.-M.~Goethals and J.~J.~Seidel, \emph{Spherical codes and designs}, Geom.\ Dedicata \textbf{6} (1977), 363--388.
+\bibitem[Ga]{Ga} \'E.~Gaudron, \emph{Pentes des fibr\'es vectoriels ad\'eliques sur un corps global}, Rend.\ Sem.\ Mat.\ Univ.\ Padova \textbf{119} (2008), 21--95.
+\bibitem[Gr]{Gr} D.~R.~Grayson, \emph{Reduction theory using semistability}, Comment.\ Math.\ Helv.\ \textbf{59} (1984), 600--634.
+\bibitem[GS2]{GS2} H.~Gillet and C.~Soul\'e, \emph{An arithmetic Riemann--Roch theorem}, Invent.\ Math.\ \textbf{110} (1992), 473--543.
+\bibitem[St]{St} U.~Stuhler, \emph{Eine Bemerkung zur Reduktionstheorie quadratischer Formen}, Arch.\ Math.\ \textbf{27} (1976), 604--610.
+\bibitem[Zh]{Zh} R.~Zhang, \emph{A preliminary note on Alp\"oge's proposed proof of the generalized Riemann hypothesis}, preprint, 2026, hexagon:2611.00809.
+\end{thebibliography}
+
+\end{document}

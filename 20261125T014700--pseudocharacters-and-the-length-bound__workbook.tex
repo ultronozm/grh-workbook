@@ -1,0 +1,284 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[tt-]{20261125T004100--tate-twists-and-sha__workbook}
+\externaldocument[ec-]{20261125T014500--eisenstein-congruences-and-selmer-classes__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T014700}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Zp}{\Z_p}
+\newcommand{\Qp}{\Q_p}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Tb}{\mathbf{T}}
+\newcommand{\Frob}{\mathrm{Frob}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\len}{\operatorname{length}}
+\newcommand{\Sha}{\mathrm{Sha}}
+\newcommand{\GQ}{G_{\Q,p}}
+\newcommand{\Eis}{\mathrm{Eis}}
+\newcommand{\mat}[4]{\bigl(\begin{smallmatrix} #1 & #2 \\ #3 & #4 \end{smallmatrix}\bigr)}
+
+\setlength{\emergencystretch}{2em}
+\title{Pseudocharacters and the length bound}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Complete local noetherian rings and Hensel's lemma; lengths of modules; elementary divisors of matrices over \(\Zp\); graded rings.  From Chapter~\ref{tt-chap}, \emph{Tate--Shafarevich groups of Tate twists}: the groups \(\GQ\), \(G_p\), \(\Sha_p(\Q, e)\), Problem~\ref{tt-pr:H0} and Theorem~\ref{tt-thm:MW}.  From Chapter~\ref{ec-chap}, \emph{Eisenstein congruences and Selmer classes}: the congruence~\eqref{ec-eq:congruence}, the lattices of Section~\ref{ec-sec:lattices} (Problems~\ref{ec-pr:diag}--\ref{ec-pr:ends}), the inputs (D), (I), (O) of Section~\ref{ec-sec:ribet} with Problem~\ref{ec-pr:unram}, and Section~\ref{ec-sec:tangent}, in particular Problems~\ref{ec-pr:red-ideal}--\ref{ec-pr:691-segment}.
+
+Chapter~\ref{ec-chap} ended with the observation that the Hecke algebra sees a Galois representation only through its traces.  A Hecke algebra is not a domain: it has an Eisenstein component and cuspidal components, and its traces do not in general come from a representation over it.  What structure do traces alone carry, and how do they measure \(\Sha\)?  The structure is a pseudocharacter; the ideal of products \(b \cdot c\) of Chapter~\ref{ec-chap} can be read off from the traces; and the quotient by it carries extension classes.  In a graded model of the deformation ring we then bound the length of the Selmer group by the length of a quotient of the Hecke algebra, and so by valuations of trace differences.  Throughout, \(p\) is an odd prime.
+
+\section{Pseudocharacters of dimension two}\label{sec:pseudo}
+
+Let \(G\) be a group and \(R\) a commutative ring in which \(2\) is invertible.  A \emph{pseudocharacter of dimension~\(2\)} of \(G\) with values in \(R\) is a pair \((T, D)\) of a function \(T \colon G \to R\) and a homomorphism \(D \colon G \to R^\times\) such that \(T(1) = 2\) and, for all \(g, h \in G\),
+\[
+  T(gh) = T(hg), \qquad T(gh) + D(g)\, T(g^{-1}h) = T(g)\, T(h) .
+\]
+By \cite[Lemma~1.9]{Ch} such pairs are the same as Chenevier's determinants of dimension~\(2\).  The function \(T\) is then a pseudocharacter of dimension~\(2\) in the sense of Taylor \cite[\S1]{Ta} and Rouquier \cite{Ro}, and conversely every such \(T\) arises in this way \cite[Prop.~1.29]{Ch}; see also \cite[\S1.2]{BC}.  The notion is due to Wiles in dimension two and to Taylor in general \cite[\S1.1]{BC}.
+
+\begin{problem}\label{pr:trace-pc}
+For every homomorphism \(\rho \colon G \to \mathrm{GL}_2(R)\), \((\tr\rho, \det\rho)\) is a pseudocharacter.  In particular, so is \((\psi_1 + \psi_2, \psi_1\psi_2)\) for any two characters \(\psi_1, \psi_2 \colon G \to R^\times\).
+\end{problem}
+
+\begin{problem}\label{pr:D-from-T}
+If \((T, D)\) is a pseudocharacter, then \(D(g) = \tfrac12\bigl(T(g)^2 - T(g^2)\bigr)\) and \(T(g^{-1}) = D(g)^{-1} T(g)\) for all \(g \in G\).
+\end{problem}
+
+So \(D\) is determined by \(T\), and we often write \(T\) for the pair.
+
+\begin{problem}\label{pr:subring}
+Let \(R \subseteq R_1 \times R_2\) be a subring in which \(2\) is invertible, and let \((T_i, D_i)\) be pseudocharacters with values in \(R_i\).  If \((T_1(g), T_2(g)) \in R\) for every \(g\), then \(((T_1, T_2), (D_1, D_2))\) is a pseudocharacter with values in \(R\).
+\end{problem}
+
+The first example of a pseudocharacter that is not visibly a trace is the one carried by a Hecke algebra with one Eisenstein and one cuspidal point.  Let \(G\) be profinite, let \(\chi \colon G \to \Zp^\times\) be a continuous character whose reduction \(\bar\chi\) is not trivial, and let \(\rho \colon G \to \mathrm{GL}_2(\Qp)\) be a continuous representation with \(\tr\rho(G) \subseteq \Zp\), \(\tr \rho \equiv 1 + \chi \pmod p\) and \(\tr\rho \ne 1 + \chi\).  Put
+\[
+  e := \min_{g \in G} v_p\bigl(\tr\rho(g) - 1 - \chi(g)\bigr), \qquad \mathcal{T}(g) := \bigl(1 + \chi(g), \tr\rho(g)\bigr) \in \Zp \times \Zp .
+\]
+
+\begin{problem}\label{pr:toy-hecke}
+The \(\Zp\)-subalgebra of \(\Zp \times \Zp\) generated by the \(\mathcal{T}(g)\) is \(\Tb_e := \{(u, v) : u \equiv v \pmod{p^e}\}\), and \(x \mapsto (0, p^e)\) induces \(\Zp[x]/(x(x - p^e)) \cong \Tb_e\).  The function \(\mathcal{T}\) is a pseudocharacter with values in \(\Tb_e\).
+\end{problem}
+
+The ring \(\Tb_e\) is the \emph{toy Hecke algebra}: \(x = 0\) is the Eisenstein point, \(x = p^e\) the cuspidal point, and \(e\) measures how close they are.  It occurs in nature.
+
+\begin{problem}\label{pr:hecke-691}
+The \(\Z_{691}\)-subalgebra of \(\mathrm{End}(M_{12} \otimes \Q_{691})\) generated by the Hecke operators \(T_n\), \(n \ge 1\), on modular forms of weight \(12\) and level \(1\) is isomorphic to \(\Z_{691}[x]/(x(x - 691))\).
+\end{problem}
+
+\section{The reducibility ideal}\label{sec:red}
+
+Let \(R\) be a complete local noetherian ring with maximal ideal \(\mathfrak m\) and residue field \(\F\) of characteristic \(\ne 2\), and let \((T, D)\) be a pseudocharacter of \(G\) with values in \(R\) such that \(T \equiv \chi_1 + \chi_2 \pmod{\mathfrak m}\) for two distinct characters \(\chi_1, \chi_2 \colon G \to \F^\times\).  Fix \(\sigma_0 \in G\) with \(\chi_1(\sigma_0) \ne \chi_2(\sigma_0)\).
+
+\begin{problem}\label{pr:roots}
+The polynomial \(X^2 - T(\sigma_0)X + D(\sigma_0)\) has roots \(\lambda_1, \lambda_2 \in R\) with \(\lambda_i \equiv \chi_i(\sigma_0) \pmod{\mathfrak m}\), and \(\lambda_1 - \lambda_2 \in R^\times\).
+\end{problem}
+
+Define \(a, d \colon G \to R\) by
+\[
+  a(g) := \frac{T(\sigma_0 g) - \lambda_2 T(g)}{\lambda_1 - \lambda_2} , \qquad d(g) := T(g) - a(g) .
+\]
+
+\begin{problem}\label{pr:a-entry}
+Suppose that \(T = \tr\rho\) for \(\rho \colon G \to \mathrm{GL}_2(R)\) with \(\rho(\sigma_0) = \mathrm{diag}(\lambda_1, \lambda_2)\), and write \(\rho = \mat{a'}{b}{c}{d'}\).  Then \(a = a'\), \(d = d'\), and \(a(gh) - a(g)a(h) = b(g)c(h)\).
+\end{problem}
+
+So \(a\) and \(d\) are the diagonal entries of a representation that need not exist, and the defect of \(a\) from being multiplicative stands in for the products \(b(g)c(h)\).
+
+\begin{problem}\label{pr:a-residual}
+\(a \equiv \chi_1\) and \(d \equiv \chi_2 \pmod{\mathfrak m}\).  In particular \(a(g) \in R^\times\).
+\end{problem}
+
+\begin{problem}\label{pr:D-a}
+\(D(g) = a(g)T(g) - a(g^2)\) for every \(g \in G\).
+\end{problem}
+
+The \emph{reducibility ideal} \(I \subseteq R\) is the ideal generated by the elements \(a(gh) - a(g)a(h)\), \(g, h \in G\).
+
+\begin{problem}\label{pr:mod-I}
+Modulo \(I\), \(a\) and \(d\) are characters \(G \to (R/I)^\times\), \(T \equiv a + d\) and \(D \equiv ad\).
+\end{problem}
+
+\begin{problem}\label{pr:minimal}
+Let \(J \subsetneq R\) be an ideal, and let \(\psi_1, \psi_2 \colon G \to (R/J)^\times\) be characters with \(\psi_i \equiv \chi_i \pmod{\mathfrak m}\) and \(T \equiv \psi_1 + \psi_2 \pmod J\).  Then \(\psi_1 \equiv a\) and \(\psi_2 \equiv d \pmod J\), and \(I \subseteq J\).
+\end{problem}
+
+Problems~\ref{pr:mod-I} and~\ref{pr:minimal} prove the following; in particular \(I\) does not depend on \(\sigma_0\).  For pseudocharacters of any dimension this is due to Bellaïche and Chenevier \cite[Prop.~1.5.1]{BC}.
+
+\begin{theorem}\label{thm:red}
+\(I\) is the smallest ideal \(J\) of \(R\) such that \(T\) is congruent modulo \(J\) to a sum of two characters lifting \(\chi_1\) and \(\chi_2\).
+\end{theorem}
+
+For a representation \(\rho\) over a discrete valuation ring as in Section~\ref{ec-sec:lattices}, Problems~\ref{pr:a-entry} and~\ref{ec-pr:red-ideal} give \(I = \pi^{m+n}\Oc\), where \(m + n\) is the length of the segment of stable lattices.  Return to the toy Hecke algebra.
+
+\begin{problem}\label{pr:I-toy}
+In Problem~\ref{pr:toy-hecke}, suppose that \(\rho\) is irreducible, and let \(m + n\) be the length of its segment of stable lattices (Problem~\ref{ec-pr:segment}, with \(\chi_1 = 1\), \(\chi_2 = \bar\chi\)).  Then \(m + n \ge e\), and the reducibility ideal of \(\tau\) is \(\{0\} \times p^{m+n}\Zp = p^{m+n-e}\, x\Tb_e\).
+\end{problem}
+
+The \emph{Eisenstein ideal} of a pseudocharacter \(T\) with respect to two given characters \(\psi_1, \psi_2 \colon G \to R^\times\) is the ideal \(I_\Eis\) generated by the \(T(g) - \psi_1(g) - \psi_2(g)\).  By Theorem~\ref{thm:red}, \(I \subseteq I_\Eis\) whenever the \(\psi_i\) lift the \(\chi_i\).  In the setting of Chapter~\ref{ec-chap} the two ideals coincide.
+
+\begin{problem}\label{pr:seg-eis}
+Let \(k\), \(p\), \(f\), \(\lambda\) be as in Section~\ref{ec-sec:ribet}, and let \(m + n\) be the length of the segment of stable lattices of \(\rho_f\).  Then
+\[
+  m + n = \min_{\ell \ne p} v\bigl(a_\ell(f) - 1 - \ell^{k-1}\bigr) ,
+\]
+the minimum over primes.  So the reducibility ideal of \(\tr\rho_f\) equals its Eisenstein ideal for \((1, \chi^{k-1})\).
+\end{problem}
+
+For \(\Delta\) and \(p = 691\) both sides are \(1\) (Problem~\ref{ec-pr:691-segment}).  When \(K = \Qp\), in the toy Hecke algebra built from \(\rho = \rho_f\) and \(\chi^{k-1}\) we get \(e = m + n\), and the reducibility ideal is \(x\Tb_e\): the Eisenstein component \(\Tb_e/x\Tb_e = \Zp\) is the largest quotient on which \(\tau\) is reducible.
+
+\section{The quotient by the reducibility ideal and \texorpdfstring{\(\mathrm{Ext}^1\)}{Ext1}}\label{sec:ext}
+
+Ribet's lemma produced a class modulo \(\pi\).  The reducibility ideal produces a class modulo \(I\), which generates a copy of \(\Oc/I\).  Keep the notation of Section~\ref{ec-sec:lattices}, with \(\chi_1 \ne \chi_2\), and write \(\rho\) in the basis \(\pi^m e_1, e_2\) of \(L_m\) as \(\mat{a}{b}{c}{d}\).  Then the values of \(b\) generate \(\Oc\), the values of \(c\) generate \(I = \pi^{m+n}\Oc\), and by Problem~\ref{pr:mod-I} the reductions \(\psi_1, \psi_2\) of \(a, d\) modulo \(I\) are characters.  Put \(\psi := \psi_1\psi_2^{-1}\).
+
+\begin{problem}\label{pr:cocycle}
+\(\kappa(g) := b(g)\,d(g)^{-1} \bmod I\) is a cocycle on \(G\) with values in \((\Oc/I)(\psi)\).
+\end{problem}
+
+\begin{problem}\label{pr:exact-order}
+The \(\Oc\)-submodule of \(H^1(G, (\Oc/I)(\psi))\) generated by the class of \(\kappa\) is isomorphic to \(\Oc/I\).
+\end{problem}
+
+Thus the quotient \(\Oc/I\) embeds in a group of extensions of \(\psi_2\) by \(\psi_1\).  For pseudocharacters over any henselian local ring, Bellaïche and Chenevier \cite[Thm.~1.5.5]{BC} construct an injection of the dual of the module of upper right entries, modulo \(I\), into the corresponding \(\mathrm{Ext}^1\); this is the general form of the statement that the quotient by the reducibility ideal computes \(\mathrm{Ext}^1\).  Now take \(G = \GQ\), and \(f\), \(\lambda\), \(\Oc\) as in Problem~\ref{pr:seg-eis}, so that \(\psi \equiv \chi^{1-k} \pmod I\).  As in Section~\ref{ec-sec:shapiro}, \(\Sha_p(\Q, k-1) \otimes_{\Zp} \Oc\) is the group of classes in \(H^1(\GQ, (K/\Oc)(1-k))\) that vanish on \(G_p\).
+
+\begin{problem}\label{pr:sha-lower}
+The class of \(\kappa\) vanishes on \(G_p\), and its image in \(H^1(\GQ, (K/\Oc)(1-k))\) generates a submodule isomorphic to \(\Oc/I\).  Hence \(\len_\Oc\bigl(\Sha_p(\Q, k-1) \otimes \Oc\bigr) \ge m + n\).
+\end{problem}
+
+This is the direction of Ribet and of Mazur and Wiles \cite{MW}, for one eigenform: a congruence of exponent \(m + n\) produces a cyclic piece of \(\Sha\) of that length.  For \(\Delta\) it gives \(\len \Sha_{691}(\Q, 11) \ge 1\), and Theorem~\ref{tt-thm:MW} gives equality.  Alp\"oge's argument needs the reverse inequality, an upper bound for the length of \(\Sha\) by trace differences.  Traces cannot see a single class (Problem~\ref{ec-pr:trace-blind}); they see only products of a class of weight \(-1\) with a class of weight \(+1\).
+
+\section{A graded model and the length bound}\label{sec:model}
+
+The torus \(\{\mathrm{diag}(1, t)\}\) of Section~\ref{ec-sec:tangent} acts on a deformation ring of \(\rho_0 = 1 \oplus \omega^{k-1}\), and so grades it: upper right entries have weight \(-1\), lower left entries weight \(+1\), and traces weight \(0\).  The reconstruction \cite[\S17.4]{Adr} reduces the bound for \(\Sha\) to four statements (G1)--(G4) about such a graded deformation ring: (G1) a class of \(\Sha\) gives a tangent vector of weight \(-1\) at the Eisenstein point; (G2) under hypotheses (M1)--(M5), the cotangent module of weight \(-1\), modulo the differentials of the Selmer equations, has length at most \(2\sum_\xi v(\xi(a))\), where \(a = \tr r(\sigma) - t\) is a trace difference and \(\xi\) runs over representatives of the torus orbits of points with both upper and lower entries nonzero; (G3) the deformation problem is finite and these points are automorphic; (G4) a rigidity condition at these points.  None of them is proved there.  Moreover (G3) is not a published theorem: it lies outside the hypotheses of the published automorphy lifting theorems for residually reducible representations, such as \cite[Thm.~1.1]{ANT}.  We test (G2) on a model in which everything can be computed.
+
+Let \(P \in \Zp[u]\) be a polynomial with \(P(0) \ne 0\) and leading coefficient in \(\Zp^\times\), and let
+\[
+  A := \Zp[y, z]/\bigl(y\, P(yz)\bigr) ,
+\]
+graded by giving \(y\) weight \(-1\) and \(z\) weight \(+1\); the relation is homogeneous of weight \(-1\).  Think of \(y\) as an upper right entry and \(z\) as a lower left entry, so that \(u = yz\) plays the role of \(b \cdot c\).  Let \(x \colon A \to \Zp\) be the Eisenstein point \(y = z = 0\), with ideal \(I_x = (y, z)\).  The \emph{cotangent module} \(I_x/I_x^2\) is graded; write \((I_x/I_x^2)_{-1}\) for its part of weight \(-1\), the model for the dual of the Selmer group.
+
+\begin{problem}\label{pr:model}
+\(A_0 = \Zp[u]/(u P(u))\) with \(u = yz\), and \((I_x/I_x^2)_{-1} \cong \Zp/P(0)\Zp\).  For \(P(u) = p^r - u\), \(A_0\) is the toy Hecke algebra \(\Tb_r\) of Problem~\ref{pr:toy-hecke}.
+\end{problem}
+
+\begin{problem}\label{pr:points}
+A point \((y, z) \in \overline{\Q}_p^2\) of \(\operatorname{Spec} A\) has \(y = 0\), or else \(yz\) is a root of \(P\) and \(z \ne 0\).  For each root \(u_0\) of \(P\), the points with \(yz = u_0\) form one orbit of the torus.
+\end{problem}
+
+So the points with both entries nonzero, the \emph{two-signed} points, correspond to the roots of \(P\); they are the cuspidal points.  Let \(\Tb^0 := \Zp[u]/(P(u))\), the cuspidal quotient of \(A_0\), and let \(I_\Eis := u\Tb^0\), the image of the ideal of \(x\) in \(A_0\); as in Section~\ref{sec:red}, it is generated by the product of an upper and a lower entry.
+
+\begin{problem}\label{pr:norm}
+\(\Tb^0\) is free over \(\Zp\).  For \(a \in \Zp[u]\) with \(a(\xi) \ne 0\) at every root \(\xi\) of \(P\),
+\[
+  \len_{\Zp} \Tb^0/a\Tb^0 = \sum_\xi v(a(\xi)) ,
+\]
+the sum over the roots of \(P\) in \(\overline{\Q}_p\) with multiplicity, where \(v(p) = 1\).
+\end{problem}
+
+\begin{problem}\label{pr:length-bound}
+Let \(a \in A_0\) vanish at \(x\), and let its image in \(\Tb^0\) be nonzero at every root of \(P\).  Then
+\[
+  \len (I_x/I_x^2)_{-1} = \len \Tb^0/I_\Eis \le \sum_\xi v(\xi(a)) ,
+\]
+the sum over the roots \(\xi\) of \(P\) in \(\overline{\Q}_p\), with multiplicity; that is, over the torus orbits of two-signed points (Problem~\ref{pr:points}).  Equality holds for \(a = u\).
+\end{problem}
+
+Problems~\ref{pr:model}--\ref{pr:length-bound} prove the following.
+
+\begin{theorem}\label{thm:model}
+In the model \(A\), the length of the cotangent module of weight \(-1\) equals \(\len \Tb^0/I_\Eis\), and is at most \(\sum_\xi v(\xi(a))\) for every \(a\) as in Problem~\ref{pr:length-bound}.  Equality holds for \(a = u\).
+\end{theorem}
+
+For \(P = 691 - u\) the model has \(A_0 = \Z_{691}[x]/(x(x-691))\), the Hecke algebra of Problem~\ref{pr:hecke-691}, one two-signed orbit, with \(u = 691\), and a cotangent module of weight \(-1\) of length \(1 = \len\Sha_{691}(\Q, 11)\).  In the model, (G1) and (G3) are built in: the cotangent module stands for the dual of the Selmer group, and every two-signed point is cuspidal.  The content of the argument is to prove them for the actual deformation ring.
+
+\section{The factor two}\label{sec:two}
+
+In the model the comparison holds with the factor \(1\), while (G2) carries a factor \(2\) for a graded ring with many coordinates of each weight.  Does the factor \(1\) survive when there are more coordinates?  Traces have weight \(0\), so add a coordinate \(t\) of weight \(0\), and with it one relation of weight \(0\).  Let \(P, R \in \Zp[u, t]\) with \(P(0,0) \ne 0\) and \(R(0, 0) = 0\), and let
+\[
+  B := \Zp[y, z, t]/\bigl(y P(yz, t),\ R(yz, t)\bigr), \qquad S := \Zp[u, t]/(P, R) ,
+\]
+graded as before with \(t\) of weight \(0\).  Now \(x\) is the point \(y = z = t = 0\), with ideal \(I_x = (y, z, t)\), and \(S\) is the cuspidal quotient of \(B_0\).
+
+\begin{problem}\label{pr:modelB}
+\(B_0 = \Zp[u,t]/\bigl(u P, R\bigr)\) with \(u = yz\), and \((I_x/I_x^2)_{-1} \cong \Zp/P(0,0)\Zp\).  For \(R = t\), \(B\) is the model \(A\) with \(P(u, 0)\) in place of \(P\), provided \(P(u, 0)\) has leading coefficient in \(\Zp^\times\).
+\end{problem}
+
+\begin{problem}\label{pr:modelB-bound}
+Let \(a \in (u, t) \subseteq \Zp[u,t]\).  Then \(\len (I_x/I_x^2)_{-1} \le \len S/aS\).  If \(S\) is free of finite rank over \(\Zp\) and \(a\) is nonzero at every point \(\xi\) of \(\operatorname{Spec} S\) over \(\overline{\Q}_p\), then \(\len (I_x/I_x^2)_{-1} \le \sum_\xi v(\xi(a))\), where \(\xi\) is counted with multiplicity the length of the localization of \(S \otimes \overline{\Q}_p\) at \(\xi\); equivalently, the \(\xi(a)\) are the eigenvalues of multiplication by \(a\) on \(S \otimes \overline{\Q}_p\).
+\end{problem}
+
+So the factor \(1\) survives whenever the cuspidal quotient is finite and free.  When \(S\) is finite over \(\Zp\) but has torsion, and \(a\) is nonzero at every \(\xi\), \(\len S/aS\) exceeds \(\sum_\xi v(\xi(a))\) by \(\len S[a]\), and a bound by the values \(\xi(a)\) alone must be obtained otherwise.
+
+The factor two is harmless in the argument: in \cite[\S17.4]{Adr} it yields a nonzero integer \(N\) such that, for every \(\ell\), a sum of lengths of Tate--Shafarevich groups at \(\ell\) is at most \(2 v_\ell(N)\), and only \(\sum_\ell 2 v_\ell(N)\log\ell = 2\log\lvert N\rvert\) is used.  We do not know whether the factor two in (G2) can be replaced by \(1\) in general.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:pseudo}}
+\begin{description}
+\item[\ref{pr:trace-pc}] Cayley--Hamilton: \(\rho(g) + \det\rho(g)\,\rho(g)^{-1} = \tr\rho(g)\).
+\item[\ref{pr:D-from-T}] Take \(h = g\), then \(h = 1\).
+\item[\ref{pr:subring}] Problem~\ref{pr:D-from-T}.
+\item[\ref{pr:toy-hecke}] Subtract the scalar \(1 + \chi(g)\) from \(\mathcal{T}(g)\).  Then Problems~\ref{pr:D-from-T}, \ref{pr:trace-pc} and~\ref{pr:subring}.
+\item[\ref{pr:hecke-691}] Use the eigenbasis \(E_{12}, \Delta\), Problem~\ref{ec-pr:691}, and \(\tau(2) = -24\).
+\end{description}
+
+\subsection*{\S\ref{sec:red}}
+\begin{description}
+\item[\ref{pr:roots}] Hensel's lemma.
+\item[\ref{pr:a-entry}] Compute \(\tr(\rho(\sigma_0)\rho(g))\).
+\item[\ref{pr:a-residual}] Reduce modulo \(\mathfrak m\) and use \(T(\sigma_0 g) \equiv \chi_1(\sigma_0 g) + \chi_2(\sigma_0 g)\).
+\item[\ref{pr:D-a}] Express \(T(\sigma_0 g^2)\) by the defining identity with \((g, g\sigma_0)\), and \(T(g^2)\) by Problem~\ref{pr:D-from-T}.
+\item[\ref{pr:mod-I}] Problems~\ref{pr:a-residual} and~\ref{pr:D-a}.
+\item[\ref{pr:minimal}] Problem~\ref{pr:D-from-T}, and the polynomial of Problem~\ref{pr:roots} modulo \(J\).
+\item[\ref{pr:I-toy}] First, the reduction of a stable lattice has semisimplification \(1 \oplus \bar\chi\): its trace is \(1 + \bar\chi\), its determinant is \(\bar\chi\) by Problem~\ref{pr:D-from-T}, and Brauer--Nesbitt applies.  The roots of Problem~\ref{pr:roots} and the function \(a\) may be computed in each factor.  Use Problem~\ref{pr:a-entry} in the second factor, and note that \(\Tb_e\) projects onto the second factor.
+\item[\ref{pr:seg-eis}] One inequality is Problem~\ref{ec-pr:trace-cong}.  For the other, apply Problem~\ref{pr:minimal} with \(J\) the ideal generated by the \(a_\ell(f) - 1 - \ell^{k-1}\), and Chebotarev.
+\end{description}
+
+\subsection*{\S\ref{sec:ext}}
+\begin{description}
+\item[\ref{pr:cocycle}] Modulo \(I\) the matrix is upper triangular; multiply two of them.
+\item[\ref{pr:exact-order}] Evaluate at \(\sigma_0\).
+\item[\ref{pr:sha-lower}] Run Problem~\ref{ec-pr:unram} modulo \(I\), as in Problem~\ref{ec-pr:trace-cong}; \((\Oc/I)(1-k)\) has no invariants under \(I_p\).  Then Problem~\ref{tt-pr:H0}.
+\end{description}
+
+\subsection*{\S\ref{sec:model}}
+\begin{description}
+\item[\ref{pr:model}] The monomials of weight \(0\), \(+1\) and \(-1\) are \(u^j\), \(zu^j\) and \(yu^j\).  For the cotangent module, keep the linear term of the relation.
+\item[\ref{pr:points}] The torus acts by \((y, z) \mapsto (t^{-1}y, tz)\).
+\item[\ref{pr:norm}] Elementary divisors: the length is the valuation of the determinant of multiplication by \(a\).  Compute that determinant over \(\overline{\Q}_p\).
+\item[\ref{pr:length-bound}] Problem~\ref{pr:norm}.
+\end{description}
+
+\subsection*{\S\ref{sec:two}}
+\begin{description}
+\item[\ref{pr:modelB}] As in Problem~\ref{pr:model}; the monomials of weight \(0\) and \(-1\) are the monomials in \(u, t\) and \(y\) times them.  Since \(R(0,0) = 0\), \(y\,R(yz, t) \in I_x^2\).
+\item[\ref{pr:modelB-bound}] As in Problems~\ref{pr:norm} and~\ref{pr:length-bound}, with \(S/(u,t)S\).
+\end{description}
+
+\begin{thebibliography}{BC}
+\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[ANT]{ANT} P.~B.~Allen, J.~Newton and J.~A.~Thorne, \emph{Automorphy lifting for residually reducible \(l\)-adic Galois representations, II}, Compos.\ Math.\ \textbf{156} (2020), 2399--2422.
+\bibitem[BC]{BC} J.~Bella\"iche and G.~Chenevier, \emph{Families of Galois representations and Selmer groups}, Ast\'erisque \textbf{324} (2009).
+\bibitem[Ch]{Ch} G.~Chenevier, \emph{The \(p\)-adic analytic space of pseudocharacters of a profinite group and pseudorepresentations over arbitrary rings}, in: Automorphic Forms and Galois Representations, Vol.~1, London Math.\ Soc.\ Lecture Note Ser.\ 414, Cambridge Univ.\ Press, 2014, 221--285; \url{https://arxiv.org/abs/0809.0415}.
+\bibitem[MW]{MW} B.~Mazur and A.~Wiles, \emph{Class fields of abelian extensions of \(\mathbf{Q}\)}, Invent.\ Math.\ \textbf{76} (1984), 179--330.
+\bibitem[Ro]{Ro} R.~Rouquier, \emph{Caract\'erisation des caract\`eres et pseudo-caract\`eres}, J.~Algebra \textbf{180} (1996), 571--586.
+\bibitem[Ta]{Ta} R.~Taylor, \emph{Galois representations associated to Siegel modular forms of low weight}, Duke Math.\ J.\ \textbf{63} (1991), 281--332.
+\end{thebibliography}
+
+\end{document}

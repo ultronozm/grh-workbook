@@ -1,0 +1,322 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[zr-]{20261125T001000--zeros-to-ramp-sums__workbook}
+\externaldocument[zi-]{20261125T001100--inert-primes-and-estimate-b__workbook}
+\externaldocument[sp-]{20261125T007000--stepanov-without-multiplicity__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T005000}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\Gal}{\operatorname{Gal}}
+\newcommand{\Frob}{\operatorname{Frob}}
+\newcommand{\cell}{\operatorname{cell}}
+\newcommand{\ol}[1]{\overline{#1}}
+
+\setlength{\emergencystretch}{2em}
+
+\title[Fourier analysis on the Galois group]{Fourier analysis on the Galois group: the table and averaging over translates}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Frobenius elements and inertia groups in abelian extensions of \(\Q\) \cite[Ch.~I, \S9]{Ne}; Dirichlet characters as characters of Galois groups, with their conductors \cite[Ch.~3]{Wa}; orthogonality of characters of finite abelian groups \cite[Ch.~VI, \S1]{SeA}.  From Chapters~\ref{zr-chap} and~\ref{zi-chap}, \emph{From zeros to a one-sided ramp sum} and \emph{Inert primes and Estimate~B}: the functions \(G\), \(G_\chi\) and constants \(c_\chi = \frac{L'}{L}(1, \chi)\) of equations~\eqref{zr-eq:G} and~\eqref{zr-eq:Gchi} there, Section~\ref{zr-sec:dirichlet}, and Sections~\ref{zi-sec:inert}--\ref{zi-sec:estB} with Estimate~B.
+
+\medskip
+In Chapter~\ref{zi-chap} an odd prime power was put in a cell of a table with two rows and \(n\) columns, and averaging over translates turned some of the cells into four ramp sums (Problem~\ref{zi-pr:translates}).  Here the cells are the archimedean places of an abelian CM field, a weighted prime sum is an exact combination of the functions \(G_\chi\) over the characters of its Galois group, and averaging over translates is the projection onto the characters trivial on the translations.  We follow \cite[Ch.~5--6]{Dup}, an account of Alpöge's argument \cite{Alp}.
+
+Throughout, \(q \equiv 3 \pmod 8\) and \(d \equiv 7 \pmod 8\) are primes with \(q \mid d + 1\); \(n \ge 2\) is a power of \(2\), \(N := 4n\), \(H := (\Z/N\Z)^\times/\{\pm 1\}\), and \([r] \in H\) is the class of an odd \(r\).  Let \(\eta := \chi_q \chi_d\) and \(v(r) := \frac12\bigl(1 + \chi_q(r)\bigr)\).  The example is \(q = 11\), \(d = 1319\), \(N = 16\), with \(H = \{[1], [3], [5], [7]\}\).
+
+\section{The host field and its places}\label{sec:places}
+
+Why are the class of \(r\) modulo \(N\) up to sign and \(\chi_q(r)\) the right labels for a prime power?  Let
+\[
+  E := \Q\bigl(\zeta_N + \zeta_N^{-1}, \sqrt{-q}, \sqrt{-d}\bigr) \subset \Q(\zeta_{Nqd}),
+  \qquad
+  K := \Q(\sqrt{-d}),
+\]
+\(\Gamma := H \times \{\pm 1\} \times \{\pm 1\}\), and for \(r\) prime to \(2qd\) let \(\Frob_r \in \Gal(E/\Q)\) be the restriction of \(\zeta \mapsto \zeta^r\).
+
+\begin{problem}\label{pr:galois}
+There is an isomorphism \(\Gal(E/\Q) \to \Gamma\) with \(\Frob_r \mapsto \bigl([r], \chi_q(r), \chi_d(r)\bigr)\) for every \(r\) prime to \(2qd\).  In particular \([E : \Q] = 4n\).
+\end{problem}
+
+We identify \(\Gal(E/\Q)\) with \(\Gamma\) and \(H\) with \(H \times 1 \times 1\).  Then \(\Phi := \Gal(E/K) = H \times \{\pm 1\} \times 1\), and \(E\) is a CM field whose complex conjugation is \(c := ([1], -1, -1)\) under every embedding.  Fix an embedding \(\sigma_0 \colon E \to \C\).
+
+\begin{problem}\label{pr:cm-type}
+The conjugate of \(\sigma_0 \circ g\) is \(\sigma_0 \circ g c\).  Hence each of the \(2n\) complex places of \(E\) contains exactly one embedding \(\sigma_0 \circ \rho\) with \(\rho \in \Phi\).
+\end{problem}
+
+So the CM type \(\Phi\) indexes the places.  We call \((s, e_1, 1) \in \Phi\) the \emph{cell} \((v, s)\), in row \(v := \frac12(1 - e_1)\) and column \(s\); the group \(H\) translates the columns.  In \cite[Def.~6.1.3]{Dup} a prime power \(r\) counts exactly when \(\Frob_r \notin \Phi\), and it counts at the place of \(\sigma_0 \circ \Frob_r\), represented in \(\Phi\) by \(\Frob_r c\).
+
+\begin{problem}\label{pr:outside}
+Let \(p \nmid 2qd\) be prime.  Then \(\Frob_{p^h} \notin \Phi\) if and only if \(p\) is inert in \(K\) and \(h\) is odd, and then \(\Frob_{p^h} c\) is the cell \(\bigl(v(p^h), [p^h]\bigr)\).
+\end{problem}
+
+\begin{problem}\label{pr:table}
+For \(q = 11\), \(d = 1319\), \(N = 16\), the odd primes \(p \le 61\), \(p \ne 11\), with \(\Frob_p \notin \Phi\) lie in the cells below; the others are squares modulo \(1319\).
+\[
+  \begin{array}{c|cccc}
+    \text{row} \backslash \text{column} & [1] & [3] & [5] & [7] \\ \hline
+    0 & 17 & 13,\, 29,\, 61 & - & 41 \\
+    1 & 47 & - & 37,\, 59 & 23
+  \end{array}
+\]
+\end{problem}
+
+At \(p \mid 2qd\) let \(I_p \subset \Gamma\) be the inertia group and \(F_p\) the coset of \(I_p\) inducing the Frobenius on the fixed field of \(I_p\) \cite[Ch.~I, \S9]{Ne}; for \(p \nmid 2qd\) let \(I_p := 1\) and \(F_p := \{\Frob_p\}\).  For \(r = p^h\) let \(F(r) := F_p^h\), the \(h\)-th power of \(F_p\) in \(\Gamma/I_p\) (a coset of \(I_p\), not the set of \(h\)-th powers of its elements), and \(\Lambda_d(r) := \Lambda(r)\bigl(1 - \chi_d(r)\bigr)\).
+
+\begin{problem}\label{pr:ram-cells}
+(i) \(F(2^h), F(q^h) \subset \Phi\).
+(ii) \(F(d^h)\) has exactly one element \(g\) outside \(\Phi\), and \(g c\) is the cell \(\bigl(v(d^h), [d^h]\bigr)\); for the example, \(d\) and \(d^2\) lie in \((0, [7])\) and \((1, [1])\).
+\end{problem}
+
+So \(F(r) \smallsetminus \Phi\) is empty or a single element \(g_r\); in the second case let \(\cell_t(r) := t g_r c\) for \(t \in H\), the cell of \(r\) with shift \(t\).
+
+\begin{problem}\label{pr:coef}
+For every prime power \(r = p^h\), \(\ 2 \lvert I_p \rvert^{-1} \#\bigl(F(r) \smallsetminus \Phi\bigr) \log p = \Lambda_d(r)\).
+\end{problem}
+
+\section{Characters and the balance identity}\label{sec:balance}
+
+The characters of \(\Gamma\) are \(\theta_{\xi, j, l}(s, e_1, e_2) := \xi(s) e_1^j e_2^l\), with \(\xi\) a character of \(H\) and \(j, l \in \{0, 1\}\).  Let \(\chi_\theta\) be the primitive character inducing \(r \mapsto \theta(\Frob_r)\), let \(\theta_K := \theta_{1, 0, 1}\), and let \(G_1 := G\) and \(G_\theta := G_{\chi_\theta}\), \(c_\theta := c_{\chi_\theta}\) for \(\theta \ne 1\).
+
+\begin{problem}\label{pr:chi-theta}
+\(\chi_{\theta_{\xi, j, l}}\) induces \(\xi \chi_q^j \chi_d^l\), with conductor \(f(\xi) q^j d^l\), \(f(\xi) \mid N\).  For \(N = 16\) and \(\xi([3]) = i\), the conductors of \(\xi^k\), \(k = 0, 1, 2, 3\), are \(1, 16, 8, 16\), and \(\xi^2\) induces \(\chi_8(r) = (-1)^{(r^2 - 1)/8}\).
+\end{problem}
+
+\begin{problem}\label{pr:cell-expansion}
+For every prime power \(r\), \(t \in H\) and \(\rho \in \Phi\),
+\[
+  \Lambda_d(r) \, \one\bigl[\cell_t(r) = \rho\bigr]
+  = \frac{\Lambda(r)}{2n} \sum_\theta \ol{\theta(t^{-1} \rho c)} \, \chi_\theta(r) .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:trivial-on-Phi}
+\(\sum_{\rho \in \Phi} \ol{\theta(t^{-1} \rho c)}\) is \(2n\) if \(\theta = 1\), \(-2n\) if \(\theta = \theta_K\), and \(0\) otherwise; and \(\chi_{\theta_K} = \chi_d\).
+\end{problem}
+
+The arithmetic of the argument gives a smoothed Legendre count over the prime powers with a cell, each weighted by its cell \cite[Rem.~6.1.5]{Dup}.  For \(a > 0\), \(t \in H\) and \(w \colon \Phi \to (0, \infty)\) let
+\[
+  P_{t, w}(a) := \sum_r \Lambda_d(r) \Bigl(\frac{a}{r} - w\bigl(\cell_t(r)\bigr)\Bigr)_+ ,
+  \qquad
+  M_w(a) := a \bigl( \log a - 1 - \gamma + c_{\chi_d} - \langle \log w \rangle \bigr) ,
+\]
+where \(\langle \log w \rangle\) is the mean of \(\log w\) over \(\Phi\).  The term \(a \langle \log w \rangle\) is what an even spread of the primes over the cells would give, since the cell \(\rho\) tests primes up to \(a/w(\rho)\).
+
+\begin{problem}\label{pr:bal-primes}
+The finite parts \(\sum_{r \le y} \Lambda(r) \chi_\theta(r)(y/r - 1)\) of the \(G_\theta(y)\) satisfy
+\[
+  \frac{1}{2n} \sum_{\rho} w(\rho) \sum_\theta \ol{\theta(t^{-1} \rho c)} \!\! \sum_{r \le a/w(\rho)} \!\! \Lambda(r) \chi_\theta(r) \Bigl(\frac{a}{w(\rho) r} - 1\Bigr) = P_{t, w}(a) .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:bal-linear}
+The linear parts, \(-y \log y + (1 + \gamma) y\) for \(\theta = 1\) and \(c_\theta y\) otherwise, contribute \(-M_w(a)\) in the same way.
+\end{problem}
+
+Adding Problems~\ref{pr:bal-primes} and \ref{pr:bal-linear} gives the case of \cite[Prop.~6.1.4]{Dup} needed here.
+
+\begin{theorem}[balance identity]\label{thm:balance}
+For every \(a > 0\), \(t \in H\) and \(w \colon \Phi \to (0, \infty)\),
+\begin{equation}\label{eq:balance}
+  P_{t, w}(a) - M_w(a) = \sum_{\rho \in \Phi} w(\rho) R_{t, \rho}\bigl(a/w(\rho)\bigr) ,
+  \qquad
+  R_{t, \rho} := \frac{1}{2n} \sum_\theta \ol{\theta(t^{-1} \rho c)} \, G_\theta .
+\end{equation}
+\end{theorem}
+
+Both sides are finite sums; no prime number theorem enters.  So an upper bound \(P \le M + \mathcal{E}\), of the kind divisibility gives, bounds a combination of the \(G_\theta\).  For \(w\) constant the right side is \(b(G - G_{\chi_d})(a/b)\), as in Problem~\ref{zi-pr:G-minus}.  In the example, with \(t = [1]\), \(a = 10^4\), and \(w\) equal to \(10\) at \((1, [1])\) and \(0.05\) elsewhere, \(P_{t, w}(a) = 84701.0317\) and \(M_w(a) = 84463.3942\).
+
+\section{Averaging over translates}\label{sec:translates}
+
+Why not use the cells one at a time?
+
+\begin{problem}\label{pr:inversion}
+\(\sum_{\rho \in \Phi} \theta(t^{-1} \rho c) R_{t, \rho} = G_\theta - G_{\theta \theta_K}\).  Hence \(\lvert G_\xi - G_{\xi \chi_d} \rvert \le 2n \max_\rho \lvert R_{t, \rho} \rvert\) for every character \(\xi \ne 1\) of \(H\).
+\end{problem}
+
+Bounds for single cells at the scale \(x\) would thus bound \(G_\xi(x) - G_{\xi\chi_d}(x)\) for the fixed characters \(\xi \ne 1\) of conductor dividing \(N\).  These involve the fixed functions \(L(s, \xi)\), and a two-sided bound for \(G_\xi\) at all large \(x\) is as strong as the Riemann hypothesis for \(L(s, \xi)\) (Problem~\ref{zi-pr:fixed-chi}).  The characters \(\xi \ne 1\) must be removed.  For \(u \in H\) let \(w_u(\rho) := w(u^{-1} \rho)\).
+
+\begin{problem}\label{pr:avg}
+Independently of \(t\),
+\[
+  \frac1n \sum_{u \in H} \bigl( P_{t, w_u}(a) - M_{w_u}(a) \bigr) = \frac{1}{2n} \sum_{\rho} w(\rho) \sum_{j, l} \ol{\theta_{1, j, l}(\rho c)} \, G_{\theta_{1, j, l}}\bigl(a/w(\rho)\bigr) .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:four}
+For \(\rho\) in row \(1\) the inner sum is \(R_{q, d} := G + G_{\chi_q} - G_{\chi_d} - G_\eta\), the right side of Problem~\ref{zi-pr:Rqd}; in row \(0\) it is \(R'_{q, d} := G - G_{\chi_q} - G_{\chi_d} + G_\eta\).
+\end{problem}
+
+\begin{theorem}\label{thm:avg}
+For every \(a > 0\), \(t \in H\) and \(w \colon \Phi \to (0, \infty)\),
+\begin{multline*}
+  \frac1n \sum_{u \in H} \bigl( P_{t, w_u}(a) - M_{w_u}(a) \bigr) \\
+  = \frac{1}{2n} \sum_{\rho \text{ in row } 1} w(\rho) R_{q, d}\Bigl(\frac{a}{w(\rho)}\Bigr) + \frac{1}{2n} \sum_{\rho \text{ in row } 0} w(\rho) R'_{q, d}\Bigl(\frac{a}{w(\rho)}\Bigr) .
+\end{multline*}
+\end{theorem}
+
+Averaging is the projection onto the characters of \(\Gal\bigl(\Q(\sqrt{-q}, \sqrt{-d})/\Q\bigr)\); the column characters vanish exactly, for every weight.  The survivors other than \(1\) have conductors \(q\), \(d\), \(qd\), within reach of Estimate~B, and \(G\) has coefficient \(+1\).  In the example the four excesses \(P_{t, w_u}(a) - M_{w_u}(a)\) are \(237.64\), \(-300.26\), \(-176.73\), \(229.13\), with mean \(-2.5545\); Theorem~\ref{thm:avg} writes it as \(\frac54 R_{11, 1319}(1000) = -2.7034\) plus \(0.1488\) from the cells at the scale \(200000\).
+
+\section{Thick and thin weights, and two scales}\label{sec:thick}
+
+In \cite[Def.~6.2.1]{Dup} the weights are not translates of one function, and they are of two kinds.  Fix \(T_2 \subset H\), \(\delta := \lvert T_2 \rvert/n\), and let \(\Theta_u\) be the cells in row \(1\) with column in \(u T_2\).  Let \(x \ge 2\), \(\lvert a/b - x \rvert \le 1\), \(\Delta \ge 0\), \(X > x + 1\), \(\vartheta \ge 0\), and suppose that for every \(u\)
+\begin{equation}\label{eq:thick-thin}
+  b \le w_u(\rho) \le b + \Delta \quad (\rho \in \Theta_u,\ \text{thick}),
+  \qquad
+  a/w_u(\rho) \ge X \quad (\rho \notin \Theta_u,\ \text{thin}),
+\end{equation}
+and that \(\lvert G_\theta(y) \rvert \le \vartheta y\) for all \(\theta\) and \(y \ge X\) (the thin-scale bound).  Thick cells test primes near \(x\); thin ones test primes beyond \(X\).  There \(b = \exp(x^\varepsilon)\) and \(X = \frac13 \exp(x^{\varepsilon/3})\).
+
+\begin{problem}\label{pr:thin}
+The thin cells contribute at most \(4 n a \vartheta\) to the right side of \eqref{eq:balance} for \(w_u\).
+\end{problem}
+
+\begin{problem}\label{pr:thick-move}
+Replacing \(w_u\) by \(b\) on \(\Theta_u\) changes \(P_{t, w_u}(a) - M_{w_u}(a)\) by at most
+\[
+  \Delta \Bigl( 2 \sum_{r \le x + 1} \Lambda(r) + x + 1 \Bigr) .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:thick-avg}
+With weight \(b\) on \(\Theta_u\), the average over \(u \in H\) of the thick part of \eqref{eq:balance} is \(\frac{\delta b}{2} R_{q, d}(a/b)\).
+\end{problem}
+
+\begin{problem}\label{pr:move-x}
+For \(\lvert y - x \rvert \le 1\), \(\lvert R_{q, d}(y) - R_{q, d}(x) \rvert \le \mathcal{K}(x)\), where
+\[
+  \mathcal{K}(x) := 4 \sum_{r \le x + 1} \frac{\Lambda(r)}{r} + \log(x + 1) + 1 + \lvert c_{\chi_q} \rvert + \lvert c_{\chi_d} \rvert + \lvert c_\eta \rvert .
+\]
+\end{problem}
+
+\begin{theorem}\label{thm:two-scales}
+Under \eqref{eq:thick-thin} and the thin-scale bound, for every \(t \in H\),
+\begin{multline*}
+  R_{q, d}(x) \le \frac{2}{\delta b} \cdot \frac1n \sum_{u \in H} \bigl( P_{t, w_u}(a) - M_{w_u}(a) \bigr) \\
+  + \mathcal{K}(x) + \frac{8 n (x + 1) \vartheta}{\delta} + \frac{2\Delta}{\delta b} \Bigl( 2 \sum_{r \le x + 1} \Lambda(r) + x + 1 \Bigr) .
+\end{multline*}
+\end{theorem}
+
+At the scale \(x\) only the quadratic characters appear; at the scale \(X\) all \(4n\) do, but only a bound of prime number theorem type is needed there.  The cost conditions of \cite[Def.~6.2.3(2)]{Dup} make the last two terms \(O(1/(\delta x))\).  The thin-scale bound follows from the classical zero-free region \cite[Ch.~14]{Dav}, since \(\log X\) is large compared with the logarithms of the conductors, and from the exclusion of exceptional zeros: by Theorem~\ref{sp-thm:siegel} of Chapter~\ref{sp-chap}, or by the choice of \(q, d\) \cite[Def.~5.4.2]{Dup}, \cite[\S6]{Adr}.  We do not carry out the computation here.
+
+\section{Averaging over a subgroup, and top places}\label{sec:subgroup}
+
+For \(L(s, \psi)\), averaging over all of \(H\) would remove \(\psi\).  In the simplest case \(\psi\) is a character of \(H\) (in general \(E\) is enlarged, \cite[Def.~5.1.3]{Dup}).  Let \(o\) be its order and \(A_0 := \ker \psi\); in the example \(\psi := \xi^2\), \(\chi_\psi = \chi_8\), \(o = 2\), \(A_0 = \{[1], [7]\}\).  Now \(u\) runs over \(A_0\), \(T_2 \subset A_0\), thick weights equal \(b\), and the shift \(t\) runs over a set \(T \subset H\) of top places \cite[\S6.3]{Dup}.
+
+\begin{problem}\label{pr:A0}
+The characters of \(\Gamma\) trivial on \(A_0\) are the \(4o\) characters \(\theta_{\xi, j, l}\) with \(\xi \in \langle \psi \rangle\); in the example the conductors of their \(\chi_\theta\) are \(1\), \(11\), \(1319\), \(14509\), \(8\), \(88\), \(10552\), \(116072\).
+\end{problem}
+
+\begin{problem}\label{pr:thick-A0}
+The average over \(u \in A_0\) of the thick part of \eqref{eq:balance} is
+\[
+  \frac{\delta b}{2} \sum_{\xi \in \langle \psi \rangle} \xi(t) R_\xi(a/b) ,
+  \qquad
+  R_\xi := G_\xi + G_{\xi \chi_q} - G_{\xi \chi_d} - G_{\xi \eta}
+\]
+(primitive characters), with \(R_1 = R_{q, d}\).
+\end{problem}
+
+\begin{problem}\label{pr:shares}
+If a proportion \(\lambda\) of \(T\) lies in \(A_0\) and \(\lambda'\) in each other coset, then the mean of \(\xi(t)\) over \(t \in T\) is \(1\) for \(\xi = 1\) and \(\kappa := \lambda - \lambda'\) for \(\xi \in \langle \psi \rangle \smallsetminus 1\).
+\end{problem}
+
+Combining Problems~\ref{pr:thick-A0} and \ref{pr:shares}: the average over \(u \in A_0\) and \(t \in T\) of the thick part is \(\frac{\delta b}{2}\bigl(R_{q, d} + \kappa \sum_{\xi \ne 1} R_\xi\bigr)(a/b)\).  Its untwisted part \(G + \kappa \sum_{\xi \ne 1} G_\xi\) is the \(G^\psi\) of Section~\ref{zr-sec:dirichlet} for the shares \(\lambda = 4/(3o + 1)\), \(\lambda' = 3/(3o + 1)\) of \cite[Def.~5.3.3]{Dup}, where \(T\) has these shares up to \(x^{-1 + \varepsilon}\).  The characters \(\xi \notin \langle \psi \rangle\), of small conductor, are gone; the rest are twists of large conductor.
+
+\begin{problem}\label{pr:coef-shares}
+For odd \(r\), the coefficient of \(\Lambda(r)(y/r - 1)_+\) in \(G + \kappa \sum_{\xi \ne 1} G_\xi\) is \(o\) times the proportion of \(T\) in the coset of \([r]\); for \(o = 2\), \(\lambda = 4/7\), it is \(8/7\) or \(6/7\), as in Problem~\ref{zr-pr:coef}.
+\end{problem}
+
+The upper bound for the mean of \(P - M\) that this averaging consumes is the main inequality of the argument, not treated here \cite[Thm.~6.3.4]{Dup}.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:places}}
+\begin{description}
+\item[\ref{pr:galois}] The three generating fields are ramified only at \(2\), \(q\), \(d\) respectively.  \(\Frob_p\) multiplies \(\sqrt{-q}\) by \(\bigl(\frac{-q}{p}\bigr) = \bigl(\frac{p}{q}\bigr)\).
+\item[\ref{pr:cm-type}] Complex conjugation after \(\sigma_0\) is \(\sigma_0 \circ c\), and \(c \notin \Phi\).
+\item[\ref{pr:outside}] Problem~\ref{zi-pr:kronecker}.
+\item[\ref{pr:table}] For instance \(13\) is not a square modulo \(11\), and \([13] = [3]\).
+\item[\ref{pr:ram-cells}] \(I_2 = H \times 1 \times 1\), \(I_q = 1 \times \{\pm1\} \times 1\), \(I_d = 1 \times 1 \times \{\pm 1\}\); on the other coordinates \(F_p\) acts by \(\chi_q(p)\), \(\chi_d(p)\) or \([p]\).  Use Problem~\ref{zi-pr:congruences} and \(\chi_q(d) = -1\).
+\item[\ref{pr:coef}] Problems~\ref{pr:outside} and \ref{pr:ram-cells}.
+\end{description}
+
+\subsection*{\S\ref{sec:balance}}
+\begin{description}
+\item[\ref{pr:chi-theta}] \(\xi([9]) = -1\) with \(9 \equiv 1 \pmod 8\), and \(\xi^2([5]) = -1\).
+\item[\ref{pr:cell-expansion}] Write \(\chi_\theta(p^h) = \lvert I_p \rvert^{-1} \sum_{g \in F(p^h)} \theta(g)\), apply orthogonality, and use Problem~\ref{pr:coef}.
+\item[\ref{pr:trivial-on-Phi}] \(\Phi\) has index \(2\) and \(\theta_K(c) = -1\).
+\item[\ref{pr:bal-primes}] Exchange the sums and use Problem~\ref{pr:cell-expansion}.
+\item[\ref{pr:bal-linear}] Problem~\ref{pr:trivial-on-Phi}.
+\end{description}
+
+\subsection*{\S\ref{sec:translates}}
+\begin{description}
+\item[\ref{pr:inversion}] Orthogonality on \(\Phi\) and Problem~\ref{pr:trivial-on-Phi}.
+\item[\ref{pr:avg}] Substitute \(\rho = u \rho'\) in \eqref{eq:balance}, and use orthogonality on \(H\).
+\item[\ref{pr:four}] Evaluate each \(\theta_{1, j, l}\) at \(\rho c\).
+\end{description}
+
+\subsection*{\S\ref{sec:thick}}
+\begin{description}
+\item[\ref{pr:thin}] Apply the thin-scale bound to each \(G_\theta\) in \(R_{t, \rho}\).
+\item[\ref{pr:thick-move}] \(w \mapsto (z - w)_+\) is \(1\)-Lipschitz, and only \(r < a/b\) are affected; \(\log w - \log b \le \Delta/b\).
+\item[\ref{pr:thick-avg}] Problem~\ref{pr:avg} restricted to \(\rho \in \Theta_u\), then Problem~\ref{pr:four}.
+\item[\ref{pr:move-x}] Differentiate Problem~\ref{zi-pr:Rqd} in \(y\); \((1 + \chi_q)(1 - \chi_d) \le 4\).
+\end{description}
+
+\subsection*{\S\ref{sec:subgroup}}
+\begin{description}
+\item[\ref{pr:A0}] The characters of \(H/A_0\) are the powers of \(\psi\); Problem~\ref{pr:chi-theta}.
+\item[\ref{pr:thick-A0}] As for Problem~\ref{pr:thick-avg}, with \(\sum_{u \in A_0} \xi(u) = \lvert A_0 \rvert \one[\xi \in \langle \psi \rangle]\) and \(\theta = 1\) on \(T_2\).
+\item[\ref{pr:shares}] The values of \(\xi \ne 1\) on the cosets other than \(A_0\) add up to \(-1\).
+\item[\ref{pr:coef-shares}] Orthogonality of the characters in \(\langle \psi \rangle\), and \(\lambda + (o - 1)\lambda' = 1\).
+\end{description}
+
+\begin{thebibliography}{Dup}
+
+\bibitem[Adr]{Adr}
+J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+
+\bibitem[Alp]{Alp}
+L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
+
+\bibitem[Dav]{Dav}
+H.~Davenport, \emph{Multiplicative Number Theory}, 3rd ed., revised by H.~L.~Montgomery, Grad. Texts in Math. \textbf{74}, Springer, 2000.
+
+\bibitem[Dup]{Dup}
+\emph{Notes on Alp\"oge's proof of the Riemann hypothesis}, printed by T.~Dupuy, AI generated, 21 November 2026, \url{https://tdupu.github.io/riemann-public/riemann-book.pdf}.
+
+\bibitem[Ne]{Ne}
+J.~Neukirch, \emph{Algebraic Number Theory}, Grundlehren Math. Wiss. \textbf{322}, Springer, 1999.
+
+\bibitem[SeA]{SeA}
+J.-P.~Serre, \emph{A Course in Arithmetic}, Grad. Texts in Math. \textbf{7}, Springer, 1973.
+
+\bibitem[Wa]{Wa}
+L.~C.~Washington, \emph{Introduction to Cyclotomic Fields}, 2nd ed., Grad. Texts in Math. \textbf{83}, Springer, 1997.
+
+\end{thebibliography}
+
+\end{document}

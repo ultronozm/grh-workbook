@@ -1,0 +1,310 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[sm-]{20261125T000000--slope-method__workbook}
+\externaldocument[sl-]{20261125T000100--slope-inequality-in-the-mean__workbook}
+\externaldocument[rl-]{20261125T010000--rank-lemma-and-zero-estimate__workbook}
+\externaldocument[gf-]{20261125T005000--galois-fourier-and-averaging__workbook}
+\externaldocument[ps-]{20261125T010500--poincare-series-and-near-orthogonality__workbook}
+\externaldocument[as-]{20261125T021500--assembly-at-one-scale__workbook}
+
+% Chapter number; \ref{chap} gives it.  The fallback is used only until
+% the sheet is listed in the index.
+\newcounter{chap}
+\input{chapters}
+\makeatletter
+\@ifundefined{chapters@20261125T020200}{\def\thechap{VI.3}}{\chapnumber{20261125T020200}}
+\makeatother
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\HH}{\mathbb{H}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Hc}{\mathcal{H}}
+\newcommand{\Wc}{\mathcal{W}}
+\newcommand{\mumax}{\mu_{\max}}
+\newcommand{\mumin}{\mu_{\min}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\rk}{\operatorname{rk}}
+\newcommand{\hgt}{\operatorname{ht}}
+\newcommand{\HS}{\mathrm{HS}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\Dall}{D_{\mathrm{all}}}
+\newcommand{\Drows}{D_{\mathrm{rows}}}
+\newcommand{\dS}{d^{S}}
+
+\setlength{\emergencystretch}{2em}
+
+\title{Slopes, frames and Bessel--Poincar\'e series}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+From Chapter~\ref{sm-chap}: normed spaces, degrees, slopes and heights (Section~\ref{sm-sec:slopes}), the normalized slopes \(\mu^\sharp\) and heights \(h^\sharp\), and Theorem~\ref{sm-thm:image}.  From Chapter~\ref{sl-chap}: Theorems~\ref{sl-thm:hn}, \ref{sl-thm:mean} and~\ref{sl-thm:rank}, with the notation of Sections~\ref{sl-sec:mean} and~\ref{sl-sec:gram}.  From Chapter~\ref{rl-chap}: Section~\ref{rl-sec:gram}.  From Chapter~\ref{ps-chap}: the Poincar\'e series, Problems~\ref{ps-pr:unfold}, \ref{ps-pr:gram} and~\ref{ps-pr:dim}, and Theorem~\ref{ps-thm:near}.  Bernoulli's inequality.  The statements in the text are quoted from Adriazola's reconstruction \cite{Adr} of Alp\"oge's argument \cite{Alp}, with its numbering, and the sizes \(m\), \(k\), \(n\), \(b = e^y\), \(y = x^\varepsilon\), \(a = xb\) are those of \cite[Prop.~5.15]{Adr}: \(m \le 2x^{1/2-\varepsilon/16}\), \(n \le 2x^{2+8\varepsilon}\) and \(k \le 2x^{9/2+10\varepsilon}\).  No problem needs more of \cite{Adr} than is stated here.
+
+\medskip
+Chapter~\ref{sl-chap} bounded the mean slope of a target by a family of maps whose images fill it, given a Gram condition at one complex place; Chapters~\ref{rl-chap} and~\ref{ps-chap} found such conditions for Poincar\'e series on \(\mathrm{SL}_2(\Z)\).  What does the argument need of these, for lattices of rank about \(x^{9/2}\) over a CM field, and which of the needed statements are proved?  This chapter states them in the form used, as numbered theorems quoted from \cite{Adr}.  After each we name its simplest incarnation in the earlier chapters and its status: \emph{classical}, with a reference; \emph{proved in \cite{Adr}} (from published results); or \emph{proved in the Lean formalization} \cite{Lean}, with the hypotheses of \cite{Adr} on which it rests, not yet written out in the published expositions.  The problems specialize the statements, check their exponents, and deduce the form in which Chapter~\ref{as-chap} uses them.
+
+\section{Slopes over a totally complex field}\label{sec:slopes}
+
+Let \(K\) be a totally complex number field of degree \(n_K\), and \(\Sigma_K\) its set of complex places; for \(v \in \Sigma_K\) fix an embedding \(\sigma_v\) in the class \(v\).  A \emph{hermitian lattice} \(\bar L\) over \(\Oc_K\) is a finitely generated \(\Oc_K\)-submodule \(L\) spanning a \(K\)-vector space \(V\), with a hermitian norm on \(V_v := V \otimes_{K,\sigma_v} \C\) for each \(v\).  It is the normed space of Chapter~\ref{sm-chap} whose unit lattice at a finite place \(w\) is \(L \otimes \Oc_{K,w}\).  We use the slope \(\mu\) and height \(\hgt\) of \cite[(13.1), (13.2)]{Adr}, with \(\hgt(\varphi) := \frac{2}{n_K}\sum_{v \in \Sigma_K} \log\lVert\varphi_v\rVert_{\mathrm{op}}^2\).  They are the \(\mu^\sharp\) and \(h_\infty^\sharp\) of Section~\ref{sm-sec:slopes}, that is, \(2/n_K\) times the slope and the archimedean height there; for \(K\) imaginary quadratic they coincide with them.  So \(\mu(\Oc_K) = 0\), dividing all norms by \(c > 0\) raises \(\mu\) by \(2\log c\), and Theorems~\ref{thm:hn}--\ref{thm:A3} are unchanged if slopes, heights and the numbers \(s\), \(h_i\), \(u_F\), \(H_0\) are multiplied by a common positive constant.  The sets of slopes, \(\mumax\) and \(\mumin\) are as in Chapter~\ref{sl-chap}.
+
+\begin{theorem}[{\cite[Prop.~13.1]{Adr}}]\label{thm:hn}
+Let \(\bar L\) be a hermitian lattice over \(\Oc_K\) of rank \(\ell \ge 1\).  There are real numbers \(x_1 \ge \dots \ge x_\ell\), the slopes of \(\bar L\), and for each real \(\theta\) a saturated submodule \(L_{\ge\theta} \subseteq L\), such that: the number of \(j\) with \(x_j \ge \theta\) is \(\rk L_{\ge\theta}\); \(x_1 + \dots + x_\ell = \ell\mu(L)\); \(\mumin(L) \le x_j \le \mumax(L)\); every nonzero submodule \(N\) with \(\mumin(N) \ge \theta\) lies in \(L_{\ge\theta}\); and \(\mumin(L_{\ge\theta}) \ge \theta\) if \(L_{\ge\theta} \ne 0\).  Moreover \(\mu(L^\vee) = -\mu(L)\) and \(\mumin(L^\vee) = -\mumax(L)\).
+\end{theorem}
+
+\emph{Simplest incarnation}: Theorem~\ref{sl-thm:hn} and the truncations \(V^{\ge\lambda}\) after it.  \emph{Status}: classical, by Stuhler \cite{St} and Grayson \cite{Gr} over \(\Z\), and by Bost \cite{Bo1} and Gaudron \cite{Ga} over rings of integers.
+
+\begin{theorem}[{\cite[Prop.~13.3]{Adr}}]\label{thm:slope}
+Let \(\bar A\) be a hermitian lattice over \(\Oc_K\) in \(V\), let \(V'\) carry hermitian norms at the places of \(\Sigma_K\), and let \(\varphi \colon V \to V'\) be \(K\)-linear with \(\varphi(A) \ne 0\).  Give \(\varphi(A)\) the norms of \(V'\).  Then \(\mumin(\varphi(A)) \ge \mumin(A) - \hgt(\varphi)\).
+\end{theorem}
+
+\emph{Simplest incarnation}: Theorem~\ref{sm-thm:image} and Problem~\ref{sl-pr:slope-map}.  \emph{Status}: classical (Bost \cite{Bo1}); \cite{Adr} gives the proof in its normalization.
+
+\begin{problem}\label{pr:diagonal}
+Let \(K\) be imaginary quadratic, let \(\mu_1 > \mu_2\), and let \(L := \Oc_Ke_1 \oplus \Oc_Ke_2\) with \(e_1 \perp e_2\) and \(\lVert e_i\rVert = e^{-\mu_i/2}\).  Then \(\mumax(L) = \mu_1\), \(\mumin(L) = \mu_2\) and \(\mu(L) = \frac12(\mu_1 + \mu_2)\).  Let \(c_1, c_2 \in K^\times\), let \(\varphi := \operatorname{diag}(c_1, c_2) \colon K^2 \to K^2\) with the standard norm on the target, and \(\lambda_i := \mu_i + 2\log\lvert c_i\rvert\).  Then \(\hgt(\varphi) = \max(\lambda_1, \lambda_2)\) and \(\mumin(\varphi(L)) = \min(\mu_1 - \lambda_1, \mu_2 - \lambda_2)\), so Theorem~\ref{thm:slope} is an equality for \(\varphi\) if and only if \(\lambda_2 \ge \lambda_1\).
+\end{problem}
+
+So the slope inequality is sharp when the map stretches the part of small slope at least as much as the rest.
+
+\section{The frame theorem}\label{sec:frame}
+
+For one map, Theorem~\ref{thm:slope} sees only \(\mumin\) and \(\mumax\).  For a family, Chapter~\ref{sl-chap} passed to the mean slope.  The form used is the following; for \(u = 0\) we read \(u\log(1 + H_0/u)\) as \(0\).  For a \(K\)-linear map \(B\) between spaces with fixed bases, \([B]_v\) is its matrix with \(\sigma_v\) applied to the entries.
+
+\begin{theorem}[frame theorem, {\cite[Thm.~13.8]{Adr}}]\label{thm:frame}
+Let \(I\) be a nonempty finite set, and for \(i \in I\) let \(\bar N_i\) be a hermitian lattice over \(\Oc_K\) of rank \(d_i\) in \(V_i\), with \(\Delta := \sum_i d_i > 0\).  Let \(\bar C\) be a hermitian lattice of rank \(D\) in \(W\).  Let \(B_i \colon V_i \to W\) be \(K\)-linear with \(B_i(N_i) \subseteq C\), and \(h_i\) real with \(\hgt(B_i) \le h_i\) whenever \(B_i \ne 0\).  Fix \(v \in \Sigma_K\), bases of the \(V_i\) and \(W\), invertible complex matrices \(Y_i\) of size \(d_i\) and \(Y'\) of size \(D\), an integer \(D_1 \ge 0\), and complex \((D + D_1) \times d_i\) matrices \(A_i\) whose first \(D\) rows form \(Y'^{-1}[B_i]_vY_i\).  Let \(\gamma_i > 0\) and \(Q := \sum_i \gamma_iA_iA_i^*\).  Let \(s\), \(u_F \ge 0\), \(H_0 \ge 0\), \(0 \le \epsilon \le \frac14\), \(\eta \ge 0\) and \(0 \le \delta_R < 1\) satisfy
+\begin{enumerate}
+\item[(i)] \(s\Delta \le \sum_i d_i\bigl(\mu(N_i) - h_i\bigr)\);
+\item[(ii)] \(\mumax(N_i) - h_i \le s + u_F\) for every \(i\);
+\item[(iii)] \(s - \mumin(C) \le H_0\);
+\item[(iv)] \((1 - \delta_R)(D + D_1) \le D\);
+\item[(v)] \(\sum_i \lVert\gamma_iA_i^*A_i - 1\rVert_\HS^2 \le \epsilon\Delta\);
+\item[(vi)] \(\tr(Q^2) \le (1 + \eta)(\tr Q)^2/(D + D_1)\).
+\end{enumerate}
+Then
+\[
+  \mu(C) \ge s - \frac{4u_F\log(1 + H_0/u_F) + (\eta + 4\sqrt\epsilon)H_0}{1 - \delta_R} .
+\]
+\end{theorem}
+
+(In \cite{Adr} the numbers \(u_F\), \(H_0\), \(\epsilon\), \(\delta_R\) are called \(u\), \(H\), \(e\), \(\delta\).)  \emph{Simplest incarnation}: Theorem~\ref{sl-thm:mean}, with the rank hypothesis of Section~\ref{sl-sec:mean} obtained from Theorem~\ref{sl-thm:rank} with \(\theta = (\eta + 4\sqrt\epsilon)/(1 - \delta_R)\) and \(c = 4/(1 - \delta_R)\), as at the end of Section~\ref{sl-sec:gram}; here (v) and~(vi) are the Gram conditions of that section, with \(D' = D + D_1\).  \emph{Status}: proved in \cite{Adr}, from Theorems~\ref{thm:hn} and~\ref{thm:slope} by the argument of Chapter~\ref{sl-chap}.
+
+\begin{problem}\label{pr:one-map}
+Let \(\bar N\) and \(\bar C\) have the same rank, with \(\bar N\) semistable, and let \(B \colon V \to W\) be bijective with \(B(N) \subseteq C\).  Then Theorem~\ref{thm:frame} applies with \(I = \{1\}\), \(h_1 = \hgt(B)\), \(s = \mu(N) - \hgt(B)\), \(u_F = 0\), \(D_1 = 0\), \(A_1 = 1\), \(\gamma_1 = 1\), \(\epsilon = \eta = \delta_R = 0\) and any \(H_0 \ge \max(0, s - \mumin(C))\), and gives \(\mu(C) \ge \mu(N) - \hgt(B)\), the conclusion of Problem~\ref{sl-pr:one-map}.
+\end{problem}
+
+For a single map the theorem is weaker than Theorem~\ref{thm:slope} \cite[Rem.~13.9]{Adr}; its gain is the passage from \(\mumax(C)\) to \(\mu(C)\) for a redundant family.  Conditions~(v) and~(vi) are checked through the Gram operators of larger, uncompressed maps.
+
+\begin{theorem}[{\cite[Prop.~13.11]{Adr}}]\label{thm:gram}
+Let \(I\) be a nonempty finite set and \(\tilde D \ge 0\) an integer; for \(i \in I\) let \(\dS_i \ge d_i \ge 0\) be integers, \(P_i\) a complex \(\tilde D \times \dS_i\) matrix, \(V_i\) a complex \(\dS_i \times d_i\) matrix with \(V_i^*V_i = 1\), and \(\gamma_i > 0\).  Put \(K_{ij} := \sqrt{\gamma_i\gamma_j}\,P_i^*P_j\), \(A_i := P_iV_i\), \(Q := \sum_i \gamma_iA_iA_i^*\), \(\Delta_S := \sum_i \dS_i\) and \(\Delta := \sum_i d_i\).  Let \(D^* > 0\), \(0 < \sigma \le \frac1{20}\), \(-1 \le \eta_0 \le \frac\sigma2\), \(\eta_1 \le \frac\sigma2\), \(e_0 \ge 0\) with \(\sqrt{e_0} \le \frac\sigma2\), and \(0 \le \delta_T \le \frac14\), and suppose
+\begin{enumerate}
+\item[(G1)] \(\lVert K_{ij}\rVert_\HS^2 \le (1 + \eta_0)\dS_i\dS_j/D^*\) for \(i \ne j\);
+\item[(G2)] \(\lVert K_{ii} - 1\rVert_\HS^2 \le e_0\dS_i\) for every \(i\);
+\item[(G3)] \(\tilde D \le (1 + \eta_1)D^*\);
+\item[(G4)] \(D^* \le \sigma\Delta_S\);
+\item[(G5)] \(\sum_i (\dS_i - d_i) \le \delta_T\Delta_S\).
+\end{enumerate}
+Then \(\Delta \ge (1 - \delta_T)\Delta_S > 0\), \(\tilde D \ge 1\), \(\sum_i \lVert\gamma_iA_i^*A_i - 1\rVert_\HS^2 \le 2e_0\Delta\) and \(\tr(Q^2) \le (1 + 5\sigma + 3\sqrt{\delta_T})(\tr Q)^2/\tilde D\).
+\end{theorem}
+
+(In \cite{Adr}, \(\delta_T\) is called \(\delta'\).)  \emph{Simplest incarnation}: Problem~\ref{rl-pr:pair} and Theorem~\ref{rl-thm:pair}.  \emph{Status}: proved in \cite{Adr}; it is linear algebra.
+
+\begin{problem}\label{pr:pair}
+In the setting of Theorem~\ref{rl-thm:pair}, with \(\eta_0 \ge 0\), take \(\tilde D = D^* = D\), \(P_i\) the matrix of \(B_i\) in orthonormal bases, \(V_i = 1\), \(\dS_i = d_i = r_i\), \(e_0 = \eta_1 = \delta_T = 0\) and \(\sigma := \max(2\eta_0, D/R)\).  If \(\sigma \le \frac1{20}\), then (G1)--(G5) hold, and Problem~\ref{rl-pr:pair} gives the conclusion of Theorem~\ref{thm:gram} with the factor \(1 + 5\sigma\) replaced by the smaller \(1 + \eta_0 + D/R\).
+\end{problem}
+
+So the condition \(D^* \le \sigma\Delta_S\) is the term \(D/R\) of Theorem~\ref{rl-thm:pair}: the sources must have total rank much larger than the target.
+
+\section{The period maps and the mean slope}\label{sec:A3}
+
+In the argument the target is the dual \(R^\vee\) of a lattice \(R\) of automorphic forms at the top of the chain, of rank \(\Drows \ge 1\) in a \(K\)-vector space \(Y\), and the sources are lattices \(N_u\) of rank \(d_u \ge 1\) in spaces \(V_u\), indexed by a finite set \(\Wc\) of \emph{words}; the \emph{period maps} are \(K\)-linear maps \(B_u \colon V_u \to Y^*\) \cite[\S13.4]{Adr}.  Here \(K\) is a totally complex Galois field containing the field \(E\) of Chapter~\ref{gf-chap}.  Their archimedean structure at one place is the following \cite[Def.~13.13]{Adr}.  A \emph{Bessel realization} of \((B_u)_{u \in \Wc}\) at \(v \in \Sigma_K\) consists of: a Hilbert space \(\Hc\) of finite dimension \(\Dall\), with inner product conjugate-linear in the first variable, and a conjugate-linear isometric embedding \(\iota_0 \colon Y_v \to \Hc\), where \(Y_v\) has the norm of \(R\) at \(v\); for each \(u\), a Hilbert space \(C_u\) of dimension \(\dS_u\), a linear map \(P_u \colon C_u \to \Hc\), a number \(c_u > 0\), an inner product on \(V_{u,v}\) and a linear isometric embedding \(\iota_u \colon V_{u,v} \to C_u\); and unitary operators \(U\) of \(Y_v\) and \(U_u\) of \(V_{u,v}\), and numbers \(\alpha_u \ne 0\), such that
+\begin{equation}\label{eq:bessel}
+  (B_{u,v}\varphi)(F) = \alpha_u\,\bigl\langle \iota_0(UF),\, P_u\iota_uU_u\varphi \bigr\rangle_\Hc \qquad (\varphi \in V_{u,v},\ F \in Y_v) .
+\end{equation}
+Its \emph{Gram operators} are \(K_{uu'} := (c_uc_{u'})^{-1/2}P_u^*P_{u'} \colon C_{u'} \to C_u\).  In the construction \(\Hc\) is a space of automorphic forms on a unitary group, \(C_u\) the space of column forms of the word \(u\), \(\iota_u\) the inclusion of the forms ramified at the auxiliary prime \(T_u\), \(P_u\) the map to Bessel Poincar\'e series and \(c_u\) its normalizing volume.
+
+\begin{problem}\label{pr:classical}
+Write \(\kappa\) for the weight \(k\) and \(P_\ell\) for the series \(P_m\) of Chapter~\ref{ps-chap}, and \(T_\kappa\) for its Kloosterman term.  Let \(\Hc = Y_v = S_\kappa\) (a model only: there is no field \(K\) or lattice \(R\) here), with \(\langle F, G\rangle_\Hc\) the Petersson product \(\langle G, F\rangle\), let \(\iota_0(F)(z) := \overline{F(-\bar z)}\), and for \(\ell \ge 1\) let \(V_\ell = C_\ell = \C\), \(\iota_\ell = 1\), \(P_\ell(1) := P_\ell\), \(B_\ell(\varphi)(F) := \varphi\,a_F(\ell)\) and \(c_\ell := \Gamma(\kappa-1)(4\pi\ell)^{1-\kappa}\).  Then~\eqref{eq:bessel} holds with \(U = U_\ell = 1\) and \(\alpha_\ell = 1/c_\ell\), and \(K_{\ell\ell'} = \delta(\ell, \ell') + T_\kappa(\ell, \ell')\).
+\end{problem}
+
+So~\eqref{eq:bessel} generalizes the unfolding of Problem~\ref{ps-pr:unfold}: a Fourier coefficient becomes a Bessel period.
+
+\begin{theorem}[{\cite[Thm.~13.15]{Adr}}]\label{thm:A3}
+Let \(R\), \(N_u\), \(B_u\) be as above, and \(h_u\) real.  Put
+\[
+  s := \frac{\sum_u d_u\bigl(\mu(N_u) - h_u\bigr)}{\sum_u d_u} , \qquad u_F := \max_{u \in \Wc}\bigl(\mumax(N_u) - h_u\bigr) - s .
+\]
+Let \(D^* > 0\), \(H_0 > 0\), \(0 < \sigma \le \frac1{20}\), \(-1 \le \eta_0 \le \frac\sigma2\), \(\eta_1 \le \frac\sigma2\), \(0 \le e_0 \le \frac18\) with \(\sqrt{e_0} \le \frac\sigma2\), \(0 \le \delta_T \le \frac14\) and \(0 \le \delta_R < 1\), and suppose:
+\begin{enumerate}
+\item[(a)] \(B_u(N_u) \subseteq R^\vee\) for every \(u\);
+\item[(b)] \(\hgt(B_u) \le h_u\) whenever \(B_u \ne 0\), for the norms of \(\bar N_u\) and \(\bar R^\vee\);
+\item[(c)] \(s + \mumax(R) \le H_0\);
+\item[(d)] \((B_u)\) has a Bessel realization at some \(v \in \Sigma_K\) with \(\Dall \ge \Drows\) and \((1 - \delta_R)\Dall \le \Drows\);
+\item[(e)] \(\lVert K_{uu'}\rVert_\HS^2 \le (1 + \eta_0)\dS_u\dS_{u'}/D^*\) for \(u \ne u'\), \(\lVert K_{uu} - 1\rVert_\HS^2 \le e_0\dS_u\), and \(\Dall \le (1 + \eta_1)D^*\);
+\item[(f)] \(D^* \le \sigma\sum_u \dS_u\) and \(\sum_u (\dS_u - d_u) \le \delta_T\sum_u \dS_u\).
+\end{enumerate}
+Then \(s - e_3 \le \mu(R^\vee)\), where
+\[
+  e_3 := \frac{4u_F\log(1 + H_0/u_F) + \bigl(5\sigma + 3\sqrt{\delta_T} + 4\sqrt{2e_0}\bigr)H_0}{1 - \delta_R} \ge 0 .
+\]
+\end{theorem}
+
+This is the input~(A3) of \cite[Prop.~3.1]{Adr}, with the weights \(d_u\).  \emph{Simplest incarnation}: Theorem~\ref{sl-thm:mean} for the maps \(B_u\), with the rank hypothesis from Theorem~\ref{sl-thm:rank}.  \emph{Status}: proved in \cite{Adr}, from Theorems~\ref{thm:hn}, \ref{thm:frame} and~\ref{thm:gram}: by \cite[Lemma~13.14]{Adr} the realization gives matrices \(A_u = P_uV_u\) as in Theorem~\ref{thm:frame}, with \(D = \Drows\) and \(D_1 = \Dall - \Drows\), so that~(d) is condition~(iv) there.  That the construction satisfies (a)--(f) is proved in the Lean formalization; in \cite{Adr} it rests on hypotheses.  Inclusion~(a) is the divisibility of the chain \cite[\S\S11--12, Lemma~13.20]{Adr}, and \(h_u\) in~(b) is defined in \cite[Def.~15.14]{Adr}.  Hypothesis~(c) enters only through the choice of \(H_0\), and Section~\ref{sec:record} returns to it.  Hypotheses~(d)--(f) are the subject of the next section.
+
+\section{Bessel Poincar\'e series}\label{sec:bessel}
+
+The automorphic side is as follows \cite[\S14.1]{Adr}.  Let \(G\) be the unitary group of a hermitian space over the CM field \(E\); the totally real subfield of \(E\) has degree \(2n\).  The space \(\Hc\) consists of the automorphic forms on \(G\) with a fixed discrete series at the archimedean places and fixed by the level idempotent of the construction, with the Petersson product; \(\Dall = \dim\Hc\), and \(D^*\) is the formal degree of the discrete series times the volume of the automorphic quotient of \(G\) times the value at \(1\) of the level idempotent, as in Section~\ref{ps-sec:dim}.  For \(y = x^\varepsilon\) put
+\[
+  \Gamma_0 := \exp\bigl(2C_\Gamma\,m^5ny\bigr) .
+\]
+
+\begin{theorem}[near orthogonality, {\cite[Thm.~14.1]{Adr}}]\label{thm:near}
+There are absolute constants \(C_0 \ge 1\) and \(C_\Gamma > 0\) such that for every \(\varepsilon\), every \(x\) large in terms of \(\varepsilon\), and every family of data of \cite[Part~II]{Adr} at the scale \(x\) whose words satisfy
+\begin{equation}\label{eq:window}
+  C_0^{-1} \le \dS_u\Gamma_0^2/D^* \le C_0 \qquad (u \in \Wc) ,
+\end{equation}
+the Gram operators satisfy~(e) of Theorem~\ref{thm:A3} with \(e_0 \ge 0\) and \(\eta_0, \eta_1, \sqrt{e_0} \le \exp(-x^{\varepsilon/8})\).
+\end{theorem}
+
+\emph{Simplest incarnation}: Theorem~\ref{ps-thm:near}, through Problem~\ref{ps-pr:gram}.  \emph{Status}: proved in the Lean formalization.  It is proved in \cite[Thm.~14.79]{Adr} from \cite[Hyps.~14.71--14.77]{Adr}: the kernel expansion, the main row, the loops, the nongeneric and degenerate terms, the multiplicity formula and the sizes.  Of these, \cite[Hyp.~14.76]{Adr} is deduced from the label dictionary and the pre-trace inputs, \cite[Hyps.~14.59 and~14.61]{Adr}, by \cite[Cor.~14.63]{Adr} under the size conditions \cite[(14.19)]{Adr}, and the two exponential size conditions of \cite[Hyp.~14.77]{Adr} are \cite[Lemma~14.78]{Adr}; the others are not yet written out in the published expositions \cite[\S18.7]{Adr}.
+
+\begin{problem}\label{pr:sl2}
+In the setting of Problem~\ref{pr:classical}, let \(1 \le M \le (\kappa-1)/(4\pi e)\), where \(e = 2.718\ldots\) as in Theorem~\ref{ps-thm:near}, let \(\Wc = \{1, \dots, M\}\), so that \(\dS_\ell = 1\), and let \(D^* := (\kappa-1)/12\).  Then~(e) of Theorem~\ref{thm:A3} holds with \(e_0 = \kappa^24^{-\kappa}\), \(\eta_1 = 13/(\kappa-1)\) and \(1 + \eta_0 = (\kappa-1)\kappa^24^{-\kappa}/12\).  But \(D^* \ge \frac{\pi e}3\sum_\ell \dS_\ell\), with \(\frac{\pi e}{3} = 2.846\ldots\), so the first half of~(f) fails for every \(\sigma \le \frac1{20}\).
+\end{problem}
+
+This is the obstruction at the end of Chapter~\ref{ps-chap}.  In the argument each word contributes a column space of dimension about \(D^*\Gamma_0^{-2}\) by~\eqref{eq:window}, nearly orthogonal to the others, and the words are so many that their dimensions add up to more than \(x^{C_H}D^*\).
+
+\begin{theorem}[share of irreducible rows, {\cite[Thm.~14.2]{Adr}}]\label{thm:rows}
+Let \(J \ge 1\) be the fixed integer of the construction.  Let \(\Drows\) be the dimension of the span of the image of \(R \otimes_{K,\sigma_v} \C\) in \(\Hc\) under the row embedding, and define \(\delta_R\) by \(\Drows = (1 - \delta_R)\Dall\).  For every family of data of \cite[Part~II]{Adr} and every \(x\) large in terms of the family constants, \(0 \le \delta_R \le \exp(-x^{\varepsilon/J}/7)\).
+\end{theorem}
+
+\emph{Simplest incarnation}: Problem~\ref{ps-pr:dim}, the dimension of \(S_k\) as formal degree times covolume.  \emph{Status}: proved in the Lean formalization.  It is \cite[Thm.~14.46]{Adr}, from \cite[Hyps.~14.42--14.44]{Adr} and the sizes \cite[Lemma~14.64]{Adr}.  Of these, \cite[Hyp.~14.42]{Adr} is proved \cite[Cor.~14.57]{Adr} through Gelfand--Graev representations \cite[\S10]{DL}, \cite[Ch.~8]{Cart}; \cite[Hyp.~14.43]{Adr} follows from \cite[Hyps.~14.59 and~14.61]{Adr} by \cite[Cor.~14.63]{Adr}; \cite[Hyp.~14.44]{Adr} is not yet written out in the published expositions.
+
+\begin{theorem}[Bessel identity, {\cite[Thm.~14.3]{Adr}}]\label{thm:bessel}
+For every family of data of \cite[Part~II]{Adr} and every large \(x\), the period maps have a Bessel realization~\eqref{eq:bessel} at \(v\), with \(\iota_0\) the row embedding, \(\iota_u\) the column embedding, and \(P_u\) the Bessel Poincar\'e series.  Moreover \(B_{u,v}(\varphi \otimes 1)(\xi \otimes 1) = \sigma_v\bigl(B_u(\varphi)(\xi)\bigr)\) for \(\varphi \in V_u\) and \(\xi \in Y\).
+\end{theorem}
+
+\emph{Simplest incarnation}: Problem~\ref{ps-pr:unfold}, as Problem~\ref{pr:classical} shows.  \emph{Status}: proved in the Lean formalization.  It is \cite[Thm.~14.15]{Adr}, given the data \cite[(P1)--(P5)]{Adr} of the construction and \cite[Hyps.~14.10--14.12]{Adr}: the seesaw relation, the dictionaries and rationality.  The seesaw relation \cite[Hyp.~14.10]{Adr} follows from the laws of the theta tower and its dictionaries, \cite[Hyps.~14.17 and~14.21]{Adr}, by \cite[Cor.~14.22, Rem.~14.23]{Adr}; the double-step identity in \cite[Hyp.~14.17]{Adr} follows from the laws of the Weil representation, \cite[Hyps.~14.27 and~14.28]{Adr}, by \cite[Thm.~14.29]{Adr}; and \cite[Lemma~14.24]{Adr} reduces rationality to three period identities.  The hypotheses at the ends of these reductions are not yet written out in the published expositions.
+
+So Theorems~\ref{thm:rows} and~\ref{thm:bessel} give~(d) of Theorem~\ref{thm:A3}, and Theorem~\ref{thm:near} gives~(e).  The second half of~(f) counts ramified columns.
+
+\begin{problem}\label{pr:ramified}
+Let \(T \ge 2\) and \(\dS \ge 0\), and \(d := \dS\bigl(1 - 1/(T - 1)\bigr)^{2n}\).  Then \(\dS - d \le (4n/T)\,\dS\).  Hence, if \(d_u = \dS_u(1 - 1/(T_u - 1))^{2n}\) and \(T_u \ge b\) for every \(u\), the second half of~(f) holds with \(\delta_T = 4n/b\), and \(d_u > \frac12\dS_u\) once \(b > 8n\) and \(\dS_u > 0\).
+\end{problem}
+
+The proof of Theorem~\ref{thm:bessel} needs one nonzero pairing of a Poincar\'e series with a theta lift.
+
+\begin{problem}\label{pr:kernel}
+Let \(P \colon C \to \Hc\) be a linear map of finite-dimensional inner product spaces, \(c > 0\), and \(K := c^{-1}P^*P\).  Then \(\dim\ker P \le \lVert K - 1\rVert_\HS^2\).  Hence, if \(\lVert K - 1\rVert_\HS^2 \le e_0\dim C\) with \(e_0 \le \frac12\), then \(P\) does not vanish on any subspace of \(C\) of dimension greater than \(\frac12\dim C\).
+\end{problem}
+
+By Problems~\ref{pr:ramified} and~\ref{pr:kernel}, the diagonal clause of Theorem~\ref{thm:near} gives \(\varphi_0 \in V_{u,v}\) with \(P_u\iota_uU_u\varphi_0 \ne 0\) \cite[Lemma~14.14]{Adr}.  Theorem~\ref{thm:near} concerns the Poincar\'e series alone, so using it in the proof of Theorem~\ref{thm:bessel} is not circular \cite[Rem.~14.81]{Adr}.
+
+What remains are the sizes.  Write \(\omega := \exp(-x^{\varepsilon/8})\) and \(\sigma := x^{-C_H}\), with \(C_H > 0\).
+
+\begin{problem}\label{pr:sizes}
+Let \(\varepsilon > 0\) and \(C_H > 0\).  For large \(x\): (i) \(x^{C_H} \ge 20\), \(11\omega x^{C_H} \le 1\) and \(8n \le b\omega^2\); (ii) if \(\eta_0, \eta_1, \sqrt{e_0} \le \omega\) and \(\delta_T = 4n/b\), then \(\eta_0, \eta_1, \sqrt{e_0} \le \frac\sigma2\), \(e_0 \le \frac18\), \(\delta_T \le \frac12\omega^2 \le \frac14\), and \(\bigl(5\sigma + 3\sqrt{\delta_T} + 4\sqrt{2e_0}\bigr)x^{C_H} \le 6\).
+\end{problem}
+
+The first half of~(f) holds if \(\dS_u \ge D^*/(C_0\Gamma_0^2)\) for every \(u\), the lower half of~\eqref{eq:window}, and \(\lvert\Wc\rvert \ge C_0\Gamma_0^2x^{C_H}\).  Problems~\ref{pr:ramified} and~\ref{pr:sizes} with this remark are \cite[Lemma~13.19]{Adr}.  The upper half of~\eqref{eq:window} shows that the words must be numerous; since a word is a string of \(k - 3\) binary letters, this forces \(k\) to be large.
+
+\begin{problem}\label{pr:words}
+Assume \(D^* \le \sigma\sum_u \dS_u\), \(\dS_u \le C_0D^*\Gamma_0^{-2}\) for every \(u \in \Wc\), and \(\lvert\Wc\rvert \le 2^{k-3}\).  Then \((k - 3)\log 2 \ge 4C_\Gamma m^5ny + C_H\log x - \log C_0\).  Hence \(k \ge m^5n\) for large \(x\).
+\end{problem}
+
+So~(f) and~\eqref{eq:window} make \(k\) at least about \(m^5n\), which is about \(x^{9/2}\) with the choices of \cite[Prop.~5.15]{Adr}.
+
+\section{The record}\label{sec:record}
+
+Chapter~\ref{as-chap} uses Theorem~\ref{thm:A3} with \(H_0 := x^{C_H}b\).  The condition (K3) of a chain record \cite[Def.~18.9]{Adr} asks: \(0 \le \delta_R \le \frac12\), \(\eta \ge 0\), \(0 \le \epsilon \le \frac14\), \((\eta + 4\sqrt\epsilon)x^{C_H} \le 6\), and for every \(H_0 > 0\) with \(H_0 \ge s - \mumin(R^\vee)\),
+\begin{equation}\label{eq:K3}
+  s - \log\lvert\Wc\rvert - \frac{1}{1 - \delta_R}\Bigl(4u_F\log\Bigl(1 + \frac{H_0}{u_F}\Bigr) + (\eta + 4\sqrt\epsilon)H_0\Bigr) \le \mu(R^\vee) .
+\end{equation}
+The first part of (K4) asks \(\mumin(R^\vee) = -\mumax(R)\) and \(s + \mumax(R) \le x^{C_H}b\).
+
+Theorem~\ref{thm:A3}, with Theorems~\ref{thm:hn} and~\ref{thm:near}--\ref{thm:bessel} and Problems~\ref{pr:ramified} and~\ref{pr:sizes}, gives the following \cite[Prop.~18.11(ii), proof of (K3)]{Adr}.
+
+\begin{theorem}\label{thm:K3}
+Suppose that, at the scale \(x\), the data satisfy~(a) and~(b) of Theorem~\ref{thm:A3} and~\eqref{eq:window}, that \(T_u \ge b\) and \(d_u = \dS_u(1 - 1/(T_u - 1))^{2n}\) for every \(u\), and that \(C_0\Gamma_0^2x^{C_H} \le \lvert\Wc\rvert \le 2^{k-3}\).  Under Theorems~\ref{thm:near}, \ref{thm:rows} and~\ref{thm:bessel}, for large \(x\) the record condition (K3) holds with \(\eta = 5x^{-C_H} + 3\sqrt{4n/b}\) and \(\epsilon = 2e_0\).
+\end{theorem}
+
+The term \(\log\lvert\Wc\rvert\) in~\eqref{eq:K3} only weakens Theorem~\ref{thm:A3}, and costs little.
+
+\begin{problem}\label{pr:logW}
+If \(\Wc\) is nonempty and \(\lvert\Wc\rvert \le 2^{k-3}\), then \(\log\lvert\Wc\rvert \le k\), and \(k \le a = xe^{x^\varepsilon}\) for large \(x\).
+\end{problem}
+
+\begin{problem}\label{pr:phi}
+Let \(0 \le u \le U\), \(b, X > 0\) and \(0 < H_0 \le Xb\).  Then \(u\log(1 + H_0/u) \le \log(1 + X)\,(U + b)\).
+\end{problem}
+
+\begin{problem}\label{pr:A3}
+Assume (K3), \(\mumin(R^\vee) = -\mumax(R)\), \(s + \mumax(R) \le x^{C_H}b\), and \(u_F \le U\) (note that \(u_F \ge 0\), since \(s\) is a weighted mean of the \(\mu(N_u) - h_u\)).  Then \(s - e_3 \le \mu(R^\vee)\) with \(e_3 = \log\lvert\Wc\rvert + 8\log(1 + x^{C_H})(U + b) + 12b\).
+\end{problem}
+
+This is~(A3) in the form of \cite[Prop.~18.14]{Adr}; compare \cite[Cor.~13.18]{Adr}.  The bound \(u_F \le U\) for the spread is \cite[Lemma~18.13]{Adr}, which combines the records of the other inputs.
+
+\paragraph{Deliverable.}
+This chapter supplies the following part of a chain record \cite[Def.~18.9]{Adr}: condition~(a), \(\lvert\Wc\rvert \le 2^{k-3}\), compatible with the lower bound of Theorem~\ref{thm:K3} once \(k \ge m^5n\) with room to spare (Problem~\ref{pr:words}); condition (K3), by Theorem~\ref{thm:K3}; and the first clause \(\mumin(R^\vee) = -\mumax(R)\) of (K4), by Theorem~\ref{thm:hn}.  Theorems~\ref{thm:hn}--\ref{thm:A3} are classical or proved in \cite{Adr}.  The record rests on Theorems~\ref{thm:near}--\ref{thm:bessel}, which are proved in the Lean formalization and in \cite{Adr} rest on the hypotheses of \cite[\S14]{Adr} listed after them, not yet written out in the published expositions; and on (a) and (b) of Theorem~\ref{thm:A3}, which come from the divisibility and the heights.  The a priori range \(s + \mumax(R) \le x^{C_H}b\) in (K4) is assumed in \cite[Prop.~18.11(iii)]{Adr}; we have not found a proof of it there, so in \cite{Adr} it is part of \cite[Hyp.~18.10]{Adr}, which is proved in the Lean formalization.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:slopes}}
+\begin{description}
+\item[\ref{pr:diagonal}] The filtration \(0 \subset \Oc_Ke_1 \subset L\) has semistable quotients of decreasing slopes; use the uniqueness in Theorem~\ref{sl-thm:hn}.  The image \(\varphi(L)\) is again an orthogonal sum of two lines.
+\end{description}
+
+\subsection*{\S\ref{sec:frame}}
+\begin{description}
+\item[\ref{pr:one-map}] Take \(Y_1 = 1\) and \(Y' = [B]_v\).  Semistability makes \(\mumax(N) = \mu(N)\).
+\item[\ref{pr:pair}] Compare \(\eta_0 + D/R\) with \(5\sigma\).
+\end{description}
+
+\subsection*{\S\ref{sec:A3}}
+\begin{description}
+\item[\ref{pr:classical}] Compute the \(q\)-expansion of \(\iota_0(F)\), and use Problems~\ref{ps-pr:unfold} and~\ref{ps-pr:gram}.
+\end{description}
+
+\subsection*{\S\ref{sec:bessel}}
+\begin{description}
+\item[\ref{pr:sl2}] An entry of a matrix is bounded by its operator norm; use Theorem~\ref{ps-thm:near} and Problem~\ref{ps-pr:dim}.
+\item[\ref{pr:ramified}] Bernoulli's inequality.
+\item[\ref{pr:kernel}] \(K\) is positive semidefinite with \(\ker K = \ker P\), and \(K - 1\) is \(-1\) on this kernel.
+\item[\ref{pr:sizes}] \(x^{\varepsilon/8}\) eventually exceeds any multiple of \(\log x\); and \(3 + 4\sqrt2 < 11\).
+\item[\ref{pr:words}] \(\sum_u \dS_u \le \lvert\Wc\rvert\max_u \dS_u\).
+\end{description}
+
+\subsection*{\S\ref{sec:record}}
+\begin{description}
+\item[\ref{pr:logW}] \(k \le 2x^{9/2+10\varepsilon}\).
+\item[\ref{pr:phi}] Apply \(\log z \le z - 1\) to \(z = (1 + H_0/u)/(1 + X)\), and \(1 - 1/z \le \log z\) to \(z = 1 + X\).
+\item[\ref{pr:A3}] Take \(H_0 = x^{C_H}b\) in~\eqref{eq:K3}, and use Problem~\ref{pr:phi} with \(X = x^{C_H}\).
+\end{description}
+
+\begin{thebibliography}{Car}
+\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[Alp]{Alp} L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
+\bibitem[Bo1]{Bo1} J.-B.~Bost, \emph{P\'eriodes et isog\'enies des vari\'et\'es ab\'eliennes sur les corps de nombres (d'apr\`es D.~Masser et G.~W\"ustholz)}, S\'eminaire Bourbaki, Exp.~795, Ast\'erisque \textbf{237} (1996), 115--161.
+\bibitem[Cart]{Cart} R.~W.~Carter, \emph{Finite Groups of Lie Type: Conjugacy Classes and Complex Characters}, Wiley, Chichester, 1985.
+\bibitem[DL]{DL} P.~Deligne and G.~Lusztig, \emph{Representations of reductive groups over finite fields}, Ann.\ of Math.\ (2) \textbf{103} (1976), 103--161.
+\bibitem[Ga]{Ga} \'E.~Gaudron, \emph{Pentes des fibr\'es vectoriels ad\'eliques sur un corps global}, Rend.\ Sem.\ Mat.\ Univ.\ Padova \textbf{119} (2008), 21--95.
+\bibitem[Gr]{Gr} D.~R.~Grayson, \emph{Reduction theory using semistability}, Comment.\ Math.\ Helv.\ \textbf{59} (1984), 600--634.
+\bibitem[Lean]{Lean} The Lean community, \emph{riemann-hypothesis}, a Lean formalization of Alp\"oge's argument, \url{https://github.com/leanprover-community/riemann-hypothesis}.
+\bibitem[St]{St} U.~Stuhler, \emph{Eine Bemerkung zur Reduktionstheorie quadratischer Formen}, Arch.\ Math.\ \textbf{27} (1976), 604--610.
+\end{thebibliography}
+
+\end{document}

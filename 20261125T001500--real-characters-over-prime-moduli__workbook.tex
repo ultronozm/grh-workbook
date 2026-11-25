@@ -1,0 +1,304 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[zr-]{20261125T001000--zeros-to-ramp-sums__workbook}
+\externaldocument[ie-]{20261125T001100--inert-primes-and-estimate-b__workbook}
+\externaldocument[sp-]{20261125T007000--stepanov-without-multiplicity__workbook}
+\externaldocument[as-]{20261125T021500--assembly-at-one-scale__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T001500}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\newcommand{\Pc}{\mathcal{P}}
+\newcommand{\leg}[2]{\Bigl(\frac{#1}{#2}\Bigr)}
+\newcommand{\sq}{\square}
+
+\setlength{\emergencystretch}{2em}
+
+\title{Real characters over prime moduli}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Chapter~\ref{ie-chap}, \emph{Inert primes and Estimate~B}, Section~\ref{ie-sec:estB}: the coefficients $a_n(x)$, the sums $S_Z(x, \chi)$ and $t_\chi(Z)$ and the identity $G_\chi(x) = -S_Z(x, \chi) - x\, t_\chi(Z)$, the bound in Problem~\ref{ie-pr:quad-ms}, Problems~\ref{ie-pr:derivative} and~\ref{ie-pr:block}, and the proof of Theorem~\ref{ie-thm:good-q-interval}; also $\Psi_\chi$ from Section~\ref{ie-sec:inert}.  Chebyshev's bounds and the prime number theorem.  From Davenport \cite{Dav}: primitive real characters and Kronecker symbols (Ch.~5), the functional equation (Ch.~9), zero-free regions and the exceptional zero (Ch.~14), the number of zeros (Ch.~16), the explicit formula for $\psi(x, \chi)$ (Ch.~19) and the prime number theorem for characters (Ch.~20). % check-numbers: ok (Davenport): Ch.~5; Ch.~9; Ch.~14; Ch.~16; Ch.~19; Ch.~20
+
+\medskip
+Chapter~\ref{ie-chap} obtained a good modulus $q$ by averaging $\chi_q(n) = \bigl(\frac nq\bigr)$ over primes $q \in (U, 2U]$ and letting $U \to \infty$ with everything else fixed.  How large must the primes be, as a function of the window $[Y, Y^A]$?  The average of $\bigl(\frac sq\bigr)$ over $q$ is a sum over primes of a character of conductor about $s$, and it is small unless that character has a real zero near $1$.  By Page's theorem at most one $s$ is affected.  The tail $t_{\chi_q}(Z)$ needs a zero-free box for $L(s, \chi_q)$, and a density estimate gives one for all but few $q$.  The answer is that $\log q$ of size $(\log Y)^3$ suffices.
+
+Throughout, $Q$ is large, $\Pc$ is the set of primes in $(Q, 2Q]$ (so $Q$ and $\Pc$ are the $U$ and $\mathcal P(U)$ of Chapter~\ref{ie-chap}), and for squarefree $s \ge 1$
+\[
+  \Sigma(s) := \sum_{q \in \Pc} \leg{s}{q} .
+\]
+Constants $c, C$ are positive and absolute unless their dependence is shown, and may change from line to line.
+
+\section{The symbol \texorpdfstring{$(s/q)$}{(s/q)} as a function of \texorpdfstring{$q$}{q}}\label{sec:symbol}
+
+For squarefree $s > 1$ let $D_s := s$ if $s \equiv 1 \pmod 4$ and $D_s := 4s$ otherwise; this is the discriminant of $\Q(\sqrt s)$.  Let $\omega_s(n) := \bigl(\frac{D_s}{n}\bigr)$ be the Kronecker symbol.  It is a primitive real character of conductor $D_s$, and every primitive real character is a Kronecker symbol of a fundamental discriminant \cite[Ch.~5]{Dav}.
+
+\begin{problem}\label{pr:omega}
+For squarefree $s > 1$ and every odd prime $q \nmid s$, $\bigl(\frac sq\bigr) = \omega_s(q)$.  The character $\omega_s$ is even, and $s \mapsto \omega_s$ is injective.
+\end{problem}
+
+\begin{problem}\label{pr:small-s}
+$\omega_2$ has conductor $8$ and $\omega_2(q) = 1$ exactly when $q \equiv \pm 1 \pmod 8$; $\omega_3$ has conductor $12$ and $\omega_3(q) = 1$ exactly when $q \equiv \pm 1 \pmod{12}$; and $\omega_5(q) = \bigl(\frac q5\bigr)$.
+\end{problem}
+
+Two inputs are used.  The first is the prime number theorem for characters \cite[Ch.~20]{Dav}, \cite[Ch.~14]{Dav}: there are $c_1 \in (0, \frac12]$ and $C_1$ such that for every primitive character $\chi$ modulo $N \ge 3$ and every $u \ge 2$ with $\log N \le \sqrt{\log u}$,
+\begin{equation}\label{eq:pnt}
+  \Bigl\lvert \Psi_\chi(u) + \frac{u^\beta}{\beta} \Bigr\rvert \le C_1\, u\, e^{-c_1\sqrt{\log u}} ,
+\end{equation}
+where the term with $\beta$ is present only when $\chi$ is real and $L(s, \chi)$ has a real zero $\beta > 1 - c_1/\log N$; there is at most one such zero.  The second is Page's theorem \cite{Pa}, \cite[Ch.~14]{Dav}: there is $c_2 > 0$ such that for every $R \ge 3$ at most one primitive real character of conductor at most $R$ has a real zero in $(1 - c_2/\log R, 1)$.  Call it the \emph{exceptional character at level $R$}.
+
+Fix $R \ge 3$ with $\log(4R) \le \sqrt{\log Q}$.  If the exceptional character at level $4R$ exists and equals $\omega_s$ for some squarefree $s \le R$, let $s^*$ be this $s$; by Problem~\ref{pr:omega} there is at most one.
+
+\begin{problem}\label{pr:psi-omega}
+Let $1 < s \le R$ be squarefree with $s \ne s^*$.  Then $\lvert \Psi_{\omega_s}(u) \rvert \le C u\, e^{-c\sqrt{\log Q}}$ for $Q \le u \le 2Q$.
+\end{problem}
+
+\begin{problem}\label{pr:Sigma}
+For $s$ as in Problem~\ref{pr:psi-omega}, $\lvert \Sigma(s) \rvert \le C \lvert \Pc \rvert\, e^{-c\sqrt{\log Q}}$.
+\end{problem}
+
+\begin{theorem}\label{thm:legendre}
+There are $c_0, C_0 > 0$ such that, with $\eta_Q := C_0 e^{-c_0\sqrt{\log Q}}$, $\lvert \Sigma(s) \rvert \le \eta_Q \lvert \Pc \rvert$ for every squarefree $s$ with $1 < s \le R$ and $s \ne s^*$.
+\end{theorem}
+
+The exception is real.  An exceptional zero very close to $1$ makes almost every prime of $\Pc$ inert in $\Q(\sqrt{s^*})$:
+
+\begin{problem}\label{pr:exc-bias}
+Let $s$ vary with $Q$, with $\log(4s) \le \sqrt{\log Q}$, and suppose $L(\sigma, \omega_s)$ has a real zero $\beta$ with $(1 - \beta)\log Q \to 0$.  Then $\Sigma(s) = -\lvert \Pc \rvert\,(1 + o(1))$ as $Q \to \infty$.
+\end{problem}
+
+By Theorem~\ref{sp-thm:siegel} of Chapter~\ref{sp-chap} no such $s$ exists, and $s^*$ is not defined once $c_2$ is at most the constant $c$ there.  We keep $s^*$, as an exceptional set of at most one element, so that this chapter does not depend on Chapter~\ref{sp-chap}.
+
+
+\section{The mean square}\label{sec:meansq}
+
+Let $Z < Q$ and let $c_n$, for $1 \le n \le Z$, be complex numbers.  Write $n n' = \sq$ if $n n'$ is a square, and $n n' \in s^* \sq$ if $n n'/s^*$ is a square; terms involving $s^*$ are absent if $s^*$ is not defined.
+
+\begin{problem}\label{pr:ms-expand}
+Suppose $Z^2 \le R$.  Then
+\[
+  \frac{1}{\lvert \Pc \rvert} \sum_{q \in \Pc} \Bigl\lvert \sum_{n \le Z} c_n \leg{n}{q} \Bigr\rvert^2
+  \le \sum_{n n' = \sq} \lvert c_n c_{n'} \rvert
+  + \sum_{n n' \in s^* \sq} \lvert c_n c_{n'} \rvert
+  + \eta_Q \Bigl( \sum_{n \le Z} \lvert c_n \rvert \Bigr)^2 .
+\]
+\end{problem}
+
+We apply this to $c_n = \Lambda(n) \kappa(n) \min(1, y/n)$ with $\lvert \kappa(n) \rvert \le 1$ and $3 \le y \le Z$, so that $\lvert c_n \rvert \le a_n(y)$.  The first sum is at most $C y \log y$ by the bound in Problem~\ref{ie-pr:quad-ms}.
+
+\begin{problem}\label{pr:exc-pairs}
+For every squarefree $s^* > 1$,
+\[
+  \sum_{n n' \in s^* \sq} a_n(y)\, a_{n'}(y) \le C \sqrt y \log y .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:l1}
+$\sum_{n \le Z} a_n(y) \le C y \log Z$.
+\end{problem}
+
+Problems~\ref{pr:ms-expand}--\ref{pr:l1} give the following.
+
+\begin{theorem}\label{thm:meansq}
+Let $3 \le y \le Z$, take $R := Z^2$, and suppose $\log(4 Z^2) \le \sqrt{\log Q}$ and $\eta_Q\, y \log^2 Z \le 1$.  For all $\kappa(n)$ with $\lvert \kappa(n) \rvert \le 1$,
+\[
+  \frac{1}{\lvert \Pc \rvert} \sum_{q \in \Pc} \Bigl\lvert \sum_{n \le Z} \Lambda(n) \kappa(n) \min\Bigl(1, \frac yn\Bigr) \leg{n}{q} \Bigr\rvert^2 \le C y \log y .
+\]
+\end{theorem}
+
+For $Q = 10^6$, $\kappa = 1$, $y = 100$ and $Z = 1000$ the left side is $988.3$, and the square pairs $n n' = \sq$ contribute $1034.1$.
+
+By Problem~\ref{ie-pr:derivative}, $y D(y)$ is a sum of the same form with $\kappa(n) = 1$ for $n > y$ and $\kappa(n) = 0$ otherwise.  The proof of Theorem~\ref{ie-thm:good-q-interval}, with Theorem~\ref{thm:meansq} in place of Problem~\ref{ie-pr:quad-ms}, therefore gives:
+
+\begin{theorem}\label{thm:window}
+Let $0 < \tau \le \frac12$, $A \ge 1$, $Y \ge 3$ and $Z \ge 2Y^A$, take $R := Z^2$, and suppose $\log(4Z^2) \le \sqrt{\log Q}$ and $2\eta_Q\, Y^A \log^2 Z \le 1$.  The number of $q \in \Pc$ with $\lvert S_Z(y, \chi_q) \rvert > \frac12 y^{1/2 + \tau}$ for some $y \in [Y, Y^A]$ is at most $C_\tau \lvert \Pc \rvert\, Y^{-2\tau} \log Y$.
+\end{theorem}
+
+Heath-Brown's large sieve for real characters \cite[Thm.~1]{HB} gives, with no information about zeros,
+\[
+  \sideset{}{^*}\sum_{m \le V} \Bigl\lvert \sideset{}{^*}\sum_{n \le W} a_n \leg{n}{m} \Bigr\rvert^2 \le C_\varepsilon (VW)^\varepsilon (V + W) \sum_n \lvert a_n \rvert^2 ,
+\]
+the sums running over odd squarefree $m$ and $n$.  Here the loss $Q^\varepsilon = e^{\varepsilon (\log Y)^3}$ would be fatal, and Theorem~\ref{thm:legendre} avoids it at the price of the exceptional $s^*$.
+
+
+\section{Zero-free boxes for most \texorpdfstring{$q$}{q}}\label{sec:boxes}
+
+It remains to bound $x\, t_{\chi_q}(Z)$.  For fixed $\chi$ the tail $t_\chi(Z)$ tends to $0$ at a rate set by the zeros of $L(s, \chi)$ near $\Re s = 1$ with $\lvert \Im s \rvert$ up to a power of the conductor.  For one $q$ nothing better than \eqref{eq:pnt} is known; for most $q$ a density estimate does better.  Gallagher's density estimate \cite{Gal}, in the form of \cite[(1.3)]{TZ2}: there are $c_3 \ge 1$ and $C_3$ such that for $T \ge 3$ and $0 \le \sigma \le 1$
+\[
+  \sum_{N \le T} \ \sideset{}{^*}\sum_{\chi \bmod N} \#\{\rho = \beta + i\gamma : L(\rho, \chi) = 0,\ \beta > \sigma,\ \lvert \gamma \rvert \le T\} \le C_3\, T^{c_3(1 - \sigma)} ,
+\]
+where $\sum^*$ runs over primitive characters and zeros are counted with multiplicity.  For other density estimates of large sieve type see \cite[Ch.~12]{Mon}.  Put $\delta_0 := 1/(2c_3)$, and call $q \in \Pc$ \emph{good} if $L(s, \chi_q)$ has no zero with $\Re s > 1 - \delta_0$ and $\lvert \Im s \rvert \le 2Q$.
+
+\begin{problem}\label{pr:box-count}
+At most $C_3 (2Q)^{1/2}$ primes $q \in \Pc$ are not good.
+\end{problem}
+
+\begin{problem}\label{pr:box-symm}
+If $q$ is good, every zero $\rho = \beta + i\gamma$ of $L(s, \chi_q)$ in $0 < \beta < 1$ with $\lvert \gamma \rvert \le 2Q$ has $\delta_0 \le \beta \le 1 - \delta_0$.  In particular $\lvert \rho \rvert \ge \delta_0$, and for $Q \ge e^{c_1/\delta_0}$ there is no real zero in $(1 - c_1/\log q, 1)$.
+\end{problem}
+
+The explicit formula \cite[Chs.~16 and~19]{Dav}: there is $C_4$ such that for every primitive $\chi$ modulo $N \ge 3$ the number of zeros with $\lvert \gamma - t \rvert \le 1$ is at most $C_4 \log(N(\lvert t \rvert + 2))$, and, if $L(s, \chi)$ has no real zero in $(1 - c_1/\log N, 1)$, then for $2 \le T \le u$
+\[
+  \Bigl\lvert \Psi_\chi(u) + \sum_{\lvert \gamma \rvert < T} \frac{u^\rho}{\rho} \Bigr\rvert \le C_4 \Bigl( \frac{u \log^2(Nu)}{T} + u^{1/4} \log u \Bigr) .
+\]
+
+In Problems~\ref{pr:psi-box}--\ref{pr:tail-bound}, $q \in \Pc$ is good, $Q \ge e^{c_1/\delta_0}$, and $\lambda := \log q$.
+
+\begin{problem}\label{pr:psi-box}
+For $2^{1/\delta_0} \le u \le e^{\lambda^2}$, $\lvert \Psi_{\chi_q}(u) \rvert \le C \lambda^4 (u^{1-\delta_0} + u/Q)$.
+\end{problem}
+
+\begin{problem}\label{pr:psi-far}
+For $u \ge e^{\lambda^2}$, $\lvert \Psi_{\chi_q}(u) \rvert \le 2u^{1-\delta_0} + C_1 u\, e^{-c_1\sqrt{\log u}}$.
+\end{problem}
+
+\begin{problem}\label{pr:tail-id}
+For every primitive nonprincipal $\chi$ and $Z \ge 1$, $t_\chi(Z) = -\Psi_\chi(Z)/Z + \int_Z^\infty \Psi_\chi(u)\, u^{-2}\, d u$.
+\end{problem}
+
+\begin{problem}\label{pr:tail-bound}
+For $2^{1/\delta_0} \le Z \le e^{\lambda^2}$, $\lvert t_{\chi_q}(Z) \rvert \le C\bigl( \lambda^6 (Z^{-\delta_0} + Q^{-1}) + \lambda e^{-c_1\lambda} \bigr)$.
+\end{problem}
+
+Now choose the parameters.  Let $A \ge 1$ and $0 < \tau \le \frac12$, and put
+\[
+  X := Y^A, \qquad Z := X^{2/\delta_0}, \qquad \log Q := (\log Y)^3 .
+\]
+
+\begin{problem}\label{pr:choice}
+For $Y \ge Y_0(A)$: (i) the hypotheses of Theorem~\ref{thm:window} hold, and $Q \ge e^{c_1/\delta_0}$; (ii) $y\, \lvert t_{\chi_q}(Z) \rvert \le 1$ for every good $q$ and every $y \le X$.
+\end{problem}
+
+Combining Theorem~\ref{thm:window}, Problems~\ref{pr:box-count} and~\ref{pr:choice} and the identity $G_\chi = -S_Z - x\, t_\chi(Z)$ proves the following simple form of Estimate~B.
+
+\begin{theorem}\label{thm:estB-q}
+Let $A \ge 1$ and $0 < \tau \le \frac12$.  For $Y \ge Y_0(A, \tau)$ and $\log Q = (\log Y)^3$, all $q \in \Pc$ outside a set of at most $Y^{-\tau} \lvert \Pc \rvert$ elements satisfy:  $L(s, \chi_q) \ne 0$ for $\Re s > 1 - \delta_0$, $\lvert \Im s \rvert \le 2Q$; and $\lvert G_{\chi_q}(y) \rvert \le y^{1/2 + \tau}$ for every $y \in [Y, Y^A]$.
+\end{theorem}
+
+The exponent $3$ has room.  Problem~\ref{pr:psi-omega} needs $\log Q \ge (\log 4R)^2$, of order $(\log Y)^2$, and Problem~\ref{pr:choice} needs $\lambda$ larger than a multiple of $\log Y$; any $\log Q = (\log Y)^{2 + \varepsilon}$ with $\varepsilon > 0$ works.  The range $\log N \le \sqrt{\log u}$ of \eqref{eq:pnt} is what costs the square.  At the other end, $\log Q$ may be as large as a small power of $Y$: besides the lower bounds just named, Problem~\ref{pr:choice} needs only $\lambda^6 \le X$.  Adriazola takes this upper end, $e^{z/2} < q \le e^z$ with $z = Y^{\varepsilon/5}$, where now $0 < \varepsilon \le \frac1{52}$ is the exponent of Chapter~\ref{as-chap} \cite[Thms.~5.10 and~5.12]{Adr}; so does Chapter~\ref{as-chap} (Problem~\ref{as-pr:window}).
+
+
+\section{The second prime and Linnik's range}\label{sec:linnik}
+
+Estimate~B also needs a second prime $d$, chosen after $q$, in a residue class modulo a multiple of $q$.
+
+\begin{problem}\label{pr:class}
+Let $q \equiv 3 \pmod 8$ be prime.  The primes $d \equiv 7 \pmod{16}$ with $q \mid d + 1$ are the primes in one class $a$ modulo $M_q := 16q$, with $(a, M_q) = 1$, and each such $d$, with $q$, satisfies the congruences assumed in Problem~\ref{ie-pr:congruences}.
+\end{problem}
+
+The average of $(\frac sd)$ over these $d$ is a sum over primes of the characters $\xi \omega_s$, $\xi$ modulo $M_q$, whose conductors are about $M_q s$.  With \eqref{eq:pnt} this needs $\log d \ge (\log M_q)^2$.  One can do with less: the prime number theorem in progressions holds, with a relative error $e^{-c\log x/\log M_q}$, as soon as $\log x$ is a large multiple of $\log M_q$.  This is the range of Linnik \cite{Lin}.
+
+Let $k \ge 3$.  By a theorem of McCurley, as stated in \cite[\S1]{TZ1}, $\prod_{\chi \bmod k} L(s, \chi)$ has at most one zero in $\Re s \ge 1 - 1/(13 \log(k(\lvert \Im s \rvert + 3)))$; if it exists it is real and simple, call it $\beta_1$, and $L(\beta_1, \chi_1) = 0$ for a unique real nonprincipal $\chi_1$ modulo $k$.  For $(a, k) = 1$ and $h \le x$ put $\lambda_a := h^{-1} \int_{x-h}^x (1 - \chi_1(a) t^{\beta_1 - 1})\, d t$ if $\beta_1$ exists and $\lambda_a := 1$ otherwise.  Gallagher's Theorem~7 \cite[Thm.~7]{Gal} gives, in the form of \cite[(3.3)--(3.4)]{TZ1}: there are $c_4, c_5 > 0$ and $C_5$ such that if $e^{\sqrt{\log x}} \le k \le x^{c_4}$ and $x/k \le h \le x$, then % check-numbers: ok (Gallagher): Theorem~7
+\[
+  \Bigl\lvert 1 - \frac{\varphi(k)}{\lambda_a h} \sum_{\substack{x - h < p \le x \\ p \equiv a \ (k)}} \log p \Bigr\rvert
+  \le C_5\, \mu\, e^{-c_5 \log x/\log k} ,
+\]
+with $\mu := (1 - \beta_1)\log k$ if $\beta_1$ exists and $\mu := 1$ otherwise.
+
+In Problems~\ref{pr:linnik-plain} and~\ref{pr:linnik-exc}, $x := k^B$ and $h := x/2$, with $B$ and then $k$ large.
+
+\begin{problem}\label{pr:linnik-plain}
+If $\beta_1$ does not exist, then $\sum_{x/2 < p \le x,\, p \equiv a\ (k)} \log p \ge x/(4\varphi(k))$.
+\end{problem}
+
+\begin{problem}\label{pr:linnik-exc}
+If $\beta_1$ exists, then $\lambda_a \ge \frac12 \min\bigl(1, (1 - \beta_1)\log(x/2)\bigr)$, and the sum of Problem~\ref{pr:linnik-plain} is at least $\lambda_a x/(4\varphi(k)) > 0$.
+\end{problem}
+
+Problems~\ref{pr:linnik-plain} and~\ref{pr:linnik-exc} prove Linnik's theorem \cite{Lin}:
+
+\begin{theorem}\label{thm:linnik}
+There is an absolute $B_0$ such that for every $k \ge 2$ and every $a$ prime to $k$ there is a prime $p \equiv a \pmod k$ with $p \le C k^{B_0}$.
+\end{theorem}
+
+The factor $\mu = (1 - \beta_1)\log k$ is the Deuring--Heilbronn phenomenon, which Gallagher's proof uses through \cite[(27)]{Gal}: an exceptional zero pushes the other zeros away from $1$.  Without it, Problem~\ref{pr:linnik-exc} would need $e^{-c_5 B} < \lambda_a$; the classical effective lower bound $1 - \beta_1 \ge c k^{-1/2} (\log k)^{-2}$ \cite[Ch.~14]{Dav} would force $B$ of order $\log k$, that is, $\log x$ of order $(\log k)^2$, the range of \eqref{eq:pnt} again.  Theorem~\ref{sp-thm:siegel} gives instead $1 - \beta_1 \ge c/\log(2k)$, so that $\mu$ is bounded below; as with $s^*$, we do not use it here.  For Estimate~B the class $a$ is the one of Problem~\ref{pr:class}, and the analogues of Sections~\ref{sec:symbol}--\ref{sec:boxes} for $d$ run with the main term $\lambda_a$ in place of $1$; to make $\eta_Q$ smaller than $Y^{-A}$ one takes $\log d$ of order $(\log M_q)(\log Y)^2$.  We do not carry this out here.  Adriazola \cite[\S5]{Adr} does, from the inputs of this chapter; there $d$ is also taken $\equiv -1$ modulo $q$ and modulo every odd prime up to $z$, with $q$ and $z$ as at the end of Section~\ref{sec:boxes}, and the exceptional set of Section~\ref{sec:symbol} is replaced by a larger one.
+
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:symbol}}
+\begin{description}
+\item[\ref{pr:omega}] On odd primes not dividing $D$ the Kronecker symbol $(\frac Dq)$ is a Legendre symbol, and $(\frac{4s}{q}) = (\frac sq)$.  For the parity, $\chi(-1)$ is the sign of $D$ \cite[Ch.~5]{Dav}.
+\item[\ref{pr:small-s}] The supplementary law for $2$ and quadratic reciprocity.
+\item[\ref{pr:psi-omega}] Apply \eqref{eq:pnt} with $N = D_s \le 4R$, and bound a possible $\beta$ by Page's theorem at level $4R$.
+\item[\ref{pr:Sigma}] Remove the prime powers with Chebyshev's bound, then pass from $\sum \omega_s(q)\log q$ to $\sum \omega_s(q)$ by partial summation.
+\item[\ref{pr:exc-bias}] Keep the term with $\beta$ in \eqref{eq:pnt}; note $u^{\beta - 1} \to 1$ uniformly on $[Q, 2Q]$.
+\end{description}
+
+\subsection*{\S\ref{sec:meansq}}
+\begin{description}
+\item[\ref{pr:ms-expand}] Expand the square and write $n n' = s m^2$ with $s$ squarefree; $q > Z$ does not divide $n n'$.
+\item[\ref{pr:exc-pairs}] Since $n$ and $n'$ are prime powers, $s^*$ has at most two prime factors.  Bound $\sum_{a \ge 1} \log p \min(1, y/p^a)$ by $3 \log y$, and the sum of $a_n(y)$ over squares $n$ by $C\sqrt y$.
+\item[\ref{pr:l1}] Split at $n = y$ and use Chebyshev's bound with partial summation.
+\end{description}
+
+\subsection*{\S\ref{sec:boxes}}
+\begin{description}
+\item[\ref{pr:box-count}] $\chi_q$ is primitive of conductor $q \le 2Q$, and distinct $q$ give distinct characters.  Take $T = 2Q$ and $\sigma = 1 - \delta_0$.
+\item[\ref{pr:box-symm}] For a real primitive $\chi$ the functional equation makes the zeros symmetric under $\rho \mapsto 1 - \bar\rho$ \cite[Ch.~9]{Dav}.
+\item[\ref{pr:psi-box}] Take $T = \min(u^{\delta_0}, Q)$ in the explicit formula; use Problem~\ref{pr:box-symm} and count zeros in intervals of length $1$.
+\item[\ref{pr:psi-far}] In \eqref{eq:pnt}, a real zero $\beta$ is a zero in the box.
+\item[\ref{pr:tail-id}] Partial summation, and $\Psi_\chi(V)/V \to 0$.
+\item[\ref{pr:tail-bound}] Split the integral of Problem~\ref{pr:tail-id} at $e^{\lambda^2}$.
+\item[\ref{pr:choice}] Compare sizes: $\log Z$ is a multiple of $\log Y$, $\eta_Q = C_0 e^{-c_0 (\log Y)^{3/2}}$, and $\lambda > (\log Y)^3$.
+\end{description}
+
+\subsection*{\S\ref{sec:linnik}}
+\begin{description}
+\item[\ref{pr:linnik-plain}] Check the hypotheses $e^{\sqrt{\log x}} \le k \le x^{c_4}$ and $x/k \le h$.
+\item[\ref{pr:linnik-exc}] $1 - e^{-v} \ge \frac12 \min(1, v)$ for $v \ge 0$, and the definition of $\beta_1$ bounds $\mu$.
+\end{description}
+
+\begin{thebibliography}{TZ2}
+
+\bibitem[Adr]{Adr}
+J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+
+\bibitem[Dav]{Dav}
+H.~Davenport, \emph{Multiplicative Number Theory}, 3rd ed., revised by H.~L.~Montgomery, Grad. Texts in Math. \textbf{74}, Springer, 2000.
+
+\bibitem[Gal]{Gal}
+P.~X.~Gallagher, \emph{A large sieve density estimate near $\sigma = 1$}, Invent. Math. \textbf{11} (1970), 329--339.
+
+\bibitem[HB]{HB}
+D.~R.~Heath-Brown, \emph{A mean value estimate for real character sums}, Acta Arith. \textbf{72} (1995), 235--275.
+
+\bibitem[Lin]{Lin}
+U.~V.~Linnik, \emph{On the least prime in an arithmetic progression.~I. The basic theorem}, Rec. Math. [Mat. Sbornik] N.S. \textbf{15(57)} (1944), 139--178.
+
+\bibitem[Mon]{Mon}
+H.~L.~Montgomery, \emph{Topics in Multiplicative Number Theory}, Lecture Notes in Math. \textbf{227}, Springer, 1971.
+
+\bibitem[Pa]{Pa}
+A.~Page, \emph{On the number of primes in an arithmetic progression}, Proc. London Math. Soc. (2) \textbf{39} (1935), 116--141.
+
+\bibitem[TZ1]{TZ1}
+J.~Thorner and A.~Zaman, \emph{Refinements to the prime number theorem for arithmetic progressions}, preprint, 2021, \url{https://arxiv.org/abs/2108.10878}.
+
+\bibitem[TZ2]{TZ2}
+J.~Thorner and A.~Zaman, \emph{An explicit version of Bombieri's log-free density estimate and S\'ark\"ozy's theorem for shifted primes}, Forum Math. (2024), \url{https://doi.org/10.1515/forum-2023-0091}.
+
+\end{thebibliography}
+
+\end{document}

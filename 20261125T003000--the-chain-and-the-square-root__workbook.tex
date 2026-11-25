@@ -1,0 +1,378 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[zr-]{20261125T001000--zeros-to-ramp-sums__workbook}
+\externaldocument[sm-]{20261125T000000--slope-method__workbook}
+\externaldocument[hn-]{20261125T013500--hecke-nondegeneracy-on-the-tree__workbook}
+\externaldocument[dc-]{20261125T016700--divisibility-along-the-chain__workbook}
+\externaldocument[as-]{20261125T021500--assembly-at-one-scale__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T003000}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\mumax}{\mu_{\max}}
+\newcommand{\covol}{\operatorname{covol}}
+\newcommand{\rk}{\operatorname{rk}}
+\newcommand{\hfin}{h_{\mathrm{fin}}}
+\newcommand{\Naff}{N^{\mathrm{aff}}}
+
+\setlength{\emergencystretch}{2em}
+
+\title{The chain and the square root}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Finite fields and Euler's criterion; polynomials over a field, their roots and multiplicities; a homogeneous linear system with more unknowns than equations has a nonzero solution.  Euclidean lattices and their covolumes.  The slope inequality of Bost, which is stated in Section~\ref{sec:chain} and proved in Chapter~\ref{sm-chap}.  The von Mangoldt function \(\Lambda\) and Mertens' estimate \(\sum_{n \le x} \Lambda(n)/n = \log x + O(1)\).  Sections~\ref{sec:aux}--\ref{sec:count} use no earlier chapter.  Section~\ref{sec:budget} uses the function \(G\) of~\eqref{zr-eq:G} and Theorem~\ref{zr-thm:intervals} of Chapter~\ref{zr-chap}.
+
+\section{The auxiliary polynomial}\label{sec:aux}
+
+How can a polynomial show that a set of about \(q/2\) elements of \(\F_q\) has at most \(q/2 + O(\sqrt q)\) elements?  Stepanov's answer \cite{Ste69} is to make it vanish to high order on the set.  We follow his method for the curve \(y^2 = f(x)\).
+
+Let \(q\) be a power of an odd prime \(p\), and let \(f \in \F_q[X]\) have odd degree \(d = 2g + 1\) with \(3 \le d < q\).  Let
+\[
+  c := \frac{q-1}{2} , \qquad D := \frac{q-d}{2} .
+\]
+For \(\eta \in \{1, -1\}\) let \(S_\eta := \{x \in \F_q : f(x)^c = \eta\}\), let \(S_0 := \{x \in \F_q : f(x) = 0\}\), and let \(\Naff\) be the number of solutions \((x, y) \in \F_q^2\) of \(y^2 = f(x)\).
+
+\begin{problem}\label{pr:euler}
+\(\F_q\) is the disjoint union of \(S_1\), \(S_{-1}\) and \(S_0\), and \(\Naff = 2\lvert S_1 \rvert + \lvert S_0 \rvert\).  For \(q = 7\) and \(f = X^3 - X\), \(S_1 = \{4, 5\}\), \(S_{-1} = \{2, 3\}\) and \(\Naff = 7\).
+\end{problem}
+
+Hence \(\Naff - q = \lvert S_1 \rvert - \lvert S_{-1} \rvert\), and a bound \(\lvert S_\eta \rvert \le q/2 + B\) for both signs gives \(\lvert \Naff - q \rvert \le 2B + d\).  For squarefree \(f\), Weil's theorem \cite{Wei48} gives \(\lvert \Naff - q \rvert \le 2g\sqrt q\).
+
+The principle is the count of zeros against the degree: if \(F \in \F_q[X]\) is nonzero and vanishes to order at least \(\ell\) at every point of \(S_\eta\), then
+\begin{equation}\label{eq:count}
+  \ell\, \lvert S_\eta \rvert \le \deg F .
+\end{equation}
+The polynomials \(f^c - \eta\) and \(X^q - X\) vanish on \(S_\eta\), and give \(\lvert S_\eta \rvert \le dc\) and \(\lvert S_\eta \rvert \le q\).  To reach \(q/2\) one needs \(\deg F/\ell\) close to \(q/2\).  Stepanov combines the two polynomials.  Let \(J \ge 1\), and let \(r_j, s_j \in \F_q[X]\), for \(0 \le j < J\), have degree less than \(D\) and be not all zero.  The \emph{auxiliary polynomial} is
+\begin{equation}\label{eq:aux}
+  F := \sum_{j<J} \bigl( r_j + s_j f^c \bigr) X^{jq} .
+\end{equation}
+
+\begin{problem}\label{pr:degE}
+\(\deg f^c = gq + D\), and \(2D < q\).
+\end{problem}
+
+\begin{problem}\label{pr:nonzero}
+The nonzero terms \(r_j X^{jq}\) and \(s_j f^c X^{jq}\) of~\eqref{eq:aux} have pairwise distinct degrees.  Hence \(F \ne 0\) and \(\deg F \le (J + g)q - d - 1\).
+\end{problem}
+
+For \(x \in S_\eta\) we have \(x^{jq} = x^j\) and \(f(x)^c = \eta\), so \(F(x) = C_0(x)\), where
+\[
+  C_0 := \sum_{j<J} (r_j + \eta s_j) X^j .
+\]
+If \(C_0 = 0\), then \(F\) vanishes on all of \(S_\eta\).
+
+\begin{problem}\label{pr:order-one}
+If \(C_0 = 0\), then \(\deg F \ge q\).  If \(D \ge 2\), the tuple \(r_0 = -X\), \(r_1 = 1\), all others zero, gives \(F = X^q - X\).
+\end{problem}
+
+So the gain must come from the order of vanishing.
+
+\section{Vanishing to order \texorpdfstring{\(\ell\)}{l}}\label{sec:order}
+
+In characteristic \(p\) the derivative of order \(p\) vanishes identically, so one uses Hasse derivatives.  For \(G \in \F_q[X]\) define \(H^k G \in \F_q[X]\) by
+\[
+  G(X + Y) = \sum_{k \ge 0} (H^k G)(X)\, Y^k \qquad \text{in } \F_q[X, Y] .
+\]
+
+\begin{problem}\label{pr:hasse}
+\(H^k(X^n) = \binom{n}{k} X^{n-k}\), and \(H^k(G_1 G_2) = \sum_{i \le k} H^i G_1 \cdot H^{k-i} G_2\).  For \(t \in \F_q\), \((X - t)^\ell\) divides \(G\) if and only if \((H^k G)(t) = 0\) for all \(k < \ell\).
+\end{problem}
+
+\begin{problem}\label{pr:frobenius}
+\((X + Y)^{jq} = (X^q + Y^q)^j\).  Hence \(H^k(G X^{jq}) = (H^k G) X^{jq}\) for \(k < q\).
+\end{problem}
+
+To differentiate \(f^c\), write \(f(X + Y)^c = f(X)^c \bigl( f(X+Y)/f(X) \bigr)^c\) and define \(U_i \in \F_q(X)\) by
+\[
+  \Bigl( \frac{f(X + Y)}{f(X)} \Bigr)^c = \sum_{i \ge 0} \frac{U_i}{f^i}\, Y^i \qquad \text{in } \F_q(X)[[Y]] .
+\]
+
+\begin{problem}\label{pr:Ui}
+Each \(U_i\) is a polynomial of degree at most \(i(d-1)\).  Moreover \(U_0 = 1\) and \(U_1 = c f'\).
+\end{problem}
+
+For \(k \ge 0\) let
+\begin{equation}\label{eq:Ck}
+  C_k := \sum_{j<J} \Bigl( f^k H^k r_j + \eta \sum_{i \le k} f^{k-i} U_i\, H^{k-i} s_j \Bigr) X^j .
+\end{equation}
+For \(k = 0\) this is the polynomial \(C_0\) of Section~\ref{sec:aux}.
+
+\begin{problem}\label{pr:jet}
+Let \(t \in S_\eta\) and \(k < q\).  Then \((H^k F)(t) = f(t)^{-k} C_k(t)\).
+\end{problem}
+
+\begin{problem}\label{pr:degCk}
+\(\deg C_k \le D + J - 2 + k(d-1)\).
+\end{problem}
+
+By Problems~\ref{pr:hasse} and~\ref{pr:jet}, if \(\ell \le q\) and
+\begin{equation}\label{eq:conditions}
+  C_0 = C_1 = \dots = C_{\ell-1} = 0 ,
+\end{equation}
+then \(F\) vanishes to order at least \(\ell\) at every point of \(S_\eta\).  By Problem~\ref{pr:degCk} the identities~\eqref{eq:conditions} cost at most
+\[
+  \sum_{k<\ell} \bigl( D + J - 1 + k(d-1) \bigr) = \ell (D + J - 1) + (d-1)\frac{\ell(\ell-1)}{2}
+\]
+linear conditions, whatever \(S_\eta\) is.  The \(k\)th identity costs \(k(d-1)\) more than the first, and this growth will limit \(\ell\).
+
+\section{The count and the balance}\label{sec:count}
+
+The unknowns are the \(2JD\) coefficients of the \(r_j\) and \(s_j\).
+
+\begin{problem}\label{pr:siegel}
+If \(2JD > \ell(D + J - 1) + (d-1)\ell(\ell-1)/2\), then there is an auxiliary polynomial~\eqref{eq:aux} satisfying~\eqref{eq:conditions}.
+\end{problem}
+
+\begin{problem}\label{pr:choiceJ}
+Let \(\ell\) be even with \(\ell < q - d\), and let \(J = \ell/2 + t\).  Then
+\[
+  2JD - \ell(D + J - 1) - (d-1)\frac{\ell(\ell-1)}{2} = t\,(q - d - \ell) - \frac{d\ell^2 - (d+1)\ell}{2} .
+\]
+Hence the hypothesis of Problem~\ref{pr:siegel} holds if \(t > d\ell^2/\bigl(2(q - d - \ell)\bigr)\).
+\end{problem}
+
+Inserting \(\deg F \le (J + g)q - d - 1\) from Problem~\ref{pr:nonzero} into~\eqref{eq:count}, Problems~\ref{pr:hasse}--\ref{pr:choiceJ} prove the following.
+
+\begin{theorem}[Stepanov]\label{thm:stepanov}
+Let \(\ell\) be even with \(2 \le \ell < q - d\), and let \(t := \lfloor d\ell^2/(2(q - d - \ell)) \rfloor + 1\).  Then, for \(\eta = \pm 1\),
+\[
+  \lvert S_\eta \rvert \le \frac{q}{2} + \frac{(g + t)\, q}{\ell} .
+\]
+\end{theorem}
+
+This is Stepanov's method \cite{Ste69}; see \cite{Sch76} for Hasse derivatives.  For example, for \(q = 1009\), \(d = 3\) and \(\ell = 24\) one has \(t = 1\), and the bound is \(588.58\ldots\); for \(f = X^3 + X + 1\) the sets have \(\lvert S_1 \rvert = 516\) and \(\lvert S_{-1} \rvert = 492\).
+
+\begin{problem}\label{pr:sqrtq}
+If \(q \ge 16d^2\) and \(\ell\) is an even integer with \(\lvert \ell - \sqrt q \rvert \le 1\), then \(\lvert S_\eta \rvert \le q/2 + 2d\sqrt q\) for \(\eta = \pm 1\), and \(\lvert \Naff - q \rvert \le 4d\sqrt q + d\).
+\end{problem}
+
+Where does the square root come from?  Write \((J + g)q - d - 1 = \frac{\ell}{2} q + \bigl((g+1)q - d - 1\bigr) + (t - 1) q\).  After division by \(\ell\) the first term is the main term \(q/2\).  The second is paid once, however high the order.  The third comes from the growing cost of the \(k\)th identity: \(t - 1\) is about \(d\ell^2/(2q)\).  So the error is about \((g+1)q/\ell + d\ell/2\), of the shape \(q/m + m\), and the two terms balance at \(\ell \approx \sqrt q\).
+
+\begin{problem}\label{pr:no-better}
+For every \(\ell\) as in Theorem~\ref{thm:stepanov}, \((g + t)q/\ell > \sqrt{2gdq}\).
+\end{problem}
+
+So the method never gives \(o(\sqrt q)\).  We expect the same for Bombieri's form \cite{Bom74}, but do not prove it here.
+
+\section{The chain inequality}\label{sec:chain}
+
+Over \(\Z\) there is no derivative in the direction of a prime.  In Alpöge's argument \cite{Alp} (see also \cite{Zh}, \cite[\S\S1.4--1.6]{Dup}), the order of vanishing is replaced by a chain of \(m\) linear maps between lattices, each divisible by many primes.  What does a chain give that one map does not?
+
+A \emph{Euclidean lattice} \(L\) is a free \(\Z\)-module of finite rank with a Euclidean norm on \(L_\R := L \otimes \R\).  Let
+\[
+  \mu(L) := -\frac{\log \covol(L)}{\rk L} ,
+\]
+and let \(\mumax(L)\) be the largest slope \(\mu(L')\) of a nonzero subgroup \(L' \subseteq L\), with the restricted norm.  \(L\) is \emph{semistable} if \(\mumax(L) = \mu(L)\).  For Euclidean lattices \(L, M\) and a nonzero linear map \(\varphi \colon L_\Q \to M_\Q\) let
+\[
+  \hfin(\varphi) := -\log \lambda , \qquad h_\infty(\varphi) := \log \lVert \varphi_\R \rVert ,
+\]
+where \(\lambda\) is the largest positive rational number with \(\varphi(L) \subseteq \lambda M\), and \(\lVert \varphi_\R \rVert\) is the operator norm.  Thus \(-\hfin(\varphi)\) measures divisibility and \(h_\infty(\varphi)\) measures size.  The following is due to Bost \cite{Bo1}, and is proved in Chapter~\ref{sm-chap}.
+
+\begin{theorem}[Slope inequality]\label{thm:bost}
+If \(\varphi\) is injective, then \(-\hfin(\varphi) \le \mumax(M) - \mu(L) + h_\infty(\varphi)\).
+\end{theorem}
+
+For \(L = M = \Z\) and \(\varphi\) the multiplication by a nonzero integer \(n\), both sides are \(\log \lvert n \rvert\).  Now let \(L_0, \dots, L_m\) be Euclidean lattices, let \(\varphi_j \colon L_{j-1,\Q} \to L_{j,\Q}\) be nonzero linear maps, and let \(\Phi := \varphi_m \circ \dots \circ \varphi_1\).
+
+\begin{problem}\label{pr:subadd}
+If \(\Phi \ne 0\), then \(\hfin(\Phi) \le \sum_j \hfin(\varphi_j)\) and \(h_\infty(\Phi) \le \sum_j h_\infty(\varphi_j)\).  In particular, if \(\varphi_j(L_{j-1}) \subseteq p^{e_j} L_j\) for each \(j\), then \(\Phi(L_0) \subseteq p^{e_1 + \dots + e_m} L_m\).
+\end{problem}
+
+Problem~\ref{pr:subadd} and Theorem~\ref{thm:bost} for \(\Phi\) give the following.
+
+\begin{theorem}[Chain inequality]\label{thm:chain}
+If \(\Phi\) is injective, then
+\[
+  \sum_{j=1}^m \bigl( -\hfin(\varphi_j) \bigr) \le \mumax(L_m) - \mu(L_0) + \sum_{j=1}^m h_\infty(\varphi_j) .
+\]
+\end{theorem}
+
+The gains add, the sizes of the steps add, the slopes of the two ends are paid once, and the intermediate lattices \(L_1, \dots, L_{m-1}\) do not occur.
+
+\begin{problem}\label{pr:stepwise}
+Suppose that every \(\varphi_j\) is injective.  The sum of the inequalities of Theorem~\ref{thm:bost} for \(\varphi_1, \dots, \varphi_m\) is the inequality of Theorem~\ref{thm:chain} with
+\[
+  \sum_{0 < j < m} \bigl( \mumax(L_j) - \mu(L_j) \bigr) \ge 0
+\]
+added to its right side.  This sum vanishes if and only if \(L_1, \dots, L_{m-1}\) are semistable.
+\end{problem}
+
+\begin{problem}\label{pr:rank-two}
+Let \(N \ge 2\), \(L_0 = L_2 = \Z^2\) and \(L_1 = \Z e_1 + \Z N e_2\), all with the standard norm of \(\R^2\), and let \(\varphi_1(x, y) = (x, Ny)\) and \(\varphi_2(x, y) = (x, y/N)\).  Then \(\mumax(L_1) - \mu(L_1) = \tfrac12 \log N\).  The right side of Theorem~\ref{thm:chain} is \(\log N\), the sum of Problem~\ref{pr:stepwise} is \(\tfrac32 \log N\), and \(h_\infty(\Phi) = 0\).
+\end{problem}
+
+In the argument the divisibility \(\varphi_j(L_{j-1}) \subseteq p^{e_j} L_j\) is known only on a full sublattice of \(L_{j-1}\), spanned by the images of Hecke operators, and not on all of \(L_{j-1}\).  The gain is then recorded on that sublattice as in Theorem~\ref{sm-thm:one}, and the logarithm of its index, divided by the rank, is subtracted from it: the gains that add are the gains on the sublattices, and the colength of each sublattice is a loss \cite[\S\S10, 12]{Adr}.  Chapter~\ref{hn-chap} computes this colength at one vertex of a tree, and Chapter~\ref{dc-chap} follows it along the chain.
+
+Theorem~\ref{thm:chain} needs only the slopes of the two ends and the size \(h_\infty(\varphi_j)\) of each step.  How precisely must these be known?
+
+\section{The budget \texorpdfstring{\(x/m + m\)}{x/m + m}}\label{sec:budget}
+
+How long should the chain be?  Let \(G(x) = \sum_{n \le x} \Lambda(n) (x/n - 1) - x\log x + (1 + \gamma)x\) be the function of~\eqref{zr-eq:G} in Chapter~\ref{zr-chap}.  By Mertens' estimate, \(G(x) = O(x)\).  By Theorem~\ref{zr-thm:intervals}, if \(G(x) \le x^\theta\) for some \(\theta < 1\) and all large \(x\), then \(\zeta(s) \ne 0\) for \(\operatorname{Re} s > \theta\).  So a one-sided bound with exponent \(\tfrac12\) gives the Riemann hypothesis.
+
+Let \(a, b > 0\) and \(x := a/b\).  As in Section~\ref{zr-sec:smoothing}, \((a/p^e - b)_+ = b(x/p^e - 1)_+\), so that
+\[
+  \sum_p \log p \sum_{e \ge 1} \Bigl( \frac{a}{p^e} - b \Bigr)_+ = b \sum_{n \le x} \Lambda(n) \Bigl( \frac{x}{n} - 1 \Bigr) ,
+\]
+where \(u_+ := \max(u, 0)\); the inner sum is a smoothed Legendre formula for \(v_p(a!)\).  In the argument such divisibilities come from jets of theta functions \cite[\S1.4]{Dup}.  We consider a chain as in Section~\ref{sec:chain}, with \(\Phi\) injective, and real numbers \(E\) and \(c_1, \dots, c_m\) such that for \(1 \le j \le m\)
+\begin{equation}\label{eq:toy}
+\begin{gathered}
+  -\hfin(\varphi_j) \ge b \sum_{n \le x} \Lambda(n) \Bigl( \frac{x}{n} - 1 \Bigr) , \qquad h_\infty(\varphi_j) \le a(\log x - 1 - \gamma) + c_j , \\
+  \mumax(L_m) - \mu(L_0) \le E .
+\end{gathered}
+\end{equation}
+Here \(E\) is the cost at the ends, and \(c_j\) the cost of the \(j\)th step.  This models the bookkeeping only; the chains of Alp\"oge's argument, and the status of their inputs in \cite{Adr}, are described in Chapter~\ref{as-chap}.
+
+\begin{problem}\label{pr:toy}
+Under~\eqref{eq:toy}, \(G(x) \le (E + c_1 + \dots + c_m)/(mb)\).
+\end{problem}
+
+\begin{problem}\label{pr:half}
+If \(E = a\) and \(c_j = (2j - 1)b\), then \(G(x) \le x/m + m\).  With \(m = \lceil \sqrt x \rceil\) this gives \(G(x) \le 2\sqrt x + 1\).  For \(x = 10^6\) the bound is \(2000\) at \(m = 1000\) and \(10100\) at \(m = 100\).
+\end{problem}
+
+The cost at the ends, \(a = xb\), is divided by \(m\) because it is paid once.  The costs of the steps grow linearly with \(j\), as the cost of the \(k\)th identity does in Section~\ref{sec:order}.  The square root is the balance of the two.
+
+\begin{problem}\label{pr:every-step}
+Suppose instead that Theorem~\ref{thm:bost} is applied to each \(\varphi_j\) separately, with \(\mumax(L_j) - \mu(L_{j-1}) \le a\) for every \(j\) and \(c_j = (2j-1)b\).  Then the \(j\)th step gives \(G(x) \le x + 2j - 1\), so the best of these bounds is \(G(x) \le x + 1\), the bound for \(m = 1\).
+\end{problem}
+
+\begin{problem}\label{pr:two-thirds}
+\(\sum_{j=1}^m (3j^2 - 3j + 1) = m^3\).  So if \(E = a\) and \(c_j = (3j^2 - 3j + 1)b\), then \(G(x) \le x/m + m^2\).  For every \(m > 0\), \(x/m + m^2 \ge 3 \cdot 2^{-2/3} x^{2/3}\).  For \(x = 10^6\) the least value over integers \(m\) is \(18899.2\ldots\), at \(m = 79\).
+\end{problem}
+
+Thus steps whose cost grows quadratically in their index would give only \(\zeta(s) \ne 0\) for \(\operatorname{Re} s > \tfrac23\).  The exponent is decided by how the cost of a step grows along the chain, and so by how precisely the size of each step is known.
+
+\section{Ultrametric norms}\label{sec:ultrametric}
+
+Theorem~\ref{thm:stepanov} lives over \(A := \F_q[X]\), where the product formula is the count~\eqref{eq:count}.  Can one model the chain there?
+
+A \emph{normed lattice} over \(A\) is a free \(A\)-module \(L\) with a basis \((e_i)\) and real numbers \((\alpha_i)\).  For \(v = \sum_i c_i e_i\) let
+\[
+  \lVert v \rVert := \max_i \bigl( \deg c_i - \alpha_i \bigr) ,
+\]
+with \(\deg 0 = -\infty\).  This norm is additive: it plays the role of the logarithm of a norm.  A linear map \(M \colon L \to L'\) of normed lattices has \emph{norm at most} \(s\) if \(\lVert Mv \rVert \le \lVert v \rVert + s\) for all \(v\).
+
+\begin{problem}\label{pr:ultra-norm}
+\(\lVert v + w \rVert \le \max(\lVert v \rVert, \lVert w \rVert)\), with equality if \(\lVert v \rVert \ne \lVert w \rVert\).  A map with matrix \((m_{i'i})\) has norm at most \(s\) if and only if \(\deg m_{i'i} \le s + \alpha'_{i'} - \alpha_i\) for all \(i, i'\).
+\end{problem}
+
+\begin{problem}\label{pr:path}
+Let \(L_0, \dots, L_m\) be normed lattices, with weights \(\alpha^{(k)}_i\), and let \(M_k \colon L_{k-1} \to L_k\) have norm at most \(s_k\).  Let \(\rho \in A\) have degree \(n\), and suppose that \(\rho\) divides every entry of every \(M_k\) and that \(M_m \cdots M_1 \ne 0\).  Then there are indices \(i_0, \dots, i_m\) such that the entry \(\mu_k\) of \(M_k\) in position \((i_k, i_{k-1})\) is nonzero for every \(k\), and
+\[
+  n \le \deg \mu_k \le s_k + \alpha^{(k)}_{i_k} - \alpha^{(k-1)}_{i_{k-1}} \qquad (1 \le k \le m) .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:single}
+In Problem~\ref{pr:path}, \(mn \le \sum_k s_k + \alpha^{(m)}_{i_m} - \alpha^{(0)}_{i_0}\).  Moreover some \(k\) satisfies
+\[
+  n \le \deg \mu_k \le s_k + \frac{1}{m}\bigl( \alpha^{(m)}_{i_m} - \alpha^{(0)}_{i_0} \bigr) .
+\]
+\end{problem}
+
+The first inequality is the chain inequality over \(A\), and by Problem~\ref{pr:single} some single entry \(\mu_k\), a polynomial divisible by \(\rho\), already does as well as the chain.  With \(\rho = \prod_{t \in S_\eta} (X - t)\) and entries auxiliary polynomials with \(C_0 = 0\), Problem~\ref{pr:order-one} gives at best \(\lvert S_\eta \rvert \le q\).  Over \(\Z\) a lattice need not have an orthogonal basis, and the norm of a composite can be much smaller than the product of the norms (Problem~\ref{pr:rank-two}); whatever lets a chain of theta lifts pay its end costs once must lie in such archimedean inputs.
+
+Is there a model of the chain over a function field in which the costs at the ends are paid once and the chain does better than its single steps?  By Problem~\ref{pr:single}, normed lattices over \(\F_q[X]\) cannot provide one.  We do not know the answer.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:aux}}
+\begin{description}
+\item[\ref{pr:euler}] Euler's criterion: \(f(x)\) is a nonzero square in \(\F_q\) exactly when \(f(x)^c = 1\).
+\item[\ref{pr:degE}] \(dc = \frac{d-1}{2} q + \frac{q-d}{2}\).
+\item[\ref{pr:nonzero}] Look at the quotient and the remainder of each degree on division by \(q\).
+\item[\ref{pr:order-one}] If \(r_j = s_j = 0\) for all \(j \ge 1\), then \(s_0 \ne 0\).  Otherwise use Problem~\ref{pr:nonzero}.
+\end{description}
+
+\subsection*{\S\ref{sec:order}}
+\begin{description}
+\item[\ref{pr:hasse}] For the last statement, expand \(G(t + Y)\) and substitute \(Y = X - t\).
+\item[\ref{pr:frobenius}] The map \(u \mapsto u^q\) is a ring homomorphism in characteristic \(p\).
+\item[\ref{pr:Ui}] Write \(f(X + Y) = f(X) + \Delta\) with \(\Delta = \sum_{k \ge 1} (H^k f) Y^k\), and expand \((1 + \Delta/f)^c\) by the binomial theorem.  Note \(\deg H^k f \le d - k\).
+\item[\ref{pr:jet}] Expand \(F(t + Y)\) modulo \(Y^{k+1}\).  Use Problem~\ref{pr:frobenius}, \(t^q = t\), and \(f(t)^c = \eta\).
+\item[\ref{pr:degCk}] Bound each of the two kinds of terms in~\eqref{eq:Ck} separately, using Problem~\ref{pr:Ui}.
+\end{description}
+
+\subsection*{\S\ref{sec:count}}
+\begin{description}
+\item[\ref{pr:siegel}] Count unknowns and linear conditions, using Problem~\ref{pr:degCk}.
+\item[\ref{pr:choiceJ}] Use \(2D = q - d\).
+\item[\ref{pr:sqrtq}] Check that \(\sqrt q \ge 12\), \(q - d - \ell \ge 8q/9\) and \(11\sqrt q/12 \le \ell \le 13\sqrt q/12\).  Then bound \(t - 1\) and \(g\) by multiples of \(d\).
+\item[\ref{pr:no-better}] \(t > d\ell^2/(2q)\).  Then use the inequality between arithmetic and geometric means.
+\end{description}
+
+\subsection*{\S\ref{sec:chain}}
+\begin{description}
+\item[\ref{pr:subadd}] If \(\varphi_j(L_{j-1}) \subseteq \lambda_j L_j\) for each \(j\), then \(\Phi(L_0) \subseteq \lambda_1 \cdots \lambda_m L_m\).  Operator norms are submultiplicative.
+\item[\ref{pr:stepwise}] Write out the \(m\) inequalities and add them.
+\item[\ref{pr:rank-two}] Every nonzero vector of \(L_1\) has length at least \(1\).
+\end{description}
+
+\subsection*{\S\ref{sec:budget}}
+\begin{description}
+\item[\ref{pr:toy}] Apply Theorem~\ref{thm:chain}, and divide by \(mb\).
+\item[\ref{pr:half}] \(\sum_{j \le m} (2j - 1) = m^2\).
+\item[\ref{pr:every-step}] Each step gives a bound for the same quantity.
+\item[\ref{pr:two-thirds}] Minimize over real \(m > 0\) first.
+\end{description}
+
+\subsection*{\S\ref{sec:ultrametric}}
+\begin{description}
+\item[\ref{pr:ultra-norm}] \(\deg(c + c') \le \max(\deg c, \deg c')\), with equality if the degrees differ.  For the second statement test on the basis vectors.
+\item[\ref{pr:path}] An entry of the product is a sum over paths of products of entries.  A nonzero multiple of \(\rho\) has degree at least \(n\).
+\item[\ref{pr:single}] The weights telescope.  The least of \(m\) numbers is at most their mean.
+\end{description}
+
+\begin{thebibliography}{Wei48}
+
+\bibitem[Adr]{Adr}
+J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+
+\bibitem[Alp]{Alp}
+L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
+
+\bibitem[Bom74]{Bom74}
+E.~Bombieri, \emph{Counting points on curves over finite fields (d'apr\`es S.~A.~Stepanov)}, S\'eminaire Bourbaki, Exp.~430, Lecture Notes in Math. \textbf{383}, Springer, 1974, 234--241.
+
+\bibitem[Bo1]{Bo1}
+J.-B.~Bost, \emph{P\'eriodes et isog\'enies des vari\'et\'es ab\'eliennes sur les corps de nombres (d'apr\`es D.~Masser et G.~W\"ustholz)}, S\'eminaire Bourbaki, Exp.~795, Ast\'erisque \textbf{237} (1996), 115--161.
+
+\bibitem[Dup]{Dup}
+\emph{Notes on Alp\"oge's proof of the Riemann hypothesis}, printed by T.~Dupuy, AI generated, 21 November 2026, \url{https://tdupu.github.io/riemann-public/riemann-book.pdf}.
+
+\bibitem[Sch76]{Sch76}
+W.~M.~Schmidt, \emph{Equations over Finite Fields: An Elementary Approach}, Lecture Notes in Math. \textbf{536}, Springer, 1976.
+
+\bibitem[Ste69]{Ste69}
+S.~A.~Stepanov, \emph{On the number of points of a hyperelliptic curve over a finite prime field}, Izv. Akad. Nauk SSSR Ser. Mat. \textbf{33} (1969), 1171--1181.
+
+\bibitem[Wei48]{Wei48}
+A.~Weil, \emph{Sur les courbes alg\'ebriques et les vari\'et\'es qui s'en d\'eduisent}, Hermann, 1948.
+
+\bibitem[Zh]{Zh}
+R.~Zhang, \emph{A preliminary note on Alp\"oge's proposed proof of the generalized Riemann hypothesis}, preprint, 2026, hexagon:2611.00809.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,192 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[sm-]{20261125T000000--slope-method__workbook}
+\externaldocument[tt-]{20261125T004100--tate-twists-and-sha__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T004000}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Cl}{\operatorname{Cl}}
+\newcommand{\Gal}{\operatorname{Gal}}
+\newcommand{\len}{\operatorname{len}}
+\newcommand{\lcm}{\operatorname{lcm}}
+\newcommand{\num}{\operatorname{num}}
+\newcommand{\mumax}{\mu_{\max}}
+
+\setlength{\emergencystretch}{2em}
+\title{Denominators and the Stickelberger element}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Ideal class groups \cite[Ch.~I, \S\S3, 6]{Ne}.  Cyclotomic fields, Bernoulli numbers and generalized Bernoulli numbers \cite[Ch.~4--6]{Wa}.  From Chapter~\ref{sm-chap}, \emph{The slope method}: Euclidean lattices as normed spaces over \(\Q\) with their slopes (Section~\ref{sm-sec:slopes}), and the slope inequality of Theorem~\ref{sm-thm:image} with Problem~\ref{sm-pr:hfin}.  Chapter~\ref{tt-chap}, \emph{Tate--Shafarevich groups of Tate twists}, continues this one.
+
+\section{Denominators of linear maps}\label{sec:denominators}
+
+A linear map between \(\Q\)-vector spaces with integral structures need not respect them.  What does that cost in a slope inequality, and how can it be reduced?  The simplest example is differentiation.  Let \(\mathrm{Int}\) be the set of polynomials \(f \in \Q[x]\) with \(f(\Z) \subseteq \Z\), and let \(\mathrm{Int}_n\) be its elements of degree at most \(n\).
+
+\begin{problem}\label{pr:intval}
+The binomial polynomials \(\binom{x}{k}\), \(0 \le k \le n\), form a \(\Z\)-basis of \(\mathrm{Int}_n\).
+\end{problem}
+
+\begin{problem}\label{pr:derivative}
+Let \(D = d/dx\).  Then
+\[
+  D \binom{x}{n} = \sum_{k=1}^{n} \frac{(-1)^{k-1}}{k} \binom{x}{n-k} .
+\]
+Hence the least positive integer \(c\) with \(c \, D(\mathrm{Int}_n) \subseteq \mathrm{Int}\) is \(\lcm(1, 2, \dots, n)\).
+\end{problem}
+
+The logarithm of this denominator is \(\psi(n)\), of the size of \(n\).  Alpöge's note records a ``need for division'' \cite[item~14]{Alp}.  In the reconstruction \cite[\S17.1]{Adr} the defect sits at the places where the local type of the theta lifts is twisted: there the lattice of integral lifted forms differs from the lattice that the period pairing sees, and a congruence module measures the difference.
+
+An integral structure can be built one prime at a time.  For a lattice \(L \subset \Q^r\) and a prime \(p\), write \(L_p := L \otimes \Z_p \subset \Q_p^r\).
+
+\begin{problem}\label{pr:local-global}
+For every family \((\Lambda_p)_p\) of \(\Z_p\)-lattices \(\Lambda_p \subset \Q_p^r\) with \(\Lambda_p = \Z_p^r\) for all but finitely many \(p\), there is exactly one lattice \(L \subset \Q^r\) with \(L_p = \Lambda_p\) for every \(p\), namely \(L = \bigcap_p (\Lambda_p \cap \Q^r)\).  If \(\Lambda_2 = \tfrac12 \Z_2 \oplus \Z_2\), \(\Lambda_3 = \Z_3 \oplus \tfrac13 \Z_3\), and \(\Lambda_p = \Z_p^2\) otherwise, then \(L = \tfrac12\Z \oplus \tfrac13\Z\).
+\end{problem}
+
+For a finitely generated torsion \(\Z_p\)-module \(T\) let \(\len_{\Z_p} T\) be its length.
+
+\begin{problem}\label{pr:length}
+If \(T\) is a finite abelian group, then \(\log \lvert T \rvert = \sum_p \len_{\Z_p}(T \otimes \Z_p) \log p\).  If \(M' \subseteq M\) are lattices of the same rank, then \(\log [M : M'] = \sum_p \len_{\Z_p}(M_p/M'_p) \log p\).
+\end{problem}
+
+Let \(L\) and \(M\) be Euclidean lattices and \(T \colon L_\Q \to M_\Q\) an injective linear map.  If \(T(L) \not\subseteq M\), one may replace \(M\) by the lattice \(M + T(L)\), with the same norm.
+
+\begin{problem}\label{pr:enlarge}
+\(\mumax(M + T(L)) \le \mumax(M) + \log [M + T(L) : M]\).  Hence \(\mu(L) \le \mumax(M) + h_\infty(T) + \log [M + T(L) : M]\).
+\end{problem}
+
+The index term in Theorem~\ref{sm-thm:one} has the same origin.  So a denominator costs \(\log\lvert(M + T(L))/M\rvert\), a sum of local terms by Problem~\ref{pr:length}.  If several maps \(T_1, \dots, T_k\) serve equally well, for instance because they have the same period, one may choose at each prime the map with the smallest local denominator, and Problem~\ref{pr:local-global} assembles the choices.
+
+\begin{problem}\label{pr:gcd}
+Let \(M_j := M + T_j(L)\), and let \(M^*\) be the lattice with \(M^*_p = (M_j)_p\) for a \(j = j(p)\) that minimizes \(\len_{\Z_p}\bigl((M_j)_p/M_p\bigr)\).  Then \(M^* \supseteq M\) and
+\[
+  \log [M^* : M] = \sum_p \min_j \len_{\Z_p}\bigl((M_j)_p/M_p\bigr) \log p .
+\]
+If \(M = \Z\) and \(M_j = D_j^{-1}\Z\) with positive integers \(D_j\), then \([M^* : M] = \gcd(D_1, \dots, D_k)\).  For \(D_j = 6, 10, 15\) each map alone costs at least \(\log 6\), and together they cost nothing.
+\end{problem}
+
+Alpöge's note glues its integral structures in this way, ``across Hecke characters for a `gcd' '' \cite[item~15]{Alp}.  What no twist removes is, at each prime, a finite module that it identifies with a group of Galois cohomology classes \cite[item~17]{Alp}; in the reconstruction the congruence modules are bounded by lengths of Tate--Shafarevich groups of Tate twists, through deformation rings and Wach modules \cite[\S\S17.3 and 17.5]{Adr}, so the Stickelberger element below is a model of the minus part only.  The simplest instance, a rational element whose twists are integral and whose remainder is measured by a class group, is the Stickelberger element of \(\Q(\zeta_p)\).
+
+\section{The Stickelberger element}\label{sec:stickelberger}
+
+Let \(p\) be an odd prime, \(F := \Q(\zeta_p)\), \(G := \Gal(F/\Q)\), and let \(\sigma_a \in G\) be the automorphism with \(\sigma_a(\zeta_p) = \zeta_p^a\).  Let \(A\) be the \(p\)-primary part of \(\Cl(F)\), a \(\Z_p[G]\)-module.  Let \(\omega \colon (\Z/p\Z)^\times \to \Z_p^\times\) be the Teichmüller character, with \(\omega(a) \equiv a \pmod p\), and view it as a character of \(G\).  For \(i \in \Z/(p-1)\Z\) let \(A^{(i)} := \{ z \in A : \sigma_a z = \omega(a)^i z \text{ for all } a \}\), and
+\[
+  \varepsilon_i := \frac{1}{p-1} \sum_{a=1}^{p-1} \omega(a)^i \sigma_a^{-1} \in \Z_p[G] .
+\]
+
+\begin{problem}\label{pr:eigen}
+The \(\varepsilon_i\) are orthogonal idempotents with sum \(1\), \(\sigma_a \varepsilon_i = \omega(a)^i \varepsilon_i\), and \(A = \bigoplus_i \varepsilon_i A = \bigoplus_i A^{(i)}\).  Complex conjugation \(\sigma_{-1}\) acts on \(A^{(i)}\) by \((-1)^i\).
+\end{problem}
+
+Write \(A^+\) and \(A^-\) for the sums of the \(A^{(i)}\) with \(i\) even and with \(i\) odd.
+
+\begin{problem}\label{pr:subfield}
+If \(K \subseteq F\), then extension of ideals identifies the \(p\)-primary part of \(\Cl(K)\) with \(A^{\Gal(F/K)}\).  Hence \(A^{(0)} = 0\), \(A^+\) is the \(p\)-primary part of the class group of \(F^+ := \Q(\zeta_p + \zeta_p^{-1})\), and if \(p \equiv 1 \pmod 4\), then \(A^{((p-1)/2)}\) is the \(p\)-primary part of \(\Cl(\Q(\sqrt{p}))\).
+\end{problem}
+
+The \emph{Stickelberger element} is
+\[
+  \theta := \frac1p \sum_{a=1}^{p-1} a \, \sigma_a^{-1} \in \Q[G] ,
+\]
+with the denominator \(p\).  We use Stickelberger's theorem as a black box \cite[Thm.~6.10]{Wa}.
+
+\begin{theorem}[Stickelberger]\label{thm:stickelberger}
+If \(\beta \in \Z[G]\) and \(\beta\theta \in \Z[G]\), then \(\beta\theta\) annihilates \(\Cl(F)\).
+\end{theorem}
+
+The integral multiples of \(\theta\) are its twists.
+
+\begin{problem}\label{pr:c-twist}
+For \(c\) prime to \(p\), \((c - \sigma_c)\theta = \sum_{b=1}^{p-1} \lfloor cb/p \rfloor \, \sigma_b^{-1}\).  In particular \((c - \sigma_c)\theta \in \Z[G]\).
+\end{problem}
+
+For a nontrivial Dirichlet character \(\chi\) modulo \(p\) let \(B_{1,\chi} := \frac1p \sum_{a=1}^{p-1} \chi(a)\, a\).
+
+\begin{problem}\label{pr:eigen-theta}
+\(\varepsilon_i \theta = B_{1,\omega^{-i}} \varepsilon_i\) for \(i \not\equiv 0\).  If \(i \not\equiv 0\) is even, then \(B_{1,\omega^{-i}} = 0\).
+\end{problem}
+
+So \(\theta\) says nothing about \(A^+\).  On \(A^{(i)}\) the twist \((c - \sigma_c)\theta\) acts as \((c - \omega(c)^i)B_{1,\omega^{-i}}\), and the gluing of Problem~\ref{pr:gcd} asks for the ideal generated by the factors \(c - \omega(c)^i\).
+
+\begin{problem}\label{pr:gcd-c}
+The ideal of \(\Z_p\) generated by the numbers \(c - \omega(c)^i\), \(c\) prime to \(p\), is \(\Z_p\) if \(i \not\equiv 1\) and \(p\Z_p\) if \(i \equiv 1\).  Moreover \(v_p(B_{1,\omega^{-1}}) = -1\).
+\end{problem}
+
+Thus on each \(A^{(i)}\) with \(i \not\equiv 1\) the twists together act as \(B_{1,\omega^{-i}} \in \Z_p\): the gluing recovers the eigenvalue of \(\theta\) itself.  On \(A^{(1)}\) the denominator \(p\) is removed by no twist; it is the order of \(\mu_p\), on which \(G\) acts by \(\omega\).  (The group \(A^{(1)}\) vanishes for another reason \cite[Prop.~6.16]{Wa}.)  By Kummer's congruences \cite[Ch.~5]{Wa}, if \(i\) is odd and \(3 \le i \le p-2\), then
+\begin{equation}\label{eq:kummer}
+  B_{1,\omega^{-i}} \equiv \frac{B_{p-i}}{p-i} \pmod p .
+\end{equation}
+
+\begin{problem}\label{pr:p7}
+For \(p = 7\) the character \(\omega^{-3}\) is the Legendre symbol, \(B_{1,\omega^{-3}} = -1\), and \(B_4/4 = -1/120 \equiv -1 \pmod 7\).
+\end{problem}
+
+\begin{problem}\label{pr:herbrand}
+Let \(i\) be odd with \(3 \le i \le p-2\).  If \(p \nmid B_{p-i}\), then \(A^{(i)} = 0\).
+\end{problem}
+
+This is Herbrand's theorem \cite[Thm.~6.17]{Wa}.  Its converse is due to Ribet \cite{Ri}, and the exact order to Mazur and Wiles \cite{MW}; see \cite[Ch.~15]{Wa}.  We use them as a black box.
+
+\begin{theorem}[Herbrand, Ribet, Mazur--Wiles]\label{thm:HR}
+Let \(i\) be odd with \(3 \le i \le p-2\).  Then \(A^{(i)} \ne 0\) if and only if \(p \mid B_{p-i}\), and \(\lvert A^{(i)} \rvert = \lvert B_{1,\omega^{-i}} \rvert_p^{-1}\).
+\end{theorem}
+
+\begin{problem}\label{pr:irregular}
+For \(p < 100\), the pairs \((p, k)\) with \(k\) even, \(2 \le k \le p-3\) and \(p \mid B_k\) are \((37, 32)\), \((59, 44)\) and \((67, 58)\).  Hence for \(p < 100\) the group \(A^-\) is nonzero only for \(p = 37, 59, 67\), and then exactly one odd eigenspace is nonzero, \(A^{(5)}\), \(A^{(15)}\) and \(A^{(9)}\) respectively.
+\end{problem}
+
+The plus part \(A^+\) is not seen by \(\theta\) (Problem~\ref{pr:eigen-theta}).  Its order is the \(p\)-part of an index of cyclotomic units in the units of \(F^+\) \cite[Thm.~8.2]{Wa}.  Vandiver's conjecture, that \(A^+ = 0\) for every \(p\), is open; it has been verified for \(p < 2^{31}\) \cite{HHO}.  The next chapter meets the same division between minus and plus parts in Galois cohomology.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:denominators}}
+\begin{description}
+\item[\ref{pr:intval}] Use the difference operator \(\Delta f(x) := f(x+1) - f(x)\) and \(\Delta \binom{x}{k} = \binom{x}{k-1}\).
+\item[\ref{pr:derivative}] Formally \(D = \log(1 + \Delta)\).  For the sharpness, use the uniqueness in Problem~\ref{pr:intval}.
+\item[\ref{pr:local-global}] Choose an integer \(N\) with \(N \Z_p^r \subseteq \Lambda_p \subseteq N^{-1}\Z_p^r\) for all \(p\), and work in \(N^{-1}\Z^r / N\Z^r\).
+\item[\ref{pr:length}] The \(p\)-primary part of \(T\) is \(T \otimes \Z_p\).
+\item[\ref{pr:enlarge}] For a subspace \(U\), compare the lattices \(U \cap M\) and \(U \cap (M + T(L))\).  Then apply Theorem~\ref{sm-thm:image} and Problem~\ref{sm-pr:hfin} to \(T \colon L \to M + T(L)\).
+\item[\ref{pr:gcd}] Apply Problem~\ref{pr:length} to \(M^*/M\).
+\end{description}
+
+\subsection*{\S\ref{sec:stickelberger}}
+\begin{description}
+\item[\ref{pr:eigen}] Orthogonality of the characters \(\omega^i\) of the cyclic group \(G\), whose order is prime to \(p\).
+\item[\ref{pr:subfield}] Compose extension of ideal classes with the norm, in both orders; \([F:K]\) is prime to \(p\).  For the last claim, find the subfield fixed by the squares in \(G\).
+\item[\ref{pr:eigen-theta}] Use \(\sigma_a^{-1}\varepsilon_i = \omega(a)^{-i}\varepsilon_i\).  For even \(\chi\), pair \(a\) with \(p - a\).
+\item[\ref{pr:gcd-c}] Reduce \(c - \omega(c)^i\) modulo \(p\).  For \(B_{1,\omega^{-1}}\), reduce \(p B_{1,\omega^{-1}}\) modulo \(p\).
+\item[\ref{pr:herbrand}] Apply Theorem~\ref{thm:stickelberger} to \(\beta = c - \sigma_c\), project with \(\varepsilon_i\), choose \(c\) by Problem~\ref{pr:gcd-c}, and use~\eqref{eq:kummer}.
+\item[\ref{pr:irregular}] The first part is a finite computation.  For the second use Theorem~\ref{thm:HR} with \(k = p - i\), and \(A^{(1)} = 0\) \cite[Prop.~6.16]{Wa}.
+\end{description}
+
+\begin{thebibliography}{HHO}
+\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[Alp]{Alp} L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
+\bibitem[HHO]{HHO} W.~Hart, D.~Harvey and W.~Ong, \emph{Irregular primes to two billion}, Math.\ Comp.\ \textbf{86} (2017), 3031--3049.
+\bibitem[MW]{MW} B.~Mazur and A.~Wiles, \emph{Class fields of abelian extensions of \(\mathbf{Q}\)}, Invent.\ Math.\ \textbf{76} (1984), 179--330.
+\bibitem[Ne]{Ne} J.~Neukirch, \emph{Algebraic Number Theory}, Grundlehren Math.\ Wiss.\ 322, Springer, 1999.
+\bibitem[Ri]{Ri} K.~A.~Ribet, \emph{A modular construction of unramified \(p\)-extensions of \(\mathbf{Q}(\mu_p)\)}, Invent.\ Math.\ \textbf{34} (1976), 151--162.
+\bibitem[Wa]{Wa} L.~C.~Washington, \emph{Introduction to Cyclotomic Fields}, 2nd ed., Grad.\ Texts in Math.\ 83, Springer, 1997.
+\end{thebibliography}
+
+\end{document}

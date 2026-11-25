@@ -1,0 +1,334 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[zr-]{20261125T001000--zeros-to-ramp-sums__workbook}
+\externaldocument[zi-]{20261125T001100--inert-primes-and-estimate-b__workbook}
+\externaldocument[gf-]{20261125T005000--galois-fourier-and-averaging__workbook}
+\externaldocument[sm-]{20261125T000000--slope-method__workbook}
+\externaldocument[ch-]{20261125T003000--the-chain-and-the-square-root__workbook}
+\externaldocument[kl-]{20261125T009000--kronecker-limit-and-chowla-selberg__workbook}
+\externaldocument[ts-]{20261125T004100--tate-twists-and-sha__workbook}
+\externaldocument[cs-]{20261125T005500--columns-from-a-sphere__workbook}
+\externaldocument[sp-]{20261125T007000--stepanov-without-multiplicity__workbook}
+\externaldocument[ec-]{20261124T223000--elliptic-curves-for-the-proof__workbook}
+\externaldocument[od-]{20261125T008000--one-cm-determinant__workbook}
+\externaldocument[af-]{20261125T020000--the-analytic-frame__workbook}
+\externaldocument[di-]{20261125T020100--divisibility-at-inert-primes-in-general__workbook}
+\externaldocument[sb-]{20261125T020200--slopes-frames-and-bessel-poincare-series__workbook}
+\externaldocument[hp-]{20261125T020300--heights-periods-and-the-auxiliary-prime__workbook}
+\externaldocument[lt-]{20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T021500}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Lc}{\mathcal{L}}
+\newcommand{\Bc}{\mathcal{B}}
+\newcommand{\Wc}{\mathcal{W}}
+\newcommand{\mumax}{\mu_{\max}}
+\newcommand{\mumin}{\mu_{\min}}
+\newcommand{\rd}{\operatorname{rd}}
+\newcommand{\ph}{\varphi}
+\newcommand{\Sha}{\mathrm{Sha}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\Gal}{\operatorname{Gal}}
+\renewcommand{\Re}{\operatorname{Re}}
+
+\setlength{\emergencystretch}{2em}
+
+\title{Assembly at one scale}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+From Chapter~\ref{zr-chap}: the functions \(G\) and \(G_\chi\) of~\eqref{zr-eq:G} and~\eqref{zr-eq:Gchi}, Theorem~\ref{zr-thm:intervals}, and Sections~\ref{zr-sec:dirichlet} and~\ref{zr-sec:real-pole}.  From Chapter~\ref{zi-chap}: Problem~\ref{zi-pr:Rqd} and Estimate~B (Section~\ref{zi-sec:estB}).  From Chapter~\ref{gf-chap}: the notation \(q, d, n, H, \Phi\), \(P_{t,w}(a)\), \(M_w(a)\), \(c_{\chi_d}\), \(\delta = \lvert T_2\rvert/n\), \(R_{q,d}\), Theorems~\ref{gf-thm:balance} and~\ref{gf-thm:two-scales}, and Section~\ref{gf-sec:subgroup}.  From Chapter~\ref{cs-chap}: the bound~\eqref{cs-eq:density}, Theorem~\ref{cs-thm:behrend} and Problem~\ref{cs-pr:size-T}.  From Chapter~\ref{ch-chap}: Theorem~\ref{ch-thm:chain} and Section~\ref{ch-sec:budget}.  Mertens' estimate \(\sum_{n \le x}\Lambda(n)/n = \log x + O(1)\).  From Chapters~\ref{af-chap}, \ref{di-chap}, \ref{sb-chap}, \ref{hp-chap} and~\ref{lt-chap}: the deliverable stated at the end of each, which Sections~\ref{sec:inputs} and~\ref{sec:window} match with the inputs, and the problems cited below.
+
+\medskip
+Chapter~\ref{ch-chap} balanced an error \(x/m + m\) for a model chain whose inputs were given.  What are the inputs in Alp\"oge's argument \cite{Alp}, what error must each achieve, and which of them pays for each term of the final bound?  We follow the reconstruction of Adriazola \cite{Adr}, with \cite[\S\S I.5--I.8]{Rub} and \cite[\S6]{Zh}.  Throughout, \(0 < \varepsilon < \frac1{52}\), the range in which \cite[Thms.~5.10 and~5.12]{Adr} construct the auxiliary primes of Section~\ref{sec:window}; no problem uses this bound.  Let
+\[
+  y := x^\varepsilon , \qquad b := e^{y} , \qquad a := xb .
+\]
+We treat \(\zeta\), so that the averaging of Chapter~\ref{gf-chap} is over all of \(H\); for \(L(s,\psi)\) see Section~\ref{gf-sec:subgroup} there and \cite[\S6]{Adr}.
+
+\section{The accounting}\label{sec:acct}
+
+The data are: \(m\) lifts; a set \(T \subset H\) of \(N_T\) tops with weights \(a_t > 0\), and \(A := \sum_t a_t\); nodes \(w_j \colon \Phi \to (0,\infty)\) for \(1 \le j \le m\); a finite set \(\Wc\) of \emph{words}, and for \(u \in \Wc\) a source lattice \(N_u\) of rank \(d_u\), a base lattice \(M_u\), an auxiliary prime \(T_u\), and a bound \(h_u\) for the height of the period map \(B_u \colon N_u \to R^\vee\), where \(R^\vee\) is the target.  All lattices are hermitian over \(\Oc_E\), with slopes as in Chapter~\ref{sm-chap}.  Let \(S := \sum_{t,j} P_{t,w_j}(a_t)\), let \(\Gamma\) be the total gain of the lifts at the inert primes, \(\Lc\) their common local terms and \(E_u\) their local terms at the level and twisted places.  Let \(\ph(t) := t\log t - t\), \(v := \frac12 \rd_E\), \(\log\Omega := \gamma + \log(\pi/v) - c_{\chi_d}\) (for \(E = \Q(\ii)\), with \(\chi_{-4}\) in place of \(\chi_d\), \(v = 1\) and \(\Omega\) is the \(\Omega\) of Problem~\ref{ec-pr:Omega}), let \(g := \log(g_0g_1)\) for two level primes \(g_0, g_1\), and write \(\langle X \rangle := \sum_u d_uX_u / \sum_u d_u\).  The inputs are seven inequalities, for every \(u \in \Wc\), with numbers \(e_1, \dots, e_7 \ge 0\):
+\begin{align}
+  S &\le \Gamma + e_1 , \tag{A1}\label{A1}\\
+  \mu(M_u) + \Gamma + \Lc - E_u - e_2 &\le \mu(N_u) , \tag{A2}\label{A2}\\
+  \langle \mu(N) - h \rangle - e_3 &\le \mu(R^\vee) , \tag{A3}\label{A3}\\
+  \mu(R^\vee) + h_u - \Lc &\le \textstyle\sum_{t} \bigl( m\ph(a_t) - m a_t \log\Omega - a_t\log T_u \bigr) + e_4 , \tag{A4}\label{A4}\\
+  E_u &\le mAg + e_5 , \tag{A5}\label{A5}\\
+  \log T_u &\ge \textstyle\sum_{j} \frac{1}{2n}\sum_{\rho\in\Phi} \log\bigl(w_j(\rho)v/\pi\bigr) + mg - e_6 , \tag{A6}\label{A6}\\
+  \mu(M_u) &\ge -e_7 . \tag{A7}\label{A7}
+\end{align}
+
+\begin{problem}\label{pr:A127}
+\(\Gamma \le \mu(N_u) - \Lc + E_u + e_2 + e_7\) for every \(u\).
+\end{problem}
+
+\begin{problem}\label{pr:A3}
+\(\Gamma \le \mu(R^\vee) - \Lc + \langle h + E \rangle + e_2 + e_3 + e_7\).
+\end{problem}
+
+\begin{problem}\label{pr:heights}
+Let \(\Sigma_u\) be the right side of~\eqref{A4}.  Then \(\Gamma \le \langle \Sigma + E \rangle + e_2 + e_3 + e_7\): the heights cancel.
+\end{problem}
+
+\begin{problem}\label{pr:levels}
+\[
+  \Sigma_u + E_u \le \sum_{j}\sum_t a_t\bigl(\log a_t - 1 - \gamma + c_{\chi_d} - \langle\log w_j\rangle_\Phi\bigr) + e_4 + e_5 + Ae_6 ,
+\]
+where \(\langle\cdot\rangle_\Phi\) is the mean over \(\Phi\): the level terms \(mAg\) cancel, and so do \(\log v\) and \(\log\pi\).
+\end{problem}
+
+The sum in Problem~\ref{pr:levels} is \(\sum_{t,j} M_{w_j}(a_t)\).  Problems~\ref{pr:A127}--\ref{pr:levels} and~\eqref{A1} prove the following \cite[Prop.~3.1]{Adr}; with Theorem~\ref{gf-thm:balance} it bounds a sum of the functions \(G_\theta\) of Chapter~\ref{gf-chap}.
+
+\begin{theorem}[accounting]\label{thm:acct}
+Under~\eqref{A1}--\eqref{A7},
+\[
+  \sum_{t \in T}\sum_{j=1}^m \bigl( P_{t,w_j}(a_t) - M_{w_j}(a_t) \bigr) \le e := e_1 + e_2 + e_3 + e_4 + e_5 + Ae_6 + e_7 .
+\]
+\end{theorem}
+
+Three cancellations occur, as in Stepanov's count (Chapter~\ref{ch-chap}): the heights between~\eqref{A3} and~\eqref{A4}, the level terms between~\eqref{A5} and~\eqref{A6}, and the linear terms.  Euler's constant and \(c_{\chi_d}\) enter \(M_w\) through the prime sum, and \(\log\Omega\) through the period, by the Chowla--Selberg formula (Theorem~\ref{kl-thm:cs}); Problem~\ref{pr:levels} is where they meet.
+
+\section{The inputs and their errors}\label{sec:inputs}
+
+What must each \(e_i\) be?  Put \(N_2 := \lvert T_2\rvert = \delta n\) and
+\[
+  B_0 := 2nmby , \qquad N_c := \frac{N_2\,k\,b\,y^2}{n^2} ,
+\]
+where \(k\) is the dimension of the first hermitian space of the chain \cite[\S6.1]{Zh}.  In the following, \(C \ge 1\) and \(C_H \ge 0\) depend on \(\varepsilon\) but not on \(x\).  The data satisfy \(N_T \ge 1\), \(1 \le m \le k \le b\), \(mb \le a\) and \(a \le a_t \le a + b\) for \(t \in T\) \cite[Def.~18.5, Lemma~18.15]{Adr} (the bound \(k \le b\) holds for the choices of Section~\ref{sec:exponents} once \(x\) is large), and \(1 \le \lvert\Wc\rvert \le 2^{k-3}\) \cite[Def.~18.9(a)]{Adr}; so \(a_t \le 2a\) and \(\lvert a_t/b - x\rvert \le 1\).  The spread \(u_F := \max_u(\mumax(N_u) - h_u) - \langle\mu(N) - h\rangle\) satisfies \(0 \le u_F \le U := Cy\bigl(N_Ta(1 + m^2/k) + mB_0\bigr)\) \cite[Lemma~18.13]{Adr}.  The errors are those of \cite[Def.~18.9 and Prop.~18.14]{Adr}, and the five preceding chapters deliver them:
+\begin{itemize}
+\item \eqref{A1} and~\eqref{A2}, with \(e_1 \le CN_Tmb\) and \(e_2 \le Cy\bigl(N_Tmb + N_Ta\,m^2/k + a\bigr)\): Theorems~\ref{di-thm:K1} and~\ref{di-thm:K2}, with Problems~\ref{di-pr:aux} and~\ref{di-pr:record};
+\item \eqref{A3}, with \(e_3 = \log\lvert\Wc\rvert + 8\log(1 + x^{C_H})(U + b) + 12b\): Theorem~\ref{sb-thm:K3} and Problem~\ref{sb-pr:A3};
+\item \eqref{A4}, with \(e_4 \le Cy^2\bigl(N_Ta + m(B_0 + N_c)\bigr)\): Input~\ref{hp-in:A4}, where the term \(mN_c\) is the cost of the congruence defects, Theorem~\ref{lt-thm:congruence};
+\item \eqref{A5}, with \(e_5 \le CmB_0\): Theorem~\ref{lt-thm:local} and Problem~\ref{lt-pr:A5};
+\item \eqref{A6}, with \(e_6 \le Cy(1 + m^2/k)\), and~\eqref{A7}, with \(e_7 \le CyN_Ta(1 + m/k)\): Inputs~\ref{hp-in:A6} and~\ref{hp-in:A7}, with Problem~\ref{hp-pr:record}.
+\end{itemize}
+Section~\ref{sec:map} records the status of each.
+
+\begin{problem}\label{pr:e3}
+If \(\Wc\) is nonempty and \(\lvert\Wc\rvert \le 2^{k-3}\), then \(e_3 \le 8(1 + C_H)\,y\,(U + b) + 13b\) for large \(x\).
+\end{problem}
+
+\begin{problem}\label{pr:calB}
+Let \(\Bc := N_Ta(1 + m^2/k) + m(B_0 + N_c)\), and suppose that the data satisfy the conditions stated at the start of this section and that \(y \ge 1\).  Then \(e \le C_1y^2\Bc\) for large \(x\), with \(C_1\) depending on \(C\) and \(C_H\) only.
+\end{problem}
+
+\begin{theorem}\label{thm:M}
+Under the conditions on the data and the inputs~\eqref{A1}--\eqref{A7} with the errors of this section, for large \(x\),
+\(
+  \sum_{t,j}\bigl(P_{t,w_j}(a_t) - M_{w_j}(a_t)\bigr) \le x^{3\varepsilon}\,\Bc
+\).
+\end{theorem}
+
+This is \cite[Thm.~A]{Adr}, and \cite[\S I.5, (M)]{Rub} before normalization.  Reading Problem~\ref{pr:calB} backwards shows which input pays for which term of \(\Bc\).  The term \(N_Ta\) collects costs incurred once for each top, not once for each lift: the base lattice (\(e_7\)), the precision \(\log(a\rd_E) \le 2y\) of the linear term of the norms (\(e_4\)), and the auxiliary prime (\(e_6\)).  The term \(N_Ta\,m^2/k\) is the colength and size of the auxiliary prime (\(e_2\), \(e_6\)).  The term \(mB_0\) collects the local losses of the \(m\) lifts (\(e_5\), and \(e_4\)); each is of size \(B_0\), which grows with \(m\) because the nodes of the \(j\)th lift grow with \(j\), as the cost of the \(k\)th identity did in Chapter~\ref{ch-chap}.  The term \(mN_c\) comes only from the congruence defects, through \(e_4\).  The spread \(U\) and hence \(e_3\) contain all but the last.
+
+\section{Normalization: the four terms}\label{sec:norm}
+
+The averaging of Chapter~\ref{gf-chap} is over translates.  We write \(\tau \in H\) for the translate index, called \(u\) there, since \(u\) indexes words here; so the nodes of the \(j\)th lift at the translate \(\tau\) are \(w_{\tau,j} \colon \Phi \to (0,\infty)\).  Before averaging we need, for one \(x\):
+\begin{enumerate}
+\item[(N1)] for every \(\tau \in H\), data as in Section~\ref{sec:inputs} with the nodes \(w_{\tau,1}, \dots, w_{\tau,m}\), and with the same \(m, k, n, T, T_2\) and \(a_t\) for all \(\tau\), satisfying the conditions stated there and~\eqref{A1}--\eqref{A7} with the errors stated there, with the same \(C\), \(C_H\) and threshold for ``large \(x\)''; the words \(\Wc\) and the lattices may depend on \(\tau\);
+\item[(N2)] for every \(t \in T\) and every \(j\), all hypotheses of Theorem~\ref{gf-thm:two-scales} for \(a = a_t\) and the family \((w_{\tau,j})_{\tau \in H}\): \(\lvert a_t/b - x\rvert \le 1\), the thick and thin conditions~\eqref{gf-eq:thick-thin} with numbers \(\Delta\) and \(X\), and the thin-scale bound \(\lvert G_\theta(y)\rvert \le \vartheta y\) for all \(\theta\) and \(y \ge X\);
+\item[(N3)] \(\displaystyle \frac{8n(x+1)\vartheta}{\delta} + \frac{2\Delta}{\delta b}\Bigl(2\sum_{r \le x+1}\Lambda(r) + x + 1\Bigr) \le 1\).
+\end{enumerate}
+By (N1) and Theorem~\ref{thm:M}, for every \(\tau\) the sum \(\sum_{t,j}\bigl(P_{t,w_{\tau,j}}(a_t) - M_{w_{\tau,j}}(a_t)\bigr)\) is at most \(x^{3\varepsilon}\Bc\), a bound that does not depend on \(\tau\), since \(\Bc\) does not involve the nodes.  By (N2) and (N3), Theorem~\ref{gf-thm:two-scales} for each pair \((t, j)\), averaged over the \(N_Tm\) pairs, bounds \(R_{q,d}(x)\) by
+\[
+  \frac{2}{N_Tmb\delta}\cdot\frac1n\sum_{\tau\in H}\sum_{t,j}\bigl(P_{t,w_{\tau,j}}(a_t) - M_{w_{\tau,j}}(a_t)\bigr)
+\]
+plus \(\mathcal{K}(x) + 1\) \cite[Thm.~4.2]{Adr}.  The divisor \(N_Tmb\delta/2\) counts the gain: \(N_T\) tops, \(m\) lifts, weight \(b\), at a proportion \(\delta/2\) of the places.  By Theorem~\ref{thm:M} what remains is to divide \(\Bc\) by it.
+
+\begin{problem}\label{pr:divide}
+\(\displaystyle \frac{\Bc}{N_Tmb\delta/2} = \frac{2x}{\delta}\Bigl(\frac1m + \frac mk\Bigr) + \frac{4nmy}{N_T\delta} + \frac{2ky^2}{nN_T}\).
+\end{problem}
+
+\begin{problem}\label{pr:four}
+If \(\delta \ge x^{-\varepsilon}\) and \(N_T \ge \frac12 x^{-\varepsilon/8}n\), the quotient of Problem~\ref{pr:divide} is at most \(8x^{17\varepsilon/8}\bigl(x/m + xm/k + m + k/n^2\bigr)\).
+\end{problem}
+
+\begin{theorem}\label{thm:four}
+Assume (N1)--(N3), \(\delta \ge x^{-\varepsilon}\) and \(N_T \ge \frac12 x^{-\varepsilon/8}n\).  For large \(x\), \(R_{q,d}(x) \le x^{C_{\mathrm{abs}}\varepsilon}\bigl(x/m + xm/k + m + k/n^2\bigr) + \mathcal{K}(x) + 1\), with \(C_{\mathrm{abs}}\) absolute.
+\end{theorem}
+
+The hypothesis \(\delta \ge x^{-\varepsilon}\) is~\eqref{cs-eq:density}, which Behrend's set of columns satisfies (Theorem~\ref{cs-thm:behrend}, and Problem~\ref{af-pr:behrend} at the scale of the argument).  The hypothesis \(N_T \ge \frac12 x^{-\varepsilon/8}n\) holds with high probability for the random tops of density \(\delta_1 = x^{-\varepsilon/8}\) (Problem~\ref{cs-pr:size-T}, and Theorem~\ref{af-thm:sizes}(iv)).
+This is the four-term error of \cite[\S I.5, (M), and \S I.6, Thm.~A]{Rub}.  Adriazola writes the fourth term as \(kx^{c\varepsilon}/(nN_T)\) \cite[\S4.3]{Adr}, the same up to \(n/N_T \le 2x^{\varepsilon/8}\); Zhang's Lemma~6.1 \cite{Zh} has the same four terms.  So \(x/m\) is paid at the ends, \(xm/k\) at the auxiliary primes, \(m\) by the local losses of the steps, and \(k/n^2\) by the congruence defects.  Rubinstein \cite[\S I.8]{Rub} describes \(x/m\) and \(m\) in the same way, and calls \(xm/k\) and \(k/n^2\) the costs of the auxiliary parameters \(k\) and \(n\); for the last term we follow \cite[\S\S16--18]{Adr}. % check-numbers: ok (Zhang): Lemma~6.1
+
+\section{The exponents}\label{sec:exponents}
+
+Why \(m \approx x^{1/2}\), \(k \approx x^{9/2}\) and \(n \approx x^2\)?  Put \(\delta_1 := x^{-\varepsilon/8}\).
+
+\begin{problem}\label{pr:m}
+If \(\sqrt{x\delta_1} \le m \le 2\sqrt{x\delta_1}\), then \(x/m \le x^{1/2 + \varepsilon/16}\) and \(m \le 2x^{1/2 - \varepsilon/16}\).  If instead \(m = x^{1/2 + \kappa}\), then \(x/m + m \ge x^{1/2 + \lvert\kappa\rvert}\).
+\end{problem}
+
+\begin{problem}\label{pr:compatible}
+A number \(k\) with \(xm/k \le 1\) and \(k/n^2 \le x^{1/2-\varepsilon}\) exists if and only if \(n^2 \ge m\,x^{1/2+\varepsilon}\).  With \(m \ge x^{1/2-\varepsilon/16}\) this forces \(n \ge x^{1/2}\).
+\end{problem}
+
+The lower bound for \(k\) comes from the rank hypothesis.  The sources must have total rank at least \(x^{C_H}\) times the dimension of the target, each has rank at most \(C_0\) times that dimension divided by \(\Gamma_0^2 = \exp(4C_\Gamma m^5ny)\), the constant of near orthogonality (Theorem~\ref{sb-thm:near}), and there are at most \(2^{k-3}\) of them; so \(k \ge m^5n\) for large \(x\) (Problem~\ref{sb-pr:words}).
+
+\begin{problem}\label{pr:x2}
+If \(k \ge m^5n\), \(k \le n^2x^{1/2}\) and \(m \ge x^{1/2-\varepsilon/16}\), then \(n \ge x^{2-5\varepsilon/16}\) and \(k \ge x^{9/2-5\varepsilon/8}\).
+\end{problem}
+
+The choices of \cite[Prop.~5.15]{Adr} and \cite[\S I.5]{Rub} are \(m \in [\sqrt{x\delta_1}, 2\sqrt{x\delta_1}]\), \(k \in [x^{9/2+10\varepsilon}, 2x^{9/2+10\varepsilon}]\) and \(n \in [x^{2+8\varepsilon}, 2x^{2+8\varepsilon}]\), with \(n\) a power of \(2\) times a bounded integer.
+
+\begin{problem}\label{pr:substitute}
+With these choices, \(x/m\), \(xm/k\), \(m\) and \(k/n^2\) are at most \(x^{1/2+\varepsilon/16}\), \(2x^{-3-161\varepsilon/16}\), \(2x^{1/2-\varepsilon/16}\) and \(2x^{1/2-6\varepsilon}\); for \(\varepsilon = \frac1{100}\) the exponents are \(0.500625\), \(-3.100625\), \(0.499375\) and \(0.44\).  Moreover \(xm \le k \le n^2x^{1/2-\varepsilon}\) for large \(x\).
+\end{problem}
+
+\begin{problem}\label{pr:139}
+With these choices, \(4C_\Gamma m^5ny \le 256\,C_\Gamma\,x^{9/2+139\varepsilon/16}\).  Since \(\frac{139}{16} < 10\), the inequality of Problem~\ref{sb-pr:words} holds for large \(x\).
+\end{problem}
+
+Thus \(m\) balances \(x/m\) against \(m\), the rank hypothesis makes \(k\) about \(m^5n\), and \(k/n^2 \le x^{1/2}\) then makes \(n\) about \(x^2\).  The terms \(xm/k\) and \(k/n^2\) never compete with the balance.  It remains to bound the constant \(\mathcal{K}(x)\) of Theorem~\ref{thm:four}, which contains \(\lvert c_\chi\rvert\) for \(\chi = \chi_q, \chi_d, \chi_q\chi_d\), uniformly in \(q\) and \(d\).
+
+\begin{problem}\label{pr:cchi}
+Let \(\chi\) be a primitive nonprincipal character with \(\lvert G_\chi(x)\rvert \le x\).  Then \(\lvert c_\chi\rvert \le 1 + \sum_{n \le x}\Lambda(n)/n\).  Hence, if Estimate~B ((W1) below) holds at \(x\), then \(\mathcal{K}(x) \le C''\log x\) for \(x \ge 3\), with \(C''\) absolute.
+\end{problem}
+
+By Theorem~\ref{thm:four} and Problem~\ref{pr:cchi}:
+
+\begin{theorem}[Estimate A]\label{thm:A}
+Assume (N1)--(N3), \(\delta \ge x^{-\varepsilon}\), \(N_T \ge \frac12 x^{-\varepsilon/8}n\), the choices of \(m\), \(k\) and \(n\) of this section, and (W1) of Section~\ref{sec:window}.  For large \(x\), \(R_{q,d}(x) \le x^{1/2 + C'\varepsilon}\), with \(C'\) absolute.  In \cite{Adr}, \(C' = 6\).
+\end{theorem}
+
+If the local loss of the \(j\)th lift grew like \(j^2\) instead of \(j\), the term \(m\) would become \(m^2\), and the balance \(x/m + m^2\) would give only the exponent \(\frac23\) (Problem~\ref{ch-pr:two-thirds}; \cite[step~14]{Alp}).
+
+\section{The window, and the zeros}\label{sec:window}
+
+Theorem~\ref{zr-thm:intervals} needs \(G(x) \le x^\theta\) at every point of \([Y, Y^{3/2}]\), for arbitrarily large \(Y\).  What must hold uniformly as \(x\) runs through such a window?  The form of \cite[\S18]{Adr} is this.  For every small \(\varepsilon\) there is \(J = J(\varepsilon) \ge 2\) such that for arbitrarily large \(Y\) there are \(Y_0 \le Y\) with \(Y^2 \le Y_0^J\), and primes \(q \equiv 3 \pmod 8\), \(d \equiv 7 \pmod{16}\), \(q \mid d + 1\), chosen at the scale \(Y_0\) with \(\log q \le Y_0^{\varepsilon/5}\) and \(\log d \le Y_0^{\varepsilon/5}\log^2Y_0\), such that at every \(x \in [Y, Y^{3/2}]\):
+\begin{enumerate}
+\item[(W1)] Estimate~B: \(\lvert G_\chi(x)\rvert \le x^{1/2+\varepsilon}\) for \(\chi = \chi_q, \chi_d, \chi_q\chi_d\);
+\item[(W2)] the thin-scale bound \(\lvert G_\theta(y')\rvert \le y'\exp(-x^{\varepsilon/8})\) for the \(4n\) characters \(\theta\) of Chapter~\ref{gf-chap} and all \(y' \ge \frac13\exp(x^{\varepsilon/3})\);
+\item[(W3)] \(\sum_{1 \le e < x^{400}} \sum_\ell h_{\ell,e}(E)\log\ell \le \exp(\frac12x^\varepsilon)\) for the field \(E\) of Chapter~\ref{gf-chap} at \(x\), where \(h_{\ell,e}(E)\) is the length of \(\Sha_\ell(E,e)\) as in Chapter~\ref{ts-chap};
+\item[(W4)] data \(n, m, k, T, T_2\), weights, nodes and lattices satisfying (N1)--(N3) of Section~\ref{sec:norm}, with \(X = \frac13\exp(x^{\varepsilon/3})\) and \(\vartheta = \exp(-x^{\varepsilon/8})\) as in (W2), and with \(\delta \ge x^{-\varepsilon}\), \(N_T \ge \frac12 x^{-\varepsilon/8}n\) and the choices of Section~\ref{sec:exponents}; the constants \(C\), \(C_H\) and the threshold for ``large \(x\)'' do not depend on \(x\), \(Y\), \(Y_0\), \(q\) or \(d\).
+\end{enumerate}
+The data of (W4) depend on \(x\); the pair \(q, d\) depends only on \(Y_0\).  Chapter~\ref{af-chap} delivers (W1) (Problems~\ref{af-pr:estB-base} and~\ref{af-pr:twists}) and (W2) (Problem~\ref{af-pr:thin}).  (W3) is Theorem~\ref{lt-thm:W3}, and it is what fixes the position of the window.  (W4) is the deliverables of Chapters~\ref{di-chap}--\ref{lt-chap} at every \(x\) of the window, with the data of Theorem~\ref{af-thm:sizes}.
+
+\begin{problem}\label{pr:window}
+If \(Y_0 \le Y\) and \(Y^2 \le Y_0^J\), then \([Y, Y^{3/2}] \subset [Y_0, Y_0^J]\).  For \(x\) in this window and \(n \le 2x^{2+8\varepsilon}\), \(\log(4nqd) \le 3x^{\varepsilon/5}\log^2x\) once \(x\) is large, while the thin scale \(\frac13\exp(x^{\varepsilon/3})\) has logarithm \(x^{\varepsilon/3} - \log 3\).
+\end{problem}
+
+\begin{problem}\label{pr:G}
+Under (W1)--(W4), \(G(x) \le x^{1/2+C'\varepsilon} + 3x^{1/2+\varepsilon}\) for every \(x\) in the window, once \(Y\) is large.
+\end{problem}
+
+\begin{problem}\label{pr:close}
+Let \(0 < c(\varepsilon) < \frac12\) for small \(\varepsilon > 0\), and suppose that for every small \(\varepsilon\) there are arbitrarily large \(Y\) with \(G(x) \le x^{1/2+c(\varepsilon)}\) for all \(x \in [Y, Y^{3/2}]\).  Then \(\zeta(s) \ne 0\) for \(\Re s > \frac12 + \liminf_{\varepsilon\to0} c(\varepsilon)\).
+\end{problem}
+
+By Problem~\ref{pr:G}, \(c(\varepsilon) = (C' + 1)\varepsilon\) for large \(Y\), with \(C'\) independent of \(\varepsilon\).  Problem~\ref{pr:close} then gives the Riemann hypothesis.  This is why the constant \(C'\) of Theorem~\ref{thm:A} must not depend on \(\varepsilon\), while \(J\), \(C\), \(C_H\) and the threshold for \(x\) may.
+
+\begin{theorem}\label{thm:RH}
+Assume (W1)--(W4).  Then \(\zeta(s) \ne 0\) for \(\Re s > \frac12\).
+\end{theorem}
+
+For \(L(s, \psi)\) one averages over \(A_0 = \ker\psi\) (Section~\ref{gf-sec:subgroup}) and bounds the positive combination \(G^\psi\) of Section~\ref{zr-sec:dirichlet} on windows.  The interval version is Theorem~\ref{zr-thm:dirichlet-intervals}: a bound for \(G^\psi\) on windows excludes the zeros of \(\zeta\) and of every \(L(s,\psi_j)\), real or not; a real zero is excluded by Problem~\ref{zr-pr:real-excluded}.  Chapter~\ref{af-chap} works out the averaging for \(\psi = \chi_8\), and Section~\ref{sec:chi8} closes the example.  Everything in this chapter, from (W1)--(W4) to Theorem~\ref{thm:RH}, is bookkeeping.
+
+\section{The example \texorpdfstring{\(\psi = \chi_8\)}{psi = chi8}}\label{sec:chi8}
+
+Take the example \(\psi = \chi_8\) at the end of Chapter~\ref{af-chap}, with \(R^\psi\) and \(G^\psi = G + \frac17G_{\chi_8}\) as in Problem~\ref{af-pr:chi8-shares}.  How does the argument exclude a zero of \(L(s, \chi_8)\)?
+
+\begin{problem}\label{pr:chi8-zero}
+Suppose that for every small \(\varepsilon > 0\) there are arbitrarily large \(Y\) such that, at every \(x \in [Y, Y^{3/2}]\), \(R^\psi(x) \le x^{1/2+C'\varepsilon}\) and the six characters of Problem~\ref{af-pr:chi8-twists} satisfy Estimate~B.
+(i) Then \(\zeta(s) \ne 0\) and \(L(s, \chi_8) \ne 0\) for \(\Re s > \frac12\).
+(ii) If \(\zeta(s)^7 L(s, \chi_8)\) had a real zero \(\beta > \frac12\) of multiplicity \(\mu\), and no zero of larger real part, the transform of \(G^\psi\) would have residue \(\mu/(7\beta(1 - \beta)) > 0\) at \(\beta\).  The argument of Problem~\ref{zr-pr:real-excluded}, with this residue, then excludes \(\beta\).
+\end{problem}
+
+\section{The status of the inputs}\label{sec:map}
+
+Every input below is proved in the Lean formalization \cite{Lean}; the ledger records which of them have a published human-readable proof.  Each is \emph{classical}, with a reference; \emph{proved in \cite{Adr}}; or \emph{proved in the Lean formalization}, and then we name the hypothesis of \cite{Adr} that it is or rests on, not yet written out in the published expositions.  The accounting, the normalization, the exponents and the window are proved in this chapter, on the models of Chapters~\ref{sm-chap}, \ref{ch-chap}, \ref{sp-chap} and~\ref{od-chap}.  For each input we name the deliverable that supplies it.
+
+{\small
+\begin{description}
+\item[\eqref{A1}, \eqref{A2}] Theorems~\ref{di-thm:K1} and~\ref{di-thm:K2}.  Proved in the Lean formalization; \cite[Thms.~12.27 and~12.21]{Adr} prove them from \cite[Hyps.~11.22, 11.38, 11.42 and~12.12]{Adr}, not yet written out in the published expositions.
+\item[\eqref{A3}] Theorem~\ref{sb-thm:K3}.  The frame theorem and its application to the period maps are proved in \cite[Thms.~13.8 and~13.15]{Adr}; the Gram conditions, \cite[Thms.~14.1--14.3]{Adr}, are proved in the Lean formalization, and in \cite{Adr} they rest on hypotheses of \cite[\S14]{Adr}, not yet written out in the published expositions.
+\item[\eqref{A4}, \eqref{A6}, \eqref{A7}] Inputs~\ref{hp-in:A4}, \ref{hp-in:A6} and~\ref{hp-in:A7}.  The CM period is classical \cite{CS} (Theorem~\ref{kl-thm:cs}), with a correction proved in \cite[Props.~15.3 and~15.6]{Adr}; the mass formula is classical \cite{GHY}; \eqref{A7} is proved in \cite[Thm.~15.33]{Adr}.  The height and target bounds of~\eqref{A4} and the dimension budget of~\eqref{A6} are proved in the Lean formalization; they are \cite[Hyps.~15.10--15.12, 15.16, 15.18 and~15.23]{Adr}, not yet written out in the published expositions.
+\item[\eqref{A5}, and \(mN_c\) in~\eqref{A4}] Theorems~\ref{lt-thm:local} and~\ref{lt-thm:congruence}.  Proved in the Lean formalization; \cite[Thms.~16.6 and~17.37]{Adr} prove them from \cite[Hyps.~16.13, 16.14, 17.24 and~17.36]{Adr}, not yet written out in the published expositions.
+\item[(N1)--(N3), (W1), (W2)] Chapter~\ref{af-chap}.  (N1) is~\eqref{A1}--\eqref{A7} for every translate; the rest is proved in \cite[\S\S4--6]{Adr} from classical theorems \cite{Gal}, \cite{Pa}, \cite[Ch.~14]{Dav}.
+\item[(W3)] Theorem~\ref{lt-thm:W3}.  Over \(\Q\) the bound is classical \cite{MW}, as are the Galois representations \cite{HT}, \cite{Shi}, \cite{CH}, \cite{Car1}.  Over \(E\) it is proved in the Lean formalization; it is \cite[Hyp.~17.11]{Adr}, not yet written out in the published expositions.  As \cite[\S17.4]{Adr} notes, it implies more towards Vandiver's conjecture than any published result.
+\item[(W4)] The deliverables of Chapters~\ref{di-chap}--\ref{lt-chap} at every \(x\) of the window, with constants independent of \(x\), \(Y\), \(Y_0\), \(q\), \(d\).  Proved in the Lean formalization; it is \cite[Hyp.~18.10]{Adr}, not yet written out in the published expositions.  Even given the hypotheses of \cite[\S\S11--17]{Adr}, \cite[\S18.3]{Adr} does not derive it.
+\end{description}
+}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:acct}}
+\begin{description}
+\item[\ref{pr:A127}] Use~\eqref{A7} in~\eqref{A2}.
+\item[\ref{pr:A3}] Take the weighted mean of Problem~\ref{pr:A127} over \(u\), and write \(\mu(N_u) = (\mu(N_u) - h_u) + h_u\).
+\item[\ref{pr:heights}] The weighted mean of~\eqref{A4}.
+\item[\ref{pr:levels}] Use~\eqref{A5}, and~\eqref{A6} multiplied by \(A \ge 0\).  Then use the definition of \(\log\Omega\).
+\end{description}
+
+\subsection*{\S\ref{sec:inputs}}
+\begin{description}
+\item[\ref{pr:e3}] Problem~\ref{sb-pr:logW} and \(k \le b\); and \(\log(1 + x^{C_H}) \le (1 + C_H)\log x \le (1 + C_H)y\).
+\item[\ref{pr:calB}] Bound each \(e_i\) separately, using \(b \le a \le N_Ta\), \(A \le 2N_Ta\) and Problem~\ref{pr:e3}.
+\end{description}
+
+\subsection*{\S\ref{sec:norm}}
+\begin{description}
+\item[\ref{pr:divide}] \(N_2 = \delta n\) and \(a = xb\).
+\item[\ref{pr:four}] \(n/N_T \le 2x^{\varepsilon/8}\) and \(1/\delta \le x^\varepsilon\).
+\end{description}
+
+\subsection*{\S\ref{sec:exponents}}
+\begin{description}
+\item[\ref{pr:m}] One of the two terms is at least \(x^{1/2+\lvert\kappa\rvert}\).
+\item[\ref{pr:x2}] Eliminate \(k\).
+\item[\ref{pr:139}] \(m \le 2x^{1/2-\varepsilon/16}\) and \(n \le 2x^{2+8\varepsilon}\).
+\item[\ref{pr:cchi}] Solve~\eqref{zr-eq:Gchi} for \(c_\chi\).  For \(\mathcal{K}(x)\) use Mertens' estimate.
+\end{description}
+
+\subsection*{\S\ref{sec:window}}
+\begin{description}
+\item[\ref{pr:window}] \(Y^{3/2} \le Y^2\) and \(Y_0 \le x\).
+\item[\ref{pr:G}] Theorem~\ref{thm:A} and Problem~\ref{zi-pr:Rqd}.
+\item[\ref{pr:close}] Theorem~\ref{zr-thm:intervals} for each \(\varepsilon\).
+\end{description}
+
+\subsection*{\S\ref{sec:chi8}}
+\begin{description}
+\item[\ref{pr:chi8-zero}] Problem~\ref{af-pr:chi8-twists} and Theorem~\ref{zr-thm:dirichlet-intervals}, as in Problem~\ref{pr:close}; for (ii), compute the residue as in Problem~\ref{zr-pr:nearest}, and note that Problem~\ref{zr-pr:positive} uses only its sign.
+\end{description}
+
+\begin{thebibliography}{Car1}
+\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[Alp]{Alp} L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
+\bibitem[Car1]{Car1} A.~Caraiani, \emph{Local--global compatibility and the action of monodromy on nearby cycles}, Duke Math.\ J.\ \textbf{161} (2012), 2311--2413.
+\bibitem[CH]{CH} G.~Chenevier and M.~Harris, \emph{Construction of automorphic Galois representations, II}, Camb.\ J.\ Math.\ \textbf{1} (2013), 53--73.
+\bibitem[CS]{CS} S.~Chowla and A.~Selberg, \emph{On Epstein's zeta-function}, J.\ reine angew.\ Math.\ \textbf{227} (1967), 86--110.
+\bibitem[Dav]{Dav} H.~Davenport, \emph{Multiplicative Number Theory}, 3rd ed., Grad.\ Texts in Math.\ 74, Springer, 2000.
+\bibitem[Gal]{Gal} P.~X.~Gallagher, \emph{A large sieve density estimate near \(\sigma = 1\)}, Invent.\ Math.\ \textbf{11} (1970), 329--339.
+\bibitem[GHY]{GHY} W.~T.~Gan, J.~P.~Hanke and J.-K.~Yu, \emph{On an exact mass formula of Shimura}, Duke Math.\ J.\ \textbf{107} (2001), 103--133.
+\bibitem[HT]{HT} M.~Harris and R.~Taylor, \emph{The Geometry and Cohomology of Some Simple Shimura Varieties}, Ann.\ of Math.\ Stud.\ 151, Princeton Univ.\ Press, 2001.
+\bibitem[Lean]{Lean} The Lean community, \emph{riemann-hypothesis}, a Lean formalization of Alp\"oge's argument, \url{https://github.com/leanprover-community/riemann-hypothesis}.
+\bibitem[MW]{MW} B.~Mazur and A.~Wiles, \emph{Class fields of abelian extensions of \(\mathbf{Q}\)}, Invent.\ Math.\ \textbf{76} (1984), 179--330.
+\bibitem[Pa]{Pa} A.~Page, \emph{On the number of primes in an arithmetic progression}, Proc.\ London Math.\ Soc.\ (2) \textbf{39} (1935), 116--141.
+\bibitem[Rub]{Rub} \emph{The Alp\"oge--Claude proof of the Riemann hypothesis explained for the Riemann zeta function}, written by AI models at the behest of M.~O.~Rubinstein, working draft, 21 November 2026, \url{https://www.math.uwaterloo.ca/~mrubinst/alpoge_claude_grh/zeta-paper.pdf}.
+\bibitem[Shi]{Shi} S.~W.~Shin, \emph{Galois representations arising from some compact Shimura varieties}, Ann.\ of Math.\ (2) \textbf{173} (2011), 1645--1741.
+\bibitem[Zh]{Zh} R.~Zhang, \emph{A preliminary note on Alp\"oge's proposed proof of the generalized Riemann hypothesis}, preprint, 2026, hexagon:2611.00809.
+\end{thebibliography}
+
+\end{document}

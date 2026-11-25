@@ -1,0 +1,285 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[sm-]{20261125T000000--slope-method__workbook}
+\externaldocument[ec-]{20261124T223000--elliptic-curves-for-the-proof__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261125T009500}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\Fc}{\mathcal{F}}
+\newcommand{\leg}[2]{\Bigl(\frac{#1}{#2}\Bigr)}
+
+\setlength{\emergencystretch}{2em}
+
+\title{The Fock model and theta intertwiners}
+\author{}
+\date{November 25, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Fourier series of entire periodic functions.  Quadratic Gauss sums: for an odd prime \(p\) and \(p \nmid a\), \(\sum_{t \bmod p} e^{2\pi\ii a t^2/p} = \leg{a}{p}\varepsilon_p\sqrt p\), with \(\varepsilon_p = 1\) for \(p \equiv 1 \pmod 4\) and \(\varepsilon_p = \ii\) for \(p \equiv 3 \pmod 4\) \cite[Ch.~2]{Dav}.  From Chapter~\ref{ec-chap}, \emph{Complex tori, theta functions and periods}: Jacobi's function and its quasi-periodicity (Section~\ref{ec-sec:theta}, Problem~\ref{ec-pr:jacobi-qp}).  From Chapter~\ref{sm-chap}, \emph{The slope method}: the Gaussian norm of Problem~\ref{sm-pr:fock}.
+
+The theta lifts of later chapters are built from theta functions of many lattices at once, and a lift changes the lattice.  How does a theta function of one lattice become a theta function of another, and what is lost when one does this twice?  The answer is a finite sum of translation operators, and the loss is a root of unity given by a Gauss sum.  We work in one complex variable, with \(\Z[\ii]\) and its neighbours of index \(2\) and \(p\).
+
+\section{The Heisenberg group and the Fock model}\label{sec:fock}
+
+On \(V = \C\) let \(H(z,w) := z\bar w\) and \(E := \operatorname{Im} H\), so that \(E(x + \ii y, x' + \ii y') = y x' - x y'\) is a symplectic form.  For \(x \in \C\) and a function \(G\) on \(\C\) put
+\[
+  (U_x G)(z) := G(z + x)\, e^{-\pi H(z,x) - \frac\pi2 H(x,x)} .
+\]
+Let \(\Fc\) be the \emph{Fock space} of entire functions with \(\lVert G\rVert^2 := \int_\C \lvert G(z)\rvert^2 e^{-\pi\lvert z\rvert^2}\, dA(z) < \infty\).  The operators \(e^{\ii s}U_x\) with \(s \in \R\) form a Heisenberg group, and \(\Fc\) is its Fock model \cite[Ch.~1]{Fo}, \cite[Ch.~2]{Pol}; for theta functions in one variable from this point of view, see \cite[Ch.~I, \S3]{Mu}.
+
+\begin{problem}\label{pr:unitary}
+Each \(U_x\) is a unitary operator on \(\Fc\), and
+\[
+  U_x U_y = e^{-\pi\ii E(x,y)}\, U_{x+y} .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:monomials}
+The monomials \(z^n\) are orthogonal in \(\Fc\), with \(\lVert z^n\rVert^2 = n!/\pi^n\).
+\end{problem}
+
+So \(f \mapsto f(\sqrt\pi\, z)\) is an isometry from \(\C[z]\) with the norm of Problem~\ref{sm-pr:fock}, where \(\lVert z^n\rVert^2 = n!\), into \(\Fc\).
+
+The representation of the Heisenberg group on \(\Fc\) is irreducible, and by the Stone--von Neumann theorem it is the only irreducible unitary representation on which \(e^{\ii s}\) acts by \(e^{\ii s}\) \cite[Ch.~1]{LV}, \cite[Ch.~2]{Pol}.  A theta function is a vector fixed by a maximal commutative subgroup that comes from a lattice.
+
+A lattice \(\Lambda \subset \C\) is \emph{self-dual} if \(E(\Lambda,\Lambda) \subset \Z\) and \(\C/\Lambda\) has area \(1\).  A \emph{semicharacter} of \(\Lambda\) is a function \(\alpha \colon \Lambda \to \{\pm1\}\) with
+\[
+  \alpha(\lambda + \mu) = \alpha(\lambda)\alpha(\mu)(-1)^{E(\lambda,\mu)} \qquad (\lambda, \mu \in \Lambda) .
+\]
+For such a pair let \(\mathcal{T}(\Lambda,\alpha)\) be the space of entire functions \(G\) with \(\alpha(\lambda)U_\lambda G = G\) for all \(\lambda \in \Lambda\), that is,
+\[
+  G(z + \lambda) = \alpha(\lambda)\, e^{\pi z\bar\lambda + \frac\pi2\lvert\lambda\rvert^2}\, G(z) .
+\]
+These are the classical theta functions of the line bundle on \(\C/\Lambda\) with Hermitian form \(H\) and semicharacter \(\alpha\) \cite[Ch.~1]{Pol}.  Let \(\alpha_0(m + n\ii) := (-1)^{mn}\) on \(\Z[\ii]\).
+
+\begin{problem}\label{pr:semichar}
+The semicharacters of \(\Z[\ii]\) are the four functions \((-1)^{mn + am + bn}\) with \(a, b \in \{0,1\}\).  Exactly two of them, \(\alpha_0\) and \((-1)^{mn+m+n}\), are invariant under \(v \mapsto \ii v\).
+\end{problem}
+
+\begin{problem}\label{pr:eigen}
+Let \(\alpha\) be a semicharacter of a self-dual \(\Lambda\).  Then \(\lambda \mapsto \alpha(\lambda)U_\lambda\) is a homomorphism, and for \(w \in \C\) and \(G \in \mathcal{T}(\Lambda,\alpha)\),
+\[
+  \alpha(\lambda)U_\lambda\,(U_w G) = e^{-2\pi\ii E(\lambda,w)}\, U_w G \qquad (\lambda \in \Lambda) .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:not-fock}
+\(\mathcal{T}(\Lambda,\alpha) \cap \Fc = 0\).
+\end{problem}
+
+So theta functions are not vectors of \(\Fc\).  For \(G \in \mathcal{T}(\Lambda,\alpha)\) the function \(\lvert G(z)\rvert^2 e^{-\pi\lvert z\rvert^2}\) is \(\Lambda\)-periodic, and we use instead
+\[
+  \lVert G\rVert_\Lambda^2 := \int_{\C/\Lambda} \lvert G(z)\rvert^2 e^{-\pi\lvert z\rvert^2}\, dA(z) .
+\]
+
+\section{Theta functions of \texorpdfstring{\(\Z[\ii]\)}{Z[i]}}\label{sec:gauss}
+
+How many theta functions does \(\Z[\ii]\) carry?  For \(\operatorname{Im}\tau > 0\) let \(\vartheta_\tau(z) := \sum_{n \in \Z} e^{\pi\ii n^2\tau + 2\pi\ii n z}\), the function \(\vartheta\) of Chapter~\ref{ec-chap}, and let
+\[
+  G(z) := e^{\pi z^2/2}\, \vartheta_\ii(z) = e^{\pi z^2/2} \sum_{n \in \Z} e^{-\pi n^2 + 2\pi\ii n z} .
+\]
+
+\begin{problem}\label{pr:G-line}
+\(\mathcal{T}(\Z[\ii], \alpha_0) = \C G\).
+\end{problem}
+
+\begin{problem}\label{pr:G-rot}
+\(G(\ii z) = G(z)\).
+\end{problem}
+
+\begin{problem}\label{pr:G-norm}
+\(\lVert G\rVert_{\Z[\ii]}^2 = 2^{-1/2}\).
+\end{problem}
+
+For \(t > 0\) let \(\Lambda_t := t\Z + t^{-1}\ii\Z\), a self-dual lattice, with the semicharacter \(\alpha_t(ta + t^{-1}b\ii) := (-1)^{ab}\).
+
+\begin{problem}\label{pr:diag}
+\(\mathcal{T}(\Lambda_t, \alpha_t) = \C\, e^{\pi z^2/2}\, \vartheta_{\ii/t^2}(z/t)\).
+\end{problem}
+
+In general, \(\mathcal{T}(\Lambda,\alpha)\) is a line for every self-dual \(\Lambda\) and every semicharacter \(\alpha\) of it; in \(g\) variables its dimension is the Pfaffian of \(E\) on \(\Lambda\) \cite[Ch.~3]{Pol}.  Section~\ref{sec:intertwiners} proves this for the lattices met below, from Problem~\ref{pr:G-line}.
+
+\section{Intertwiners}\label{sec:intertwiners}
+
+Two pairs \((\Lambda_1,\alpha_1)\) and \((\Lambda_2,\alpha_2)\) as in Section~\ref{sec:fock} are \emph{compatible} if \(\Lambda_1\) and \(\Lambda_2\) are commensurable and \(\alpha_1 = \alpha_2\) on \(\Lambda_{12} := \Lambda_1 \cap \Lambda_2\).  Since both lattices have covolume \(1\), \(n_{12} := [\Lambda_2 : \Lambda_{12}]\) equals \([\Lambda_1 : \Lambda_{12}]\).  The \emph{intertwiner} is
+\[
+  I_{12}\, G := n_{12}^{-1/2} \sum_{y \in \Lambda_2/\Lambda_{12}} \alpha_2(y)\, U_y G \qquad (G \in \mathcal{T}(\Lambda_1,\alpha_1)) .
+\]
+It is a finite sum of translation operators.  The theory goes back to Weil \cite{We}; see \cite[Ch.~4]{Pol} and \cite[Ch.~1]{LV}.  We follow the presentation of Adriazola \cite[\S7]{Adr}.
+
+\begin{problem}\label{pr:I-def}
+Each summand of \(I_{12}G\) depends only on the class of \(y\) modulo \(\Lambda_{12}\), and \(I_{12}\) maps \(\mathcal{T}(\Lambda_1,\alpha_1)\) into \(\mathcal{T}(\Lambda_2,\alpha_2)\).
+\end{problem}
+
+\begin{problem}\label{pr:I-inverse}
+\(I_{21} I_{12}\) is the identity of \(\mathcal{T}(\Lambda_1,\alpha_1)\).
+\end{problem}
+
+\begin{problem}\label{pr:I-isometry}
+\(\lVert I_{12}G\rVert_{\Lambda_2} = \lVert G\rVert_{\Lambda_1}\).
+\end{problem}
+
+By Problems~\ref{pr:G-line} and~\ref{pr:I-inverse}, \(\mathcal{T}(\Lambda,\alpha)\) is a line, spanned by \(I G\) for the intertwiner \(I\) from \(\Z[\ii]\), whenever \((\Lambda,\alpha)\) is compatible with \((\Z[\ii],\alpha_0)\).
+
+\begin{problem}\label{pr:I-explicit}
+Let \(p\) be a prime, and let \(I_{12}\) be the intertwiner from \((\Z[\ii],\alpha_0)\) to \((\Lambda_{1/p}, \alpha_{1/p})\).  Then
+\[
+  I_{12}\, G = \sqrt p\; e^{\pi z^2/2}\, \vartheta_{p^2\ii}(pz) ,
+\]
+and Problem~\ref{pr:I-inverse} for this pair is the splitting of \(\vartheta_\ii(z)\) according to the class of \(n\) modulo \(p\).
+\end{problem}
+
+\section{Composition}\label{sec:composition}
+
+Is \(I_{23}I_{12}\) equal to \(I_{13}\)?  Let \((\Lambda_i,\alpha_i)\), \(i = 1, 2, 3\), be pairwise compatible pairs, each compatible with \((\Z[\ii],\alpha_0)\).  Both \(I_{23}I_{12}\) and \(I_{13}\) map the line \(\mathcal{T}(\Lambda_1,\alpha_1)\) isomorphically onto the line \(\mathcal{T}(\Lambda_3,\alpha_3)\), so they differ by a constant \(\mu = \mu(\Lambda_1,\Lambda_2,\Lambda_3)\).  For \(z \in \Lambda_3\) and \(y \in \Lambda_2\) with \(z + y \in \Lambda_1\) put
+\[
+  \psi(z,y) := \alpha_3(z)\,\alpha_2(y)\,\alpha_1(z+y)\, e^{-\pi\ii E(z,y)} .
+\]
+
+\begin{problem}\label{pr:triple}
+Let \(S_2\) and \(S_3\) be sets of representatives of \(\Lambda_2/\Lambda_{12}\) and \(\Lambda_3/\Lambda_{23}\).  Then
+\[
+  I_{23} I_{12} = \mu\, I_{13},
+  \qquad
+  \mu = \Bigl(\frac{n_{13}}{n_{12}\, n_{23}}\Bigr)^{1/2} \sum_{\substack{z \in S_3,\ y \in S_2 \\ z + y \in \Lambda_1}} \psi(z,y) .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:mu-abs}
+\(\lvert\mu\rvert = 1\), \(\mu(\Lambda_1,\Lambda_2,\Lambda_1) = 1\), and \(\mu(\Lambda_1,\Lambda_3,\Lambda_2) = \overline{\mu(\Lambda_1,\Lambda_2,\Lambda_3)}\).
+\end{problem}
+
+\begin{problem}\label{pr:cocycle}
+For four pairwise compatible pairs, each compatible with \((\Z[\ii],\alpha_0)\),
+\[
+  \mu(\Lambda_1,\Lambda_2,\Lambda_3)\,\mu(\Lambda_1,\Lambda_3,\Lambda_4) = \mu(\Lambda_2,\Lambda_3,\Lambda_4)\,\mu(\Lambda_1,\Lambda_2,\Lambda_4) .
+\]
+\end{problem}
+
+Problems~\ref{pr:I-inverse}, \ref{pr:I-isometry}, \ref{pr:triple} and~\ref{pr:mu-abs} prove the following.  It is due to Weil \cite{We}; the formula for \(\mu\) is that of \cite[Lemma~7.3]{Adr}, where one semicharacter is defined on all lattices at once.
+
+\begin{theorem}\label{thm:compose}
+The intertwiners are isometries, \(I_{21} = I_{12}^{-1}\), and \(I_{23}I_{12} = \mu\, I_{13}\) with \(\lvert\mu\rvert = 1\) given by the sum of Problem~\ref{pr:triple}.
+\end{theorem}
+
+The constant \(\mu\) is a normalized quadratic Gauss sum.  For the Weil representation, Lion and Vergne express the analogous constant through the Maslov index of three Lagrangian subspaces \cite[Ch.~1]{LV}; Gauss sums of integral quadratic forms are treated in \cite[App.~B]{Pol}.  The next section computes \(\mu\) in the smallest cases.
+
+\section{Neighbours of index \texorpdfstring{\(p\)}{p} and \texorpdfstring{\(2\)}{2}}\label{sec:neighbours}
+
+\emph{Odd index.}  Let \(R \subset \Q\) be the ring of fractions with odd denominator, so that \(R/2R = \Z/2\), and for \(r \in R\) let \((-1)^r := (-1)^n\) for any integer \(n \equiv r \pmod{2R}\).  For \(v = x + \ii y\) with \(x, y \in R\) put \(\alpha_R(v) := (-1)^{xy}\).
+
+\begin{problem}\label{pr:alphaR}
+\(\alpha_R\) is a semicharacter of every self-dual lattice contained in \(R + R\ii\).  It equals \(\alpha_0\) on \(\Z[\ii]\) and \(\alpha_{1/p}\) on \(\Lambda_{1/p}\) for \(p\) odd.
+\end{problem}
+
+So all self-dual lattices in \(R + R\ii\), with \(\alpha_R\), are pairwise compatible.  Fix an odd prime \(p\), and let \(N := \Z + p\Z\ii\).
+
+\begin{problem}\label{pr:p-neighbours}
+The self-dual lattices \(\Lambda\) with \(N \subset \Lambda\) are \(\Lambda^{(\infty)} := \Z[\ii]\) and \(\Lambda^{(c)} := N + \Z(\frac1p + c\ii)\) for \(c \in \Z/p\).  Moreover \(\Lambda^{(0)} = \Lambda_{1/p}\), and any two of these \(p + 1\) lattices intersect in \(N\).
+\end{problem}
+
+\begin{problem}\label{pr:mu-p}
+For \(b \ne c\) in \(\Z/p\), with \(\bar 2 := (p+1)/2\),
+\[
+  \mu(\Lambda^{(\infty)}, \Lambda^{(b)}, \Lambda^{(c)}) = \frac{1}{\sqrt p} \sum_{t \bmod p} e^{2\pi\ii\, \bar2 (c-b) t^2/p} = \leg{2(c-b)}{p}\, \varepsilon_p .
+\]
+For \(p = 3\), \(b = 0\), \(c = 1\) this is \(-\ii\).
+\end{problem}
+
+\begin{problem}\label{pr:mu-p-gen}
+For distinct \(a, b, c \in \Z/p\),
+\[
+  \mu(\Lambda^{(a)}, \Lambda^{(b)}, \Lambda^{(c)}) = \leg{2(b-a)(c-b)(c-a)}{p}\, \varepsilon_p .
+\]
+\end{problem}
+
+\emph{Index \(2\).}  Here \(\alpha_R\) is not available, and the semicharacters must be chosen.  Let \(N_2 := \Z + 2\Z\ii\), let \(\Lambda' := \Lambda_{1/2} = \frac12\Z + 2\Z\ii\) with \(\alpha' := \alpha_{1/2}\), and let \(\Lambda'' := \Z(\frac12 + \ii) + \Z\) with \(\alpha''(a(\frac12 + \ii) + m) := (-1)^{am}\).
+
+\begin{problem}\label{pr:index2}
+\(\Z[\ii]\), \(\Lambda'\) and \(\Lambda''\) are the self-dual lattices containing \(N_2\), and any two of them intersect in \(N_2\).  The pairs \((\Z[\ii],\alpha_0)\), \((\Lambda',\alpha')\) and \((\Lambda'',\alpha'')\) are pairwise compatible, and each of \(\Lambda'\), \(\Lambda''\) has exactly two semicharacters compatible with \(\alpha_0\).
+\end{problem}
+
+\begin{problem}\label{pr:mu-2}
+\(\mu(\Z[\ii], \Lambda', \Lambda'') = 2^{-1/2}\sum_{t \bmod 2} e^{\pi\ii t^2/2} = e^{\pi\ii/4}\).  If \(\alpha''\) is replaced by the other semicharacter compatible with \(\alpha_0\), then \(\mu = e^{-\pi\ii/4}\).
+\end{problem}
+
+So \(\mu\) is a fourth root of unity for neighbours of odd index and a primitive eighth root of unity for neighbours of index \(2\).  The sign \(\leg{2}{p}\) in Problem~\ref{pr:mu-p} and the eighth root of Problem~\ref{pr:mu-2} come from the same place: the semicharacter, which is a \(2\)-adic datum.
+
+\paragraph{Unitary changes of variable.}
+Constants of the same kind appear when a lattice is moved by a unitary map \(\varrho\) of \(V\).  If \(\varrho\) preserves \(\Lambda\) and \(\alpha\), as \(z \mapsto \ii z\) does for \((\Z[\ii],\alpha_0)\), then \(G \circ \varrho^{-1}\) lies in the same line, and Problem~\ref{pr:G-rot} says that the constant is \(1\).  In general \(G \circ \varrho^{-1}\) is a Gauss sum times \(I_{\Lambda \to \varrho\Lambda}\,G\); this is Weil's transformation law \cite{We}, in the form used in \cite[\S7.1, (W3), and Lemma~7.8]{Adr}.  In the theta chain of \cite[\S7]{Adr} this is what makes the kernels covariant under the unitary groups.  The constants \(\mu\) are, in lattice form, the constants that define Weil's metaplectic double cover of \(\mathrm{Sp}_2 = \mathrm{SL}_2\) \cite{We}, which is the case \(n = 2\) of Kubota's \(n\)-fold covers of \(\mathrm{SL}_2\).
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:fock}}
+\begin{description}
+\item[\ref{pr:unitary}] \(\lvert(U_xG)(z)\rvert^2 e^{-\pi\lvert z\rvert^2} = \lvert G(z+x)\rvert^2 e^{-\pi\lvert z+x\rvert^2}\).  For the product, compare exponents; \(H(x,y) - \operatorname{Re}H(x,y) = \ii E(x,y)\).
+\item[\ref{pr:monomials}] Polar coordinates.
+\item[\ref{pr:semichar}] Two semicharacters differ by a character of \(\Lambda\) with values \(\pm1\).  For \(\alpha_0\) check the identity on the basis \(1, \ii\) and extend.
+\item[\ref{pr:eigen}] The first statement is the definition of a semicharacter together with Problem~\ref{pr:unitary}.  For the second, commute \(U_\lambda\) past \(U_w\).
+\item[\ref{pr:not-fock}] \(\lvert G\rvert^2 e^{-\pi\lvert z\rvert^2}\) is \(\Lambda\)-periodic.
+\end{description}
+
+\subsection*{\S\ref{sec:gauss}}
+\begin{description}
+\item[\ref{pr:G-line}] For \(F \in \mathcal{T}(\Z[\ii],\alpha_0)\), \(e^{-\pi z^2/2}F\) has period \(1\); expand it in a Fourier series and use the law under \(z \mapsto z + \ii\) to relate consecutive coefficients.
+\item[\ref{pr:G-rot}] \((\Z[\ii],\alpha_0)\) is invariant under \(z \mapsto \ii z\), and \(H(\ii z, \ii w) = H(z,w)\); so \(G(\ii z)\) lies in the line.  Compare values at \(0\).
+\item[\ref{pr:G-norm}] Integrate first over \(x \in [0,1]\); the remaining sum over \(n\) unfolds \([0,1]\) in \(y\) to \(\R\).
+\item[\ref{pr:diag}] As in Problem~\ref{pr:G-line}, after the substitution \(z = tw\).
+\end{description}
+
+\subsection*{\S\ref{sec:intertwiners}}
+\begin{description}
+\item[\ref{pr:I-def}] Write \(\alpha_2(y+\lambda)U_{y+\lambda}\) through \(\alpha_2(y)U_y\) and \(\alpha_2(\lambda)U_\lambda\), with \(\lambda \in \Lambda_{12}\); then use \(\alpha_1 = \alpha_2\) on \(\Lambda_{12}\).  For the second statement, \(\alpha_2(w)U_w\) permutes the summands.
+\item[\ref{pr:I-inverse}] By Problem~\ref{pr:eigen}, \(\sum_{x \in \Lambda_1/\Lambda_{12}} \alpha_1(x)U_x\) multiplies \(U_yG\) by a character sum.  The character \(x \mapsto e^{-2\pi\ii E(x,y)}\) of \(\Lambda_1/\Lambda_{12}\) is trivial exactly when \(y \in \Lambda_1\), since \(\Lambda_1\) is self-dual.
+\item[\ref{pr:I-isometry}] Integrate over \(\C/\Lambda_{12}\), an \(n_{12}\)-fold cover of both tori.  A cross term \(U_yG\,\overline{U_{y'}G}\,e^{-\pi\lvert z\rvert^2}\) with \(y \not\equiv y'\) is \(\Lambda_{12}\)-periodic and changes by a nontrivial character under \(\Lambda_1\).
+\item[\ref{pr:I-explicit}] Representatives \(s/p\), \(0 \le s < p\).  Then \(\sum_s e^{2\pi\ii ns/p}\) picks out \(p \mid n\).
+\end{description}
+
+\subsection*{\S\ref{sec:composition}}
+\begin{description}
+\item[\ref{pr:triple}] Write \(I_{23}I_{12}G = \kappa\, I_{13}G\), and apply \(\sum_{x} \alpha_1(x)U_x\) to both sides, with \(x\) running over \(\Lambda_1/(\Lambda_1 \cap \Lambda_2 \cap \Lambda_3)\).  This lattice fixes each term \(U_zU_yG\), so the sum may be applied term by term; by Problem~\ref{pr:eigen} only the terms with \(z + y \in \Lambda_1\) survive, and there \(U_zU_yG = e^{-\pi\ii E(z,y)}\alpha_1(z+y)G\).
+\item[\ref{pr:mu-abs}] For the modulus use Problem~\ref{pr:I-isometry}.  Then compute \(I_{32}I_{23}I_{12}\) in two ways.
+\item[\ref{pr:cocycle}] Compute \(I_{34}I_{23}I_{12}\) in two ways.
+\end{description}
+
+\subsection*{\S\ref{sec:neighbours}}
+\begin{description}
+\item[\ref{pr:alphaR}] \((x+x')(y+y') - xy - x'y' - E(v,v') = 2xy'\).
+\item[\ref{pr:p-neighbours}] The dual of \(N\) for \(E\) is \(N^\perp = \frac1p\Z + \Z\ii\), and \(N^\perp/N \cong (\Z/p)^2\).  A self-dual \(\Lambda \supset N\) lies in \(N^\perp\) and corresponds to a line in \(N^\perp/N\).
+\item[\ref{pr:mu-p}] Take \(z = t(\frac1p + c\ii)\) and \(y = -t(\frac1p + b\ii)\).  Then \(z + y \in \Z[\ii]\).
+\item[\ref{pr:mu-p-gen}] Problem~\ref{pr:cocycle} with \(\Lambda_1 = \Z[\ii]\), and Problem~\ref{pr:mu-p}.
+\item[\ref{pr:index2}] As in Problem~\ref{pr:p-neighbours} with \(p = 2\).  Note that \(\alpha_0 = 1\) on \(N_2\), and apply Problem~\ref{pr:semichar}'s argument to \(\Lambda'\) and \(\Lambda''\).
+\item[\ref{pr:mu-2}] One term has \(z = y = 0\).  In the other, \(z\) represents the nonzero class of \(\Lambda''/N_2\).
+\end{description}
+
+\begin{thebibliography}{Pol}
+\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[Dav]{Dav} H.~Davenport, \emph{Multiplicative Number Theory}, 3rd ed., Grad.\ Texts in Math.\ 74, Springer, 2000.
+\bibitem[Fo]{Fo} G.~B.~Folland, \emph{Harmonic Analysis in Phase Space}, Ann.\ of Math.\ Stud.\ 122, Princeton Univ.\ Press, 1989.
+\bibitem[LV]{LV} G.~Lion and M.~Vergne, \emph{The Weil Representation, Maslov Index and Theta Series}, Progr.\ Math.\ 6, Birkh\"auser, 1980.
+\bibitem[Mu]{Mu} D.~Mumford, \emph{Tata Lectures on Theta I}, Progr.\ Math.\ 28, Birkh\"auser, 1983.
+\bibitem[Pol]{Pol} A.~Polishchuk, \emph{Abelian Varieties, Theta Functions and the Fourier Transform}, Cambridge Tracts in Math.\ 153, Cambridge Univ.\ Press, 2003.
+\bibitem[We]{We} A.~Weil, \emph{Sur certains groupes d'op\'erateurs unitaires}, Acta Math.\ \textbf{111} (1964), 143--211.
+\end{thebibliography}
+
+\end{document}
