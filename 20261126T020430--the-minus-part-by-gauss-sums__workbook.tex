@@ -1,0 +1,254 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[tt-]{20261125T004100--tate-twists-and-sha__workbook}
+\externaldocument[ds-]{20261125T004000--denominators-and-sha__workbook}
+\externaldocument[ec-]{20261125T014500--eisenstein-congruences-and-selmer-classes__workbook}
+\externaldocument[lt-]{20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook}
+
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T020430\endcsname
+  \chapnumber{20261126T020430}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Zl}{\Z_\ell}
+\newcommand{\Ql}{\Q_\ell}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Gal}{\operatorname{Gal}}
+\newcommand{\len}{\operatorname{len}}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\num}{\operatorname{num}}
+\newcommand{\Sha}{\mathrm{Sha}}
+\newcommand{\tl}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\title{The minus part, by Gauss sums}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Chapter~\ref{tt-chap}: the modules \(W_e=\Ql/\Zl(-e)\), the groups \(\Sha_\ell(F,e)\), \(\Sha_\ell(\Q,e;\eta)\) and the lengths \(h_{\ell,e}(F)\), critical characters, and Theorem~\ref{tt-thm:MW}.  Chapter~\ref{ds-chap}: the Stickelberger element and Problem~\ref{ds-pr:c-twist}.  Chapter~\ref{ec-chap}, Section~\ref{ec-sec:shapiro}: the coefficient ring \(\Oc\) and the decomposition of Problem~\ref{ec-pr:sha-decomp}.  Generalized Bernoulli numbers \cite[Ch.~4]{Wa}, Gauss sums \cite[Ch.~6]{Wa}, and Hilbert symbols \cite[Ch.~III]{Se}.  Throughout, \(\ell\) is an odd prime, and for a finite extension \(\Oc\) of \(\Zl\) the valuation \(v_\Oc\) takes the value \(1\) on a uniformizer.
+
+\section{The two signs}\label{sec:signs}
+
+Over \(\Q\), odd twists are measured by Bernoulli numbers and even twists by the plus part of a class group (Section~\ref{tt-sec:split}).  The fields of the argument are the abelian CM fields
+\[
+ E=E(\psi,a,q,d)=A_\psi\cdot\Q(\zeta_{2^{a+2}})^+\cdot\Q(\sqrt{-q})\cdot\Q(\sqrt{-d}),
+\]
+where \(A_\psi\) is the field cut out by a primitive Dirichlet character \(\psi\), \(a\ge2\), and \(q\equiv3\pmod8\), \(d\equiv7\pmod{16}\) are primes not dividing the conductor \(N_\psi\) \cite[\S5.3]{Zh}.  Which part of \(\Sha_\ell(E,e)\) is measured by Bernoulli numbers?  Let \(c\) be complex conjugation, which acts on \(\Sha_\ell(E,e)\).  The \emph{plus part} \(\Sha^+_\ell(E,e)\) is the subgroup on which \(c\) acts by \((-1)^e\), the \emph{minus part} \(\Sha^-_\ell(E,e)\) the subgroup on which it acts by \((-1)^{e+1}\), and \(h^\pm_{\ell,e}(E)\) are their lengths.
+
+\begin{problem}\label{pr:split}
+Let \(R\) be a commutative ring with \(2\in R^\times\), \(M\) an \(R\)-module of finite length, and \(c\) an \(R\)-linear involution of \(M\).  Then \(M=M^{c=1}\oplus M^{c=-1}\) and \(\len M=\len M^{c=1}+\len M^{c=-1}\).  Hence \(h_{\ell,e}(E)=h^+_{\ell,e}(E)+h^-_{\ell,e}(E)\).
+\end{problem}
+
+\begin{problem}\label{pr:parts}
+Let \(\ell\nmid[E:\Q]\).  In the decomposition of Problem~\ref{ec-pr:sha-decomp}, \(c\) acts on the summand of a character \(\eta\) of \(\Gal(E/\Q)\) by \(\eta(-1)\).  Hence \(\Sha^-_\ell(E,e)\otimes\Oc\) is the sum of the summands of the \(\eta\) that are critical for \(e\), that is, with \(\eta(-1)=(-1)^{e+1}\).
+\end{problem}
+
+\begin{problem}\label{pr:parity}
+Let \(\chi\) be a primitive Dirichlet character and \(k\ge2\).  Then \(B_{k,\chi}=0\) if \(\chi(-1)\ne(-1)^k\), and \(B_{k,\chi}\ne0\) if \(\chi(-1)=(-1)^k\).  So \(L(-e,\chi)\ne0\), for \(e\ge1\), exactly when \(\chi\) is critical for \(e\).
+\end{problem}
+
+\begin{problem}\label{pr:degree}
+\([E:\Q]\) divides \(2^{a+2}\) times the order of \(\psi\).  Hence every odd prime dividing \([E:\Q]\) divides the order of \(\psi\).
+\end{problem}
+
+So on the minus part an \(L\)-value is available, and the primes \(\ell\mid[E:\Q]\) form a fixed finite set.
+
+\section{The bound by Bernoulli numbers}\label{sec:bernoulli}
+
+The Lean formalization bounds each critical summand by one generalized Bernoulli number.
+
+\begin{theorem}[Bernoulli bound]\label{thm:psi}
+Let \(E\subseteq\Q(\zeta_N)\) be an abelian CM field, \(\ell\nmid[E:\Q]\), \(e\ge1\), and \(\eta\colon\Gal(E/\Q)\to\Oc^\times\) a character with \(\eta(-1)=(-1)^{e+1}\).  View \(\eta\) as a Dirichlet character modulo \(N\), with primitive character \(\eta_0\).  Then
+\[
+ \len_\Oc\Sha_\ell(\Q,e;\eta)_\Oc\le v_\Oc\Bigl(N\prod_{p\le e+2}p\cdot B_{e+1,\eta_0}\Bigr),
+\]
+the product over primes \(p\).
+\end{theorem}
+
+\noindent\emph{Status}: proved in the Lean formalization from Poitou--Tate duality and an orthogonality law for unramified classes, by the method of Section~\ref{sec:euler}; we have read the statements of its steps, not their proofs.  The main conjecture of Mazur and Wiles \cite{MW} is not used.  Theorem~\ref{thm:psi} is a bound in one direction only; for \(E=\Q(\zeta_\ell)\) and \(\eta=1\), Theorem~\ref{tt-thm:MW} gives the exact value, and Problem~\ref{pr:compare} compares the two.  The method is Rubin's, with Kolyvagin's Euler systems of Gauss sums \cite{Ru91}, \cite[Appendix]{La}.
+
+\begin{problem}\label{pr:integral}
+Let \(\chi\) be a Dirichlet character of conductor \(f\mid N\) and \(k\ge1\).  Then \(N\prod_{p\le k+1}p\cdot B_{k,\chi}\) is an algebraic integer.
+\end{problem}
+
+\begin{problem}\label{pr:size}
+For \(k\ge2\) and \(0\le s\le1\), \(\lvert B_k(s)\rvert\le4\,k!/(2\pi)^k\).  Hence, using \(\prod_{p\le n}p<4^n\), \(\bigl\lvert N\prod_{p\le k+1}p\cdot B_{k,\chi}\bigr\rvert\le16N^{k+1}k!\) for every \(\chi\) of conductor dividing \(N\).
+\end{problem}
+
+The size of one number controls every \(\ell\) at once, as in Problem~\ref{tt-pr:one-number}.
+
+\begin{problem}\label{pr:prime-bound}
+Let \(M_e\) be the product of the numbers \(N\prod_{p\le e+2}p\cdot B_{e+1,\eta_0}\) over the characters \(\eta\) of \(\Gal(E/\Q)\) critical for \(e\).  Then \(M_e\) is a nonzero rational integer, and
+\[
+ \sum_{\ell\nmid[E:\Q]}h^-_{\ell,e}(E)\log\ell\le\log\lvert M_e\rvert\le[E:\Q]\log\bigl(16N^{e+2}(e+1)!\bigr),
+\]
+the sum over odd primes \(\ell\).
+\end{problem}
+
+\begin{problem}\label{pr:sum-e}
+For \(t\ge2\) and \(N\ge1\), \(\sum_{1\le e<t}\log\bigl(16N^{e+2}(e+1)!\bigr)\le3t^2\log(tN)\).
+\end{problem}
+
+At the finitely many odd \(\ell\) dividing \([E:\Q]\) the idempotents of \(\Oc[\Gal(E/\Q)]\) are not integral, and the formalization uses annihilators instead.
+
+\begin{problem}\label{pr:adjugate}
+Let \(A\) be a commutative \(R\)-algebra, free of finite rank as an \(R\)-module, \(z\in A\), and \(\Delta=\det_R(z\mid A)\).  Then \(\Delta\in zA\).  Hence every \(A\)-module killed by \(z\) is killed by \(\Delta\).
+\end{problem}
+
+\begin{problem}\label{pr:exponent-rank}
+If a finite \(\Zl\)-module \(M\) is killed by \(\ell^r\), then \(\len M\le r\dim_{\F_\ell}M[\ell]\).
+\end{problem}
+
+\begin{lemma}[Stickelberger bound]\label{lem:stick}
+There is an absolute constant \(C\) such that, for every abelian CM field \(E\subseteq\Q(\zeta_N)\) satisfying a condition at \(\ell\) that holds for the fields \(E(\psi,a,q,d)\), and every \(e\ge1\), \(h^-_{\ell,e}(E)\log\ell\le C\ell[E:\Q]^2(e+1)\log^2(e\ell N)\).
+\end{lemma}
+
+\noindent\emph{Status}: proved in the Lean formalization from a Stickelberger element at modulus \(N\ell\), Problem~\ref{pr:adjugate} for the exponent, and a separate bound for the \(\ell\)-rank, combined by Problem~\ref{pr:exponent-rank}, as described in \cite[\S5.4]{Zh}.  We have not transcribed the condition at \(\ell\) or read the proof.
+
+Problems~\ref{pr:split}--\ref{pr:exponent-rank}, Theorem~\ref{thm:psi} and Lemma~\ref{lem:stick} prove the following, with \(N\) the conductor of \(E\).
+
+\begin{theorem}[the minus part]\label{thm:minus}
+There is an absolute constant \(C\) such that for every \(E=E(\psi,a,q,d)\) and every \(t\ge2\),
+\[
+ \sum_\ell\log\ell\sum_{1\le e<t}h^-_{\ell,e}(E)\le3[E:\Q]t^2\log(tN)+C\sum_{\ell}\ell[E:\Q]^2t^2\log^2(t\ell N),
+\]
+the first sum over odd primes \(\ell\), the second over the odd primes dividing the order of \(\psi\).
+\end{theorem}
+
+\noindent\emph{Status}: proved in the Lean formalization; it is part~(II) of Theorem~\ref{lt-thm:signs}.  It holds at every scale: no window is needed for the minus part.
+
+\section{Gauss sums and the Euler system}\label{sec:euler}
+
+How does one bound a Selmer group from above by an \(L\)-value without the main conjecture?  Kolyvagin's idea, in Rubin's version for class groups \cite{Ru91}: Gauss sums at auxiliary primes \(r\equiv1\pmod{\ell^m}\) give Kummer classes whose ramification is known; \emph{derivative} classes built from them are unramified outside a few chosen primes; and a reciprocity law kills one generator of the dual Selmer group at a time.  The formalization follows this route with Jacobi sums, auxiliary primes chosen by Chebotarev's theorem, and the twist by \(\chi_\ell^{-e}\).  The size of the Stickelberger value at the start is then compared with the Bernoulli number of Theorem~\ref{thm:psi}.  We state the checkable pieces.
+
+For \(F\ge2\), \(b\) prime to \(F\), and \(t\) prime to \(F\), let \(\tilde t\in[1,F)\) represent \(t\), and put
+\[
+ \vartheta_F(b,t)=\lfloor b\tilde t/F\rfloor-\lfloor b(F-\tilde t)/F\rfloor .
+\]
+Let \(\theta_F=\frac1F\sum_t\tilde t\,\sigma_t^{-1}\in\Q[G]\), \(G=(\Z/F)^\times\), be the Stickelberger element of Chapter~\ref{ds-chap} at modulus \(F\).
+
+\begin{problem}\label{pr:theta}
+\(\vartheta_F(b,t)=2\lfloor b\tilde t/F\rfloor-b+1\), and \(\sum_t\vartheta_F(b,t)\sigma_t^{-1}=2(b-\sigma_b)\theta_F-(b-1)\sum_t\sigma_t\).  For \(F=5\), \(b=2\) the values at \(\tilde t=1,2,3,4\) are \(-1,-1,1,1\).
+\end{problem}
+
+For a Dirichlet character \(\chi\) modulo \(F\) (not necessarily primitive) put \(B^{(F)}_{k,\chi}=F^{k-1}\sum_{a=1}^F\chi(a)B_k(a/F)\), and \(d_k=2k\prod_{p\le k+1}p\).
+
+\begin{problem}\label{pr:zcong}
+Let \(\ell^m\mid F\), \(e\ge1\), \(b\) prime to \(F\), and \(\chi\) a character modulo \(F\) with \(\chi(-1)=(-1)^{e+1}\).  Then
+\[
+ d_{e+1}\Bigl(b^e\chi(b)\sum_t\vartheta_F(b,t)\,\tilde t^{\,e}\chi(t)-2\bigl(\chi(b)b^{e+1}-1\bigr)\frac{B^{(F)}_{e+1,\chi}}{e+1}\Bigr)\equiv0\pmod{\ell^m}.
+\]
+For \(F=5\), \(e=1\), \(b=2\) and \(\chi\) trivial the expression in parentheses (before multiplication by \(d_2=24\)) is \(10\); for \(F=25\) it is \(250\).
+\end{problem}
+
+So the Stickelberger value \(\sum_t\vartheta_F(b,t)\tilde t^{\,e}\chi(t)\) is, modulo \(\ell^m\), a Bernoulli number times an explicit factor; the factor \(\chi(b)b^{e+1}-1\) is a unit for a suitable \(b\) unless \(b\mapsto\chi(b)b^{e+1}\) is trivial modulo the maximal ideal.  In that case the group vanishes.
+
+\begin{problem}\label{pr:exc}
+Let \(\eta=\omega^j\) with \(j\equiv-e-1\pmod{\ell-1}\), so that \(W_e\otimes\eta^{-1}\) is congruent to \(\Z/\ell(1)\).  Then \(\Sha_\ell(\Q,e;\eta)=0\).
+\end{problem}
+
+The derivative classes rest on an identity in the group ring of a cyclic group.
+
+\begin{problem}\label{pr:derivative}
+Let \(\sigma\) generate a cyclic group of order \(M\), \(D=\sum_{i=1}^{M-1}i\sigma^i\) and \(\mathcal N=\sum_{i=0}^{M-1}\sigma^i\).  Then \((\sigma-1)D=M-\mathcal N\).
+\end{problem}
+
+The last ingredient is a reciprocity law: for a global class, the local invariants sum to zero, so if all but one vanish, so does the last.  Hilbert's law is the simplest instance.
+
+\begin{problem}\label{pr:hilbert}
+The Hilbert symbol \((-1,-1)_v\) is \(-1\) for \(v=\infty\) and \(v=2\), and \(1\) for odd \(v\).  If \(a,b\in\Q^\times\) and \((a,b)_v=1\) for all places \(v\ne r\), then \((a,b)_r=1\).
+\end{problem}
+
+\noindent\emph{Status of the assembly}: in the Lean formalization, the reciprocity law used is deduced from Poitou--Tate duality and the orthogonality of unramified local classes; a system of derivative classes is constructed from Jacobi sums; the length of the \(\eta\)-summand is bounded by the valuation of a Stickelberger value at an auxiliary level \(F=f\ell^m\); and Problem~\ref{pr:zcong} identifies that value with the Bernoulli number of Theorem~\ref{thm:psi}.  We have read the statements of these steps but not the proofs of the bound by the Stickelberger value or of the reciprocity law.  Zhang describes the same route \cite[\S5.4]{Zh}.
+
+\section{Examples}\label{sec:examples}
+
+\begin{problem}\label{pr:37}
+Let \(\ell=37\), \(E=\Q(\zeta_{37})\), \(N=37\), \(e=1\), and \(\eta=\omega^j\) with \(j\) even.  The bound of Theorem~\ref{thm:psi} is \(1+v_{37}(B_{2,\omega^j})\).  It equals \(2\) for \(j=30\), \(0\) for \(j=34\), and \(1\) for the other even \(j\) with \(0\le j<36\).
+\end{problem}
+
+For \(j=30\) the \(37\)-torsion of the summand is \(\Hom(A^{(5)},\F_{37})\) by Problem~\ref{tt-pr:eta-rank}, with \(A^{(5)}\ne0\) (Problem~\ref{ds-pr:irregular}); for \(j=34\) it vanishes by Problem~\ref{pr:exc}, and the bound sees this.
+
+\begin{problem}\label{pr:psi-one}
+Let \(E=\Q(\zeta_\ell)\), \(N=\ell\) and \(\eta=1\).  For odd \(e\), Theorem~\ref{thm:psi} gives \(h_{\ell,e}(\Q)\le v_\ell(B_{e+1})+1+\delta\), with \(\delta=1\) if \(\ell\le e+2\) and \(\delta=0\) otherwise.  For \(\ell=691\), \(e=11\) the bound is \(2\), while \(h_{691,11}(\Q)=1\).
+\end{problem}
+
+\begin{problem}\label{pr:compare}
+If \(e\) is odd and \((\ell-1)\nmid(e+1)\), the bound of Problem~\ref{pr:psi-one} exceeds the value given by Theorem~\ref{tt-thm:MW} by exactly \(1+\delta+v_\ell(e+1)\).
+\end{problem}
+
+The loss is a bounded number of factors \(\log\ell\) per twist, harmless against \(\sqrt b\).  On the plus part no \(L\)-value is available, and the next ingredient must replace the Bernoulli number by an integer built from automorphic forms.
+
+\begin{leanremark}
+\raggedright In \cite{Lean} the two eigenspaces are \tl{ShaPlus} and \tl{ShaMinus}, with lengths \tl{plusLen} and \tl{minusLen}; Problem~\ref{pr:split} is \tl{length\_\allowbreak{}eq\_\allowbreak{}add\_\allowbreak{}eigen} and \tl{shaLen\_\allowbreak{}eq\_\allowbreak{}add}.  Theorem~\ref{thm:psi} is \tl{Odd.\allowbreak{}PsiBound}, proved by \tl{ML.\allowbreak{}iv} through \tl{ML.\allowbreak{}psiOf} and \tl{ML.\allowbreak{}vChar}; the Bernoulli number with its factor is \tl{alN}.  The reciprocity law is \tl{ML.\allowbreak{}Rec}, proved by \tl{ML.\allowbreak{}recip} from \tl{UnramifiedOrthogonality}; the derivative classes are \tl{NuSys}, built by \tl{kolInit}, \tl{kolStep} and \tl{nuSysEx} from Jacobi sums (\tl{xJac}) and primes chosen by \tl{chebQ}; the bound by the Stickelberger value is \tl{ML.\allowbreak{}count}, the choice of level \tl{ML.\allowbreak{}zEval}, Problem~\ref{pr:zcong} is \tl{ML.\allowbreak{}zCong} with \(\vartheta_F\) the function \tl{th}, and Problem~\ref{pr:exc} is the analogue over \(\Q\) of \tl{ML.\allowbreak{}exc}.  Problem~\ref{pr:prime-bound} is \tl{PrimeBound}, Lemma~\ref{lem:stick} is \tl{StickBound}, and Theorem~\ref{thm:minus} is \tl{ThmBcFree}, from \tl{thmBc\_\allowbreak{}of}.
+\end{leanremark}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:signs}}
+\begin{description}
+\item[\ref{pr:split}] The projections \((1\pm c)/2\).
+\item[\ref{pr:parts}] The action of \(\gamma\in\Gal(E/\Q)\) in Section~\ref{ec-sec:shapiro}, with \(\gamma=c\).
+\item[\ref{pr:parity}] \(B_k(1-s)=(-1)^kB_k(s)\); for the nonvanishing, \(L(1-k,\chi)=-B_{k,\chi}/k\) \cite[Thm.~4.2]{Wa} and the functional equation relating \(L(1-k,\chi)\) to \(L(k,\bar\chi)\ne0\).
+\item[\ref{pr:degree}] Degrees of the four fields in the compositum.
+\end{description}
+
+\subsection*{\S\ref{sec:bernoulli}}
+\begin{description}
+\item[\ref{pr:integral}] Expand \(f^{k-1}B_k(a/f)\) in powers of \(a\), and apply von Staudt--Clausen to the coefficients.
+\item[\ref{pr:size}] The Fourier series of \(B_k(s)\), and \(\zeta(k)\le\zeta(2)\).
+\item[\ref{pr:prime-bound}] Theorem~\ref{thm:psi}, Problems~\ref{pr:parts}, \ref{pr:parity}, \ref{pr:integral} and~\ref{pr:size}; the set of critical characters is stable under \(\Gal(\overline\Q/\Q)\), and \(\len_\Oc(M\otimes\Oc)=v_\Oc(\ell)\len_{\Zl}M\).
+\item[\ref{pr:sum-e}] Bound each of the three factors by a power of \(tN\).
+\item[\ref{pr:adjugate}] The Cayley--Hamilton theorem for multiplication by \(z\).
+\item[\ref{pr:exponent-rank}] Decompose \(M\) into cyclic modules.
+\end{description}
+
+\subsection*{\S\ref{sec:euler}}
+\begin{description}
+\item[\ref{pr:theta}] \(F\nmid b\tilde t\); then Problem~\ref{ds-pr:c-twist} at modulus \(F\).
+\item[\ref{pr:zcong}] Write \(b\tilde t=r_t+F\lfloor b\tilde t/F\rfloor\), expand \(\bigl(r_t+F\lfloor b\tilde t/F\rfloor\bigr)^{e+1}\) and sum over \(t\); compare \(\sum_a\chi(a)a^k\) with \(F B^{(F)}_{k,\chi}\) through the expansion of \(B_k(s)\); pair \(t\) with \(F-t\).
+\item[\ref{pr:exc}] Problem~\ref{tt-pr:eta-rank}; which eigenspace of \(A\) appears?
+\item[\ref{pr:derivative}] Telescope, using \(\sigma^M=1\).
+\item[\ref{pr:hilbert}] The formulas for \((a,b)_v\) and the product formula \cite[Ch.~III, \S2]{Se}.
+\end{description}
+
+\subsection*{\S\ref{sec:examples}}
+\begin{description}
+\item[\ref{pr:37}] Compute \(B_{2,\omega^j}=37\sum_{a=1}^{36}\omega(a)^jB_2(a/37)\) in \(\Z_{37}\) to a few digits; for \(j=0\) use \(\eta_0=1\).
+\item[\ref{pr:psi-one}] \(\eta_0=1\), \(B_{12}=-691/2730\), and Theorem~\ref{tt-thm:MW}.
+\item[\ref{pr:compare}] \(B_{e+1}/(e+1)\) is \(\ell\)-integral when \((\ell-1)\nmid(e+1)\) \cite[Cor.~5.14]{Wa}.
+\end{description}
+
+\begin{thebibliography}{Ru91}
+\bibitem[La]{La} S.~Lang, \emph{Cyclotomic Fields I and II}, combined 2nd ed., with an appendix by K.~Rubin, Grad.\ Texts in Math.\ 121, Springer, 1990.
+\bibitem[Lean]{Lean} The Lean community, \emph{riemann-hypothesis}, a Lean formalization of Alp\"oge's argument, \url{https://github.com/leanprover-community/riemann-hypothesis}.
+\bibitem[MW]{MW} B.~Mazur and A.~Wiles, \emph{Class fields of abelian extensions of \(\mathbf{Q}\)}, Invent.\ Math.\ \textbf{76} (1984), 179--330.
+\bibitem[Ru91]{Ru91} K.~Rubin, \emph{Kolyvagin's system of Gauss sums}, in: Arithmetic Algebraic Geometry (Texel, 1989), Progr.\ Math.\ 89, Birkh\"auser, 1991, 309--324.
+\bibitem[Se]{Se} J.-P.~Serre, \emph{A Course in Arithmetic}, Grad.\ Texts in Math.\ 7, Springer, 1973.
+\bibitem[Wa]{Wa} L.~C.~Washington, \emph{Introduction to Cyclotomic Fields}, 2nd ed., Grad.\ Texts in Math.\ 83, Springer, 1997.
+\bibitem[Zh]{Zh} R.~Zhang, \emph{A preliminary note on Alp\"oge's proposed proof of the generalized Riemann hypothesis}, 22 November 2026, \url{https://hexagonmath.org/pdf/2611.00809v1}.
+\end{thebibliography}
+
+\end{document}
