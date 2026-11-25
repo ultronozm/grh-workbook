@@ -12,7 +12,7 @@ Everything is read from the sources, so the chart follows the index:
   * the last Part holds the modules (the general statements) and, as
     its last chapter, the assembly.  A module's Prerequisites and its
     "Simplest incarnation" remarks name the earlier chapters it
-    generalizes.  Which inputs (A1)-(A7), (N1)-(N3), (W1)-(W4) of the
+    generalizes.  Which inputs (A1)-(A7), (V1)-(V3), (W1)-(W4) of the
     assembly a module supplies is read from its Deliverable paragraph
     and from the assembly's map of the inputs (the description list in
     its section sec:map), keeping the labels on which both agree.
@@ -56,7 +56,7 @@ LABEL = re.compile(r"^(?P<num>[A-Z]*\d+)\.\s+(?P<title>.*)$")
 EXTDOC = re.compile(
     r"^[ \t]*\\externaldocument\[(?P<pre>[^\]]*)\]\{(?P<id>\d{8}T\d{6})--", re.M)
 REF = re.compile(r"\\(?:eq|auto|c|C)?ref\{(?P<pre>[A-Za-z]+-)")
-INPUT = re.compile(r"\((?P<l>[ANWK])(?P<a>\d)\)(?:\s*--+\s*\((?P=l)(?P<b>\d)\))?")
+INPUT = re.compile(r"\((?P<l>[AVWK])(?P<a>\d)\)(?:\s*--+\s*\((?P=l)(?P<b>\d)\))?")
 
 # The conditions (K1)-(K8) of a chain record [Adr, Def. 18.9] and the
 # inputs (A1)-(A7) of the assembly that they give [Adr, Prop. 18.14],
@@ -242,7 +242,7 @@ def read_sheets(sheets):
         a, b = from_map.get(t, []), deliveries.get(t, [])
         both = [l for l in a if l in b]
         deliveries[t] = sorted(both or a or b,
-                               key=lambda l: ("ANWK".index(l[0]), int(l[1:])))
+                               key=lambda l: ("AVWK".index(l[0]), int(l[1:])))
     return deps, deliveries, inputs, assembly, modules, src
 
 
