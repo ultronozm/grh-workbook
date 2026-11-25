@@ -4,7 +4,7 @@
 \usepackage{xr-hyper}
 \usepackage[hidelinks]{hyperref}
 \externaldocument[st-]{20261124T214500--supersingular-theta-divisibility__workbook}
-\externaldocument[as-]{20261125T021500--assembly-at-one-scale__workbook}
+\externaldocument[pf-]{20261125T013700--pairings-on-a-formal-group-of-height-two__workbook}
 
 % Chapter number; \ref{chap} gives it.
 \newcounter{chap}
@@ -179,11 +179,14 @@ If \(M = s^p t/p\), then \(\partial_s^{pw}\partial_t^w e^{M}(0) = (pw)!/p^w\), o
 
 \section{Questions}\label{sec:questions}
 
-Theorem~\ref{thm:main} does not extend to \(p \equiv 7 \pmod 8\): it fails at \(p = 7\) (Problem~\ref{pr:p7}).  What fails is the choice of directions: \(e_\pm\) are global eigenlines of \(\Z[\zeta]\), and they are isotropic modulo \(p\) only for \(p \equiv 3 \pmod 8\) (Problem~\ref{pr:isotropic}).  For every \(p \equiv 3 \pmod 4\), the form \(H\) on \(\Oc^2\) has a basis \(f, f'\) with \(H(f, f) = H(f', f') = 0\) and \(H(f, f') = 1\), which need not come from any element of the CM order.  Adriazola \cite[\S8.6 and Thm.~8.21]{Adr} writes theta functions of hermitian lattices in such local hyperbolic coordinates over \(\Z_{p^2}\), using the action of all of \(\Z_{p^2}\) on the formal group \cite[Lemma~8.13]{Adr}, and obtains the gain at the odd levels at every inert \(p \ge 5\), for the imaginary quadratic fields used there, with no condition modulo \(8\) \cite[Thm.~11.45]{Adr}.  That result assumes that the constant in the kernel law is integral; in \cite{Adr} this is \cite[Hyp.~11.42, (N3)]{Adr}; see the ledger in Section~\ref{as-sec:map} of Chapter~\ref{as-chap}.  The Lean formalization \cite{Lean} does not assume it: it proves an integral kernel law of this shape for the kernels it uses, by a different route, in which the exponent is a torus average of a coboundary of the logarithm of the sigma function of one CM curve, and the integrality comes from a factorization of the fourth tensor power of the kernel into sigma functions.  So the restriction \(p \equiv 3 \pmod 8\) belongs to the eigenline model of this chapter, not to the argument.
+Theorem~\ref{thm:main} does not extend to \(p \equiv 7 \pmod 8\): it fails at \(p = 7\) (Problem~\ref{pr:p7}).  What fails is the choice of directions: \(e_\pm\) are global eigenlines of \(\Z[\zeta]\), and they are isotropic modulo \(p\) only for \(p \equiv 3 \pmod 8\) (Problem~\ref{pr:isotropic}).  For every \(p \equiv 3 \pmod 4\), the form \(H\) on \(\Oc^2\) has a basis \(f, f'\) with \(H(f, f) = H(f', f') = 0\) and \(H(f, f') = 1\), which need not come from any element of the CM order.  Alp\"oge's proof needs no condition modulo \(8\); see the remark at the end of this section.  So the restriction \(p \equiv 3 \pmod 8\) belongs to the eigenline model of this chapter, not to the proof.
 
 Let \(A\) be an abelian variety with complex multiplication by the ring of integers of a CM field \(K\), with CM type \(\Phi\), and let \(\Theta\) be a normalized theta function on its universal cover.  The eigenlines \(\C e_\phi\) (\(\phi \in \Phi\)) replace \(e_\pm\); the case above is \(K = \Q(\zeta)\), \(\Phi = \{\sigma_+, \sigma_-\}\).  The argument of Section~\ref{sec:line} on \(\C e_\phi\) needs an element \(a\) of the CM order with \(\phi(a)\) a non-unit and \(\phi(\bar a)\) a unit, and such an element exists exactly when complex conjugation does not fix the prime of \(K\) determined by \(\phi\).  Theorem~\ref{thm:main} subtracts at each odd level \(i\) the order of differentiation along \(c \circ \Frob^i \circ \sigma_+ = \sigma_-\).  We do not know whether in general the weight subtracted at level \(i\) from the order along \(e_\phi\) is the order along \(c \circ \Frob^i \circ \phi\), at the levels with \(\Frob^i \circ \phi \notin \Phi\).
 
 For \(E \times E\) the eigenline argument fails only at \(p \equiv 7 \pmod 8\), and there the hyperbolic coordinates above are the way around it.  The eigenline argument fails at every supersingular prime for the Jacobian of \(y^2 = x^5 - 1\), with CM by \(\Q(\zeta_5)\).  For odd \(p \not\equiv 0, 1 \pmod 5\), complex conjugation lies in the decomposition group of every prime above \(p\), and these are the primes at which the Jacobian is supersingular.  We do not know whether the restriction of \(\Theta\) to an eigenline is \(p\)-integral in the formal parameter at these primes, nor what lower bound holds for its derivatives at the origin.
+
+\paragraph{In the Lean formalization.}
+In the rewritten Lean proof \cite{GL}, at every prime \(p\) that does not split in \(K = \Q(\sqrt{-d})\), the Taylor series of the theta functions that it uses, with the variables scaled by a suitable \(\varpi\), is an integral series times \(\exp\bigl((\varpi^{p+1}/p)\,\Xi\bigr)\), where \(\Xi\) is an integral combination of powers \(\Gamma_e^{p^j}\) of the couplings \(\Gamma_e = \sum z_{\tau,i}^{p^e} z_{\tau',i}\) between each place \(\tau\) and its partner \(\tau' = -p^e\tau\), for odd \(e\), or any \(e\) if \(p = d\) (\texttt{exists\_hasNormalForm\_jetSeries}, in \texttt{New/Derivatives/Vacuum/Divisibility.lean} of the readable edition; the normal form is \texttt{HasNormalForm}).  The cross term \(s^pt/p\) of the exercise of Section~\ref{sec:cross} is the simplest coupling, and Chapter~\ref{pf-chap}, \emph{Pairings on a formal group of height two}, treats one pairing.  From the normal form, \texttt{norm\_jet\_minorProd\_le\_of\_hasNormalForm} derives lower bounds for the valuations of derivatives, with terms \((a_\tau/p^e - a_{\tau'} - \dotsb)_+\) of the shape of Theorem~\ref{thm:main}.
 
 \section*{Hints}
 
@@ -214,9 +217,8 @@ For \(E \times E\) the eigenline argument fails only at \(p \equiv 7 \pmod 8\), 
 \end{description}
 
 \begin{thebibliography}{Si2}
-\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
 \bibitem[BK]{BK} K.~Bannai and S.~Kobayashi, \emph{Algebraic theta functions and the \(p\)-adic interpolation of Eisenstein--Kronecker numbers}, Duke Math.\ J.\ \textbf{153} (2010), 229--295; arXiv:math/0610163.  Numbering as in the arXiv version.
-\bibitem[Lean]{Lean} The Lean community, \emph{riemann-hypothesis}, a Lean formalization of Alp\"oge's argument, \url{https://github.com/leanprover-community/riemann-hypothesis}.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
 \bibitem[Si2]{Si2} J.~H.~Silverman, \emph{Advanced Topics in the Arithmetic of Elliptic Curves}, Grad.\ Texts in Math.\ 151, Springer, 1994.
 \end{thebibliography}
 
