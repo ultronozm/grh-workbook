@@ -9,6 +9,8 @@
 \externaldocument[ch-]{20261125T003000--the-chain-and-the-square-root__workbook}
 \externaldocument[hn-]{20261125T013500--hecke-nondegeneracy-on-the-tree__workbook}
 \externaldocument[ho-]{20261125T016500--hecke-operators-and-theta-lifts__workbook}
+\externaldocument[c32-]{20261126T030300--the-data__workbook}
+\externaldocument[c35-]{20261126T030500--divisibility-of-the-composite-lift__workbook}
 
 % Chapter number; \ref{chap} gives it.
 \newcounter{chap}
@@ -19,6 +21,8 @@
 \newtheorem{problem}{Problem}[section]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
 
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\Q}{\mathbb{Q}}
@@ -44,9 +48,9 @@
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-Formal power series over a commutative ring.  Finite extensions of \(\Q_p\), their valuations, and lattices over their rings of integers; the length of a module of finite length.  Gaussian binomial coefficients \(\qbinom{n}{l}{Q}\) \cite[Ch.~I, \S2, Example~3]{Mac}.  From Chapter~\ref{sm-chap}, \emph{The slope method}: Theorem~\ref{sm-thm:one}.  From Chapter~\ref{ch-chap}, \emph{The chain and the square root}: Section~\ref{ch-sec:chain}.  From Chapter~\ref{hn-chap}, \emph{Hecke nondegeneracy on the tree}: the loss, defined in Section~\ref{hn-sec:tree}.  From Chapter~\ref{ho-chap}, \emph{Hecke operators and theta lifts}: Section~\ref{ho-sec:split}, in particular Problems~\ref{ho-pr:split-el} and~\ref{ho-pr:split-chain}.
+Formal power series over a commutative ring.  Finite extensions of \(\Q_p\), their valuations, and lattices over their rings of integers; the length of a module of finite length.  Gaussian binomial coefficients \(\qbinom{n}{l}{Q}\) \cite[Ch.~I, \S2, Example~3]{Mac}.  From Chapter~\ref{sm-chap}, \emph{Size against divisibility}: that a sublattice of small colength has small index, so that a gain on it is charged its colength.  From Chapter~\ref{ch-chap}, \emph{The chain and the square root}: Section~\ref{ch-sec:chain}.  From Chapter~\ref{hn-chap}, \emph{Hecke nondegeneracy on the tree}: the loss, defined in Section~\ref{hn-sec:tree}.  From Chapter~\ref{ho-chap}, \emph{Hecke operators and theta lifts}: Section~\ref{ho-sec:split}, in particular Problems~\ref{ho-pr:split-el} and~\ref{ho-pr:split-chain}.  Section~\ref{sec:proof} states the step in the generality of the proof; its objects are those of Chapters~\ref{c32-chap} and~\ref{c35-chap}, and the rest of the chapter does not use it.
 
-Theorem~\ref{ch-thm:chain} adds gains that hold on the whole of each lattice.  In the argument a lift gains more only on a sublattice spanned by images of a Hecke operator, and Chapter~\ref{hn-chap} measures the colength of such a sublattice.  How does a gain on a sublattice at the start of a chain become a gain of the composite?  The Hecke operator has to be moved along the chain, by Problem~\ref{ho-pr:split-chain}, and the coefficients that appear are complete symmetric functions.  Their denominators are the price of the move.  We follow the reconstruction of Adriazola \cite[\S10]{Adr}, with one Hecke operator in place of several.
+Problem~\ref{ch-pr:subadd} adds the divisibility exponents that hold on the whole lattice at each step of the chain.  In the rewritten proof, Theorem~\ref{thm:proof} bounds the gauge of the restricted chain on the image of the integral source forms under a power of a product of Hecke operators.  The local model in Chapter~\ref{hn-chap} measures the colength of the values of a Hecke operator at a single lattice.  How does a gain on a sublattice at the start of a chain become a gain of the composite?  In the model of Problem~\ref{ho-pr:split-chain}, moving the source operator through the chain introduces signed complete symmetric functions.  Their valuations enter the bound in Section~\ref{sec:gain}.  The model below uses one Hecke operator.  Theorem~\ref{thm:proof} uses a product indexed by a full mark above~\(p\).
 
 \section{Elementary and complete symmetric functions}\label{sec:sym}
 
@@ -55,6 +59,7 @@ Let \(x = (x_1, \dots, x_n)\) be a finite family in a commutative ring.  The \em
   E_x(X) := \prod_{i} (1 + x_i X) = \sum_{l \ge 0} e_l(x) X^l , \qquad
   H_x(X) := \prod_{i} (1 - x_i X)^{-1} = \sum_{l \ge 0} h_l(x) X^l .
 \]
+All degrees \(l\) are nonnegative integers, and \(\qbinom{n}{l}{Q} = 0\) for \(l > n\).
 
 \begin{problem}\label{pr:EH}
 \(E_x(X) H_x(-X) = 1\), that is, \(\sum_{l=0}^r (-1)^l e_{r-l}(x)\, h_l(x) = 0\) for \(r \ge 1\).  For \(x = (a, b)\), \(h_2(x) = a^2 + ab + b^2\).
@@ -80,15 +85,15 @@ For instance \(h_2(1, Q) = 1 + Q + Q^2\).
 
 These are \cite[Ch.~I, \S2, Example~3]{Mac}.  Let \(q\) be invertible, \(Q := q^2\), \(g \ge 1\) and \(t := g - 1\).  A \emph{block} is a family
 \begin{equation}\label{eq:block}
-  x = m\,(q^t, q^{t-2}, \dots, q^{-t})
+  x = \beta\,(q^t, q^{t-2}, \dots, q^{-t})
 \end{equation}
-of \(g\) terms with ratio \(Q^{-1}\).  These are the families of Problem~\ref{ho-pr:split-el}, where \(q^t\) is written \(Q^{t/2}\).
+of \(g\) terms with ratio \(Q^{-1}\), where \(\beta\) is invertible.  For \(\beta = 1\) this is the family in Problem~\ref{ho-pr:split-el}, where \(q^t\) is written \(Q^{t/2}\).
 
 \begin{problem}\label{pr:sym-block}
-For the block~\eqref{eq:block}, \(e_l(x) = m^l q^{-l(g-l)} \qbinom{g}{l}{Q}\) and \(h_l(x) = m^l q^{-lt} \qbinom{t+l}{l}{Q}\).
+For the block~\eqref{eq:block}, \(e_l(x) = \beta^l q^{-l(g-l)} \qbinom{g}{l}{Q}\) and \(h_l(x) = \beta^l q^{-lt} \qbinom{t+l}{l}{Q}\).
 \end{problem}
 
-The first formula is Problem~\ref{ho-pr:split-el}.
+For \(\beta = 1\) the first formula, in degrees \(0 \le l \le g\), is Problem~\ref{ho-pr:split-el}.
 
 \section{Valuations}\label{sec:val}
 
@@ -99,27 +104,27 @@ Let \(k\) be a finite extension of \(\Q_p\), with ring of integers \(\Oc\) and v
 \end{problem}
 
 \begin{problem}\label{pr:block-val}
-Let \(a \in k^\times\) and \(Q \in k\) with \(v(Q) = \nu > 0\).  Then
+Let \(a \in k^\times\) and \(Q \in k^\times\) with \(v(Q) = \kappa > 0\).  Then
 \begin{align*}
-  v\bigl(e_l(a, aQ, \dots, aQ^t)\bigr) &= l\,v(a) + \nu\,\frac{l(l-1)}{2} && (0 \le l \le t+1) , \\
+  v\bigl(e_l(a, aQ, \dots, aQ^t)\bigr) &= l\,v(a) + \kappa\,\frac{l(l-1)}{2} && (0 \le l \le t+1) , \\
   v\bigl(h_l(a, aQ, \dots, aQ^t)\bigr) &= l\,v(a) && (l \ge 0) .
 \end{align*}
 \end{problem}
 
-So the valuation of \(e_l\) exceeds that of \(h_l\) by \(\nu\,l(l-1)/2\).
+So for \(0 \le l \le t+1\) the valuation of \(e_l\) exceeds that of \(h_l\) by \(\kappa\,l(l-1)/2\).
 
 \begin{problem}\label{pr:sym-val}
-Let \(x\) be the block~\eqref{eq:block} with \(m, q \in k^\times\) and \(v(q) = \nu > 0\).  Then \(v(h_l(x)) = l\,(v(m) - t\nu)\) and \(v(e_l(x)) = l\,(v(m) - t\nu) + \nu\, l(l-1)\) for \(0 \le l \le g\).  In particular every \(h_l(x)\) lies in \(\Oc\) if and only if \(v(m) \ge t\nu\).
+Let \(x\) be the block~\eqref{eq:block} with \(\beta, q \in k^\times\) and \(v(q) = \nu > 0\).  Then \(v(h_l(x)) = l\,(v(\beta) - t\nu)\) for \(l \ge 0\), and \(v(e_l(x)) = l\,(v(\beta) - t\nu) + \nu\, l(l-1)\) for \(0 \le l \le g\).  In particular every \(h_l(x)\) lies in \(\Oc\) if and only if \(v(\beta) \ge t\nu\).
 \end{problem}
 
 For a union of blocks only a bound survives.
 
 \begin{problem}\label{pr:union-val}
-Let \(Z\) be a finite family in \(k\) whose least valuation is \(\mu\).  Then \(v(h_l(Z)) \ge l\mu\), with equality if exactly one member of \(Z\) has valuation \(\mu\).  For \(Z = (1, 1)\) and \(Z = (1, -1)\) one has \(h_l(Z) = l + 1\) and \(h_l(Z) = (1 + (-1)^l)/2\).
+Let \(Z\) be a finite family in \(k\) whose least valuation is a real number \(\mu\).  Then \(v(h_l(Z)) \ge l\mu\), with equality if exactly one member of \(Z\) has valuation \(\mu\).  For \(Z = (1, 1)\) and \(Z = (1, -1)\) one has \(h_l(Z) = l + 1\) and \(h_l(Z) = (1 + (-1)^l)/2\).
 \end{problem}
 
 \begin{problem}\label{pr:two-blocks}
-Let \(Z = x_1 \sqcup x_2\), where \(x_i = m_i\,(q, q^{-1})\) are blocks with \(g = 2\), and let \(v(q) = \nu > 0\) and \(v(m_1) = v(m_2) = 0\).  Then \(h_1(Z) = (m_1 + m_2)(q + q^{-1})\), so \(v(h_1(Z)) = v(m_1 + m_2) - \nu\), which exceeds \(-\nu\) exactly when \(m_1 \equiv -m_2\) modulo the maximal ideal of \(\Oc\).
+Let \(Z = x_1 \sqcup x_2\), where \(x_i = \beta_i\,(q, q^{-1})\) are blocks with \(g = 2\), and let \(v(q) = \nu > 0\) and \(v(\beta_1) = v(\beta_2) = 0\).  Then \(h_1(Z) = (\beta_1 + \beta_2)(q + q^{-1})\), so \(v(h_1(Z)) = v(\beta_1 + \beta_2) - \nu\), which exceeds \(-\nu\) exactly when \(\beta_1 \equiv -\beta_2\) modulo the maximal ideal of \(\Oc\).
 \end{problem}
 
 \section{Moving a Hecke operator along a chain}\label{sec:move}
@@ -128,14 +133,14 @@ We use the setting of Problem~\ref{ho-pr:split-chain}.  Let \(F_0, \dots, F_m\) 
 \begin{equation}\label{eq:R}
   \Ec^{(j+1)}_i\, K_j = K_j \sum_{l=0}^i e_l(x_{j+1})\, \Ec^{(j)}_{i-l} \qquad (0 \le i \le r,\ 0 \le j < m) .
 \end{equation}
-For lifts with split kernels, Section~\ref{ho-sec:split} gives~\eqref{eq:R} with \(x_{j+1}\) a block~\eqref{eq:block}, up to a unit that we take to be \(1\) \cite[Props.~10.8 and~10.13]{Adr}.  Let \(Z_j := x_1 \sqcup \dots \sqcup x_j\).  In~\eqref{eq:R} the operators at the target are expressed through those at the source.  We need the converse.
+This is the case with source argument \(X\) of the split relation in Section~\ref{ho-sec:split}.  Under the weak-datum and level-coprimality hypotheses of Theorem~\ref{thm:proof}, the normalization in Section~\ref{sec:proof} gives this relation for every supported translation, at every prime of a mark, on forms spherical there, for \(r \le N_0\).  The family at each step is a block~\eqref{eq:block}.  Let \(Z_j := x_1 \sqcup \dots \sqcup x_j\).  In~\eqref{eq:R} the operators at the target are expressed through those at the source.  We need the converse.
 
 \begin{problem}\label{pr:r-one}
-Let \(r = 1\).  Then \(K_0 \Ec^{(0)}_1 = \bigl(\Ec^{(1)}_1 - e_1(x_1)\bigr) K_0\), and \(\Kc_2 \Ec^{(0)}_1 = \bigl(\Ec^{(2)}_1 - h_1(Z_2)\bigr) \Kc_2\).
+Let \(r = 1\) and \(m \ge 2\).  Then \(K_0 \Ec^{(0)}_1 = \bigl(\Ec^{(1)}_1 - e_1(x_1)\bigr) K_0\), and \(\Kc_2 \Ec^{(0)}_1 = \bigl(\Ec^{(2)}_1 - h_1(Z_2)\bigr) \Kc_2\).
 \end{problem}
 
 \begin{problem}\label{pr:r-two}
-Let \(r = 2\).  Then \(K_0 \Ec^{(0)}_2 = \bigl(\Ec^{(1)}_2 - h_1(x_1)\, \Ec^{(1)}_1 + h_2(x_1)\bigr) K_0\).
+Let \(r = 2\) and \(m \ge 1\).  Then \(K_0 \Ec^{(0)}_2 = \bigl(\Ec^{(1)}_2 - h_1(x_1)\, \Ec^{(1)}_1 + h_2(x_1)\bigr) K_0\).
 \end{problem}
 
 \begin{problem}\label{pr:forward}
@@ -149,7 +154,7 @@ For \(1 \le j \le m\),
 \(\displaystyle \Kc_j\, \Ec^{(0)}_r = \sum_{l=0}^r (-1)^l h_l(Z_j)\, \Ec^{(j)}_{r-l}\, \Kc_j\).
 \end{theorem}
 
-The relation for one lift has the elementary functions of a block, whose valuations exceed those of the complete functions by \(\nu\,l(l-1)\) (Problem~\ref{pr:sym-val}).  The inverse relation has the complete functions, which may have denominators.  The operators \(\Ec^{(j)}_i\) are normalized forms of the sums \(T^{(j)}_i\) over edges of type \(i\) of Section~\ref{ho-sec:split}: when \(F_j\) consists of functions of lattices in a space of dimension \(N_j\), with \(N_0 < N_1 < \dots < N_m\), one takes \(\Ec^{(j)}_i = q^{-i(N_j - i)}\, T^{(j)}_i\) \cite[\S10.3]{Adr}.
+The relation for one lift has the elementary functions of a block.  For \(v(q) = \nu > 0\) and \(0 \le l \le g\), the valuation of \(e_l\) of a block exceeds that of \(h_l\) by \(\nu\,l(l-1)\) (Problem~\ref{pr:sym-val}).  The inverse relation has the complete functions, which may have denominators.  For the lattice normalization in the next two problems assume \(1 \le r \le N_0\), where \(N_0\) is defined below.  The operators \(\Ec^{(j)}_i\) are normalized forms of the sums \(T^{(j)}_i\) over edges of type \(i\) of Section~\ref{ho-sec:split}: when \(F_j\) consists of functions of lattices in a space of dimension \(N_j\), with \(N_0 < N_1 < \dots < N_m\), one takes \(\Ec^{(j)}_i = q^{-i(N_j - i)}\, T^{(j)}_i\) for \(0 \le i \le N_j\).
 
 \begin{problem}\label{pr:raw}
 With this normalization, Theorem~\ref{thm:move} reads
@@ -159,27 +164,26 @@ With this normalization, Theorem~\ref{thm:move} reads
 \end{problem}
 
 \begin{problem}\label{pr:integral}
-Suppose that \(Z_j\) is a union of blocks~\eqref{eq:block} with the same \(t\), that \(v(q) > 0\), that \(v(m) \ge 0\) for each block, and that \(N_j \ge 2r + t - 1\).  Then every coefficient \(h_l(Z_j)\, q^{l(N_j - 2r + l)}\) in Problem~\ref{pr:raw} lies in \(\Oc\).
+Suppose that \(Z_j\) is a union of blocks~\eqref{eq:block} with the same \(t\), that \(v(q) > 0\), that \(v(\beta) \ge 0\) for each block, and that \(N_j \ge 2r + t - 1\).  Then every coefficient \(h_l(Z_j)\, q^{l(N_j - 2r + l)}\) in Problem~\ref{pr:raw} lies in \(\Oc\).
 \end{problem}
 
 \section{A gain on a sublattice}\label{sec:gain}
 
-For each \(j\) let \(\Int_j \subset F_j\) be an \(\Oc\)-lattice of full rank.  For \(w \in F_j\) let \(\ord(w)\) be the least valuation of a coordinate of \(w\) in a basis of \(\Int_j\), with \(\ord(0) = \infty\).  For a linear map \(A \colon F_i \to F_j\) let \(\gain(A)\) be the least value of \(\ord(Ab)\) over the members \(b\) of a basis of \(\Int_i\).  For \(k = \Q_p\), \(\gain(A)\) is the largest integer \(g\) with \(A(\Int_i) \subseteq p^g \Int_j\); so \(\gain(A) \log p\) plays at \(p\) the role of the divisibility \(-h_{\mathrm{fin}}\) of Section~\ref{ch-sec:chain}.
+For each \(j\) let \(\Int_j \subset F_j\) be an \(\Oc\)-lattice of full rank.  For \(w \in F_j\) let \(\ord(w)\) be the least valuation of a coordinate of \(w\) in a basis of \(\Int_j\), with \(\ord(0) = \infty\); we use \(v(0) = +\infty\) and \(\min\varnothing = +\infty\).  For a linear map \(\phi \colon F_i \to F_j\) let \(\gain(\phi)\) be the least value of \(\ord(\phi y)\) over the members \(y\) of a basis of \(\Int_i\).  For \(k = \Q_p\) and \(\phi \ne 0\), \(\gain(\phi)\) is the largest integer \(n\) with \(\phi(\Int_i) \subseteq p^n \Int_j\); so \(\gain(\phi) \log p\) plays at \(p\) the role of the divisibility \(-h_{\mathrm{fin}}\) of Section~\ref{ch-sec:chain}.
 
 \begin{problem}\label{pr:gain}
-\(\ord\) and \(\gain\) do not depend on the bases.  \(\ord(Aw) \ge \ord(w) + \gain(A)\), \(\gain(AB) \ge \gain(A) + \gain(B)\), \(\gain(A + B) \ge \min(\gain(A), \gain(B))\), and \(\gain(cA) = v(c) + \gain(A)\) for \(c \in k^\times\).
+\(\ord\) and \(\gain\) do not depend on the bases.  \(\ord(\phi w) \ge \ord(w) + \gain(\phi)\), \(\gain(\phi\psi) \ge \gain(\phi) + \gain(\psi)\), \(\gain(\phi + \psi) \ge \min(\gain(\phi), \gain(\psi))\), and \(\gain(c\phi) = v(c) + \gain(\phi)\) for \(c \in k^\times\).
 \end{problem}
 
 Assume~\eqref{eq:R}.  For \(1 \le j \le m\) and \(0 \le i \le r\) let
 \[
   \gamma_j(i) := \gain\bigl(\Ec^{(j)}_i K_{j-1}\bigr) ,
 \]
-so that \(\gamma_j(0) = \gain(K_{j-1})\) is the gain of the \(j\)th step on the whole lattice, and \(\gamma_j(r)\) its gain after the Hecke operator \(\Ec^{(j)}_r\) at the target.  Let \(c \in k^\times\) be such that \(Y := c\, \Ec^{(0)}_r\) maps \(\Int_0\) into itself, and let \(A := v(c)\).  The gain of the \(j\)th step on the image of \(Y\) is not \(A + \gamma_j(r)\).  By Theorem~\ref{thm:move} it is controlled by
+so that \(\gamma_j(0) = \gain(K_{j-1})\) is the gain of the \(j\)th step on the whole lattice, and \(\gamma_j(r)\) its gain after the Hecke operator \(\Ec^{(j)}_r\) at the target.  Let \(c \in k^\times\) be such that \(Y := c\, \Ec^{(0)}_r\) maps \(\Int_0\) into itself, and let \(A := v(c)\).  To bound \(\ord(\Kc_j\, \Ec^{(0)}_r w)\) in terms of \(\ord(\Kc_{j-1} w)\), define
 \[
-  \delta_j := \min_{0 \le l \le r} \bigl( v(h_l(Z_j)) + \gamma_j(r - l) \bigr) ,
-  \qquad \Price_j := \gamma_j(r) - \delta_j .
+  \delta_j := \min_{0 \le l \le r} \bigl( v(h_l(Z_j)) + \gamma_j(r - l) \bigr) .
 \]
-When \(\gamma_j(r) < \infty\), we call \(\Price_j\) the \emph{price} of the \(j\)th step; the term \(l = 0\) shows that \(\Price_j \ge 0\), and \(\delta_j = \gamma_j(r) - \Price_j\).
+When \(\gamma_j(r) < +\infty\), the \emph{price} of the \(j\)th step is \(\Price_j := \gamma_j(r) - \delta_j\).  It is nonnegative.
 
 \begin{problem}\label{pr:one-step}
 For \(w \in F_0\) and \(1 \le j \le m\), \(\ord\bigl(\Kc_j\, \Ec^{(0)}_r w\bigr) \ge \ord\bigl(\Kc_{j-1} w\bigr) + \delta_j\).
@@ -188,7 +192,7 @@ For \(w \in F_0\) and \(1 \le j \le m\), \(\ord\bigl(\Kc_j\, \Ec^{(0)}_r w\bigr)
 \begin{problem}\label{pr:induction}
 Let \(S \subseteq \{1, \dots, m\}\), and let \(n_j\) be the number of elements of \(S\) that are at most \(j\).  For \(G \in \Int_0\) and \(0 \le j \le m\),
 \[
-  \ord\bigl(\Kc_j\, Y^{n_j} G\bigr) \ge \sum_{i \le j,\ i \in S} \bigl(A + \delta_i\bigr) + \sum_{i \le j,\ i \notin S} \gamma_i(0) .
+  \ord\bigl(\Kc_j\, Y^{n_j} G\bigr) \ge \sum_{1 \le i \le j,\ i \in S} \bigl(A + \delta_i\bigr) + \sum_{1 \le i \le j,\ i \notin S} \gamma_i(0) .
 \]
 \end{problem}
 
@@ -201,17 +205,17 @@ For every \(F \in \Int_0\),
 \]
 \end{theorem}
 
-This is the case of one orbit of \cite[Thm.~10.7]{Adr}, in which the estimates at several primes are combined.  A step uses a factor of \(Y\) only when the factor pays for its price; the other factors are applied at the start, where they cost nothing.  The gain holds on the image \(Y^m \Int_0\).  When \(Y\) is injective this is a sublattice of full rank, and in Theorem~\ref{sm-thm:one} the gain on such a sublattice is charged its colength, divided by the rank.
+A step uses a factor of \(Y\) only when the factor pays for its price; the other factors are applied at the start, where they cost nothing.  The gain holds on the image \(Y^m \Int_0\).  When \(Y\) is injective this is a sublattice of full rank, and in Chapter~\ref{sm-chap} the gain on such a sublattice is charged its colength.  In the rewritten Lean proof one copy of the product \(Y\) of Section~\ref{sec:proof} goes into the datum of every lift, and the transfer is cleared by a power of \(p\) fixed in advance (Section~\ref{sec:proof}).
 
 \begin{problem}\label{pr:colength}
 If \(Y\) is injective, then the length of \(\Int_0/Y^m\Int_0\) is \(m\) times the length of \(\Int_0/Y\,\Int_0\).
 \end{problem}
 
-When \(\Int_0\) consists of integral forms and \(Y\) is the normalized Hecke operator of Chapter~\ref{hn-chap}, the values of \(Y\) at one lattice \(L\) span the module \(S(L)\) there, and the loss of Chapter~\ref{hn-chap} is its colength in \(H(L)\).
+In the tree model of Chapter~\ref{hn-chap}, as \(F\) ranges over all integral forms the values \((YF)(L)\) fill \(S(L)\), and the loss at \(L\) is the length of \(H(L)/S(L)\).  The rewritten Lean proof does not assume that \(Y\) is injective; Section~\ref{sec:proof} states the colength bound it uses.
 
 \section{Stepwise maxima overcount}\label{sec:overcount}
 
-Theorem~\ref{thm:chain-gain}, like \cite[Thm.~10.7]{Adr}, charges each step a price; in \cite[(10.2)]{Adr} an upper bound for it is subtracted from the gain of the \(j\)th lift.  Can the price be ignored, so that each step gains \(\max(\gamma_j(0), A + \gamma_j(r))\) on \(Y^m\Int_0\)?  We compare two chains with the same numbers \(\gamma_j(i)\).  Let \(p\) be any prime, \(k = \Q_p\), \(m = 2\), \(r = 1\), \(F_j = \Q_p^2\) and \(\Int_j = \Z_p^2\).  Let \(K_0 = K_1 = K\) be a diagonal matrix, let \(x_1 = (a_1)\) and \(x_2 = (a_2)\) be families of one element, and let
+Theorem~\ref{thm:chain-gain} charges each step a price.  Can the price be ignored, that is, can one replace the lower bound for \(\gain(\Kc_m Y^m)\) by \(\sum_{j=1}^m \max(\gamma_j(0), A + \gamma_j(r))\)?  We compare two chains with the same numbers \(\gamma_j(i)\).  Let \(p\) be any prime, \(k = \Q_p\), \(m = 2\), \(r = 1\), \(F_j = \Q_p^2\) and \(\Int_j = \Z_p^2\).  Let \(K_0 = K_1 = K\) be a diagonal matrix, let \(x_1 = (\alpha_1)\) and \(x_2 = (\alpha_2)\) be families of one element, and let
 \[
   Y := \Ec^{(0)}_1 := \diag(p, 1) , \qquad \Ec^{(j)}_1 := Y + h_1(Z_j) \quad (j = 1, 2) ,
 \]
@@ -222,23 +226,47 @@ These data satisfy~\eqref{eq:R}, and \(\len \Z_p^2/Y\Z_p^2 = 1\).
 \end{problem}
 
 \begin{problem}\label{pr:good}
-Let \(K = \diag(1, p)\) and \(a_1 = a_2 = p\).  Then \(\gamma_j(0) = 0\), \(\gamma_j(1) = 1\) and \(\Price_j = 0\) for \(j = 1, 2\), and \(\gain(\Kc_2\, Y^2) = 2\).
+Let \(K = \diag(1, p)\) and \(\alpha_1 = \alpha_2 = p\).  Then \(\gamma_j(0) = 0\), \(\gamma_j(1) = 1\) and \(\Price_j = 0\) for \(j = 1, 2\), and \(\gain(\Kc_2\, Y^2) = 2\).
 \end{problem}
 
 \begin{problem}\label{pr:bad}
-Let \(K = \diag(p, 1)\), \(a_1 = p - 1\) and \(a_2 = -2p\).  Then \(\gamma_j(0) = 0\), \(\gamma_j(1) = 1\) and \(\Price_j = 1\) for \(j = 1, 2\), and \(\gain(\Kc_2\, Y^2) = 0\).
+Let \(K = \diag(p, 1)\), \(\alpha_1 = p - 1\) and \(\alpha_2 = -2p\).  Then \(\gamma_j(0) = 0\), \(\gamma_j(1) = 1\) and \(\Price_j = 1\) for \(j = 1, 2\), and \(\gain(\Kc_2\, Y^2) = 0\).
 \end{problem}
 
-In both chains each step, followed by the Hecke operator at its target, gains \(1\), and the sum of the stepwise maxima is \(2\).  In the second chain the composite gains nothing on \(Y^2\Int_0\): the Hecke operator at the target of each step is not the image of the one at the source, and \(h_1(Z_j)\) is a unit.  Theorem~\ref{thm:chain-gain} gives the exact gain in both cases.
+The sum of the stepwise maxima is \(2\) in both chains.  Theorem~\ref{thm:chain-gain} gives the exact gain in each case.
 
-The theorem takes two inputs: the gains \(\gamma_j(i)\) of a single lift followed by a Hecke operator at its target, for which Chapters~\ref{st-chap} and~\ref{ip-chap} give models through the divisibility of theta kernels, and the colength of \(Y\,\Int_0\), which Chapter~\ref{hn-chap} computes at one lattice.  The price couples them, through the least valuation in the union \(Z_j\) of the blocks met so far (Problems~\ref{pr:sym-val} and~\ref{pr:union-val}).
+Theorem~\ref{thm:chain-gain} uses the gains \(\gamma_j(i)\), the scaling valuation \(A\), and the coefficients \(h_l(Z_j)\).  Chapters~\ref{st-chap} and~\ref{ip-chap} model divisibility for a single theta kernel.  If \(Z_j\) has finite least valuation \(\mu_j\), then \(v(h_l(Z_j)) \ge l\mu_j\) (Problem~\ref{pr:union-val}).  A separate colength estimate enters when the gain on the image is used; Chapter~\ref{hn-chap} computes a local colength at one lattice.
 
 \subsection*{Exercises}
 
 \begin{enumerate}
-\item The Newton polygon of \(\prod_{i=0}^t (1 + aQ^iX)\) over \(k\), with \(a \in k^\times\) and \(v(Q) > 0\), has the vertices \(\bigl(l, l\,v(a) + v(Q)\,l(l-1)/2\bigr)\) for \(0 \le l \le t+1\).
-\item Suppose that~\eqref{eq:R} holds with \(u_{j+1}^i K_j\) in place of \(K_j\) on the right, for units \(u_j \in \Oc^\times\).  In terms of \(E_j(X) := \sum_{i \le r} \Ec^{(j)}_i X^i\) this reads \(E_{j+1}(X) K_j = K_j\, E_{x_{j+1}}(u_{j+1}X)\, E_j(u_{j+1}X)\) modulo \(X^{r+1}\); it is the relation of Section~\ref{ho-sec:split} with the family \(u_{j+1}x_{j+1}\), whose product \(\prod_a (1 + aX)\) is the \(P(X)\) written there.  Then Theorem~\ref{thm:move} holds with \(\Kc_j\Ec^{(0)}_r\) multiplied by \((u_1 \cdots u_j)^r\), and with \(Z_j\) replaced by the family \(Z'_j\) of the \(u_l u_{l+1} \cdots u_j\, a\) for \(l \le j\) and \(a\) in \(x_l\) \cite[Prop.~10.8]{Adr}.  Theorem~\ref{thm:chain-gain} holds with \(\delta_j\) computed from \(Z'_j\).  These agree with the old \(\delta_j\) when \(Z_j\) has exactly one member of least valuation (Problem~\ref{pr:union-val}), but not in general: for \(p\) odd, \(x_1 = (1)\), \(x_2 = (-1)\), \(u_1 = -1\) and \(u_2 = 1\), one has \(h_1(Z_2) = 0\) while \(h_1(Z'_2)\) is a unit.
+\item The Newton polygon of \(\prod_{i=0}^t (1 + aQ^iX)\) over \(k\), with \(a \in k^\times\), \(Q \in k^\times\) and \(v(Q) > 0\), has the vertices \(\bigl(l, l\,v(a) + v(Q)\,l(l-1)/2\bigr)\) for \(0 \le l \le t+1\).
+\item Suppose that~\eqref{eq:R} holds with \(u_{j+1}^i K_j\) in place of \(K_j\) on the right, for units \(u_j \in \Oc^\times\).  In terms of \(E_j(X) := \sum_{i \le r} \Ec^{(j)}_i X^i\) this reads \(E_{j+1}(X) K_j = K_j\, E_{x_{j+1}}(u_{j+1}X)\, E_j(u_{j+1}X)\) modulo \(X^{r+1}\); it is the relation of Section~\ref{ho-sec:split} with the family \(u_{j+1}x_{j+1}\), whose product \(\prod_a (1 + aX)\) is the \(P(X)\) written there.  Then Theorem~\ref{thm:move} holds with \(\Kc_j\Ec^{(0)}_r\) multiplied by \((u_1 \cdots u_j)^r\), and with \(Z_j\) replaced by the family \(Z'_j\) of the \(u_l u_{l+1} \cdots u_j\, a\) for \(l \le j\) and \(a\) in \(x_l\).  Theorem~\ref{thm:chain-gain} holds with \(\delta_j\) computed from \(Z'_j\).  For the same gains \(\gamma_j(i)\), the two values of \(\delta_j\) agree when \(Z_j\) has exactly one member of least valuation.  For \(r = 1\), \(p\) odd, \(x_1 = (1)\), \(x_2 = (-1)\), \(u_1 = -1\), \(u_2 = 1\) and \(\gamma_2(1) > \gamma_2(0)\), the two values of \(\delta_2\) differ.
 \end{enumerate}
+
+\section{The step in the proof}\label{sec:proof}
+
+We state the step as the rewritten Lean proof \cite{Ser} states it, for its admissible data; Chapter~\ref{c32-chap} describes them, and we recall what the statement uses.  The data fix a CM field \(E\) with a CM type and \(f\) infinite places, the number \(m\) of lifts, the length \(a\) of a long row, a set of infinite places of \(E\) called the \(a\)-places, and scales \(x_1 < b\).  Let \(p\) be a prime, \(\iota \colon \mathbb{C} \to \mathbb{C}_p\) a ring homomorphism, and \(\Oc_\iota\) the ring of complex numbers \(z\) with \(\lvert \iota(z) \rvert \le 1\).  For an infinite place \(\sigma\) let \(\Phi_\sigma \colon E \to \mathbb{C}\) be the embedding selected by the CM type, and \(w_\iota(\sigma)\) the prime above \(p\) induced by \(\iota \circ \Phi_\sigma\).  A finite set \(\Lambda\) of primes of \(E\) is a \emph{mark} at \((p, \iota)\) if \(\Lambda\) is disjoint from its complex conjugate, \(p\) is exceptional, each prime of \(\Lambda\) is \(w_\iota(\tau)\) for some \(a\)-place \(\tau\), \(p < x_1\) and \(\chi_K(p) \ne 1\).  A mark is \emph{full} if it contains \(w_\iota(\tau)\) or its conjugate for every \(a\)-place \(\tau\).
+
+Let \(\rho\) be the least integer \(h \ge 0\) with \(m \le p^h\).  For \(\mathfrak{l}\) in a mark \(\Lambda\) let \(A_{\mathfrak{l}}\) be \(a\) times the number of \(a\)-places \(\tau\) with \(w_\iota(\tau) = \mathfrak{l}\), let \(T_{\mathfrak{l}, \rho}\) be the Hecke operator of the double coset of \(\diag(\varpi 1_\rho, 1)\) at \(\mathfrak{l}\), acting on the source forms, and let \(Y_{\mathfrak{l}} := p^{A_{\mathfrak{l}}}\, T_{\mathfrak{l}, \rho}\), an \(\Oc_\iota\)-linear endomorphism of the source forms.  With the normalization of Section~\ref{sec:move}, the arithmetic operator has the form \(Y_{\mathfrak{l}} = c\,\Ec^{(0)}_\rho\) used in Section~\ref{sec:gain}, with \(c = p^{A_{\mathfrak{l}}} q^{\rho(N_0 - \rho)}\), in the notation below.  Let \(Y\) be the product of the \(Y_{\mathfrak{l}}\) over \(\mathfrak{l} \in \Lambda\), in the order used in the cited theorem.  A form has \emph{gauge at most} a real number \(C\) if at every point \(g\) the \(p\)-adic gauge of its value at \(g\), taken at \(g\), is at most \(C\); the \emph{integral} source forms are those of gauge at most \(1\).  For a twist \(\vartheta\) and a finitely supported complex-valued function \(\Psi\) on translations \(x = (x_j)_{j \ge 0}\), sum the chains of \(m\) lifts with coefficients \(\Psi(x)\), using at stage \(j\) the integral vacuum translated by \(x_j\).  The \emph{restricted chain} applies to this sum the restriction of the rewriting from the last space to a subspace: it evaluates the last form at the block-diagonal points \(\diag(h, 1)\), applies a fixed branching matrix to the value, and multiplies by \(\prod_\tau \Phi_\tau(\bar\pi_N)^{-n_\tau}\), where \(\pi_N\) is the level element of the data and \(n_\tau\) is the sum of the entries of the last weight minus that of the restricted weight at \(\tau\).  Write \(\gain(p)\) for the predicted divisibility exponent of the chain at \(p\) (a number, not the gain of a linear map of Section~\ref{sec:gain}) and \(\operatorname{loss}(p)\) for the unit of loss at \(p\); at a full mark the allowed loss of Chapter~\ref{c35-chap} is \(2\operatorname{loss}(p)\).
+
+\begin{theorem}\label{thm:proof}
+Let \(\vartheta\) be a twist and \(\Psi\) a finitely supported function on translations that is a weak chain datum for \(\vartheta\), and suppose that \(p\) is prime to the norm of the level of \(\vartheta\).  Let \(v\) be an integral source form, and let \(\Lambda\) be a full mark at \((p, \iota)\).  Then the restricted chain of \(Y^m v\) has gauge at most \(p^{2\operatorname{loss}(p) - \gain(p)}\).
+\end{theorem}
+
+\begin{leanremark}\sloppy
+Theorem~\ref{thm:proof} is \path{New.Data.IsWeakChainDatum.gaugeLe_restrictedChain_of_isFullMark} in \path{New/UpperBound/Divisibility/LocalDivisibility.lean} of~\cite{Ser}.  Its definitions are \path{New.Data.IsWeakChainDatum}, \path{New.Data.restrictedChain} and \path{New.Data.restrictToY} in \path{Columns.lean}; \path{inducedPlace}, \path{IsMarked}, \path{IsFullMark}, \path{heckeScalingExponent}, \path{IsMarked.scaledHeckeOperator} and \path{integralSourceForms} in \path{MarkedPrimes.lean}; \path{gain}, \path{loss}, \path{ceilLogLifts}, \path{transferExponent}, \path{collisionExponent} and \path{IsExceptional} in \path{ShortColumns.lean}; \path{allowedLoss} in \path{Estimates.lean}; \path{New.GaugeLe} and \path{New.embValRing} in \path{PAdicGauge.lean}; \path{New.Data}, \path{New.Data.a} and \path{New.Data.aPlaces} in \path{AdmissibleData.lean}; \path{New.Data.Twist} and \path{New.Data.TameChar.normQ} in \path{LevelAndTwists.lean}; and \path{SourceForm}, \path{Translations}, \path{translateDatum}, \path{chainCombination} and \path{borderU} in \path{Columns.lean}.  The branching exponent is \path{New.Data.branchExponent} in \path{Weights.lean}, the long row is \path{New.Data.longRow} in \path{JetExponent.lean}, and the congruence in the loss is \path{New.Data.IsPlusMinusOneModLifts} in \path{ShortColumns.lean}.
+\end{leanremark}
+
+A prime with a full mark is exceptional, hence not congruent to \(\pm 1\) modulo \(m\), and for such a prime \(\operatorname{loss}(p) = f (\log b)^2 a/p\); this simplification is ours.
+
+The rewriting proves Theorem~\ref{thm:proof} by transferring the Hecke operator of index \(\rho\) separately at each prime of \(\Lambda\), through all \(m\) lifts.  Fix \(\mathfrak{l} \in \Lambda\); it is split, and \(Q = \mathrm{N}\mathfrak{l} = q^2\) with \(q\) a power of \(p\).  Let \(K_{j,x}\) be the lift from stage \(j\) to stage \(j+1\) with datum translated by \(x_j\), \(N_j\) the dimension at stage \(j\), \(t + 1 = N_{j+1} - N_j\), \(T^{(j)}_i\) the Hecke operator of the double coset of \(\diag(\varpi 1_i, 1)\) at \(\mathfrak{l}\) at stage \(j\), and \(H_j(U) = \sum_{i=0}^{N_j} (-U)^i Q^{i(i-1)/2}\, T^{(j)}_i\).  First, there is \(R \in \Oc_\iota[U]\) with \(R(0) = 1\) such that for every \(x\) in the support of \(\Psi\) and every form \(\phi\) at stage \(j\) spherical at \(\mathfrak{l}\), \(K_{j,x}\phi\) is spherical and \(H_{j+1}(U) K_{j,x}\phi = R(U) K_{j,x} H_j(q^{t+1}U)\phi\) for all \(U \in \mathbb{C}\).  The proof takes \(R(U) = \prod_{h=0}^{t} (1 - Q^h q^{N_j} \chi U)\), where \(\chi\), the base change of the character of lift \(j+1\) at a uniformizer of \(\mathfrak{l}\), is a \(p\)-adic unit.  With \(\Ec^{(j)}_i = q^{-i(N_j - i)} T^{(j)}_i\), the substitution \(U = -X/q^{N_{j+1}-1}\) gives~\eqref{eq:R} on these forms in degrees \(0 \le i \le r \le N_0\), when the family denoted by \(x_{j+1}\) in~\eqref{eq:R} is taken to be \(\chi(q^t, q^{t-2}, \dots, q^{-t})\).  This comparison is ours.  Second, there are \(c_{ii'} \in \Oc_\iota\), obtained by inverting \(R(U)\) in \(\Oc_\iota[[U]]\), such that for every supported \(x\), on spherical inputs and for \(0 \le i \le N_j\), \(q^{(t+1)i} Q^{i(i-1)/2} K_{j,x} T^{(j)}_i = \sum_{i'=0}^{i} c_{ii'} T^{(j+1)}_{i'} K_{j,x}\).  Third, for \(i \le \rho\) the one-lift identity holds with the multiplier \(p^{f\rho t}\) and new integral coefficients.  Write \(C_{j+1,x}\) for the composite of the first \(j+1\) translated lifts.  For each \(0 \le j < m\) there are \(c_0, \dots, c_\rho \in \Oc_\iota\) such that for every \(x\) in the support of \(\Psi\) and every form \(\phi\) of the stage-zero weight spherical at \(\mathfrak{l}\), \(p^\eta C_{j+1,x}(T^{(0)}_\rho \phi) = \sum_{i=0}^{\rho} c_i T^{(j+1)}_i (C_{j+1,x}\phi)\), where \(\eta = \rho f(N_m + \rho)\).  Fourth, the operators are moved onto the data of the lifts, one copy of the whole product \(Y\) on each of the \(m\) lifts, and, fifth, for a mark the restricted chain of \(Y^m v\) has gauge at most \(p\) to the power \(\sum_{0 \le j < m} (\#\Lambda \cdot \eta + \lambda_j)\), where \(\lambda_j\) is the loss from stage \(j\) to stage \(j+1\) defined in the rewriting.  For a full mark each term is at most \((2\operatorname{loss}(p) - \gain(p))/m\).
+
+The colength bound that goes with Theorem~\ref{thm:proof} is the following.  Let \(M\) be the \(\Oc_\iota\)-module of integral source forms and \(j_p = \lceil 2mfa/p \rceil\).  For every mark \(\Lambda\), \(Y^m M \subseteq M\), and there is an integer \(0 \le s \le \operatorname{loss}(p) \dim_{\mathbb{C}} V_0\), where \(V_0\) is the space of source forms, such that every finite family \(v_1, \dots, v_n\) in \(M\) has combinations \(\sum_k B_{ik} v_k \in Y^m M + p^{j_p} M\) for \(1 \le i \le n\), with \(B \in M_n(\Oc_\iota)\) and \(\det B\) dividing \(p^s\).  This holds even when \(Y\) has a kernel.
+
+\begin{leanremark}\sloppy
+The five steps are, in order, \path{exists_heckePolyOp_lift}, \path{exists_sum_heckeSplit_lift_eq_smul}, \path{exists_sum_heckeSplit_lift_eq_pow_smul} with its iteration \path{exists_sum_heckeSplit_chain_eq_pow_smul} followed by \path{exists_hecke_transfer}, \path{exists_lift_eq_chain_scaledHeckeOperator} and \path{gaugeLe_scaledHeckeOperator_pow}, in the namespace \path{New.Data.IsWeakChainDatum} of \path{ValuationAtNonSplitPrimes.lean}, where \(\lambda_j\) is \path{New.Data.liftLoss}; the bound for each summand is proved inside \path{gaugeLe_restrictedChain_of_isFullMark}.  Splitting, the square norm and the unit character value are \path{New.Data.IsMarked.isSplit} in \path{MarkedPrimes.lean} and \path{New.Data.IsMarked.exists_q_eq_sq}, \path{New.Data.IsMarked.norm_baseChange_atUniformizer} in \path{ValuationAtNonSplitPrimes.lean}.  The colength bound is \path{New.Data.IsMarked.isOntoUpToColength_prod_scaledHeckeOperator_pow} in \path{LocalDivisibility.lean}; its finite-family form expands \path{New.IsOntoUpToColength} and \path{New.ColengthDvd} in \path{New/Reduction/Lattices/Colength.lean}.  The stage rank is \path{New.Data.n} in \path{AdmissibleData.lean}, and the local operator and its polynomial are \path{New.heckeSplit} and \path{New.heckePolyOp} in \path{Lib/Weil/Unramified/SplitHecke.lean}.
+\end{leanremark}
 
 \section*{Hints}
 
@@ -246,8 +274,8 @@ The theorem takes two inputs: the gains \(\gamma_j(i)\) of a single lift followe
 \begin{description}
 \item[\ref{pr:EH}] Compare the product formulas.
 \item[\ref{pr:union}] \(E_{x \sqcup y} = E_x E_y\).
-\item[\ref{pr:geom}] Induction on \(t\), with the rule \(\qbinom{n}{l}{Q} = \qbinom{n-1}{l-1}{Q} + Q^l \qbinom{n-1}{l}{Q}\) and its companion \(\qbinom{n}{l}{Q} = Q^{n-l}\qbinom{n-1}{l-1}{Q} + \qbinom{n-1}{l}{Q}\).
-\item[\ref{pr:sym-block}] Problem~\ref{pr:geom} for the family \(mq^{-t}(1, Q, \dots, Q^t)\); \(e_l\) and \(h_l\) are homogeneous of degree \(l\).
+\item[\ref{pr:geom}] Induction on \(t\) and \(l\) together, using \(\qbinom{n}{0}{Q} = 1\) at the boundary and, for \(1 \le l \le n\), the rule \(\qbinom{n}{l}{Q} = \qbinom{n-1}{l-1}{Q} + Q^l \qbinom{n-1}{l}{Q}\) and its companion \(\qbinom{n}{l}{Q} = Q^{n-l}\qbinom{n-1}{l-1}{Q} + \qbinom{n-1}{l}{Q}\).
+\item[\ref{pr:sym-block}] Problem~\ref{pr:geom} for the family \(\beta q^{-t}(1, Q, \dots, Q^t)\); \(e_l\) and \(h_l\) are homogeneous of degree \(l\).
 \end{description}
 
 \subsection*{\S\ref{sec:val}}
@@ -283,9 +311,9 @@ The theorem takes two inputs: the gains \(\gamma_j(i)\) of a single lift followe
 \item[\ref{pr:bad}] Compute \(\Ec^{(1)}_1\) and \(\Ec^{(2)}_1\) first.
 \end{description}
 
-{\small\begin{thebibliography}{Mac}
-\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+{\small\begin{thebibliography}{Ser}
 \bibitem[Mac]{Mac} I.~G.~Macdonald, \emph{Symmetric Functions and Hall Polynomials}, 2nd ed., Oxford Math.\ Monogr., Clarendon Press, Oxford, 1995.
+\bibitem[Ser]{Ser} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean 4}, a rewriting of the Lean proof, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}.
 \end{thebibliography}}
 
 \end{document}
