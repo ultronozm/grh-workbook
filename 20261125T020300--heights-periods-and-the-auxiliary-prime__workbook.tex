@@ -11,6 +11,10 @@
 \externaldocument[cv-]{20261125T006000--covolumes__workbook}
 \externaldocument[cf-]{20261125T017500--chow-forms-and-effective-hilbert-samuel__workbook}
 \externaldocument[cp-]{20261125T006500--covolumes-and-periods__workbook}
+\externaldocument[cl-]{20261126T020310--counting-forms-and-the-critical-level__workbook}
+\externaldocument[af-]{20261125T020000--the-analytic-frame__workbook}
+\externaldocument[sp-]{20261125T007000--stepanov-without-multiplicity__workbook}
+\externaldocument[as-]{20261125T021500--assembly-at-one-scale__workbook}
 \newcounter{chap}
 \input{chapters}
 \makeatletter
@@ -19,7 +23,8 @@
 \renewcommand{\thesection}{\thechap.\arabic{section}}
 \theoremstyle{definition}
 \newtheorem{problem}{Problem}[section]
-\newtheorem{blackbox}{Input}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
 \newcommand{\rd}{\operatorname{rd}}
 \newcommand{\mass}{\operatorname{mass}}
 \newcommand{\htop}{\operatorname{ht}}
@@ -36,10 +41,15 @@
 \paragraph{Prerequisites.}
 The period calculation in Chapters~\ref{ec-chap} and~\ref{kl-chap},
 the mass and the squared norm of a lift in Chapters~\ref{ms-chap}
-and~\ref{tn-chap}, and the degrees of lattices of sections in
-Chapters~\ref{cv-chap}, \ref{cf-chap} and~\ref{cp-chap}.
+and~\ref{tn-chap}, the degrees of lattices of sections in
+Chapters~\ref{cv-chap}, \ref{cf-chap} and~\ref{cp-chap}, the
+Siegel--Weil formula of Chapter~\ref{sw-chap}, the exceptional zero in
+Chapter~\ref{sp-chap}, and the nodes of Chapter~\ref{af-chap}.
 We use squared operator norms and slopes equal to twice the arithmetic
 degree divided by the field degree and the rank \cite[\S15.1]{Adr}.
+The statements are quoted from \cite[\S15]{Adr}, whose definitions this
+chapter does not reproduce in full; the reader needs \cite[\S15]{Adr}
+open.
 
 \section{The period in a squared norm}\label{sec:period}
 
@@ -54,7 +64,7 @@ $f=[E:K]$ embeddings extending a fixed complex embedding of $K$.
 Write $v=\rd_E/2$, where $\rd_E=|\operatorname{disc}E|^{1/(2f)}$,
 and $c_{\chi_d}=L'(1,\chi_d)/L(1,\chi_d)$.
 
-\begin{blackbox}[CM period]\label{in:period}
+\begin{theorem}[CM period]\label{in:period}
 Let $L_C$ represent each of the $h_K$ ideal classes of $K$ as a complex lattice.
 At each $\tau\in\Phi$, the normalized arithmetic degree $\log\Omega_\tau$
 of the coordinate line of periods $\mathcal L_\tau$ over a field of definition
@@ -65,11 +75,11 @@ $F$ means $2\widehat{\deg}(\mathcal L_\tau)/[F:\Q]$ \cite[Def.~15.5]{Adr}.  Its 
        -\log\frac{\rd_E}{\sqrt d}
  =\gamma+\log\frac{\pi}{v}-c_{\chi_d} =:\log\Omega .
 \]
-Simplest incarnation: Problem~\ref{kl-pr:LL-eta-gen} computes the class
+\end{theorem}
+\noindent\emph{Simplest incarnation}: Problem~\ref{kl-pr:LL-eta-gen} computes the class
 mean by Kronecker's limit formula (Theorem~\ref{kl-thm:klf}).
 \emph{Status}: the class mean is classical, by Kronecker's limit formula;
 the relative-different correction is proved in \cite[Props.~15.3 and~15.6]{Adr}.
-\end{blackbox}
 
 \begin{problem}\label{pr:quadratic}
 For $E=K$ the correction is zero and
@@ -104,7 +114,7 @@ period map $B_u=P_u K_m\cdots K_1:N_u\to R^\vee$, where $P_u$ is
 the final pairing and $R$ is the top lattice.  Over the field of definition,
 $\htop(B_u)$ is the mean of $\log\|B_u\|^2$ over the archimedean places.
 
-\begin{blackbox}[Height of the composite]\label{in:height}
+\begin{theorem}[Height of the composite]\label{in:height}
 Let $s_j$ bound the mean log squared norm of $K_j$.  In the frames of the
 chain the specified bound is
 \[
@@ -123,12 +133,13 @@ metric.  Use the allowances of \cite[Def.~15.14]{Adr}.  Under the kernel, pairin
  \htop(B_u)\le h_u:=-A\log T_u+e_P^{\max}-\langle\log\kappa\rangle
        +\sum_j\bigl(s_j-\sum_\rho h_{j\rho}+e_{\lambda,j}^{\max}\bigr).
 \]
-Simplest incarnation: the squared norm in Theorem~\ref{tn-thm:norm}
-has one factorial term.  \emph{Status}: composition in the stated frames is proved in
-\cite[Prop.~15.9, Cor.~15.15]{Adr}.  The bounds for the chain are proved in
-the Lean formalization \cite{Lean}; they are \cite[Hyps.~15.10--15.12]{Adr},
-not yet written out in the published expositions.
-\end{blackbox}
+\end{theorem}
+\noindent\emph{Simplest incarnation}: the squared norm in Theorem~\ref{tn-thm:norm}
+has one factorial term.  \emph{Status}: derived in
+\cite[Prop.~15.9, Cor.~15.15]{Adr} from the kernel, pairing and frame
+bounds for the chain, \cite[Hyps.~15.10--15.12]{Adr}, assumed there.
+The formalization \cite{Lean} proves the final theorem; the corresponding
+step in \cite{Adr} is these hypotheses, assumed there.
 
 \begin{problem}\label{pr:common-height}
 Suppose the terms defining $h_u$ other than $-A\log T_u$ are common
@@ -143,7 +154,7 @@ Let $D=\operatorname{rk} R$, $n=f/2$, $N_2$ the size of $T_2$, the set indexing 
 Write $\mathcal L$ for the sum of the normalized local lengths at the
 twisted places, as in \cite[\S15.4]{Adr}.
 
-\begin{blackbox}[Covolumes and the height inequality]\label{in:A4}
+\begin{theorem}[Covolumes and the height inequality]\label{in:A4}
 The covolume estimate on the chain, with $\lcv=-2\widehat{\deg}/[F:\Q]$ over the field of definition $F$, is
 \[
  \frac{\lcv(M_j)}D\le
@@ -158,20 +169,22 @@ comparisons, the target bound of \cite[Hyp.~15.16]{Adr} reads
  \le \sum_{j,\rho}(p_j-q_j)w_{j\rho}\log\Omega+\mathcal L
        +1+C_0 b+C_0my(B_0+N_c).
 \]
-With Input~\ref{in:height}, the kernel weight relations and the size
+With Theorem~\ref{in:height}, the kernel weight relations and the size
 conditions of \cite[Hyp.~15.18, Thm.~15.19]{Adr}, this gives (A4):
 \begin{align*}
  \mu(R^\vee)+h_u-\mathcal L
    &\le m\sum_t\bigl(\varphi(a_t)-a_t\log\Omega\bigr)-A\log T_u+e_4,\\
  e_4&=(50C_0+10)\bigl(N_Ta\Lambda_a+my(B_0+N_c)\bigr).
 \end{align*}
-Simplest incarnation: for theta sections on an elliptic curve $J$ with
+\end{theorem}
+\noindent\emph{Simplest incarnation}: for theta sections on an elliptic curve $J$ with
 a unit-discriminant model, Theorem~\ref{cp-thm:Mk} gives the slope
 $-h_F(J)+\tfrac12\log(k/(2\pi^2))$ in weight $k$, with $h_F$
-the Faltings height.  \emph{Status}: proved in the Lean formalization; for
-the chain it rests on \cite[Hyps.~15.10--15.12,
-15.16, 15.18, 15.58--15.59, 15.69]{Adr}, not yet written out in the published expositions.
-\end{blackbox}
+the Faltings height.  \emph{Status}: derived in \cite[Thms.~15.19
+and~15.70]{Adr} from \cite[Hyps.~15.10--15.12, 15.16, 15.18,
+15.58--15.59 and~15.69]{Adr}, assumed there.  The formalization proves
+the final theorem; the corresponding step in \cite{Adr} is these
+hypotheses, assumed there.
 
 \begin{problem}\label{pr:weights}
 At $(j,\rho)$ the kernel weight has sum
@@ -180,6 +193,14 @@ term taken as zero off $T$.  After adding the covolume term, the coefficient
 of $w_{j\rho}\log\Omega$ is $2j-1-m$, of absolute value at most $m-1$.
 The top terms over all lifts contribute $-mA\log\Omega$.
 \end{problem}
+
+The remaining term $\sum_j(2j-1-m)w_{j\rho}\log\Omega$ of
+Problem~\ref{pr:weights} is not small term by term.  Since
+$\sum_{j=1}^m(2j-1-m)=0$, it equals
+$\sum_j(2j-1-m)(w_{j\rho}-b)\log\Omega$, and it is absorbed in $e_4$
+only because the nodes at the thick cells lie within $\Delta$ of $b$
+(Theorem~\ref{af-thm:sizes}(ii)); at the other cells they are at most
+$2b'$.
 
 \begin{problem}\label{pr:error}
 If $\Lambda_a\le2y$ as in \cite[Lemma~18.15(iii)]{Adr} and $y\ge1$, then
@@ -235,26 +256,56 @@ parameters $z^{\rm col}_{u\rho},z^{\rm row}_\rho$ define
 where $D^*$ is the target dimension budget.  The exponent $fk$ comes from
 the source dimension $d_u^*(T_u^k-1)^f$ for trivial stabilizers.
 
-\begin{blackbox}[The dimension budget and the level]\label{in:A6}
-Assume the row and column interlacing, mass-ratio formula and size
-conditions of \cite[Prop.~15.25]{Adr}, and the dimension bound
+\begin{theorem}[The dimension budget and the level]\label{in:A6}
+Suppose that the rank of the source lattice and the dimension budget are
+given exactly by the mass formula,
 \[
- D^*\ge(2/3)^f\mass(r)I_\Sigma\prod_\rho D_r(z^{\rm row}_\rho).
+ \operatorname{rk}N_u=d_u^*\,(T_u^k-1)^f,\qquad
+ D^*=\mass(r)\,I_\Sigma\prod_\rho D_r(z^{\rm row}_\rho),
 \]
-Let $\Gamma_0\ge1$ be the frame factor, $\log\Gamma_0\le fk$, and let
-$T_u\ge Z_u:=X_u\Gamma_0^{-2/(fk)}$.  Then (A6) is
+and that the auxiliary prime is chosen so that
+$C_0^{-1}\Gamma_0^{-2}D^*\le\operatorname{rk}N_u\le C_0\Gamma_0^{-2}D^*$,
+with $C_0\ge1$ and the frame factor $\Gamma_0\ge1$ of the mean slope
+inequality satisfying $\log\Gamma_0\le k/8$.  Let the row and column
+parameters, the nodes $b_{\rho j}$ and the level primes satisfy the
+conditions of Theorem~\ref{cl-thm:A6} and Problem~\ref{cl-pr:compare},
+with the constant $C_u$ there.  Then
 \[
  \log T_u\ge\sum_{j=1}^m\frac1f\sum_{\rho\in\Phi}
-                    \log\frac{w_{j\rho}v}{\pi}+mg-e_6,
- \qquad e_6=C_6y(1+m^2/k)+2 .
+                    \log\frac{b_{\rho j}v}{\pi}+mg-e_6,
+ \qquad e_6=(3+C_u)y+\log5+\frac1f\Bigl(\frac{\log(2C_0)}k+\frac14\Bigr).
 \]
-Simplest incarnation: Theorem~\ref{ms-thm:count} cancels the Weyl
+\end{theorem}
+\noindent\emph{Simplest incarnation}: Theorem~\ref{ms-thm:count} cancels the Weyl
 factorials in the Gaussian mass, leaving $V_s(z)\pi^{-s(s+1)/2}$
-times the local factors.  \emph{Status}: the deduction is proved in
-\cite[Prop.~15.25, Thm.~15.26]{Adr}; the target budget is proved in the
-Lean formalization, and is \cite[Hyp.~15.23]{Adr}, not yet written out in the published expositions.  The mass and formal degree must
-use the same measures \cite[\S18.7]{Adr}.
-\end{blackbox}
+times the local factors.  \emph{Status}: in the Lean formalization
+\cite{Lean} the two counts are proved from the mass formula and
+Harish-Chandra's formal degrees, and the lower bound for $T_u$ follows
+from the lemmas it proves on critical levels.  Chapter~\ref{cl-chap}
+develops that proof; Theorem~\ref{cl-thm:A6} is our combination of those
+lemmas, and we have not traced where the formalization uses it.  The
+formalization proves the final theorem; the corresponding step in
+\cite{Adr} is the dimension budget \cite[Hyp.~15.23]{Adr}, assumed there,
+from which \cite[Prop.~15.25, Thm.~15.26]{Adr} derive (A6).  The mass and
+formal degree must use the same measures \cite[\S18.7]{Adr}.
+
+In \cite{Adr} the budget is the inequality
+\[
+ D^*\ge(2/3)^f\mass(r)I_\Sigma\prod_\rho D_r(z^{\rm row}_\rho),
+\]
+and (A6) is stated with the nodes $w_{j\rho}$: under the row and column
+interlacing, mass-ratio and size conditions of
+\cite[Prop.~15.25]{Adr}, and for $T_u\ge Z_u:=X_u\Gamma_0^{-2/(fk)}$
+with $\log\Gamma_0\le fk$, one has
+\[
+ \log T_u\ge\sum_{j=1}^m\frac1f\sum_{\rho\in\Phi}
+                    \log\frac{w_{j\rho}v}{\pi}+mg-e_6',
+ \qquad e_6'=C_6y(1+m^2/k)+2 .
+\]
+The nodes satisfy $b_{\rho j}<w_{j\rho}\le b_{\rho j}(1+1/x)$
+\cite[\S15.5]{Adr}, so Theorem~\ref{in:A6} gives this form of (A6) with
+$e_6+m/x$ in place of $e_6'$, an error of order $y$.  The formalization
+states the counts exactly, not the inequality of \cite[Hyp.~15.23]{Adr}.
 
 \begin{problem}\label{pr:factorials}
 For each $k<M\le r$ the mass ratio contributes $((M-1)!)^f$.
@@ -286,19 +337,22 @@ For $Z_u\le T_u\le(1+1/(fk))Z_u$,
 \end{problem}
 
 The required congruence is $T_u=\alpha\bar\alpha$ in $K$, with
-$\alpha\equiv1\pmod {M\mathcal O_K}$ for
-$M=Q_Sqd(g_0g_1)^2$ \cite[Rem.~15.27]{Adr}.  Here $q$ is the first
+$\alpha\equiv1\pmod {\mathfrak m\mathcal O_K}$ for
+$\mathfrak m=Q_Sqd(g_0g_1)^2$ \cite[Rem.~15.27]{Adr}.  Here $q$ is the first
 auxiliary character modulus and $Q_S$ is the part of the conductor
 of $E$ prime to $qd$.  The ray class estimate in \cite[\S5.8, (C9)]{Adr}, from \cite[Thm.~1.4]{TZ} with Stark's exceptional-zero bound,
 supplies such a prime in $(Z,(1+h)Z]$ when
-$\log(4dM^2)\le c\sqrt{\log Z}$ and
+$\log(4d\mathfrak m^2)\le c\sqrt{\log Z}$ and
 $e^{-c\sqrt{\log Z}}\le h\le1$, for an absolute $c>0$.
+\cite{Adr} keeps the exceptional zero in this estimate; with
+Theorem~\ref{sp-thm:siegel} of Chapter~\ref{sp-chap} the exceptional
+zero does not occur.
 
 \begin{problem}\label{pr:ray}
 Take $m\asymp x^{1/2-\varepsilon/16}$, $fk=x^{O(1)}$,
 $\log(Q_Sqd)\ll x^{\varepsilon/5}\log^2 x$, and
 $(kb)^8\le g_i\le2(kb)^8$ as in \cite[Prop.~5.15, Def.~6.1]{Adr}.
-If $\log Z_u\gg my$, then $\log(4dM^2)\asymp y=o(\sqrt{\log Z_u})$
+If $\log Z_u\gg my$, then $\log(4d\mathfrak m^2)\asymp y=o(\sqrt{\log Z_u})$
 and $\log(fk)=o(\sqrt{\log Z_u})$.  Hence (C9) supplies $T_u$ in
 the interval of Problem~\ref{pr:interval}.
 \end{problem}
@@ -321,8 +375,8 @@ the height term gives
 \end{problem}
 
 In the mean slope inequality the average of $\mu(R^\vee)+h_u$ is
-bounded using Input~\ref{in:A4} in the same metric.  Multiplying
-Input~\ref{in:A6} by $-A$ then contributes $-mAg$, which cancels the
+bounded using Theorem~\ref{in:A4} in the same metric.  Multiplying
+Theorem~\ref{in:A6} by $-A$ then contributes $-mAg$, which cancels the
 $+mAg$ in the local bound (A5) \cite[Prop.~3.1]{Adr}.
 Problem~\ref{pr:linear} gives the coefficient that survives.
 
@@ -338,7 +392,7 @@ Let $\mu_{\rm std}(\nu)$ be the slope of this normalized Weyl lattice.
 In the unnormalized Fock form the monomials are orthogonal with
 $\|x^\alpha\|^2=\alpha!$.  Let $c_\nu=\|hw_\nu\|^2/\prod_i\nu_i!$.
 
-\begin{blackbox}[Slope of the base lattice]\label{in:A7}
+\begin{theorem}[Slope of the base lattice]\label{in:A7}
 In the level-zero genus,
 \[
  \mu(M_u)=-\frac{\log T_u}{k}\sum_\rho |\lambda_\rho|
@@ -348,12 +402,12 @@ In the level-zero genus,
 Under the weight and size bounds of \cite[Thm.~15.33]{Adr}, including
 $\log T_u\le C_Tmy$, (A7) is $\mu(M_u)\ge-e_7$, with
 $e_7=C_7 N_T a\Lambda_a(1+m/k)$.
-Simplest incarnation: Problem~\ref{cv-pr:def-n1} computes the slope
+\end{theorem}
+\noindent\emph{Simplest incarnation}: Problem~\ref{cv-pr:def-n1} computes the slope
 of a Gaussian invariant line in weight divisible by four.  Its
 Petersson squared norm includes a stabilizer factor $1/4$, giving
 slope $\log4$ where the normalized coefficient line has slope zero.  \emph{Status}: the displayed formulas and the lower
 bound are proved in \cite[Props.~15.30, 15.32, Thm.~15.33]{Adr}.
-\end{blackbox}
 
 \begin{problem}\label{pr:hook}
 For $\nu=(l,h)$ with $l\ge h\ge0$, the hook formula of
@@ -364,34 +418,78 @@ $x_{11}(x_{11}x_{22}-x_{12}x_{21})$ has squared Fock norm $3$.
 \end{problem}
 
 \begin{problem}\label{pr:record}
-With $y\le\Lambda_a$, Input~\ref{in:A6} gives the lower inequality in
+With $y\le\Lambda_a$, the form of (A6) in \cite{Adr} after
+Theorem~\ref{in:A6} gives the lower inequality in
 (K7) with error $(C_6+2)\Lambda_a(1+m^2/k)$.
-Input~\ref{in:A7} gives the lower inequality in (K8).
+Theorem~\ref{in:A7} gives the lower inequality in (K8).
 The upper bound on $\mu_{\max}(M_u)$ is a separate input to
 \cite[Prop.~18.11(viii), Rem.~15.34]{Adr}.
 \end{problem}
 
+\paragraph{Remark: where the arithmetic geometry enters.}
+The public sources differ here, and this chapter follows \cite{Adr}
+without settling the difference.  Zhang \cite[\S4.3]{Zh} applies the
+moduli schemes, the arithmetic Hilbert--Samuel theorem, Moriwaki's
+criterion for small sections and Fargues's estimates for Hodge--Tate
+maps to the covolumes of the initial lattices, the analogues of the base
+lattices $M_u$ (his bound $\mu(M_\alpha)\ge-E_{\rm sl}$).  Adriazola
+\cite[\S15]{Adr} applies the Hilbert--Samuel theorem to the target in
+Theorem~\ref{in:A4}, and obtains Theorem~\ref{in:A7} for the base
+lattices from a computation with Weyl modules.  The periods also differ:
+those of \cite{Zh} are periods of CM abelian varieties, after Anderson,
+with Shimura--Taniyama reciprocity and the integrality theorem of Deligne
+and Ribet among the results used for them, while Theorem~\ref{in:A4} uses
+only the CM period $\Omega$ of Theorem~\ref{in:period} as a real number.
+We have not determined which of the two routes the Lean formalization
+follows.  The same remark follows the map of the inputs in
+Chapter~\ref{as-chap}.
+
 \paragraph{Deliverable.}
-For the chain record of \cite[Def.~18.9]{Adr}, Input~\ref{in:height}
-specifies $h_u$, Input~\ref{in:A4} supplies the height inequality in
+For the chain record of \cite[Def.~18.9]{Adr}, Theorem~\ref{in:height}
+specifies $h_u$, Theorem~\ref{in:A4} supplies the height inequality in
 (K4), and Problem~\ref{pr:common-height} supplies (K6) under the
-common-frame assumption.  Inputs~\ref{in:A6} and~\ref{in:A7} supply
+common-frame assumption.  Theorems~\ref{in:A6} and~\ref{in:A7} supply
 the first inequalities of (K7) and (K8).  The upper and between-word
 bounds on $\log T_u$ and the maximal base slope still enter
 \cite[Prop.~18.11(vii)--(viii)]{Adr} separately.  These are the
 contributions to (A4), (A6) and (A7) in \cite[Prop.~18.14]{Adr}.
-Existence of records uniformly on the window is proved in the Lean
-formalization; it is \cite[Hyp.~18.10]{Adr}, not yet written out in the published expositions.
+Existence of records uniformly on the window is \cite[Hyp.~18.10]{Adr},
+assumed there; the formalization constructs records only for data that
+it chooses (Section~\ref{as-sec:map} of Chapter~\ref{as-chap}).
 
 \section*{Hints}
 \subsection*{\S\ref{sec:period}}
 \begin{description}
 \item[\ref{pr:quadratic}] Take logarithms of the product over classes.
+\item[\ref{pr:gaussian}] Problem~\ref{ec-pr:Omega}; then compare the
+linear terms of $\log\|\Theta_{(a)}\|^2$ before and after the rescaling.
+\end{description}
+\subsection*{\S\ref{sec:height}}
+\begin{description}
+\item[\ref{pr:common-height}] Write out $h_u$ and $h_{u'}$; only
+$-A\log T_u$ differs.
+\item[\ref{pr:weights}] $p_j-q_j=k+2j-1-m$.
+\item[\ref{pr:error}] Substitute $\Lambda_a\le2y$ in $e_4$, and use
+$y\ge1$.
+\item[\ref{pr:uniform}] Theorem~\ref{cv-thm:P1} for the first claim and
+Theorem~\ref{cf-thm:points} for the second; then let $H$ grow.
 \end{description}
 \subsection*{\S\ref{sec:prime}}
 \begin{description}
+\item[\ref{pr:factorials}] Telescope the mass ratios over $k<M\le r$, and
+use the definition of $D_s$.
+\item[\ref{pr:indices}] Expand $r(r+1)/2+k-k(k+1)/2$ with $r=k+m-1$,
+and bound each index below by half its leading power.
 \item[\ref{pr:interval}] Use $\log(1+t)\le t$.
 \item[\ref{pr:ray}] Compare $y^2$ with $my$.
+\item[\ref{pr:linear}] Insert the value of $\log\Omega$ from
+Theorem~\ref{in:period}.
+\end{description}
+\subsection*{\S\ref{sec:base}}
+\begin{description}
+\item[\ref{pr:hook}] The hook formula of \cite[Lemma~15.29]{Adr} for two
+rows; for $(2,1)$ expand the product and use $\|x^\alpha\|^2=\alpha!$.
+\item[\ref{pr:record}] Use $y\le\Lambda_a$ in $e_6'$.
 \end{description}
 
 \begin{thebibliography}{Adr}
@@ -400,5 +498,6 @@ J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, r
 \bibitem[Lean]{Lean} The Lean community, \emph{riemann-hypothesis}, a Lean formalization of Alp\"oge's argument, \url{https://github.com/leanprover-community/riemann-hypothesis}.
 \bibitem[TZ]{TZ} J.~Thorner and A.~Zaman, \emph{A unified and improved Chebotarev density theorem},
 Algebra Number Theory \textbf{13} (2019), 1039--1068.
+\bibitem[Zh]{Zh} R.~Zhang, \emph{A preliminary note on Alp\"oge's proposed proof of the generalized Riemann hypothesis}, 22 November 2026, \url{https://hexagonmath.org/pdf/2611.00809v1}.
 \end{thebibliography}
 \end{document}
