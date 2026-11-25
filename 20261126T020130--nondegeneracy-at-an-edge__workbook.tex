@@ -1,0 +1,253 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[hn-]{20261125T013500--hecke-nondegeneracy-on-the-tree__workbook}
+\externaldocument[di-]{20261125T020100--divisibility-at-inert-primes-in-general__workbook}
+\externaldocument[le-]{20261126T020410--local-exponents-of-the-lifts__workbook}
+
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T020130\endcsname
+  \chapnumber{20261126T020130}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+\newtheorem{remark}{Remark}[section]
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\F}{\mathbb F}
+\newcommand{\GL}{\mathrm{GL}}
+\newcommand{\Sym}{\operatorname{Sym}}
+\newcommand{\LP}{\mathrm{LP}}
+\newcommand{\Nsrc}{N^{\rm src}}
+\newcommand{\Ntgt}{N^{\rm tgt}}
+\newcommand{\vo}{\mathfrak o}
+\newcommand{\tl}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\title{Nondegeneracy at an edge}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Chapter~\ref{hn-chap}: sources of a lattice (Problem~\ref{hn-pr:sources}), the integral forms \(H(L)=\Sym^d(L^\vee)\) and their equivariance (Problem~\ref{hn-pr:equivariance}), and elementary divisors with witnesses and tests (Problems~\ref{hn-pr:minors} and~\ref{hn-pr:good-count}).  Theorem~\ref{di-thm:LP} of Chapter~\ref{di-chap}, which states the nondegeneracy property in the form of \cite[Thm.~12.11]{Adr}.  The Frobenius orbits and the classes of inert primes of Section~\ref{le-sec:orbits}.  Unramified extensions of \(\mathbb Q_p\), their Frobenius, and Teichm\"uller representatives \cite[Ch.~II, \S\S4--5]{SeL}.  Gaussian binomial coefficients.
+
+In Chapter~\ref{hn-chap} the Hecke image at a vertex of the tree was computed directly.  In the proof the vertex lies in the building of \(\GL_k\) over a large unramified extension, and the image is controlled by a condition on one edge at a time.  This chapter states that condition as the Lean formalization \cite{Lean} has it, checks its formal properties in the smallest model, and shows why it can only hold thanks to the Frobenius twist.  The theorems that establish it are stated at the end; their proofs are large and are not developed here.
+
+\section{Edges and their midpoints}\label{sec:edges}
+
+Fix a prime \(p\ge5\) and an integer \(\nu\ge1\).  Let \(W\) be the ring of integers of the unramified extension \(K\) of \(\mathbb Q_p\) of degree \(\nu\), with residue field \(\F_Q\), \(Q=p^\nu\), and Frobenius \(\sigma\).  In the application \(\nu\) is the length \(n_p\) of a Frobenius orbit, Section~\ref{le-sec:orbits}, and the formalization requires \(\nu\) to be even.  Let \(\vo\supset W\) be a complete discrete valuation ring with a uniformizer \(\varpi\) such that \(\varpi^2=p\); in the formalization its residue field is \(\F_{Q^2}\).  We write \(v\) for the valuation of \(\vo\), so \(v(p)=2\).  For a \(W\)-lattice \(L\) we write \(L_\vo=\vo L\).
+
+Fix integers \(k\ge2\) and \(1\le r<k\).  For \(W\)-lattices \(L''\subset L\) in \(K^k\), the pair \(e=(L''\subset L)\) is an \emph{\(r\)-edge} if \(pL\subset L''\) and \(L/L''\cong\F_Q^r\); its \emph{source} is \(L''\) and its \emph{target} is \(L\).  Its \emph{midpoint} is the \(\vo\)-lattice \(M(e)=L''_\vo+\varpi L_\vo\).
+
+\begin{problem}\label{pr:count}
+The \(r\)-edges into \(L\) correspond to the subspaces of codimension \(r\) of \(L/pL\), and the \(r\)-edges out of \(L''\) to the \(r\)-dimensional subspaces of \(p^{-1}L''/L''\).  Each set has \(\binom kr_Q\ge Q^{r(k-r)}\) elements.  For \(k=2\), \(r=1\) this is \(Q+1\); for \(k=4\), \(r=2\), \(Q=5\) it is \(806\ge625\).
+\end{problem}
+
+\begin{problem}\label{pr:midpoint}
+\(L''_\vo\subset M(e)\subset L_\vo\), and both quotients \(M(e)/L''_\vo\) and \(L_\vo/M(e)\) have length \(r\) over \(\vo\).  If \(L''\) has a basis \(g_1,\dots,g_k\) with \(L=L''+W p^{-1}g_1+\dots+Wp^{-1}g_r\), then \(M(e)\) has the basis \(\varpi^{-1}g_1,\dots,\varpi^{-1}g_r,g_{r+1},\dots,g_k\).
+\end{problem}
+
+\section{Integral forms on an edge}\label{sec:forms}
+
+To each lattice \(L\) the construction attaches an \(\vo\)-lattice \(H(L)\) in a finite-dimensional representation \(V\) of \(\GL_k(K)\) over the fraction field of \(\vo\), with \(H(gL)=gH(L)\).  In the formalization \(V\) is a tensor product, over the positions \(i\in\Z/\nu\), of dual Weyl modules of a dominant weight, twisted by \(\sigma^i\); at the odd positions the dual weight is used \cite{Lean}.  We work in the following model, for \(k=2\) and \(r=1\), which keeps the twist and drops the duals.
+
+\paragraph{The model.}  Fix degrees \(d_0,\dots,d_{\nu-1}\ge0\).  Let \(V\) be the space of functions \(F(u_0,\dots,u_{\nu-1})\) on \((K^2)^\nu\), with values in the fraction field of \(\vo\), that are homogeneous polynomials of degree \(d_i\) in \(u_i\).  For a lattice \(L\subset K^2\) put
+\[
+ H(L)=\bigotimes_{i\in\Z/\nu}\Sym^{d_i}\bigl((\sigma^iL)^\vee\bigr)\otimes_W\vo ,
+\]
+where \(\sigma^iL\) is the image of \(L\) under \(\sigma^i\) applied to coordinates and \(\Sym^{d_i}\) acts on the variable \(u_i\).  For \(\nu=1\) this is \(\Sym^d(L^\vee)\otimes\vo\), as in Chapter~\ref{hn-chap}.  The \emph{normalizing exponent} is \(A=\sum_id_i\).  For \(F\in V\) and \(u\in K^2\), the \emph{twisted value} is \(F^\sigma(u)=F(u,\sigma u,\dots,\sigma^{\nu-1}u)\).  The group \(\GL_2(K)\) acts on \(V\) by \((gF)(u_0,\dots,u_{\nu-1})=F((\sigma^0g)^{-1}u_0,\dots,(\sigma^{\nu-1}g)^{-1}u_{\nu-1})\), where \(\sigma^ig\) is \(g\) with \(\sigma^i\) applied to its entries, and on \(V^\vee\) by the contragredient action.
+
+For an edge \(e\), put
+\[
+ R(e)=\varpi^{-A}H\bigl(M(e)\bigr),\qquad R'(e)=\varpi^{-A}H\bigl(M(e)\bigr)^\vee,\qquad \langle F,G\rangle=G(p^AF),
+\]
+where \(H(M(e))=\bigotimes_i\Sym^{d_i}\bigl(((\sigma^iL'')_\vo+\varpi(\sigma^iL)_\vo)^\vee\bigr)\), the duals now taken over \(\vo\), \({}^\vee\) is the dual lattice in the dual space \(V^\vee\), and \(F\in V\), \(G\in V^\vee\).  Let \(e=(L''\subset L)\) be an edge, let \(g,g'\) be a basis of \(L''\) with \(L=L''+Wp^{-1}g\), and let \(\eta,\xi\) be the dual basis of \(L''^\vee\), so that \(\eta(g)=1\) and \(\xi(g)=0\).  Let \(\eta_i,\xi_i\) be the corresponding basis of \((\sigma^iL'')^\vee\), and for \(J=(j_0,\dots,j_{\nu-1})\) with \(0\le j_i\le d_i\) put \(x_J=\prod_i\eta_i^{j_i}\xi_i^{d_i-j_i}\).
+
+\begin{problem}\label{pr:adapted}
+In the basis \(x_J\),
+\[
+ H(L'')=\bigoplus_J\vo\,x_J,\qquad H(M(e))=\bigoplus_J\varpi^{\lvert J\rvert}\vo\,x_J,\qquad H(L)=\bigoplus_Jp^{\lvert J\rvert}\vo\,x_J,
+\]
+with \(\lvert J\rvert=\sum_ij_i\).  Hence \(R(e)=\bigoplus_J\varpi^{\lvert J\rvert-A}\vo\,x_J\).
+\end{problem}
+
+\begin{problem}\label{pr:perfect}
+\(R(e)\) and \(R'(e)\) are dual to each other under \(\langle\ ,\ \rangle\): an element \(G\) lies in \(R'(e)\) exactly when \(\langle F,G\rangle\in\vo\) for every \(F\in R(e)\), and conversely.  In the basis dual to \((x_J)\), \(R'(e)=\bigoplus_J\varpi^{-A-\lvert J\rvert}\vo\,x_J^*\).
+\end{problem}
+
+\begin{problem}\label{pr:inclusions}
+\(H(L'')\subset R(e)\subset p^{-A}H(L)\), and \(H(L)^\vee\subset R'(e)\).
+\end{problem}
+
+\begin{problem}\label{pr:top-coefficient}
+Write \(F\in V\) as \(\sum_Jf_Jx_J\).  The coefficient of the top monomial \(\prod_i\eta_i^{d_i}\) is the twisted value \(F^\sigma(g)\).  Consequently, if \(F\in\varpi^cR(e)\), then \(v(F^\sigma(g))\ge c\).
+\end{problem}
+
+So \(R(e)\) lies halfway between \(H\) of the source and \(p^{-A}H\) of the target, and the top coefficient, which is the twisted value at the direction \(g\) in which the edge expands, is the one that \(R(e)\) does not enlarge.  In the formalization these are the lemmas on dual bases, inclusions and perfectness, proved for every dominant weight.
+
+\section{The condition}\label{sec:LP}
+
+For an integer \(t\ge0\), a lattice \(L''\) and a lattice \(L\), put
+\[
+ \Nsrc_t(L'')=\varpi^{-t}H(L'')\cap\bigcap_{e\ \text{out of}\ L''}R(e),\qquad
+ \Ntgt_t(L)=\varpi^{-t}H(L)^\vee\cap\bigcap_{e\ \text{into}\ L}R'(e).
+\]
+Let \(D\ge0\) and \(c_*\ge0\) be integers and \(0\le\kappa\le1\).  The condition \(\LP(r;t,D,\kappa,c_*)\) is: \(c_*\ge4(D+1)\), and for every lattice \(L\) there are
+\begin{itemize}
+\item[(i)] \(r\)-edges \(e_1,\dots,e_M\) into \(L\), with sources \(L''_1,\dots,L''_M\), and vectors \(F_l\in\Nsrc_t(L''_l)\);
+\item[(ii)] such that each \(F_l\) is \emph{isolated}: \(F_l\in\varpi^{c_*}R(e')\) for every edge \(e'\ne e_l\) out of \(L''_l\);
+\item[(iii)] and an integer \(n\ge(1-\kappa)\dim V\), an \(\vo\)-linear map \(u\colon\vo^n\to\Ntgt_t(L)\) and an \(n\times M\) matrix \((\mu_{jl})\) over \(\vo\), with \(\sum_l\mu_{jl}\langle F_l,u(z)\rangle=p^Dz_j\) for all \(z\in\vo^n\) and all \(j\).
+\end{itemize}
+This is the definition of \cite[Def.~12.6]{Adr}, recalled before Theorem~\ref{di-thm:LP}, in the form of the formalization.  The parameter \(t\) is the \emph{depth}, \(D\) the \emph{denominator}, \(\kappa\) the \emph{defect} and \(c_*\) the \emph{isolation order}.
+
+\begin{problem}\label{pr:one-lattice}
+\(R(ge)=gR(e)\), \(R'(ge)=gR'(e)\), \(\Nsrc_t(gL'')=g\Nsrc_t(L'')\) and \(\Ntgt_t(gL)=g\Ntgt_t(L)\) for \(g\in\GL_2(K)\), and \(\langle gF,gG\rangle=\langle F,G\rangle\).  Hence if (i)--(iii) hold for one lattice \(L\), they hold for every lattice.
+\end{problem}
+
+\begin{problem}\label{pr:trivial-defect}
+If \(c_*\ge4(D+1)\), then \(\LP(r;t,D,1,c_*)\) holds.  If \(\LP(r;t,D,\kappa,c_*)\) holds and \(\kappa\le\kappa'\le1\), then so does \(\LP(r;t,D,\kappa',c_*)\).  The set of \(\kappa\) for which \(\LP(r;t,D,\kappa,c_*)\) holds is \([\kappa_0,1]\) for some \(\kappa_0\) in \(\{1-n/\dim V:0\le n\le\dim V\}\).
+\end{problem}
+
+\begin{problem}\label{pr:smith}
+Given \(F_1,\dots,F_M\), let \(\Phi\colon\Ntgt_t(L)\to\vo^M\) be the map \(G\mapsto(\langle F_l,G\rangle)_l\).  Then (iii) holds with a given \(n\) exactly when at least \(n\) elementary divisors of \(\Phi\) have valuation at most \(2D\).
+\end{problem}
+
+\begin{problem}\label{pr:base-change}
+If \(\vo'\supset\vo\) is a complete discrete valuation ring, finite over \(\vo\), and \(\LP(r;t,D,\kappa,c_*)\) holds over \(\vo\) with \(\varpi\), then it holds over \(\vo'\) with the same \(\varpi\), for the lattices \(H(L)\otimes_\vo\vo'\).
+\end{problem}
+
+The formalization defines the defect it uses at the primes of class~I as the least \(\kappa\) for which the condition holds; by Problem~\ref{pr:trivial-defect} this least value exists and is attained.  So the condition itself is never in doubt.  What has content is how small its least defect is, and that is a statement about the isolated vectors.
+
+\section{Isolation needs the Frobenius twist}\label{sec:isolation}
+
+Let \(L''\) have the basis \(g=e_2\), \(g'=e_1\), so that the edge \(e=(L''\subset L''+Wp^{-1}e_2)\) is one edge out of \(L''\).  Let \(x,y\) be the coordinates dual to \(e_1,e_2\).
+
+\begin{problem}\label{pr:other-edges}
+The edges out of \(L''\) other than \(e\) are \(e'_\alpha=(L''\subset L''+Wp^{-1}(e_1+[\alpha]e_2))\), for \(\alpha\in\F_Q\), where \([\alpha]\) is the Teichm\"uller representative.  The twisted value of a monomial \(\prod_ix_i^{d_i-j_i}y_i^{j_i}\) at \(e_1+[\alpha]e_2\) is \([\alpha]^{\sum_ij_ip^i}\).
+\end{problem}
+
+\begin{problem}\label{pr:digits}
+Suppose that the exponents \(\sum_ij_ip^i\), for \(0\le j_i\le d_i\), are distinct and less than \(Q\); this holds if \(d_i\le p-1\) for every \(i\), and also if \(d_0<Q\) and \(d_i=0\) for \(i\ne0\).  Then the map sending \(F\in H(L'')\) to the function \(\alpha\mapsto F^\sigma(e_1+[\alpha]e_2)\bmod\varpi\) on \(\F_Q\) is injective modulo \(\varpi H(L'')\).
+\end{problem}
+
+Problems~\ref{pr:top-coefficient} and~\ref{pr:digits} show that, under the hypothesis of Problem~\ref{pr:digits}, a vector of \(H(L'')\) that lies in \(\varpi R(e'_\alpha)\) for every \(\alpha\) has its top coefficients at the \(Q\) directions divisible by \(\varpi\), and so lies in \(\varpi H(L'')\).  Pushing this further gives the following, which we state without proof.
+
+\begin{remark}\label{pr:obstruction}\label{pr:vacuous}\label{pr:untwisted}
+Under the hypothesis of Problem~\ref{pr:digits}, if \(F\in\varpi^{-t}H(L'')\) lies in \(\varpi^cR(e'_\alpha)\) for every \(\alpha\in\F_Q\), then \(F\in\varpi^cH(L'')\).  Combined with Problems~\ref{pr:inclusions} and~\ref{pr:perfect}, and \(c_*\ge4(D+1)>2D\), this shows that every isolated vector pairs into \(\varpi^{c_*}\vo\) with \(\Ntgt_t(L)\), so that \(\LP(1;t,D,\kappa,c_*)\) holds in the model only with \(\kappa=1\).  This includes the untwisted tree of Chapter~\ref{hn-chap} with \(Q>d\), where Theorem~\ref{hn-thm:vertex} shows that the Hecke image itself is nondegenerate up to \(p^{\lfloor\log_pd\rfloor}\) on all of the rank.  \emph{Status}: this observation is ours; it is not in the formalization, and we have not found it in the literature.
+\end{remark}
+
+So without the twist the edge condition is a much stronger requirement than nondegeneracy of the image: it asks for witnesses at single edges, and a binary form of degree less than \(Q\) cannot be small at \(Q\) directions without being small everywhere.  The twist removes this obstruction as soon as one degree reaches \(p\).
+
+\begin{problem}\label{pr:twisted-example}
+Let \(p=5\), \(\nu=2\), \(d_0=5\) and \(d_1=4\).  The form \(F=y_0^5y_1^4-x_0^4y_0x_1^4\) lies in \(H(L'')\), its twisted values \(F^\sigma(e_1+[\alpha]e_2)\) vanish for all \(25\) elements \(\alpha\in\F_{25}\), and \(F^\sigma(e_2)=1\).
+\end{problem}
+
+Thus the top coefficient of \(F\) vanishes at all the edges out of \(L''\) except \(e\), and is not small at \(e\).  We have not computed whether the full condition, with isolation of order \(c_*\), holds in this example for some depth and denominator.  In the formalization the weights at the top positions are of size \(a\), far larger than \(p\), and the orbit length \(\nu=n_p\) is at least \(x^{\varepsilon/4}\).
+
+\section{The two theorems}\label{sec:theorems}
+
+The formalization proves the condition with small defect at the primes of class~I, in the two ranges of Theorem~\ref{di-thm:LP}: \(13\le p<p_*\), with edges of a large type \(r\ge2\), and \(p_*\le p<X'\), with \(r=1\).  We use the notation of Section~\ref{di-sec:image}: \(a\), \(b'\), the rank \(k\), and a parameter \(Y\ge1\).  The positions \(i\in\Z/\nu\) that carry tops form a set \(\mathcal T\); a dominant weight \(\lambda=(\lambda_i)_{i\in\Z/\nu}\) has \emph{base type} with parameters \(a_i,b_i\) and \(c\) if, for \(i\in\mathcal T\), the first entry of \(\lambda_i\) is \(a_i\), the last is \(-b_i\), and the others have absolute value at most \(c\), while for \(i\notin\mathcal T\) every entry has absolute value at most \(c\).
+
+\begin{theorem}[small primes]\label{thm:small}
+There is an absolute constant \(C\) with the following property.  Let \(p\ge13\), \(2\le r\le Y\), and let \(\mathcal T\) satisfy the orbit conditions of the formalization, with parameters \(L_1,N_1,G'\), where \(N_1\) is its window count and \(N_1^2\le r\lvert\mathcal T\rvert\).  Let \(\lambda\) have base type with \(a+c\le a_i\le2a-c\) and \(0\le b_i\le c_0-2c\).  Put \(\Lambda=CN_1^2\log a\), and suppose
+\[
+ \Lambda\le k,\quad N_1+3r\le k,\quad 256k^2\lvert\mathcal T\rvert Y^2\le p^{L_1-1},\quad
+ C\lvert\mathcal T\rvert k^2\log_pa\le D,\quad 8(D+1)\le c_*,
+\]
+\[
+ Ck^3r^2\lvert\mathcal T\rvert p^{5G'}\bigl(c_*+r\lvert\mathcal T\rvert c_0+2r\nu c\bigr)Y\le a .
+\]
+Then \(\LP(r;t,D,C\lvert\mathcal T\rvert r^2k/Y,c_*)\) holds for every integer
+\[
+ t\ge Cr\lvert\mathcal T\rvert\Bigl(\frac{\Lambda a}{pk}+ap^{-L_1}+c_0+kp^{G'}\Bigr)+2r\nu c .
+\]
+\end{theorem}
+
+\noindent\emph{Status}: proved in the formalization.  It is used with \(r=r_G=\lceil8(h+2)/\varepsilon\rceil+1\), \(h=2+8\varepsilon\); for \(\varepsilon=1/100\) this is \(r_G=3265\).  Its proof rests on the dual-basis and perfectness lemmas of Section~\ref{sec:forms} for general weights, on a model for the weights whose factors are symmetric powers or their duals (in Witt-vector coordinates), on counts of rational planes over \(\F_Q\) (Problem~\ref{pr:count}), branching and Pieri counts, the extremal projector, and on valuations of digit polynomials along chains of letters.  It is a large development which we have not followed.  In \cite{Adr} the corresponding statement is Theorem~\ref{di-thm:LP}(i), derived there from the engines of \cite[Hyp.~12.12]{Adr}.
+
+For \(p\ge p_*\) the weights vary in a box: \(a_i\in[a,a+a/(kY)]\cap\Z\) and \(b_i\in[b_l,b_u]\cap\Z\) for \(i\in\mathcal T\).  For a position \(i\) let \(d(i)\ge1\) be least with \(i-d(i)\) an even position in \(\mathcal T\).
+
+\begin{theorem}[large primes]\label{thm:classI}
+For suitable constants \(C_0\), \(C_H\) and \(C\), the first two large enough, the following holds.  Put \(\Lambda_0=C_0N_{\rm gap}^2\log a\), where \(N_{\rm gap}\) and \(G_{\rm gap}\) bound the number of tops between, and the distance between, consecutive even tops.  Under the size conditions of the formalization on \(p,\nu,k,\mathcal T,Y,a,b',b_l,b_u,c,D,c_*\) (among them \(k^2Y^2\le p<a/b'\), \(c_*\ge8(D+1)\), and that no odd power of \(p\) lies within a factor \(1\pm2\delta\) of \(a/b'\) for an explicit \(\delta<1/6\)), there is a function \(\kappa(a_\bullet,b_\bullet)\ge0\) on the box such that
+\begin{itemize}
+\item[(a)] the mean of \(\kappa\) over the box is at most \(C\lvert\mathcal T\rvert N_{\rm gap}/Y\);
+\item[(b)] for every weight of base type with parameters in the box, \(\LP(1;t,D,\kappa(a_\bullet,b_\bullet),c_*)\) holds for every integer \(t\ge t_I\), where
+\[
+ t_I=\sum_{i\in\mathcal T,\ i\ \text{odd}}\min\Bigl(b_i,\ \frac{a_{i-d(i)}}{p^{d(i)}}\Bigr)+E ,
+\]
+with an explicit error term \(E\) of size \(C\lvert\mathcal T\rvert N_{\rm gap}(a/p^2+b'/p+\Lambda_0a/(pk)+\Lambda_0b'/k)\) plus terms in \(p^{G_{\rm gap}}\), \(k\), \(\log_pa\), \(\nu\), \(c_*\) and \(c\).
+\end{itemize}
+\end{theorem}
+
+\noindent\emph{Status}: proved in the formalization; we have not reproduced its full list of size conditions.  Its proof combines a detection theorem for twisted Fock pairings, a rank theorem for systems of columns, and mean bounds for the shares of bad segments.  These are presumably the three engines of \cite[Hyp.~12.12]{Adr}, but we have not checked the correspondence.  We have not followed the proof.  In \cite{Adr} the corresponding statement is Theorem~\ref{di-thm:LP}(ii).
+
+\begin{problem}\label{pr:least}
+Let \(\kappa_0(a_\bullet,b_\bullet)\) be the least defect of Problem~\ref{pr:trivial-defect} for the depth \(\lceil t_I\rceil\).  Under Theorem~\ref{thm:classI}, \(\kappa_0\) also has mean at most \(C\lvert\mathcal T\rvert N_{\rm gap}/Y\), and the proportion of the box on which \(\kappa_0>\eta\) is at most \(C\lvert\mathcal T\rvert N_{\rm gap}/(Y\eta)\).
+\end{problem}
+
+\begin{problem}\label{pr:main-term}
+Let \(\nu=6\), \(\mathcal T=\{0,1,3\}\), \(p=13\), \(a_0=a_1=a_3=10^6\), \(b_1=10^5\) and \(b_3=10^3\).  Then \(d(1)=1\), \(d(3)=3\), and the main term of \(t_I\) is \(10^6/13+10^6/13^3\), about \(77378\).
+\end{problem}
+
+The main term of \(t_I\) is a sum over the odd tops: each pays the smaller of its own bottom weight and the weight of the nearest even top behind it, divided by \(p\) to the distance.  The defect, not the depth, is what the edge theorems control on average; Chapter~\ref{di-chap} turns depth, denominator and defect into the colength of the Hecke image.
+
+\begin{leanremark}
+\raggedright In \cite{Lean} the condition is \tl{LPprime}, at one lattice \tl{LPprimeAt}, with \tl{IsEdge}, the midpoint \tl{LeAt}, the lattices \tl{HL}, \tl{Re}, \tl{Re'}, the pairing \tl{be}, the depth lattices \tl{Nsrc}, \tl{Ntgt}, and \tl{GoodRankK} for~(iii).  The setting is \tl{HidaSetting} and \tl{UnramifiedQuadraticSetting}.  Section~\ref{sec:forms} is \tl{DualHeightBasis}, \tl{DualHeightInclusion} and \tl{BePerfect}; Problem~\ref{pr:one-lattice} is \tl{LPOneEvery}; Problem~\ref{pr:trivial-defect} is \tl{one\_\allowbreak{}mem\_\allowbreak{}kapISet}, \tl{LPprime\_\allowbreak{}mono\_\allowbreak{}kappa} and \tl{KapIDef}; Problem~\ref{pr:base-change} is \tl{lpBaseChange}; Problem~\ref{pr:count} is \tl{rational\_\allowbreak{}planes\_\allowbreak{}count}.  Theorem~\ref{thm:small} is \tl{tableLineDegreeFive.aux\_3}, from \tl{second\_\allowbreak{}theorem\_\allowbreak{}absolute\_\allowbreak{}constant}; Theorem~\ref{thm:classI} is \tl{flipOneThree.Conclusion2}, from \tl{first\_\allowbreak{}theorem\_\allowbreak{}threshold\_\allowbreak{}functions}.  Section~\ref{sec:isolation} is not in the formalization.
+\end{leanremark}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:edges}}
+\begin{description}
+\item[\ref{pr:count}] Count bases of subspaces of \(\F_Q^k\); for the lower bound compare the factors of the Gaussian binomial one by one.
+\item[\ref{pr:midpoint}] Choose a basis of \(L''\) adapted to the edge by the elementary divisor theorem.
+\end{description}
+
+\subsection*{\S\ref{sec:forms}}
+\begin{description}
+\item[\ref{pr:adapted}] Problem~\ref{pr:midpoint} for each \(\sigma^iL''\); write the coordinate functions of each lattice in terms of \(\eta_i,\xi_i\).
+\item[\ref{pr:perfect}] Compute \(\langle\varpi^{-A}h,\varpi^{-A}h'\rangle\) for \(h\in H(M(e))\) and \(h'\in H(M(e))^\vee\).
+\item[\ref{pr:inclusions}] Compare exponents in Problem~\ref{pr:adapted}.
+\item[\ref{pr:top-coefficient}] Evaluate \(x_J\) at \((\sigma^ig)_i\).
+\end{description}
+
+\subsection*{\S\ref{sec:LP}}
+\begin{description}
+\item[\ref{pr:one-lattice}] Problem~\ref{hn-pr:equivariance}; \(\GL_2(K)\) acts transitively on lattices.
+\item[\ref{pr:trivial-defect}] Consider the least possible \(n\).
+\item[\ref{pr:smith}] Problem~\ref{hn-pr:good-count}, applied to the image of \(\Phi\) inside its saturation in \(\vo^M\), with \(p^D=\varpi^{2D}\).
+\item[\ref{pr:base-change}] Keep the same edges, vectors, \(u\) and \((\mu_{jl})\).
+\end{description}
+
+\subsection*{\S\ref{sec:isolation}}
+\begin{description}
+\item[\ref{pr:other-edges}] Problem~\ref{pr:count}; \(\sigma[\alpha]=[\alpha^p]\).
+\item[\ref{pr:digits}] A polynomial of degree less than \(Q\) that vanishes on \(\F_Q\) is zero.
+\item[\ref{pr:twisted-example}] Problem~\ref{pr:other-edges}; Teichm\"uller representatives are multiplicative.
+\end{description}
+
+\subsection*{\S\ref{sec:theorems}}
+\begin{description}
+\item[\ref{pr:least}] Markov's inequality.
+\end{description}
+
+\begin{thebibliography}{Lean}
+\bibitem[Adr]{Adr}  J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[Lean]{Lean} The Lean community, \emph{riemann-hypothesis}, a Lean formalization of Alp\"oge's argument, \url{https://github.com/leanprover-community/riemann-hypothesis}.
+\bibitem[SeL]{SeL}  J.-P.~Serre, \emph{Local Fields}, Graduate Texts in Mathematics~67, Springer, 1979.
+\end{thebibliography}
+\end{document}
