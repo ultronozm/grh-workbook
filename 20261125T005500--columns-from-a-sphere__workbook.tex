@@ -5,8 +5,6 @@
 \usepackage[hidelinks]{hyperref}
 \externaldocument[sm-]{20261125T000000--slope-method__workbook}
 \externaldocument[gf-]{20261125T005000--galois-fourier-and-averaging__workbook}
-\externaldocument[ip-]{20261124T214600--the-isotropic-plane__workbook}
-\externaldocument[hn-]{20261125T013500--hecke-nondegeneracy-on-the-tree__workbook}
 
 % Chapter number; \ref{chap} gives it.
 \newcounter{chap}
@@ -22,210 +20,237 @@
 \newcommand{\Q}{\mathbb{Q}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
-\newcommand{\PP}{\mathbb{P}}
-\newcommand{\EE}{\mathbb{E}}
-\newcommand{\cell}{\operatorname{cell}}
+\newcommand{\Pc}{\mathcal{P}}
+\newcommand{\Nc}{\mathcal{N}}
+\newcommand{\enc}{\operatorname{enc}}
 
-\setlength{\emergencystretch}{2em}
+\setlength{\emergencystretch}{3em}
+\sloppy
 
 \title{Places from a sphere}
 \author{}
-\date{November 25, 2026}
+\date{November 26, 2026}
 
 \begin{document}
 \maketitle
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-Linearity of expectation, the union bound and Chebyshev's inequality for sums of independent Bernoulli variables.  From Chapter~\ref{gf-chap}, \emph{Fourier analysis on the Galois group}: the group \(H\), the cells \(\cell_t(r)\) and Problem~\ref{gf-pr:outside} (Section~\ref{gf-sec:places}), and the thick cells \(\Theta_u\), the density \(\delta = \lvert T_2\rvert/n\) and Theorem~\ref{gf-thm:two-scales} (Section~\ref{gf-sec:thick}).
+The structure of \((\Z/p^N\Z)^\times\) for a prime \(p\) \cite[Ch.~4, \S1]{IR}.  Linearity of expectation.  From Chapter~\ref{gf-chap}: the places \(\Phi\) of \(E\) and their labels in \(U_{q_1}\), the map \(\pi\), the places \(u(v)\), the \(a\)-places \(A\) with \(h = \lvert A\rvert\), the \(b\)-places \(B\) with \(j = \lvert B\rvert\) (Section~\ref{gf-sec:places}), and Problems~\ref{gf-pr:fibres}, \ref{gf-pr:coef} and~\ref{gf-pr:dense}.
 
 \medskip
-In Chapter~\ref{gf-chap} a set \(T_2\) of columns was fixed, and the cells of row~\(1\) in the columns \(uT_2\) were given the weight \(b\), so that they test primes near \(x\).  Nothing was asked of \(T_2\) there except that it be large: Theorem~\ref{gf-thm:two-scales} divides by \(\delta\).  How is \(T_2\) chosen?  The argument asks for a second property, that the cells of the odd powers of one prime rarely fall in \(uT_2\), and the two properties pull in opposite directions.  Behrend's construction \cite{Beh} satisfies both: lattice points on a sphere, written as digits in a large base.  We follow \cite[\S III.3]{Rub} and \cite[\S5]{Adr}.
+In Chapter~\ref{gf-chap} a set \(B\) of places of class \(-1\) modulo \(q_0\) was given the weight \(b\), and Problem~\ref{gf-pr:dense} showed why it must be dense: if \(b > 1\) and \(h \le j\log b\), then
+\[
+  R_{q_0}(x) \le \frac{\mathrm{rem}}{aj} + \lvert R_{q_0}(x_1)\rvert + \log b\,\lvert R_1(x_1)\rvert .
+\]
+How can \(B\) be chosen?  The argument asks for a second property, which pulls against density: \(B\) must be sparse along multiplication by every small prime.  In the rewritten Lean proof \cite{GL}, \texttt{New.Parameters.exists\_large\_isSparse} uses Behrend's construction \cite{Beh} to choose the exponents \(n\) in labels \(-g^n\), and \texttt{New.Parameters.IsLargeScale.exists\_isAdmissibleData} supplies \(B\) with the required density.  Lattice points on a sphere, written as digits in a large base, become exponents of one element of \(U_{q_1}\).
 
-Throughout, \(x\) is large, \(0 < \varepsilon < \frac1{52}\), and \(n\) is a power of \(2\) with \(x^{2+8\varepsilon} \le n \le 2x^{2+8\varepsilon}\); the notation \(q, d, N = 4n, H, \Phi, v(r)\) is that of Chapter~\ref{gf-chap}.  The integer \(L \ge 2\) is at most \(C_L \log x\) for a constant \(C_L\); in the argument \(L\) is of order \(\log x\) \cite[\S III.3]{Rub}.
+Throughout, for \(q' \mid q_1\) let \(\pi_{q'} \colon \Phi \to U_{q'}\) be the label reduced modulo \(q'\), so that \(\pi = \pi_{q_0}\); for a prime \(\ell\) let \(q_\ell\) be the largest divisor of \(q_1\) prime to \(\ell\).  The map is \texttt{New.Parameters.placeClass}; the modulus \(q_\ell\) is written \texttt{ordCompl}\([\ell]\,q_1\) in \texttt{New.Parameters.IsSparse}.  For the parameters \((q_0, d)\) of Chapter~\ref{gf-chap} (\texttt{New.Parameters}) and an integer \(s \ge 0\), the proof sets
+\[
+  l_0(s) = 3^{\lfloor \log_3 s\rfloor + 4}, \qquad q_1 = q_0 \cdot 3\,l_0(s)\,2^s ,
+\]
+with \(\lfloor\log_3 0\rfloor\) read as \(0\) (\texttt{New.l\textsubscript{0}}, \texttt{New.towerDeg}, \texttt{New.Parameters.q\textsubscript{1}}).  With \(e := \lfloor\log_3 s\rfloor\) this is the \(q_1 = q_0\,3^{e+5}2^s\) of Chapter~\ref{gf-chap}, and Problem~\ref{gf-pr:fibres} gives \(h = q_1/q_0 = 3l_0(s)2^s\) (see \texttt{New.Parameters.card\_placeClass\_eq\_one\_eq\_towerDeg} and \texttt{New.towerDeg\_eq}).  We write \(l_0\) when \(s\) is fixed.  Exponents in group powers and congruences are integers, as are the exponents in prime-power moduli.
 
 \section{Two requirements}\label{sec:two}
 
-\begin{problem}\label{pr:cyclic}
-The group \(H = (\Z/N\Z)^\times/\{\pm1\}\) is cyclic of order \(n\), generated by \([5]\).  For \(N = 16\), \([5]^0, [5]^1, [5]^2, [5]^3\) are \([1], [5], [7], [3]\).
-\end{problem}
-
-We write \(H\) additively through \(\iota \colon H \to \Z/n\Z\), \(\iota([5]^i) = i\), and regard a set of integers \(T_2 \subset [0, n)\) as the set of columns \(\{[5]^s : s \in T_2\}\).  Then the thick cells for the translate \(u\) are the cells in row \(1\) whose column \(c\) has \(\iota(c) \in \iota(u) + T_2\).
-
-\begin{problem}\label{pr:frob-prog}
-Let \(p\) be a prime inert in \(K = \Q(\sqrt{-d})\), \(p \nmid 2qd\), and \(\iota_p := \iota([p])\).  For odd \(h \ge 1\) and \(t \in H\), the cell \(\cell_t(p^h)\) is in row \(v(p)\) and its column has index \(\iota(t) + h\iota_p\).  So the cells of \(p, p^3, p^5, \dots\) run along the progression \(\iota(t) + \iota_p + 2\iota_p\,\Z\) in a single row.
-\end{problem}
-
-We call these the \emph{Frobenius progressions}.  The first requirement on \(T_2\) comes from averaging.
+The first requirement is size, measured against the class of \(-1\).
 
 \begin{problem}\label{pr:avg-density}
-Let \(r\) be a prime power with a cell, and \(t \in H\).  The number of \(u \in H\) for which \(\cell_t(r)\) is thick for \(w_u\) is \(\lvert T_2\rvert\) if \(v(r) = 1\), and \(0\) if \(v(r) = 0\).
+Multiplication by \(u(-1)\) maps \(A\) bijectively onto \(\pi^{-1}(-1)\), so \(\pi^{-1}(-1)\) has \(h\) elements.  In the toy example of Chapter~\ref{gf-chap}, \(q_0 = 4\), \(q_1 = 16\), it consists of the places with labels \(3, 7, 11, 15\).
 \end{problem}
 
-So the average over translates sees \(T_2\) only through \(\delta\), and every prime power of row~\(1\) gets the weight \(\delta\); this is Problem~\ref{gf-pr:thick-avg}.  The gain of the argument is proportional to \(\delta\), while its errors are not, and in Theorem~\ref{gf-thm:two-scales} the mean excess is divided by \(\delta b\).  The argument needs
+The field \texttt{New.Data.towerDeg\_le\_card\_bPlaces\_mul} of an admissible datum requires
 \begin{equation}\label{eq:density}
-  \delta \ge x^{-\varepsilon} ,
+  q_1/q_0 \le j \log b ,
 \end{equation}
-which is used in the chapter \emph{Assembly at one scale}, where the other losses are also powers \(x^{O(\varepsilon)}\).
+so \(B\) must contain at least the proportion \(1/\log b\) of \(\pi^{-1}(-1)\).
 
-The second requirement concerns a single translate.  For all \(u, t \in H\) and every prime as in Problem~\ref{pr:frob-prog}, at most two of the cells of \(L\) consecutive odd powers \(p^h\) may be thick, provided \(2\iota_p\) has order greater than \(4L\).  If the order is at most \(4L\), at most one cell of any odd power of \(p\) may be thick.  In \cite{Rub} the sets of columns enter the main inequality through \eqref{eq:density} and through a bound for the losses at inert primes, which is quoted there from the formal proof \cite[\S III.6]{Rub}.  These are losses of the kind in Theorem~\ref{ip-thm:main} of Chapter~\ref{ip-chap}, the weight \(w\) subtracted at each odd level, not the colength of Chapter~\ref{hn-chap}: at the scale \(p^h\) the loss is at most \(w\), where \(w\) is the weight of the cell to which Frobenius links the chosen one \cite[\S I.4.3]{Rub}, and a thick cell carries the large weight \(b\).  This second property is the form in which \(T_2\) is recorded for that bound, which we do not treat here.  The requirement is uniform: it must hold for every \(u\), \(t\) and \(p\), with no exceptions.
+The second requirement concerns ratios of places.  For \(\ell \nmid q_1\), the label of \(u(\ell)\) is \(\ell \bmod q_1\).  For \(\ell \mid q_1\), the convention of Chapter~\ref{gf-chap} gives \(u(\ell) = 1\).  In both cases the sparsity condition compares the reduced label of a ratio with signed powers of \(\ell\) modulo \(q_\ell\).
 
-Why are these two requirements in tension?  The obvious sets of integers without three-term progressions are thin.
+\begin{problem}\label{pr:frob-prog}
+Let \(\ell\) be a prime, \(\sigma \in \Phi\) and \(i \ge 1\).  (i) If \(\ell \nmid q_1\), then \(q_\ell = q_1\), and the places \(\tau\) with \(\pi_{q_\ell}(\tau/\sigma) = \pm\ell^i\) are the two places \(u(\pm\ell^i)\sigma\).  (ii) If \(\ell^\nu \Vert q_1\) with \(\nu \ge 1\), then for each sign there are \(\ell^{\nu-1}(\ell-1)\) such places.  For \(q_1 = 36\), \(\ell = 3\) this is \(6\).
+\end{problem}
+
+The definition \texttt{New.Parameters.IsSparse} of the rewritten Lean proof states the second requirement.  For a natural number \(L\), a finite set \(\Pc \subseteq \Phi\) is \emph{sparse for the primes up to \(L\)} if for every prime \(\ell \le L\) and all integers \(0 < i < i' < l_0(s)\) there are no \(\sigma, \tau, \tau' \in \Pc\), distinct or not, and no signs \(\varepsilon, \varepsilon' \in \{\pm1\}\) with
+\[
+  \pi_{q_\ell}(\tau/\sigma) = \varepsilon\,\ell^i \quad\text{and}\quad \pi_{q_\ell}(\tau'/\sigma) = \varepsilon'\ell^{i'} \quad\text{in } \Z/q_\ell\Z.
+\]
+The field \texttt{New.Data.sparse} of an admissible datum requires \(B\) to be sparse for the primes up to \(kt\), where \(k = r+1-m\) and \(t = 5r\) are \texttt{New.Data.k} and \texttt{New.Data.t}, with \(m\) the number of lifts and \(r\) the target rank of the datum.
+
+\begin{problem}\label{pr:short-orbit}
+Let \(\Pc\) be sparse for the primes up to \(L\), let \(\ell \le L\) be prime, \(v \in U_{q_\ell}\), and choose a sign \(\varepsilon_\mu\) for every integer \(\mu\).  Among any \(l_0\) consecutive integers \(\mu\), at most two have \(\varepsilon_\mu\ell^\mu v \in \pi_{q_\ell}(\Pc)\).
+\end{problem}
+
+\begin{problem}\label{pr:near-pairs}
+Let \(\Pc\) be sparse for the primes up to \(L\), let \(p \le L\) be a prime with \(p \nmid q_1\), and \(0 < i < i' < l_0\).  For no \(\sigma\) are all three of \(\sigma\), \(u(-p)^i\sigma\), \(u(-p)^{i'}\sigma\) in \(\Pc\).
+\end{problem}
+
+The rewritten Lean proof applies the field \texttt{New.Data.sparse} directly in two lemmas.  Problem~\ref{pr:near-pairs} for \(B\), with the hypotheses \(p \le k\) and \(\chi_d(p) \ne 1\) in place of \(p \le L\) and \(p \nmid q_1\), is \texttt{New.Data.notMem\_bPlaces\_of\_two\_partners}, used in the sharpness argument for the divisibility of derivatives; the second hypothesis gives \(p \nmid q_1\) by Problem~\ref{gf-pr:coef}(i).  The lemma \texttt{New.Selmer.notMem\_bPlaces\_of\_short\_arc}, used in the bound for local losses at a prime \(\ell \le kt\), applies the definition to three places of \(E\) obtained from one embedding \(E \to \bar\Q_\ell\) and three elements of \(\mathrm{Gal}(\bar\Q_\ell/\Q_\ell)\); its hypotheses give the two ratios, with exponents \(0 < i < i' < l_0\).
+
+Why are the two requirements in tension?  We shall look for \(B\) among the places \(u(-g^n)\) for the integer \(g\) of Section~\ref{sec:places}, whose order modulo a power of \(2\) is \(2^s\) (\texttt{New.Parameters.exists\_orderOf\_placeClass\_eq}).  Section~\ref{sec:places} uses a set of exponents \(\Nc \subseteq [0, 2^s)\) with the following property: for all \(n_1, n_2, n_3 \in \Nc\) and positive integers \(\alpha, \alpha'\) with \(\alpha + \alpha' \le 2l_0\), the congruence \((\alpha+\alpha')n_2 \equiv \alpha n_1 + \alpha' n_3 \pmod{2^s}\) implies \(n_1 = n_2 = n_3\).  For \(\alpha = \alpha' = 1\) this excludes nonconstant three-term progressions.  The obvious sets without them are thin.
 
 \begin{problem}\label{pr:base3}
-Let \(A_k\) be the set of integers in \([0, 3^k)\) whose base-\(3\) digits are \(0\) or \(1\).  (i) \(A_k\) contains no three-term arithmetic progression, and \(\lvert A_k\rvert = (3^k)^{\log 2/\log 3}\).  (ii) For \(k \ge 2\), \(A_k\) contains \(0, 1, 3\), and \(3(1 - 0) = 1 \cdot (3 - 0)\).
+For an integer \(\mu \ge 0\), let \(\Nc_\mu\) be the set of integers in \([0, 3^\mu)\) whose base-\(3\) digits are \(0\) or \(1\).  (i) \(\Nc_\mu\) contains no nonconstant three-term arithmetic progression, and \(\lvert \Nc_\mu\rvert = (3^\mu)^{\log 2/\log 3}\).  (ii) For \(\mu \ge 2\), \(\Nc_\mu\) contains \(0, 1, 3\), and \(3 \cdot 1 = 2 \cdot 0 + 1 \cdot 3\), a relation with \(\alpha = 2\), \(\alpha' = 1\).
 \end{problem}
 
-As a set of columns with \(n \approx 3^k\), \(A_k\) has density \(n^{-0.369\ldots}\), far below \(x^{-\varepsilon}\).  A random set has the right density but meets progressions too often.
+We compare the expected size of a random set with its expected number of progressions.
 
 \begin{problem}\label{pr:random-ap}
-Let \(R \subset \Z/n\Z\) contain each element independently with probability \(\delta\).  The expected number of pairs \((s, h)\) with \(s, s + h, s + 2h \in R\) and \(h\) of order greater than \(4L\) is at least \(n(n - 4L)\delta^3\).  For \(\delta = x^{-\varepsilon}\) this exceeds \(\delta n \cdot x^{2}\) for large \(x\).
+Let \(o \ge 4\) be even, and let \(R \subseteq \Z/o\Z\) contain each element independently with probability \(\delta\).  The expected number of pairs \((n, \eta)\) with \(\eta \notin \{0, o/2\}\) and \(n, n+\eta, n+2\eta \in R\) is \(o(o-2)\delta^3\).  If \(\delta^2(o-2) > 1\), this exceeds the expected size \(\delta o\) of \(R\).
 \end{problem}
-
-Each such pair gives three consecutive terms \(s, s+h, s+2h\) of a progression in \(R\), against the second requirement for every \(L \ge 3\).  In expectation there are far more bad pairs than points of \(R\), so counting one deleted point for each bad pair leaves no lower bound for what survives.  The count alone does not show that no cleverer deletion succeeds, since one point can lie on many bad pairs; but it locates the density at which the naive deletion stops working.
 
 \begin{problem}\label{pr:random-deletion}
-Let \(R\) be as in Problem~\ref{pr:random-ap}, and let \(R'\) be obtained by deleting one point from each bad pair.  Then \(R'\) contains no bad pair, and its expected size is at least \(\delta n - \delta^3 n^2\).  For \(\delta \le (2n)^{-1/2}\) this is at least \(\delta n/2\), and \((2n)^{-1/2} < x^{-1-4\varepsilon}\).
+Let \(R\) be as in Problem~\ref{pr:random-ap}.  For each pair \((n, \eta)\) counted there choose one of \(n, n+\eta, n+2\eta\), and let \(R'\) be obtained from \(R\) by deleting the chosen points.  Then \(R'\) contains no three distinct points \(n, n+\eta, n+2\eta\), and its expected size is at least \(\delta o - \delta^3 o^2\).  For \(\delta \le (2o)^{-1/2}\) this is at least \(\delta o/2\).
 \end{problem}
 
-So a random set with deletions reaches a density about \(n^{-1/2}\), and to raise it to \(x^{-\varepsilon}\) the set must be built with structure.
+For an admissible datum let \(o = 2^s\).  Then \(o = m^{22}\) by \texttt{New.Data.m\_pow\_eq\_two\_pow\_towerExp}, \(\sqrt{x} \le m \le 2\sqrt{x}\) by \texttt{New.Data.m\_mem}, and \((\log b)^{100} \le x\) by \texttt{New.Data.logB\_pow\_le\_x}.  The density guaranteed by Problem~\ref{pr:random-deletion} is of order \(o^{-1/2}\) at best, and \((2o)^{-1/2} < x^{-5}\).  For places indexed injectively by exponents modulo \(o\), \eqref{eq:density} asks for an exponent density at least \(3l_0/\log b > x^{-1/100}\).  The deletion estimate falls short of the required density by a power of \(x\).  We now choose the exponents using lattice points on a sphere.
 
 \section{Behrend's construction}\label{sec:behrend}
 
-Three points of a sphere are never collinear.  Behrend's idea is to transport this to the integers by writing vectors as digits.  Let \(S, D \ge 2\) be integers and \(\Sigma_k := \{v \in \{0, \dots, D-1\}^S : \lvert v\rvert^2 = k\}\).
+Behrend \cite{Beh} encodes lattice points of fixed squared length by their digits.  Let \(D, H \ge 1\) be integers and \(\Sigma_\rho := \{v \in \{0, \dots, H-1\}^D : \lvert v\rvert^2 = \rho\}\).
 
 \begin{problem}\label{pr:line-sphere}
-Let \(v_1, v_2, v_3\) lie on one sphere \(\lvert v\rvert^2 = k\) in \(\R^S\), and let \(i, j\) be real with \(i, j \ne 0\), \(i \ne j\) and \(j(v_2 - v_1) = i(v_3 - v_1)\).  Then \(v_1 = v_2 = v_3\).
+Let \(v, v', v'' \in \Z^D\) have \(\lvert v\rvert^2 = \lvert v'\rvert^2 = \lvert v''\rvert^2\), and let \(\alpha, \alpha'\) be positive integers with \((\alpha + \alpha')v' = \alpha v + \alpha' v''\).  Then \(v = v' = v''\).
 \end{problem}
 
 \begin{problem}\label{pr:pigeonhole}
-Some \(k\) has \(\lvert\Sigma_k\rvert \ge D^{S-2}/S\).
+Some \(\rho\) has \(\lvert\Sigma_\rho\rvert \ge H^D/(DH^2)\).
 \end{problem}
 
-Fix such a \(k\).  Let \(B := 4LD\), \(s(v) := \sum_{m=0}^{S-1} v_m B^m\), and \(T_2 := s(\Sigma_k)\).
+Fix such a \(\rho\) and an integer \(Q \ge 1\).  Let \(\beta := QH\), \(\enc(v) := \sum_{\mu=0}^{D-1} v_\mu \beta^\mu\), and \(\Nc := \enc(\Sigma_\rho)\).
 
 \begin{problem}\label{pr:digits}
-If \(c_0, \dots, c_{S-1}\) are integers with \(\lvert c_m\rvert < B\) and \(\sum_m c_m B^m = 0\), then every \(c_m = 0\).  In particular \(s\) is injective.
+If \(z_0, \dots, z_{D-1}\) are integers with \(\lvert z_\mu\rvert < \beta\) and \(\sum_\mu z_\mu \beta^\mu = 0\), then every \(z_\mu = 0\).  In particular \(\enc\) is injective on \(\{0, \dots, H-1\}^D\).
 \end{problem}
 
 \begin{problem}\label{pr:no-relation}
-There are no distinct \(s_1, s_2, s_3 \in T_2\) and integers \(i \ne j\) with \(0 < \lvert i\rvert, \lvert j\rvert \le L\) and \(j(s_2 - s_1) = i(s_3 - s_1)\).
+Let \(n_1, n_2, n_3 \in \Nc\), and let \(\alpha, \alpha'\) be positive integers with \(\alpha + \alpha' \le Q\).  If \((\alpha + \alpha')n_2 = \alpha n_1 + \alpha' n_3\), then \(n_1 = n_2 = n_3\).
 \end{problem}
-
-For \(L = 2\) this excludes three-term progressions (\(i = 1\), \(j = 2\)).  Problem~\ref{pr:base3}(ii) shows that it says more.
 
 \begin{problem}\label{pr:example}
-For \(S = 3\), \(D = 3\), \(L = 2\), so \(B = 24\), the sphere with the most points is \(k = 5\), with the six permutations of \((0, 1, 2)\), and \(T_2 = \{26, 49, 578, 624, 1153, 1176\}\).
+For \(D = 3\), \(H = 3\), \(Q = 8\), so \(\beta = 24\), the sphere with the most points is \(\rho = 5\), with the six permutations of \((0, 1, 2)\), and \(\Nc = \{26, 49, 578, 624, 1153, 1176\}\).  With \(Q = 6\), \(\beta = 18\), the same sphere gives \(\{20, 37, 326, 360, 649, 666\}\).
 \end{problem}
-
-It remains to choose \(S\) and \(D\).  Behrend lets \(S\) grow with \(n\).  For the density \(x^{-\varepsilon}\) a fixed dimension suffices: let \(S > 12/\varepsilon\) be a fixed integer and \(D := \lfloor (n/4L)^{1/S}/(4L) \rfloor\).
 
 \begin{problem}\label{pr:size}
-(i) \(B^S \le n/(4L)\), so \(4Ls < n\) for every \(s \in T_2\).  (ii) If \((n/4L)^{1/S} \ge 8L\), then \(\lvert T_2\rvert \ge n^{1 - 2/S}(8L)^{-S}/S\).
+Let \(o \ge \beta^D\) be an integer.  (i) Every \(n \in \Nc\) satisfies \(n < o\).  (ii) For \(n_1, n_2, n_3 \in \Nc\) and positive integers \(\alpha, \alpha'\) with \(\alpha + \alpha' \le Q\), the congruence \((\alpha + \alpha')n_2 \equiv \alpha n_1 + \alpha' n_3 \pmod o\) implies \(n_1 = n_2 = n_3\).
 \end{problem}
 
-Since \(n^{-2/S} \ge (2x^{2+8\varepsilon})^{-\varepsilon/6} \ge x^{-\varepsilon/2}\) and \((8L)^{-S}/S \ge (8C_L\log x)^{-S}/S \ge x^{-\varepsilon/2}\) for large \(x\), Problems~\ref{pr:pigeonhole}--\ref{pr:no-relation} and~\ref{pr:size} prove the following.
+Problems~\ref{pr:line-sphere}--\ref{pr:no-relation} and~\ref{pr:size} give the following theorem for \(D, H \ge 1\); the statement in the rewritten Lean proof also covers \(DH = 0\).  Here \(D, H, Q, o\) are natural numbers, and the quotient \(H^D/(DH^2)\) is taken in \(\R\), with value \(0\) when \(DH = 0\).
 
-\begin{theorem}[Behrend]\label{thm:behrend}
-For \(x\) large in terms of \(\varepsilon\) and \(C_L\) there is a set \(T_2\) of nonnegative integers with \(4Ls < n\) for \(s \in T_2\), with \(\lvert T_2\rvert \ge x^{-\varepsilon}n\), and with the property of Problem~\ref{pr:no-relation}.
+\begin{theorem}\label{thm:behrend}
+If \(0 < Q\) and \((QH)^D \le o\), there is a finite set \(\Nc\) of natural numbers such that \(n < o\) for every \(n \in \Nc\), \(H^D/(DH^2) \le \#\Nc\), and for all \(n_1, n_2, n_3 \in \Nc\) and all natural numbers \(\alpha, \alpha'\) with \(0 < \alpha\), \(0 < \alpha'\), \(\alpha + \alpha' \le Q\), the congruence \((\alpha + \alpha')n_2 \equiv \alpha n_1 + \alpha' n_3 \pmod o\) implies \(n_1 = n_2\) and \(n_2 = n_3\).
 \end{theorem}
 
-Optimizing \(S\) gives the density \(L^{-1}\exp(-C\sqrt{\log n \log L})\) \cite[Prop.~5.17]{Adr}, which is Behrend's bound for \(L = 2\) \cite{Beh}.  No construction can give a density bounded below: by Roth's theorem \cite{Ro} a set of integers in \([0, n)\) without three-term progressions has \(o(n)\) elements.
+\paragraph{In the Lean formalization.}
+In the rewritten Lean proof \cite{GL} this is the lemma \texttt{New.exists\_three\_term\_free}, in \texttt{New/Reduction/Data/Existence.lean} of the readable edition.
 
-Now pass to \(\Z/n\Z\).  The condition \(4Ls < n\) turns a congruence into an equation.
+For \(Q = 2\), the first Exercise below gives the density lower bound \(\exp(-C\sqrt{\log o})\) of Behrend's construction \cite{Beh}.  No construction gives a density bounded below by a positive constant independent of \(N\): by Roth's theorem \cite{Ro} a set of integers in \([0, N)\) without nonconstant three-term progressions has \(o(N)\) elements as \(N \to \infty\).  The size condition we need is~\eqref{eq:density}.
+
+\section{From exponents to places}\label{sec:places}
+
+The exponents of Theorem~\ref{thm:behrend} become places through one integer \(g\) prime to \(q_1\).  Let \(w = v_2(q_0)\), so that \(2^{s+w} \mid q_1\); since \(16 \mid 18480\), \(w \ge 4\), and the problems below use only \(w \ge 2\).  Following the construction in \texttt{New.Parameters.exists\_large\_isSparse}, let
+\[
+  g := 1 + 3l_0q_0, \qquad \sigma_n := u(-g^n) \in \Phi \quad (n \ge 0).
+\]
+A toy of the same shape has \(q_0 = 4\) and \(l_0 = 3\) in place of the values of the proof, and \(s = 13\): then \(q_1 = 4 \cdot 9 \cdot 2^{13} = 294912\), \(w = 2\) and \(g = 37\).  In the toy the prime \(3\) divides \(q_1\) but not \(q_0\), which nothing below uses, and ``sparse'' is taken with \(l_0 = 3\).
+
+\begin{problem}\label{pr:cyclic}
+(i) If \(N \ge w \ge 2\) and \(y\) is odd, then \(1 + 2^w y\) has order \(2^{N-w}\) in \(U_{2^N}\).  (ii) If \(N \ge 1\), then \(4\) has order \(3^{N-1}\) in \(U_{3^N}\).  For example \(5^0, 5^1, 5^2, 5^3 \equiv 1, 5, 9, 13 \pmod{16}\), and \(4\) has order \(3\) modulo \(9\).
+\end{problem}
 
 \begin{problem}\label{pr:long-order}
-Let \(u_0, t, h \in \Z/n\Z\) with \(h\) of order greater than \(4L\).  Among any \(L\) consecutive terms \(t + ih\), at most two lie in \(u_0 + T_2\).
+The integer \(g\) has order \(2^s\) modulo \(2^{s+w}\).  The places \(\sigma_n\), \(0 \le n < 2^s\), are distinct, and their labels are \(\equiv -1 \pmod{3l_0q_0}\), in particular modulo \(q_0\).  In the toy, \(37\) has order \(2^{13}\) modulo \(2^{15}\).
 \end{problem}
 
 \begin{problem}\label{pr:short-order}
-If \(h\) has order at most \(4L\), at most one element of \(t + \Z h\) lies in \(u_0 + T_2\).
+Let \(0 < i < l_0\) and \(n, n' \ge 0\).  Then \(\pi_{q_2}(\sigma_{n'}/\sigma_n) \ne \pm 2^i\).
 \end{problem}
-
-Problem~\ref{pr:long-order} uses only that \(h\) has order at least \(L\); the threshold \(4L\) is the one at which Problem~\ref{pr:short-order} takes over.  Problems~\ref{pr:long-order} and~\ref{pr:short-order} prove the following.
-
-\begin{theorem}\label{thm:progressions}
-Let \(T_2\) be as in Theorem~\ref{thm:behrend}, and \(u_0, t, h \in \Z/n\Z\).  If \(h\) has order greater than \(4L\), at most two of any \(L\) consecutive terms \(t + ih\) lie in \(u_0 + T_2\).  If \(h\) has order at most \(4L\), at most one element of \(t + \Z h\) does.
-\end{theorem}
-
-So \(T_2\) satisfies~\eqref{eq:density} and the second requirement of Section~\ref{sec:two}; for the cells this reads as follows.
 
 \begin{problem}\label{pr:frob-thick}
-Let \(p\) be as in Problem~\ref{pr:frob-prog}, and \(u, t \in H\).  If \(2\iota_p\) has order greater than \(4L\) in \(\Z/n\Z\), then at most two of \(\cell_t(p^{h_0}), \cell_t(p^{h_0 + 2}), \dots, \cell_t(p^{h_0 + 2L - 2})\) are thick for \(w_u\), for every odd \(h_0 \ge 1\).
+Let \(\ell\) be an odd prime, \(0 < i < i'\), and \(n_1, n_2, n_3 \ge 0\).  If \(\pi_{q_\ell}(\sigma_{n_2}/\sigma_{n_1}) = \pm\ell^i\) and \(\pi_{q_\ell}(\sigma_{n_3}/\sigma_{n_1}) = \pm\ell^{i'}\), then
+\[
+  2i'\,n_2 \equiv 2(i' - i)\,n_1 + 2i\,n_3 \pmod{2^s}.
+\]
 \end{problem}
 
-Theorems~\ref{thm:behrend} and~\ref{thm:progressions} are \cite[Thm.~III.3.1]{Rub}.  For \(L(s, \psi)\) with \(\psi\) of order \(o\), Section~\ref{gf-sec:subgroup} requires \(T_2 \subset A_0\).  One applies the construction with \(n/o\) in place of \(n\) and places \(s\) at \(s\,a_0\), with \(a_0\) a generator of the cyclic group \(A_0\) \cite[\S5]{Adr}.
-
-\section{The tops: a random choice}\label{sec:tops}
-
-The set \(T\) of shifts \(t\) in Section~\ref{gf-sec:subgroup}, the \emph{tops}, has the opposite needs.  Its density \(\delta_1 := x^{-\varepsilon/8}\) is larger, and along a Frobenius orbit it may contain a bounded number \(k_T\) of points in a window, not two.  Exceptions are allowed if they are rare on average over primes.  A random set does this, and this is where the argument uses randomness \cite[\S III.3]{Rub}, \cite[Prop.~5.20]{Adr}.  Let \(T \subset \Z/n\Z\) contain each element independently with probability \(\delta_1\).
-
-\begin{problem}\label{pr:size-T}
-\(\PP\bigl(\bigl\lvert\lvert T\rvert - \delta_1 n\bigr\rvert > \frac12\delta_1 n\bigr) \le 4/(\delta_1 n)\).
+\begin{problem}\label{pr:two-power}
+Let \(\ell > 1\) be an odd integer, \(\lambda \ge 1\) and \(s \ge 0\).  If \(\ell^\lambda \equiv 1 \pmod{2^{s+1}}\), then \(2^s \le (\ell + 1)\lambda\).
 \end{problem}
 
-\begin{problem}\label{pr:window}
-Let \(h\) have order at least \(L_2\), and let \(W\) be a set of \(L_2\) consecutive terms of \(t + \Z h\).  Then \(\PP(\lvert W \cap T\rvert \ge k_T + 1) \le (L_2\delta_1)^{k_T+1}\).
+\begin{problem}\label{pr:toy}
+In the toy, the places \(\sigma_n\) for \(n = 20, 37, 326, 360, 649, 666\) have labels \(153935\), \(39851\), \(74807\), \(243359\), \(190331\), \(43271\) modulo \(294912\).  These are \(\equiv -1 \pmod{36}\), and the six places form a set sparse for the primes up to \(1364\), the largest \(L\) with \(6(L+1) < 2^{13}\).
 \end{problem}
 
-\begin{problem}\label{pr:union}
-Let \(k_T \ge 8(4 + 8\varepsilon)/\varepsilon\).  If \(h\) has order at least \(L_2\), the expected number of windows of \(L_2\) consecutive terms on the orbits of \(h\) that contain more than \(k_T\) points of \(T\) is at most \(2L_2^{k_T+1}x^{-2-\varepsilon/8}\).
+Problems~\ref{pr:long-order}--\ref{pr:two-power}, with Theorem~\ref{thm:behrend} for \(Q = 2l_0\) and \(o = 2^s\), prove the next theorem.  It concerns the parameters \((q_0, d)\) and natural numbers \(s, D, H, L\), with the same convention for \(H^D/(DH^2)\) as in Theorem~\ref{thm:behrend}.
+
+\begin{theorem}\label{thm:progressions}
+If \((2l_0(s)H)^D \le 2^s\) and \(2l_0(s)(L+1) < 2^s\), there is a finite set \(\Pc \subseteq \Phi\) with \(\pi(\sigma) = -1\) for every \(\sigma \in \Pc\), with \(H^D/(DH^2) \le \#\Pc\), and sparse for the primes up to \(L\).
+\end{theorem}
+
+\paragraph{In the Lean formalization.}
+In the rewritten Lean proof \cite{GL} this is the lemma \texttt{New.Parameters.exists\_large\_isSparse}, in \texttt{New/Reduction/Data/Existence.lean} of the readable edition; sparsity is the definition \texttt{New.Parameters.IsSparse}, in \texttt{New/Reduction/Data/AdmissibleData.lean}.
+
+It remains to choose \(D\) and \(H\) so that \(\#\Pc\) is large compared with \(q_1/q_0\).
+
+\begin{problem}\label{pr:count}
+Let \(D \ge 1\) be an integer and \(W \ge 1\) real, with \(W \le 2^s \le W^D\), \((2l_0)^D \le W\) and \(3l_0 D 2^D \le W^3\), and let \(H\) be the largest power of \(2\) with \(H^D \le 2^s/W\).  Then \(H \le W\), \((2l_0 H)^D \le 2^s\), and \(q_1/q_0 \le W^6 H^D/(DH^2)\).
 \end{problem}
 
-With \(L_2\) bounded and \(k_T\) as in Problem~\ref{pr:union}, a random \(T\) is thus sparse along the orbits of one \(h\) with probability close to \(1\).  The argument asks for two more conditions of even spread along the orbits.  It conditions on \(t \in T\) and weights the primes by \(\log p/p\), and it takes different probabilities on the cosets of \(A_0\) to obtain the shares of Problem~\ref{gf-pr:shares}.  Then it chooses one \(T\) by comparing expectations \cite[Thm.~III.3.2]{Rub}, \cite[Prop.~5.20]{Adr}.  Compare Problem~\ref{pr:random-ap}: the same method fails for \(T_2\), where at most two points are allowed in a window and there may be no exceptions.  For \(T_2\) the sphere replaces chance.  This ends the reduction: the Riemann hypothesis now asks for an upper bound for weighted prime sums at one scale, and the next part, from Chapter~\ref{sm-chap} on, gives the method that bounds them by comparing divisibility with size.
+With Theorem~\ref{thm:progressions} this gives a set of places of class \(-1\) modulo \(q_0\), sparse for the primes up to \(L\), with \(q_1/q_0 \le \#\Pc\cdot W^6\), under the hypotheses of Problem~\ref{pr:count} and \(2l_0(L+1) < 2^s\); in the rewritten Lean proof this is the lemma \texttt{New.Parameters.exists\_isSparse}.  In \texttt{New.Parameters.IsLargeScale.exists\_isAdmissibleData}, the scale \(b\) is chosen with \(W^6 \le \log b\), which gives~\eqref{eq:density}.  This ends the choice of places.  From Chapter~\ref{sm-chap} on, the next part develops the comparison of divisibility with size.
 
 \subsection*{Exercises}
 
 \begin{enumerate}
-\item Let \(\log L \le c\log n\) with \(c\) small.  With \(S \approx \sqrt{\log n/\log L}\) and \(D := \lfloor (n/4L)^{1/S}/(4L) \rfloor\), the construction gives \(\lvert T_2\rvert \ge n\exp(-C\sqrt{\log n \log L})\), still with \(4Ls < n\), for an absolute constant \(C\).
-\item Without the condition \(4Ls < n\), Problem~\ref{pr:long-order} fails: for \(n = 64\) and \(L = 3\), the set \(\{0, 2, 33\}\) has the property of Problem~\ref{pr:no-relation}, yet \(0, 33, 66 \equiv 2\) are consecutive terms of \(33i\), of order \(64\).
-\item A set \(T_2 \subset [0, n)\) with the property of Problem~\ref{pr:no-relation} meets every arithmetic progression of \(L\) terms in \(\Z\) in at most two points.
+\item With \(Q = 2\), \(D = \lceil\sqrt{\log o}\,\rceil\) and \(H\) the largest integer with \((2H)^D \le o\), Theorem~\ref{thm:behrend} gives a set \(\Nc \subset [0, o)\) without nonconstant three-term progressions modulo \(o\) and with \(\#\Nc \ge o\exp(-C\sqrt{\log o})\) for large \(o\), for an absolute constant \(C\).
+\item The hypothesis \(o \ge \beta^D\) cannot be dropped from Problem~\ref{pr:size}: for \(D = 3\), \(H = Q = 2\), \(\rho = 1\) and \(o = 27\), every element of \(\Nc\) is less than \(o\), but three distinct elements of \(\Nc\) form an arithmetic progression modulo \(o\).
 \end{enumerate}
 
 \section*{Hints}
 
 \subsection*{\S\ref{sec:two}}
 \begin{description}
-\item[\ref{pr:cyclic}] By induction, \(5^{2^{e}} \equiv 1 + 2^{e+2} \pmod{2^{e+3}}\); and \(-1\) is not a power of \(5\) modulo \(4\).
-\item[\ref{pr:frob-prog}] Problem~\ref{gf-pr:outside}; \(\chi_q(p^h) = \chi_q(p)\) for odd \(h\).
-\item[\ref{pr:avg-density}] Count the solutions \(u\) of \(t[r] \in uT_2\).
-\item[\ref{pr:base3}] (i) Add \(a + c\) digit by digit.
-\item[\ref{pr:random-ap}] The three points are distinct; count the \(h\) of order at most \(4L\) in a cyclic group.
-\item[\ref{pr:random-deletion}] Linearity of expectation: \(\lvert R'\rvert\) is at least \(\lvert R\rvert\) minus the number of bad pairs.
+\item[\ref{pr:avg-density}] Problem~\ref{gf-pr:fibres}.
+\item[\ref{pr:frob-prog}] (ii) Count a fibre of \(U_{q_1} \to U_{q_\ell}\).
+\item[\ref{pr:short-orbit}] Take three such \(\mu\).
+\item[\ref{pr:near-pairs}] \((-p)^i = (-1)^ip^i\).
+\item[\ref{pr:base3}] (i) Add the outer terms digit by digit.
+\item[\ref{pr:random-ap}] For \(\eta \notin \{0, o/2\}\) the three points are distinct.
+\item[\ref{pr:random-deletion}] Linearity of expectation.
 \end{description}
 
 \subsection*{\S\ref{sec:behrend}}
 \begin{description}
-\item[\ref{pr:line-sphere}] Expand \(\lvert v_1 + b\rvert^2 = \lvert v_1\rvert^2\) for \(b = v_2 - v_1\) and for \(c = v_3 - v_1\), and eliminate \(v_1 \cdot c\).
+\item[\ref{pr:line-sphere}] Three distinct points of a sphere are never collinear.  Compute \(\alpha\lvert v\rvert^2 + \alpha'\lvert v''\rvert^2 - (\alpha+\alpha')\lvert v'\rvert^2\) in terms of \(v - v''\).
 \item[\ref{pr:pigeonhole}] Count the possible values of \(\lvert v\rvert^2\).
-\item[\ref{pr:digits}] Look at the lowest nonzero \(c_m\) modulo \(B\).
-\item[\ref{pr:no-relation}] Apply Problem~\ref{pr:digits} to the digits of \(j(s_2 - s_1) - i(s_3 - s_1)\).
-\item[\ref{pr:size}] (ii) \(\lfloor z\rfloor \ge z/2\) for \(z \ge 1\), and Problem~\ref{pr:pigeonhole}.
-\item[\ref{pr:long-order}] Eliminate \(h\) from three such terms, and bound the resulting integer.
-\item[\ref{pr:short-order}] If \(m\) is the order of \(h\), then \(m(s_1 - s_2) \equiv 0\).
-\item[\ref{pr:frob-thick}] Problems~\ref{pr:frob-prog} and~\ref{pr:long-order}.
+\item[\ref{pr:digits}] Look at the lowest nonzero \(z_\mu\) modulo \(\beta\).
+\item[\ref{pr:no-relation}] Problem~\ref{pr:digits}.
+\item[\ref{pr:size}] (ii) Bound the base-\(\beta\) digits of both sides.
 \end{description}
 
-\subsection*{\S\ref{sec:tops}}
+\subsection*{\S\ref{sec:places}}
 \begin{description}
-\item[\ref{pr:size-T}] Chebyshev's inequality.
-\item[\ref{pr:window}] Union bound over subsets of \(W\) of size \(k_T + 1\).
-\item[\ref{pr:union}] There are \(n\) windows.
+\item[\ref{pr:cyclic}] Induction on the exponent of \(2\), resp.\ \(3\), in \((1+2^wy)^{2^r} - 1\), resp.\ \(4^{3^r} - 1\).
+\item[\ref{pr:long-order}] Problem~\ref{pr:cyclic}(i).
+\item[\ref{pr:short-order}] Use \(3l_0 \mid q_2\) and Problem~\ref{pr:cyclic}(ii).
+\item[\ref{pr:frob-thick}] For odd \(\ell\), \(2^{s+w} \mid q_\ell\).  Work modulo \(2^{s+w}\).
+\item[\ref{pr:two-power}] Compute \(v_2(\ell^\lambda - 1)\) for \(\lambda\) odd and for \(\lambda\) even; for \(\lambda\) even use \(\ell^2 - 1 = (\ell-1)(\ell+1)\) and Problem~\ref{pr:cyclic}(i) for \(\ell^2\).
+\item[\ref{pr:toy}] Problems~\ref{pr:example} (base \(18\)), \ref{pr:short-order} and~\ref{pr:frob-thick} with \(l_0 = 3\); if the exponents coincide, Problem~\ref{pr:two-power}.
+\item[\ref{pr:count}] Compare \((2H)^D\) with \(2^s/W\).
 \end{description}
 
-\begin{thebibliography}{Adr}
-
-\bibitem[Adr]{Adr}
-J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\begin{thebibliography}{GL}
 
 \bibitem[Beh]{Beh}
 F.~A.~Behrend, \emph{On sets of integers which contain no three terms in arithmetical progression}, Proc. Nat. Acad. Sci. U.S.A. \textbf{32} (1946), 331--332.
 
+\bibitem[GL]{GL}
+L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+
+\bibitem[IR]{IR}
+K.~Ireland and M.~Rosen, \emph{A Classical Introduction to Modern Number Theory}, 2nd ed., Springer, 1990.
+
 \bibitem[Ro]{Ro}
 K.~F.~Roth, \emph{On certain sets of integers}, J. London Math. Soc. \textbf{28} (1953), 104--109.
-
-\bibitem[Rub]{Rub}
-\emph{The Alp\"oge--Claude proof of the Riemann hypothesis explained for the Riemann zeta function}, written by AI models at the behest of M.~O.~Rubinstein, working draft, 21 November 2026, \url{https://www.math.uwaterloo.ca/~mrubinst/alpoge_claude_grh/zeta-paper.pdf}.
 
 \end{thebibliography}
 
