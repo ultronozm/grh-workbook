@@ -1,0 +1,300 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[lt-]{20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook}
+\externaldocument[pf-]{20261125T013700--pairings-on-a-formal-group-of-height-two__workbook}
+\externaldocument[as-]{20261125T021500--assembly-at-one-scale__workbook}
+
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T020410\endcsname
+  \chapnumber{20261126T020410}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Oc}{\mathcal O}
+\newcommand{\Tc}{\mathcal T}
+\newcommand{\tl}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\title{Local exponents of the lifts}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+We use the notation of Chapter~\ref{lt-chap}, Section~\ref{lt-sec:local}: the scale \(x\), \(y=x^\varepsilon\) with \(0<\varepsilon<1/52\), \(b=e^y\), \(a=xb\), the CM type \(\Phi\) of \(E\) with \(f=2n\) elements, the field \(L\) with its places \(w\), weights \(\ell_w\) and ramification indices \(e_w\), the level primes \(g_\iota=\pi_\iota\bar\pi_\iota\), the terminal prime \(T_u=\varpi_u\bar\varpi_u\), the total weight \(A=\sum_ta_t\) of the tops \(t\in\Tc\), and \(B_0=fmby\).  Recall \(\sum_{w\mid p}\ell_we_w=\log p\), and Problem~\ref{lt-pr:half-norm}: if \(\pi\in\Oc_K\) and \(\pi\bar\pi=g\) is prime, then \(\sum_{w\mid g}\ell_wv_w(\tau\bar\pi)=\tfrac12\log g\) for every automorphism \(\tau\) of \(L\).  Section~\ref{sec:orbits} uses Legendre's formula for the exponent of \(p\) in \(n!\) and Chebyshev's bound \(\sum_{p\le n}\log p\le n\log4\) \cite[Ch.~2]{AZ}.
+
+Chapter~\ref{lt-chap} states the bound for the local terms, Theorem~\ref{lt-thm:local}, in the form this chapter proves.  In \cite[Thm.~16.6]{Adr} its inputs are size bounds for the numbers \(\kappa_j\), \(\delta_j\), \(\varepsilon^T_u\), \(\varepsilon^d_j\) and \(\varepsilon^{\rm in}_{j,p}\) \cite[(E1)--(E6), Hyps.~16.13--16.14]{Adr}.  In the Lean formalization \cite{Lean} these numbers are given by formulas.  What are the formulas, and why are the bounds true?  Almost everything turns out to be elementary: a congruence at the terminal prime, a count of rows at the level primes, Minkowski's bound for finite groups, and, at the inert primes, a linear programme along Frobenius orbits summed with Mertens' estimate.
+
+\section{The exponent at each place}\label{sec:def}
+
+Besides the scale, the data have integer ranks \(k\ge2\), \(m\ge1\), \(t\ge0\) with \(N_i=k+i(t+1)\), weights \(w_j(\rho)\ge0\) for \(1\le j\le m\) and \(\rho\in\Phi\), a width \(\Theta\) of the windows in which these weights lie, and a size parameter \(\sigma\).  Put \(X'=\exp(x^{\varepsilon/3})\), \(b'=a/X'\) and \(X''=xnX'\).  In the formalization the elements of \(\Phi\) restrict to the identity on \(K\).  The lifts gain only at primes of two classes, called class~I and class~II below, both consisting of primes inert in \(K\).
+
+The exponent \(E_{u,j}(w)\) at a place \(w\) with residue characteristic \(p\) is defined as follows.  If \(p=T_u\), it is \(\varepsilon^T_u\) when \(v_w(\varpi_u)>0\) and \(0\) otherwise, with
+\[
+ \varepsilon^T_u=2\sum_{\rho\in\Phi}W_u(\rho)+fN_m+\tfrac14\lvert\Tc\rvert(t+1)(m+1).
+\]
+Here \(W_u(\rho)\) is the largest of the numbers \(\lvert\lambda-\lfloor i(t+1)/2\rfloor\rvert\) over the entries \(\lambda\) at \(\rho\) of the highest weights of the chain \(u\) at the levels \(i\le m\), the top entry at the top places excepted.  If \(p\ne T_u\), then \(E_{u,j}(w)=v_p(D_\Gamma)+E'\), where
+\begin{itemize}
+\item[] \(E'=-\tfrac12\Delta_j+e_w^{-1}\sum_\rho n_{u,j}(\rho)v_w(\tau_\rho\bar\pi_\iota)+\kappa_j\) with \(\kappa_j=c_gf(N_m^2+m^2\Theta)\) if \(p=g_\iota\);
+\item[] \(E'=\varepsilon^d_j\) if \(p=d\);
+\item[] \(E'=\varepsilon^{\rm cl}_{j,p}=3fN_m^2\log_pa+(p^2-1)^{-1}\sum_\rho w_j(\rho)\) if \(p\le X''\) is of class~I and its Frobenius label \(h_p\) of Section~\ref{sec:orbits} vanishes;
+\item[] \(E'=\varepsilon^{\rm orb}_{j,p}\), defined in Section~\ref{sec:orbits}, for the other \(p\le X''\) of classes I and~II;
+\item[] \(E'=0\) otherwise.
+\end{itemize}
+Here \(\Delta_j\) is the Fock degree, \(n_{u,j}(\rho)\) the exponent of \(\bar\pi_\iota\) at \(\rho\) in the \(j\)-th lift, \(c_g\ge10\) a constant, and \(\varepsilon^d_j\) an explicit expression in the weights at the two places of \(\Phi\) above each column.  This is the shape of~\cite[Def.~16.5]{Adr}, with its free numbers now given by formulas.
+
+\paragraph{Sizes.}  The family of data satisfies size conditions.  Those we use are:
+\begin{itemize}
+\item[(S1)] \(0\le w_j(\rho)\le3b\) and \(W_u(\rho)\le5b\);
+\item[(S2)] \(N_m^2\le\Theta\), \(4N_m\le\Theta\), \(1\le y\le\Theta\), \(f\Theta\le b\), \(X''\Theta\le b\) and \(X''N_m^2\le b\);
+\item[(S3)] \(2\le m\le f\), \(\lvert\Tc\rvert\le f\), \((t+1)(m+1)\le b\), \(kb'\le b\) and \(k(b'+\Theta)\le mb\);
+\item[(S4)] \(\log g_\iota\le C_Yy\) and \(\log d\le y\);
+\item[(S5)] \(\log T_u\le C_Tmy\), and \(D_\Gamma\) divides Minkowski's number \(M(2fN_m)\), where \(M(r)=\prod_pp^{\mu_p(r)}\) with \(\mu_p(r)=\sum_{i\ge1}\lfloor r/(p^{i-1}(p-1))\rfloor\).
+\end{itemize}
+Minkowski proved that the order of every finite subgroup of \(\mathrm{GL}_r(\Z)\) divides \(M(r)\) \cite[\S1]{Se}.  \emph{Status}: in the Lean formalization (S1)--(S4) follow from the size conditions imposed on the family, and (S5) is part of the definition of the class of families to which the main argument is applied; we have not traced how the constructed family is shown to satisfy them.  Consequently \(X''\le b\le a\) and \(fN_m\le b\).
+
+\begin{problem}\label{pr:trace}
+Let \(\varpi\in\Oc_K\) with \(\varpi\equiv1\pmod{4\Oc_K}\), and suppose \(T=\varpi\bar\varpi\) is prime.  Then \(T\equiv1\pmod 4\), the trace \(\varpi+\bar\varpi\) is \(\equiv2\pmod4\), and \(T\nmid\varpi+\bar\varpi\).  For \(K=\Q(\mathrm i)\) and \(\varpi=1+4\mathrm i\) one has \(T=17\) and trace \(2\).
+\end{problem}
+
+\begin{problem}\label{pr:one-of-two}
+In Problem~\ref{pr:trace}, at each place \(w\mid T\) of \(L\) exactly one of \(v_w(\varpi)\), \(v_w(\bar\varpi)\) is positive, and it equals \(e_w\).  For \(\varpi=1+\mathrm i\), which is not \(\equiv1\pmod4\), both are positive at the place above \(2\).
+\end{problem}
+
+In the construction \(\varpi_u\equiv1\pmod{Q_Sqd(g_0g_1)^2}\) \cite[Rem.~16.8]{Adr}, where \(Q_S\) is the part of the conductor of \(E\) prime to \(qd\); it is divisible by \(4\), since in the formalization \(2^{e+2}\mid Q_S\) for an exponent \(e\ge2\) of the \(2\)-power tower.  So Problems~\ref{pr:trace} and~\ref{pr:one-of-two} apply to \(T_u\).
+
+\begin{problem}\label{pr:seen-half}
+Let \(S_u\) be the set of places \(w\mid T_u\) with \(v_w(\varpi_u)>0\).  Then \(\sum_{w\in S_u}\ell_we_w=\frac12\log T_u\), and the places above \(T_u\) contribute exactly \(\varepsilon^T_u\log T_u\) to \(\sum_w2\ell_we_wE_{u,j}(w)\).
+\end{problem}
+
+\cite[Thm.~16.6]{Adr} bounds this contribution by \(2\varepsilon^T_u\log T_u\); the congruence halves it.
+
+\begin{problem}\label{pr:epsT}
+Under (S1), (S3) and \(N_m\le b\), one has \(\varepsilon^T_u\le12fb\).  With (S5), the places above \(T_u\) contribute at most \(12C_TB_0\).
+\end{problem}
+
+\section{The level primes}\label{sec:level}
+
+By Problem~\ref{lt-pr:level}, the places above \(g_\iota\) contribute \((2v_{g_\iota}(D_\Gamma)-\Delta_j+2\kappa_j+n_{u,j})\log g_\iota\), where \(n_{u,j}=\sum_\rho n_{u,j}(\rho)\).  The main term \(A\log g_\iota\) appears once we know that \(n_{u,j}-\Delta_j\) is close to \(A\).
+
+The exponent \(n_{u,j}(\rho)\) is a sum of \(N_{j-1}\) row exponents, read off from the highest weights of the \(j\)-th lift.  There are \(k-2\) middle rows, each with exponent within \(\sigma+N_m\) of \(w_j(\rho)\); \(N_{j-1}-k\) block rows, each with exponent in \((0,2\Theta]\); and two end rows.  The two end rows together have exponent close to \(w_j(\rho)+a(\rho)+w'_j(\rho)\).  Here \(a(\rho)=a_t\) and \(w'_j(\rho)=0\) if \(\rho\) is the top place of \(t\in\Tc\), and \(a(\rho)=0\), \(w'_j(\rho)=w_j(\rho)\) if \(\rho\) is not a top place.  Each top \(t\) has exactly one top place, and distinct tops have distinct top places.  On the other side \(\Delta_j=\sum_\rho\Delta_j(\rho)\), where \(\Delta_j(\rho)\) is a sum of \(k+m-1\) absolute values, \(k-1\) of them close to \(w_j(\rho)\) and the others small.
+
+\begin{lemma}[degree identity]\label{lem:degree}
+For every \(u\) and \(1\le j\le m\),
+\[
+ \lvert n_{u,j}-\Delta_j-A\rvert\le\delta_j,\qquad
+ \delta_j=2\sum_\rho w_j(\rho)+40\bigl(f(k\sigma+mt\Theta+kN_m)+\lvert\Tc\rvert b'/x\bigr),
+\]
+and \(\delta_j\le166fb\) under the size conditions.
+\end{lemma}
+\noindent\emph{Status}: proved in the Lean formalization by the row-by-row comparison just described.  The row exponents and the Fock degree are given by formulas in the construction of the lifts, which we have not re-derived.  The corresponding step in \cite{Adr} is the degree part of \cite[Hyp.~16.14]{Adr}, assumed there.
+
+\begin{problem}\label{pr:degree-assembly}
+Suppose that for every \(\rho\)
+\[
+ \bigl\lvert n_{u,j}(\rho)-(k-1)w_j(\rho)-a(\rho)-w'_j(\rho)\bigr\rvert\le e_1(\rho),\qquad
+ \bigl\lvert\Delta_j(\rho)-(k-1)w_j(\rho)\bigr\rvert\le e_2(\rho).
+\]
+Then \(\lvert n_{u,j}-\Delta_j-A\rvert\le\sum_\rho\bigl(w_j(\rho)+e_1(\rho)+e_2(\rho)\bigr)\).
+\end{problem}
+
+\begin{problem}\label{pr:kappa}
+Assume (S2)--(S4) and Lemma~\ref{lem:degree}.  Then \(\kappa_j\log g_\iota\le2c_gC_YB_0\), and \(\delta_j\log g_\iota\le166C_YB_0\).
+\end{problem}
+
+\begin{problem}\label{pr:level-clause}
+For \(\iota=0,1\),
+\[
+ \Bigl\lvert\sum_{w\mid g_\iota}2\ell_we_wE_{u,j}(w)-A\log g_\iota\Bigr\rvert\le(\delta_j+2\kappa_j+2v_{g_\iota}(D_\Gamma))\log g_\iota .
+\]
+\end{problem}
+
+\section{The other places}\label{sec:other}
+
+\begin{problem}\label{pr:minkowski}
+For every \(r\ge1\), \(M(r)\) divides \((2r)!\), so \(\log M(r)\le2r\log(2r)\).  For instance \(M(1)=2\) and \(M(2)=24\).
+\end{problem}
+
+\begin{problem}\label{pr:DGamma}
+Assume (S3), (S5) and \(fN_m\le b\).  Then \(\log D_\Gamma\le12fN_m\log(fN_m)\) and \(2\log D_\Gamma\le24B_0\).
+\end{problem}
+
+\begin{lemma}\label{lem:ramified}
+Under the size conditions, \(\lvert\varepsilon^d_j\rvert\le\lvert\Tc\rvert b+fkb'\).
+\end{lemma}
+\noindent\emph{Status}: proved in the Lean formalization, from the windows for the weights at the two places above each column.
+
+\begin{problem}\label{pr:ramified}
+Under (S3), (S4) and Lemma~\ref{lem:ramified}, \(2\log d\,\lvert\varepsilon^d_j\rvert\le4B_0\).
+\end{problem}
+
+Write \(P^{\rm in}\) for the primes \(p\le X''\) of classes I and~II, and \(\varepsilon^{\rm in}_{j,p}\) for \(\varepsilon^{\rm cl}_{j,p}\) or \(\varepsilon^{\rm orb}_{j,p}\), as in Section~\ref{sec:def}.
+
+\begin{problem}\label{pr:off-level}
+For every \(u\) and \(j\),
+\[
+ \sum_{w\nmid g_0g_1}2\ell_we_w\lvert E_{u,j}(w)\rvert\le
+ \varepsilon^T_u\log T_u+2\log D_\Gamma+2\log d\,\lvert\varepsilon^d_j\rvert+\sum_{p\in P^{\rm in}}2\log p\,\lvert\varepsilon^{\rm in}_{j,p}\rvert .
+\]
+\end{problem}
+
+\section{Orbit losses at inert primes}\label{sec:orbits}
+
+It remains to bound the last sum in Problem~\ref{pr:off-level}; this is~\cite[Hyp.~16.13]{Adr} together with~\cite[Lemma~16.12]{Adr}.  The \(f=2n\) places of \(\Phi\) are labelled by pairs \(z=(\xi,h)\in\{0,1\}\times H\), where \(H\) is an abelian group of order \(n\) indexing the columns; we write \(w_j(z)\) for the weight at the place labelled \(z\).  The tops are elements of \(H\), and the top places are the labels \((0,t)\) with \(t\in\Tc\).  For \(p\) of class I or~II there is an element \(h_p\in H\), read off from the Frobenius at \(p\), and Frobenius acts on labels by
+\[
+ \phi_p(\xi,h)=(\xi+\xi_p,\ h+h_p),\qquad \xi_p=0\text{ for class I},\quad \xi_p=1\text{ for class II},
+\]
+with \(\xi\) taken modulo \(2\).  Let \(n_p\) be the order of \(\phi_p\).
+
+\begin{problem}\label{pr:orbit-length}
+For \(p\) of class~I, \(n_p\) is the order of \(h_p\); for \(p\) of class~II, \(n_p=2\operatorname{ord}(2h_p)=\operatorname{lcm}(2,\operatorname{ord}h_p)\).  Every orbit of \(\phi_p\) on labels has exactly \(n_p\) elements.
+\end{problem}
+
+The loss along an orbit is the defect of a linear programme.  For an integer \(l\ge2\), an integer \(d\ge1\) and numbers \(D_s\ge0\) indexed by \(s\in\Z/d\), let \(V(l,d,D)\) be the supremum of \(\sum_{s,i}x_{s,i}\) over the real \(x_{s,i}\ge0\), with \(s\in\Z/d\) and \(i\) odd, \(0<i<d\), subject to
+\[
+ \sum_il^ix_{s,i}+\sum_ix_{s-i,i}\le D_s\qquad\text{for every }s\in\Z/d .
+\]
+Put \(F(l,d,D)=\frac{l}{l^2-1}\sum_sD_s-V(l,d,D)\).  The factor \(l/(l^2-1)\) is the gain per unit weight at an inert prime \(l\), Chapter~\ref{pf-chap}.
+
+\begin{problem}\label{pr:lp-bounds}
+\(V(l,d,D)\le(l+1)^{-1}\sum_sD_s\), hence \(0\le F(l,d,D)\le\frac{l}{l^2-1}\sum_sD_s\).
+\end{problem}
+
+\begin{problem}\label{pr:lp-two}
+If \(d=1\), then \(F(l,1,D)=lD_0/(l^2-1)\).  If \(d=2\) and \(D_0=D_1=D\), then \(V=2D/(l+1)\) and \(F(l,2,D)=2D/(l^2-1)\).
+\end{problem}
+
+For a label \(z\) put \(F_{j,p}(z)=F(p,n_p,D)\) with \(D_s=(k-1)w_j(\phi_p^sz)\).  Let \(Z_p\) be the set of labels with \(\xi=0\) if \(p\) is of class~I, and \(Z_p=\emptyset\) if \(p\) is of class~II; let \(Z'_p\) be its complement and \(Z'^{\rm top}_p\) the top places in \(Z'_p\).  Let \(P^{\rm odd}\) be the set of primes of class~I whose \(h_p\ne0\) has odd order, and \(\gamma_p=p/(p^2-1)\).  Then
+\begin{multline*}
+ \varepsilon^{\rm orb}_{j,p}=\max\Bigl(0,\frac1{n_p}\sum_{z\in Z_p}F_{j,p}(z)\Bigr)
+ +\gamma_p\lvert Z'^{\rm top}_p\rvert(b+\Theta+1+3\sigma)+\frac{12}p\sum_{z\in Z'_p}w_j(z)\\
+ +\lvert Z'_p\rvert N_{j-1}N_j\bigl(\log_p(4n_pN_ma)+1\bigr)
+ +5\lvert Z'_p\rvert N_m^2\log_p(2a)+4\lvert Z'^{\rm top}_p\rvert(\log_p2a)^2+\varepsilon^{\rm odd}_{j,p},
+\end{multline*}
+where \(\varepsilon^{\rm odd}_{j,p}=(k-1)p^{-3}\sum_{z\in Z'_p}w_j(z)+12fN_m^2\log_pa\) for \(p\in P^{\rm odd}\), and \(\varepsilon^{\rm odd}_{j,p}=0\) otherwise.  The first term is the orbit loss; the others are errors.
+
+\begin{lemma}\label{lem:per-prime}
+Under the size conditions, for every prime \(p\le b\) of class I or~II,
+\[
+ \lvert\varepsilon^{\rm orb}_{j,p}-\varepsilon^{\rm odd}_{j,p}\rvert\log p\le126fmb\frac{\log p}p+46f\Theta y,\qquad
+ \lvert\varepsilon^{\rm odd}_{j,p}\rvert\log p\le9fbk\frac{\log p}{p^3}+24f\Theta y,
+\]
+and \(k\sum_{p\in P\cap P^{\rm odd}}(\log p)/p^3\le2\) for every finite set \(P\) of primes.
+\end{lemma}
+\noindent\emph{Status}: proved in the Lean formalization.  The first bound treats the seven terms one at a time; its main term is Problem~\ref{pr:main-orbit} below.  The last bound rests on a congruence \(p\equiv\pm1\pmod{2^e}\) for the primes of \(P^{\rm odd}\), with \(2^e\) large compared to \(k\); we have not followed its proof.
+
+\begin{problem}\label{pr:main-orbit}
+Suppose \(w_j(z)\le3(b'+\Theta)\) whenever \(z\) has \(\xi=0\), and assume (S3).  Then for \(p\ge2\) of class I or~II,
+\[
+ \max\Bigl(0,\frac1{n_p}\sum_{z\in Z_p}F_{j,p}(z)\Bigr)\le\frac{6fmb}{p}.
+\]
+\end{problem}
+
+\begin{problem}\label{pr:mertens}
+For every integer \(N\ge1\), \(\sum_{p\le N}(\log p)/p\le\log N+\log4\).
+\end{problem}
+
+\begin{problem}\label{pr:sum-I}
+Assume (S2), (S3), Lemma~\ref{lem:per-prime} and \(X''\le b\).  For every set \(P\) of primes \(p\le X''\) of classes I and~II,
+\(\sum_{p\in P}2\log p\,\lvert\varepsilon^{\rm orb}_{j,p}\rvert\le848B_0\).
+\end{problem}
+
+\begin{problem}\label{pr:log-a}
+For \(x\ge1\), \(\log a\le(1/\varepsilon+1)y\).
+\end{problem}
+
+\begin{problem}\label{pr:sum-C}
+Assume (S1) and (S2), and \(X''\le a\).  For every set \(P\) of primes \(p\le X''\),
+\(\sum_{p\in P}2\log p\,\varepsilon^{\rm cl}_{j,p}\le18(1/\varepsilon+1)B_0\).
+\end{problem}
+
+Problems~\ref{pr:sum-I} and~\ref{pr:sum-C} bound the last sum of Problem~\ref{pr:off-level} by \((848+18/\varepsilon+18)B_0\).  The constant depends on \(\varepsilon\), as in \cite[Rem.~16.9]{Adr}.
+
+\section{The theorem}\label{sec:theorem}
+
+Problems~\ref{pr:seen-half}--\ref{pr:level-clause}, \ref{pr:DGamma}, \ref{pr:ramified}, \ref{pr:off-level}, \ref{pr:sum-I} and~\ref{pr:sum-C} prove the following.
+
+\begin{theorem}[local terms]\label{thm:local}
+Let \(0<\varepsilon<1/52\), and consider a family of data satisfying the size conditions, Lemmas~\ref{lem:degree}, \ref{lem:ramified} and~\ref{lem:per-prime}.  There are \(C\) and \(x_0\) such that for every datum at a scale \(x\ge x_0\), every \(u\) and every \(1\le j\le m\),
+\[
+ \Bigl\lvert\sum_w2\ell_we_wE_{u,j}(w)-A\log(g_0g_1)\Bigr\rvert\le CB_0,\qquad
+ \sum_{w\nmid g_0g_1}2\ell_we_w\lvert E_{u,j}(w)\rvert\le CB_0 .
+\]
+\end{theorem}
+\noindent\emph{Status}: proved in the Lean formalization, for the family it constructs.  The first inequality is the bound of \cite[Thm.~16.6]{Adr} for these exponents.  The corresponding steps in \cite{Adr} are \cite[Hyps.~16.13 and~16.14]{Adr}, assumed there; here Lemmas~\ref{lem:degree}, \ref{lem:ramified} and~\ref{lem:per-prime} take their place.  The second inequality is not stated in \cite{Adr}.  Summing over \(j\) gives~\eqref{as-A5}, \(E_u\le mAg+e_5\), with \(e_5=CmB_0\), as in Problem~\ref{lt-pr:A5}.
+
+\begin{leanremark}
+\raggedright In \cite{Lean} the exponent is \tl{Eval}, with the pieces \tl{EatT}, \tl{EatG}, \tl{EatD}, \tl{EatC}, \tl{EatI}, \tl{EatX}, the orbit loss \tl{FOrb} and the programme \tl{lpF}.  The two inequalities of Theorem~\ref{thm:local} are \tl{LocalQuadraticParts.adm11}; the first is a clause of \tl{LinkDIV\_\allowbreak{}at}, supplied by \tl{linkDIV\_\allowbreak{}at\_\allowbreak{}words}.  They are assembled by \tl{secondComplement\_\allowbreak{}of\_\allowbreak{}split} from \tl{C2atG\_\allowbreak{}of} (Problem~\ref{pr:level-clause}) and \tl{C2off\_\allowbreak{}of} (Problem~\ref{pr:off-level}).  The family version is \tl{familySecondComplementInputs\_\allowbreak{}of\_\allowbreak{}tuSize\_\allowbreak{}of\_\allowbreak{}dGamSize}, whose hypotheses \tl{TuSize} and \tl{DGamSize} are (S5).  Its inputs are:
+\tl{typePrime\_\allowbreak{}valuationSum\_\allowbreak{}eq\_\allowbreak{}logGap\_\allowbreak{}all} (Problem~\ref{lt-pr:half-norm});
+\tl{not\_\allowbreak{}dvd\_\allowbreak{}trace}, \tl{coprime\_\allowbreak{}conj}, \tl{sum\_\allowbreak{}over\_\allowbreak{}eq}, \tl{ETpi\_\allowbreak{}le} and \tl{admissible\_\allowbreak{}off\_\allowbreak{}type\_\allowbreak{}level\_\allowbreak{}budget} (Problems~\ref{pr:trace}--\ref{pr:epsT});
+\tl{admissibleDegree\_\allowbreak{}count\_\allowbreak{}at\_\allowbreak{}parameter\_\allowbreak{}const}, via \tl{degree\_\allowbreak{}fine}, \tl{nuAbs\_\allowbreak{}place\_\allowbreak{}fine} and \tl{letters\_\allowbreak{}place} (Lemma~\ref{lem:degree});
+\tl{typePrime\_\allowbreak{}sizes\_\allowbreak{}le\_\allowbreak{}budget\_\allowbreak{}single} (Problem~\ref{pr:kappa});
+\tl{dGamSize\_\allowbreak{}of\_\allowbreak{}dvd} and \tl{log\_\allowbreak{}minkM\_\allowbreak{}le\_\allowbreak{}two} (Problems~\ref{pr:minkowski} and~\ref{pr:DGamma});
+\tl{abs\_\allowbreak{}EatD\_\allowbreak{}le} and \tl{offDiagonalRamified\_\allowbreak{}bound\_\allowbreak{}const\_\allowbreak{}four} (Lemma~\ref{lem:ramified}, Problem~\ref{pr:ramified});
+\tl{factLpF} (Problem~\ref{pr:lp-bounds}), \tl{first\_\allowbreak{}term}, \tl{eatI\_\allowbreak{}bound}, \tl{eatX\_\allowbreak{}bound}, \tl{sum\_\allowbreak{}cube\_\allowbreak{}le}, \tl{prime\_\allowbreak{}log\_\allowbreak{}sum\_\allowbreak{}bound} and \tl{sum\_\allowbreak{}eatI} (Lemma~\ref{lem:per-prime}, Problems~\ref{pr:main-orbit}--\ref{pr:sum-I});
+\tl{bound\_\allowbreak{}one} and \tl{sum\_\allowbreak{}primes\_\allowbreak{}le} (Problem~\ref{pr:sum-C}).
+They are combined in \tl{inertPrimes\_\allowbreak{}loss\_\allowbreak{}log\_\allowbreak{}sum\_\allowbreak{}admissible}.
+\end{leanremark}
+
+In the formalization the orbit losses \(F_{j,p}(z)\) also enter other local terms of the lifts, and a separate loss term enters the gain inequality at inert primes.  We have not traced how these are related to the orbit losses of this chapter.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:def}}
+\begin{description}
+\item[\ref{pr:trace}] Write \(\varpi=1+4\beta\), and compare a nonzero multiple of \(T\) with \(\lvert\varpi+\bar\varpi\rvert\le2\sqrt T\).
+\item[\ref{pr:one-of-two}] The trace and \(T\) are coprime integers, and \(v_w(\varpi)+v_w(\bar\varpi)=v_w(T)\).
+\item[\ref{pr:seen-half}] Problem~\ref{lt-pr:half-norm} for \(\pi=\bar\varpi_u\), and Problem~\ref{pr:one-of-two}.
+\item[\ref{pr:epsT}] Bound the three terms of \(\varepsilon^T_u\) separately.
+\end{description}
+
+\subsection*{\S\ref{sec:level}}
+\begin{description}
+\item[\ref{pr:degree-assembly}] Sum over \(\rho\); use \(\sum_\rho a(\rho)=A\) and \(0\le w'_j\le w_j\).
+\item[\ref{pr:kappa}] (S2) and (S3).
+\item[\ref{pr:level-clause}] Problem~\ref{lt-pr:level} and Lemma~\ref{lem:degree}.
+\end{description}
+
+\subsection*{\S\ref{sec:other}}
+\begin{description}
+\item[\ref{pr:minkowski}] Compare \(\mu_p(r)\) with Legendre's formula for \(v_p((2r)!)\), term by term.
+\item[\ref{pr:DGamma}] Problem~\ref{pr:minkowski} with \(r=2fN_m\); then \(\log 4\le2\log(fN_m)\).
+\item[\ref{pr:off-level}] Group the places by residue characteristic; use Problem~\ref{pr:seen-half} at \(T_u\), and \(\sum_{p}v_p(D_\Gamma)\log p\le\log D_\Gamma\).
+\end{description}
+
+\subsection*{\S\ref{sec:orbits}}
+\begin{description}
+\item[\ref{pr:orbit-length}] Compute \(\phi_p^e\).
+\item[\ref{pr:lp-bounds}] Sum the constraints over \(s\).
+\item[\ref{pr:lp-two}] For \(d=2\) the only \(i\) is \(1\); use Problem~\ref{pr:lp-bounds} for the upper bound.
+\item[\ref{pr:main-orbit}] Problem~\ref{pr:lp-bounds} for each \(z\), with \(\gamma_p\le2/p\); there are at most \(f\) labels.
+\item[\ref{pr:mertens}] Legendre's formula for \(\log N!\).
+\item[\ref{pr:sum-I}] Problem~\ref{pr:mertens} with \(N=\lfloor X''\rfloor\), \(\lvert P\rvert\le X''\), and \(m\ge2\).
+\item[\ref{pr:log-a}] \(\log u\le u\).
+\item[\ref{pr:sum-C}] Problem~\ref{pr:log-a}, and \(\sum_{n\ge2}n^{-2}\le1\).
+\end{description}
+
+\begin{thebibliography}{Lean}
+\bibitem[Adr]{Adr}  J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[AZ]{AZ}  M.~Aigner and G.~M.~Ziegler, \emph{Proofs from THE BOOK}, 6th ed., Springer, 2018.
+\bibitem[Lean]{Lean} The Lean community, \emph{riemann-hypothesis}, a Lean formalization of Alp\"oge's argument, \url{https://github.com/leanprover-community/riemann-hypothesis}.
+\bibitem[Se]{Se}  J.-P.~Serre, \emph{Bounds for the orders of the finite subgroups of \(G(k)\)}, in: Group Representation Theory, EPFL Press, Lausanne, 2007, 405--450.
+\end{thebibliography}
+\end{document}
