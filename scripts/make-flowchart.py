@@ -16,16 +16,16 @@ Everything is read from the sources, so the chart follows the index:
     assembly a module supplies is read from its Deliverable paragraph
     and from the assembly's map of the inputs (the description list in
     its section sec:map), keeping the labels on which both agree;
-  * a chapter of the last Part without a Deliverable paragraph whose
-    Prerequisites cite an earlier chapter of that Part is a development: it treats one input of that
-    chapter (its parent) in detail.  It supplies nothing to the assembly
-    directly, and is drawn in a band just below the modules, under its
-    parent where that column is free.
+  * a chapter of the last Part without a Deliverable paragraph, listed
+    after a chapter of that Part that has one, is a development: it
+    treats one input of the module listed last before it (its parent).
+    It supplies nothing to the assembly directly, and is drawn below its
+    parent, the developments of a module stacked in index order.
 
-The chart is a grid: one column per Part, the chapters of a Part stacked
-with the earliest at the bottom, the modules above the column that feeds
-them most, the developments just below their modules, and the assembly
-on top.  Edges implied by a path are dropped
+The chart has two grids.  Below, one column per Part I-V, the chapters
+of a Part stacked with the earliest at the bottom.  Above, the last Part:
+one column per module, its developments stacked below it, and the
+assembly on top; edges into the last Part enter boxes from the side.  Edges implied by a path are dropped
 (transitive reduction).  The layout and the orthogonal edge routing are
 done here, so Graphviz is not needed; a DOT file is written as well, for
 reference.
@@ -45,7 +45,6 @@ build and export flowchart.org to flowchart.html.
 """
 import argparse
 import html
-import itertools
 import json
 import os
 import re
@@ -208,16 +207,16 @@ def read_sheets(sheets):
             warn(f"{s.tex} has no Prerequisites paragraph")
         deps[s.id] = resolve(s, prefixes(para), "Prerequisites")
 
-    # Developments: chapters of the last Part that build on an earlier
-    # one.  The parent is the earliest module reached through the
-    # chapters of the last Part that it cites.
+    # Developments: chapters of the last Part without a Deliverable
+    # paragraph that come after a module.  Each develops an input of the
+    # module listed last before it in the index (its parent).
     devs, parent = [], {}
+    last_mod = None
     for s in modules:
-        cited = sorted((t for t in deps[s.id]
-                        if t in {x.id for x in modules}), key=pos.get)
-        if cited and not paragraph(src[s.id], "Deliverable"):
-            p = cited[0]
-            parent[s.id] = parent.get(p, p)
+        if paragraph(src[s.id], "Deliverable") or last_mod is None:
+            last_mod = s.id
+        else:
+            parent[s.id] = last_mod
             devs.append(s)
     modules = [s for s in modules if s.id not in parent]
 
@@ -230,10 +229,9 @@ def read_sheets(sheets):
 
     deliveries = {}
     for s in modules:
-        para = paragraph(src[s.id], "Deliverable")
-        if not para:
-            warn(f"{s.tex} has no Deliverable paragraph")
-        deliveries[s.id] = delivered(para)
+        # A module without a Deliverable paragraph (the first chapter of
+        # the Part, which fixes the objects) supplies nothing directly.
+        deliveries[s.id] = delivered(paragraph(src[s.id], "Deliverable"))
 
     # The assembly's map of the inputs: each item names the inputs and
     # the chapters of the last Part whose deliverables supply them.  An
@@ -285,7 +283,8 @@ def build_graph(sheets, parts):
     for mid, labs in deliveries.items():
         for lab in labs:
             supplier[lab].append(mid)
-        edges[(mid, assembly.id)] = "del"
+        if labs:
+            edges[(mid, assembly.id)] = "del"
 
     succ = defaultdict(set)
     for (u, v) in edges:
@@ -319,7 +318,6 @@ WIDTH = 1200
 MARGIN = 6
 LANE = 6             # spacing of parallel edges
 PAD = 7              # cluster padding
-DEV = -0.5           # the row of the developments, between modules and Parts
 
 
 def wrap(text, width_px, max_lines=4):
@@ -355,9 +353,19 @@ def assign_lanes(intervals):
 
 
 def layout(sheets, parts, g):
+    """Two grids.  Below, one column per Part I-V, the chapters of a Part
+    stacked with the earliest at the bottom.  Above, the last Part: one
+    column per module, with its developments stacked below it in index
+    order, and the assembly on top.  Edges inside the lower grid run in
+    its gutters and in the gaps below the rows; edges into the last Part
+    cross the transfer gap below it and enter boxes from the side through
+    the gutters of the upper grid."""
     by_id = {s.id: s for s in sheets}
     assembly, modules = g["assembly"], g["modules"]
     mod_ids = [s.id for s in modules]
+    dev_ids = [s.id for s in g["devs"]]
+    parent = g["parent"]
+    six = set(mod_ids) | set(dev_ids)
     last_part = assembly.part
     col_parts = [p for p in parts if p[0] != last_part
                  and not by_id[p[2][0]].side]
@@ -378,73 +386,111 @@ def layout(sheets, parts, g):
         rows = max(rows, start + len(ids))
         clusters.append((f"{key}. {name}" if name else key, ids))
 
-    # Modules over the columns that feed them most.
-    edges = g["edges"]
-    feed = defaultdict(int)
-    for (u, v), k in edges.items():
-        if v in mod_ids and u in col_of:
-            feed[(v, col_of[u])] += 1
-    if len(mod_ids) <= C:
-        best = max(itertools.permutations(range(C), len(mod_ids)),
-                   key=lambda p: (sum(feed[(m, c)] for m, c in zip(mod_ids, p)),
-                                  [-x for x in p]))
-    else:
-        best = [k % C for k in range(len(mod_ids))]
-    for m, c in zip(mod_ids, best):
-        col_of[m], row_of[m] = c, -1
-    col_of[assembly.id], row_of[assembly.id] = C // 2, -2
-
-    # Developments, in a band just below the modules: under the parent
-    # if that column is free, else in the nearest free column.
-    dev_ids = [s.id for s in g["devs"]]
-    parent = g["parent"]
-    dev_cols = set()
+    # The upper grid: column and level of each chapter of the last Part.
+    K = len(mod_ids)
+    col6, lvl = {}, {}
+    for k, m in enumerate(mod_ids):
+        col6[m], lvl[m] = k, 0
+    depth = defaultdict(int)
     for d in dev_ids:
-        free = [c for c in range(C) if c not in dev_cols]
-        if not free:
-            die("more developments than columns; extend the layout")
-        pc = col_of[parent[d]]
-        c = min(free, key=lambda c: (abs(c - pc), c))
-        dev_cols.add(c)
-        col_of[d], row_of[d] = c, DEV
+        m = parent[d]
+        depth[m] += 1
+        col6[d], lvl[d] = col6[m], depth[m]
+    levels = 1 + max(depth.values(), default=0)
 
-    def below(c, r):
-        """The row drawn directly below row r in column c."""
-        if r == -1:
-            return DEV if c in dev_cols else 0
-        if r == DEV:
-            return 0
-        return r + 1
-
-    # Routing plan: for each edge, gutter and gap (lanes come later).
-    # Gutter g lies left of column g.  Gap r lies below row r (gap -1:
-    # between the modules and the first row of chapters).
+    edges = g["edges"]
     plan = {}
     for (u, v), k in edges.items():
         if k == "del":
             continue
-        cu, ru, cv, rv = col_of[u], row_of[u], col_of[v], row_of[v]
-        if v in dev_ids and (u in mod_ids or u in dev_ids):
-            plan[(u, v)] = ("near",)
-        elif cu == cv and ru == below(cv, rv):
-            plan[(u, v)] = ("straight",)
-        else:
-            if cv > cu:
-                gut, side = cu + 1, "R"
-            elif cv < cu:
-                gut, side = cu, "L"
+        if v in six and u in six:
+            if col6[u] == col6[v] and lvl[v] == lvl[u] + 1:
+                plan[(u, v)] = ("down",)
             else:
-                gut, side = cu, "L"
-            plan[(u, v)] = ("routed", gut, side, rv)
+                plan[(u, v)] = ("six",)
+        elif v in six:
+            plan[(u, v)] = ("up",)
+        else:
+            cu, ru, cv, rv = col_of[u], row_of[u], col_of[v], row_of[v]
+            if cu == cv and ru == rv + 1:
+                plan[(u, v)] = ("straight",)
+            else:
+                gut, side = (cu + 1, "R") if cv > cu else (cu, "L")
+                plan[(u, v)] = ("routed", gut, side, rv)
 
-    # Box sizes.
+    # Sides and gutters in the upper grid.  Gutter k lies left of column k.
+    # Estimated x (in column units) of a lower-grid gutter, to pick sides.
+    def lower_gut_frac(gut):
+        return gut / C
+    def six_frac(v):
+        return (col6[v] + 0.5) / K
+    six_side = {}      # (edge, end) -> ("L"|"R", gutter index)
+    for e, p in plan.items():
+        u, v = e
+        if p[0] == "up":
+            cu = col_of[u]
+            vx = six_frac(v)
+            gut, side = (cu + 1, "R") if vx > (cu + 0.5) / C else (cu, "L")
+            plan[e] = ("up", gut, side)
+            if lower_gut_frac(gut) <= vx:
+                six_side[(e, "v")] = ("L", col6[v])
+            else:
+                six_side[(e, "v")] = ("R", col6[v] + 1)
+        elif p[0] == "six":
+            if col6[u] == col6[v]:
+                six_side[(e, "u")] = ("L", col6[u])
+                six_side[(e, "v")] = ("L", col6[v])
+            elif col6[v] > col6[u]:
+                six_side[(e, "u")] = ("R", col6[u] + 1)
+                six_side[(e, "v")] = ("L", col6[v])
+            else:
+                six_side[(e, "u")] = ("L", col6[u])
+                six_side[(e, "v")] = ("R", col6[v] + 1)
+
+    # Lanes in the upper gutters, from intervals in level units: the box
+    # at level L is at L, the gap below it at L + 0.5, the transfer gap
+    # below the whole grid at `levels`.
+    six_iv = defaultdict(dict)
+    hop_iv = defaultdict(dict)       # gap level -> {edge: (gut_u, gut_v)}
+    for e, p in plan.items():
+        u, v = e
+        if p[0] == "up":
+            gut = six_side[(e, "v")][1]
+            six_iv[gut][e] = (lvl[v], levels)
+        elif p[0] == "six":
+            gu, gv = six_side[(e, "u")][1], six_side[(e, "v")][1]
+            if gu == gv:
+                six_iv[gu][e] = (min(lvl[u], lvl[v]), max(lvl[u], lvl[v]))
+            else:
+                h = max(lvl[u], lvl[v]) + 0.5
+                six_iv[gu][(e, "u")] = (lvl[u], h)
+                six_iv[gv][(e, "v")] = (lvl[v], h)
+                hop_iv[h][e] = (min(gu, gv), max(gu, gv))
+    lanes6, n6 = {}, {}
+    for gut, iv in six_iv.items():
+        ln, n = assign_lanes({k: (a * 10, b * 10) for k, (a, b) in iv.items()})
+        lanes6.update(ln)
+        n6[gut] = n
+    GW6 = max(28, 2 * PAD + 6 + max(n6.values(), default=1) * LANE)
+    BW6 = (WIDTH - 2 * MARGIN - (K + 1) * GW6) / K
+
+    def col6_x(c):
+        return MARGIN + GW6 + c * (BW6 + GW6)
+
+    def gut6_x(gut, key):
+        left = MARGIN + gut * (BW6 + GW6)
+        n = n6.get(gut, 1)
+        return left + GW6 / 2 + (lanes6[key] - (n - 1) / 2) * LANE
+
+    # The lower grid: gutter lanes, with the "up" edges rising to gap -1.
     gutter_lanes = defaultdict(dict)
-    # Lane counts need y extents; first estimate with row indices.
     for e, p in plan.items():
         if p[0] == "routed":
             _, gut, side, gap = p
             ru = row_of[e[0]]
             gutter_lanes[gut][e] = (min(ru, gap + 0.5), max(ru, gap + 0.5))
+        elif p[0] == "up":
+            gutter_lanes[p[1]][e] = (-0.5, row_of[e[0]])
     lanes_g, nlanes_g = {}, {}
     for gut, iv in gutter_lanes.items():
         ln, n = assign_lanes({e: (a * 10, b * 10) for e, (a, b) in iv.items()})
@@ -465,40 +511,46 @@ def layout(sheets, parts, g):
     a_w = min(2 * BW + GW, WIDTH - 2 * MARGIN)
     a_x = WIDTH / 2 - a_w / 2
 
-    def span_x(v):
-        """Left end and width of the box of v."""
-        if v == assembly.id:
-            return a_x, a_w
-        return col_x(col_of[v]), BW
-
     lines = {}
     for s in sheets:
-        lines[s.id] = wrap(f"{s.num}  {s.title}", BW - 12)
+        if s.id in six:
+            lines[s.id] = wrap(f"{s.num}  {s.title}", BW6 - 12, 5)
+        else:
+            lines[s.id] = wrap(f"{s.num}  {s.title}", BW - 12)
     BH = max(len(lines[s.id]) for s in sheets if s.id in col_of) * LH + 10
+    lvl_h = [max(len(lines[v]) for v in six if lvl[v] == L) * LH + 10
+             for L in range(levels)]
 
-    # Horizontal segments in gaps need x extents: entry points first.
-    entries = defaultdict(list)       # v -> [(sortkey, e)]
+    # Horizontal lanes: hops between upper gutters, in the gaps between
+    # levels; and the transfer gap (gap -1), from lower to upper gutters.
+    hop_lanes, hop_n = {}, {}
+    for h, iv in hop_iv.items():
+        ln, n = assign_lanes({e: (a * 10, b * 10) for e, (a, b) in iv.items()})
+        hop_lanes.update(ln)
+        hop_n[h] = n
+    # Entry points from below in the lower grid.
+    entries = defaultdict(list)
     for e, p in plan.items():
         u, v = e
-        if p[0] == "near":
-            continue
         if p[0] == "straight":
-            entries[v].append((span_x(v)[0] + span_x(v)[1] / 2, e))
-        else:
-            n = nlanes_g[p[1]]
-            entries[v].append((gutter_x(p[1], lanes_g[e], n), e))
+            entries[v].append((col_x(col_of[v]) + BW / 2, e))
+        elif p[0] == "routed":
+            entries[v].append((gutter_x(p[1], lanes_g[e], nlanes_g[p[1]]), e))
     entry_x = {}
     for v, lst in entries.items():
         lst.sort(key=lambda t: t[0])
-        x0, w = span_x(v)
+        x0, w = col_x(col_of[v]), BW
         for k, (_, e) in enumerate(lst):
             entry_x[e] = x0 + w * 0.15 + w * 0.7 * (k + 1) / (len(lst) + 1)
     gap_iv = defaultdict(dict)
     for e, p in plan.items():
         if p[0] == "routed":
             gx = gutter_x(p[1], lanes_g[e], nlanes_g[p[1]])
-            ex = entry_x[e]
-            gap_iv[p[3]][e] = (min(gx, ex), max(gx, ex))
+            gap_iv[p[3]][e] = (min(gx, entry_x[e]), max(gx, entry_x[e]))
+        elif p[0] == "up":
+            gx = gutter_x(p[1], lanes_g[e], nlanes_g[p[1]])
+            sx = gut6_x(six_side[(e, "v")][1], e)
+            gap_iv[-1][e] = (min(gx, sx), max(gx, sx))
     lanes_h, nlanes_h = {}, {}
     for gap, iv in gap_iv.items():
         ln, n = assign_lanes(iv)
@@ -506,29 +558,26 @@ def layout(sheets, parts, g):
         nlanes_h[gap] = n
 
     # Vertical positions.
-    TITLE_H = 2 * 12 + 8                 # cluster titles, two lines
-    A_H = 2 * LH + 14                    # assembly box
-    DEL_H = 96                           # band for the delivery arrows
-    y = MARGIN + PAD + 22                # Part VI title
+    TITLE_H = 2 * 12 + 8
+    A_H = 2 * LH + 14
+    DEL_H = 96
+    y = MARGIN + PAD + 22
     a_y = y
     y += A_H + DEL_H
-    m_y = y
-    MBH = max(len(lines[m]) for m in mod_ids) * LH + 10
-    y += MBH + PAD
+    lvl_y, hop_top = [], {}
+    for L in range(levels):
+        lvl_y.append(y)
+        y += lvl_h[L]
+        hop_top[L + 0.5] = y
+        y += 8 + hop_n.get(L + 0.5, 0) * LANE
+    six_bottom = y
+    y += PAD
 
     def gap_h(gap):
         return 10 + nlanes_h.get(gap, 0) * LANE
 
-    gap_top = {-2: a_y + A_H + 2, -1: y}
-    y += gap_h(-1)
-    dev_y = DBH = None
-    if dev_ids:
-        DBH = max(len(lines[d]) for d in dev_ids) * LH + 10
-        dev_y = y + 4
-        y = dev_y + DBH + PAD
-        gap_top[DEV] = y
-        y += gap_h(DEV)
-    y += TITLE_H
+    gap_top = {-1: y}
+    y += gap_h(-1) + TITLE_H
     row_y = {}
     for r in range(rows):
         row_y[r] = y
@@ -544,73 +593,93 @@ def layout(sheets, parts, g):
         n = nlanes_h[gap]
         return gap_top[gap] + 5 + (lanes_h[e] + 0.5) * LANE if n else gap_top[gap] + 5
 
+    def hop_y(h, e):
+        return hop_top[h] + 4 + (hop_lanes[e] + 0.5) * LANE
+
     box = {}
     for i in col_of:
-        if i == assembly.id:
-            continue
-        if i in mod_ids:
-            box[i] = (col_x(col_of[i]), m_y, BW, MBH)
-        elif i in dev_ids:
-            box[i] = (col_x(col_of[i]), dev_y, BW, DBH)
-        else:
-            box[i] = (col_x(col_of[i]), row_y[row_of[i]], BW, BH)
+        box[i] = (col_x(col_of[i]), row_y[row_of[i]], BW, BH)
+    for v in six:
+        box[v] = (col6_x(col6[v]), lvl_y[lvl[v]], BW6, lvl_h[lvl[v]])
     box[assembly.id] = (a_x, a_y, a_w, A_H)
     lines[assembly.id] = wrap(f"{assembly.num}  {assembly.title}", a_w - 12, 2)
 
-    # Exit points on the sides of the sources.
+    # Attachment points on the sides of the upper boxes, ordered by the
+    # height of the other end, and on the sides of the lower sources.
+    att = defaultdict(list)       # (v, side) -> [(sortkey, key)]
+    for (e, end), (side, gut) in six_side.items():
+        other = e[1] if end == "u" else e[0]
+        oy = box[other][1] if other in box else 0
+        att[(e[0] if end == "u" else e[1], side)].append((oy, (e, end)))
+    att_y = {}
+    for (v, side), lst in att.items():
+        lst.sort(key=lambda t: t[0])
+        x, y0, w, h = box[v]
+        for k, (_, key) in enumerate(lst):
+            att_y[key] = y0 + h * (k + 1) / (len(lst) + 1)
     exits = defaultdict(list)
     for e, p in plan.items():
-        if p[0] == "routed":
+        if p[0] in ("routed", "up"):
             exits[(e[0], p[2])].append(e)
     exit_y = {}
     for (u, side), lst in exits.items():
-        lst.sort(key=lambda e: lane_y(plan[e][3], e))
+        lst.sort(key=lambda e: lane_y(plan[e][3] if plan[e][0] == "routed" else -1, e))
         x, y0, w, h = box[u]
         for k, e in enumerate(lst):
             exit_y[e] = y0 + h * (k + 1) / (len(lst) + 1)
 
+    def side_x(v, side):
+        x, y0, w, h = box[v]
+        return x if side == "L" else x + w
+
     paths = {}
     for e, p in plan.items():
         u, v = e
-        vx, vy, vw, vh = box[v]
         ux, uy, uw, uh = box[u]
-        if p[0] == "near":
-            continue
-        ex = entry_x[e]
+        vx, vy, vw, vh = box[v]
         if p[0] == "straight":
+            ex = entry_x[e]
             paths[e] = [(ex, uy), (ex, vy + vh)]
-        else:
+        elif p[0] == "routed":
             _, gut, side, gap = p
             gx = gutter_x(gut, lanes_g[e], nlanes_g[gut])
             sx = ux + uw if side == "R" else ux
             hy = lane_y(gap, e)
+            ex = entry_x[e]
             paths[e] = [(sx, exit_y[e]), (gx, exit_y[e]), (gx, hy),
                         (ex, hy), (ex, vy + vh)]
-
-    # From a module or development to a development: down from the
-    # parent, or sideways within the band.
-    for e, p in plan.items():
-        if p[0] != "near":
-            continue
-        u, v = e
-        ux, uy, uw, uh = box[u]
-        vx, vy, vw, vh = box[v]
-        right = vx > ux
-        if u in dev_ids:
-            yy = vy + vh / 2
-            paths[e] = ([(ux + uw, yy), (vx, yy)] if right
-                        else [(ux, yy), (vx + vw, yy)])
-        elif col_of[u] == col_of[v]:
-            x = ux + 0.07 * uw
+        elif p[0] == "up":
+            _, gut, side = p
+            gx = gutter_x(gut, lanes_g[e], nlanes_g[gut])
+            sx = ux + uw if side == "R" else ux
+            hy = lane_y(-1, e)
+            vside, vg = six_side[(e, "v")]
+            x6 = gut6_x(vg, e)
+            ay = att_y[(e, "v")]
+            paths[e] = [(sx, exit_y[e]), (gx, exit_y[e]), (gx, hy),
+                        (x6, hy), (x6, ay), (side_x(v, vside), ay)]
+        elif p[0] == "down":
+            x = ux + uw / 2
             paths[e] = [(x, uy + uh), (x, vy)]
         else:
-            sx = ux + (0.93 * uw if right else 0.07 * uw)
-            tx = vx + (0.07 * vw if right else 0.93 * vw)
-            paths[e] = [(sx, uy + uh), (sx, vy - 6), (tx, vy - 6), (tx, vy)]
+            us, gu = six_side[(e, "u")]
+            vs, gv = six_side[(e, "v")]
+            uy0, vy0 = att_y[(e, "u")], att_y[(e, "v")]
+            if gu == gv:
+                x6 = gut6_x(gu, e)
+                paths[e] = [(side_x(u, us), uy0), (x6, uy0), (x6, vy0),
+                            (side_x(v, vs), vy0)]
+            else:
+                h = max(lvl[u], lvl[v]) + 0.5
+                xu, xv = gut6_x(gu, (e, "u")), gut6_x(gv, (e, "v"))
+                hy = hop_y(h, e)
+                paths[e] = [(side_x(u, us), uy0), (xu, uy0), (xu, hy),
+                            (xv, hy), (xv, vy0), (side_x(v, vs), vy0)]
 
     # Delivery arrows: module tops to the bottom of the assembly.
     ax, ay, aw, ah = box[assembly.id]
-    dels = sorted((m for m in mod_ids), key=lambda m: box[m][0])
+    dels = [m for m in mod_ids if (m, assembly.id) in edges]
+    dels.sort(key=lambda m: box[m][0])
     for k, m in enumerate(dels):
         mx, my, mw, mh = box[m]
         tx = ax + aw * (k + 1) / (len(dels) + 1)
@@ -624,9 +693,8 @@ def layout(sheets, parts, g):
         cl_boxes.append((name, min(xs) - PAD, min(ys) - TITLE_H,
                          BW + 2 * PAD, max(ye) - min(ys) + TITLE_H + PAD))
     p6_name = next((f"{k}. {n}" if n else k) for k, n, _ in parts if k == last_part)
-    p6_bottom = dev_y + DBH if dev_ids else m_y + MBH
     cl_boxes.insert(0, (p6_name, MARGIN, MARGIN, WIDTH - 2 * MARGIN,
-                        p6_bottom + PAD - MARGIN))
+                        six_bottom - MARGIN))
     return dict(box=box, lines=lines, paths=paths, clusters=cl_boxes,
                 width=WIDTH, height=height, col_of=col_of, row_of=row_of)
 
@@ -910,8 +978,8 @@ def render_page(sheets, g, svg):
            " read from the bottom up: a chapter sits above the chapters it"
            " builds on.  On top are the chapters of Part VI, each stating one"
            f" ingredient in general, and the final chapter, /{asm.title}/,"
-           " which assembles them.  Just below a Part VI chapter are the"
-           " chapters that develop one of its inputs, in the form the Lean"
+           " which assembles them.  Below each of the first Part VI chapters are"
+           " the chapters that develop its inputs, in the form the Lean"
            " formalization proves.  Hover over a chapter to pick out its arrows.",
            "",
            "#+BEGIN_EXPORT html",
@@ -927,9 +995,10 @@ def render_page(sheets, g, svg):
            " of a Part VI chapter (from its /Prerequisites/, its"
            " /Simplest incarnation/ remarks, and the map of the inputs in"
            f" /{asm.title}/).",
-           "- Pale box below a Part VI chapter: a chapter that develops one"
-           " of its inputs (it cites an earlier Part VI chapter in its"
-           " /Prerequisites/); the arrow comes from the chapter it builds on.",
+           "- Pale boxes below a Part VI chapter: the chapters listed after it"
+           " in the index, which develop its inputs in the form the Lean"
+           " formalization proves; arrows among them come from their"
+           " /Prerequisites/.",
            "- Red arrow: a Part VI chapter supplies the inputs named on it to"
            " the assembly (where its /Deliverable/ paragraph and the map of the"
            " inputs agree).  The conditions (K1)–(K8) of a chain record are"
@@ -977,7 +1046,8 @@ def main():
     sheets, parts = read_index()
     g = build_graph(sheets, parts)
     for m in g["modules"]:
-        if not g["deliveries"].get(m.id):
+        if (paragraph(g["src"][m.id], "Deliverable")
+                and not g["deliveries"].get(m.id)):
             warn(f"{m.tex}: no inputs found in its Deliverable paragraph")
     L = layout(sheets, parts, g)
     svg = render_svg(sheets, g, L)
