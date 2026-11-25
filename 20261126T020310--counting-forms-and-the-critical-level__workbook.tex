@@ -1,0 +1,444 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[ms-]{20261125T002000--definite-theta-lifts__workbook}
+\externaldocument[hp-]{20261125T020300--heights-periods-and-the-auxiliary-prime__workbook}
+\newcounter{chap}
+\input{chapters}
+\makeatletter
+\@ifundefined{chapters@20261126T020310}{\renewcommand{\thechap}{?}}{\chapnumber{20261126T020310}}
+\makeatother
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+\newcommand{\mass}{\operatorname{mass}}
+\newcommand{\rd}{\operatorname{rd}}
+\newcommand{\GL}{\mathrm{GL}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Tc}{T^{\mathrm{cr}}}
+\newcommand{\zr}{z^{\mathrm{row}}}
+\newcommand{\zc}{z^{\mathrm{col}}}
+\setlength{\emergencystretch}{2em}
+\title{Counting forms and the critical level}
+\author{}
+\date{November 26, 2026}
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+The mass of a genus, Weyl's dimension formula and the count identity of
+Chapter~\ref{ms-chap}; the dimension budget, the level indices and the
+interval for the auxiliary prime in \S\ref{hp-sec:prime}.  We use the
+order of $\GL_n(\F_q)$, the Euler product of the Dedekind zeta function
+of a number field, and $\log(1+t)\le t$.
+
+This chapter develops the input (A6) of Chapter~\ref{hp-chap} from the
+Lean formalization \cite{Lean}, where the published expositions stop.
+There the dimension budget is not an inequality: the rank of the source
+lattice and the budget are both given exactly by the mass formula, and
+their ratio is a product over the embeddings of a \emph{critical level}
+divided by the auxiliary prime.  The prime is then pinned to the
+geometric mean of the critical levels, and the lower bound (A6) becomes a
+lower bound for each critical level, which is a Vandermonde estimate.
+
+\section{Two dimensions}\label{sec:two}
+
+How many forms does each side of the final pairing carry?  Let $F$ be a
+totally real number field of degree $f$, and $E\supset F$ a CM field
+unramified over $F$ at every finite prime, so that $|d_E|=d_F^2$ for the
+discriminants.  Let $\chi$ be the quadratic character of $F$ attached
+to $E$, write $\rd_E=|d_E|^{1/(2f)}$ and $v=\rd_E/2$ as in
+Chapter~\ref{hp-chap}, and let $\Phi$ be a CM type, a set of $f$ complex
+embeddings $\rho$ of $E$.  For $M\ge1$ let $\mass(M)$ be the mass of the
+genus of the standard lattice $\mathcal O_E^M$ with
+$h(x,y)=\sum_i\bar x_iy_i$, the sum of $1/|\mathrm{Aut}|$ over its classes.
+
+\begin{theorem}[Mass ratio]\label{in:mass}
+For $M\ge3$,
+\[
+ \frac{\mass(M)}{\mass(M-1)}
+ =\bigl((M-1)!\,(v/\pi)^M\bigr)^f(2v)^{-f/2}\,L(M),
+ \qquad L(M)=\prod_{\mathfrak P}e_{\mathfrak P}(M),
+\]
+the product over the primes $\mathfrak P$ of $E$, with
+$e_{\mathfrak P}(M)=(1-(-1)^M N\mathfrak P^{-M/2})^{-1}$ if
+$\bar{\mathfrak P}=\mathfrak P$ and
+$e_{\mathfrak P}(M)=(1-N\mathfrak P^{-M})^{-1/2}$ otherwise.
+\end{theorem}
+\noindent\emph{Status}: this follows from the exact mass formula of Gan, Hanke and
+Yu \cite{GHY} and the functional equation.  In \cite{Lean} it is proved
+from a statement on representations of one by hermitian lattices; we have
+not followed that proof.
+Simplest incarnation: the Gaussian ratio
+$M_r/M_{r-1}=(r-1)!\,\pi^{-r}\kappa_r$ of \eqref{ms-eq:kappa}, where
+$\mathbb Q(\mathrm i)$ is ramified at two and so lies outside the present
+hypotheses.
+
+\begin{problem}\label{pr:euler}
+For $M\ge2$, $L(M)=\zeta_F(M)$ for even $M$, and $L(M)=L_F(M,\chi)$ for odd $M$.
+\end{problem}
+
+\begin{problem}\label{pr:Lbound}
+For $M\ge2$, $|\log L(M)|\le\log\zeta_F(M)\le f\log\zeta(M)$.
+\end{problem}
+
+Fix even $m=2s+2\ge2$, $k\ge m+3$ and $r=k+m-1$, and two primes
+$g_0\ne g_1$ split completely in $E$.  The level indices of
+\S\ref{hp-sec:prime} are $I_\Pi=(I_\Pi(g_0)I_\Pi(g_1))^f$ and
+$I_\Sigma=(I_\Sigma(g_0)I_\Sigma(g_1))^f$ with
+$I_\Pi(q)=\prod_{i=1}^k(q^i-1)$ and
+$I_\Sigma(q)=q^k\prod_{i=1}^r(q^i-1)$.
+
+\begin{problem}\label{pr:glcard}
+$|\GL_n(\F_q)|=q^{n(n-1)/2}\prod_{i=1}^n(q^i-1)$.  With
+$N=s(2k+2s+1)$ one has $k^2+N+km+m(m-1)/2=r^2$, and hence
+$I_\Sigma(q)=|\GL_r(\F_q)|/q^{N+k(k-1)/2}$.
+\end{problem}
+
+\begin{problem}\label{pr:index}
+$I_\Sigma(q)/I_\Pi(q)=q^{km+m(m-1)/2}\prod_{j=k+1}^{r}(1-q^{-j})$.
+For $k=5$ and $m=2$ this is $q^5(q^6-1)$.
+\end{problem}
+
+Recall from \eqref{ms-eq:weyl} the Vandermonde product
+$V_n(z)=\prod_{i<i'}(z_i-z_{i'})$ and $D_n(z)=V_n(z)/\prod_{i=0}^{n-1}i!$.
+For each $\rho\in\Phi$ let $\zr_\rho\in\mathbb R^r$ be the row parameter
+and, for each word $u$, $\zc_{u\rho}\in\mathbb R^k$ the column parameter,
+both strictly decreasing.  Let $T_u$ be the auxiliary prime of the word,
+let $d_u$ be the rank of the source lattice $N_u$, and $D^*$ the
+dimension budget.
+
+\begin{theorem}[The two counts]\label{in:counts}
+\[
+ d_u=\mass(k)\,I_\Pi\prod_{\rho\in\Phi}D_k(\zc_{u\rho})\,(T_u^k-1)^f,
+ \qquad
+ D^*=\mass(r)\,I_\Sigma\prod_{\rho\in\Phi}D_r(\zr_\rho).
+\]
+\end{theorem}
+\noindent\emph{Status}: the first is the class number formula for the column
+group at level $T_u$ together with Weyl's dimension formula; the second is
+the volume of the row group times Harish-Chandra's formal degrees
+\cite{HC}, which are given by Weyl's formula.  Both are proved in
+\cite{Lean} from these inputs; we have read the statements, not the
+proofs.  In \cite[Hyp.~15.23]{Adr} the budget is only bounded below, with
+a factor $(2/3)^f$.
+
+For each word $u$ and $\rho\in\Phi$ define the \emph{critical level}
+$\Tc_{u\rho}>0$ by
+\[
+ (\Tc_{u\rho})^k=(v/\pi)^{(m-1)k+m(m-1)/2}\,\rd_E^{-(m-1)/2}\,
+ (g_0g_1)^{km+m(m-1)/2}\,\frac{V_r(\zr_\rho)}{V_k(\zc_{u\rho})},
+\]
+and put
+\[
+ E_a=\prod_{M=k+1}^{r}L(M)\cdot
+ \prod_{i=0,1}\prod_{j=k+1}^{r}(1-g_i^{-j})^f\cdot(1-T_u^{-k})^{-f}.
+\]
+
+\begin{problem}\label{pr:telescope}
+$\sum_{M=k+1}^{r}M=(m-1)k+m(m-1)/2$, and
+\[
+ \frac{\mass(r)}{\mass(k)}=\Bigl((v/\pi)^{(m-1)k+m(m-1)/2}\,
+ \rd_E^{-(m-1)/2}\prod_{i=k}^{r-1}i!\Bigr)^f\prod_{M=k+1}^{r}L(M).
+\]
+\end{problem}
+
+\begin{problem}\label{pr:factorials}
+$\prod_{i=k}^{r-1}i!\cdot D_r(z)/D_k(z')=V_r(z)/V_k(z')$ for all
+$z\in\mathbb R^r$ and $z'\in\mathbb R^k$ with $V_k(z')\ne0$.
+\end{problem}
+
+Combining Theorem~\ref{in:counts} with Problems~\ref{pr:index},
+\ref{pr:telescope} and~\ref{pr:factorials} gives the following.
+
+\begin{theorem}[The count ratio]\label{thm:count}
+For every word $u$,
+\[
+ \frac{D^*}{d_u}=E_a\prod_{\rho\in\Phi}\Bigl(\frac{\Tc_{u\rho}}{T_u}\Bigr)^k .
+\]
+\end{theorem}
+
+No factorial survives, as in the Gaussian count identity
+(Theorem~\ref{ms-thm:count}).  What remains of the masses is the power of
+$v/\pi$ and the $L$-values in $E_a$.
+
+\section{The prime and the critical levels}\label{sec:prime}
+
+How close is $T_u$ to the critical levels?  The factor $E_a$ is
+exponentially close to one in $k$.
+
+\begin{problem}\label{pr:zeta-tail}
+For $M\ge3$, $\log\zeta(M)\le2^{1-M}$.
+\end{problem}
+
+\begin{problem}\label{pr:Ea}
+If $g_0,g_1\ge4$ and $T_u\ge2$, then $|\log E_a|\le8f/2^k$.
+\end{problem}
+
+The prime $T_u$ is chosen so that $d_u$ matches the budget up to the
+frame factor $\Gamma_0\ge1$ of \S\ref{hp-sec:prime}, the same for all
+words: for a constant $C_0\ge1$,
+\begin{equation}\label{eq:window}
+ C_0^{-1}\Gamma_0^{-2}D^*\le d_u\le C_0\Gamma_0^{-2}D^*.
+\end{equation}
+The formalization takes $C_0=3$.  The prime itself is part of its data,
+subject to the interval $Z_u\le T_u\le(1+1/(fk))Z_u$ of
+Problem~\ref{hp-pr:interval}.
+
+\begin{problem}\label{pr:window}
+Assume \eqref{eq:window}, $8f/2^k\le\log2$ and $\log\Gamma_0\le k/8$,
+together with the hypotheses of Problem~\ref{pr:Ea}.  Then
+\[
+ (2C_0)^{-1/k}\le\prod_{\rho\in\Phi}\frac{\Tc_{u\rho}}{T_u}
+ \le(2C_0)^{1/k}e^{1/4}.
+\]
+\end{problem}
+
+In the application, $\Gamma_0=\exp(C_\Gamma m^5fy)$ with $y=x^\varepsilon$, and
+the size condition $8C_\Gamma m^5fy\le k$ gives $\log\Gamma_0\le k/8$.
+Thus $\log T_u$ is the mean of $\log\Tc_{u\rho}$ over $\Phi$ up to
+$O(1/f)$.  The same comparison bounds the ratio of the primes of two
+words.
+
+\begin{problem}\label{pr:ratio}
+Let $u,u'$ be words satisfying \eqref{eq:window}, with
+$|\log E_a|\le8f/2^k$ for both and $k\ge5$.  If
+$\Tc_{u\rho}\le C_1\Tc_{u'\rho}$ for every $\rho$, then
+$T_u\le eC_0C_1T_{u'}$.
+\end{problem}
+
+\section{The critical level from below}\label{sec:below}
+
+Which part of $\Tc_{u\rho}$ is large?  Fix $\rho$ and drop it from the
+notation.  The row parameter is
+$\zr=(\alpha_1,\dots,\alpha_{k-1},-b_1,\dots,-b_m)$ with
+\[
+ \alpha_i=\alpha_{k-1}+4\Delta(k-1-i),\qquad
+ \alpha_{k-1}\ge0,\quad \alpha_1\le4k\Delta,\quad\Delta\ge1,
+\]
+and nodes $1\le b_1$, $b_{j+1}\ge b_j+1$.  A word is
+$\delta\in\{0,1\}^{k-1}$ with $\delta_{k-1}=0$, and the column parameter
+is $\zc=(\gamma_1,\dots,\gamma_k)$ with
+\[
+ \gamma_i=\alpha_{i-1}-\tfrac12-\delta_{i-1}\Delta\quad(2\le i\le k),
+ \qquad \gamma_1-\alpha_1\ge4k\Delta,
+\]
+and we put $\eta=\gamma_1-\alpha_1$.
+This is the case of a place $\rho$ that is not a top.  At a top the
+last entry is replaced by $\gamma_k=-b'$ with $b_1/2\le b'\le b_1-3$, and
+we put $\eta=\gamma_1b'/(k\Delta)$ instead.
+
+\begin{problem}\label{pr:interlace}
+$\gamma_1>\alpha_1>\gamma_2>\alpha_2>\dots>\alpha_{k-1}>\gamma_k$, and
+$\zr$ is strictly decreasing.
+\end{problem}
+
+\begin{problem}\label{pr:bracket}
+Let $B>0$ with
+$B^k=(v/\pi)^{m(m-1)/2}\rd_E^{-(m-1)/2}(g_0g_1)^{m(m-1)/2}$.  Then
+\[
+ \Tc=(v/\pi)^{m-1}(g_0g_1)^m\,B\,
+ \bigl(V_r(\zr)/V_k(\zc)\bigr)^{1/k},
+\]
+and if $\rd_E\ge1$ and $g_0g_1\ge2\pi$, then
+$1\le B\le\exp\bigl(m^2\log(g_0g_1\rd_E)/(2k)\bigr)$.
+\end{problem}
+
+\begin{problem}\label{pr:row}
+\[
+ V_r(\zr)=V_{k-1}(\alpha)\prod_{i,j}(\alpha_i+b_j)\prod_{j<j'}(b_{j'}-b_j)
+ \ge V_{k-1}(\alpha)\,(b_1\cdots b_m)^{k-1}.
+\]
+\end{problem}
+
+\begin{problem}\label{pr:split}
+$V_k(\zc)=\prod_{i=2}^k(\gamma_1-\gamma_i)\cdot
+V_{k-1}(\gamma_2,\dots,\gamma_k)$, and
+\[
+ V_{k-1}(\gamma_2,\dots,\gamma_k)=R_\delta\,V_{k-1}(\alpha),\qquad
+ R_\delta=\prod_{1\le i<i'\le k-1}
+ \Bigl(1+\frac{\delta_{i'}-\delta_i}{4(i'-i)}\Bigr).
+\]
+\end{problem}
+
+\begin{problem}\label{pr:R}
+$R_\delta\le e^{(k-2)/4}$.
+\end{problem}
+
+The formalization also proves $R_\delta\ge e^{-k/4}$; we do not need it.
+
+\begin{problem}\label{pr:edge}
+At a non-top place, $\eta\le\gamma_1-\gamma_i\le2\eta$ for $2\le i\le k$.  Hence
+$V_k(\zc)\le(2\eta)^{k-1}e^{k/4}V_{k-1}(\alpha)$.
+\end{problem}
+
+\begin{problem}\label{pr:constant}
+$2\cdot0.38\cdot e^{1/4}<1$.  Let $\beta=b_1\cdots b_m$, let $b\ge1$ with
+$b_j\le b^2$ for all $j$, and put $e_0=\exp(-2m\log b/k)$.  Then
+$e_0^k\beta\le1$, and
+$(0.38\,e_0\beta/\eta)^k\,V_k(\zc)\le\tfrac12V_{k-1}(\alpha)\beta^{k-1}$.
+\end{problem}
+
+By Problems~\ref{pr:bracket}, \ref{pr:row} and~\ref{pr:constant}, at a
+non-top place $(V_r(\zr)/V_k(\zc))^{1/k}\ge0.38\,e_0\beta/\eta$, and
+$B\ge1$.  The top case runs the same way with a separate Vandermonde
+count for the last column entry.
+
+\begin{theorem}[Lower bound for the critical level]\label{thm:below}
+Let $k\ge4$, $b\ge1$, $b_j\le b^2$ for all $j$, $\rd_E\ge1$ and
+$g_0g_1\ge2\pi$.  At a non-top place
+\[
+ \Tc\ge c_1\,(g_0g_1)^m(v/\pi)^{m-1}\,\frac{b_1\cdots b_m}{\eta},
+ \qquad c_1=0.38\exp(-2m\log b/k).
+\]
+At a top, the same holds with $c_1$ divided by $1+4k\Delta/b'$, under
+$40mk\Delta\le b_1$ and $20m\log b\le k$.
+\emph{Status}: the non-top case is Problems~\ref{pr:bracket}--\ref{pr:constant};
+the top case is proved in \cite{Lean}, and we have not checked its
+Vandermonde count by hand.
+\end{theorem}
+
+\begin{problem}\label{pr:c1}
+If $40mk\Delta\le b_1$ and $20m\log b\le k$, then $c_1\ge1/5$ in both
+cases of Theorem~\ref{thm:below}.
+\end{problem}
+
+The word enters $\Tc$ only through $V_k(\zc)$.  The formalization also
+proves that, for $40mk\Delta\le b_1$ and any two words $\delta,\delta'$,
+$|\log(V_k(\zc_{\delta'})/V_k(\zc_\delta))|\le k/2+1$ \cite{Lean}.
+
+\begin{problem}\label{pr:words}
+Under that bound and $k\ge4$, the critical levels of two words differ by
+a factor between $e^{-3/4}$ and $e^{3/4}$.
+\end{problem}
+
+With Problem~\ref{pr:ratio} this gives $T_u\le e^{7/4}C_0T_{u'}$ for any
+two words, comparing the critical levels at each place.
+
+\section{The auxiliary prime}\label{sec:A6}
+
+Combining Problem~\ref{pr:window} with Theorem~\ref{thm:below} and
+Problem~\ref{pr:c1} gives the following.
+
+\begin{theorem}[Lower bound for the prime]\label{thm:A6}
+Under the hypotheses of Problems~\ref{pr:window} and~\ref{pr:c1} and of
+Theorem~\ref{thm:below} at every $\rho\in\Phi$, with nodes $b_{\rho j}$
+and $\eta_{u\rho}$ at $\rho$,
+\begin{multline*}
+ \log T_u\ge m\log(g_0g_1)+(m-1)\log\frac v\pi
+ +\frac1f\sum_{\rho\in\Phi}\Bigl(\sum_{j=1}^m\log b_{\rho j}
+ -\log\eta_{u\rho}\Bigr)\\
+ -\log5-\frac1f\Bigl(\frac{\log(2C_0)}k+\frac14\Bigr).
+\end{multline*}
+\end{theorem}
+
+\begin{problem}\label{pr:A6}
+Theorem~\ref{thm:A6} follows from Problem~\ref{pr:window},
+Theorem~\ref{thm:below} and Problem~\ref{pr:c1}.
+\end{problem}
+
+\begin{problem}\label{pr:compare}
+Let $y=\log b$, $g=\log(g_0g_1)$, and suppose $\log(v/\pi)\le y$,
+$b_{\rho j}\le b^2$ and $\eta_{u\rho}\le b_{\rho1}b^{C_u}$.  Then
+Theorem~\ref{thm:A6} gives
+\[
+ \log T_u\ge\sum_{j=1}^m\frac1f\sum_{\rho\in\Phi}
+ \log\frac{b_{\rho j}v}{\pi}+mg-(3+C_u)y-\log5
+ -\frac1f\Bigl(\frac{\log(2C_0)}k+\frac14\Bigr).
+\]
+\end{problem}
+
+This is Theorem~\ref{hp-in:A6}, the form of (A6) with the nodes
+$b_{\rho j}$ in place of $w_{j\rho}$ and an error of order $y$.  In
+\cite[\S15.5]{Adr} the nodes satisfy $b_{\rho j}<w_{j\rho}\le
+b_{\rho j}(1+1/x)$, so the two forms differ by at most $m/x$.  The
+formalization bounds the first column entry by $\gamma_1\le b^{C_u}$, which
+gives $\eta_{u\rho}\le b_{\rho1}b^{C_u}$ at a top; elsewhere it imposes
+$\eta_{u\rho}\le8k\Delta$, which is at most $b_{\rho1}$ when
+$40mk\Delta\le b_{\rho1}$.
+
+\begin{leanremark}\sloppy
+The mass ratio is \texttt{SiegelMassRatioCM}, proved as
+\texttt{massRatio\_all\_unramified\_cmFields}, with right side
+\texttt{massRatioRightSide} and $L(M)$ \texttt{lValEta}; the bound of
+Problem~\ref{pr:Lbound} is \texttt{log\_l\_value\_field\_bound}.
+Theorem~\ref{in:counts} is \texttt{FamilyMidVolume}, proved by
+\texttt{admissible\_ranks\_of\_mass\_alt} through \texttt{Dstar\_mass} and
+\texttt{admissibleRanks\_of\_mass\_formula}, with formal degrees
+\texttt{DsigHC}.  The critical level is \texttt{Tcrit}.
+Theorem~\ref{thm:count} is \texttt{Sz.PropA}, used in
+\texttt{degree\_ratio\_product\_formula}; Problems~\ref{pr:Ea},
+\ref{pr:window} and~\ref{pr:ratio} are \texttt{Sz.EaSize},
+\texttt{Sz.CorA} and \texttt{level\_ratio\_bound}.  Section~\ref{sec:below}
+follows \texttt{BracketBound}, \texttt{VandLamLower}, \texttt{VandNonTop},
+\texttt{VandTop}, \texttt{EdgeFactors} and \texttt{TcritLower} (proved as
+\texttt{critical\_threshold\_lower\_bound}, used in
+\texttt{critical\_level\_lower\_bound}), and the word comparison is
+\texttt{TcritWords}.  The window \eqref{eq:window} is part of
+\texttt{StandingNumericalData}; the interval for $T_u$ is
+\texttt{levelPrime\_window}.  Downstream, the formalization uses
+$T_u\ge(g_0g_1v/\pi)^{m-2}$ (\texttt{TFrameAt}) and
+$b^{m/2}\le T_u\le b^{(4C_g+13)m}$ (\texttt{levelPrime\_size})
+\cite{Lean}.
+\end{leanremark}
+
+\emph{Status}: we have not traced where the formalization uses a lower
+bound for $\log T_u$ in the mean slope inequality, nor how it constructs a
+prime in the window; we located only the consequences named above.
+Theorem~\ref{thm:A6} is our combination of its lemmas.
+
+\section*{Hints}
+\subsection*{\S\ref{sec:two}}
+\begin{description}
+\item[\ref{pr:euler}] Since $E/F$ is unramified, $\bar{\mathfrak P}=\mathfrak P$
+exactly when $\mathfrak P$ lies over an inert prime of $F$.  Group the
+factors over each prime of $F$.
+\item[\ref{pr:Lbound}] Compare each Euler factor with
+$(1-N\mathfrak p^{-M})^{\pm1}$, and the primes of $F$ over $p$ with
+$(1-p^{-M})^{-f}$.
+\item[\ref{pr:glcard}] Count ordered bases.  For the identity, expand
+$r^2$ with $r=k+2s+1$.
+\item[\ref{pr:telescope}] Multiply Theorem~\ref{in:mass} over $M$; use $2v=\rd_E$.
+\end{description}
+\subsection*{\S\ref{sec:prime}}
+\begin{description}
+\item[\ref{pr:zeta-tail}] Bound $\sum_{n\ge3}n^{-M}$ by an integral.
+\item[\ref{pr:Ea}] Use $-\log(1-t)\le2t$ for $0\le t\le\frac12$ and
+Problems~\ref{pr:Lbound} and~\ref{pr:zeta-tail}.
+\item[\ref{pr:window}] Theorem~\ref{thm:count} with
+$\frac12\le E_a\le2$.
+\item[\ref{pr:ratio}] Compare $T_u^{kf}\prod_\rho(\Tc_{u\rho}/T_u)^k$ for $u$ and $u'$;
+\eqref{eq:window} gives $d_u\le C_0^2d_{u'}$.
+\end{description}
+\subsection*{\S\ref{sec:below}}
+\begin{description}
+\item[\ref{pr:bracket}] Substitute $\rd_E=2v$ in $B^k$.
+\item[\ref{pr:R}] Group the pairs by $d=i'-i$.
+\item[\ref{pr:edge}] $\gamma_k$ is the smallest column entry.  Then use
+Problems~\ref{pr:split} and~\ref{pr:R}.
+\item[\ref{pr:constant}] Insert Problem~\ref{pr:edge} and use $\eta\ge1$.
+\item[\ref{pr:c1}] At a top, $b'\ge b_1/2$; and $e^{-t}\ge1-t$.
+\end{description}
+\subsection*{\S\ref{sec:A6}}
+\begin{description}
+\item[\ref{pr:A6}] Take logarithms in Problem~\ref{pr:window} and average
+Theorem~\ref{thm:below} over $\Phi$.
+\end{description}
+
+\begin{thebibliography}{GHY}
+\bibitem[Adr]{Adr}
+J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[GHY]{GHY} W.~T.~Gan, J.~P.~Hanke and J.-K.~Yu, \emph{On an exact mass formula of Shimura}, Duke Math.\ J.\ \textbf{107} (2001), 103--133.
+\bibitem[HC]{HC} Harish-Chandra, \emph{Discrete series for semisimple Lie groups.~II}, Acta Math.\ \textbf{116} (1966), 1--111.
+\bibitem[Lean]{Lean} The Lean community, \emph{riemann-hypothesis}, a Lean formalization of Alp\"oge's argument, \url{https://github.com/leanprover-community/riemann-hypothesis}.
+\end{thebibliography}
+\end{document}
