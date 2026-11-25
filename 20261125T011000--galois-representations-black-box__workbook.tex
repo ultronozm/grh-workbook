@@ -3,8 +3,8 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{xr-hyper}
 \usepackage[hidelinks]{hyperref}
-\externaldocument[ob-]{20261126T000000--the-objects-of-the-construction__workbook}
 \externaldocument[cm-]{20261124T223100--complex-multiplication-and-inert-reduction__workbook}
+\externaldocument[p1-]{20261126T030300--the-data__workbook}
 
 % Chapter number; \ref{chap} gives it.
 \newcounter{chap}
@@ -25,70 +25,42 @@
 \newcommand{\A}{\mathbb{A}}
 \newcommand{\Qlb}{\overline{\Q}_\ell}
 \newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Kc}{\mathcal{K}}
+\newcommand{\Uc}{\mathcal{U}}
 \newcommand{\Gal}{\operatorname{Gal}}
 \newcommand{\GL}{\mathrm{GL}}
-\newcommand{\Art}{\operatorname{Art}}
-\newcommand{\rec}{\operatorname{rec}}
-\newcommand{\WD}{\operatorname{WD}}
 \newcommand{\Frob}{\mathrm{Frob}}
 \newcommand{\Ind}{\operatorname{Ind}}
-\newcommand{\Sp}{\operatorname{Sp}}
-\newcommand{\St}{\mathrm{St}}
 \newcommand{\tr}{\operatorname{tr}}
+\newcommand{\ord}{\operatorname{ord}}
 \newcommand{\ii}{\mathrm{i}}
 
 \setlength{\emergencystretch}{2em}
 \title{Black box: Galois representations of eigenforms}
 \author{}
-\date{November 25, 2026}
+\date{November 26, 2026}
 
 \begin{document}
 \maketitle
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-Local and global class field theory, including ray class groups and the Chebotarev density theorem \cite[Ch.~V--VI, \S VII.13]{Ne}.  Elliptic curves at the level of \cite[Ch.~III, V]{Si1}; the curve \(y^2 = x^3 - x\) as in Chapter~\ref{cm-chap}, \emph{Complex multiplication and reduction at an inert prime}.  Modular forms of weight \(2\) and Hecke operators \cite[Ch.~1--6]{DS}.  Parabolic induction and the Steinberg representation of \(\GL_2\) over a \(p\)-adic field \cite[Ch.~3]{BH}.  The words crystalline, potentially semistable and Hodge--Tate weight are used only in statements.  Everything below that is not posed as a problem is a published theorem, stated with a reference, and is a black box for this chapter.
-
-\section{Weil--Deligne representations and local Langlands maps}\label{sec:local}
-
-What does a Galois representation remember at a prime \(p\ne\ell\), and what does an automorphic representation give to compare it with?
-
-Let \(K/\Q_p\) be finite, with uniformizer \(\varpi_K\) and residue field of order \(q\).  Let \(W_K\) be its Weil group, \(I_K\) the inertia subgroup, and \(\Frob \in W_K\) a geometric Frobenius.  Let \(\Art_K \colon K^\times \to W_K^{ab}\) be the reciprocity map, normalized so that \(\varpi_K\) goes to a geometric Frobenius, and let \(\lvert w \rvert := \lvert \Art_K^{-1}(w) \rvert\), so that \(\lvert \Frob \rvert = q^{-1}\).  A \emph{Weil--Deligne representation} is a pair \((r, N)\) of a representation \(r \colon W_K \to \GL(V)\) on a finite-dimensional space over \(\C\) or \(\Qlb\), trivial on an open subgroup of \(I_K\), and an endomorphism \(N\) with \(r(w) N r(w)^{-1} = \lvert w \rvert N\).  It is \emph{Frobenius-semisimple} if \(r(\Frob)\) is semisimple.  Let \(\Sp(2)\) be the pair with \(V = \C^2\) (or \(\Qlb^2\)), \(r(w) = \mathrm{diag}(1, \lvert w \rvert)\) and \(N e_1 = e_2\), \(N e_2 = 0\).
-
-\begin{problem}\label{pr:nilpotent}
-In a Weil--Deligne representation, \(N\) is nilpotent.
-\end{problem}
-
-\begin{problem}\label{pr:sp2}
-A two-dimensional Weil--Deligne representation with \(N \ne 0\) is isomorphic to \(\Sp(2) \otimes \chi\) for exactly one character \(\chi\) of \(W_K\).
-\end{problem}
-
-Let \(\ell \ne p\).  By Grothendieck's monodromy theorem \cite[4.2.1--4.2.2]{Ta}, every continuous \(\rho \colon W_K \to \GL_n(\Qlb)\) determines a Weil--Deligne representation \(\WD(\rho) = (r, N)\), characterized by \(\rho(\Frob^m \sigma) = r(\Frob^m \sigma) \exp(t_\ell(\sigma) N)\) for \(m \in \Z\) and \(\sigma \in I_K\), where \(t_\ell \colon I_K \to \Z_\ell\) is a surjection onto the \(\ell\)-part of tame inertia.  We write \(\WD(\rho)^{F\text{-ss}}\) for its Frobenius-semisimplification.
-
-\begin{problem}\label{pr:monodromy}
-If \(\rho(I_K)\) is finite, then \(N = 0\).  If \(\rho(I_K)\) is a nontrivial group of unipotent matrices, then \(N \ne 0\).
-\end{problem}
-
-For characters \(\chi_1, \dots, \chi_n\) of \(K^\times\), let \(i(\chi_1, \dots, \chi_n)\) be the normalized parabolic induction from the Borel subgroup of \(\GL_n(K)\).  Let \(\St\) be the Steinberg representation of \(\GL_2(K)\), the irreducible subquotient of \(i(\lvert\cdot\rvert^{1/2}, \lvert\cdot\rvert^{-1/2})\) that is not a character.
-
-\begin{theorem}[Harris--Taylor, Henniart]\label{thm:LLC}
-For each \(n \ge 1\) there is a bijection \(\rec_K\) from irreducible admissible representations of \(\GL_n(K)\) to Frobenius-semisimple \(n\)-dimensional Weil--Deligne representations of \(W_K\) such that \(\rec_K(\chi) = \chi \circ \Art_K^{-1}\) for \(n = 1\), \(\rec_K(\pi \otimes \chi \circ \det) = \rec_K(\pi) \otimes \rec_K(\chi)\), \(\det \rec_K(\pi) = \rec_K(\omega_\pi)\) for the central character \(\omega_\pi\), \(\rec_K(\pi^\vee) = \rec_K(\pi)^\vee\), and \(L\)- and \(\epsilon\)-factors of pairs are preserved.  These properties determine \(\rec_K\).
-\end{theorem}
-
-See \cite{HT}, \cite{He} and, for another proof, \cite{Sch}.  If \(i(\chi_1, \dots, \chi_n)\) is irreducible, then \(\rec_K\) sends it to \(\bigoplus_i \chi_i \circ \Art_K^{-1}\) with \(N = 0\); for every irreducible subquotient \(\pi\) of \(i(\chi_1, \dots, \chi_n)\), the semisimplification of the \(W_K\)-representation underlying \(\rec_K(\pi)\) is \(\bigoplus_i \chi_i \circ \Art_K^{-1}\); and \(\rec_K(\St \otimes \chi) = \Sp(2) \otimes \chi\lvert\cdot\rvert^{-1/2} \circ \Art_K^{-1}\) \cite{Ku}.  Only these properties are used below.
+Local and global class field theory, including ray class groups and the Chebotarev density theorem \cite[Ch.~V--VI, \S VII.13]{Ne}.  Elliptic curves at the level of \cite[Ch.~III, V, \S\S VII.3--VII.4]{Si1}, and the statement of Tate's uniformization \cite[Ch.~V]{Si2}; the curve \(y^2 = x^3 - x\) as in Chapter~\ref{cm-chap}, \emph{Complex multiplication and reduction at an inert prime}.  Modular forms of weight \(2\) and Hecke operators \cite[Ch.~1--6]{DS}.  Lattices over a discrete valuation ring.  The exercises use the cyclotomic character to illustrate Hodge--Tate weights; crystallinity and potential semistability enter only through the stated theorems.  The cited theorems are black boxes for this chapter.  Section~\ref{sec:spherical} states a theorem of the rewritten Lean proof \cite{GL} and gives the definitions needed to read it.
 
 \section{Galois representations over CM fields}\label{sec:global}
 
-Let \(F\) be a CM field with totally real subfield \(F^+\) and complex conjugation \(c\), let \(\ell\) be a prime and \(\iota \colon \Qlb \cong \C\).  Let \(\epsilon_\ell\) be the \(\ell\)-adic cyclotomic character.  A cuspidal automorphic representation \(\pi\) of \(\GL_a(\A_F)\) is \emph{polarized} if \(\pi^c \cong \pi^\vee \otimes (\chi \circ N_{F/F^+} \circ \det)\) for a character \(\chi\) of \(\A_{F^+}^\times/(F^+)^\times\) satisfying a sign condition at the real places, and \emph{regular algebraic} if \(\pi_\infty\) has the infinitesimal character of an irreducible algebraic representation of \(\mathrm{Res}_{F/\Q}\GL_a\); see \cite[\S2.1]{BLGGT}.
+What Galois representation does an automorphic representation determine, and at which places can the two be compared?
+
+Let \(F\) be a CM field with maximal totally real subfield \(F^+\) and complex conjugation \(x \mapsto \bar x\), let \(\ell\) be a prime and \(\iota \colon \Qlb \cong \C\).  Let \(\epsilon_\ell\) be the \(\ell\)-adic cyclotomic character.  A cuspidal automorphic representation \(\pi\) of \(\GL_a(\A_F)\) is \emph{polarizable} if \(\pi^c \cong \pi^\vee \otimes (\chi \circ N_{F/F^+} \circ \det)\) for a continuous character \(\chi \colon \A_{F^+}^\times/(F^+)^\times \to \C^\times\) with \(\chi_v(-1) = (-1)^a\) at every real place \(v\), and \emph{regular algebraic} if \(\pi_\infty\) has the infinitesimal character of an irreducible algebraic representation of \(\mathrm{Res}_{F/\Q}\GL_a\); see \cite[\S2.1]{BLGGT}; the pair \((\pi, \chi)\) is then called polarized.  For a finite place \(w\) with residue field of order \(q_w\) and uniformizer \(\varpi_w\), an irreducible representation \(\pi_w\) of \(\GL_a(F_w)\) is \emph{unramified} if it has a nonzero vector fixed by \(\GL_a(\Oc_{F_w})\); it is then a subquotient of the normalized induction of the character \(b \mapsto \prod_{i=1}^a \chi_i(b_{ii})\) of the upper triangular Borel subgroup, where the \(\chi_i\) are unramified characters of \(F_w^\times\), and its \emph{Satake parameters} are \(\chi_1(\varpi_w), \dots, \chi_a(\varpi_w)\).
 
 \begin{theorem}\label{thm:galois}
-Let \(\pi\) be a regular algebraic polarized cuspidal automorphic representation of \(\GL_a(\A_F)\).  There is a continuous semisimple \(r = r_{\ell,\iota}(\pi) \colon G_F \to \GL_a(\Qlb)\) such that:
+Let \((\pi, \chi)\) be a regular algebraic polarized cuspidal pair as above.  There is a continuous semisimple \(r = r_{\ell,\iota}(\pi) \colon G_F \to \GL_a(\Qlb)\) such that:
 \textup{(i)} \(r^c \cong r^\vee \otimes \epsilon_\ell^{1-a} r_{\ell,\iota}(\chi)|_{G_F}\);
-\textup{(ii)} for every finite place \(w \nmid \ell\), \(\iota\WD(r|_{G_{F_w}})^{F\text{-ss}} \cong \rec_{F_w}(\pi_w \otimes \lvert\det\rvert^{(1-a)/2})\);
-\textup{(iii)} for every \(w \mid \ell\), \(r|_{G_{F_w}}\) is potentially semistable, crystalline if \(\pi_w\) is unramified, with Hodge--Tate weights determined by \(\pi_\infty\), and \textup{(ii)} holds for the Weil--Deligne representation attached to it by Fontaine.
+\textup{(ii)} at every finite place \(w \nmid \ell\) at which \(\pi_w\) is unramified, \(r\) is unramified, and for a geometric Frobenius \(\Frob_w\) the eigenvalues of \(\iota r(\Frob_w)\) are \(q_w^{(a-1)/2}\alpha_1, \dots, q_w^{(a-1)/2}\alpha_a\), where \(\alpha_1, \dots, \alpha_a\) are the Satake parameters of \(\pi_w\);
+\textup{(iii)} for every \(w \mid \ell\), \(r|_{G_{F_w}}\) is potentially semistable, crystalline if \(\pi_w\) is unramified, with Hodge--Tate weights determined by \(\pi_\infty\).
 \end{theorem}
 
-The representations are constructed in the cohomology of Shimura varieties attached to unitary groups, to which \(\pi\) is first descended, by Kottwitz, Clozel, Harris--Taylor, Shin and Chenevier--Harris \cite{Cl,HT,Shi,CH}.  Part (ii) is due to Taylor--Yoshida and Caraiani \cite{TY,Car1}, and part (iii) to Barnet-Lamb--Gee--Geraghty--Taylor and Caraiani \cite[Thm.~2.1.1]{BLGGT}, \cite{Car2}.  For Alpöge's argument \cite{Alp}, the reconstruction \cite[\S17.5]{Adr} lists Theorem~\ref{thm:galois}, with local--global compatibility at all places, among the published inputs of its Galois-theoretic steps.
+The construction uses the cohomology of unitary Shimura varieties and, in the generality treated by Chenevier and Harris, also \(p\)-adic families \cite{Cl,HT,Shi,CH}.  At the ramified places \(w \nmid \ell\) the published theorem gives more: the Frobenius-semisimplified Weil--Deligne representation of \(r|_{G_{F_w}}\) corresponds, after applying \(\iota\), to \(\pi_w \otimes \lvert\det\rvert_w^{(1-a)/2}\) under the local Langlands correspondence, by Taylor--Yoshida and Caraiani \cite{TY,Car1}; part (iii) is due to Barnet-Lamb--Gee--Geraghty--Taylor and Caraiani \cite[Thm.~2.1.1]{BLGGT}, \cite{Car2}.  The introduction to \texttt{Lib/GaloisRep/Main/AllRanks.lean} in the rewritten Lean proof \cite{GL} describes the results of that module as substitutes for base change, for Galois representations with local--global compatibility, and for the local Langlands correspondence, on definite unitary groups.  Theorem~\ref{thm:spherical} below is the one that gives the local conclusions at places where the form is spherical.
 
 The smallest case is \(a = 1\) over an imaginary quadratic field \(K\), where the unitary group is \(U(1) := \ker(N \colon \mathrm{Res}_{K/\Q}\mathbb{G}_m \to \mathbb{G}_m)\).
 
@@ -97,11 +69,11 @@ The smallest case is \(a = 1\) over an imaginary quadratic field \(K\), where th
 \end{problem}
 
 \begin{problem}\label{pr:U1-descent}
-Let \(\phi\) be a character of \(\A_K^\times/K^\times\) that is trivial on \(\A_\Q^\times\).  Then \(\phi^c = \phi^{-1}\), and \(\phi = \mu(x/x^c)\) for exactly one character \(\mu\) of \(U(1)(\A)/U(1)(\Q)\).  Conversely each such \(\mu\) gives such a \(\phi\).
+Let \(\phi\) be a character of \(\A_K^\times/K^\times\) that is trivial on \(\A_\Q^\times\).  Then \(\phi^c = \phi^{-1}\), and there is exactly one character \(\mu\) of \(U(1)(\A)/U(1)(\Q)\) such that \(\phi(x) = \mu(x/x^c)\) for every \(x \in \A_K^\times\).  Conversely each such \(\mu\) gives such a \(\phi\).
 \end{problem}
 
 \begin{problem}\label{pr:U1-sign}
-If \(\phi^c = \phi^{-1}\), then \(\phi|_{\A_\Q^\times}\) is either trivial or the quadratic character \(\omega_{K/\Q}\).
+Let \(\phi\) be a character of \(\A_K^\times/K^\times\).  If \(\phi^c = \phi^{-1}\), then \(\phi|_{\A_\Q^\times}\) is either trivial or the quadratic character \(\omega_{K/\Q}\).
 \end{problem}
 
 So the characters with \(\phi^c = \phi^{-1}\) fall into two classes, and by Problem~\ref{pr:U1-descent} only the first comes from \(U(1)\).
@@ -130,7 +102,7 @@ Combining Problem~\ref{pr:ray} with Artin reciprocity for the ray class fields m
 There is a continuous character \(\psi_\ell \colon G_K \to (\Oc \otimes \Z_\ell)^\times\), unramified outside \(2\ell\), with \(\psi_\ell(\Frob_\mathfrak{p}) = \psi(\mathfrak{p})\) for every prime \(\mathfrak{p} \nmid 2\ell\), where \(\Frob_\mathfrak{p}\) is an arithmetic Frobenius.
 \end{theorem}
 
-By Problem~\ref{pr:primary}, \(\psi\psi^c\) is the norm, so \(\psi\) is polarized, and \(\psi_\ell\), followed by an embedding \(\Oc \otimes \Z_\ell \to \Qlb\), is the representation of Theorem~\ref{thm:galois} for \(a = 1\), up to the normalizations of the reciprocity maps.  At the places not above \(\ell\) the theorem is then class field theory; the next problem looks at the places above \(\ell\).
+By Problem~\ref{pr:primary}, \(\psi\psi^c\) is the norm.  For a \(\Z_\ell\)-algebra map \(\tau \colon \Oc \otimes \Z_\ell \to \Qlb\), the character \(\tau \circ \psi_\ell\) takes a geometric Frobenius at \(\mathfrak{p} \nmid 2\ell\) to \(\tau(\psi(\mathfrak{p}))^{-1}\); in Theorem~\ref{thm:galois}(ii) the corresponding unramified local character takes \(\varpi_\mathfrak{p}\) to \(\iota(\tau(\psi(\mathfrak{p}))^{-1})\).  At the places not above \(\ell\) the theorem is then class field theory; the next problem looks at the places above \(\ell\).
 
 \begin{problem}\label{pr:HT}
 Let \(\ell \equiv 1 \pmod 4\), \(\ell = \lambda\bar\lambda\), and let \(\psi_\lambda \colon G_K \to \Z_\ell^\times\) be \(\psi_\ell\) followed by \(\Oc \otimes \Z_\ell \to \Oc_\lambda = \Z_\ell\).  Then \(\psi_\lambda = \epsilon_\ell\) on an open subgroup of the inertia group at \(\lambda\), and \(\psi_\lambda\) has finite image on the inertia group at \(\bar\lambda\).
@@ -140,8 +112,10 @@ So \(\psi_\lambda\) has Hodge--Tate weights \(1\) and \(0\) at the two places ab
 
 The automorphism \([\ii](x, y) = (-x, \ii y)\) of \(E\) is defined over \(K\), so \(V_\ell(E) := T_\ell(E) \otimes \Q\) is free of rank one over \(K \otimes \Q_\ell\), and \(G_K\) acts on it through a character \(G_K \to (K \otimes \Q_\ell)^\times\).
 
+Since \(E\) has good reduction at \(\mathfrak{p} \nmid 2\), \(V_\ell(E)\) is unramified at \(\mathfrak{p} \nmid 2\ell\) \cite[\S VII.4]{Si1}, and an element \(\beta \in \Oc\) acts on \(V_\ell(E)\) through \([\beta]\).
+
 \begin{problem}\label{pr:frob-cm}
-Let \(\mathfrak{p} \nmid 2\ell\).  If \(N\mathfrak{p} = p \equiv 1 \pmod 4\), then \(\Frob_\mathfrak{p}\) acts on \(V_\ell(E)\) as \(\psi(\mathfrak{p})\).  If \(\mathfrak{p} = (p)\) with \(p \equiv 3 \pmod 4\), it acts as \(-p = \psi((p))\).
+Let \(\mathfrak{p} \nmid 2\ell\), and let \(\Frob_\mathfrak{p}\) denote an arithmetic Frobenius.  If \(N\mathfrak{p} = p \equiv 1 \pmod 4\), then \(\Frob_\mathfrak{p}\) acts on \(V_\ell(E)\) as \(\psi(\mathfrak{p})\).  If \(\mathfrak{p} = (p)\) with \(p \equiv 3 \pmod 4\), it acts as \(-p = \psi((p))\).
 \end{problem}
 
 By the Chebotarev density theorem, Problem~\ref{pr:frob-cm} proves the following; it is due to Deuring, see \cite[Ch.~II, \S10]{Si2}.
@@ -151,10 +125,10 @@ The character of \(G_K\) on \(V_\ell(E)\) is \(\psi_\ell\).
 \end{theorem}
 
 \begin{problem}\label{pr:induced}
-Let \(\psi_1, \psi_2 \colon G_K \to \Qlb^\times\) be \(\psi_\ell\) followed by the two embeddings \(\Oc \otimes \Z_\ell \to \Qlb\).  Then \(\psi_2 = \psi_1^c\), \(V_\ell(E) \otimes \Qlb \cong \Ind_{G_K}^{G_\Q} \psi_1\), and \(\tr(\Frob_p \mid V_\ell(E)) = 0\) for \(p \equiv 3 \pmod 4\), \(p \ne \ell\).
+Let \(\psi_1, \psi_2 \colon G_K \to \Qlb^\times\) be \(\psi_\ell\) followed by the two \(\Z_\ell\)-algebra homomorphisms \(\Oc \otimes \Z_\ell \to \Qlb\).  Then \(\psi_2 = \psi_1^c\), \(V_\ell(E) \otimes_{\Q_\ell} \Qlb \cong \Ind_{G_K}^{G_\Q} \psi_1\), and \(\tr(\Frob_p \mid V_\ell(E)) = 0\) for \(p \equiv 3 \pmod 4\), \(p \ne \ell\).
 \end{problem}
 
-Restricted to \(G_K\), \(V_\ell(E)\) is \(\psi_1 \oplus \psi_1^c\), which is reducible.  So the weight-two form of \(E\), base changed to \(K\), is not cuspidal, and it enters Theorem~\ref{thm:galois} only through \(\psi\), with \(a = 1\).  For a cuspidal example with \(a = 2\) one needs a curve without complex multiplication by \(K\).  We take \(X_0(11)\) and stay over \(\Q\); its base change to \(K\) is cuspidal, and the local questions are the same.
+Over \(\Qlb\), the restriction of \(V_\ell(E) \otimes_{\Q_\ell} \Qlb\) to \(G_K\) is \(\psi_1 \oplus \psi_1^c\), which is reducible.  So the weight-two form of \(E\), base changed to \(K\), is not cuspidal, and it enters Theorem~\ref{thm:galois} only through \(\psi\), with \(a = 1\).  For a cuspidal example with \(a = 2\) one needs a curve without complex multiplication by \(K\).  We take \(X_0(11)\) and stay over \(\Q\); its base change to \(K\) is cuspidal, and the local questions are the same.
 
 \section{Eichler--Shimura for \texorpdfstring{\(X_0(11)\)}{X0(11)}}\label{sec:es}
 
@@ -178,28 +152,111 @@ For \(p \notin \{11, \ell\}\), the arithmetic Frobenius at \(p\) has determinant
 Let \(\Phi \in \GL_2(\Qlb)\) satisfy \(\Phi^2 - a\Phi + p = 0\) with \(a \in \Z\), and let \(\det\Phi = p\).  Then the characteristic polynomial of \(\Phi\) is \(X^2 - aX + p\).  Hence, taking \(\ell \ne p\), \(\#E(\F_p) = p + 1 - a_p\) for \(p \ne 11\).
 \end{problem}
 
-The relation of Problem~\ref{pr:annihilate} kills Frobenius; it does not give the multiplicities of its roots.  In dimension two the determinant supplies them.  In dimension three, \(\mathrm{diag}(\alpha, \alpha, \beta)\) and \(\mathrm{diag}(\alpha, \beta, \beta)\) are killed by the same quadratic polynomial.  The published constructions behind Theorem~\ref{thm:galois} obtain the whole characteristic polynomial by counting points, following Langlands and Kottwitz \cite{Ko}.  The simplest instance is the trace formula for \(\#E(\F_{p^k})\) stated before Problem~\ref{pr:charpoly}.
+The relation of Problem~\ref{pr:annihilate} kills Frobenius; it does not give the multiplicities of its roots.  In dimension two the determinant supplies them.  In dimension three, \(\mathrm{diag}(\alpha, \alpha, \beta)\) and \(\mathrm{diag}(\alpha, \beta, \beta)\) are killed by the same quadratic polynomial.  In the cohomological construction, counts of points give traces of powers of Frobenius, following Langlands and Kottwitz \cite{Ko}.  The simplest instance is the trace formula for \(\#E(\F_{p^k})\) stated before Problem~\ref{pr:charpoly}.
 
 \begin{problem}\label{pr:count}
-\(\#E(\F_p) = p + 1 - a_p\) for \(p = 2, 3, 5, 7, 13\) by direct count.  The numbers \(\#E(\F_p)\) and \(\#E(\F_{p^2})\) determine the characteristic polynomial of \(\Frob_p\); for \(p = 2\) both equal \(5\).
+\(\#E(\F_p) = p + 1 - a_p\) for \(p = 2, 3, 5, 7, 13\) by direct count.  For \(p \notin \{11, \ell\}\), the numbers \(\#E(\F_p)\) and \(\#E(\F_{p^2})\) determine the characteristic polynomial of the arithmetic Frobenius on \(V_\ell(E)\); for \(p = 2\) both equal \(5\).
 \end{problem}
 
-At \(11\) the curve has split multiplicative reduction.  By Tate's theory \cite[Ch.~V]{Si2}, \(E \cong \mathbb{G}_m/q^\Z\) over \(\Q_{11}\) for some \(q \in 11\Z_{11}\), and \(T_\ell(E)\) is an extension of \(\Z_\ell\) by \(\Z_\ell(1)\) on which the inertia group at \(11\) acts through the Kummer classes of \(q^{1/\ell^n}\).
+At \(11\) the curve has split multiplicative reduction.  By Tate's uniformization \cite[Ch.~V]{Si2}, \(E\) is uniformized over \(\Q_{11}\) by \(\mathbb{G}_m/q^\Z\) for some nonzero \(q \in 11\Z_{11}\), and the exact sequence \(0 \to \Z_\ell(1) \to T_\ell(E) \to \Z_\ell \to 0\) has extension class given by the Kummer class of \(q\).
 
 \begin{problem}\label{pr:tate}
-For \(\ell \ne 11\), \(\WD(V_\ell(E)|_{G_{\Q_{11}}}) \cong \Sp(2) \otimes \chi\) for an unramified character \(\chi\); in particular \(N \ne 0\).
+For \(\ell \ne 11\), the inertia group at \(11\) acts on \(V_\ell(E)\) through a nontrivial group of unipotent matrices; in particular \(V_\ell(E)\) is ramified at \(11\).
 \end{problem}
 
-Correspondingly, \(\pi_{11}\) is an unramified twist of \(\St\), and the compatibility of Theorem~\ref{thm:galois}(ii), in its version over \(\Q\) due to Carayol \cite{Ca}, matches the monodromy at \(11\).  The later parts, from Chapter~\ref{ob-chap} on, state each ingredient in the generality the proof uses and assemble them.
+So the place \(11\) is not of the kind covered by Theorem~\ref{thm:galois}(ii); the finer compatibility there, through the Weil--Deligne representation, is due to Carayol \cite{Ca}.  The next section asks what survives if one compares only at unramified places.
+
+\section{Hecke polynomials on a definite unitary group}\label{sec:spherical}
+
+The input to Theorem~\ref{thm:galois} is a representation of \(\GL_a(\A_F)\).  Theorem~\ref{thm:spherical} of the rewritten Lean proof \cite{GL} starts with forms on the unitary group of the standard definite hermitian space.  What does an eigenform there determine at a split place, and in what sense is it compared with Frobenius?
+
+Let \(F\) be a CM field, \(n \ge 1\), and
+\[
+  G_f := \{ g \in \GL_n(\A_{F,f}) : \bar g^{T} g = 1 \}, \qquad \Kc_0 := G_f \cap \GL_n(\widehat{\Oc}_F).
+\]
+For a finite place \(w\) of \(F\), let \(q_w\) be the order of its residue field, \(\varpi_w\) a uniformizer of \(F_w\), and \(\Kc_w\) the group of \(k \in \Kc_0\) whose components at all places other than \(w, \bar w\) are \(1\).  Let \(w\) be \emph{split}, \(\bar w \ne w\).  For \(a \in \GL_n(F_w)\) let \(b_w(a) \in G_f\) have component \(a\) at \(w\), \((\bar a^T)^{-1}\) at \(\bar w\) and \(1\) elsewhere.  For \(j \ge 0\) let
+\[
+  D_j := \{ a \in \GL_n(F_w) : a \text{ and } \varpi_w a^{-1} \text{ have entries in } \Oc_w,\ \ord_w \det a = j \} .
+\]
+For a function \(\phi\) on \(G_f\) fixed by \(\Kc_w\) under right translation, the Hecke operator is \((T_{w,j}\phi)(g) := \sum_{a} \phi(g\, b_w(a))\), the sum over \(a\) in a set of representatives of \(D_j/\GL_n(\Oc_w)\).  For \(q, N \in \mathbb{N}\) and \(t \colon \mathbb{N} \to \C\) put
+\[
+  H(q, N, t) := \sum_{j=0}^{N} (-1)^j q^{\binom{j}{2}}\, t(j)\, X^{N-j} .
+\]
+A function \(\phi\) on \(G_f\) with values in a finite-dimensional complex vector space \emph{has Hecke polynomial} \(Q \in \C[X]\) at the split place \(w\) if \(\phi\) is fixed by \(\Kc_w\) and there is \(t \colon \mathbb{N} \to \C\) with \(Q = H(q_w, n, t)\) and \(T_{w,j}\phi = t(j)\phi\) for every \(j \in \mathbb{N}\).
+
+\begin{problem}\label{pr:cosets}
+The map \(a \mapsto a\Oc_w^n/\varpi_w\Oc_w^n\) is a bijection from \(D_j/\GL_n(\Oc_w)\) onto the subspaces of codimension \(j\) of \(\F_{q_w}^n\).  Hence \(D_j = \emptyset\) for \(j > n\), \(D_n = \varpi_w\GL_n(\Oc_w)\), and \(D_1\) is the union of \(q_w + 1\) cosets when \(n = 2\).
+\end{problem}
+
+\begin{problem}\label{pr:rank-one}
+Let \(n = 1\).  Then \(T_{w,0}\phi = \phi\), \((T_{w,1}\phi)(g) = \phi(g\, b_w(\varpi_w))\) and \(T_{w,j}\phi = 0\) for \(j \ge 2\).  A nonzero \(\phi\) fixed by \(\Kc_w\) has a Hecke polynomial at \(w\) if and only if \(\phi(g\,b_w(\varpi_w)) = t_1\phi(g)\) for a constant \(t_1\) and all \(g\), and then the polynomial is \(X - t_1\).
+\end{problem}
+
+\begin{problem}\label{pr:heckepoly}
+\(H(q, 2, t) = t(0)X^2 - t(1)X + q\,t(2)\).  If \(q \ge 1\), \(\beta_1, \dots, \beta_N \in \C\), and \(t(j) = q^{-\binom{j}{2}} e_j(\beta_1, \dots, \beta_N)\) for \(0 \le j \le N\), with \(e_j\) the elementary symmetric polynomials, then \(H(q, N, t) = \prod_{i=1}^{N} (X - \beta_i)\).
+\end{problem}
+
+Away from \(\ell\), the split-place clause of Theorem~\ref{thm:spherical} below evaluates the local polynomial on a \emph{geometric} Frobenius, whose inverse acts on the residue field by \(x \mapsto x^{q_w}\).  For \(E = X_0(11)\) and \(p \notin \{11, \ell\}\), taking \(t = (1, a_p, 1, 0, 0, \dots)\) gives \(H(p, 2, t) = X^2 - a_pX + p\), which kills the arithmetic Frobenius on \(V_\ell(E)\) by Problem~\ref{pr:annihilate}.
+
+\begin{problem}\label{pr:geometric}
+Let \(\Phi \in \GL(V)\) satisfy \(\Phi^2 - a\Phi + p = 0\), and let \(\GL(V)\) act on the dual \(V^\vee\) by \(g \mapsto (g^{-1})^T\).  Then \(\Phi^{-1}\) acts on \(V^\vee\) by a matrix that satisfies the same equation.  So for \(p \notin \{11, \ell\}\), \(X^2 - a_pX + p\) kills the geometric Frobenius at \(p\) on \(V_\ell(E)^\vee\).
+\end{problem}
+
+In rank one the forms of trivial weight are the complex-valued functions on \(G_f = \{x \in \A_{F,f}^\times : x\bar x = 1\}\) that are invariant under \(U(1)(F^+) := \{\gamma \in F^\times : \gamma\bar\gamma = 1\}\), embedded diagonally, and have open stabilizer under right translation.
+
+\begin{problem}\label{pr:U1-forms}
+Let \(n = 1\) and let \(\mu\) be a character of \(G_f\), trivial on \(U(1)(F^+)\), with open kernel.  Then \(\mu\) is a form of trivial weight, and at every split \(w\) with \(\mu(b_w(\Oc_w^\times)) = 1\) it has Hecke polynomial \(X - \mu(b_w(\varpi_w))\).  Here \(b_w(x)\) has components \(x\) at \(w\) and \(\bar x^{-1}\) at \(\bar w\).
+\end{problem}
+
+For an eigenform, all but finitely many places of prime norm must be split and admit the prescribed Hecke polynomial.
+
+\begin{problem}\label{pr:split}
+In \(\Q(\ii)\) the place \((1 + \ii)\) has norm \(2\) and is fixed by conjugation.  If a CM field \(F\) contains a root of unity of exact order \(5040\), then every finite place \(v\) of \(F\) with \(q_v\) prime is split.
+\end{problem}
+
+A homomorphism \(r\) from a group \(\Gamma\) to \(\GL_n(k)\), \(k\) a field, is \emph{trace-nondegenerate} if every \(z\) in the \(k\)-span of \(r(\Gamma)\) with \(\tr(z\,r(h)) = 0\) for all \(h \in \Gamma\) is \(0\).
+
+\begin{problem}\label{pr:trace-nondeg}
+Every character \(\Gamma \to k^\times\) is trace-nondegenerate.  The homomorphism \(r \colon \Z \to \GL_2(k)\), \(m \mapsto \bigl(\begin{smallmatrix} 1 & m \\ 0 & 1 \end{smallmatrix}\bigr)\), is not trace-nondegenerate.
+\end{problem}
+
+\paragraph{The statement in the rewritten Lean proof.}
+Fix \(\ell\) prime and \(\iota \colon \Qlb \cong \C\) as in Section~\ref{sec:global} (the ring isomorphism supplied by \texttt{New.PadicIso} goes from \(\C\) to \(\Qlb\)), an algebraic closure \(\overline{\Q}\), and a CM field \(F\) with an embedding \(F \to \overline{\Q}\) and a CM type \(\Phi = (\Phi_v)_{v \mid \infty}\), an embedding \(\Phi_v \colon F \to \C\) inducing each infinite place \(v\).  Let \(G_F = \Gal(\overline{\Q}/F)\).  Assume \(F\) contains a root of unity of exact order \(5040\).  \emph{Weil data} on such a field consist of an element \(\jmath \in F\) with \(\bar\jmath = -\jmath\), \(\operatorname{Im}\Phi_v(\jmath) > 0\) for every \(v \mid \infty\), and \((1 - \jmath^{-1})/2\) integral; a finite idele \(\alpha\) with \(\ord_w(\jmath\alpha\bar\alpha) = -\ord_w(\mathfrak{D}_{F/\Q})\) at every finite \(w\), \(\mathfrak{D}_{F/\Q}\) the different; and a continuous character \(\upsilon\) of \(\A_F^\times/F^\times\) with values of absolute value \(1\), such that \(\upsilon(x) = \prod_{v \mid \infty} x_v/\lvert x_v\rvert\) whenever the finite part of \(x\) lies in \(\widehat{\Oc}_F^\times\) (with \(x_v \in \C^\times\) through \(\Phi_v\)), \(\upsilon(\bar x) = \upsilon(x)^{-1}\) for all \(x\), and \(\upsilon(\varpi_w) = -1\) at every \(w\) with \(\bar w = w\) (\(\varpi_w\) placed at \(w\), \(1\) elsewhere).
+
+A \emph{weight} \(\kappa = (c, e)\) consists of functions \(c_v \colon \mathbb{N} \to \mathbb{N}\) and integers \(e_v\), for \(v \mid \infty\).  Let \(W_\kappa\) be the tensor product over \(v\) of the representations of \(\GL_n(\C)\) with \(c_v(h)\) columns of height \(h\), \(0 \le h < n\), twisted by \(\det^{e_v}\), and let \(U(F^+) := \{\gamma \in \GL_n(F) : \bar\gamma^T\gamma = 1\}\) act on it through the complex conjugates of the \(\Phi_v(\gamma)\).  (The code takes \(W_\kappa\) to be the space of complex-valued functions on \texttt{New.WeylIndex}, with the action \texttt{New.Space.weightRep} given by \texttt{New.conjWeylRep}, through Schur matrices in chosen bases of tableaux.)  A \emph{form of weight \(\kappa\)} is a function \(f \colon G_f \to W_\kappa\) with open stabilizer under right translation such that \(f(\gamma g) = \gamma \cdot f(g)\) for \(\gamma \in U(F^+)\), embedded diagonally, and \(g \in G_f\).  For a family \(P = (P_v)\) of polynomials in \(\C[X]\) indexed by the finite places of \(F\), \(f\) is an \emph{eigenform for \(P\)} if \(f \ne 0\) and, for all but finitely many finite places \(v\), if \(q_v\) is prime then \(v\) is split and \(f\) has Hecke polynomial \(P_v\) at \(v\).
+
+A \emph{Frobenius datum} \((v, A, s)\) is a finite place \(v\) of \(F\) with \(q_v\) prime, a valuation ring \(A\) of \(\overline{\Q}\) lying over \(v\) (an \(x \in \Oc_F\) is in the maximal ideal of \(A\) exactly when \(x \in v\)), and \(s \in G_F\) such that \(s^{-1}\) stabilizes \(A\) and induces \(x \mapsto x^{q_v}\) on its residue field.  A set \(Y\) of Frobenius data contains \emph{most Frobenius data} if every nonempty open \(\Uc \subseteq G_F\) contains a nonempty open \(\Uc'\) such that, for all but finitely many \(v\), \(Y\) contains every datum \((v, A, s)\) with \(s \in \Uc'\).  A homomorphism \(r \colon G_F \to \GL_n(\Qlb)\) is \emph{attached to} \(P\) if it is continuous and trace-nondegenerate, and for every real \(\eta > 0\) the set of Frobenius data \((v, A, s)\) for which every coefficient of \(\det(X - r(s)) - \iota^{-1} P_v\) has \(\ell\)-adic absolute value at most \(\eta\) contains most Frobenius data.  (Here \(\iota^{-1} P_v\) is \(P_v\) with \(\iota^{-1}\) applied to its coefficients.  More generally, \texttt{New.GaloisRep.Attached} allows a map \(b \colon H \to G_F\) from a topological group \(H\), asks \(b\) to be an open map, and requires the coefficient bound at a datum \((v, A, s)\) for every \(h \in H\) with \(b(h) = s\), using \(r(h)\); here \(b\) is the identity.)
+
+For \(\sigma \colon F \to \C\) inducing the infinite place \(v\), and \(0 \le j < n\), put \(u_j := e_v + \sum_{j < h < n} c_v(h) + (n - 1 - j)\), and let \(J_\sigma\) be the multiset of the \(n - 1 - u_j\) if \(\sigma = \Phi_v\) and of the \(u_j\) otherwise.
+
+Let \(i_F \colon F \to \overline{\Q}\) be the fixed embedding, \(A\) a valuation ring of \(\overline{\Q}\), \(D_A\) the stabilizer of \(A\) in \(G_F\), \(G_\ell = \Gal(\Qlb/\Q_\ell)\), and \(\C_\ell\) the completion of \(\Qlb\).  A \emph{local datum} at \(A\) is a ring embedding \(e \colon \overline{\Q} \to \Qlb\) under which the valuation ring of \(\Qlb\) pulls back to \(A\), together with a topological group isomorphism \(j\) from \(D_A\) onto the subgroup of \(G_\ell\) fixing \(e(i_F(F))\) pointwise, with \(j(d)e(x) = e(dx)\); the image of \(j\) is open.  Write \(B_{\max}\) for the period ring \texttt{New.Period.Bmax} of \cite{GL}.  For \(r \colon G_F \to \GL_n(\Qlb)\) write \(T = \Qlb^n\) with \(D_A\) acting through \(r\); tensor products below are over \(\Z_\ell\).
+
+\begin{theorem}\label{thm:spherical}
+Let \(F\) have Weil data, let \(n \ge 1\), and let \(w\) be a finite place of \(F\).  For every family \(P\), every weight \(\kappa\) and every form \(f\) of weight \(\kappa\) that is an eigenform for \(P\):
+\begin{enumerate}
+\item[(a)] some \(r \colon G_F \to \GL_n(\Qlb)\) is attached to \(P\);
+\item[(b)] for every \(r\) attached to \(P\), if \(f\) is fixed by \(\Kc_w\), then for every valuation ring \(A\) of \(\overline{\Q}\) over \(w\):
+\begin{enumerate}
+\item[(i)] if \(w \nmid \ell\), \(r\) is trivial on the inertia group of \(A\); and for every local datum \((e, j)\) at \(A\), the elements of \(B_{\max} \otimes T\) fixed by \(D_A\), acting through \(j\) on \(B_{\max}\) and through \(r\) on \(T\), span \(B_{\max} \otimes T\) over \(B_{\max}\);
+\item[(ii)] for every local datum \((e, j)\) at \(A\), every \(g \in G_\ell\) and every \(u \in \Z\), the multiplicity of \(u\) in \(J_\sigma\), \(\sigma = \iota \circ g^{-1} \circ e \circ i_F\), equals the \(\Qlb\)-dimension (zero if infinite) of the space of maps \(a \colon T \to \C_\ell\), semilinear for the embedding \(\Qlb \to \C_\ell\) induced by \(g\), such that for each \(t \in T\) and all \(d \in D_A\) sufficiently near \(1\), \(a(r(d)t) = \epsilon_\ell(j(d))^{-u}\, j(d)(a(t))\);
+\item[(iii)] if \(w\) is split, then for every \(Q \in \C[X]\) such that \(f\) has Hecke polynomial \(Q\) at \(w\), and every \(s \in G_F\) such that \(s^{-1}\) stabilizes \(A\) and induces \(x \mapsto x^{q_w}\) on its residue field: if \(w \nmid \ell\), then \((\iota^{-1} Q)(r(s)) = 0\); and for every local datum \((e, j)\) at \(A\) and every \(k \in \mathbb{N}\) such that \(j(s)^{-1}\) induces \(x \mapsto x^{\ell^k}\) on the residue field of \(\Qlb\), \(r|_{D_A}\) is potentially crystalline along \(j\) and \(\iota^{-1} Q\), with coefficients acting on \(T\), annihilates the \(B_{\max}\)-linear Frobenius for \((s, k)\), an operator on \(B_{\max} \otimes T\) that agrees with \(\varphi^k j(s) \otimes r(s)\) on the periods fixed by a neighborhood of \(1\) (\(\varphi\) the Frobenius of \(B_{\max}\)).
+\end{enumerate}
+\end{enumerate}
+\end{theorem}
+
+In the rewritten Lean proof \cite{GL} this is \texttt{New.GaloisRep.sphericalCompat\_std} in \texttt{Lib/GaloisRep/Main/AllRanks.lean}, which proves \texttt{New.GaloisRep.SphericalCompat} with \(N = n\); the local conditions are combined in \texttt{New.GaloisRep.IsCompatibleAt}, with period predicates \texttt{New.Period.IsCrystalline}, \texttt{New.Period.jump} and \texttt{New.Period.IsKilledBy}; parts (i)--(iii) unpack \texttt{New.GaloisRep.IsGoodAt}, \texttt{HasJumpsAt} and \texttt{PolyKillsAt}, with local data \texttt{New.GaloisRep.PadicPlaceEmbedding}; the definitions above use specializations of declarations in the namespace \texttt{New}, including \texttt{Gf}, \texttt{stdSpace}, \texttt{EmbeddedNumberField}, \texttt{CMType}, \texttt{stdLevel}, \texttt{maxCompactAt}, \texttt{ofSplitPlace}, \texttt{basicDoubleCoset}, \texttt{heckeSplit}, \texttt{heckePoly}, \texttt{HasHeckePolyAt}, \texttt{IsTraceNondeg}, \texttt{WeilData}, \texttt{Weight}, \texttt{Space.forms}, \texttt{IsEigenform}, \texttt{FrobeniusDatum}, \texttt{mostFrobenii}, \texttt{GaloisRep.Attached} and \texttt{jumps}; the second assertion of Problem~\ref{pr:split} is \texttt{New.isSplit\_of\_q\_prime}.  The rewriting proves the theorem by lifting \(f\) along two characters to rank \(2n+1\), attaching a representation to each lift, twisting each, and cancelling the \(n+1\) extra characters on each side.  Its authors compare it with the conjugate self-dual cohomological cuspidal case of Theorem~\ref{thm:galois}.  If \(w\) is split, \(w \nmid \ell\), and \(f\) has Hecke polynomial \(Q\) at \(w\), then \((\iota^{-1}Q)(r(s)) = 0\) for every \(s\) as in (iii); this identity alone does not determine the multiplicities in the characteristic polynomial (compare \(\mathrm{diag}(\alpha,\alpha,\beta)\) in Section~\ref{sec:es}).  Attachment gives coefficientwise approximation to \(\iota^{-1}P_v\), at each positive tolerance, for most Frobenius data.  The introduction to \texttt{Lib/GaloisRep/Main/AllRanks.lean} records that these results do not construct a Weil--Deligne representation.
+
+\begin{problem}\label{pr:trivial-instance}
+Let \(n = 1\), \(\kappa = (0, 0)\) (so \(c_v = 0\), \(e_v = 0\) and \(W_\kappa = \C\)), and let \(F\) contain a root of unity of exact order \(5040\).  The constant function \(f = 1\) is a form of weight \(\kappa\) and an eigenform for \(P_v = X - 1\) (all \(v\)), and the trivial homomorphism \(r = 1\) is attached to \(P\).  At every split \(w \nmid \ell\) and for every \(s \in G_F\) such that \(s^{-1}\) stabilizes a valuation ring \(A\) over \(w\) and induces \(x \mapsto x^{q_w}\) on its residue field, \((\iota^{-1} Q)(r(s)) = 0\) for \(Q = X - 1\), and \(J_\sigma = \{0\}\) for every \(\sigma\).
+\end{problem}
+
+\begin{problem}\label{pr:most-frobenii}
+Let \(F\) have Weil data, let \(f\) be a form that is an eigenform for \(P\), and let \(r\) be attached to \(P\).  Then the set of Frobenius data \((v, A, s)\) with \((\iota^{-1} P_v)(r(s)) = 0\) contains most Frobenius data.
+\end{problem}
+
+Thus \((\iota^{-1}P_v)(r(s)) = 0\) for most Frobenius data \((v, A, s)\): the Hecke polynomial kills Frobenius.  The last part, from Chapter~\ref{p1-chap} on, follows the rewritten Lean proof.
 
 \section*{Hints}
-
-\subsection*{\S\ref{sec:local}}
-\begin{description}
-\item[\ref{pr:nilpotent}] Take \(w = \Frob\): \(N\) is conjugate to \(q^{-1}N\).
-\item[\ref{pr:sp2}] \(\ker N\) is a line stable under \(W_K\); compare the characters on \(\ker N\) and on \(V/\ker N\).  The extension is trivial on inertia, and splits because \(\lvert\Frob\rvert \ne 1\).
-\item[\ref{pr:monodromy}] \(\exp(t_\ell(\sigma)N) = 1\) on an open subgroup of \(I_K\) exactly when \(N = 0\).
-\end{description}
 
 \subsection*{\S\ref{sec:global}}
 \begin{description}
@@ -211,9 +268,9 @@ Correspondingly, \(\pi_{11}\) is an unramified twist of \(\St\), and the compati
 \subsection*{\S\ref{sec:cm}}
 \begin{description}
 \item[\ref{pr:primary}] The units \(\pm 1, \pm\ii\) map bijectively onto \((\Oc/\mathfrak{f})^\times\), which has order \(4\); and \(\mathfrak{f}^c = \mathfrak{f}\).
-\item[\ref{pr:ray}] Write \(\mathfrak{a} = \mathfrak{b}(\beta)\) with \(\beta \equiv 1 \pmod{^\times \mathfrak{f}\ell^n}\); then \(\beta\) is the generator of \((\beta)\) that \(\psi\) picks.
-\item[\ref{pr:HT}] Approximate an idèle \(u \in 1 + \ell^m\Z_\ell\) placed at \(\lambda\) by a global element of \(\Oc\).  With uniformizers sent to arithmetic Frobenius, as in Theorem~\ref{thm:psi-l}, the local reciprocity map sends \(u\) to an element acting on \(\ell\)-power roots of unity by \(u^{-1}\).
-\item[\ref{pr:frob-cm}] The \(p\)-power Frobenius of the reduction commutes with \([\ii]\), so it is \([\alpha]\) with \(\alpha \in \Oc\) of norm \(p\).  It is inseparable, so \(\alpha \in \mathfrak{p}\); fix the unit with \(a_p = \psi(\mathfrak{p}) + \psi(\mathfrak{p}^c)\).  For \(p \equiv 3 \pmod 4\), use \(a_p = 0\).
+\item[\ref{pr:ray}] Write \(\mathfrak{a} = \mathfrak{b}(\beta)\) with \(\beta \equiv 1 \pmod{^\times \mathfrak{f}\ell^n}\); compare \(\beta\,\psi(\mathfrak{b})\) with the primary generator of \(\mathfrak{a}\).
+\item[\ref{pr:HT}] Fix \(m \ge 1\) and use the Chinese remainder theorem to choose Gaussian integers congruent to \(1\) modulo a high power of \(1 + \ii\) that approximate \(u \in 1 + \ell^m\Z_\ell\) at \(\lambda\) and \(1\) at \(\bar\lambda\) to any finite precision.  With uniformizers sent to arithmetic Frobenius, as in Theorem~\ref{thm:psi-l}, the local reciprocity map sends \(u\) to an element acting on \(\ell\)-power roots of unity by \(u^{-1}\).
+\item[\ref{pr:frob-cm}] In the split case use the action on the invariant differential to distinguish the two primes over \(p\), and the trace to distinguish unit multiples.  In the inert case compare Frobenius over \(\F_{p^2}\) with Frobenius over \(\F_p\).
 \item[\ref{pr:induced}] Complex conjugation acts on \(V_\ell(E)\) and anticommutes with \([\ii]\).
 \end{description}
 
@@ -223,13 +280,23 @@ Correspondingly, \(\pi_{11}\) is an unramified twist of \(\St\), and the compati
 \item[\ref{pr:annihilate}] Multiply \(T_p = F + V\) by \(F\), and use that \(\Frob_p\) acts on \(T_\ell\) of the reduction as \(F\).
 \item[\ref{pr:charpoly}] Cayley--Hamilton.
 \item[\ref{pr:count}] In \(\F_4\), the equation becomes \(y^2 + y = x^3 + x^2\).  Use \(\alpha^2 + \beta^2 = (\alpha+\beta)^2 - 2\alpha\beta\).
-\item[\ref{pr:tate}] Problems~\ref{pr:sp2} and~\ref{pr:monodromy}; \(v_{11}(q) \ne 0\).
+\item[\ref{pr:tate}] Kummer theory for the extensions \(\Q_{11}^{\mathrm{ur}}(q^{1/\ell^n})\); \(v_{11}(q) \ne 0\).
+\end{description}
+
+\subsection*{\S\ref{sec:spherical}}
+\begin{description}
+\item[\ref{pr:cosets}] The lattice \(a\Oc_w^n\) determines the coset \(a\GL_n(\Oc_w)\); it lies between \(\varpi_w\Oc_w^n\) and \(\Oc_w^n\), with index \(q_w^j\) in \(\Oc_w^n\).
+\item[\ref{pr:rank-one}] Problem~\ref{pr:cosets} with \(n = 1\).
+\item[\ref{pr:heckepoly}] Expand the product and compare coefficients.
+\item[\ref{pr:geometric}] Transpose the equation for \(\Phi\).
+\item[\ref{pr:U1-forms}] \(\Kc_w = b_w(\Oc_w^\times)\), and \(\mu\) is multiplicative.
+\item[\ref{pr:split}] If \(\bar v = v\), conjugation induces an automorphism of the residue field \(\F_p\); take a root \(\zeta\) of order \(5040\) and consider \(\zeta^2 - 1\).
+\item[\ref{pr:trace-nondeg}] For a character the span is \(k\).  For the second assertion, consider \(r(1) - r(0)\).
+\item[\ref{pr:trivial-instance}] Problems~\ref{pr:rank-one}, \ref{pr:split} and~\ref{pr:trace-nondeg}.
+\item[\ref{pr:most-frobenii}] Apply Theorem~\ref{thm:spherical}(b)(iii) at \(w = v\) with \(Q = P_v\), after discarding the exceptional places of the eigenform and the places over \(\ell\).
 \end{description}
 
 \begin{thebibliography}{BLGGT}
-\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
-\bibitem[Alp]{Alp} L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
-\bibitem[BH]{BH} C.~J.~Bushnell and G.~Henniart, \emph{The Local Langlands Conjecture for \(\mathrm{GL}(2)\)}, Grundlehren Math.\ Wiss.\ 335, Springer, 2006.
 \bibitem[BLGGT]{BLGGT} T.~Barnet-Lamb, T.~Gee, D.~Geraghty and R.~Taylor, \emph{Potential automorphy and change of weight}, Ann.\ of Math.\ (2) \textbf{179} (2014), 501--609.
 \bibitem[Ca]{Ca} H.~Carayol, \emph{Sur les repr\'esentations \(\ell\)-adiques associ\'ees aux formes modulaires de Hilbert}, Ann.\ Sci.\ \'Ec.\ Norm.\ Sup.\ (4) \textbf{19} (1986), 409--468.
 \bibitem[Car1]{Car1} A.~Caraiani, \emph{Local--global compatibility and the action of monodromy on nearby cycles}, Duke Math.\ J.\ \textbf{161} (2012), 2311--2413.
@@ -237,18 +304,15 @@ Correspondingly, \(\pi_{11}\) is an unramified twist of \(\St\), and the compati
 \bibitem[CH]{CH} G.~Chenevier and M.~Harris, \emph{Construction of automorphic Galois representations, II}, Camb.\ J.\ Math.\ \textbf{1} (2013), 53--73.
 \bibitem[Cl]{Cl} L.~Clozel, \emph{Repr\'esentations galoisiennes associ\'ees aux repr\'esentations automorphes autoduales de \(\mathrm{GL}(n)\)}, Publ.\ Math.\ IH\'ES \textbf{73} (1991), 97--145.
 \bibitem[DS]{DS} F.~Diamond and J.~Shurman, \emph{A First Course in Modular Forms}, Grad.\ Texts in Math.\ 228, Springer, 2005.
-\bibitem[He]{He} G.~Henniart, \emph{Une preuve simple des conjectures de Langlands pour \(\mathrm{GL}(n)\) sur un corps \(p\)-adique}, Invent.\ Math.\ \textbf{139} (2000), 439--455.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean 4}, a shorter rewriting of the Lean proof, \url{https://github.com/lsernau/grh-lean}, at the commit named in the index.
 \bibitem[HT]{HT} M.~Harris and R.~Taylor, \emph{The Geometry and Cohomology of Some Simple Shimura Varieties}, Ann.\ of Math.\ Stud.\ 151, Princeton Univ.\ Press, 2001.
 \bibitem[IR]{IR} K.~Ireland and M.~Rosen, \emph{A Classical Introduction to Modern Number Theory}, 2nd ed., Grad.\ Texts in Math.\ 84, Springer, 1990.
 \bibitem[Ko]{Ko} R.~E.~Kottwitz, \emph{Points on some Shimura varieties over finite fields}, J.\ Amer.\ Math.\ Soc.\ \textbf{5} (1992), 373--444.
-\bibitem[Ku]{Ku} S.~S.~Kudla, \emph{The local Langlands correspondence: the non-archimedean case}, in: Motives, Proc.\ Sympos.\ Pure Math.\ 55, Part~2, Amer.\ Math.\ Soc., 1994, 365--391.
 \bibitem[Ne]{Ne} J.~Neukirch, \emph{Algebraic Number Theory}, Grundlehren Math.\ Wiss.\ 322, Springer, 1999.
-\bibitem[Sch]{Sch} P.~Scholze, \emph{The local Langlands correspondence for \(\mathrm{GL}_n\) over \(p\)-adic fields}, Invent.\ Math.\ \textbf{192} (2013), 663--715.
 \bibitem[Sh]{Sh} G.~Shimura, \emph{Introduction to the Arithmetic Theory of Automorphic Functions}, Princeton Univ.\ Press, 1971.
 \bibitem[Shi]{Shi} S.~W.~Shin, \emph{Galois representations arising from some compact Shimura varieties}, Ann.\ of Math.\ (2) \textbf{173} (2011), 1645--1741.
 \bibitem[Si1]{Si1} J.~H.~Silverman, \emph{The Arithmetic of Elliptic Curves}, 2nd ed., Grad.\ Texts in Math.\ 106, Springer, 2009.
 \bibitem[Si2]{Si2} J.~H.~Silverman, \emph{Advanced Topics in the Arithmetic of Elliptic Curves}, Grad.\ Texts in Math.\ 151, Springer, 1994.
-\bibitem[Ta]{Ta} J.~Tate, \emph{Number theoretic background}, in: Automorphic Forms, Representations and \(L\)-Functions, Proc.\ Sympos.\ Pure Math.\ 33, Part~2, Amer.\ Math.\ Soc., 1979, 3--26.
 \bibitem[TY]{TY} R.~Taylor and T.~Yoshida, \emph{Compatibility of local and global Langlands correspondences}, J.\ Amer.\ Math.\ Soc.\ \textbf{20} (2007), 467--493.
 \end{thebibliography}
 
