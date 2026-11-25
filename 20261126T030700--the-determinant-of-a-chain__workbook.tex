@@ -4,7 +4,6 @@
 \usepackage{xr-hyper}
 \usepackage[hidelinks]{hyperref}
 \externaldocument[c7-]{20261125T003000--the-chain-and-the-square-root__workbook}
-\externaldocument[c21-]{20261125T015500--siegel-weil-in-the-smallest-case__workbook}
 \externaldocument[c22-]{20261125T002100--definite-theta-lifts-and-norms__workbook}
 \externaldocument[c32-]{20261126T030300--the-data__workbook}
 
@@ -16,9 +15,19 @@
   \renewcommand{\thechap}{?}
 \fi
 \renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
 \newcommand{\Z}{\mathbb Z}
 \newcommand{\Q}{\mathbb Q}
+\newcommand{\R}{\mathbb R}
 \newcommand{\C}{\mathbb C}
+\newcommand{\Nm}{\operatorname{Nm}}
+\newcommand{\vol}{\operatorname{vol}}
+\newcommand{\Rc}{\mathcal R}
 \setlength{\emergencystretch}{3em}
 
 \title{The determinant of a chain}
@@ -30,10 +39,260 @@
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-Chapters~\ref{c7-chap}, \ref{c21-chap}, \ref{c22-chap} and~\ref{c32-chap}.
+Linear algebra over \(\C\): adjoints, determinants, characteristic polynomials and Newton's identities \cite[Ch.~I, \S2]{Mac}.  From Chapter~\ref{c22-chap}: Problems~\ref{c22-pr:U1U1} and~\ref{c22-pr:rallis}.  From Chapter~\ref{c32-chap}: the parameters \(P\), the admissible data \(D\), the field \(E\), the level primes \(p_0, p_1\) with \(M = p_0 p_1\), the prime \(N\), the element \(\alpha \in \mathcal O_K\) with \(\alpha\bar\alpha = M\), the number \(m\) of lifts and the ranks \(r\) and \(k = r + 1 - m \ge 1\), and \(t = 5r\).  Write \(\Delta := 2r^8\) for the gap.  Chapter~\ref{c7-chap} explains why a chain of \(m\) maps is used; it is not needed for the problems.
 
 \medskip
-The Gram determinant of the target forms under a chain of theta lifts factors, after division by its value at the trivial twist, into the determinants of single lifts and ratios of Hecke values.  The chapter states the Rallis inner product formula and the exchange identity that give the factorization, and explains why \(m\)-fold twists are needed.  The simplest settings are the chain of Chapter~\ref{c7-chap} and the norm of one definite lift in Chapter~\ref{c22-chap}.
+For a chain \(\Theta\) of \(m\) theta lifts, consider the determinant of \(\Theta^*\Theta\) on the good forms at the source.  How does this determinant change when the character of lift \(j\) is multiplied by \(\vartheta^j\), for an \(m\)-fold twist \(\vartheta\)?  In Theorem~\ref{thm:main}, read from the rewritten Lean proof \cite{GL}, its quotient by the determinant at the trivial twist is the product of the \(m\) corresponding quotients for single lifts, times a correction factor: the product of pairwise ratios of Hecke \(L\)-values, multiplied by a power \((\Nm Q)^{e/2}\) of the norm of the set \(Q\) of places of the twist, and raised to the dimension of the space of good forms; the integer \(e\) does not depend on the twist.  Sections~\ref{sec:volumes} and~\ref{sec:multiplicities} treat the linear algebra in its simplest setting; Sections~\ref{sec:one-lift}--\ref{sec:factor} state the inputs and assemble the theorem.
 
-This chapter is being drafted.
+\section{Volumes of maps}\label{sec:volumes}
+
+For a linear map \(u \colon U \to V\) of finite-dimensional complex inner product spaces let
+\[
+  Z(u) := \det\nolimits_U (u^* u) ,
+\]
+the determinant on the domain \(U\); we call it the \emph{volume} of \(u\).  Dimensions are complex dimensions, the determinant on the zero space is \(1\), and inner products are conjugate-linear in the first argument and linear in the second.
+
+\begin{problem}\label{pr:gram}
+For every orthonormal basis \(e_1, \dots, e_d\) of \(U\), \(Z(u) = \det\bigl(\langle u e_a, u e_b \rangle\bigr)_{a,b}\).  The number \(Z(u)\) is real and \(\ge 0\), and \(Z(u) > 0\) if and only if \(u\) is injective.
+\end{problem}
+
+\begin{problem}\label{pr:scalar-gram}
+Let \(S\) be an endomorphism of \(U\) and \(a \in \C\) with \(\langle ux, uy\rangle = a \langle x, Sy\rangle\) for all \(x, y \in U\).  Then \(Z(u) = a^{\dim U} \det S\).
+\end{problem}
+
+\begin{problem}\label{pr:square-chain}
+If \(\theta_j \colon V_{j-1} \to V_j\), for \(1 \le j \le m\), are linear maps between spaces of one and the same dimension, then \(Z(\theta_m \circ \dots \circ \theta_1) = \prod_{j=1}^m Z(\theta_j)\).
+\end{problem}
+
+When the dimension grows along the chain, equality can fail.
+
+\begin{problem}\label{pr:position}
+Let \(\theta_2 \colon \C^2 \to \C^2\) be \(\operatorname{diag}(1, 2)\), and let \(\theta_1, \theta_1' \colon \C \to \C^2\) be \(x \mapsto (x, 0)\) and \(x \mapsto (0, x)\).  Then \(Z(\theta_1) = Z(\theta_1') = 1\) and \(Z(\theta_2) = 4\), while \(Z(\theta_2\theta_1) = 1\) and \(Z(\theta_2\theta_1') = 4\).
+\end{problem}
+
+What replaces Problem~\ref{pr:square-chain} is an identity for \(\Theta^*\Theta\) on the first space itself.  Here is a model of how such an identity can be propagated along a chain.
+
+\begin{problem}\label{pr:push-down}
+Let \(\Theta_j := \theta_j \circ \dots \circ \theta_1 \colon V_0 \to V_j\).  Suppose that \(\theta_1^*\theta_1 = a_1 R_1\) and that \(\theta_j^*\theta_j\,\Theta_{j-1} = a_j\,\Theta_{j-1} R_j\) for \(2 \le j \le m\), with scalars \(a_j\) and endomorphisms \(R_j\) of \(V_0\).  Then \(\Theta_m^*\Theta_m = a_1 \cdots a_m\, R_1 R_2 \cdots R_m\), and \(Z(\Theta_m) = (a_1 \cdots a_m)^{\dim V_0} \prod_j \det R_j\).
+\end{problem}
+
+For \(a \ge 0\) divisible by \(4\), the two lifts from \(\mathrm U(1)\) of Chapter~\ref{c22-chap} used here have a one-dimensional source.  The lift \(\Theta_{(a)}\) from \(\mathrm U(1)\) to \(\mathrm U(1)\) is multiplication by \(c_a/4\) (Problem~\ref{c22-pr:U1U1}), and by Problem~\ref{c22-pr:rallis} the lift \(\Theta_{(a)}\) from \(\mathrm U(1)\) to \(\mathrm U(2)\) satisfies
+\[
+  \lVert \Theta_{(a)}\varphi \rVert^2 = \lambda_a \lVert \varphi \rVert^2 , \qquad
+  \lambda_a := \frac{1}{128} \sum_j \binom{a}{j} c_j^2 c_{a-j}^2 .
+\]
+This finite calculation illustrates the inner product of a lift with itself; the strict rank inequality in Theorem~\ref{thm:rallis} below first allows a source of rank \(1\) when the target has rank \(3\).
+
+\begin{problem}\label{pr:smallest}
+For \(4 \mid a\), the composite of the lift \(\mathrm U(1) \to \mathrm U(1)\) with the lift \(\mathrm U(1) \to \mathrm U(2)\) of Chapter~\ref{c22-chap}, in degree \(a\), has volume \(\lambda_a c_a^2/16\), the product of the two volumes.
+\end{problem}
+
+\section{Equal multiplicities}\label{sec:multiplicities}
+
+The single lifts of Section~\ref{sec:one-lift} start from spaces \(W_j\) that differ from the source \(Y_0\) of the chain.  Their volumes are compared with that of the chain through Hecke operators that act on both, with the same traces.
+
+\begin{problem}\label{pr:trace-charpoly}
+Let a set \(\mathcal H\), closed under products and containing \(1\), act linearly, with \(1\) acting as the identity and products as composites, on finite-dimensional complex spaces \(U\) and \(U'\), and suppose \(\operatorname{tr}_U h = \operatorname{tr}_{U'} h\) for every \(h \in \mathcal H\).  Then \(\dim U = \dim U'\), and every \(h \in \mathcal H\) has the same characteristic polynomial, hence the same determinant, on \(U\) and on \(U'\).
+\end{problem}
+
+\begin{problem}\label{pr:trace-check}
+The matrices \(\operatorname{diag}(1, 2)\) and \(\bigl(\begin{smallmatrix} 0 & -2 \\ 1 & 3 \end{smallmatrix}\bigr)\) both have traces \(3, 5, 9\) in their first three powers, and \(\det(h + 1) = 6\) for both.
+\end{problem}
+
+\begin{problem}\label{pr:trace-mult}
+In Problem~\ref{pr:trace-charpoly}, suppose moreover that \(\mathcal H\) is commutative and acts diagonalizably on \(U\) and on \(U'\).  Then for every function \(p \colon \mathcal H \to \C\) the joint eigenspaces \(\{y : hy = p(h)y \text{ for all } h \in \mathcal H\}\) in \(U\) and in \(U'\) have the same dimension.
+\end{problem}
+
+Now the objects of the rewritten Lean proof \cite{GL}, as read from the code; the problems below use only what is stated here.  Let \(\mathcal M\) be the set of \emph{chosen places} of \(E\), the prime divisors of \(\bar\alpha\).  Let \(I\) be a set of \(r\) coordinates, numbered by a bijection \(b \colon I \to \{0, \dots, r-1\}\).  The source of the chain is a Hermitian space \(Y_0\) on \(I\); the chain passes through spaces \(Y_j\) with \(r + jt\) coordinates (\(I\) and \(j\) blocks of size \(t\)), up to \(Y_m\).  For \(1 \le j \le m\) the space \(W_j\) is diagonal on \(I\), and the sign of \(i \in I\) is \(-1\) if \(b(i) \ge k + j - 1\) and \(+1\) otherwise.  The spaces here are pointed Hermitian spaces over \(E\): a point is an adelic basis in which the form has prescribed diagonal signs at infinity and is the identity at the finite places.  For such a space \(V\) on \(I\) with signs \(s\), let \(H(V)\) be the space of principal forms: the forms of the archimedean type determined by the doubled target parameter \(l_\tau\) on \(I\) and by \(s\), fixed by the integral level subgroup with identity reduction at every \(w \in \mathcal M\).  Give \(H(V)\) the Petersson inner product.  In the complex group algebra of \(\prod_{w \in \mathcal M} \mathrm{GL}_I(k_w)\) let \(e_0\) be the central idempotent attached to \(D\), the sum of the idempotents of the good label families of \(D\), and let \(H_g(V) \subseteq H(V)\), the \emph{good} forms, be the image of \(e_0\) acting on \(H(V)\), with the induced inner product.  The space \(H(V)\) is finite-dimensional under the following \emph{gap hypothesis} at every infinite place \(\tau\): the entries of \(l_\tau\) are distinct, have the parity of \(r - 1\), and satisfy \(\lvert l_\tau(i) - l_\tau(i')\rvert \ge 2\Delta\) whenever \(s(i) \ne s(i')\), with \(\Delta\) the gap.  It holds for \(Y_0\) and for every \(W_j\).  Let
+\[
+  T := H_g(Y_0) , \qquad d_T := \dim T .
+\]
+
+\begin{problem}\label{pr:negcount}
+For \(1 \le j \le m\), \(W_j\) has exactly \(m - j\) negative signs.  In a numerical model of this sign rule with \(r = 9\), \(m = 4\) and \(j = 1\), the negative coordinates are those with \(b(i) \in \{6, 7, 8\}\).
+\end{problem}
+
+So the \(W_j\) and \(Y_0\) have rank \(r\) and can have different signatures, while the rank \(r + (j-1)t\) of \(Y_{j-1}\) exceeds \(r\) for \(j > 1\).  The rewriting shows that a spherical Hecke operator away from \(\mathcal M\) has the same trace on \(H_g(V)\) and on \(H_g(V')\) when the gap hypothesis holds for both sign systems.  For each tame character \(\xi\) (Section~\ref{sec:twists}), each \(j \in \mathbb N\) and each such \(V\) it defines an operator \(\Rc_{V,j}(\xi)\) on \(H(V)\), the series of Rallis's formula, and shows that one spherical Hecke operator acts as \(\Rc_{V,j}(\xi)\) on \(H(V)\) and as \(\Rc_{V',j}(\xi)\) on \(H(V')\); in particular \(\Rc_{V,j}(\xi)\) preserves \(H_g(V)\).  Write \(R_j(\xi)\) for the restriction of \(\Rc_{Y_0,j}(\xi)\) to \(T\), and \(R^W_j(\xi)\) for that of \(\Rc_{W_j,j}(\xi)\) to \(H_g(W_j)\).  Problems~\ref{pr:trace-charpoly} and~\ref{pr:trace-mult} model the argument; the rewriting proves the following three assertions for these spaces.  For a finite place \(w\) and \(i \in \mathbb N\) let \(T_{w,i}\) be the principal spherical split Hecke operator of index \(i\) at \(w\) if \(w \ne \bar w\) and \(w, \bar w \notin \mathcal M\), and \(T_{w,i} = 0\) otherwise.
+
+\begin{theorem}\label{thm:equal}
+For \(1 \le j \le m\): \(\dim H_g(W_j) = d_T\); for every family \(p = (p_{w,i})\) of complex numbers indexed by finite places \(w\) and \(i \in \mathbb N\), the simultaneous \(p_{w,i}\)-eigenspaces of the \(T_{w,i}\) in \(T\) and in \(H_g(W_j)\) have the same dimension; and \(\det R^W_j(\xi) = \det R_j(\xi)\) for every tame character \(\xi\).
+\end{theorem}
+
+\section{One lift}\label{sec:one-lift}
+
+The norm of a theta lift is computed by the Rallis inner product formula, which the rewriting proves in Weil's range.  We state it with the definitions of its objects abbreviated.  For this formula and the exchange identity, fix a CM field with a CM type and Weil data as in the rewriting (the field \(E\) of our data has this structure), and use pointed Hermitian spaces over it.  Let \(U\) and \(U'\) be such spaces on finite coordinate sets \(\mathcal I\) and \(\mathcal J\), with adelic unitary groups \(G\) and \(G'\), and suppose \(2\#\mathcal I < \#\mathcal J\).  Let \(\eta, \eta'\) be automorphic characters of the norm-one ideles, let \(f\) and \(f'\) be vectors of the adelic Weil representation of \(\operatorname{Hom}(U, U')\), with \(f\) satisfying a condition called cleanness (which holds whenever all signs of \(U\) agree), and let \(y, y'\) be automorphic functions on \(G\) of rapid decay.  Let \(L_f y\) be the theta lift of \(y\) to \(G'\) with datum \(f\) and characters \((\eta, \eta')\), and let \(K(g) := \langle f', \omega(g) f\rangle\, \langle y', y(\cdot\, g)\rangle_U\), where \(\omega(g)\) is the pair Weil action at \((g, 1)\) with characters \((1, \eta')\), whose character factor is \(\eta'(\det g)^{-1}\), and \(\langle\ ,\ \rangle_U\) is the Petersson product.
+
+\begin{theorem}[Rallis inner product formula]\label{thm:rallis}
+\(K\) is integrable on all of \(G\), and \(\langle L_{f'} y', L_f y\rangle_{U'} = \vol[U'] \int_G K(g)\, dg\), where \(\vol[U']\) is the total mass of the quotient measure of \(U'\).
+\end{theorem}
+
+The \(j\)th single lift goes from \(W_j\), of rank \(r\), to the standard definite space \(V_j\) of rank \(r + t\), and \(2r < r + t\).  For \(1 \le j \le m\) and a tame character \(\xi\), let \(S_{\xi,j} \colon H(W_j) \to \mathcal F_{\xi,j}(V_j)\) be this lift; its target is the space of algebraic level forms with the weight, level and character of the lift for \((\xi, j)\), with its class-sum inner product.  Write \(u_{\xi,j}\) for the restriction of \(S_{\xi,j}\) to \(H_g(W_j)\).  The rewriting shows that \(S_{\xi,j}\) is injective, and, using a specialization of Theorem~\ref{thm:rallis} to a sharp datum and the normalization of the single lift, the following.
+
+\begin{theorem}\label{thm:one-lift}
+For every \(1 \le j \le m\) there is \(A_j \in \C\), \(A_j \ne 0\), such that for every tame character \(\xi\), with set of places \(Q\), \(S_{\xi,j}^* S_{\xi,j} = A_j c_Q\, \Rc_{W_j,j}(\xi)\) on \(H(W_j)\), where
+\[
+  c_Q := (\Nm Q)^{rt} \prod_{w \in Q} \prod_{i = t+1}^{t+r} \bigl(1 - q_w^{-i}\bigr), \qquad \Nm Q := \prod_{w \in Q} q_w ,
+\]
+and \(q_w\) is the order of the residue field \(k_w\).
+\end{theorem}
+
+\begin{problem}\label{pr:cQ}
+\(c_Q\) depends only on \(Q\), \(r\) and \(t\).  Evaluating the displayed expression at \(Q = \{w\}\), \(q_w = 5\), \(r = 1\), \(t = 5\) gives \(c_Q = 15624/5\).
+\end{problem}
+
+\begin{problem}\label{pr:one-lift}
+For \(1 \le j \le m\) and every tame character \(\xi\), \(Z(u_{\xi,j}) = (A_j c_Q)^{d_T} \det R_j(\xi)\), the determinant being taken on \(T\).  Moreover \(Z(u_{\xi,j}) > 0\).
+\end{problem}
+
+\section{Twists and the exchange identity}\label{sec:twists}
+
+In the rewriting a \emph{tame character} \(\xi\) is an automorphic character of the norm-one ideles of \(E\) together with a finite set \(Q\) of finite places and characters \(\psi_w \colon k_w^\times \to \C^\times\) of the residue fields, extended by \(0\) at \(0\), such that \(\xi\) has weight \(0\) and tame part \((\psi_w)\), \(\psi_w = 1\) for \(w \notin Q\), \(\bar w \notin Q\) for \(w \in Q\), and \(\Nm Q\) is prime to \(MN\).  A \emph{twist} is a tame character with \(\psi_w \ne 1\) for every \(w \in Q\), and an \emph{\(m\)-fold twist} is a twist with \(\psi_w^n \ne 1\) for all \(w \in Q\) and \(1 \le n \le m\).  The trivial twist \(1\) has trivial character, \(Q = \varnothing\) and all \(\psi_w = 1\).  For \(n \in \mathbb N\), the tame power \(\xi^n\) is \((\xi^n, Q, (\psi_w^n))\), with the same set \(Q\); it is again a tame character, since weights add and tame parts multiply.
+
+\begin{problem}\label{pr:mfold-order}
+A character \(\psi_w\) of \(k_w^\times\) satisfies \(\psi_w^n \ne 1\) for \(1 \le n \le m\) if and only if its order exceeds \(m\).  In the finite-group example \(k_w = \mathbb F_{13}\), exactly \(8\) of the \(12\) characters have order exceeding \(3\).
+\end{problem}
+
+\begin{problem}\label{pr:powers}
+If \(\vartheta\) is an \(m\)-fold twist and \(1 \le n \le m\), then \(\vartheta^n\) is a twist with the same set \(Q\) and the same number \(c_Q\).
+\end{problem}
+
+For an automorphic character \(\nu\) of the norm-one ideles write \(\widetilde\nu(x) = \nu(x/\bar x)\).  For a set \(S\) of finite places let \(L^S(z, \nu)\) be the rewriting's function of a real variable \(z\): for \(z > 1\) it is the Euler product with coefficients \(\widetilde\nu_f(\varpi_w)\) at chosen uniformizers outside \(S \cup \bar S\) and \(0\) on \(S \cup \bar S\), which is the usual partial Hecke \(L\)-function when \(\widetilde\nu\) is unramified outside \(S \cup \bar S\); at \(z = 1\) its value agrees with the limit from the right whenever that limit exists in \(\C\).  For finite \(S\) and \(h \in \mathbb N\) let
+\[
+  B(S, \nu, h) := \Bigl(\prod_{w \in S} q_w\Bigr)^{h^2} \prod_{z=1}^{h} \lvert L^S(z, \nu) \rvert^2 .
+\]
+The modulus of the constant in the chain identity of Section~\ref{sec:factor} comes from the \emph{exchange identity} of the rewriting, which we state with the definitions of its objects abbreviated.  Let \(U_0, U_1, U_2\) be pointed Hermitian spaces on finite coordinate sets \(\mathcal N, \mathcal A, \mathcal B\), with a bijection \(\sigma \colon \mathcal B \sqcup \mathcal A \simeq \mathcal N\), such that the number \(n_-\) of negative signs of \(U_0\) is the sum of those of \(U_1\) and \(U_2\), \(\#\mathcal A = \#\mathcal B + 2h\) with \(h \in \mathbb N\), \(2n_- + 2 \le \#\mathcal N\), and \(\#\mathcal N \le 2\mu(\tau) + 2n_-\) for an integer-valued function \(\mu\) on the infinite places and every infinite place \(\tau\).  A modulus \(\mathfrak m\) is a nonzero ideal of \(\mathcal O_E\) such that no prime dividing it has its conjugate dividing it; \(S_{\mathfrak m}\) is the set of its prime divisors.  A character \(\nu\) is tame for \((\mathfrak m, \mu, \chi)\), with \(\chi\) a multiplicative character of \(\mathcal O_E/\mathfrak m\), if \(S_{\mathfrak m} \ne \varnothing\) and \(\nu\) has weight \(\mu\) and a tame part \((\psi_w)\) with \(\psi_w \ne 1\) exactly for \(w \in S_{\mathfrak m}\) and \(\chi(a) = \prod_{w \mid \mathfrak m} \psi_w(a \bmod w)\) for \(a \in \mathcal O_E/\mathfrak m\).  Write \(R_{\mathfrak m} = \mathcal O_E/\mathfrak m\).  For \(d \in \mathrm{GL}_{\mathcal N}(R_{\mathfrak m})\) let \(X_d\) be the \(\mathcal A\)-rows of \(d^{-1}\) and \(Y_d\) the \(\mathcal B\)-columns of \(d\), read through \(\sigma\).  Functions \(\Phi\) on \(\mathcal A \times \mathcal N\) matrices and \(\Psi\) on \(\mathcal N \times \mathcal B\) matrices over \(R_{\mathfrak m}\) are \emph{matched} by \(\chi\) if they vanish off the sets of the \(X_d\) and of the \(Y_d\) respectively, and \(\Phi(X_d) = \chi(\det d)\Psi(Y_d)\) for every \(d\).  Write \(\upsilon\) for the splitting character of the Weil data, \(\upsilon_1\) for its restriction to the norm-one ideles, and \(\beta[n] := \widetilde\beta\,\upsilon^{-n}\) for a norm-one character \(\beta\) and \(n \in \mathbb N\).
+
+\begin{theorem}[Exchange identity]\label{thm:exchange}
+For every Schwartz vector \(v\) of the real Fock model of \((U_2, U_0)\) there are a real \(C > 0\) and a Schwartz vector \(x\) of the real Fock model of \((U_0, U_1)\) with the following property.  For every modulus \(\mathfrak m\), every automorphic character \(\nu\) of the norm-one ideles and every \(\chi\) such that \(\nu\) is tame for \((\mathfrak m, \mu, \chi)\), there is \(c \in \C\) with
+\[
+  \lvert c \rvert^2 = C\, B(S_{\mathfrak m}, \nu, h) \ne 0
+\]
+such that the following holds.  Let \(\beta, \beta'\) be automorphic characters of the norm-one ideles with \(\beta[\#\mathcal A]\,\beta'[\#\mathcal B] = \widetilde\nu^{-1}\), and put \(\gamma := \nu^{-1}\upsilon_1^{\lfloor \#\mathcal N/2 \rfloor}\).  For every pair \(\Phi, \Psi\) matched by \(\chi\) and every adelic point \(g\) of the group of \(U_0\), the integral over \(h \in [U_1]\) of the theta kernel for \((U_0, U_1)\) with characters \((\gamma, \beta)\), datum \((\Phi, x)\) and arguments \((g, h)\) equals \(c\) times the integral over \(h \in [U_2]\) of the theta kernel for \((U_2, U_0)\) with characters \((\beta', \gamma)\), datum \((\Psi, v)\) and arguments \((h, g)\).  Each datum is the given function at the primes of \(\mathfrak m\) and the vacuum at the other finite places.
+\end{theorem}
+
+The vector \(x\) and the constant \(C\) are chosen before \(\mathfrak m, \nu, \chi\); the scalar \(c\) may depend on all three, and works for every subsequent choice of \(\beta, \beta', \Phi, \Psi, g\).  In the chain, the \(j\)th lift has the norm-one character \(\mu^0_j \vartheta^j\), where \(\mu^0_j := \chi_0 (\upsilon_1^{-\Delta} \chi_M)^j\) is the character of the \(j\)th lift at the trivial twist; here \(\chi_0\) is a chosen character of weight \(-\kappa_0\) and trivial tame part, \(\kappa_0\) the weight at index \(0\), and \(\chi_M\) is a chosen weight-zero character with prescribed tame characters at \(\mathcal M\).  For \(1 \le i < j \le m\) and an \(m\)-fold twist \(\vartheta\) with set of places \(Q\), put \(\nu := \mu^0_j / \mu^0_i\) and
+\[
+  \rho_{ij}(\vartheta) := \prod_{z=1}^{t} \frac{\lvert L^{\mathcal M \cup Q}\bigl(z, (\nu \vartheta^{j-i})^{-1}\bigr) \rvert}{\lvert L^{\mathcal M}(z, \nu^{-1}) \rvert} ,
+\]
+a nonnegative real number; the rewriting shows that \(L^{\mathcal M}(z, \nu^{-1}) \ne 0\) for each integer \(1 \le z \le t\).
+
+\begin{problem}\label{pr:B-ratio}
+Let \(S\) and \(Q\) be disjoint finite sets of finite places, \(h \in \mathbb N\), and \(\nu, \nu'\) characters whose values \(L^S(z, \nu)\) and \(L^{S \cup Q}(z, \nu')\) are finite, with \(L^S(z, \nu) \ne 0\), for each integer \(1 \le z \le h\).  Then
+\[
+  B(S \cup Q, \nu', h) = B(S, \nu, h)\, (\Nm Q)^{h^2} \prod_{z=1}^{h} \frac{\lvert L^{S \cup Q}(z, \nu') \rvert^2}{\lvert L^S(z, \nu) \rvert^2} .
+\]
+\end{problem}
+
+For \(1 \le i < j \le m\), \(n = j - i\), \(\nu = \mu^0_j/\mu^0_i\) and an \(m\)-fold twist \(\vartheta\) with set \(Q\), the rewriting proves
+\[
+  B\bigl(\mathcal M \cup Q, (\nu\vartheta^n)^{-1}, t\bigr) = B(\mathcal M, \nu, t)\, (\Nm Q)^{t^2} \rho_{ij}(\vartheta)^2 ,
+\]
+using \(L^{\mathcal M}(z, \nu^{-1}) = L^{\mathcal M}(z, \nu)\) for this pair; this is how \(\Nm Q\) and the ratios \(\rho_{ij}\) enter.
+
+\begin{problem}\label{pr:rho-one}
+\(\rho_{ij}(1) = 1\) for \(1 \le i < j \le m\).
+\end{problem}
+
+\section{The factorization}\label{sec:factor}
+
+For an \(m\)-fold twist \(\vartheta\) let \(\Theta_\vartheta \colon T \to \mathcal F_\vartheta(Y_m)\) be the rewriting's lower chain of lifts from \(Y_0\) to \(Y_m\), restricted to \(T\); its target is a space of algebraic level forms on \(Y_m\), with weight fixed by \(D\), level and level character determined by \(\vartheta\), and the class-sum inner product; its \(j\)th lift has the character \(\mu^0_j \vartheta^j\), and the rewriting shows that the chain is injective.  Let
+\[
+  Z(\vartheta) := Z(\Theta_\vartheta) , \qquad Z_j(\vartheta) := Z(u_{\vartheta^j, j}) \quad (1 \le j \le m) ,
+\]
+and let \(R_\vartheta := R_1(\vartheta^1) R_2(\vartheta^2) \cdots R_m(\vartheta^m)\), an endomorphism of \(T\).
+The rewriting computes the Gram form of the chain by induction over a triangle of spaces of forms, each of whose squares satisfies a ``one-square'' identity obtained from Theorem~\ref{thm:exchange}.  The result is the following.
+
+\begin{theorem}\label{thm:chain-gram}
+There are a function \(\kappa\) from \(m\)-fold twists to \(\C\), a real number \(C'\) and an integer \(\ell\) such that for every \(m\)-fold twist \(\vartheta\), with set of places \(Q\),
+\[
+  \lvert \kappa(\vartheta) \rvert^2 = C'\, (\Nm Q)^\ell \Bigl( \prod_{1 \le i < j \le m} \rho_{ij}(\vartheta) \Bigr)^2 ,
+\]
+and \(\langle \Theta_\vartheta x, \Theta_\vartheta y \rangle = \kappa(\vartheta)\, c_Q^m\, \langle x, R_\vartheta y \rangle\) for all \(x, y \in T\).
+\end{theorem}
+
+\begin{problem}\label{pr:abs-ratio}
+Let \(X\) be a set with a point \(1\), let \(N \colon X \to \R_{>0}\) and \(f \colon X \to \R_{\ge 0}\) with \(N(1) = f(1) = 1\), and let \(\kappa \colon X \to \C\), \(C' \in \R\) and \(\ell \in \Z\) satisfy \(\lvert \kappa(x) \rvert^2 = C' N(x)^\ell f(x)^2\) for all \(x\).  If \(\kappa(1) \ne 0\), then \(C' = \lvert\kappa(1)\rvert^2\) and \(\lvert \kappa(x)/\kappa(1) \rvert = N(x)^{\ell/2} f(x)\) for all \(x\).
+\end{problem}
+
+\begin{problem}\label{pr:chain-det}
+In Theorem~\ref{thm:chain-gram}, if \(\kappa(1) = 0\) then \(T = 0\).  For every \(m\)-fold twist \(\vartheta\),
+\[
+  Z(\vartheta) = \Bigl( \kappa(\vartheta) \Big/ \prod_{j=1}^m A_j \Bigr)^{d_T} \prod_{j=1}^m Z_j(\vartheta) ,
+\]
+and \(Z(\vartheta) > 0\).
+\end{problem}
+
+\begin{problem}\label{pr:quotient}
+If \(T \ne 0\), then for every \(m\)-fold twist \(\vartheta\), with set of places \(Q\),
+\[
+  \frac{Z(\vartheta)}{Z(1)} = \Bigl( (\Nm Q)^{\ell/2} \prod_{1 \le i < j \le m} \rho_{ij}(\vartheta) \Bigr)^{d_T} \prod_{j=1}^m \frac{Z_j(\vartheta)}{Z_j(1)} .
+\]
+If \(T = 0\), both sides equal \(1\) (a real number to the power \(0\) is \(1\)).
+\end{problem}
+
+The rewriting states the normalized determinant identity as follows.
+
+\begin{theorem}\label{thm:main}
+Let \(P\) be parameters and \(D\) admissible data for \(P\).  There is an integer \(e\) such that for every \(m\)-fold twist \(\vartheta\), with set of places \(Q\):
+\begin{enumerate}
+\item[(a)] \(0 < Z(\vartheta)\);
+\item[(b)] \(0 < Z_j(\vartheta)\) for every integer \(j\) with \(1 \le j \le m\);
+\item[(c)] in \(\C\),
+\[
+  \frac{Z(\vartheta)}{Z(1)} = \biggl( (\Nm Q)^{e/2} \prod_{i=1}^{m} \prod_{j=i+1}^{m} \rho_{ij}(\vartheta) \biggr)^{d_T} \prod_{j=1}^m \frac{Z_j(\vartheta)}{Z_j(1)} .
+\]
+\end{enumerate}
+\end{theorem}
+
+Here \(Z(\vartheta)\) and \(Z_j(\vartheta)\) are complex numbers by definition, and (a), (b) say that they are real and positive; the base of the power \(d_T\) in (c) is a real number, with \(e/2\) a real exponent, and \(e\) does not depend on \(\vartheta\).  Problems~\ref{pr:one-lift} and~\ref{pr:abs-ratio}--\ref{pr:quotient}, with Theorem~\ref{thm:chain-gram}, prove Theorem~\ref{thm:main}; one may take \(e = \ell\) when \(T \ne 0\).  Thus the volume of the chain at a twist, relative to the trivial twist, is expressed through \(m\) volumes of single lifts, a power of \(\Nm Q\), and \(m(m-1)/2\) ratios \(\rho_{ij}\) of \(L\)-values.
+
+\paragraph{In the Lean formalization.}
+\begin{sloppypar}
+In the rewritten Lean proof \cite{GL}, Theorem~\ref{thm:main} is \texttt{New.Data.exists\_\allowbreak chainDeterminant\_\allowbreak pos\_\allowbreak and\_\allowbreak div\_\allowbreak chainDeterminant\_\allowbreak one\_\allowbreak eq} in \texttt{New/\allowbreak Determinant/\allowbreak Chain/\allowbreak NormOfChain.lean} of the readable edition; Theorem~\ref{thm:chain-gram} is \texttt{exists\_\allowbreak inner\_\allowbreak chain\_\allowbreak eq} in the same file, Theorem~\ref{thm:one-lift} is \texttt{exists\_\allowbreak adjoint\_\allowbreak singleLift\_\allowbreak comp\_\allowbreak eq} in \texttt{New/\allowbreak Determinant/\allowbreak Norms/\allowbreak AdjointThetaLift.lean}, Theorem~\ref{thm:equal} is the specialization to \(Y_0\) and \(W_j\) of \texttt{targetDim\_\allowbreak eq\_\allowbreak finrank\_\allowbreak goodForms\_\allowbreak spaceW}, \texttt{finrank\_\allowbreak goodForms\_\allowbreak inf\_\allowbreak eigenPart\_\allowbreak eq} and \texttt{det\_\allowbreak rallisOnGood\_\allowbreak eq} in \texttt{New/\allowbreak Spanning/\allowbreak Multiplicities/\allowbreak EqualMultiplicities.lean}, Theorem~\ref{thm:rallis} is \texttt{inner\_\allowbreak product\_\allowbreak formula} in \texttt{Lib/\allowbreak SiegelWeil/\allowbreak RallisInner/\allowbreak Doubling.lean}, and Theorem~\ref{thm:exchange} is \texttt{exchange\_\allowbreak identity} in \texttt{New/\allowbreak Determinant/\allowbreak Exchange/\allowbreak TheoremForPartners.lean}.
+\end{sloppypar}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:volumes}}
+\begin{description}
+\item[\ref{pr:gram}] \(\langle u e_a, u e_b\rangle = \langle e_a, u^*u\, e_b\rangle\), and \(u^*u\) is positive semidefinite with kernel \(\ker u\).
+\item[\ref{pr:scalar-gram}] Rewrite the hypothesis as an identity of endomorphisms of \(U\).
+\item[\ref{pr:square-chain}] In orthonormal bases of spaces of equal dimension, \(Z(u) = \lvert\det u\rvert^2\).
+\item[\ref{pr:position}] Problem~\ref{pr:gram} with \(U = \C\).
+\item[\ref{pr:push-down}] Induction on \(m\).
+\item[\ref{pr:smallest}] Problem~\ref{pr:gram} on a line.
+\end{description}
+
+\subsection*{\S\ref{sec:multiplicities}}
+\begin{description}
+\item[\ref{pr:trace-charpoly}] Take \(h = 1\), then the traces of the powers of \(h\), and Newton's identities.
+\item[\ref{pr:trace-mult}] Only finitely many \(p\) occur on \(U \oplus U'\); a polynomial in finitely many elements of \(\mathcal H\) acts as the projection onto one joint eigenspace.
+\item[\ref{pr:negcount}] Count the integers in \([k + j - 1, r - 1]\), using \(r + 1 = k + m\).
+\end{description}
+
+\subsection*{\S\ref{sec:one-lift}}
+\begin{description}
+\item[\ref{pr:one-lift}] \(\Rc_{W_j,j}(\xi)\) preserves \(H_g(W_j)\); Problem~\ref{pr:scalar-gram} on \(H_g(W_j)\), then Theorem~\ref{thm:equal}.  For positivity, Problem~\ref{pr:gram}.
+\end{description}
+
+\subsection*{\S\ref{sec:twists}}
+\begin{description}
+\item[\ref{pr:mfold-order}] In the example the character group is cyclic of order \(12\); which element orders exceed \(3\)?
+\item[\ref{pr:powers}] The definition of \(\vartheta^n\), and Problem~\ref{pr:cQ}.
+\item[\ref{pr:B-ratio}] Split the product over \(S \cup Q\).
+\item[\ref{pr:rho-one}] At the trivial twist \(Q = \varnothing\) and \(\vartheta^{j-i} = 1\).
+\end{description}
+
+\subsection*{\S\ref{sec:factor}}
+\begin{description}
+\item[\ref{pr:abs-ratio}] Evaluate at \(1\) first.
+\item[\ref{pr:chain-det}] For the first statement, Theorem~\ref{thm:chain-gram} at \(\vartheta = 1\), and injectivity.  For the formula, Problems~\ref{pr:scalar-gram}, \ref{pr:powers} and~\ref{pr:one-lift}; compare the \(c_Q\) factors for \(\vartheta^j\) and \(\vartheta\), and note \(c_Q \ne 0\).
+\item[\ref{pr:quotient}] Take absolute values in Problem~\ref{pr:chain-det} and divide by the case \(\vartheta = 1\), using Problems~\ref{pr:abs-ratio} and~\ref{pr:rho-one}.  For \(T = 0\), Theorem~\ref{thm:equal}.
+\end{description}
+
+\begin{thebibliography}{Mac}
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[Mac]{Mac} I.~G.~Macdonald, \emph{Symmetric Functions and Hall Polynomials}, 2nd ed., Oxford University Press, 1995.
+\end{thebibliography}
+
 \end{document}
