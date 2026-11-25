@@ -1,0 +1,239 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[ps-]{20261125T010500--poincare-series-and-near-orthogonality__workbook}
+\externaldocument[dt-]{20261125T002000--definite-theta-lifts__workbook}
+\externaldocument[tn-]{20261125T002100--definite-theta-lifts-and-norms__workbook}
+\externaldocument[ob-]{20261126T000000--the-objects-of-the-construction__workbook}
+\externaldocument[sb-]{20261125T020200--slopes-frames-and-bessel-poincare-series__workbook}
+
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T020210\endcsname
+  \chapnumber{20261126T020210}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\R}{\mathbb R}
+\newcommand{\C}{\mathbb C}
+\newcommand{\A}{\mathbb A}
+\newcommand{\Oc}{\mathcal O}
+\newcommand{\Hc}{\mathcal H}
+\newcommand{\Ac}{\mathcal A}
+\newcommand{\Wc}{\mathcal W}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\Sym}{\operatorname{Sym}}
+\newcommand{\HS}{\mathrm{HS}}
+\newcommand{\vol}{\operatorname{vol}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\Cl}{\mathrm{Cl}}
+\newcommand{\tl}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\title{Bessel--Poincar\'e series and their Gram operators}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+From Chapter~\ref{ps-chap}: Poincar\'e series on \(\mathrm{SL}_2(\Z)\), the unfolding of Problem~\ref{ps-pr:unfold}, Problem~\ref{ps-pr:k12}, and the dimension as formal degree times covolume (Section~\ref{ps-sec:dim}).  From Chapter~\ref{dt-chap}: class sets, the groups \(\Gamma_L\), forms and their norm (Section~\ref{dt-sec:forms}), Problems~\ref{dt-pr:aut}, \ref{dt-pr:class-one}, \ref{dt-pr:sym-norm} and~\ref{dt-pr:forms-2}, and the mass \(M_2=1/32\).  From Chapter~\ref{tn-chap}: the period of Section~\ref{tn-sec:seesaw}.  From Chapter~\ref{ob-chap}: the decomposition (S4) of \(Y_0\) and Problem~\ref{ob-pr:Y0}.  From Chapter~\ref{sb-chap}: the Gram operators and Theorem~\ref{sb-thm:near}.  The Bessel periods of Gan, Gross and Prasad \cite[\S12]{GGP}, at the level of the definition.
+
+\medskip
+In Chapter~\ref{ps-chap} a Fourier coefficient of a cusp form is its inner product with a Poincar\'e series, and Petersson's formula expands the inner products of two Poincar\'e series.  Chapter~\ref{sb-chap} needs the same two facts for a unitary group, with Fourier coefficients replaced by Bessel periods.  What is the Poincar\'e series, and why is its Gram operator a sum over double cosets?  We give the definitions in the form the Lean formalization \cite{Lean} uses, work them out on a definite group where every sum is finite, and then state what the formalization proves about them.  As in Chapter~\ref{ob-chap}, hermitian forms \(h\) are linear in the first variable.
+
+\section{The Bessel subgroup}\label{sec:subgroup}
+
+Let \(E/F\) be a CM extension, \(\psi_F\) a nontrivial character of \(F\backslash\A_F\), and let \(V\) be a hermitian space over \(E\) of rank \(r\) with a decomposition
+\[
+ V=Ee_1\oplus\dots\oplus Ee_w\oplus X\oplus Ez\oplus Ef_1\oplus\dots\oplus Ef_w ,
+\]
+where \(h(e_a,e_b)=h(f_a,f_b)=0\), \(h(e_a,f_b)=\delta_{ab}\), the space \(X\) of rank \(k\) is orthogonal to the \(e_a\), \(f_a\) and \(z\), and \(h(z,z)=-T\) for a prime \(T\).  So \(r=2w+k+1\).  This is the decomposition (S4) of \(Y_0\) in Chapter~\ref{ob-chap}, with \(w=m/2-1\), the hyperbolic planes \(Ee_a+Ef_a\), and \(X\) the image of \(X_0\).
+
+Let \(N\) be the group of \(n\in U(V)\) such that \((n-1)e_a\) lies in the span of \(e_1,\dots,e_{a-1}\) for every \(a\), and \((n-1)y\) lies in the span of \(e_1,\dots,e_w\) for every \(y\) orthogonal to all \(e_a\).  It is the unipotent radical of the stabilizer of the isotropic flag \(Ee_1\subset Ee_1+Ee_2\subset\cdots\).  Embed \(U(X)\) in \(U(V)\) as the pointwise stabilizer of the \(e_a\), the \(f_a\) and \(z\).  Put \(e_{w+1}:=z\) and, for \(n\in N\),
+\[
+ \lambda(n):=\sum_{a=1}^wh(ne_{a+1},f_a),\qquad \psi_N(n):=\psi_F\bigl(\Tr_{E/F}\lambda(n)\bigr).
+\]
+The \emph{Bessel subgroup} is \(R:=N\rtimes U(X)\).  For automorphic forms \(f\) on \(U(V)\) and \(\phi\) on \(U(X)\), the Bessel period integrates \(f\) against \(\overline{\psi_N}\) over \(N(F)\backslash N(\A_F)\), and the result against \(\bar\phi\) over \(U(X)(F)\backslash U(X)(\A_F)\) \cite[\S12]{GGP}.  For \(w=0\) the group \(N\) is trivial, and the Bessel period is the restriction period along \(U(X)\subset U(X\perp Ez)\).
+
+\begin{problem}\label{pr:lambda}
+For \(n\in N\), \(\lambda(n)\) is the sum over \(a\le w\) of the coefficient of \(e_a\) in \(ne_{a+1}\).  The map \(\lambda\colon N\to E\) is a homomorphism, and \(\lambda(gng^{-1})=\lambda(n)\) for \(g\in U(X)\).  Hence \(\psi_N\) is a character of \(N(\A_F)\), trivial on \(N(F)\) and fixed by \(U(X)\).
+\end{problem}
+
+\begin{problem}\label{pr:normalize}
+\(U(X)\) normalizes \(N\), and \(U(X)\cap N=\{1\}\).
+\end{problem}
+
+\begin{problem}\label{pr:dimN}
+As an algebraic group over \(F\), \(N\) has dimension \(w(r+k)\).  For \((w,k)=(1,0)\) it is the three-dimensional unipotent radical of a Borel subgroup of \(U(V)\), \(V\) of rank \(3\).
+\end{problem}
+
+Different words of the construction use different lines.  The record contains, for each word \(u\), a number \(c_u\in E^\times\) with \(c_u\bar c_uT_u=T_{u_0}\), where \(T_u\) is the terminal prime of \(u\) (Section~\ref{ob-sec:lattices}), and the line of \(u\) is spanned by \(z_u:=c_u^{-1}z\), with \(z=z_{u_0}\).
+
+\begin{problem}\label{pr:rescale}
+\(h(z_u,z_u)=-T_u\).  Replacing \(z\) by \(z_u\) changes neither \(N\) nor \(U(X)\); it multiplies the term \(a=w\) of \(\lambda\) by \(c_u^{-1}\) and leaves the others unchanged.
+\end{problem}
+
+\section{Poincar\'e series}\label{sec:poincare}
+
+The Poincar\'e series of the argument is built like that of Chapter~\ref{ps-chap}, with \(\Gamma_\infty\) replaced by \(R\) and \(e(mz)\) by a Bessel function.  Let \(G:=U(V)\).  The formalization fixes a discrete series representation \(\pi\) of \(G(F\otimes\R)\), an open compact subgroup \(K\subset G(\A_{F,f})\) with a character \(\chi\), and the space \(\Hc\) of automorphic forms on \(G\) of type \(\pi\) at infinity on which \(K\) acts by \(\chi\).  For a word \(u\) it fixes a representation \(\pi_u\) of \(U(X)(F\otimes\R)\) (the weight of the word), and a function \(W_u\colon G(F\otimes\R)\to\pi_u\) with
+\[
+ W_u(nhg)=\psi_N(n)\,\pi_u(h)W_u(g)\qquad(n\in N(F\otimes\R),\ h\in U(X)(F\otimes\R)),
+\]
+which is reproduced by convolution with a matrix coefficient of \(\pi\) and has norm one in \(L^2\) of a fundamental domain for \(R\).  It is the archimedean Bessel function.  Let \(C_u\) be the space of \(U(X)(F\otimes\R)\)-equivariant maps \(\mathsf T\) from \(\pi_u\) to functions on \(U(X)(F)\backslash U(X)(\A_F)\) with a fixed level and character: algebraic forms on the definite group \(U(X)\) of weight \(\pi_u\), the column forms of the word.  For \(g\in G(\A_F)\) whose finite part is \(n\,h\,x_u\,\kappa\) with \(n\in N(\A_{F,f})\), \(h\in U(X)(\A_{F,f})\), \(\kappa\in K\) and a fixed translate \(x_u\), put \(\Phi_{\mathsf T}(g):=\psi_N(n)\chi(\kappa)\,\mathsf T(W_u(g_\infty))(h)\), and \(\Phi_{\mathsf T}(g):=0\) for the other \(g\).  The \emph{Bessel--Poincar\'e series} is
+\[
+ P_u\mathsf T(g):=\sum_{\delta\in R(F)\backslash G(F)}\Phi_{\mathsf T}(\delta g).
+\]
+\emph{Status}: these are the definitions of the formalization.  It proves that the series converges in \(L^2\), lies in \(\Hc\) and is linear in \(\mathsf T\), under a hypothesis that \(r\ge1801\) and that consecutive weights \(b_j\) of the chain, which enter the Harish-Chandra parameter of \(\pi\), differ by at least \(16r^{19}\), from a decay statement for \(W_u\) that rests on uniqueness of archimedean Bessel models with a gap hypothesis; compare \cite{JSZ}.  We have not followed the proof of the decay statement.  Formally, unfolding the sum against \(f\in\Hc\) gives the Bessel period of \(f\) against \(\mathsf T\), as in Problem~\ref{ps-pr:unfold}.
+
+On a definite group with one class every quotient is finite, and the series is a finite sum.  Let \(\Gamma\) be a finite group acting unitarily on a space \(V_\pi\), and let the forms on \(G\) be the vectors \(V_\pi^\Gamma\), with \(\lVert\psi\rVert^2:=\lvert\Gamma\rvert^{-1}\lVert\psi\rVert_{V_\pi}^2\), as in Chapter~\ref{dt-chap} for one class.  Let \(\Gamma_X\subset\Gamma\) be a subgroup, \(W\) a unitary representation of \(\Gamma_X\), and \(\iota\colon W\to V_\pi\) a \(\Gamma_X\)-equivariant linear map with \(\lVert\iota\xi\rVert^2=c_0\lVert\xi\rVert^2\) for a constant \(c_0>0\).  The forms on \(X\) are \(W^{\Gamma_X}\), with \(\lVert\xi\rVert^2:=\lvert\Gamma_X\rvert^{-1}\lVert\xi\rVert_W^2\).  Put
+\[
+ B(\psi,\xi):=\lvert\Gamma_X\rvert^{-1}\langle\psi,\iota\xi\rangle,\qquad
+ P\xi:=\sum_{\gamma\in\Gamma/\Gamma_X}\gamma\,\iota\xi .
+\]
+
+\begin{problem}\label{pr:unfold}
+\(P\xi\) is well defined and lies in \(V_\pi^\Gamma\), and \(\langle\psi,P\xi\rangle=B(\psi,\xi)\) for every \(\psi\in V_\pi^\Gamma\).
+\end{problem}
+
+\begin{problem}\label{pr:adjoint}
+The adjoint of \(P\) for the two norms is \(P^*\psi=\iota^*\psi\).  In particular \(P\ne0\) if and only if \(B(\psi,\xi)\ne0\) for some \(\psi\) and \(\xi\).
+\end{problem}
+
+\begin{problem}\label{pr:expansion}
+Let \((W',\iota')\) be a second pair as above, with Poincar\'e map \(P'\).  For \(\xi\in W^{\Gamma_X}\) and \(\xi'\in W'^{\Gamma_X}\),
+\[
+ \langle P\xi,P'\xi'\rangle=\sum_{\delta\in\Gamma_X\backslash\Gamma/\Gamma_X}\frac{\langle\delta\,\iota\xi,\iota'\xi'\rangle}{\lvert\Gamma_X\cap\delta\Gamma_X\delta^{-1}\rvert} ,
+\]
+and if \((W',\iota')=(W,\iota)\) the term of \(\delta=1\) is \(c_0\langle\xi,\xi'\rangle\).
+\end{problem}
+
+So \(K:=c_0^{-1}P^*P\) is the identity plus a sum over the nontrivial double cosets.  This is the finite form of Petersson's formula, Theorem~\ref{ps-thm:petersson}, where the double cosets \(\Gamma_\infty\backslash\Gamma/\Gamma_\infty\) give the Kloosterman terms.
+
+\section{The smallest case}\label{sec:smallest}
+
+Take \(\Oc=\Z[\mathrm i]\), \(\Gamma:=\Gamma_{I_2}\), of order \(32\) by Problem~\ref{dt-pr:aut}, and \(\Cl_2=\{I_2\}\) by Problem~\ref{dt-pr:class-one}.  Let \(z:=e_2\) and \(X:=\Oc e_1\); here \(h(z,z)=1\), since everything is definite.  The stabilizer of \(z\) is \(\Gamma_X=\{\diag(u,1):u\in\mu_4\}\).  Let \(V_\pi:=\Sym^a(\C^2)\), \(W:=\Sym^j(\C e_1)\) and \(\iota(\xi):=\xi\,e_2^{a-j}\).  Then \(B\) is the period \(P(\psi,\xi)\) of Section~\ref{tn-sec:seesaw}, and Problem~\ref{pr:unfold} says that it is the inner product with \(P\xi\).  For \(4\mid j\) let \(\xi_j\in W^{\Gamma_X}\) be the form with value \(e_1^j\).
+
+\begin{problem}\label{pr:cosets}
+\(\Gamma_X\backslash\Gamma/\Gamma_X\) has five elements: the classes of \(\diag(1,u)\), \(u\in\mu_4\), with four elements each, and the class of the sixteen antidiagonal matrices.
+\end{problem}
+
+\begin{problem}\label{pr:Pj}
+Let \(4\mid j\) and \(0\le j\le a\).  Then \(P\xi_j=4\bigl(e_1^je_2^{a-j}+e_1^{a-j}e_2^j\bigr)\) if \(4\mid a\), and \(P\xi_j=0\) otherwise.  For \(a=8\): \(P\xi_0=4(e_1^8+e_2^8)\) and \(P\xi_4=8e_1^4e_2^4\).
+\end{problem}
+
+\begin{problem}\label{pr:gram-toy}
+Here \(c_0=\binom aj^{-1}\).  Let \(4\mid a\) and \(4\mid j,j'\), and put \(K_{jj'}:=\bigl(c_0(j)c_0(j')\bigr)^{-1/2}\langle P\xi_j,P\xi_{j'}\rangle/(\lVert\xi_j\rVert\lVert\xi_{j'}\rVert)\).  Then
+\[
+ K_{jj'}=4\bigl(\delta_{jj'}+\delta_{j',a-j}\bigr).
+\]
+In the expansion of Problem~\ref{pr:expansion} the identity contributes \(1\) to \(K_{jj}\), the three classes \(\diag(1,u)\) with \(u\ne1\) contribute \(3\), and the antidiagonal class contributes \(4\delta_{j',a-j}\).
+\end{problem}
+
+\begin{problem}\label{pr:basis}
+Let \(4\mid a\).  The forms \(P\xi_j\) with \(4\mid j\) and \(2j\le a\) are an orthogonal basis of \(\Ac_{(a)}(2)\), their number is \(\lfloor a/8\rfloor+1\), and \(P\xi_{a-j}=P\xi_j\).
+\end{problem}
+
+As in Problem~\ref{ps-pr:k12}, distinct Poincar\'e series can coincide.
+
+\begin{problem}\label{pr:count-toy}
+Let \(4\mid a\) and \(D^*:=4M_2\dim\Sym^a(\C^2)\).  Then \(D^*=(a+1)/8\), and \(0<\dim\Ac_{(a)}(2)-D^*\le7/8\).
+\end{problem}
+
+So in the toy the words \(j\) with \(2j<a\) give exactly orthogonal Poincar\'e series which span all but at most one dimension of the space, and \(\dim\Ac_{(a)}(2)\) is \(D^*\) up to a bounded error, as \(\dim S_k\) is \((k-1)/12\) up to a bounded error in Problem~\ref{ps-pr:dim}.  But the diagonal is \(4\), not \(1\): the terms of the elements \(\diag(1,u)\), which preserve the line \(Ez\) without fixing \(z\), are as large as the identity term.  The statement of the next section needs every term other than the identity term to be small, and the Bessel data are built so that the space of forms of each word is a small part of \(\Hc\).  We have not followed how the formalization disposes of the terms of such elements.
+
+\section{The Gram operators in the argument}\label{sec:gram}
+
+Return to Section~\ref{sec:poincare}.  Let \(d_u:=\dim C_u\), and let \(c_0(u)\) be the volume of the level subgroup, times the volume of a fundamental domain for \(N\) at infinity, times the volume of \(U(X)(F\otimes\R)\), divided by \(\dim\pi_u\).  The Gram operators are
+\[
+ K_{uu'}:=\bigl(c_0(u)c_0(u')\bigr)^{-1/2}P_u^*P_{u'}\colon C_{u'}\to C_u ,
+\]
+as in Chapter~\ref{sb-chap}.  Let \(D:=\dim\Hc\), and let \(D^*\) be the formal degree of \(\pi\) times the volume of \(G(F)\backslash G(\A_F)\) times the value at \(1\) of the level idempotent.  Fix the scale \(x\), \(y:=x^\varepsilon\) and \(b:=e^y\), and put \(\Gamma_0:=\exp(C_\Gamma m^5fy)\) for a constant \(C_\Gamma>0\) of the family.
+
+\begin{theorem}[near orthogonality]\label{thm:near}
+For every family of records of the formalization satisfying its size conditions there is \(x_0\) such that for every record at a scale \(x\ge x_0\) there are \(\eta_0,\eta_1,e_0\ge0\) with \(\eta_0,\eta_1,\sqrt{e_0}\le\exp(-x^{\varepsilon/8})\) with the following property.  If \(1/3\le d_u\Gamma_0^2/D^*\le3\) for every word \(u\), then
+\[
+ \lVert K_{uu'}\rVert_\HS^2\le(1+\eta_0)\frac{d_ud_{u'}}{D^*}\quad(u\ne u'),\qquad
+ \lVert K_{uu}-1\rVert_\HS^2\le e_0d_u,\qquad D\le(1+\eta_1)D^* .
+\]
+\end{theorem}
+\noindent\emph{Status}: proved in the formalization.  The proof writes \(K_{uu'}\) as an absolutely convergent sum over a set of terms containing an identity term; by our reading these are the double cosets \(R(F)\backslash G(F)/R(F)\) of Problem~\ref{pr:expansion}, but we have not read their definition.  It then proves four bounds: the terms of a class of degenerate terms sum to zero when \(u\ne u'\); their sum is small when \(u=u'\); the other terms of an off-diagonal block have squared norm at most \((1+b^{-6})d_ud_{u'}/D^*\); and the other terms of a diagonal block differ from the identity by little.  The off-diagonal bound is derived from the Siegel--Weil formula in its convergent range and from a lower bound for Poincar\'e amplitudes; we have not followed the proofs of these four bounds.  The statement is Theorem~\ref{sb-thm:near} of Chapter~\ref{sb-chap}; in \cite{Adr} it is derived from hypotheses assumed there.
+
+The third inequality comes from a count of forms.
+
+\begin{theorem}[the count]\label{thm:count}
+There are \(C,c,c_b>0\) such that, if every gap of the Harish-Chandra parameter of \(\pi\) is at least \(Cr^{19}f^5\log(b\,\mathrm{rd}_E)\), \(\log f\le\sqrt r\) and \(\log\log b\le c_brf\log r\), then \(\lvert D-D^*\rvert\le\exp(-crf\log r)\,D^*\).  Here \(\mathrm{rd}_E\) is the root discriminant of \(E\).
+\end{theorem}
+\noindent\emph{Status}: proved in the formalization from the Siegel--Weil formula for unitary groups in its convergent range, through a statement on volumes; we have not followed the proof.  It is a limit multiplicity statement with a rate, in the tradition of de George and Wallach \cite{dGW}.  Section~\ref{ps-sec:dim} is its simplest case, where the identity term is the formal degree times the covolume, and Problem~\ref{pr:count-toy} is the definite case of rank two.
+
+\begin{problem}\label{pr:eta}
+For \(x\ge1\), \(b^{-6}\le\exp(-x^{\varepsilon/8})\).  Under the hypotheses of Theorem~\ref{thm:count}, if moreover \(crf\log r\ge x^{\varepsilon/8}\), Theorem~\ref{thm:count} gives the third inequality of Theorem~\ref{thm:near} with \(\eta_1=\exp(-crf\log r)\).
+\end{problem}
+
+\begin{problem}\label{pr:assemble}
+Suppose \(K_{uu'}=K^0_{uu'}+K''_{uu'}\) with \(K''_{uu'}=0\) for \(u\ne u'\) and \(\lVert K^0_{uu'}\rVert_\HS^2\le(1+b^{-6})d_ud_{u'}/D^*\).  Then the first inequality of Theorem~\ref{thm:near} holds with \(\eta_0=b^{-6}\), for every \(x\ge1\).
+\end{problem}
+
+\begin{problem}\label{pr:toy-fails}
+In the toy of Section~\ref{sec:smallest}, with \(4\mid a\), the words \(j\) with \(4\mid j\) and \(2j<a\), and \(D^*=(a+1)/8\): the third inequality of Theorem~\ref{thm:near} holds with \(\eta_1=7/(a+1)\), the left side of the first is \(0\), and the second fails for every \(e_0<9\).
+\end{problem}
+
+In Chapter~\ref{sb-chap} the three inequalities are~(e) of Theorem~\ref{sb-thm:A3}.  The identification of the period maps with these Poincar\'e series, which is~(d) there, is the subject of the following chapters.
+
+\begin{leanremark}
+\raggedright In \cite{Lean} the Bessel datum is \tl{HidaSetting}: \tl{eX}, \tl{fY}, \tl{zu} with \tl{zu\_norm}, the sets \tl{Ninf}, \tl{Nfin}, the character \tl{psiInf}, \tl{psiFin} (whose argument is divided by the product of the two level primes), the Bessel function \tl{Wu} with \tl{IsWu}, and the level character \tl{chi2}.  The numbers \(c_u\) are \tl{D7.cOf} with \tl{cOf\_eq}, and \tl{D7.zmOf} is \(c_u^{-1}z\).  The seed, the series and its \(L^2\) class are \tl{Ph}, \tl{Pser}, \tl{PuFun} in \tl{PoincareInHH}, with \tl{InHH} and the normalizing volume \tl{c0X}.  The Gram operator is \tl{Kmat}, and Theorem~\ref{thm:near} is \tl{LinkS\_at} and \tl{LinkS}, proved by \tl{link\_alt\_alt\_bis} through \tl{theoremS\_transport\_link\_zero} and \tl{theoremS\_link\_of\_evaluation}.  The four bounds are \tl{ClKppOff} (from \tl{KppOffC\_holds}), \tl{ClKppDiag} (from \tl{kernel\_diagonal\_positive}), \tl{ClOff} (from \tl{TheoremSSelected}, proved by \tl{GlobalTheory.CarrierGap.offDiag}) and \tl{ClDiag} (from \tl{diagonal\_positive\_final}).  Theorem~\ref{thm:count} is \tl{CountAllPointsClass}, proved by \tl{count\_constants\_of\_siegelWeil}; the decay is \tl{WuDecayOfGap}, proved by \tl{wuDecayOfGap\_holds'}, under \tl{GapHyp}.
+\end{leanremark}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:subgroup}}
+\begin{description}
+\item[\ref{pr:lambda}] Write \(ne_{a+1}=e_{a+1}+\sum_{b\le a}c_b(n)e_b\), and compute the coefficients of \(nn'e_{a+1}\); an element of \(U(X)\) fixes every \(e_b\) and \(z\).
+\item[\ref{pr:normalize}] An element of \(U(X)\) preserves the span of the \(e_a\) and its orthogonal complement.
+\item[\ref{pr:dimN}] First the unipotent radical of the stabilizer of \(Ee_1+\dots+Ee_w\): \(2w(r-2w)\) dimensions from maps between \(V/(\ldots)^\perp\), the middle and the flag, and \(w^2\) from a hermitian matrix.  Then the unipotent radical of a Borel subgroup of \(\mathrm{GL}_w(E)\).
+\item[\ref{pr:rescale}] \(h\) is linear in the first variable.
+\end{description}
+
+\subsection*{\S\ref{sec:poincare}}
+\begin{description}
+\item[\ref{pr:unfold}] \(\iota\xi\) is fixed by \(\Gamma_X\), and \(\langle\psi,\gamma v\rangle=\langle\gamma^{-1}\psi,v\rangle\).
+\item[\ref{pr:adjoint}] Problem~\ref{pr:unfold}.
+\item[\ref{pr:expansion}] Apply Problem~\ref{pr:unfold} with \(\psi=P\xi\), and group the cosets \(\gamma\Gamma_X\) by double cosets.
+\end{description}
+
+\subsection*{\S\ref{sec:smallest}}
+\begin{description}
+\item[\ref{pr:cosets}] Multiply \(\diag(u_1,u_2)\) and the antidiagonal matrices by \(\diag(u,1)\) on both sides.
+\item[\ref{pr:Pj}] Representatives of \(\Gamma/\Gamma_X\): \(\diag(1,u)\) and \(\begin{pmatrix}0&u\\1&0\end{pmatrix}\); sum the powers of \(u\).
+\item[\ref{pr:gram-toy}] Problem~\ref{dt-pr:sym-norm} for \(c_0\); then Problems~\ref{pr:expansion} and~\ref{pr:cosets}.
+\item[\ref{pr:basis}] Problem~\ref{dt-pr:forms-2}.
+\item[\ref{pr:count-toy}] Write \(a=8q\) or \(a=8q+4\).
+\end{description}
+
+\subsection*{\S\ref{sec:gram}}
+\begin{description}
+\item[\ref{pr:eta}] \(6x^\varepsilon\ge x^{\varepsilon/8}\).
+\item[\ref{pr:toy-fails}] Problems~\ref{pr:gram-toy} and~\ref{pr:count-toy}; here \(d_j=1\).
+\end{description}
+
+\begin{thebibliography}{GGP}
+\bibitem[Adr]{Adr} J.~Adriazola, \emph{The Alp\"oge proof of the Riemann hypothesis}, manuscript, revised 24 November 2026, \url{https://github.com/jimjamzola/RH-Alpoge-Reconstruction}.
+\bibitem[dGW]{dGW} D.~L.~de~George and N.~R.~Wallach, \emph{Limit formulas for multiplicities in \(L^2(\Gamma\backslash G)\)}, Ann.\ of Math.\ \textbf{107} (1978), 133--150.
+\bibitem[GGP]{GGP} W.~T.~Gan, B.~H.~Gross and D.~Prasad, \emph{Symplectic local root numbers, central critical \(L\)-values, and restriction problems in the representation theory of classical groups}, Ast\'erisque \textbf{346} (2012), 1--109.
+\bibitem[JSZ]{JSZ} D.~Jiang, B.~Sun and C.-B.~Zhu, \emph{Uniqueness of Bessel models: the archimedean case}, Geom.\ Funct.\ Anal.\ \textbf{20} (2010), 690--709.
+\bibitem[Lean]{Lean} The Lean community, \emph{riemann-hypothesis}, a Lean formalization of Alp\"oge's argument, \url{https://github.com/leanprover-community/riemann-hypothesis}.
+\end{thebibliography}
+\end{document}
