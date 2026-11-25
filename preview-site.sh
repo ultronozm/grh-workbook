@@ -165,6 +165,7 @@ fi
 # Keep only what the deploy branch would contain.
 git ls-files --others -z | while IFS= read -r -d '' f; do
   case "$f" in
+    tag/*.html) continue ;;
     */*) ;;
     *.pdf|*.html|*.aux|listing.json) continue ;;
   esac
