@@ -6,6 +6,10 @@ The site is <https://ultronozm.github.io/grh-workbook/>.  Each update appends an
 
 ## What changed
 
+### 26 November 2026: where the inputs of the main inequality come from
+
+- ***The main inequality*** now says, for each input, where it comes from: (A1) and (A2) are parts (a) and (b) of Theorem A in the notation of the chapter, (B) is a consequence of Theorem B, and Theorem C is quoted in full.  A new sentence says that the three theorems are proved in Parts VIII, VII and IX and that the chapter uses only their statements.
+
 ### 26 November 2026: batch 7, the second moment (second half); the whole proof
 
 - **Two new sheets in Part VII:** *The open cell: Siegel's formula and Poisson summation* and *Positive type and the bootstrap: the second moment*.
