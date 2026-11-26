@@ -1,0 +1,236 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[sd-]{20261125T000000--slope-method__workbook}
+\externaldocument[kl-]{20261125T009000--kronecker-limit-and-chowla-selberg__workbook}
+\externaldocument[tn-]{20261125T002100--definite-theta-lifts-and-norms__workbook}
+\externaldocument[da-]{20261126T030300--the-data__workbook}
+\externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
+\externaldocument[dl-]{20261126T030500--divisibility-of-the-composite-lift__workbook}
+\externaldocument[d2-]{20261126T050200--one-lift-at-a-small-non-split-prime__workbook}
+\externaldocument[c1-]{20261126T050400--the-norm-of-one-lift__workbook}
+\externaldocument[col-]{20261126T030800--the-cost-of-one-lift__workbook}
+\externaldocument[l1-]{20261126T050800--compressions-and-false-lifts__workbook}
+\externaldocument[l5-]{20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook}
+
+\newcounter{chap}
+\input{chapters}\chapnumber{20261126T050900}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Mcal}{\mathcal{M}}
+\newcommand{\Nc}{\mathcal{N}}
+\newcommand{\Hc}{\mathcal{H}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\Aut}{\operatorname{Aut}}
+\newcommand{\Nm}{\operatorname{Nm}}
+\newcommand{\wt}{\mathrm{wt}}
+\newcommand{\alg}{\mathrm{alg}}
+\newcommand{\cvac}{c_{\mathrm{vac}}}
+\newcommand{\cjet}{c_{\mathrm{jet}}}
+\newcommand{\tl}[1]{\texttt{#1}}
+
+\setlength{\emergencystretch}{3em}
+
+\title{Hecke values as norms of lifts}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Euler products of Hecke \(L\)-functions \cite[Ch.~VII, \S8]{Ne}.  Chapter~\ref{tn-chap} (Sections~\ref{tn-sec:smallest}, \ref{tn-sec:norm}; Problems~\ref{tn-pr:U1U1}, \ref{tn-pr:hecke-positive}, \ref{tn-pr:hecke-norm}); Chapter~\ref{sd-chap} (heights, Section~\ref{sd-sec:heights}; Problems~\ref{sd-pr:iota}, \ref{sd-pr:fock}); the data, \(B\) (Definition~\ref{da-def:budget}) and \(s_\infty\) of Chapter~\ref{da-chap}; from Chapter~\ref{ob-chap} the chosen places \(\Mcal\), \(\Nc\), tame characters, \(\upsilon\), \(\chi_M\) with residue characters \(\omega\), the vacuum scale \(\cvac\) and critical pairs; integrality at \(\eta\colon\C\to\C_\ell\) (Section~\ref{dl-sec:chain}); \(\cjet\) (Definition~\ref{d2-def:jet-series}); Theorem~\ref{c1-thm:rallis}; \(\Hc_j\) (Definition~\ref{l1-def:hecke-product}).  We write \(\lvert y\rvert_\iota := \lvert\iota(y)\rvert_\ell\), \(\lvert\ell\rvert_\ell = 1/\ell\).
+
+\medskip
+For a regular family \(\theta\) of \(m\)-fold twists and \(1 \le j \le m\), Chapter~\ref{col-chap} bounds the height of \(Z_j(1)/Z_j(\theta_\iota)\), and Problem~\ref{l1-pr:quotient} expresses this quotient through the compression determinants and the quotient \(\Hc_j(\vartheta)/\Hc_j(1)\) of products of Hecke values at \(\vartheta = \theta_\iota^j\).  How can a ratio of \(L\)-values be bounded at every \(\iota \mid \ell\)?  For a critical pair with \(z \ge 2\), the squared norm of a theta lift of a character from \(\mathrm U(1)\), divided by \((\Nm Q_\xi)^{2z-1}\), is the partial Hecke value times a constant independent of the twist \(\xi\); an integer multiple of it is integral away from \(\Nm Q_\xi\); and for a main pair the untwisted squared norm has bounded height.  We begin with a lift between two lines over \(\Z[\ii]\) and with the local factors in rank four over \(\F_3\).
+
+\section{A Hecke value as a squared norm}\label{sec:toy}
+
+In this section only, \(c_a\), \(\vartheta_0\) and \(L(\bar\upsilon_n, s)\) have the meanings of Sections~\ref{tn-sec:smallest} and~\ref{tn-sec:norm}.  By Problem~\ref{tn-pr:U1U1} the lift \(\Theta_{(4)}\) between two lines is multiplication by \(c_4/4\), and Problem~\ref{tn-pr:hecke-norm} gives
+\[
+  \frac{c_4^2}{16} = 2100\,\vartheta_0^2\,(2\pi)^{-8}\,L(\bar\upsilon_8, 8) .
+\]
+
+\begin{problem}\label{pr:gauss}
+To the precision shown, \(c_4 \approx 0.14319133702\), \(\vartheta_0 \approx 1.18034059902\), \(L(\bar\upsilon_8, 8) \approx 1.06394325884\), and both sides of the display are \(\approx 0.00128148493742\).
+\end{problem}
+
+This lift has rank one, which Theorem~\ref{thm:pair} excludes (it needs rank \(2z \ge 4\)); it shows only the shape of part (i), a squared norm equal to a fixed constant times a Hecke value.  The size of the \(L\)-value itself is controlled by its Euler product, once the coefficients are unitary.
+
+\begin{problem}\label{pr:gauss-euler}
+\(L(\bar\upsilon_8, 8) = \sum_{\mathfrak a} (\bar\alpha/\lvert\alpha\rvert)^8\, \Nm\mathfrak a^{-4}\), the sum over the nonzero ideals \(\mathfrak a = (\alpha)\) of \(\Z[\ii]\), with coefficients of absolute value \(1\).  Hence \(\log L(\bar\upsilon_8, 8) \le \log\zeta_{\Q(\ii)}(4)\); numerically \(0.0620 \le 0.0680\).
+\end{problem}
+
+In the proof the character is lifted to a definite space of rank \(n\), with a finite datum on columns of length \(n\) at finitely many places.  At each such place \(w\), with residue field \(\F_q\), three factors enter: the mean of the squared absolute value of the datum on \(\F_q^n\), the index of the target level in the integral group, and \((1 - q^{-n})^{-1}\), restored from the denominator Euler product in the vacuum sum.  At a \emph{chosen} place the datum is the indicator of a fixed basis vector, and the level fixes that vector.  At a place of the modulus \(Q_\xi\) it is the residue character of one coordinate, extended by zero, whose squared absolute value is the indicator of the complement of the coordinate hyperplane; the level preserves the hyperplane.
+
+\begin{problem}\label{pr:chosen-place}
+For \(q = 3\), \(n = 4\): one fixed vector is a proportion \(1/81\) of \(\F_3^4\), \(\mathrm{GL}_4(\F_3)\) acts transitively on the \(80\) nonzero vectors, \((1 - 3^{-4})^{-1} = 81/80\), and the product is \(1\).  In general \(q^{-n}(q^n - 1)(1 - q^{-n})^{-1} = 1\).
+\end{problem}
+
+\begin{problem}\label{pr:twist-place}
+For \(q = 3\), \(n = 4\): the vectors with nonzero first coordinate are a proportion \(2/3\), \(\mathrm{GL}_4(\F_3)\) acts transitively on the \(40\) hyperplanes, and \(\tfrac23\cdot 40\cdot\tfrac{81}{80} = 27 = 3^3\).  In general \(\frac{q-1}{q}(1 + q + \dots + q^{n-1})(1 - q^{-n})^{-1} = q^{n-1}\).
+\end{problem}
+
+So the three factors give \(1\) at a chosen place and \(q^{n-1}\) at a place of the modulus: this is the power of \(\Nm Q_\xi\) in Theorem~\ref{thm:pair}.  (The index of the source level of \(\mathrm U(1)\) supplies a separate factor \(q - 1\) at each chosen place.)
+
+\section{The lift of a character}\label{sec:lift}
+
+Recall from Definition~\ref{ob-def:pair} that a critical pair \(P = (\nu, z)\) has a character \(\nu\) of weight \(-\wt_P\), with \(z \le \wt_P(\tau) \le 4b\), tame part trivial off \(\Mcal\), and \(1 \le z \le t\); that \(L^S(z, \mu)\) is the Euler product of the unitary Hecke character \(y \mapsto \mu(y/\bar y)\) of \(E\), evaluated at chosen uniformizers, over the places outside \(S \cup \bar S\), with its value at \(z = 1\) given by the limit from the right whenever that limit exists in \(\C\) (when \(S \cup \bar S\) contains the ramified places, this is the partial Hecke \(L\)-function); and that for a tame character \(\xi\) and \(\epsilon = \pm1\)
+\[
+  R_P(\xi, \epsilon) = \frac{\lvert L^{\Mcal\cup Q_\xi}(z, (\nu\xi^\epsilon)^{-1})\rvert}{\lvert L^{\Mcal}(z, \nu^{-1})\rvert} , \qquad R_P(\xi) = R_P(\xi, 1) .
+\]
+
+\begin{definition}\label{def:row}
+The \emph{row} of a critical pair \(P = (\nu, z)\) is \(\lambda_P(\tau) := \wt_P(\tau) - z \ge 0\), for \(\tau \in \Phi\).  In this chapter \(\lvert\lambda_P\rvert := \sum_{\tau\in\Phi}\lambda_P(\tau)\).
+\end{definition}
+
+\begin{definition}\label{def:char-lift}
+Let \(P = (\nu, z)\) be a critical pair with \(z \ge 2\) and \(\xi\) a tame character.  Consider the theta lift of the constant function \(1\) on \(\mathrm U(1)\) to the standard definite space of rank \(2z\), for the character \(\nu\xi\), with the following datum: at infinity the highest vector of the weight with one row of length \(\lambda_P(\tau)\) at each \(\tau\); at the places of \(\Mcal\) the indicator of one fixed basis vector, at the places of \(Q_\xi\) the residue characters of \(\xi\) at one fixed coordinate, extended by zero (as in Section~\ref{sec:toy}); the vacuum elsewhere.  The \emph{lift of the constant} \(\phi_{P,\xi}\) is this lift times the index of the chosen level of \(\mathrm U(1)\) and times \(\cvac^{2z}(\pi_M\cjet)^{\lvert\lambda_P\rvert}\).
+\end{definition}
+
+The class sum of the theta kernel of this datum over \(\mathrm U(1)\) at the chosen level equals the theta lift of \(1\) times the source level index; multiplying this class sum by \(\cvac^{2z}(\pi_M\cjet)^{\lvert\lambda_P\rvert}\) gives \(\phi_{P,\xi}\).  Its squared norm is computed by Theorem~\ref{c1-thm:rallis} for this sharp datum, which the proof checks (\emph{Status}: the Rallis inner product formula \cite{Ra,Li}).  At infinity the Fock vector is paired with itself.
+
+\begin{problem}\label{pr:fock-row}
+In the Fock space of Section~\ref{tn-sec:norm}, with variables \(u_{\tau,1},\dots,u_{\tau,2z}\) at \(\tau\), the vector \(\prod_\tau u_{\tau,1}^{\lambda_P(\tau)}\) has squared norm \(\prod_\tau \lambda_P(\tau)!\).
+\end{problem}
+
+Fix a critical pair \(P = (\nu, z)\) with \(z \ge 2\).  The proof combines the formula of Theorem~\ref{c1-thm:rallis}, the vacuum sum (the partial Hecke value divided by the product of \((1-\varepsilon_w q_w^{-z})^{-1}\) over the finite places outside \(\Mcal\cup Q_\xi\) and its conjugates, with opposite signs \(\varepsilon_w\) at distinct conjugate places and \(+1\) at a self-conjugate place), the local factors of Problems~\ref{pr:chosen-place} and~\ref{pr:twist-place} at the places of \(\Mcal \cup Q_\xi\), and Problem~\ref{pr:fock-row}.  It obtains a complex number \(C_P \ne 0\), independent of \(\xi\), with
+\[
+  \lVert\phi_{P,\xi}\rVert^2 = C_P\, L^{\Mcal\cup Q_\xi}\bigl(z, (\nu\xi)^{-1}\bigr)\,(\Nm Q_\xi)^{2z-1}
+\]
+for every tame character \(\xi\).  Here \(C_P\) is the squared modulus of the scale times the volumes of the two adelic quotients, divided by the full signed Euler product at \(z\), times \(\prod_{w\in\Mcal}(q_w - 1)\), the hook number \(\prod_\tau\lambda_P(\tau)!\) and the dimension of the weight.  The lift is nonzero for every tame \(\xi\).
+
+\begin{problem}\label{pr:euler-size}
+Let \(\chi\) be a unitary Hecke character of \(E\), \(S\) a finite set of finite places, and (in this problem) \(L^S(s,\chi)\) its \(L\)-function without the factors at \(S\).  For real \(s \ge 2\), \(L^S(s,\chi)\) is nonzero and \(\lvert\log\lvert L^S(s,\chi)\rvert\rvert \le [E:\Q]\log\zeta(2) = 2f\log\zeta(2) < 4f\).
+\end{problem}
+
+The proof uses the bound \(4f\).
+
+\section{Integrality, and the direction of the estimate}\label{sec:alg}
+
+\begin{definition}\label{def:alg}
+For a critical pair \(P = (\nu, z)\) with \(z \ge 2\) let \(d_P := M^{4fz}(Md)^{\lvert\lambda_P\rvert}\), and for a tame character \(\xi\) let the \emph{algebraic part} be
+\[
+  \alg_P(\xi) := \Nc\, d_P^2\, \frac{\lVert\phi_{P,\xi}\rVert^2}{(\Nm Q_\xi)^{2z-1}} .
+\]
+\end{definition}
+
+At primes \(\ell \nmid \Nm Q_\xi\) the number \(d_P\) clears the denominators of the scaled theta kernel: \(M^{4fz}\) those of the finite datum, and \(Md\) per box of the row those of the derivatives.  The proof shows that for every such \(\ell\) and every ring homomorphism \(\eta\colon\C\to\C_\ell\) the form \(d_P\phi_{P,\xi}\) is integral at \(\eta\) (\emph{Status}: read from the code).  The squared norm is a class sum, \(\lVert\phi\rVert^2 = \sum_c \lvert\Gamma_c\rvert^{-1}\langle\phi(g_c),\phi(g_c)\rangle\), over representatives \(g_c\) with finite stabilizers \(\Gamma_c\).
+
+\begin{problem}\label{pr:class-sum}
+Let \(I\) and \(T\) be finite sets, \(G\) an \(I\times I\) hermitian matrix with entries in \(\Z\), and \(\eta\colon\C\to\C_\ell\) a ring homomorphism.  For \(c \in T\) let \(a_c \in \C^I\), and let \(\gamma_c\) be a positive integer dividing a fixed integer \(A \ge 1\).  If \(\lvert\eta(a_{c,i})\rvert \le 1\) and \(\lvert\eta(\bar a_{c,i})\rvert \le 1\) for all \(c, i\), then \(\lvert\eta(A\sum_c \gamma_c^{-1}\, a_c^* G a_c)\rvert \le 1\).
+\end{problem}
+
+Problem~\ref{pr:class-sum} models two inputs read from the code.  At any finite adelic point, the Gram pairing of two values of gauge at most one, the first at \(\eta\circ(\text{complex conjugation})\) and the second at \(\eta\), is integral at \(\eta\).  On the standard definite space of rank at most \(2n_m\), for every level contained in the stabilizer of the standard lattice, every class stabilizer has order dividing \(\Nc\).
+
+\begin{problem}\label{pr:alg}
+Let \(P = (\nu, z)\) be a critical pair with \(z \ge 2\) and \(\xi\) a tame character.  Given the norm formula of Section~\ref{sec:lift}, the integrality of \(d_P\phi_{P,\xi}\), the Gram-pairing integrality and the divisibility of the stabilizer orders: \(\lvert\eta(\alg_P(\xi))\rvert_\ell \le 1\) for every prime \(\ell \nmid \Nm Q_\xi\) and every \(\eta\colon\C\to\C_\ell\); at \(\xi = 1\) this holds at every prime; and \(R_P(\xi) = \alg_P(\xi)/\alg_P(1) = \bigl(\lVert\phi_{P,\xi}\rVert^2/(\Nm Q_\xi)^{2z-1}\bigr)/\lVert\phi_{P,1}\rVert^2\).
+\end{problem}
+
+Fix a critical pair \(P = (\nu, z)\) with \(z \ge 2\).  For \(1 \le j \le m\) and a regular family \(\theta\) of \(m\)-fold twists (Definition~\ref{l5-def:regular}), write \(\vartheta_\iota := \theta_\iota^j\).  The family to be estimated has terms \(R_P(\vartheta_\iota)^{-1} = \alg_P(1)/\alg_P(\vartheta_\iota)\).  The denominator is integral at \(\iota\), as \(\ell \nmid \Nm Q_{\vartheta_\iota}\); its inverse need not be small there.
+
+\begin{problem}\label{pr:direction}
+For \(n \ge 1\), the number \(y_n := (2+\ii)^n\) is integral at every \(\iota\), and \(\lvert\sigma(y_n)\rvert = 5^{n/2}\) for every \(\sigma \in \Aut(\C)\); yet \(\lvert y_n^{-1}\rvert_\iota = 5^n\) for \(\iota \mid 5\) with \(\lvert 2+\ii\rvert_\iota = 1/5\).
+\end{problem}
+
+Thus an integral denominator can have a large inverse at the specified embedding, while Theorem~\ref{thm:pair}(ii) gives only an upper bound for the absolute value of the denominator.
+
+\section{The size of the untwisted norm}\label{sec:size}
+
+\begin{definition}\label{def:main}
+A critical pair \(P = (\nu, z)\) is \emph{main for} \(j\) if \(z \ge 10\), \(m < z \le r\), \(1 \le j \le m\), the tame part of \(\nu\) is \(\omega^j\), and \(\kappa_j(\tau) + r - t \le \wt_P(\tau) \le \kappa_j(\tau)\) for every \(\tau\).  It has \emph{empty row} if \(z \ge 2\) and \(\wt_P(\tau) = z\) for every \(\tau\), or equivalently if \(z \ge 2\) and \(\lambda_P(\tau) = 0\) for every \(\tau\).
+\end{definition}
+
+\begin{problem}\label{pr:jet-mono}
+\(s_\infty(y+1) \ge s_\infty(y)\) for every integer \(y \ge 0\).
+\end{problem}
+
+\begin{problem}\label{pr:row-range}
+If \(P\) is main for \(j\), then \(\kappa(\tau) \le \lambda_P(\tau) \le \kappa(\tau) + x^{42}\) for every \(\tau \in \Phi\).
+\end{problem}
+
+The conjugates of the squared norm are read from the code.  For \(\sigma \in \Aut(\C)\) fixing \(K\) and each integer \(z \ge 2\) there is \(c_{\sigma,z} \in \R\) such that every critical pair \(P = (\nu, z)\) satisfies
+\[
+  \log\bigl\lvert\sigma\bigl(\lVert\phi_{P,1}\rVert^2\bigr)\bigr\rvert = c_{\sigma,z} + r_{\sigma,P} + \sum_{\tau\in\Phi} s_\infty(\lambda_P(\tau))
+\]
+with a real \(r_{\sigma,P} \ge -4f\), and \(r_{\sigma,P} \le 4f\) if \(P\) has empty row.  Here \(r_{\sigma,P}\) is the logarithm of the dimension of the transported weight (which is \(1\) for an empty row) plus \(\log\lvert L\rvert\) for the inverse transported character at \(z\) away from \(\Mcal\), bounded by the \(4f\) of Problem~\ref{pr:euler-size}.  The factors \(M^{\lvert\lambda_P\rvert}\), \(\Omega^{-\lvert\lambda_P\rvert}\) and \(\prod_\tau\lambda_P(\tau)!\) come from \(\lvert\pi_M\rvert^2 = M\), from conjugating the scaled jets, and from Problem~\ref{pr:fock-row}.  (\emph{Status}: read from the code, which uses the conjugation of CM theta series and the Chowla--Selberg formula for the common area of the lattices \(\sigma(u)\Lambda^\sigma\), with \(\Lambda^\sigma\) the conjugate lattice and \(u\) a number of absolute value \(1\) at every finite place; classical background: \cite[Thm.~5.4]{Sh}, Theorem~\ref{kl-thm:cs}.)  The proof also uses that for \(2 \le z \le r\), with the same \(z\) as \(P\), the pair \(P_0 := (\upsilon^{-z}, z)\) is a critical pair with empty row and trivial tame part, and that \(\Nc d_{P_0}^2 \le e^{x^{33}}\).
+
+\begin{problem}\label{pr:budget-size}
+For the data, \(x^{33} + 8f \le B\).
+\end{problem}
+
+\begin{problem}\label{pr:height}
+Let \(P = (\nu, z)\) be main for \(j\) and \(H := \alg_{P_0}(1)/\lVert\phi_{P,1}\rVert^2\).  Then \(\log\lvert\sigma H\rvert \le B - \sum_\tau s_\infty(\kappa(\tau))\) for every \(\sigma \in \Aut(\C)\) and \(\lvert H\lVert\phi_{P,1}\rVert^2\rvert_\iota \le 1\) for every \(\iota\).  Hence the constant family \(\iota \mapsto \lVert\phi_{P,1}\rVert^2\) has height at most \(B - \sum_\tau s_\infty(\kappa(\tau))\).
+\end{problem}
+
+Problem~\ref{pr:alg} proves (i) and (ii) of the following theorem, and Problem~\ref{pr:height} proves (iii).
+
+\begin{theorem}\label{thm:pair}
+Let \(P = (\nu, z)\) be a critical pair with \(z \ge 2\).
+\textup{(i)} For every tame character \(\xi\), \(R_P(\xi) = \bigl(\lVert\phi_{P,\xi}\rVert^2/(\Nm Q_\xi)^{2z-1}\bigr)/\lVert\phi_{P,1}\rVert^2\).
+\textup{(ii)} For every tame character \(\xi\), every prime \(\ell \nmid \Nm Q_\xi\) and every ring homomorphism \(\eta\colon\C\to\C_\ell\), \(\lvert\eta(\alg_P(\xi))\rvert_\ell \le 1\).
+\textup{(iii)} If \(P\) is main for \(j\), the constant family \(\iota \mapsto \lVert\phi_{P,1}\rVert^2\) has height at most \(B - \sum_{\tau\in\Phi} s_\infty(\kappa(\tau))\).
+\end{theorem}
+
+\section{The Hecke product as a product of ratios}\label{sec:product}
+
+Recall from Definition~\ref{l1-def:hecke-product} that \(\Hc_j(\vartheta)\) is a product over \(i \in \{\varnothing, +, -\}\) of \((\prod_{w\in S} q_w)^{z_i^2}\prod_{v=1}^{z_i}\lvert L^S(v, (\nu_i\vartheta^{\epsilon_i})^{-1})\rvert^2\), with \(S = \Mcal \cup Q_\vartheta\), lengths \(z_\varnothing = (7m+k)/2\), \(z_+ = m\), \(z_- = m/2\), signs \(\epsilon_\varnothing = \epsilon_+ = 1\), \(\epsilon_- = -1\), and characters \(\nu_\varnothing = \mu_j^0\upsilon^{j + (t - 11m - 1)/2}\), \(\nu_\pm = \upsilon^{-z_\pm}\chi_M^{\pm j}\); each \((\nu_i, z_i)\) is a critical pair.  At \(v = 1\) we use that \(L^S(1, \mu) \ne 0\) for an automorphic character \(\mu\) of \(\mathrm U(1)\) with nonzero weight and a tame part, for every finite set \(S\) of finite places of \(E\) (\emph{Status}: classical \cite[Ch.~XV]{La}).
+
+\begin{problem}\label{pr:hecke-product}
+Let \(1 \le j \le m\) and let \(\vartheta\) be a twist.
+\textup{(a)} For \(1 \le v \le z_i\), \((\nu_i, v)\) is a critical pair, and
+\[
+  \frac{\Hc_j(\vartheta)}{\Hc_j(1)} = (\Nm Q_\vartheta)^{z_\varnothing^2 + z_+^2 + z_-^2} \Bigl(\prod_{i}\prod_{v=1}^{z_i} R_{(\nu_i, v)}(\vartheta, \epsilon_i)\Bigr)^2 .
+\]
+\textup{(b)} All these pairs are ramified; the \(k/2\) pairs \((\nu_\varnothing, v)\) with \(7m/2 < v \le z_\varnothing\) are moreover main for \(j\), and the remaining indices number \(5m\).
+\textup{(c)} Formally for \(m = 2\), \(k = 4\): \((z_\varnothing, z_+, z_-) = (9, 2, 1)\), the exponent is \(86\), and the index range \(7m/2 < v \le z_\varnothing\) has \(2\) positions, leaving \(10\) others.
+\end{problem}
+
+At \(\vartheta_\iota = \theta_\iota^j\) for a regular family, the inverse of \(\Hc_j(\vartheta_\iota)/\Hc_j(1)\) has the factor \((\Nm Q_{\vartheta_\iota})^{-(z_\varnothing^2+z_+^2+z_-^2)}\), a unit at \(\iota \mid \ell\).  For the \(5m\) remaining factors, regularity bounds the height of the inverse ratios by \(x_1\) (Definition~\ref{l5-def:small-ratios}).  For the \(k/2\) main factors see Theorem~\ref{l5-thm:main-pair}.
+
+We have proved Theorem~\ref{thm:pair} and the factorization of Problem~\ref{pr:hecke-product}.  Taken as given: the norm formula of Section~\ref{sec:lift} (Theorem~\ref{c1-thm:rallis} for the sharp datum, the vacuum sum, the nonvanishing of the lift); the integrality of \(d_P\phi_{P,\xi}\), of Gram pairings, and the divisibility of the stabilizer orders by \(\Nc\); the formula of Section~\ref{sec:size} for the conjugates of \(\lVert\phi_{P,1}\rVert^2\), with the pair \(P_0\) and the bound \(\Nc d_{P_0}^2 \le e^{x^{33}}\); and \(L^S(1,\mu) \ne 0\).  Chapter~\ref{l5-chap} supplies the lower bound for \(\lvert\alg_P(\vartheta_\iota)\rvert_\iota\) that Problem~\ref{pr:direction} shows is missing; it needs Theorem~\ref{thm:pair}, Definitions~\ref{def:row}--\ref{def:alg} and Problems~\ref{pr:row-range} and~\ref{pr:hecke-product}.
+
+\begin{leanremark}
+\raggedright In the Lean proof \cite{GL} (\tl{grh/src/}, namespace \tl{New.} omitted; files in \tl{New/OneLift/HeckeValues/} unless a path is given; auxiliary steps by name only): Theorem~\ref{thm:pair} is \tl{Data.CriticalPair.ratio\_eq\_algPart\_div} (\tl{TwistedRatio.lean}), \tl{Data.CriticalPair.integralAlgebraicPart\_mem\_integralAway} (\tl{AlgebraicPartIntegrality.lean}) and \tl{Data.heightLe\_norm\_trivialLift\_sq} (\tl{AlgebraicPartSize.lean}).  Definitions~\ref{def:char-lift} and~\ref{def:alg} are \tl{Data.CriticalPair.trivialLift} and \tl{Data.CriticalPair.integralAlgebraicPart} (\tl{CharacterLiftNorm.lean}), and Definition~\ref{def:main} is \tl{Data.CriticalPair.IsMainPair} (\tl{New/Determinant/Twist/FitTwists.lean}) and \tl{Data.CriticalPair.HasEmptyRow} (\tl{CharacterLiftNorm.lean}).  The norm formula is derived from \tl{LValueData.inner\_trivialLift\_self\_eq\_L} (\tl{CharacterLiftNorm.lean}), which is stated for the class sum, without the scale \(\cvac^{2z}(\pi_M\cjet)^{\lvert\lambda_P\rvert}\); the integrality of \(d_P\phi_{P,\xi}\) is \tl{Data.CriticalPair.denomBound\_smul\_trivialLift\_mem\_integralForms}, and the displayed formula of Section~\ref{sec:size} is \tl{Data.CriticalPair.exists\_log\_norm\_map\_norm\_sq\_\allowbreak trivialLift\_eq\_add\_sum\_jetSize}.  Auxiliary steps (a leading dot repeats the preceding namespace): \tl{Data.CriticalPair.lValueData}, \tl{.rowLengthSum}, \tl{DescentPair.residueBlockDatum}, \tl{LValueData.relIndex\_descentResidueLevel}, \tl{.stdLevelIndex\_chosenLevel}, \tl{LValueData.trivialLift}, \tl{.trivialLift\_eq\_smul\_thetaLift}, \tl{.isSharp\_blockDatum}, \tl{.inner\_thetaLift\_constForm\_self}, \tl{.integral\_fockInner\_realPairWeil}, \tl{.hookNumber\_eq\_prod\_factorial}, \tl{Data.CriticalPair.exists\_ne\_zero\_algPart\_eq\_mul\_L}, \tl{.L\_inv\_mul}, \tl{.trivialLift\_ne\_zero}, \tl{.denomBound}, \tl{.weylGauge\_denomBound\_smul\_pointKernel\_le\_one}, \tl{LevelPlaces.LevelForm.inner\_eq\_stdClassSum}, \tl{Data.CriticalPair.ratio\_eq\_integralAlgebraicPart\_div}, \tl{.norm\_trivialLift\_sq\_eq\_mul\_inner}, \tl{.exists\_norm\_map\_inner\_trivialLift\_eq\_mul}, \tl{LValueData.map\_trivialLift}; local factors, \tl{LValueData.blockMeanSquare\_mul\_relIndex\_mul\_prod\_eq\_pow}; vacuum sum, \tl{vacuumSum\_eq\_L\_div\_eulerProd}; Euler bound, \tl{eulerProd\_ne\_zero\_and\_abs\_log\_norm\_le}, specialized to \(4f\) in \tl{Data.exists\_log\_norm\_inner\_trivialLift\_eq}; pairings and stabilizers, \tl{gramForm\_mem\_embValRing} and \tl{LevelPlaces.LevelForm.norm\_nsmul\_inner\_le\_one} and \tl{Data.card\_classAut\_dvd\_chosenGroupOrder}; CM, \tl{CMLattice.complex\_multiplication\_theta} and \tl{CMLattice.chowla\_selberg}; \(P_0\) and \(e^{x^{33}}\), \tl{Data.exists\_hasEmptyRow} and \tl{Data.CriticalPair.chosenGroupOrder\_mul\_denomBound\_sq\_le}; nonvanishing at \(1\), \tl{AutChar.HasWeight.L\_ne\_zero}; the Hecke product, \tl{Data.exchangePair}, \tl{Data.CriticalPair.lowerPoint}, \tl{Data.heckeValueProd\_eq\_mul\_prod\_ratio\_sq}, \tl{Data.isMainPair\_lowerPoint\_exchangePair\_none}, \tl{Data.isRamified\_lowerPoint\_exchangePair} and \tl{Data.exists\_heckeValueProd\_eq\_mul\_prod\_ratio}; the inverse ratios of main pairs, \tl{Data.heightLe\_inv\_ratio}.
+\end{leanremark}
+
+\section*{Hints}
+
+\begin{description}
+\item[\ref{pr:gauss-euler}] \(\bar\alpha^8\lvert\alpha\rvert^{-16} = (\bar\alpha/\lvert\alpha\rvert)^8\lvert\alpha\rvert^{-8}\); compare with \(\zeta_{\Q(\ii)}(4)\).
+\item[\ref{pr:fock-row}] Problem~\ref{sd-pr:fock}; the norm factors over the variables.
+\item[\ref{pr:euler-size}] Compare with \(\zeta_E(s) \le \zeta(s)^{[E:\Q]}\).
+\item[\ref{pr:direction}] Problem~\ref{sd-pr:iota}.  \item[\ref{pr:alg}] The Gram-pairing bound at each representative of the class sum, as in Problem~\ref{pr:class-sum}; \(\Nm Q_\xi\) is a unit at \(\ell\).  For the ratio compare the norm formula at \(\xi\) and at \(1\).
+\item[\ref{pr:jet-mono}] Problem~\ref{da-pr:omega}.  \item[\ref{pr:row-range}] \(z \le r\); \(\kappa_j - \kappa = (j+\tfrac12)\Delta\) (Section~\ref{ob-sec:weights}); Definition~\ref{da-def:data}.
+\item[\ref{pr:budget-size}] \(B = fxb\log^3 b/(mk)\) with \(mk \le 6x^{11/2}\), and \(b \ge x^{10^{12}}\).
+\item[\ref{pr:height}] Subtract the displayed formulas for \(P_0\) and \(P\) (same \(z\)); then Problems~\ref{pr:jet-mono}, \ref{pr:row-range}, \ref{pr:budget-size}, and~\ref{pr:alg} at \(\xi = 1\).  An automorphism not fixing \(K\) is complex conjugation composed with one that does.
+\item[\ref{pr:hecke-product}] (a) \(\Mcal\) and \(Q_\vartheta\) are disjoint; divide each factor by its value at \(\vartheta = 1\).  (b) Problem~\ref{ob-pr:ramified-pair}, also for \(\omega^{-j}\).  For the weights, \(\mu_j^0\) has weight \(-\kappa_j\) and \(\upsilon\) weight \(1\); use \(r \ge x^5\), \(m \le 2\sqrt x\) (Definition~\ref{da-def:data}).
+\end{description}
+
+\begin{thebibliography}{Ne}
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[La]{La} S.~Lang, \emph{Algebraic Number Theory}, 2nd ed., GTM 110, Springer, 1994.
+\bibitem[Li]{Li} J.-S.~Li, Non-vanishing theorems for the cohomology of certain arithmetic quotients, \emph{J. reine angew. Math.} \textbf{428} (1992), 177--217.
+\bibitem[Ne]{Ne} J.~Neukirch, \emph{Algebraic Number Theory}, Grundlehren 322, Springer, 1999.
+\bibitem[Ra]{Ra} S.~Rallis, \emph{L-functions and the oscillator representation}, LNM 1245, Springer, 1987.
+\bibitem[Sh]{Sh} G.~Shimura, \emph{Introduction to the Arithmetic Theory of Automorphic Functions}, 1971.
+\end{thebibliography}
+
+\end{document}
