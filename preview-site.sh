@@ -154,6 +154,8 @@ else
   FAILED="$FAILED grh-via-exercises.pdf"; echo "FAILED: grh-via-exercises.pdf"
 fi
 
+python3 scripts/make-reading-tools.py
+
 # Check TeX links (warning-only); the report stays outside the site.
 emacs --batch -l ./tex2html.el --eval '(tex2html-check-links "link-check-report.md")' >/dev/null 2>&1 || true
 mv link-check-report.md "$root/link-check-report.md"

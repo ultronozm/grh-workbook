@@ -92,7 +92,7 @@
       }
     }
     stripIds(content);
-    content.querySelectorAll(".progress-toggle, .stable-tag").forEach(node => node.remove());
+    content.querySelectorAll(".progress-toggle, .stable-tag, .used-in").forEach(node => node.remove());
     content.querySelectorAll("a[href]").forEach(link => {
       link.href = new URL(link.getAttribute("href"), ref.page).href;
     });
