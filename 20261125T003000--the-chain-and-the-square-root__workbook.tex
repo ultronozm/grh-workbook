@@ -4,10 +4,10 @@
 \usepackage{xr-hyper}
 \usepackage[hidelinks]{hyperref}
 \externaldocument[zr-]{20261125T001000--zeros-to-ramp-sums__workbook}
-\externaldocument[gf-]{20261125T005000--galois-fourier-and-averaging__workbook}
 \externaldocument[c6-]{20261126T030100--a-twist-for-each-prime__workbook}
 \externaldocument[c32-]{20261126T030300--the-data__workbook}
 \externaldocument[c37-]{20261126T030700--the-determinant-of-a-chain__workbook}
+\externaldocument[c41-]{20261126T031100--theorem-c-and-the-main-inequality__workbook}
 
 % Chapter number; \ref{chap} gives it.
 \newcounter{chap}
@@ -26,7 +26,6 @@
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\covol}{\operatorname{covol}}
 \newcommand{\rk}{\operatorname{rk}}
-\newcommand{\hfin}{h_{\mathrm{fin}}}
 \newcommand{\Naff}{N^{\mathrm{aff}}}
 \newcommand{\rem}{\mathrm{rem}}
 
@@ -41,7 +40,7 @@
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-Finite fields and Euler's criterion; polynomials over a field, their roots and multiplicities; a homogeneous linear system with more unknowns than equations has a nonzero solution.  Lattices in a Euclidean space and their covolumes \cite[Ch.~I, \S4]{Ne}; the adjoint of a linear map between inner product spaces.  The von Mangoldt function \(\Lambda\) and Mertens' estimate \(\sum_{n \le x} \Lambda(n)/n = \log x + O(1)\).  The problems in Sections~\ref{sec:aux}--\ref{sec:chain} require no earlier chapter.  Section~\ref{sec:budget} uses the function \(G\) of~\eqref{zr-eq:G} and Theorem~\ref{zr-thm:one-sided} of Chapter~\ref{zr-chap}.  Theorems~\ref{thm:factor} and~\ref{thm:main} state results of the rewritten Lean proof \cite{GL} about objects defined in Chapters~\ref{gf-chap}, \ref{c32-chap} and~\ref{c37-chap}; the problems after them take what they need from the rewriting as hypotheses.
+Finite fields and Euler's criterion; polynomials over a field, their roots and multiplicities; a homogeneous linear system with more unknowns than equations has a nonzero solution.  Lattices in a Euclidean space and their covolumes \cite[Ch.~I, \S4]{Ne}; the adjoint of a linear map between inner product spaces.  The von Mangoldt function \(\Lambda\) and Mertens' estimate \(\sum_{n \le x} \Lambda(n)/n = \log x + O(1)\).  The problems in Sections~\ref{sec:aux}--\ref{sec:chain} require no earlier chapter.  Section~\ref{sec:budget} uses the function \(G\) of~\eqref{zr-eq:G} and Theorem~\ref{zr-thm:one-sided} of Chapter~\ref{zr-chap}.  The closing paragraphs of Sections~\ref{sec:chain} and~\ref{sec:budget} point to Chapters~\ref{c6-chap}, \ref{c32-chap}, \ref{c37-chap} and~\ref{c41-chap}; Problem~\ref{pr:losses} states what it needs as hypotheses.
 
 \section{The auxiliary polynomial}\label{sec:aux}
 
@@ -171,30 +170,26 @@ Thus the error term in Theorem~\ref{thm:stepanov} never gives \(o(\sqrt q)\).  W
 
 \section{The chain inequality}\label{sec:chain}
 
-Alpöge describes the difficulty of reproducing Stepanov's multiplicity over the integers, and the use of a chain of theta lifts to mimic it \cite[p.~1]{Alp}.  What does a chain of \(m\) linear maps give that one map does not?
+What does a chain of \(m\) linear maps give that one map does not?
 
-Let \(V\) and \(W\) be Euclidean spaces of the same dimension \(n \ge 1\), with lattices \(L \subset V\) and \(M \subset W\) of rank \(n\), and let
-\[
-  \mu(L) := -\frac{\log \covol(L)}{n} .
-\]
-Let \(u \colon V \to W\) be a nonzero linear map with \(u(L) \subseteq \lambda M\) for some real \(\lambda > 0\).  The largest such \(\lambda\) exists: in bases of \(L\) and \(M\) it is \(\lambda\) times the greatest common divisor of the entries of the integer matrix of \(u/\lambda\).  Call it \(\lambda(u)\), and let \(\hfin(u) := -\log \lambda(u)\).  The \emph{volume} of \(u\) is \(\det(u^* u)\), where \(u^*\) is the adjoint; in orthonormal bases it is \((\det u)^2\).  For injective \(u\) let
-\[
-  h_\infty(u) := \frac{1}{2n} \log \det(u^* u) ,
-\]
-the mean of the logarithms of the singular values of \(u\).  Thus \(-\hfin(u)\) measures divisibility and \(h_\infty(u)\) measures size.  For a linear map between complex inner product spaces of the same complex dimension \(n\), the volume is \(\det(u^* u) = \lvert \det u \rvert^2\), and for injective \(u\) the same formula for \(h_\infty(u)\) gives the mean of the logarithms of its \(n\) singular values.
+Let \(V\) and \(W\) be Euclidean spaces of the same dimension \(n \ge 1\), with lattices \(L \subset V\) and \(M \subset W\) of rank \(n\).  The \emph{volume} of a linear map \(u \colon V \to W\) is \(\det(u^* u)\), where \(u^*\) is the adjoint; in orthonormal bases it is \((\det u)^2\).
 
 \begin{problem}\label{pr:one-step}
-If \(u\) is injective, then \(-\hfin(u) \le \mu(M) - \mu(L) + h_\infty(u)\).  For \(L = M = \Z\) and \(u\) the multiplication by \(6\), both sides are \(\log 6\).
+Let \(u \colon V \to W\) be injective, and let \(\lambda > 0\) be real with \(u(L) \subseteq \lambda M\).  Then
+\[
+  n \log \lambda \le \log \covol(L) - \log \covol(M) + \tfrac12 \log \det(u^* u) .
+\]
+For \(L = M = \Z\), \(u\) the multiplication by \(6\) and \(\lambda = 6\), both sides are \(\log 6\).
 \end{problem}
 
-Let \(m \ge 1\) be an integer, and let \(V_0, \dots, V_m\) be Euclidean spaces of dimension \(n\) with lattices \(L_j \subset V_j\) of rank \(n\), let \(u_j \colon V_{j-1} \to V_j\) be nonzero linear maps with \(u_j(L_{j-1}) \subseteq \lambda_j L_j\) for some real \(\lambda_j > 0\), and let \(\Psi := u_m \circ \dots \circ u_1\).
+Let \(m \ge 1\) be an integer, and let \(V_0, \dots, V_m\) be Euclidean spaces of dimension \(n\) with lattices \(L_j \subset V_j\) of rank \(n\).  Let \(u_j \colon V_{j-1} \to V_j\) be linear maps and \(\lambda_j > 0\) real numbers with \(u_j(L_{j-1}) \subseteq \lambda_j L_j\), and let \(\Psi := u_m \circ \dots \circ u_1\).
 
 \begin{problem}\label{pr:volume-mult}
 \(\det(\Psi^* \Psi) = \prod_{j=1}^m \det(u_j^* u_j)\), also when some \(u_j\) is not injective.  The identity fails for spaces of different dimensions: for \(u_1(x) = (x, 0)\) from \(\R\) to \(\R^2\) and \(u_2(y, z) = y\) from \(\R^2\) to \(\R\) the left side is \(1\) and the right side is \(0\).
 \end{problem}
 
 \begin{problem}\label{pr:subadd}
-If \(\Psi \ne 0\), then \(\hfin(\Psi) \le \sum_j \hfin(u_j)\).  Also, if \(u_j(L_{j-1}) \subseteq p^{e_j} L_j\) for each \(j\), then \(\Psi(L_0) \subseteq p^{e_1 + \dots + e_m} L_m\).
+\(\Psi(L_0) \subseteq \lambda_1 \cdots \lambda_m L_m\).  In particular, if \(u_j(L_{j-1}) \subseteq p^{e_j} L_j\) for each \(j\), then \(\Psi(L_0) \subseteq p^{e_1 + \dots + e_m} L_m\).
 \end{problem}
 
 For the composite of the chain we have the following inequality; if \(\Psi\) is injective, then so is every \(u_j\), because all dimensions are equal.
@@ -202,20 +197,20 @@ For the composite of the chain we have the following inequality; if \(\Psi\) is 
 \begin{theorem}[Chain inequality]\label{thm:chain}
 If \(\Psi\) is injective, then
 \[
-  \sum_{j=1}^m \bigl( -\hfin(u_j) \bigr) \le \mu(L_m) - \mu(L_0) + \sum_{j=1}^m h_\infty(u_j) .
+  n \sum_{j=1}^m \log \lambda_j \le \log \covol(L_0) - \log \covol(L_m) + \frac12 \sum_{j=1}^m \log \det(u_j^* u_j) .
 \]
 \end{theorem}
 
-The right side of Theorem~\ref{thm:chain} uses the two ends and the size of each step, and the ends are paid once: if \(\Psi\) is injective, \(-\hfin(u_j) \ge \beta\) and \(h_\infty(u_j) \le \sigma\) for every \(j\), and \(\mu(L_m) - \mu(L_0) \le A\), then \(\beta \le \sigma + A/m\).
+The right side uses the two ends and the volume of each step, and the ends are paid once: if \(\Psi\) is injective, \(\log \lambda_j \ge \beta\) and \(\frac{1}{2n} \log \det(u_j^* u_j) \le \sigma\) for every \(j\), and \(\frac1n (\log \covol(L_0) - \log \covol(L_m)) \le c_{\mathrm{end}}\), then \(\beta \le \sigma + c_{\mathrm{end}}/m\).
 
 \begin{problem}\label{pr:stepwise}
-Suppose that every \(u_j\) is injective.  The sum of the inequalities of Problem~\ref{pr:one-step} for \(u_1, \dots, u_m\) is the inequality of Theorem~\ref{thm:chain}.
+Suppose that every \(u_j\) is injective.  The sum of the inequalities of Problem~\ref{pr:one-step} for \(u_1, \dots, u_m\) and \(\lambda_1, \dots, \lambda_m\) is the inequality of Theorem~\ref{thm:chain}.
 \end{problem}
 
 Measured by volumes, then, the intermediate lattices cost nothing.  The product of the operator norms, by contrast, can strictly exceed the operator norm of the composite.
 
 \begin{problem}\label{pr:rank-two}
-Let \(w \ge 2\) be an integer, \(L_0 = L_2 = \Z^2\) and \(L_1 = \Z e_1 + \Z w e_2\), all in \(\R^2\) with the standard norm, and let \(u_1(x, y) = (x, wy)\) and \(u_2(x, y) = (x, y/w)\).  Then \(\hfin(u_1) = \hfin(u_2) = 0\), \(h_\infty(u_1) = -h_\infty(u_2) = \tfrac12 \log w\), and the inequalities of Problem~\ref{pr:one-step} for \(u_1\), \(u_2\) and of Theorem~\ref{thm:chain} are equalities.  But \(\log \lVert u_1 \rVert + \log \lVert u_2 \rVert = \log w\), while \(\Psi\) is the identity.
+Let \(w \ge 2\) be an integer, \(L_0 = L_2 = \Z^2\) and \(L_1 = \Z e_1 + \Z w e_2\), all in \(\R^2\) with the standard norm, and let \(u_1(x, y) = (x, wy)\) and \(u_2(x, y) = (x, y/w)\).  Then \(\lambda_1 = \lambda_2 = 1\) are the largest admissible scalars, \(\det(u_1^* u_1) = w^2\), \(\det(u_2^* u_2) = w^{-2}\), and the inequalities of Problem~\ref{pr:one-step} for \(u_1\), \(u_2\) and of Theorem~\ref{thm:chain} are equalities.  But \(\lVert u_1 \rVert \, \lVert u_2 \rVert = w\), while \(\Psi\) is the identity.
 \end{problem}
 
 A divisibility is often known only on a sublattice.  Its index is a loss, paid once.
@@ -223,22 +218,13 @@ A divisibility is often known only on a sublattice.  Its index is a loss, paid o
 \begin{problem}\label{pr:index}
 Suppose that \(\Psi\) is injective and that \(\Psi(L_0') \subseteq \lambda L_m\) for a sublattice \(L_0' \subseteq L_0\) of finite index and a real \(\lambda > 0\).  Then
 \[
-  \log \lambda \le \mu(L_m) - \mu(L_0) + \sum_{j=1}^m h_\infty(u_j) + \frac{1}{n} \log\, [L_0 : L_0'] .
+  n \log \lambda \le \log \covol(L_0) - \log \covol(L_m) + \frac12 \sum_{j=1}^m \log \det(u_j^* u_j) + \log\, [L_0 : L_0'] .
 \]
 \end{problem}
 
-Theorem~\ref{c6-thm:twist} in Chapter~\ref{c6-chap} gives a related index and covolume inequality for a twisted lattice (\path{New.TwistedLattice.covolume_add_index_nonneg}).  In the rewriting the volume is that of a chain of \(m\) theta lifts, restricted to a space of target forms.  The rewritten Lean proof \cite{GL} does not factor it step by step as in Problem~\ref{pr:volume-mult}.  Its factors are volumes of single lifts, the \(j\)th from forms on another space \(W_j\), and the rewriting proves the factorization by expressing the volume of each single lift, and that of the chain, through the determinants on the target forms of the series of Rallis' inner product formula, which cancel when the volume of the chain is expressed through the volumes of the single lifts; division by the formula at the trivial twist then removes the remaining constant.  We state the result; its objects are defined in Chapters~\ref{c32-chap} and~\ref{c37-chap}.  For admissible data, let \(m\) be the number of lifts and \(n_T\) the dimension of the target forms.  An \(m\)-fold twist is a twist \(\vartheta\) whose first \(m\) powers are twists; the powers keep the same set of places, and the trivial twist \(1\), with empty set of places, is one.  The power with the same set of places is \path{New.Data.TameChar.pow}; for the unit see \path{New.Data.toAutChar_one_and_toTwist_one_and_Q_one}.  Let \(Z(\vartheta)\) be the volume of the chain of lifts for \(\vartheta\), from forms on \(Y_0\) to forms on \(Y_m\), restricted to the target forms.  For \(1 \le j \le m\) let \(Z_j(\vartheta)\) be the volume of the \(j\)th single lift for the twist \(\vartheta^j\), restricted to the good forms on \(W_j\).  Let \(\mathrm{N}(\vartheta)\) be the product of the norms of the places of \(\vartheta\).  For \(1 \le i < j \le m\), let \(\nu\) be the quotient of the \(j\)th and \(i\)th untwisted lift characters.  In the notation of Chapter~\ref{c37-chap}, let \(\rho_{ij}(\vartheta)\) be the product over integers \(1 \le z \le 5r\), where \(r\) is the target rank, of the absolute value of the partial Hecke \(L\)-value of \((\nu\vartheta^{j-i})^{-1}\) at \(z\) divided by that of \(\nu^{-1}\) at \(z\).  Both values omit the chosen places and their conjugates, and the numerator also omits the places of \(\vartheta\) and their conjugates.
+Theorem~\ref{c6-thm:twist} gives a related index and covolume inequality for a twisted lattice.  For the chain of the proof, the determinant divided by its value at the trivial twist is the product of the corresponding quotients for the single lifts, times a correction factor (Theorem~\ref{c37-thm:main}).  This factor is a power of the norm of the modulus times a product of ratios of absolute values of partial Hecke \(L\)-values, all raised to the dimension of the target forms.
 
-\begin{theorem}[Factorization of the chain determinant]\label{thm:factor}
-There is an integer \(e_0\) such that for every \(m\)-fold twist \(\vartheta\) one has \(Z(\vartheta) > 0\), \(Z_j(\vartheta) > 0\) for \(1 \le j \le m\), and
-\[
-  \frac{Z(\vartheta)}{Z(1)} = \Bigl( \mathrm{N}(\vartheta)^{e_0/2} \prod_{1 \le i < j \le m} \rho_{ij}(\vartheta) \Bigr)^{n_T} \prod_{j=1}^m \frac{Z_j(\vartheta)}{Z_j(1)} .
-\]
-\end{theorem}
-
-In the rewritten Lean proof \cite{GL} this is \path{New.Data.exists_chainDeterminant_pos_and_div_chainDeterminant_one_eq} in \path{grh/src/New/Determinant/Chain/NormOfChain.lean}, with \(Z\), \(Z_j\), \(\mathrm{N}\), \(\rho_{ij}\), \(n_T\) the declarations \path{chainDeterminant}, \path{liftDeterminant}, \path{normQ}, \path{quotientRatio}, \path{targetDim}; an \(m\)-fold twist is \path{New.Data.MFoldTwist} (\path{grh/src/New/Reduction/Data/LevelAndTwists.lean}), the restricted maps are \(\Theta\) in \path{NormOfChain.lean} and \path{New.Data.goodLift}; the single-lift formula, the chain operator identity and the unnormalized determinant formula are \path{exists_normDet_goodLift_sq_eq}, \path{exists_adjoint_chain_comp_eq_smul_rallisProduct} and \path{exists_chainDeterminant_eq_pow_mul_prod_liftDeterminant}; the theorem combines the quotient formula \path{exists_div_chainDeterminant_one_eq} with the positivity statements \path{chainDeterminant_pos} and \path{liftDeterminant_pos}.
-
-The right side of Theorem~\ref{thm:chain} needs only the two ends and the size \(h_\infty(u_j)\) of each step.  How precisely must these be known?
+How precisely must the two ends and the volumes of the steps be known?
 
 \section{The budget \texorpdfstring{\(x/m + m\)}{x/m + m}}\label{sec:budget}
 
@@ -246,75 +232,49 @@ How long should the chain be?  Let \(G(x) = \sum_{n \le x} \Lambda(n) (x/n - 1) 
 
 Let \(a, b > 0\) and \(x := a/b\).  As in Section~\ref{zr-sec:smoothing}, \((a/p^e - b)_+ = b(x/p^e - 1)_+\), so that
 \[
-  \sum_p \log p \sum_{e \ge 1} \Bigl( \frac{a}{p^e} - b \Bigr)_+ = b \sum_{n \le x} \Lambda(n) \Bigl( \frac{x}{n} - 1 \Bigr) ,
+  \sum_p \log p \sum_{e \ge 1} \Bigl( \frac{a}{p^e} - b \Bigr)_+ = b \sum_{\nu \le x} \Lambda(\nu) \Bigl( \frac{x}{\nu} - 1 \Bigr) ,
 \]
-where \(u_+ := \max(u, 0)\); for integral \(a\) the inner sum is a smoothed analogue of Legendre's sum \(\sum_{e \ge 1} \lfloor a/p^e \rfloor\) for \(v_p(a!)\).  We consider a chain as in Section~\ref{sec:chain}, with \(\Psi\) injective, and real numbers \(A\) and \(\kappa_1, \dots, \kappa_m\) such that for \(1 \le j \le m\)
+where \(u_+ := \max(u, 0)\); for integral \(a\) the inner sum is a smoothed analogue of Legendre's sum \(\sum_{e \ge 1} \lfloor a/p^e \rfloor\) for \(v_p(a!)\).  We consider a chain as in Section~\ref{sec:chain}, with \(\Psi\) injective, and real numbers \(c_{\mathrm{end}}\) and \(c_1, \dots, c_m\) such that for \(1 \le j \le m\)
 \begin{equation}\label{eq:toy}
 \begin{gathered}
-  -\hfin(u_j) \ge b \sum_{n \le x} \Lambda(n) \Bigl( \frac{x}{n} - 1 \Bigr) , \qquad h_\infty(u_j) \le a(\log x - 1 - \gamma) + \kappa_j , \\
-  \mu(L_m) - \mu(L_0) \le A .
+  \log \lambda_j \ge b \sum_{\nu \le x} \Lambda(\nu) \Bigl( \frac{x}{\nu} - 1 \Bigr) , \qquad \frac{1}{2n} \log \det(u_j^* u_j) \le a(\log x - 1 - \gamma) + c_j , \\
+  \frac1n \bigl( \log \covol(L_0) - \log \covol(L_m) \bigr) \le c_{\mathrm{end}} .
 \end{gathered}
 \end{equation}
-Here \(A\) is the cost at the ends, and \(\kappa_j\) the cost of the \(j\)th step.  This models the bookkeeping only.
+Here \(c_{\mathrm{end}}\) is the cost at the ends, and \(c_j\) the cost of the \(j\)th step.  This models the bookkeeping only.
 
 \begin{problem}\label{pr:toy}
-Under~\eqref{eq:toy}, \(G(x) \le (A + \kappa_1 + \dots + \kappa_m)/(mb)\).
+Under~\eqref{eq:toy}, \(G(x) \le (c_{\mathrm{end}} + c_1 + \dots + c_m)/(mb)\).
 \end{problem}
 
 \begin{problem}\label{pr:half}
-If \(A = a\) and \(\kappa_j = (2j - 1)b\), then \(G(x) \le x/m + m\).  With \(m = \lceil \sqrt x \rceil\) this gives \(G(x) \le 2\sqrt x + 1\).  For \(x = 10^6\) the bound is \(2000\) at \(m = 1000\) and \(10100\) at \(m = 100\).
+If \(c_{\mathrm{end}} = a\) and \(c_j = (2j - 1)b\), then \(G(x) \le x/m + m\).  With \(m = \lceil \sqrt x \rceil\) this gives \(G(x) \le 2\sqrt x + 1\).  For \(x = 10^6\) the bound is \(2000\) at \(m = 1000\) and \(10100\) at \(m = 100\).
 \end{problem}
 
 What happens if the cost at the ends is paid separately for every step?
 
 \begin{problem}\label{pr:every-step}
-Retain the two bounds on \(u_j\) in~\eqref{eq:toy}.  Suppose that every \(u_j\) is injective and that Problem~\ref{pr:one-step} is applied to each \(u_j\) separately, with \(\mu(L_j) - \mu(L_{j-1}) \le a\) for every \(j\) and \(\kappa_j = (2j-1)b\).  Then the \(j\)th step gives \(G(x) \le x + 2j - 1\), so the best of these bounds is \(G(x) \le x + 1\), the bound for \(m = 1\).
+Retain the first two bounds of~\eqref{eq:toy}.  Suppose that every \(u_j\) is injective and that Problem~\ref{pr:one-step} is applied to each \(u_j\) separately, with \(\frac1n (\log \covol(L_{j-1}) - \log \covol(L_j)) \le a\) for every \(j\) and \(c_j = (2j-1)b\).  Then the \(j\)th step gives \(G(x) \le x + 2j - 1\), so the best of these bounds is \(G(x) \le x + 1\), the bound for \(m = 1\).
 \end{problem}
 
 \begin{problem}\label{pr:two-thirds}
-\(\sum_{j=1}^m (3j^2 - 3j + 1) = m^3\).  So if \(A = a\) and \(\kappa_j = (3j^2 - 3j + 1)b\), then \(G(x) \le x/m + m^2\).  For every \(m > 0\), \(x/m + m^2 \ge 3 \cdot 2^{-2/3} x^{2/3}\).  For \(x = 10^6\) the least value over integers \(m\) is \(18899.2\ldots\), at \(m = 79\).
+\(\sum_{j=1}^m (3j^2 - 3j + 1) = m^3\).  So if \(c_{\mathrm{end}} = a\) and \(c_j = (3j^2 - 3j + 1)b\), then \(G(x) \le x/m + m^2\).  For every \(m > 0\), \(x/m + m^2 \ge 3 \cdot 2^{-2/3} x^{2/3}\).  For \(x = 10^6\) the least value over integers \(m\) is \(18899.2\ldots\), at \(m = 79\).
 \end{problem}
 
 If such chains exist for every sufficiently large \(x\) at a length minimizing the bound in Problem~\ref{pr:two-thirds}, that bound gives \(G(x) \le x^\theta\) eventually for each \(\theta > 2/3\), and hence a zero-free half-plane \(\operatorname{Re} s > 2/3\) for \(\zeta\).  The exponent is decided by how the total cost grows with the length of the chain.
 
-\paragraph{The rewritten Lean proof.}
-There the ramp sum is replaced by a remainder of a prime sum.  Fix the modulus \(q_0\) and the auxiliary prime of the parameters of Chapter~\ref{c32-chap}, let \(\chi_K\) be the quadratic character of the imaginary quadratic field \(K\) they define, and for \(q \in \{1, q_0\}\) and \(y > 0\) let
-\[
-  R_q(y) = \sum_{\substack{1 \le n \le y \\ n \equiv 1 \bmod q}} \Lambda(n) \bigl(1 - \chi_K(n)\bigr) \Bigl( \frac1n - \frac1y \Bigr) - \frac{\log y}{\varphi(q)} - c_q ,
-\]
-the remainder of Chapter~\ref{zr-chap}, with its constant \(c_q\), for this auxiliary prime.  Each admissible datum (Chapter~\ref{c32-chap}) has scales \(x < x_1 < b\), \(a = xb\), and a number \(m\) of lifts with \(\sqrt x \le m \le 2\sqrt x\); the scale comparisons follow from the conditions on the data.  Write \(\lvert \Phi \rvert > 0\) for the number of infinite places of the field of the data, \(\Phi_a\) and \(\Phi_b\) for its sets of \(a\)-places and \(b\)-places, and \(\rem\) for the total remainder of Chapter~\ref{gf-chap}, the sum over the \(a\)-places of the difference between the prime sum at each place and the main term for the mean over those places (\path{New.Data.mainPrimeSum}).  In the rewritten Lean proof \cite{GL}
-\begin{equation}\label{eq:rem}
-\begin{gathered}
-  \rem = a \bigl( \lvert \Phi_b \rvert (R_{q_0}(x) - R_{q_0}(x_1)) + \lvert \Phi_a \rvert R_1(x_1) \bigr) , \\
-  \lvert \Phi \rvert = \varphi(q_0) \lvert \Phi_a \rvert , \qquad 0 < \lvert \Phi_a \rvert \le \lvert \Phi_b \rvert \log b ,
-\end{gathered}
-\end{equation}
-and the rewriting proves the following.
-
-\begin{theorem}[Main inequality]\label{thm:main}
-For admissible data,
-\[
-  m \cdot \rem \le \lvert \Phi \rvert\, a (\log b)^5 , \qquad R_{q_0}(x) \le \frac{\varphi(q_0) (\log b)^6}{m} + \lvert R_{q_0}(x_1) \rvert + \log b \cdot \lvert R_1(x_1) \rvert .
-\]
-\end{theorem}
-
-\begin{problem}\label{pr:rem-bound}
-Let \(m, a > 0\) and \(b > 1\), and suppose~\eqref{eq:rem}.  Then the first inequality of Theorem~\ref{thm:main} implies the second.
-\end{problem}
-
-Only the first term in the bound for \(R_{q_0}(x)\) carries the factor \(1/m\).  How does the prescribed length \(m\) enter the other estimates?  Two of them involve \(m\) through \(m^2\) relative to their budgets.  The first is at the level: the data contain a prime \(N\) with \(m \log b \le \log N \le 30 m \log b\), the allowed loss at \(N\) is \(2 m \lvert \Phi \rvert b\) (here \(N \ge b > x_1\), so \(N\) is not one of the small non-split primes in its definition), and for every finite set \(U\) of natural numbers the sum over \(p \in U\) of the allowed loss at \(p\) times \(\log p\), with the summand at \(p = 0\) defined to be zero, is at most \(\lvert \Phi \rvert\, a (\log b)^3\).  The second concerns denominators: local defect bounds \(\delta_p\) satisfy \(\sum_{p \in T} \delta_p \log p \le C \lvert \Phi \rvert (m/k_0) b \log b\) for every finite set \(T\) of primes, with \(C = 4 \cdot 10^6 e^{180}\) and \(k_0 = r + 1 - m\), where \(r\) is the target rank and \(k_0\) the source rank, while for each lift index the sum of the logarithmic denominator bounds over every finite set of primes must be at most \(\lvert \Phi \rvert\, a (\log b)^3/(m k_0)\).
+\paragraph{The chain of the proof.}
+This chapter serves the main inequality.  Chapter~\ref{c41-chap} proves \(m \cdot \rem \le fa\log^5 b\) (Theorem~\ref{c41-thm:main}) and deduces a bound for \(R_{d,q_0}(x)\).  From here on \(f\) is the number of infinite places of the field \(E\), \(k = r + 1 - m\) is the rank of the source, and \(U = fa\log^3 b\) is the unit of error, all as in Chapter~\ref{c32-chap} (they are not the polynomial \(f\) and the index \(k\) of Sections~\ref{sec:aux}--\ref{sec:count}); the data have \(\sqrt x \le m \le 2\sqrt x\).  In the rewritten Lean proof two estimates involve \(m\) through \(m^2\) relative to their budgets.  First, the level \(N\) is a prime with \(m \log b \le \log N \le 30 m \log b\); the allowed loss at \(N\) is \(2mfb\) (here \(N \ge b > x_1\), so \(N\) is not a small non-split prime); and for every finite set of natural numbers the sum over its elements \(p\) of the allowed loss at \(p\) times \(\log p\), with the summand at \(p = 0\) defined to be zero, is at most \(U\).  Second, local defect bounds \(\delta_p\) satisfy \(\sum_{p \in T} \delta_p \log p \le C_{\mathrm{loc}} f (m/k) b \log b\) for every finite set \(T\) of primes, with \(C_{\mathrm{loc}} = 4 \cdot 10^6 e^{180}\), while for each lift index the sum of the logarithmic denominator bounds over every finite set of primes must be at most \(B = U/(mk)\).
 
 \begin{problem}\label{pr:losses}
-Let \(m, x > 0\), \(b > 1\), \(\lvert \Phi \rvert > 0\), \(L := \log b\) and \(a := xb\).  (a) If \(mL \le \log N \le 30 mL\), then \(2m^2 \lvert \Phi \rvert bL \le 2m \lvert \Phi \rvert b \log N \le 60 m^2 \lvert \Phi \rvert bL\); hence \(2m \lvert \Phi \rvert b \log N \le \lvert \Phi \rvert a L^3\) forces \(m \le L\sqrt{x/2}\), and holds if \(m \le L \sqrt{x/60}\).  (b) If \(C, k_0 > 0\), then \(C \lvert \Phi \rvert (m/k_0) bL \le \lvert \Phi \rvert a L^3/(m k_0)\) if and only if \(m \le L\sqrt{x/C}\).
+Let \(m, x, f, k > 0\), \(b > 1\), \(L := \log b\), \(a := xb\) and \(U := faL^3\).  (a) If \(mL \le \log N \le 30 mL\), then \(2m^2 fbL \le 2mfb \log N \le 60 m^2 fbL\); hence \(2mfb \log N \le U\) forces \(m \le L\sqrt{x/2}\), and holds if \(m \le L \sqrt{x/60}\).  (b) For \(C_{\mathrm{loc}} > 0\), \(C_{\mathrm{loc}} f (m/k) bL \le U/(mk)\) if and only if \(m \le L\sqrt{x/C_{\mathrm{loc}}}\).
 \end{problem}
 
-Problem~\ref{pr:losses} compares the weighted level term, and the upper bound for the sum of the local defect bounds, with their budgets; both comparisons involve \(m^2/(x (\log b)^2)\).  The data have \(\log\log b \ge 10^{12}\), so both comparisons hold in the prescribed range \(\sqrt x \le m \le 2\sqrt x\).  Up to powers of \(\log b\), the length in these comparisons has the same square-root scale as in Problem~\ref{pr:half}.
+The data have \(\log\log b \ge 10^{12} C\), with \(C \ge 1\) the constant of Chapter~\ref{c32-chap}, so both comparisons of Problem~\ref{pr:losses} hold in the range \(\sqrt x \le m \le 2\sqrt x\).  Up to powers of \(\log b\), the length has the same square-root scale as in Problem~\ref{pr:half}.
 
-\begin{problem}\label{pr:sqrt-data}
-If \(x > 0\), \(\sqrt x \le m\) and \(0 \le \log b \le 2x^\eta\) with \(\eta > 0\), then \(\varphi(q_0)(\log b)^6/m \le 64\, \varphi(q_0)\, x^{-1/2 + 6\eta}\).
-\end{problem}
+\paragraph{In the Lean formalization.}
+In the rewritten Lean proof \cite{GL} the main inequality is \path{New.star_inequality} (\path{grh/src/New/Reduction/MainInequality.lean}); the allowed loss is \path{New.Data.allowedLoss}, and the estimates used in the discussion of Problem~\ref{pr:losses} are \path{New.Data.log_N_mem_Icc}, \path{New.Data.sum_allowedLoss_mul_log_le}, \path{New.Selmer.sum_localDefectBound_mul_log_le} and \path{New.Data.IsDenominatorBound.sum_le} with \path{New.Data.denominatorBudget}, together with the fields \path{N_prime}, \path{m_mem} and \path{constantBound_le} of \path{New.Data}.
 
-For fixed parameters, each \(0 < \eta < 1/100\) and every sufficiently large integer \(x\), the rewriting constructs an admissible datum whose first scale is \(x\), with \(\log b \le 2x^\eta\), \(\sqrt x \le m\) and \(x^{\eta/12} \le \log x_1\).  For fixed parameters and \(\eta > 0\), every sufficiently large integer \(x\) and every real \(l \ge x^{\eta/12}\), the prime number theorem gives \(\lvert R_{q_0}(e^l) \rvert \le x^{-2}\) and \(\lvert R_1(e^l) \rvert \le x^{-2}\); this applies at \(l = \log x_1\).  The rewriting deduces: for every positive integer \(q_0\) divisible by \(18480\), every auxiliary prime in the class of \(q_0/2 - 1\) modulo \(q_0\), and every \(\varepsilon > 0\), there is a real \(Y\), depending on these three, such that \(R_{q_0}(y) \le y^{-1/2 + \varepsilon}\) for every real \(y \ge Y\).  Finally, the rewriting proves that \(L(s, \chi) \ne 0\) for every Dirichlet character \(\chi\) modulo every positive integer and every \(s\) with \(\operatorname{Re} s > \tfrac12\), unless \(\chi\) is principal and \(s = 1\).  In the rewritten Lean proof \cite{GL}, the parameters are \path{New.Parameters}, \(K\) and \(\chi_K\) are \path{New.Parameters.K} and \path{New.chiK}, \(R_q\) is \path{New.primeRemainder} with weight \path{New.lambdaKResidueClass}, the data are \path{New.Data} (with the field \path{m_mem} for the range of \(m\)) with scale comparisons \path{New.Data.scale_inequalities} and \(a = xb\) as \path{New.Data.cast_a}, the places are \path{New.Data.f}, \path{aPlaces} and \path{bPlaces}, and \(\rem\) is \path{New.Data.totalRemainder}; the two inequalities of Theorem~\ref{thm:main} are \path{New.star_inequality} (\path{grh/src/New/Reduction/MainInequality.lean}) and \path{New.Data.primeRemainder_le}; \eqref{eq:rem} is \path{totalRemainder_eq}, \path{f_eq_card_aPlaces_mul} and \path{card_aPlaces} (whose value \path{New.towerDeg} is a product of powers of \(3\) and \(2\)) with the field \path{towerDeg_le_card_bPlaces_mul} of the data; the level and the losses are \path{N_prime}, \path{log_N_mem_Icc}, \path{allowedLoss}, \path{sum_allowedLoss_mul_log_le}, \path{New.Selmer.sum_localDefectBound_mul_log_le} with \(\delta_p\) the bound \path{New.Selmer.localDefectBound}, \path{k}, \path{New.Data.errorUnit}, \path{denominatorBudget} and \path{IsDenominatorBound.sum_le}; the bound on \(\log\log b\) follows from the field \path{constantBound_le} and \path{le_constantBound}; and the scale existence theorem, the estimate at the cutoff, the real remainder estimate and the nonvanishing theorem are, respectively, \path{New.eventually_exists_data_scales}, \path{New.eventually_abs_primeRemainder_exp_le}, \path{New.eventually_primeRemainder_le_rpow} and \path{New.grh} (\path{grh/src/New/Reduction/OneSidedBound.lean}).
 
 \section*{Hints}
 
@@ -348,25 +308,20 @@ For fixed parameters, each \(0 < \eta < 1/100\) and every sufficiently large int
 \item[\ref{pr:one-step}] Compare \(\covol(u(L)) = \lvert \det u \rvert \covol(L)\) with \(\covol(\lambda M)\).
 \item[\ref{pr:volume-mult}] Take orthonormal bases.  For the counterexample write out the \(2 \times 2\) matrix of \(u_2^* u_2\).
 \item[\ref{pr:subadd}] Track the image of one lattice vector along the chain.
-\item[\ref{pr:stepwise}] Follow the coefficient of each intermediate \(\mu(L_j)\).
+\item[\ref{pr:stepwise}] Follow the coefficient of each intermediate \(\log\covol(L_j)\).
 \item[\ref{pr:rank-two}] \(u_1(L_0) = L_1\) and \(u_2(L_1) = L_2\).
 \item[\ref{pr:index}] Apply Problem~\ref{pr:one-step} to \(\Psi\) and the lattice \(L_0'\).
 \end{description}
 
 \subsection*{\S\ref{sec:budget}}
 \begin{description}
-\item[\ref{pr:toy}] Apply Theorem~\ref{thm:chain}, and divide by \(mb\).
+\item[\ref{pr:toy}] Divide Theorem~\ref{thm:chain} by \(n\) before applying~\eqref{eq:toy}.
 \item[\ref{pr:half}] Write \(2j - 1\) as a difference of consecutive squares.
 \item[\ref{pr:every-step}] Each step gives a bound for the same quantity.
 \item[\ref{pr:two-thirds}] Minimize over real \(m > 0\) first.
-\item[\ref{pr:rem-bound}] Solve the identity for \(R_{q_0}(x)\).
-\item[\ref{pr:sqrt-data}] Raise the bound for \(\log b\) to the sixth power.
 \end{description}
 
 \begin{thebibliography}{Wei48}
-
-\bibitem[Alp]{Alp}
-L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
 
 \bibitem[Bom74]{Bom74}
 E.~Bombieri, \emph{Counting points on curves over finite fields (d'apr\`es S.~A.~Stepanov)}, S\'eminaire Bourbaki, Exp.~430, Lecture Notes in Math. \textbf{383}, Springer, 1974, 234--241.
