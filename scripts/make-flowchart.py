@@ -97,9 +97,6 @@ def read_index():
             die(f"index entry {m.group('id')} has no number in its label; "
                 "run scripts/make-chapters.py first")
         side = "side series" in heading.lower()
-        if side:
-            warn(f"side-series sheet {m.group('id')} is left out of the chart")
-            continue
         pm = re.match(r"^(Part [IVXLC]+)\.\s*(.*)$", heading)
         key, name = (pm.group(1), pm.group(2)) if pm else (heading, "")
         s = Sheet(m.group("id"), m.group("slug"), lm.group("num"),
@@ -223,6 +220,9 @@ def layout(sheets, parts, edges):
     above the row."""
     if len(parts) < 2:
         die("the chart needs at least two Parts")
+    by_side = {i for s in sheets if s.side for i in [s.id]}
+    side_parts = [p for p in parts if p[2][0] in by_side]
+    parts = [p for p in parts if p[2][0] not in by_side]
     col_parts, (top_key, top_name, top_ids) = parts[:-1], parts[-1]
     if len(top_ids) < 2:
         die(f"{top_key} needs at least two chapters")
@@ -233,6 +233,18 @@ def layout(sheets, parts, edges):
         for r, i in enumerate(reversed(ids)):
             col_of[i], row_of[i] = c, r
     rows = max(len(p[2]) for p in col_parts)
+    # The side series: in the column with the fewest chapters, below them
+    # after one empty row, stacked like a Part.
+    side_start = {}
+    for key, name, ids in side_parts:
+        used = [1 + max((row_of[i] for i in col_of if col_of[i] == c), default=-1)
+                for c in range(C)]
+        c = min(range(C), key=lambda c: (used[c], -c))
+        start = used[c] + 1
+        for r, i in enumerate(reversed(ids)):
+            col_of[i], row_of[i] = c, start + r
+        side_start[start] = True
+        rows = max(rows, start + len(ids))
     kcol = {i: k for k, i in enumerate(row_ids)}
 
     # Classify the edges, and choose sides and gutters from estimated
@@ -418,7 +430,7 @@ def layout(sheets, parts, edges):
         row_y[r] = y
         y += BH
         gap_top[r] = y
-        y += gap_h(r)
+        y += gap_h(r) + (TITLE_H if (r + 1) in side_start else 0)
     height = y + MARGIN
 
     def lane_y(gap, e):
@@ -481,7 +493,7 @@ def layout(sheets, parts, edges):
                      min(xs) - PAD, a_y - TOP_TITLE,
                      max(xs) + BWr + PAD - (min(xs) - PAD),
                      r_y + BHr + PAD - (a_y - TOP_TITLE)))
-    for key, name, ids in col_parts:
+    for key, name, ids in col_parts + side_parts:
         ys = [box[i][1] for i in ids]
         ye = [box[i][1] + box[i][3] for i in ids]
         clusters.append((f"{key}. {name}" if name else key,
@@ -733,6 +745,8 @@ def render_text(text, by_id, pos, checks):
 
 def render_page(sheets, parts, svg):
     by_id = {s.id: s for s in sheets}
+    side_note = [p for p in parts if by_id[p[2][0]].side]
+    parts = [p for p in parts if not by_id[p[2][0]].side]
     pos = {s.id: k for k, s in enumerate(sheets)}
     top_key, top_name, top_ids = parts[-1]
     top = by_id[top_ids[-1]]
@@ -757,7 +771,10 @@ def render_page(sheets, parts, svg):
            f" of its Part that it builds on.  {top_key}, /{top_name}/, is the row"
            " across the top, where each ingredient is stated in the generality"
            f" of the proof; above it is the last chapter, /{top.title}/.  Hover"
-           " over a chapter to pick out its arrows.",
+           " over a chapter to pick out its arrows."
+           + (f"  The side series, a model in the function-field setting that"
+              " the proof does not use, is drawn below the shortest column."
+              if side_note else ""),
            "",
            "#+BEGIN_EXPORT html",
            '<figure class="fc-fig">',
