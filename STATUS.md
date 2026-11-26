@@ -6,6 +6,14 @@ The site is <https://ultronozm.github.io/grh-workbook/>.  Each update appends an
 
 ## What changed
 
+### 26 November 2026: second coherence pass over Parts VI–IX
+
+- **Status paragraph.**  Rewritten after a reading of Parts VI–IX as a whole.  It now separates what is proved here (the deductions) from what is stated from the Lean code, Part by Part.  The index also corrects one sentence in "How the sheets fit together" and four synopses, and lists Part VIII in the order D1, D2, D3, D5, D6.
+- **Wording.**  Sentences in the sheets that said more was proved than is proved were corrected.  The same phrase is now used throughout for a statement taken from the proof: "read from the proof; not proved here".
+- **The chain of deductions.**  *The seesaw identity* names the seesaw constant.  *Divisibility of the composite lift* connects the theorem on elementary divisors to the estimate it is used for.  *Theorem A* proves the two inequalities on the data that it uses.  *Theorem C* states its input (b) with a problem.  *The determinant of a chain* now proves the small-ratios statement with two problems; it was stated from the Lean code before.  Several input numbers, signs and references were corrected.
+- **Definitions in one place.**  The gauge, the final level and its character, and the Petersson product are now defined in *Spaces, forms and twists*; *Theorem B* gains admissible fillings as a numbered definition.  Duplicated problems and sums were removed.
+- **Checks.**  Every chapter whose statements read from the Lean code changed was audited again against the code and the findings were applied.
+
 ### 26 November 2026: where the inputs of the main inequality come from
 
 - ***The main inequality*** now says, for each input, where it comes from: (A1) and (A2) are parts (a) and (b) of Theorem A in the notation of the chapter, (B) is a consequence of Theorem B, and Theorem C is quoted in full.  A new sentence says that the three theorems are proved in Parts VIII, VII and IX and that the chapter uses only their statements.
