@@ -11,16 +11,14 @@ Everything is read from the sources, so the chart follows the index:
     are pointers, not prerequisites, and are dropped; so is an arrow
     implied by a path of other arrows (transitive reduction).
 
-The chart is one grid.  Below, one column per Part except the last, the
-chapters of a Part stacked with the earliest at the bottom.  The last
-Part (Part VI, the proof) is a row across the top, in index order from
-left to right, and its last chapter, the end of the proof, sits above
-that row.  Arrows within the columns run in the gutters between them and
-in the gaps below the rows; arrows into the top row enter its boxes from
-below; arrows inside the top row, and into the last chapter, run in the
-gap above the row.  The layout and the orthogonal edge routing are done
-here, so Graphviz is not needed; a DOT file is written as well, for
-reference.
+The chart is one grid, with a column per Part, the chapters of a Part
+stacked with the earliest at the bottom (layout_columns).  The Parts from
+Part VI on are the proof and are shaded; the side series sits under the
+shortest column.  Arrows run in the gutters between the columns and in
+the gaps below the rows.  (The older layout with the last Part as a row
+on top, layout(), is kept for reference.)  The layout and the orthogonal
+edge routing are done here, so Graphviz is not needed; a DOT file is
+written as well, for reference.
 
 Outputs (in the current directory, or --outdir):
   flowchart.org   the page: the chart inline, a legend, the seminar plans
@@ -177,6 +175,7 @@ FS = 11.5            # node font size
 LH = 13.5            # line height
 CHAR = 0.53 * FS     # average character width (sans-serif), a bit generous
 WIDTH = 1200
+WIDE = 1800          # width of the one-grid chart with a column per Part
 MARGIN = 6
 LANE = 6             # spacing of parallel edges
 PAD = 7              # cluster padding
@@ -504,6 +503,148 @@ def layout(sheets, parts, edges):
                 width=WIDTH, height=height)
 
 
+
+def layout_columns(sheets, parts, edges, proof_from):
+    """One grid: a column per Part, the earliest chapter of a Part at the
+    bottom.  The Parts from PROOF_FROM on (the Parts of the proof) are
+    drawn in the colour of the proof.  The side series sits under the
+    shortest column."""
+    by_id = {s.id: s for s in sheets}
+    side_ids = {s.id for s in sheets if s.side}
+    side_parts = [p for p in parts if p[2][0] in side_ids]
+    col_parts = [p for p in parts if p[2][0] not in side_ids]
+    C = len(col_parts)
+    col_of, row_of = {}, {}
+    for c, (_, _, ids) in enumerate(col_parts):
+        for r, i in enumerate(reversed(ids)):
+            col_of[i], row_of[i] = c, r
+    rows = max(len(p[2]) for p in col_parts)
+    side_start = {}
+    for key, name, ids in side_parts:
+        used = [1 + max((row_of[i] for i in col_of if col_of[i] == c), default=-1)
+                for c in range(C)]
+        c = min(range(C), key=lambda c: (used[c], -c))
+        start = used[c] + 1
+        for r, i in enumerate(reversed(ids)):
+            col_of[i], row_of[i] = c, start + r
+        side_start[start] = True
+        rows = max(rows, start + len(ids))
+    proof_ids = {i for k, (_, _, ids) in enumerate(col_parts) if k >= proof_from for i in ids}
+    plan, kind = {}, {}
+    for (u, v) in edges:
+        cu, ru, cv, rv = col_of[u], row_of[u], col_of[v], row_of[v]
+        if cu == cv and ru == rv + 1:
+            plan[(u, v)] = ("straight",)
+        else:
+            gut, side = (cu + 1, "R") if cv > cu else (cu, "L")
+            plan[(u, v)] = ("routed", gut, side, rv)
+        kind[(u, v)] = ("top" if u in proof_ids and v in proof_ids
+                        else "inc" if v in proof_ids else "dep")
+    gutter_iv = defaultdict(dict)
+    for e, p in plan.items():
+        if p[0] == "routed":
+            _, gut, side, gap = p
+            ru = row_of[e[0]]
+            gutter_iv[gut][e] = (min(ru, gap + 0.5), max(ru, gap + 0.5))
+    lanes_g, nlanes_g = {}, {}
+    for gut, iv in gutter_iv.items():
+        ln, n = assign_lanes({e: (a * 10, b * 10) for e, (a, b) in iv.items()})
+        lanes_g.update(ln)
+        nlanes_g[gut] = n
+    width = WIDE
+    GW = max(30, 2 * PAD + 8 + max(nlanes_g.values(), default=1) * LANE)
+    BW = (width - 2 * MARGIN - (C + 1) * GW) / C
+
+    def col_x(c):
+        return MARGIN + GW + c * (BW + GW)
+
+    def gutter_x(gut, e):
+        n = nlanes_g[gut]
+        return MARGIN + gut * (BW + GW) + GW / 2 + (lanes_g[e] - (n - 1) / 2) * LANE
+
+    lines = {i: wrap(f"{by_id[i].num}  {by_id[i].plain}", BW - 12, 5) for i in col_of}
+    BH = max(len(l) for l in lines.values()) * LH + 10
+
+    def spread(x0, w, lst):
+        lst.sort(key=lambda t: t[0])
+        return {key: x0 + w * 0.12 + w * 0.76 * (k + 1) / (len(lst) + 1)
+                for k, (_, key) in enumerate(lst)}
+
+    entries = defaultdict(list)
+    for e, p in plan.items():
+        u, v = e
+        if p[0] == "straight":
+            entries[v].append((col_x(col_of[v]) + BW / 2, e))
+        else:
+            entries[v].append((gutter_x(p[1], e), e))
+    entry_x = {}
+    for v, lst in entries.items():
+        entry_x.update(spread(col_x(col_of[v]), BW, lst))
+    gap_iv = defaultdict(dict)
+    for e, p in plan.items():
+        if p[0] == "routed":
+            gx = gutter_x(p[1], e)
+            gap_iv[p[3]][e] = (min(gx, entry_x[e]), max(gx, entry_x[e]))
+    lanes_h, nlanes_h = {}, {}
+    for gap, iv in gap_iv.items():
+        ln, n = assign_lanes(iv)
+        for e, k in ln.items():
+            lanes_h[(gap, e)] = k
+        nlanes_h[gap] = n
+
+    def gap_h(gap):
+        return 10 + nlanes_h.get(gap, 0) * LANE
+
+    TITLE_H = 3 * 12 + 8
+    y = MARGIN + TITLE_H
+    row_y, gap_top = {}, {}
+    for r in range(rows):
+        row_y[r] = y
+        y += BH
+        gap_top[r] = y
+        y += gap_h(r) + (TITLE_H if (r + 1) in side_start else 0)
+    height = y + MARGIN
+
+    def lane_y(gap, e):
+        return gap_top[gap] + 5 + (lanes_h[(gap, e)] + 0.5) * LANE
+
+    box = {i: (col_x(col_of[i]), row_y[row_of[i]], BW, BH) for i in col_of}
+    exits = defaultdict(list)
+    for e, p in plan.items():
+        if p[0] == "routed":
+            exits[(e[0], p[2])].append(e)
+    exit_y = {}
+    for (u, side), lst in exits.items():
+        lst.sort(key=lambda e: lane_y(plan[e][3], e))
+        x, y0, w, h = box[u]
+        for k, e in enumerate(lst):
+            exit_y[e] = y0 + h * (k + 1) / (len(lst) + 1)
+    paths = {}
+    for e, p in plan.items():
+        u, v = e
+        ux, uy, uw, uh = box[u]
+        vx, vy, vw, vh = box[v]
+        if p[0] == "straight":
+            paths[e] = [(entry_x[e], uy), (entry_x[e], vy + vh)]
+        else:
+            gx = gutter_x(p[1], e)
+            sx = ux + uw if p[2] == "R" else ux
+            hy = lane_y(p[3], e)
+            paths[e] = [(sx, exit_y[e]), (gx, exit_y[e]), (gx, hy),
+                        (entry_x[e], hy), (entry_x[e], vy + vh)]
+    clusters = []
+    for k, (key, name, ids) in enumerate(col_parts + side_parts):
+        ys = [box[i][1] for i in ids]
+        ye = [box[i][1] + box[i][3] for i in ids]
+        clusters.append((f"{key}. {name}" if name else key,
+                         box[ids[0]][0] - PAD, min(ys) - TITLE_H,
+                         BW + 2 * PAD, max(ye) - min(ys) + TITLE_H + PAD,
+                         k >= proof_from and k < C))
+    return dict(box=box, lines=lines, paths=paths, clusters=clusters,
+                plan=plan, kind=kind, top=None, row_ids=sorted(proof_ids),
+                width=width, height=height)
+
+
 # ---------------------------------------------------------------- SVG
 
 STYLE = """
@@ -555,6 +696,8 @@ SCRIPT = """
 def edge_kind(L, e):
     """Dark within Parts I-V, light dashed from them into the last Part,
     amber inside the last Part."""
+    if "kind" in L:
+        return L["kind"][e]
     p = L["plan"][e][0]
     return {"straight": "dep", "routed": "dep", "up": "inc",
             "uptop": "inc"}.get(p, "top")
@@ -601,9 +744,11 @@ def render_svg(sheets, L):
                    f'<path d="M0,1 L10,5 L0,9 z" fill="{color}"/></marker>')
     out.append(f"</defs><style>/*<![CDATA[*/{STYLE}/*]]>*/</style>")
     titles = []
-    for k, (name, x, y, w, h) in enumerate(L["clusters"]):
-        cls = "cl top" if k == 0 else "cl"
-        tl = wrap(name, (w if k else 0.3 * w) - 2 * PAD, 2)
+    for k, cl in enumerate(L["clusters"]):
+        name, x, y, w, h = cl[:5]
+        proofcl = cl[5] if len(cl) > 5 else (k == 0)
+        cls = "cl top" if proofcl else "cl"
+        tl = wrap(name, (w if (len(cl) > 5 or k) else 0.3 * w) - 2 * PAD, 3)
         texts = "".join(f'<tspan x="{x + PAD:.1f}" dy="{0 if j == 0 else 12.5}">{esc(t)}</tspan>'
                         for j, t in enumerate(tl))
         out.append(f'<g class="{cls}"><rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" '
@@ -624,7 +769,7 @@ def render_svg(sheets, L):
         x, y, w, h = L["box"][s.id]
         cls = "n asm" if s.id == top else "n mod" if s.id in row else "n"
         ls = L["lines"][s.id]
-        fs = 13 if s.id == top else FS
+        fs = 13 if (top and s.id == top) else FS
         lh = LH + (1.5 if s.id == top else 0)
         ty = y + h / 2 - (len(ls) - 1) * lh / 2 + fs * 0.35
         tx = x + 6 if s.id != top else x + w / 2
@@ -748,8 +893,6 @@ def render_page(sheets, parts, svg):
     side_note = [p for p in parts if by_id[p[2][0]].side]
     parts = [p for p in parts if not by_id[p[2][0]].side]
     pos = {s.id: k for k, s in enumerate(sheets)}
-    top_key, top_name, top_ids = parts[-1]
-    top = by_id[top_ids[-1]]
     with open(PLANS, encoding="utf-8") as f:
         data = json.load(f)
     checks = []
@@ -761,18 +904,18 @@ def render_page(sheets, parts, svg):
            # The chart is drawn 1200 units wide; let it use the window
            # rather than the text column.
            "#+HTML_HEAD: <style>figure.fc-fig{position:relative;left:50%;"
-           "transform:translateX(-50%);width:min(1200px,calc(100vw - 32px));"
+           "transform:translateX(-50%);width:min(1800px,calc(100vw - 32px));"
            "margin:1em 0} figure.fc-fig svg{display:block;width:100%}</style>",
            "",
            "Back to the [[file:index.html][index]].",
            "",
-           f"Each box is a chapter and links to it.  Parts {lower} are the"
-           " columns, read from the bottom up: a chapter sits above the chapters"
-           f" of its Part that it builds on.  {top_key}, /{top_name}/, is the row"
-           " across the top, where each ingredient is stated in the generality"
-           f" of the proof; above it is the last chapter, /{top.title}/.  Hover"
-           " over a chapter to pick out its arrows."
-           + (f"  The side series, a model in the function-field setting that"
+           "Each box is a chapter and links to it.  Each Part is a column,"
+           " read from the bottom up: a chapter sits above the chapters of"
+           " its Part that it builds on.  The shaded columns on the right,"
+           " Parts VI–IX, are the proof itself: the frame and Theorems B, A"
+           " and C; the other columns treat each ingredient in its simplest"
+           " setting.  Hover over a chapter to pick out its arrows."
+           + ("  The side series, a model in the function-field setting that"
               " the proof does not use, is drawn below the shortest column."
               if side_note else ""),
            "",
@@ -784,11 +927,11 @@ def render_page(sheets, parts, svg):
            "",
            "*Legend.*  Every arrow comes from the /Prerequisites/ paragraph of"
            " the chapter it points to.",
-           f"- Dark arrow: within Parts {lower}, the later chapter builds on the"
+           "- Dark arrow: within Parts I–V, the later chapter builds on the"
            " earlier one.",
-           f"- Light dashed arrow: a chapter of {top_key} builds on a chapter of"
-           f" Parts {lower}, usually its simplest setting.",
-           f"- Amber arrow: within {top_key}.",
+           "- Light dashed arrow: a chapter of Parts VI–IX builds on a chapter of"
+           " Parts I–V, usually its simplest setting.",
+           "- Amber arrow: within Parts VI–IX.",
            "- An arrow is left out when a path of other arrows already leads"
            " from the one chapter to the other.",
            ]
@@ -827,7 +970,9 @@ def main():
     args = ap.parse_args()
     sheets, parts = read_index()
     edges = build_graph(sheets)
-    L = layout(sheets, parts, edges)
+    main_parts = [p for p in parts if not next(x for x in sheets if x.id == p[2][0]).side]
+    proof_from = next((k for k, p in enumerate(main_parts) if p[0] == "Part VI"), len(main_parts) - 1)
+    L = layout_columns(sheets, parts, edges, proof_from)
     svg = render_svg(sheets, L)
     files = {"flowchart.svg": svg + "\n",
              "flowchart.dot": render_dot(sheets, parts, L),
