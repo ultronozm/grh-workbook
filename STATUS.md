@@ -1,10 +1,17 @@
 # Status of the workbook
 
-**Status, 26 November 2026.**  The collection is being extended to cover the complete proof and is updated continuously.  Parts I–V and the side series are stable apart from small corrections.  The proof itself now occupies four Parts.  Part VI fixes the data and all the objects, and deduces the theorem from Theorems A, B and C.  Parts VII, VIII and IX state Theorems B, A and C, deduce each from its inputs, and state those inputs from the Lean code; the proofs of the inputs are being developed into further sheets, which will appear in batches after the chapter that states the result.
+**Status, 26 November 2026.**  The collection is being extended to cover the complete proof and is updated continuously.  Parts I–V and the side series are stable apart from small corrections.  The proof itself now occupies four Parts.  Part VI fixes the data and all the objects, and deduces the theorem from Theorems A, B and C.  Parts VII, VIII and IX state Theorems B, A and C, deduce each from its inputs, and state those inputs from the Lean code; the proofs of the inputs are being developed into further sheets, which will appear in batches after the chapter that states the result.  Developed so far: in Part VIII, the divisibility of one lift at a small non-split prime and the size of the composite lift (three sheets).
 
 The site is <https://ultronozm.github.io/grh-workbook/>.  Each update appends an entry below, newest first.
 
 ## What changed
+
+### 26 November 2026: batch 1, divisibility at a small prime and the size
+
+- **Three new sheets in Part VIII:** *The count: congruences, directions and factorials*, *One lift at a small non-split prime*, *The size of the composite lift*.
+- ***Divisibility of the composite lift*** now defines the gauge, weak chain data and the restricted chain.  Two of its inputs are now references to the new sheets.
+- ***Theorem A*** passes its section on the exponent and the size theorem to *The size of the composite lift*.
+- **Checks:** each new sheet passed a fidelity audit against the Lean code and a solver test; the batch was read as a whole.  The final audit rounds were done by an independent Claude Opus auditor and the batch read by Claude Fable.
 
 ### 26 November 2026, later: the frame (batch 0)
 
