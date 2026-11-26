@@ -14,7 +14,6 @@
 \externaldocument[l3-]{20261126T050900--hecke-values-as-norms-of-lifts__workbook}
 \externaldocument[dp-]{20261126T030900--denominators-of-projections-to-lifts__workbook}
 
-% Chapter number; \ref{chap} gives it.
 \newcounter{chap}
 \input{chapters}
 \ifcsname chapters@20261126T060300\endcsname
@@ -47,6 +46,7 @@
 \newcommand{\Sym}{\operatorname{Sym}}
 \newcommand{\per}{\mathrm{per}}
 \newcommand{\phif}{\phi_{\mathrm f}}
+\newcommand{\vt}{\vartheta}
 \newcommand{\tl}[1]{\texttt{#1}}
 \setlength{\emergencystretch}{3em}
 
@@ -59,58 +59,55 @@
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-Linear algebra over \(\C\); Gaussian binomial coefficients \cite[Ch.~1]{St}.  From Chapter~\ref{l1-chap}: comparison operators (Definition~\ref{l1-def:comparison}), false lifts (Definition~\ref{l1-def:false}), the Hecke value product \(\Hc_j\) (Definition~\ref{l1-def:hecke-product}), compression determinants \eqref{l1-eq:D} and Problem~\ref{l1-pr:comparison}.  From Chapter~\ref{tn-chap}: the moments \(c_a\), the constants \(\vartheta_0\), \(\varpi\), and Problems~\ref{tn-pr:U1U2}, \ref{tn-pr:rallis} and~\ref{tn-pr:seesaw}; from Chapter~\ref{dt-chap} the norms of forms and Problems~\ref{dt-pr:sym-norm} and~\ref{dt-pr:forms-2}.  For Sections~\ref{sec:general}--\ref{sec:frames}: the data (Chapter~\ref{da-chap}), the objects of Chapter~\ref{ob-chap} (\(\Mch\), \(\Nc\), twists, \(W_j\), \(V_j\), \(H_g(W_j)\), \(u_{\vartheta,j}\), \(d_T\)), forms integral at \(\eta\) (Definition~\ref{ob-def:gauge}), the exchange factors of Chapter~\ref{c3-chap}, and Corollary~\ref{c2-cor:equal}; descent pairs (Definition~\ref{dp-def:descent-pair}), of which only the definition is used.
+Complex inner product spaces and Gaussian binomial coefficients \cite[Ch.~1]{St}.  For lifts, norms and Gaussian moments over \(\Z[\ii]\), see Chapters~\ref{dt-chap} and~\ref{tn-chap}.  We use the data and spaces of Chapters~\ref{da-chap} and~\ref{ob-chap}, the descent pair of Definition~\ref{dp-def:descent-pair} and the definitions of Chapter~\ref{l1-chap}.
 
 \medskip
-The proof of Theorem~\ref{col-thm:main} of Chapter~\ref{col-chap}, \emph{The cost of one lift}, uses the compression estimates of Chapter~\ref{l1-chap}, a comparison operator, and a height bound for the inverse Hecke ratio for a regular family of twists.  Clause (2) of Definition~\ref{l1-def:comparison} asks that the pullbacks \(u_{\vartheta,j}^*\Upsilon_\vartheta u_{\vartheta,j}\) to \(H_g(W_j)\) all equal one positive definite operator times \(\Hc_j(\vartheta)/\Hc_j(1)\).  Where does such a family come from?  In the proof there are maps \(g_\vartheta\) and numbers \(c'_\vartheta\) such that \(c'_\vartheta g_\vartheta^*u_{\vartheta,j}\) is one injective map, independent of \(\vartheta\), and \(\lvert c'_\vartheta\rvert^2\Hc_j(\vartheta)\) is independent of \(\vartheta\); the comparison operator is \(\Nc h^2 g_\vartheta g_\vartheta^*\).  We model this first in a seesaw over \(\Z[\ii]\) with a twist, then state what the proof does in general, with the inputs it takes from the code.
+The cost bound in Theorem~\ref{col-thm:main} of Chapter~\ref{col-chap} uses a comparison operator \cite[LiftVolumeHeight, line 729]{GL}.  How is it constructed?  Clause (2) of Definition~\ref{l1-def:comparison} asks that all the pullbacks \(u_{\vt,j}^*\Upsilon_\vt u_{\vt,j}\) equal a common positive definite operator times \(\Hc_j(\vt)/\Hc_j(1)\).  A seesaw over \(\Z[\ii]\) illustrates how rescaling a period makes it independent of the twist.
 
 \section{A seesaw with a twist}\label{sec:toy}
 
 \begin{problem}\label{pr:scalar}
-Let \(A\), \(T\) and \(V_\vartheta\) be finite-dimensional complex inner product spaces, with \(\vartheta\) in a set containing \(1\); let \(u_\vartheta\colon A\to V_\vartheta\) and \(g_\vartheta\colon T\to V_\vartheta\) be linear, \(n>0\), and \(c'_\vartheta\ne0\) numbers such that \(c'_\vartheta g_\vartheta^*u_\vartheta = \per\) for every \(\vartheta\), with \(\per\colon A\to T\) injective and independent of \(\vartheta\).  Then \(\Upsilon_\vartheta := n\,g_\vartheta g_\vartheta^*\) satisfies
+Let \(A\), \(T\) and \(V_\vt\) be finite-dimensional complex inner product spaces, with \(\vt\) in a set containing \(1\); let \(u_\vt\colon A\to V_\vt\) and \(g_\vt\colon T\to V_\vt\) be linear, \(n>0\), and \(c'_\vt\ne0\) numbers such that \(c'_\vt g_\vt^*u_\vt = \per\) for every \(\vt\), with \(\per\colon A\to T\) injective and independent of \(\vt\).  Then \(\Upsilon_\vt := n\,g_\vt g_\vt^*\) satisfies
 \[
-  \langle u_\vartheta y', \Upsilon_\vartheta u_\vartheta y\rangle = \rho_\vartheta\,\langle y', \Upsilon^\circ y\rangle,
-  \qquad \rho_\vartheta = \frac{\lvert c'_1\rvert^2}{\lvert c'_\vartheta\rvert^2},\quad \Upsilon^\circ = \frac{n}{\lvert c'_1\rvert^2}\,\per^*\per ,
+  \langle u_\vt y', \Upsilon_\vt u_\vt y\rangle = \rho_\vt\,\langle y', \Upsilon^\circ y\rangle,
+  \qquad \rho_\vt = \frac{\lvert c'_1\rvert^2}{\lvert c'_\vt\rvert^2},\quad \Upsilon^\circ = \frac{n}{\lvert c'_1\rvert^2}\,\per^*\per ,
 \]
-every \(u_\vartheta\) is injective, and \(\langle y,\Upsilon^\circ y\rangle>0\) for \(y\ne0\): the hypotheses of Problem~\ref{l1-pr:comparison}.
+every \(u_\vt\) is injective, and \(\langle y,\Upsilon^\circ y\rangle>0\) for \(y\ne0\): the hypotheses of Problem~\ref{l1-pr:comparison}.
 \end{problem}
 
-In this section only, \(\Oc = \Z[\ii]\), and \(c_a\), \(\vartheta_0\), \(\varpi\) are as in Chapter~\ref{tn-chap}.  Let \(\mathfrak q := (3+2\ii)\); then \(\Oc/\mathfrak q \cong \F_{13}\) with \(\ii \mapsto 5\).  In this section \(\psi\) is either the function \(1\), identically \(1\) on \(\Oc\), or the character of \((\Oc/\mathfrak q)^\times\) with \(\psi(2) = e^{2\pi\ii/3}\), read on \(\Oc\) through \(\Oc\to\Oc/\mathfrak q\) and extended by zero on \(\mathfrak q\); the latter is trivial on the image of the units.  Put \(c_a(\psi) := \sum_{\alpha\in\Oc}\psi(\alpha)\,\alpha^a e^{-\pi\lvert\alpha\rvert^2}\), so \(c_a(1) = c_a\).
+Write \(\Oc:=\Z[\ii]\) and \(\mathfrak q:=(3+2\ii)\), so \(\Oc/\mathfrak q\cong\F_{13}\) by \(\ii\mapsto5\).  Take \(\psi\) identically \(1\) on \(\Oc\), or the cubic character modulo \(\mathfrak q\) with \(\psi(2)=e^{2\pi\ii/3}\), extended by zero on \(\mathfrak q\).  It is trivial on units.  Write \(c_a(\psi):=\sum_{\alpha\in\Oc}\psi(\alpha)\alpha^a e^{-\pi|\alpha|^2}\), with \(c_a(1)=c_a\) as in Chapter~\ref{tn-chap}.
 
-The source is \(A := \Ac_{(8)}(1) = \C\) (a form is its value at \(I_1\)), with \(\langle y',y\rangle = \overline{y'}y/4\).  On \(\Sym^8(\C^2)\) write \(\langle v,w\rangle_0\) for the conjugate of the inner product of Problem~\ref{dt-pr:sym-norm}, so that it is linear in \(w\) and has the same squared norms.  The target has inner product \(\langle v,w\rangle_0/32\), which on \(\Gamma_{I_2}\)-invariant vectors induces the norm of \(\Ac_{(8)}(2)\).  The \emph{twisted lift} and the \emph{gluing map} \(g\colon \C\to\Sym^8(\C^2)\), where this second copy of \(\C\) carries the inner product of \(A\), are
+On \(A:=\Ac_{(8)}(1)=\C\) take \(\langle y',y\rangle=\overline{y'}y/4\).  On \(\Sym^8(\C^2)\) let \(\langle v,w\rangle_0\) be the conjugate of the pairing of Problem~\ref{dt-pr:sym-norm}, linear in \(w\).  The target pairing is \(\langle v,w\rangle_0/32\), giving the norm of \(\Ac_{(8)}(2)\) on invariant vectors.  Define \(u_\psi,g\colon A\to\Sym^8(\C^2)\) by
 \[
   u_\psi(\varphi) := \frac{\varphi}{4}\sum_{x\in\Oc^2}\psi(x_2)\,(x_1e_1+x_2e_2)^8 e^{-\pi\lvert x\rvert^2},
   \qquad g(\zeta) := 8\zeta\, e_1^4e_2^4 .
 \]
-The twist sits on the line \(\Oc e_2\) only; \(g\) places a form on the line \(Y=\Oc e_1\) next to the fixed vector \(e_2^4\).  For \(\psi\ne1\) the vector \(u_\psi(\varphi)\) need not be \(\Gamma_{I_2}\)-invariant; we work in all of \(\Sym^8(\C^2)\).
 
 \begin{problem}\label{pr:toy-lift}
 \(u_\psi(\varphi) = \frac{\varphi}{4}\bigl(c_8c_0(\psi)\,e_1^8 + 70\,c_4c_4(\psi)\,e_1^4e_2^4 + c_0c_8(\psi)\,e_2^8\bigr)\), and \(g^*v = \langle e_1^4e_2^4, v\rangle_0\).
 \end{problem}
 
 \begin{problem}\label{pr:toy-period}
-\(g^*u_\psi(\varphi) = c_4c_4(\psi)\varphi/4\).  Hence, with \(c'_\psi := c_4/c_4(\psi)\) (when \(c_4(\psi)\ne0\)), \(c'_\psi\,g^*u_\psi = \per\) is multiplication by \(c_4^2/4\) for both \(\psi\): the twist survives only in the number \(c'_\psi\).
-\end{problem}
-
-\begin{problem}\label{pr:toy-numbers}
+\(g^*u_\psi(\varphi) = c_4c_4(\psi)\varphi/4\).  Hence, with \(c'_\psi := c_4/c_4(\psi)\) (when \(c_4(\psi)\ne0\)), \(c'_\psi\,g^*u_\psi = \per\) is multiplication by \(c_4^2/4\) for both \(\psi\).
+\label{pr:toy-numbers}
 By machine: \(c_4(\psi) \approx 0.187713 + 0.026069\,\ii\) for \(\psi\ne1\), against \(c_4 \approx 0.143191\); so \(\rho_\psi := \lvert c'_1\rvert^2/\lvert c'_\psi\rvert^2 = \lvert c_4(\psi)\rvert^2/c_4^2 \approx 1.75167\).
 \end{problem}
 
 \begin{problem}\label{pr:toy-compression}
-Let \(\Upsilon_\psi := gg^*\), \(Z(\psi) := u_\psi^*u_\psi\) and \(D_\psi\) the compression determinant of \(\Upsilon_\psi\) on the line \(u_\psi(\C)\) (local notations).  Then \(\Upsilon^\circ = c_4^4/16\), \(Z(\psi)D_\psi = (c_4^4/16)\rho_\psi\), and \(Z(1)/Z(\psi) = (D_\psi/D_1)\rho_\psi^{-1}\).  At the trivial twist \(D_1 = 1/81\).  By machine, for \(\psi\ne1\), \(Z(\psi)\approx 6.6676\cdot10^{-4}\) and \(D_\psi \approx 0.069029\).
+Let \(\Upsilon_\psi := gg^*\), \(Z(\psi) := u_\psi^*u_\psi\) and \(D_\psi\) the compression determinant of \(\Upsilon_\psi\) on the line \(u_\psi(\C)\).  Then \(\Upsilon^\circ = c_4^4/16\), \(Z(\psi)D_\psi = (c_4^4/16)\rho_\psi\), and \(Z(1)/Z(\psi) = (D_\psi/D_1)\rho_\psi^{-1}\).  At the trivial twist \(D_1 = 1/81\).  By machine, for \(\psi\ne1\), \(Z(\psi)\approx 6.6676\cdot10^{-4}\) and \(D_\psi \approx 0.069029\).
 \end{problem}
 
-So, with the toy Hecke value \(\lvert c_4(\psi)\rvert^2\) in place of \(\Hc_j(\vartheta)\), the two twists model clauses (1) and (2) of Definition~\ref{l1-def:comparison}.  Clause (3) does not hold for free.
+With toy Hecke value \(|c_4(\psi)|^2\), these identities model clauses (1) and (2).
 
 \begin{problem}\label{pr:toy-false}
 \(\Ac_{(8)}(2)\) is spanned by \(e_1^8+e_2^8\) and \(e_1^4e_2^4\) (Problem~\ref{dt-pr:forms-2}); \(\phif := e_1^8 - 34e_1^4e_2^4 + e_2^8\) is orthogonal to \(u_1(\C)\), and \(g^*\phif = -17/35\).  Hence \(\langle\phif, \Upsilon_1u_1(\varphi)\rangle \ne 0\) for \(\varphi\ne0\).
 \end{problem}
 
-The form \(\phif\) has the symmetry of the untwisted lift and is orthogonal to \(u_1(\C)\), yet its period \(g^*\phif\) is nonzero.  In the proof the period vanishing of Section~\ref{sec:false} uses, besides membership in \(\im e_0\) and orthogonality to the lifts, the Hecke equation of the lift at a split place.
+Clause (3) also uses the Hecke equation at a split place (Section~\ref{sec:false}).
 
 \section{Gluing by a congruence}\label{sec:glue}
 
-The gluing map of Definition~\ref{def:glue} combines two vectors, one for each summand of a splitting of \(V_j\) into two definite spaces; in the formula for its periods a congruence on matrices is written as a sum over a congruence group.
+In the period of the gluing map, a sum over a congruence group enforces a matrix congruence.
 
 \begin{problem}\label{pr:glue-mod9}
 Modulo \(9\), let \(\Gamma := \{Y \equiv 1 \pmod 3\} = \{1,4,7\}\).  For \(v\in\Z/9\), the equation \(vY=1\) has a solution \(Y\in\Gamma\) if and only if \(v\equiv1\pmod 3\), and then exactly one.  Hence \(\mathbf 1_{v\equiv1\,(3)} = \sum_{Y\in\Gamma}\mathbf 1_{vY=1}\).
@@ -120,49 +117,54 @@ Modulo \(9\), let \(\Gamma := \{Y \equiv 1 \pmod 3\} = \{1,4,7\}\).  For \(v\in\
 Let a finite group \(\Gamma\) act on a finite set \(X\) on the right, and let \(S, N\subseteq X\) be such that for \(x\in S\) exactly one \(Y\in\Gamma\) has \(xY\in N\), and \(xY\in N\) implies \(x\in S\).  Then \(\mathbf 1_S(x) = \sum_{Y}\mathbf 1_N(xY)\), and for every \(\Gamma\)-invariant \(f\), \(\sum_{x}\mathbf 1_S(x)f(x) = \#\Gamma\sum_x \mathbf 1_N(x)f(x)\).
 \end{problem}
 
-In the proof (\tl{IsGlued.indicator\_eq\_sum}, see the remark at the end) \(X\) is a set of matrices modulo \(\pi_M^2\), where \((\pi_M)\) is the product of the chosen primes (Section~\ref{ob-sec:chosen}), \(\Gamma\) is the group of invertible \(r\times r\) matrices \(\equiv1\pmod\pi_M\) acting by right multiplication, and \(S\), \(N\) are given by the gluing congruence of a choice and by block normalization.  The order \(\#\Gamma\) is a factor of the constants \(c^\circ_i\) below.
+In the proof, \(X\) consists of matrices modulo \(\pi_M^2\), where \((\pi_M)\) is the product of the chosen primes (Section~\ref{ob-sec:chosen} and \cite[ExchangeData, line 80]{GL}).  Invertible \(r\times r\) matrices congruent to \(1\) modulo \(\pi_M\) act on the right.  Here \(S\) is given by the gluing congruence and \(N\) by block normalization.  The group order occurs in \(c^\circ_i\) below \cite[GluedLattices, lines 490--535 and GluingMaps, line 999]{GL}.
 
 \section{The general statement}\label{sec:general}
 
-Fix \(1\le j\le m\).  The space \(V_j\) of rank \(r+t\) splits as \(V''\oplus V^\circ\), definite of ranks \(r+9m+1\) and \(t-9m-1\), with the basis indices of \(W_j\) occurring first in \(V''\).  A \emph{choice} \(i\) consists of a \(3m\times(r+9m+1)\) matrix modulo \(\pi_M^2\), a class of the standard definite space of rank \(6m+1\) at principal level \(\pi_M^2\), and, at each infinite place, \(r^8-(t+1)/2\) ordered lists of \(2m\) row indices of that space; \(c\) runs over the classes of \(V^\circ\) at principal level \(\pi_M^2\), where all stabilizers are trivial.  A \emph{tuple} is a family \(\zeta = (\zeta_{i,c})\) of vectors of the Weyl module of the weight \(\mu^-\), the minus diagram of the \(j\)-th descent pair of the trivial twist (Definition~\ref{dp-def:descent-pair}; the \(j\)-th descent pair of a twist \(\vartheta\) is the datum of lift \(j\) at \(\vartheta\)), one per \emph{slot} \((i,c)\); tuples carry the inner product \(\sum_{i,c}\langle\zeta_{i,c},\zeta'_{i,c}\rangle\) of the integral Gram form of the Weyl module.  In this sheet \(h\) is the hook number of \(\mu^-\): the integer \(f(\partial)f(0)\) for the product \(f\) of leading minors of highest weight \(\mu^-\); for one row of length \(a_\tau\) at each infinite place \(\tau\) it is \(\prod_\tau a_\tau!\).
+Fix \(1\le j\le m\).  Write \(V_j=V''\oplus V^\circ\) with definite summands of ranks \(r+9m+1\) and \(t-9m-1\).  A choice \(i\) specifies a \(3m\times(r+9m+1)\) matrix modulo \(\pi_M^2\), a class of the standard definite space of rank \(6m+1\) at principal level \(\pi_M^2\), and at each infinite place \(r^8-(t+1)/2\) lists of \(2m\) row indices of that space.  Let \(c\) range over the classes of \(V^\circ\) at principal level \(\pi_M^2\).  Write \(\mu^-\) for the minus diagram of the untwisted \(j\)-th descent pair and \(h\) for its hook number.  Tuples \(\zeta=(\zeta_{i,c})\) carry one Weyl module of weight \(\mu^-\) per slot \((i,c)\), with the sum of the Gram pairings \cite[ExchangeData, lines 169--193, 294, 444--449 and GluingMaps, lines 58--88]{GL}.
 
 \begin{definition}\label{def:glue}
-For a twist \(\vartheta\), the \emph{gluing map} \(g_\vartheta\) is the linear map from tuples to forms on \(V_j\) (of the weight, level and character of the target of \(u_{\vartheta,j}\)) given by \(M^{l_1}\) times the sum over \((i,c)\) and over the classes \(d''\) of \(V''\) at the row-fixing level of the matrix of \(i\) and \(\vartheta\) (where stabilizers are trivial), of the class forms \(\delta_x(v)\) with \(x=\operatorname{block}(d'',c)\gamma_i\) (at the chosen representatives) and \(v\) the Cartan product of \(\phi''_{\vartheta,i}(d'')\) and \(\zeta_{i,c}\); here \(\delta_x(v)\) is the form supported on the class of \(x\) with \(\langle\delta_x(v),\phi\rangle=\langle v,\phi(x)\rangle\) (Gram pairing) for every target form \(\phi\).  Further, \(\gamma_i\) is the basis matrix of a glued lattice chosen at the trivial twist, \(l_1\) is the denominator exponent of the splitting, and the \emph{first factor} is \(\phi''_{\vartheta,i}(d'') = \overline{c''L_{\vartheta,i}(d'')}\), where \(L_{\vartheta,i}\) is a vector-valued theta series on the finite adelic points of \(\mathrm U(V'')\) built from \(i\) and \(\vartheta\) (\tl{leftSideSeries}) and \(c''\ne0\) depends only on the data and \(j\).
+For a twist \(\vt\), the \emph{gluing map} sends a tuple \(\zeta\) to the target of \(u_{\vt,j}\) by
+\[
+  g_\vt\zeta=M^{l_1}\sum_{i,c,d''}\delta_{\operatorname{block}(d'',c)\gamma_i}
+     \bigl(\phi''_{\vt,i}(d'')\mathbin{\odot}\zeta_{i,c}\bigr).
+\]
+Here \(\mathbin{\odot}\) denotes the Cartan product, \(d''\) runs over class representatives of \(V''\) at the row-fixing level of \(i,\vt\), and \(c\) in the subscript denotes its chosen representative.  The class form satisfies \(\langle\delta_x(v),\phi\rangle=\langle v,\phi(x)\rangle\).  The matrix \(\gamma_i\) is a glued lattice basis chosen at the trivial twist and \(l_1\) the denominator exponent of the splitting.  The first factor \(\phi''_{\vt,i}=\overline{c''L_{\vt,i}}\) comes from a vector-valued theta series \(L_{\vt,i}\) on \(\mathrm U(V'')(\mathbb A_f)\), with \(c''\ne0\) depending only on the data and \(j\) \cite[TestedForms, line 138, GluedLattices, line 550, GluedForms, line 450, LineCoordinates, line 331 and GluingMaps, lines 190--199, 211--247, 350--354]{GL}.
 \end{definition}
 
-We do not construct \(g_\vartheta\) further; what it does is recorded in three statements taken from the proof.  First, the first-factor pairing is normalized by one scalar per twist.  Let \(\mathsf S_{\vartheta,i}(g)\) (in this paragraph) be the conjugate-linear pairing of \(\phi''_{\vartheta,i}\) with a theta kernel of \((W_j,V'')\) at \(g\), summed over the classes at the row-fixing level, whose finite datum is \tl{columnDatum} for the rows of the matrix of \(i\) stacked over the level generator times the identity.  The row congruence is tested modulo \(\pi_M^2\), and the determinant of the distinguished rows modulo \(\pi_M^2 Q_\vartheta\) is evaluated with the residue character of the descent pair, with local factors \(\chi_{M,w}^{\,j}\vartheta_w\), \(\vartheta_w\) the local tame part of the twist (\tl{firstFactorPairing}).  There are numbers \(c'_\vartheta\), one for each twist, with \(c'_\vartheta\,\mathsf S_{\vartheta,i}(g) = c''F_i(g)\) for every \(i\) and every adelic \(g\), where the function \(F_i\) on \(\mathrm U(W_j)(\mathbb A)\) (so named in this sheet) does not depend on \(\vartheta\): this is the last of three exchanges of Chapter~\ref{c3-chap}, the first two producing a carrier form on a space of signature \((2m,m)\), and the three scalars together give
+First, write \(\mathsf S_{\vt,i}(g)\) for the pairing, conjugate-linear in \(\phi''_{\vt,i}\), with the theta kernel for \((W_j,V'')\), summed over the row-fixing classes.  Its finite datum tests the rows of the choice matrix stacked over the level generator times the identity modulo \(\pi_M^2\).  It evaluates the residue character, with local factors \(\chi_{M,w}^{\,j}\vt_w\), on the determinant of the distinguished rows modulo the product of \((\pi_M)^2\) and the prime ideals at the places in \(Q_\vartheta\).  Here \(\vt_w\) is the local tame part \cite[LevelAndTwists, line 336, GluedLattices, lines 272--278, 422--425 and GluingMaps, lines 249--255]{GL}.  In the last of three applications of the exchange identity of Chapter~\ref{c3-chap}, the first two applications having produced a carrier form of signature \((2m,m)\), one obtains functions \(F_i\) on \(\mathrm U(W_j)(\mathbb A)\) independent of the twist.  There is a scalar \(c'_\vt\) per twist such that \(c'_\vt\mathsf S_{\vt,i}(g)=c''F_i(g)\) for all \(i,g\), and
 \[
-  \lvert c'_\vartheta\rvert^2 = C/\Hc_j(\vartheta)\qquad\text{for every twist }\vartheta,
+  \lvert c'_\vt\rvert^2 = C/\Hc_j(\vt)\qquad\text{for every twist }\vt,
 \]
-with \(C\in\C\) independent of \(\vartheta\), not known in advance to be nonzero (in this identity \(1/0\) is read as \(0\), as in the code); the three factors of \(\Hc_j\) in Definition~\ref{l1-def:hecke-product} are the exchange factors of the three exchanges.  Second, by the gluing congruence (modelled by Problem~\ref{pr:glue-sum}), right invariance of the quotient integral, adjointness of lift and descent, and the first-factor identity, for good forms \(y\) on \(W_j\) and tuples \(\zeta\),
+with one \(C\in\C\) and \(1/0:=0\) in this identity.  The three exchange factors give \(\Hc_j\) of Definition~\ref{l1-def:hecke-product}.  Second, for every good form \(y\) on \(W_j\) and tuple \(\zeta\),
 \[
-  c'_\vartheta\,\langle\zeta, g_\vartheta^*u_{\vartheta,j}y\rangle = \sum_i c^\circ_i\int y\,F_i\,\Theta^\circ(\zeta_i),
+  c'_\vt\,\langle\zeta, g_\vt^*u_{\vt,j}y\rangle = \sum_i c^\circ_i\int y\,F_i\,\Theta^\circ(\zeta_i),
 \]
-the integral over \(\mathrm U(W_j)(\mathbb A)\) modulo its rational points, where \(\Theta^\circ(\zeta_i)\) is the conjugate-linear pairing of \(\zeta_i = (\zeta_{i,c})_c\) with the untwisted theta kernel of \((W_j, V^\circ)\) at principal level \(\pi_M^2\) (datum: the indicator of the inclusion matrix of the indices of \(W_j\); characters: those of the untwisted descent pair on \(W_j\), and \(\upsilon^{m/2-j}\)), and the numbers \(c^\circ_i\ne0\) do not depend on \(\vartheta\).  \emph{Status}: both are read from the code \cite{GL}; the exchanges are of the kind of Theorem~\ref{c3-thm:exchange}.  The resulting identity of maps is, for every twist,
+integrated over the adelic unitary group of \(W_j\) modulo its rational points.  Here \(c^\circ_i\ne0\) is independent of \(\vt\), and \(\Theta^\circ(\zeta_i)\) pairs the slice \((\zeta_{i,c})_c\) conjugate-linearly with the untwisted theta kernel for \((W_j,V^\circ)\) at principal level \(\pi_M^2\).  \emph{Status}: read from the code \cite[OneExchange, line 93, ThreeExchanges, lines 181, 284, 748 and GluingMaps, lines 293--319, 999--1048]{GL}.  The right side is independent of \(\vt\), so
 \begin{equation}\label{eq:period-lift}
-  c'_\vartheta\, g_\vartheta^*u_{\vartheta,j} = \per_j := c'_1\, g_1^*u_{1,j} .
+  c'_\vt\, g_\vt^*u_{\vt,j} = \per_j := c'_1\, g_1^*u_{1,j} .
 \end{equation}
-Third: \(\per_j\) is injective on \(H_g(W_j)\).  The proof shows that a good form \(y\) with \(\int yF_i\Theta^\circ(\zeta_i) = 0\) for all \(i,\zeta_i\) vanishes.  It uses a stable-range reproducing formula and, with \(n_* = 2ft^3\), one bounded function \(F_0\) on the real group with \(F_0(1)\ne0\): at each adelic \(g\) where the moved lattice of \(W_j\) has first minimum, cut off at \(1\), at least \((5b^{24})^{-1/2}\), there are coefficients \(a_i(g)\) with \(\lvert\sum_ia_i(g)F_i(g(s,1)) - F_0(s)\rvert\le 2b^{-19n_*}\lvert F_0(1)\rvert\,\lVert s\rVert^{6n_*}\) for every real point \(s\) (\(\lVert s\rVert\) the largest operator norm at the infinite places); if \(y\ne0\), every \(g\) with \(\lvert\bar y(g)\rvert>\tfrac12\sup_x\lvert\bar y(x)\rvert\) satisfies the first-minimum bound; and the resulting estimate \(\lvert F_0(1)\rvert\le 2(4b_*+1)b_*^{-19}\lvert F_0(1)\rvert\), with \(b_* := b^{n_*}>10\) a power of the scale \(b\), forces \(F_0(1) = 0\), a contradiction.  \emph{Status}: read from the code \cite{GL}; for non-vanishing of stable-range theta lifts compare \cite{Li92}.
+Third, \(\per_j\) is injective on \(H_g(W_j)\).  The proof shows that if a good form \(y\ne0\) had \(\int yF_i\Theta^\circ(\zeta_i)=0\) for all \(i,\zeta_i\), a function \(F_0\) with \(F_0(1)\ne0\) would satisfy \(|F_0(1)|\le 2(4b_*+1)b_*^{-19}|F_0(1)|\), where \(b_*:=b^{2ft^3}>10\).  \emph{Status}: read from the code \cite[ProductsSpan, lines 717, 855--907]{GL}.  For stable-range nonvanishing compare \cite{Li92}.
 
 \begin{problem}\label{pr:peak}
-For real \(b_*>10\), \(2(4b_*+1) < b_*^2 \le b_*^{19}\).  (As an illustration only: for \(b_* = 2\) the factor \(2(4b_*+1)b_*^{-19}\) is already about \(3.4\cdot10^{-5}\).)
+For \(b_*>10\), \(2(4b_*+1)<b_*^2\le b_*^{19}\).  At \(b_*=2\) the factor \(2(4b_*+1)b_*^{-19}\) is about \(3.4\cdot10^{-5}\).
 \end{problem}
 
 \begin{problem}\label{pr:nonzero}
-If \eqref{eq:period-lift} holds for every twist, \(\per_j\) is injective and \(\dim H_g(W_j) = d_T > 0\) (Corollary~\ref{c2-cor:equal}; positivity is read from the code), then \(c'_\vartheta\ne0\) for every twist.
+If \eqref{eq:period-lift} holds for every twist, \(\per_j\) is injective and \(\dim H_g(W_j) = d_T > 0\) (Corollary~\ref{c2-cor:equal}; positivity by \cite[SpanningTheorem, line 307]{GL}), then \(c'_\vt\ne0\) for every twist.
 \end{problem}
 
 \begin{problem}\label{pr:ratio}
-Let \(c'_\vartheta\ne0\) and \(\lvert c'_\vartheta\rvert^2 = C/\Hc_j(\vartheta)\) for every twist, with one \(C\in\C\), where \(1/0\) is read as \(0\).  Then \(C\ne0\), every \(\Hc_j(\vartheta)\ne0\), and \(\Hc_j(\vartheta)/\Hc_j(1) = \lvert c'_1\rvert^2/\lvert c'_\vartheta\rvert^2 \ne 0\): clause (1).
+Let \(c'_\vt\ne0\) and \(\lvert c'_\vt\rvert^2 = C/\Hc_j(\vt)\) for every twist, with one \(C\in\C\), where \(1/0\) is read as \(0\).  Then \(C\ne0\), every \(\Hc_j(\vt)\ne0\), and \(\Hc_j(\vt)/\Hc_j(1) = \lvert c'_1\rvert^2/\lvert c'_\vt\rvert^2 \ne 0\): clause (1).
 \end{problem}
 
 \begin{problem}\label{pr:clause2}
-Let \(h>0\), \(\per_j\) be injective, and for every twist let \eqref{eq:period-lift} hold with \(c'_\vartheta\ne0\) and \(\Hc_j(\vartheta)/\Hc_j(1)=\lvert c'_1\rvert^2/\lvert c'_\vartheta\rvert^2\) (Problem~\ref{pr:ratio}).  Then the family \(\Upsilon_\vartheta := \Nc h^2 g_\vartheta g_\vartheta^*\) satisfies clause (2) with \(\Upsilon^\circ = \Nc h^2\lvert c'_1\rvert^{-2}\per_j^*\per_j\), and \(\Upsilon_\vartheta u_{\vartheta,j}y = \Nc h^2 c'_\vartheta{}^{-1}\, g_\vartheta\per_j y\) for every twist and good form \(y\).
+Let \(h>0\), \(\per_j\) be injective, and for every twist let \eqref{eq:period-lift} hold with \(c'_\vt\ne0\) and \(\Hc_j(\vt)/\Hc_j(1)=\lvert c'_1\rvert^2/\lvert c'_\vt\rvert^2\) (Problem~\ref{pr:ratio}).  Then the family \(\Upsilon_\vt := \Nc h^2 g_\vt g_\vt^*\) satisfies clause (2) with \(\Upsilon^\circ = \Nc h^2\lvert c'_1\rvert^{-2}\per_j^*\per_j\), and \(\Upsilon_\vt u_{\vt,j}y = \Nc h^2 c'_\vt{}^{-1}\, g_\vt\per_j y\) for every twist and good form \(y\).
 \end{problem}
 
 \section{Periods of false lifts}\label{sec:false}
 
-By Problem~\ref{pr:clause2}, clause (3) reduces to the orthogonality of \(g_\vartheta\per_jy\) to the false lifts for every twist and every good form \(y\).
+For clause (3) we need \(g_\vt\per_jy\) orthogonal to the false lifts (Problem~\ref{pr:clause2}).
 
 \begin{problem}\label{pr:qbinom}
 \(\sum_U q^{\binom{\dim U}{2}}x^{\dim U} = \prod_{k=0}^{n-1}(1+q^kx)\), the sum over the subspaces \(U\) of \(\F_q^n\).  For \(q=2\), \(n=2\): \(1+3x+2x^2\).
@@ -170,25 +172,23 @@ By Problem~\ref{pr:clause2}, clause (3) reduces to the orthogonality of \(g_\var
 
 \begin{problem}\label{pr:small-roots}
 Let \(q\) be a prime power, \(F\) a bounded function on a group \(G\), elements \(g_U\in G\) indexed by the subspaces of \(\F_q^n\), and \(\sum_U a_U F(gg_U) = 0\) for all \(g\), with \(a_{\{0\}} = 1\) and \(\lvert a_U\rvert = q^{\binom{\dim U}2}\lvert X\rvert^{\dim U}\).  If \(q^{n+1}\lvert X\rvert\le1\), then \(\sum_U\lvert a_U\rvert\le e^{1/2}\), so \(\sum_{U\ne\{0\}}\lvert a_U\rvert<1\), and \(F = 0\).
+\label{pr:hecke-toy}
+For \(q = 2\), \(n = 2\), \(\lvert X\rvert = 1/8\): \(\sum_U\lvert a_U\rvert=45/32\), and \(\sup\lvert F\rvert\le\frac{13}{32}\sup\lvert F\rvert\).
 \end{problem}
 
-\begin{problem}\label{pr:hecke-toy}
-Under the hypotheses of Problem~\ref{pr:small-roots} with \(q = 2\), \(n = 2\), \(\lvert X\rvert = 1/8\): \(\sum_U\lvert a_U\rvert=45/32\), and \(\sup\lvert F\rvert\le\frac{13}{32}\sup\lvert F\rvert\).
-\end{problem}
-
-Fix a split place \(w\) with \(w,\bar w\notin\Mch\cup Q_\vartheta\), and let \(\phif\) be a false lift there: \(\phif\in\im e_0\) is orthogonal to the lifts of good forms and is killed by the Hecke polynomial operator of the lift at \(w\); Problem~\ref{pr:small-roots} models the resulting type of equation.  The normalized descent of \(\phif\) to \(W_j\) is zero, and every tensor product of chosen-place hyperplane sums with at least one nonzero indexing row annihilates \(\phif\).  For \(2\operatorname{rk}W_j + 2n_{\mathbb H} + 3 < \operatorname{rk}V_j\), the theta descents of every conjugate matrix coefficient of \(\phif\) to \(W_j\oplus\mathbb H^{n_{\mathbb H}}\) vanish, for the character \(\chi_W\upsilon^{n_{\mathbb H}}\) (\(\chi_W\) the character of the descent pair on \(W_j\)) and every Schwartz datum that is the vacuum off the level and its conjugate; the proof adds one plane at a time, obtaining boundedness and a Hecke equation with a small transferred root on test data.  With \(n_{\mathbb H} = r+9m+1 = \operatorname{rk}V''\) this gives the vanishing of the class sums along \(V^\circ\) that pair a slice of \(\phif\) with a theta kernel, and in particular: \emph{for every such \(\phif\), every choice \(i\) and every \(g\in\mathrm U(W_j)(\mathbb A)\), \(\Theta^\circ((g_\vartheta^*\phif)_i)(g) = 0\)}.  \emph{Status}: read from the code \cite{GL}; for theta towers compare \cite[\S I]{Ra84}.
+Fix a false lift \(\phif\) at a split place \(w\) with \(w,\bar w\notin\Mch\cup Q_\vt\) (Definition~\ref{l1-def:false}).  Its normalized descent to \(W_j\) vanishes, and every product of chosen-place hyperplane sums with a nonzero indexing row kills it.  The proof adds hyperbolic planes using boundedness and a Hecke equation as in Problem~\ref{pr:small-roots}.  If \(2\operatorname{rk}W_j+2n_{\mathbb H}+3<\operatorname{rk}V_j\), the theta descents to \(W_j\oplus\mathbb H^{n_{\mathbb H}}\) of every conjugate matrix coefficient of \(\phif\) vanish for the character \(\chi_W\upsilon^{n_{\mathbb H}}\) and every Schwartz datum vacuum off the level and its conjugate.  Here \(\chi_W=\upsilon^{r_-}\) is the character of the norm-one ideles attached to \(W_j\), where \(r_-\) is the number of negative signs of \(W_j\) \cite[AuxiliaryPair, line 332]{GL}.  Taking \(n_{\mathbb H}=\operatorname{rk}V''\) gives \(\Theta^\circ((g_\vt^*\phif)_i)(g)=0\) for all choices \(i\) and adelic \(g\).  \emph{Status}: read from the code \cite[HyperbolicPlaneStep, lines 64, 437 and GluingMaps, lines 912--958]{GL}.  For theta towers compare \cite[Ch.~I, \S\S1--2]{Ra84}.
 
 \begin{problem}\label{pr:tower-rank}
 With \(\operatorname{rk}W_j = r\), \(\operatorname{rk}V_j = r+t\), \(t = 5r\) and \(n_{\mathbb H} = r+9m+1\): the condition reads \(18m+5<2r\), and it holds for the data, where \(m\le2\sqrt x\), \(r\ge x^5\) and \(x>2\).
 \end{problem}
 
 \begin{problem}\label{pr:clause3}
-Given the second statement of Section~\ref{sec:general} at \(\vartheta = 1\) (so \(\langle\zeta,\per_jy\rangle = \sum_ic^\circ_i\int yF_i\Theta^\circ(\zeta_i)\)) and the vanishing above: for every twist \(\vartheta\), good form \(y\) and false lift \(\phif\) at an eligible split place, \(\langle\phif, g_\vartheta\per_jy\rangle = 0\).  With Problem~\ref{pr:clause2}, clause (3) holds.
+Given the second statement of Section~\ref{sec:general} at \(\vt = 1\) (so \(\langle\zeta,\per_jy\rangle = \sum_ic^\circ_i\int yF_i\Theta^\circ(\zeta_i)\)) and the vanishing above: for every twist \(\vt\), good form \(y\) and false lift \(\phif\) at an eligible split place, \(\langle\phif, g_\vt\per_jy\rangle = 0\).  With Problem~\ref{pr:clause2}, clause (3) holds.
 \end{problem}
 
 \section{Tight frames, integrality and size}\label{sec:frames}
 
-For clauses (4) and (5) a frame writes \(g_\vartheta g_\vartheta^*\) as a sum of operators of rank at most one.
+A frame expresses \(g_\vt g_\vt^*\) as a sum of operators of rank at most one.
 
 \begin{definition}\label{def:frame}
 Let \(G\) be a positive definite Hermitian \(d\times d\) matrix and \(h>0\).  A \emph{tight frame} for \((G,h)\) is a finite family \((\eta_a)\) in \(\C^d\) with \(\sum_a(\eta_a^*G\xi)\,\eta_a = h^2\xi\) for every \(\xi\in\C^d\).
@@ -198,75 +198,61 @@ Let \(G\) be a positive definite Hermitian \(d\times d\) matrix and \(h>0\).  A 
 Let \(h>0\) be an integer, \(F\) an integer matrix with \(d\) independent columns (indexed by a basis of a Weyl module) and rows indexed by tensors \(T\), \(G := F^tF\), and let an integer matrix \(H\) satisfy \(GH = hI\).  Then \(\eta_T := HF^te_T\in\Z^d\) satisfies \(G\eta_T = hF^te_T\), the \(\eta_T\) form a tight frame for \((G,h)\), and \(\eta_T^*G\eta_T\le h^2\).
 \end{problem}
 
-For the Weyl modules of the proof, \(G\) is the integral Gram matrix and \(H\) the matrix of Fock pairings of the basis polynomials; that \(GH = hI\) is read from the code.
+For the Weyl modules of the proof, \(G\) is the integral Gram matrix and \(H\) the matrix of Fock pairings of the basis polynomials.  The identity \(GH=hI\) and the integral frame are read from the code \cite[GramMatrix, lines 101, 447]{GL}.
 
 \begin{problem}\label{pr:sym-frame}
 For \(\Sym^a(\C^n)\) with \(n\ge2\), let \(H\) be the matrix of Fock pairings of the monomials \(z^\alpha\), and take the basis \(m_\alpha\), \(\lvert\alpha\rvert = a\), with \(m_\alpha\) the sum of the distinct tensors \(e_{w_1}\otimes\dots\otimes e_{w_a}\) of content \(\alpha\) (so \(m_\alpha = (a!/\alpha!)e^\alpha\) in the notation of Chapter~\ref{dt-chap}), and \(F\) the inclusion into tensors.  Then \(G = \operatorname{diag}(a!/\alpha!)\), \(H = \operatorname{diag}(\alpha!)\) and \(h = a!\).  For \(\Sym^2\C^2\) (basis \(11,12,22\)): \(G = \operatorname{diag}(1,2,1)\), \(h = 2\), the frame is \(2e_{11}, e_{12}, e_{12}, 2e_{22}\), with squared \(G\)-norms \(4,2,2,4\), and \(\sum_T\eta_T\eta_T^tG = 4I\).
 \end{problem}
 
-Given a rational unitary \(\delta_c\) of \(V^\circ\) for each class \(c\), the proof places the integral frame of the Weyl module of \(\mu^-\) in each slot, transported to \(\overline{\rho(\delta_c^{-1})\eta_T}\) with \(\rho\) the representation of weight \(\mu^-\), and obtains tuples \(f_a\), indexed by \(a = ((i,c),T)\) with \(T\) a filling of \(\mu^-\) with strictly increasing columns, with \(\sum_a\langle f_a,\zeta\rangle f_a = h^2\zeta\) for every tuple, such that \(\rho(\delta_c)\overline{f_a(i,c)}\) has integer coordinates, and such that \(N_\sigma(f_a)\le h^2\) for every \(\sigma\in\Aut(\C)\), where \(N_\sigma\) of a tuple is the sum over the slots of the squared Gram norms after \(\sigma\).
+For each class \(c\) fix a rational unitary \(\delta_c\) of \(V^\circ\).  For the representation \(\rho\) of weight \(\mu^-\), place \(\overline{\rho(\delta_c^{-1})\eta_T}\) in slot \((i,c)\) and zero elsewhere.  The tuples \(f_a\), indexed by \(a=((i,c),T)\) with \(T\) a filling of \(\mu^-\) with strictly increasing columns, satisfy \(\sum_a\langle f_a,\zeta\rangle f_a=h^2\zeta\) for every tuple.  In each slot \(\rho(\delta_c)\overline{f_a(i,c)}\) is integral in the Weyl basis, and \(N_\sigma(f_a)\le h^2\) for every \(\sigma\in\Aut(\C)\).  Here \(N_\sigma\) sums the squared Gram norms after \(\sigma\) over the slots.  \emph{Status}: read from the code \cite[LiftVolumeHeight, line 350]{GL}.
 
 \begin{problem}\label{pr:rank-one-sum}
-Then \(\Upsilon_\vartheta\phi = \sum_a\Nc\,\langle g_\vartheta f_a,\phi\rangle\, g_\vartheta f_a\).
+Then \(\Upsilon_\vt\phi = \sum_a\Nc\,\langle g_\vt f_a,\phi\rangle\, g_\vt f_a\).
 \end{problem}
 
 \begin{problem}\label{pr:clause4}
-Let \(\ell\) be a prime, \(\C_\ell\) the completion of an algebraic closure of \(\mathbb Q_\ell\), and \(\eta\colon\C\to\C_\ell\) a ring homomorphism.  Suppose each \(g_\vartheta f_a\) is integral at \(\eta\) and at \(\eta\circ(\text{complex conjugation})\), and that \(\lvert\eta(\Nc\langle\phi',\phi\rangle)\rvert_\ell\le1\) whenever \(\phi'\) is integral at \(\eta\circ(\text{conjugation})\) and \(\phi\) at \(\eta\).  Then \(\Upsilon_\vartheta\) maps forms integral at \(\eta\) to forms integral at \(\eta\).
+Let \(\ell\) be a prime, \(\C_\ell\) the completion of an algebraic closure of \(\mathbb Q_\ell\), and \(\eta\colon\C\to\C_\ell\) a ring homomorphism.  Suppose each \(g_\vt f_a\) is integral at \(\eta\) and at \(\eta\circ(\text{complex conjugation})\), and that \(\lvert\eta(\Nc\langle\phi',\phi\rangle)\rvert_\ell\le1\) whenever \(\phi'\) is integral at \(\eta\circ(\text{conjugation})\) and \(\phi\) at \(\eta\).  Then \(\Upsilon_\vt\) maps forms integral at \(\eta\) to forms integral at \(\eta\).
 \end{problem}
 
-The hypotheses hold for every prime \(\ell\nmid\Nm Q_\vartheta\) and every \(\eta\) above \(\ell\): the \(\delta_c\) are chosen so that \(\delta_c\) times the chosen representative of \(c\) is integral above \(\ell\), which makes the frame tuples integral at every \(\eta\) above \(\ell\); the gluing map carries tuples integral at \(\eta\) to forms integral at \(\eta\), where tuple integrality means that the Weyl gauge of \(\overline{\zeta_{i,c}}\) at the representative of \(c\), taken at \(\eta\circ\mathrm{conj}\), is at most \(1\) in every slot; and every stabilizer order at the target level on \(V_j\) divides \(\Nc\) (compare Problem~\ref{l3-pr:class-sum}).  \emph{Status}: read from the code.  For clause (5), \(N_\sigma\) of a form on \(V_j\) is as in Chapter~\ref{l1-chap}, and \(\sigma' := \mathrm{conj}\circ\sigma\circ\mathrm{conj}\); the proof shows \(N_\sigma(g_1\zeta)\le\exp(2fmb\log^2b)\,N_\sigma(\zeta)\) for all tuples and all \(\sigma\), and that the number of slots times \((\#\{a\}\cdot\Nc h^2)^2\), \(a\) running over the full frame index set, is at most \(\exp(2fmb\log^2b)\) (\emph{Status}: read from the code).
+A tuple \(\zeta\) is integral at \(\eta\) if, in every slot
+\((i,c)\), the Weyl gauge of \(\overline{\zeta_{i,c}}\) at the chosen
+representative of \(c\), taken at \(\eta\circ\mathrm{conj}\), is at
+most \(1\) \cite[GluingMaps, line 82]{GL}.  For \(\ell\nmid\Nm Q_\vt\) one can choose the \(\delta_c\) to make the frame integral at every \(\eta\) above \(\ell\).  Gluing preserves integrality there and every target stabilizer order divides \(\Nc\) (compare Problem~\ref{l3-pr:class-sum}), giving the hypotheses above.  \emph{Status}: read from the code \cite[LiftVolumeHeight, lines 407--433, GluingMaps, line 552, LiftChains, line 548 and PAdicGauge, line 750]{GL}.  For the size bound use \(N_\sigma\) on target forms as in Chapter~\ref{l1-chap} and \(\sigma':=\mathrm{conj}\circ\sigma\circ\mathrm{conj}\).
 
 \begin{problem}\label{pr:clause5}
-In this problem \(\lambda>0\) is a real number.  Let the frame \((f_a)\) be as above, \(N_\sigma(g_1\zeta)\le e^{2\lambda}N_\sigma(\zeta)\) for all tuples and all \(\sigma\), \(\lvert\sigma\langle\phi',\phi\rangle\rvert\le N_\sigma(\phi)^{1/2}N_{\sigma'}(\phi')^{1/2}\), \(N_\sigma(f_a)\le h^2\) for all \(a,\sigma\), and (number of slots \((i,c)\))\(\cdot(\#\{a\}\cdot\Nc h^2)^2\le e^{2\lambda}\).  Then \(N_\sigma(\Upsilon_1\phi)\le e^{6\lambda}N_\sigma(\phi)\).  With \(\lambda = fmb\log^2b\) this is clause (5).
+Let \(\lambda>0\) and suppose \(N_\sigma(g_1\zeta)\le e^{2\lambda}N_\sigma(\zeta)\) for all tuples and all \(\sigma\), \(\lvert\sigma\langle\phi',\phi\rangle\rvert\le N_\sigma(\phi)^{1/2}N_{\sigma'}(\phi')^{1/2}\), \(N_\sigma(f_a)\le h^2\) for all \(a,\sigma\), and (number of slots \((i,c)\))\(\cdot(\#\{a\}\cdot\Nc h^2)^2\le e^{2\lambda}\).  Then \(N_\sigma(\Upsilon_1\phi)\le e^{6\lambda}N_\sigma(\phi)\).  The bounds hold with \(\lambda=fmb\log^2b\) (\emph{Status}: read from the code \cite[GluingMaps, line 755, PAdicGauge, line 673 and LiftVolumeHeight, line 443]{GL}), giving clause (5).
 \end{problem}
 
-Problems~\ref{pr:ratio}, \ref{pr:nonzero}, \ref{pr:clause2}, \ref{pr:clause3}, \ref{pr:rank-one-sum}, \ref{pr:clause4} and~\ref{pr:clause5}, with the inputs read from the code in Sections~\ref{sec:general}--\ref{sec:frames}, prove the following theorem.
+Problems~\ref{pr:nonzero}, \ref{pr:ratio}, \ref{pr:clause2}, \ref{pr:clause3}, \ref{pr:rank-one-sum}, \ref{pr:clause4} and~\ref{pr:clause5}, with the inputs of Sections~\ref{sec:general}--\ref{sec:frames}, prove the following theorem.
 
 \begin{theorem}\label{thm:operator}
-For every \(1\le j\le m\) the operators \(\Upsilon_\vartheta := \Nc h^2\,g_\vartheta g_\vartheta^*\), one for each twist \(\vartheta\), form a comparison operator in the sense of Definition~\ref{l1-def:comparison}.  Here \(g_\vartheta\) is the gluing map of Definition~\ref{def:glue}, from tuples of forms on the definite space \(V^\circ\) of rank \(t-9m-1\) to the target space of \(u_{\vartheta,j}\), \(h\) is the hook number of the weight \(\mu^-\) of those forms, and \(\Nc = \prod_{w\in\Mch}\#\mathrm{GL}_{rt}(k_w)\).
+For every \(1\le j\le m\) the operators \(\Upsilon_\vt := \Nc h^2\,g_\vt g_\vt^*\), one for each twist \(\vt\), form a comparison operator in the sense of Definition~\ref{l1-def:comparison}.  Here \(g_\vt\) is the gluing map of Definition~\ref{def:glue}, from tuples of forms on the definite space \(V^\circ\) of rank \(t-9m-1\) to the target space of \(u_{\vt,j}\), \(h\) is the hook number of the weight \(\mu^-\) of those forms, and \(\Nc = \prod_{w\in\Mch}\#\mathrm{GL}_{rt}(k_w)\).
 \end{theorem}
 
-The scalar and period identities, injectivity of \(\per_j\), and \(d_T>0\) give clause (1).  With them, clause (2) also uses that the scale \(\Nc h^2\lvert c'_1\rvert^{-2}\) of \(\per_j^*\per_j\) is positive since \(\Nc>0\) and \(h>0\) (\tl{hookNumber\_pos} in \tl{Lib/GLn/SchurModule/WeylKernel.lean}).  Vanishing of the periods of false lifts gives clause (3).  Clauses (4) and (5) use the tight frame of tuples, the integrality and size bounds for gluing, the two bounds for pairings, and the count of the slots and frame indices; all these inputs are taken from the proof.  The factors of the ratio \(\Hc_j(1)/\Hc_j(\vartheta)\) that the operator introduces are treated in Chapter~\ref{l3-chap} and its successors.
+The inputs are the scalar and period identities, injectivity, \(d_T>0\) and hook positivity \cite[WeylKernel, line 57]{GL}, vanishing for false lifts, the frame, the gluing and pairing bounds and the index counts.  For the ratio and pullback see \cite[LiftVolumeHeight, lines 207--243]{GL}.  Chapter~\ref{l3-chap} treats the factors of the inverse ratio \(\Hc_j(1)/\Hc_j(\vt)\).
 
 \begin{leanremark}
-\raggedright In the Lean proof \cite{GL}.  \emph{In} \tl{New/OneLift/LiftVolumeHeight.lean}: Theorem~\ref{thm:operator} is \tl{New.Data.isComparisonOperator\_comparisonOp}, for the structure \tl{IsComparisonOperator} and \(\Upsilon_\vartheta\) = \tl{comparisonOp}; the ratio of Problem~\ref{pr:ratio} is \tl{heckeValueProd\_div\_eq}; for Problem~\ref{pr:clause2}, \tl{adjoint\_glue\_goodLift} and \tl{inner\_goodLift\_comparisonOp} give the pairing and the proof of \tl{isComparisonOperator\_comparisonOp} the positive operator; Problem~\ref{pr:clause3} deduces \tl{isOrthogonalToFalseLifts\_comparisonOp}; Problem~\ref{pr:rank-one-sum} is \tl{comparisonOp\_eq\_sum}; Problems~\ref{pr:clause4} and~\ref{pr:clause5} are the deductions in \tl{comparisonOp\_mem\_integralForms} and \tl{normSqAt\_comparisonOp\_le}; the cost bound is \tl{heightLe\_liftDeterminant\_ratio}; the frame of tuples is \tl{exists\_tight\_frame\_formTuples}, the count \tl{card\_prod\_mul\_card\_tightFrameIndex\_mul\_sq\_le}.  \emph{In} \tl{New/OneLift/ComparisonOperator/}: in \tl{GluingMaps.lean}, \(g_\vartheta\), \(c'_\vartheta\), \(\per_j\), \(h\), \(c^\circ_i\), \(\mathsf S_{\vartheta,i}\), the row-fixing level and \(\gamma_i\) are \tl{New.Rows.glue}, \tl{twistFactor}, \tl{periodLift}, \tl{hookNumberMinus}, \tl{glueFactor}, \tl{firstFactorPairing}, \tl{gluingLevel} and the \tl{point} field of \tl{glueLattice} (whose gluing property is \tl{isGlued\_glueLattice}); the scalar identity and \(\lvert c'_\vartheta\rvert^2 = C/\Hc_j(\vartheta)\) are \tl{twistFactor\_mul\_firstFactorPairing}, \tl{exists\_norm\_twistFactor\_sq\_eq}; the integral formula is \tl{twistFactor\_mul\_inner\_adjoint\_glue}; \eqref{eq:period-lift} is \tl{twistFactor\_smul\_adjoint\_glue\_comp}; injectivity is \tl{periodLift\_injective}; the deduction of Problem~\ref{pr:nonzero} gives \tl{twistFactor\_ne\_zero}, with the dimension equality from \tl{targetDim\_eq\_finrank\_goodForms\_spaceW} in \tl{New/Spanning/Multiplicities/EqualMultiplicities.lean} and \(d_T>0\) from \tl{finrank\_targetForms\_ne\_zero} in \tl{New/Spanning/SecondMoment/SpanningTheorem.lean}; the bottom of the tower is \tl{normalizedDescent\_eq\_zero\_of\_mem\_orthogonal}, \tl{hyperplaneSum\_apply\_eq\_zero}; the vanishing of periods is \tl{thetaKernelPairing\_adjoint\_glue\_eq\_zero} with \tl{sum\_slice\_eq\_zero\_of\_mem\_falseLiftsAt} and \tl{isOrthogonalToFalseLifts\_glue\_periodLift}; integrality and size of glued forms are \tl{glue\_mem\_integralForms}, \tl{normSqAt\_glue\_le}.  The first factor is from \tl{leftSideSeries} (\tl{LineCoordinates.lean}); \(l_1\) is \tl{DividedSplitting.denominatorExponent} (\tl{GluedForms.lean}); the exchanges are \tl{exists\_mul\_stdClassSum\_eq\_carrierForm}, \tl{exists\_mul\_thirdExchangeLeftSide\_eq\_choiceFn} (\tl{ThreeExchanges.lean}); choices are \tl{ChoiceIndex} (\tl{ExchangeData.lean}); \(\Theta^\circ\) is \tl{thetaKernelPairing}, and the injectivity argument is \tl{eq\_zero\_of\_integral\_choiceFn\_thetaKernelPairing} with \tl{exists\_choiceFn\_approx} (\tl{ProductsSpan.lean}) and \tl{norm\_apply\_one\_le\_of\_forall\_isPeak} (\tl{ThetaKernelEstimates.lean}); Problem~\ref{pr:glue-sum} models \tl{New.Rows.DividedSplitting.IsGlued.indicator\_eq\_sum} (\tl{GluedLattices.lean}).  \emph{Elsewhere}: false lifts are \tl{DescentPair.falseLiftsAt} (\tl{New/OneLift/TestedForms.lean}) with root \tl{liftHeckeRoot} (\tl{New/UpperBound/Objects/AuxiliaryPair.lean}); the tower is \tl{descentsVanish\_hyperbolicSum}, \tl{stdClassSum\_gramForm\_eq\_zero} (\tl{New/OneLift/FalseLifts/PeriodsOfFalseLifts.lean}) and \tl{descentsVanish\_add\_planes}, and Problem~\ref{pr:small-roots} abstracts \tl{New.SiegelWeil.eq\_zero\_of\_heckePolyOp\_eq\_zero} (both in \tl{HyperbolicPlaneStep.lean}); \(\Nc\) is \tl{chosenGroupOrder}, with \tl{card\_classAut\_dvd\_chosenGroupOrder} (\tl{New/UpperBound/Objects/LiftChains.lean}); the pairing bounds are \tl{norm\_nsmul\_inner\_le\_one}, \tl{norm\_map\_inner\_le} (\tl{Lib/Adelic/AutomorphicForms/PAdicGauge.lean}); the Weyl frame is \tl{exists\_tightFrame}, and \(GH = hI\) is \tl{weylGram\_mul\_fockPairing}, with \tl{hookNumber\_one\_row} (\tl{Lib/GLn/SchurModule/GramMatrix.lean}).  \emph{Further anchors}: the compression estimates are \tl{IsComparisonOperator.norm\_padic\_det\_liftCompression\_le}, \tl{IsComparisonOperator.norm\_map\_det\_liftCompression\_le}; in \tl{TwistedValueHeights.lean}, \tl{exists\_heckeValueProd\_eq\_mul\_prod\_ratio} factors \(\Hc_j(\vartheta)\) for every twist, and \tl{heightLe\_inv\_heckeValueProd\_div} bounds the height of \(\iota\mapsto\Hc_j(1)/\Hc_j(\theta_\iota^j)\) for a regular family; in \tl{GluedLattices.lean}, the group is \tl{congruenceGroup}, the first congruence in \tl{IsGlued.indicator\_eq\_sum} uses the matrix \tl{DividedLattice.reducedInverse}, and the second is \tl{IsBlockNormalised}; the splitting is \tl{splittingV} in \tl{GluingMaps.lean}; the index sets and their sizes use \tl{FirstFactorIndex}, \tl{card\_firstFactorIndex}, \tl{SecondFactorIndex}, \tl{SecondFactorClasses}, \tl{RowChoice} (\tl{ExchangeData.lean}) and \tl{reducedHalfGap} (\tl{AdmissibleData.lean}); tuples and their metric are \tl{FormTuples}, \tl{SecondFactorFormValues}, the stabilizers on \(V''\) at the row-fixing level are trivial by \tl{classAut\_gluingLevel\_eq\_bot}, and those on \(V^\circ\) at principal level \(\pi_M^2\) by \tl{classAut\_eq\_bot\_of\_le\_chosenLevel} as applied in \tl{sum\_slice\_eq\_zero\_of\_mem\_falseLiftsAt}, the hook \tl{hookNumber} (\tl{SchurModule/Basic.lean}), the summand \tl{DividedSplitting.productForm} with \tl{inner\_classForm} (\tl{TestedForms.lean}), and \tl{firstFactor}, \tl{firstFactorScale\_ne\_zero}; the first kernel uses \tl{kernelClassSum}, \tl{columnDatum}, \tl{liftTamePart}; \(F_i\) is \tl{choiceFn}; the first exchange is \tl{exists\_mul\_stdClassSum\_modKernelStdSpace\_eq\_one}, with \tl{exchangePair}, \tl{heckeValueProd}; the unscaled integral and nonzero coefficients are \tl{inner\_adjoint\_glue\_goodLift\_eq\_integral}, \tl{inner\_adjoint\_glue\_goodLift\_eq\_sum\_integral}, \tl{glueFactor\_ne\_zero}; reproduction is \tl{reproducing\_formula\_modKernel} (\tl{Lib/SiegelWeil/Reproduction.lean}) used in \tl{integral\_mul\_sum\_choiceFn\_eq\_zero}, with \tl{nStar}, \tl{firstMinimum}, \tl{IsPeak}, \tl{maxOpNorm}, and Problem~\ref{pr:peak} checks the last inequality in \tl{eq\_zero\_of\_integral\_choiceFn\_thetaKernelPairing}; Problem~\ref{pr:qbinom} is \tl{q\_binomial\_submodule} (\tl{Lib/General/Combinatorics.lean}) with \(W=\F_q^n\) and \(X=-x\); the tower uses \tl{DescentsVanish}, \tl{DescentsVanish.bddAbove\_lift}, \tl{lift\_eq\_zero\_of\_heckePolyOp\_eq\_zero}; Problem~\ref{pr:tower-rank} uses \tl{t\_eq\_five\_mul\_r}, \tl{card\_firstFactorIndex} and the bounds \tl{m\_mem}, \tl{r\_mem}, while the rank check in \tl{sum\_slice\_eq\_zero\_of\_mem\_falseLiftsAt} uses \tl{hundred\_mul\_m\_add\_nine\_lt\_k} and \tl{r\_add\_one}; the common period integral is \tl{inner\_periodLift}; the frame index and transport are \tl{TightFrameIndex}, \tl{exists\_frame\_weightRep\_eq\_intCast}; tuple gauge and norm are \tl{IsIntegralFormTuple}, \tl{formTupleNormSq}; the rational translates come from \tl{exists\_mul\_mem\_integralAbove} (\tl{PAdicGauge.lean}).
+\raggedright In \cite{GL}, \tl{LiftVolumeHeight.lean}, Theorem~\ref{thm:operator} is \tl{New.Data.isComparisonOperator\_comparisonOp}.  Problem~\ref{pr:rank-one-sum} applies \tl{comparisonOp\_eq\_sum} to the frame above.  In \tl{GluingMaps.lean}, Definition~\ref{def:glue} gives \tl{New.Rows.glue}, the period integral is \tl{twistFactor\_mul\_inner\_adjoint\_glue}, and line 1068 gives injectivity.  At the bottom of the tower, \tl{normalizedDescent\_eq\_zero\_of\_mem\_orthogonal} gives vanishing of the normalized descent, \tl{hyperplaneSum\_apply\_eq\_zero} gives annihilation by the hyperplane sums, and \tl{tamePart\_twistPlace\_ne\_one} gives nontriviality of the tame part at each twist place.  The proof of \tl{descentsVanish\_hyperbolicSum} obtains vanishing for all the prescribed Schwartz data at the highest vector by \tl{lift\_polyVector\_blockDatum\_eq\_zero} and \tl{descentsVanish\_of\_hyperplaneSumsAnnihilate}.
 \end{leanremark}
 
 \section*{Hints}
 
-\subsection*{\S\ref{sec:toy}}
 \begin{description}
-\item[\ref{pr:scalar}] \(g_\vartheta^*u_\vartheta = c'_\vartheta{}^{-1}\per\); move \(g_\vartheta\) across the inner product.
-\item[\ref{pr:toy-lift}] For \(\psi=1\) see Problem~\ref{tn-pr:U1U2}.  Expand by the binomial theorem; \(c_j(1)\) vanishes unless \(4\mid j\), and so does \(c_j(\psi)\): substitute \(\alpha\mapsto\ii\alpha\), using \(\psi(\ii\alpha) = \psi(\alpha)\).  For \(g^*\), compute \(\langle g\zeta, v\rangle\).
-\item[\ref{pr:toy-period}] \(\langle e_1^4e_2^4,e_1^4e_2^4\rangle_0 = 1/70\); only the factor on \(\Oc e_2\) carries \(\psi\).  Compare Problem~\ref{tn-pr:seesaw}.
-\item[\ref{pr:toy-compression}] Problems~\ref{pr:scalar} and~\ref{l1-pr:comparison}; on a line \(D = \langle v,\Upsilon v\rangle/\langle v,v\rangle\).  For \(D_1\) use \(c_4 = 4\vartheta_0(\varpi/2\pi)^4\) and Problem~\ref{tn-pr:rallis}.
+\item[\ref{pr:scalar}] \(g_\vt^*u_\vt = c'_\vt{}^{-1}\per\); move \(g_\vt\) across the inner product.
+\item[\ref{pr:toy-lift}] Expand by the binomial theorem and rotate \(\alpha\mapsto\ii\alpha\) in each moment.  For \(g^*\) compute \(\langle g\zeta,v\rangle\).
+\item[\ref{pr:toy-period}] \(\langle e_1^4e_2^4,e_1^4e_2^4\rangle_0 = 1/70\); only the factor on \(\Oc e_2\) carries \(\psi\).  Compare Problem~\ref{tn-pr:seesaw}.  For the moments use Python with \texttt{mpmath.exp} on \(|\Re\alpha|,|\Im\alpha|\le10\).
+\item[\ref{pr:toy-compression}] Problems~\ref{pr:scalar} and~\ref{l1-pr:comparison}; on a line \(D = \langle v,\Upsilon v\rangle/\langle v,v\rangle\).  For \(D_1\) use \(c_4 = 4\vt_0(\varpi/2\pi)^4\) and Problem~\ref{tn-pr:rallis}.
 \item[\ref{pr:toy-false}] Use the coefficients \(17, 70, 17\) of Problem~\ref{tn-pr:U1U2}.
-\end{description}
-
-\subsection*{\S\ref{sec:glue}}
-\begin{description}
 \item[\ref{pr:glue-sum}] For the second statement substitute \(x\mapsto xY^{-1}\) in each summand.
-\end{description}
-
-\subsection*{\S\ref{sec:general}}
-\begin{description}
-\item[\ref{pr:nonzero}] If \(c'_\vartheta = 0\), \eqref{eq:period-lift} gives \(\per_j = 0\).
-\item[\ref{pr:ratio}] Evaluate at \(\vartheta = 1\) first.
+\item[\ref{pr:nonzero}] If \(c'_\vt = 0\), \eqref{eq:period-lift} gives \(\per_j = 0\).
+\item[\ref{pr:ratio}] Evaluate at \(\vt = 1\) first.
 \item[\ref{pr:clause2}] Problems~\ref{pr:scalar} (with \(n = \Nc h^2\)) and~\ref{pr:ratio}.
-\end{description}
-
-\subsection*{\S\ref{sec:false}}
-\begin{description}
 \item[\ref{pr:qbinom}] Induct on \(n\), splitting by whether \(U\) lies in a fixed hyperplane.
 \item[\ref{pr:small-roots}] \(1+y\le e^y\) and \(\sum_{k<n}q^k < q^n\); then isolate the term \(U = \{0\}\) at \(g g_{\{0\}}^{-1}\) and take a supremum.
-\item[\ref{pr:clause3}] \(\langle\phif, g_\vartheta\per_jy\rangle = \langle g_\vartheta^*\phif, \per_jy\rangle\).
-\end{description}
-
-\subsection*{\S\ref{sec:frames}}
-\begin{description}
+\item[\ref{pr:clause3}] \(\langle\phif, g_\vt\per_jy\rangle = \langle g_\vt^*\phif, \per_jy\rangle\).
 \item[\ref{pr:frame}] \(H = hG^{-1}\); then \(\eta_T^*G\xi = h(F\xi)_T\).  For the norm, \(F\eta_T\) is \(h\) times the orthogonal projection of \(e_T\) to the column space of \(F\).
 \item[\ref{pr:sym-frame}] Evaluate \(\partial^\alpha z^\beta\) at zero.
-\item[\ref{pr:rank-one-sum}] Apply the frame identity to \(\zeta = g_\vartheta^*\phi\).
+\item[\ref{pr:rank-one-sum}] Apply the frame identity to \(\zeta = g_\vt^*\phi\).
 \item[\ref{pr:clause4}] Problem~\ref{pr:rank-one-sum}: each coefficient is integral.
 \item[\ref{pr:clause5}] By Problem~\ref{pr:rank-one-sum}, \(\Upsilon_1\phi = g_1\bigl(\sum_a x_af_a\bigr)\); bound \(\lvert\sigma(x_a)\rvert\), then each slot, then glue.
 \end{description}

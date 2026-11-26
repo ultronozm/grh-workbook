@@ -14,6 +14,7 @@
 \externaldocument[tc-]{20261126T040200--theorem-c__workbook}
 \externaldocument[w1-]{20261126T040300--roots-of-unity-for-many-polynomials__workbook}
 \externaldocument[w2-]{20261126T060600--lengths-as-values-of-polynomials__workbook}
+\externaldocument[w3-]{20261126T060700--tied-primes__workbook}
 \externaldocument[n1-]{20261126T060400--congruences-bounded-by-lengths__workbook}
 \externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
 \externaldocument[l5-]{20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook}
@@ -67,7 +68,21 @@ Fix a CM field \(E\subseteq\bar{\Q}\), with \(G_E := \mathrm{Gal}(\bar{\Q}/E)\) 
 
 From Chapter~\ref{w2-chap} we use: the rank \(\operatorname{rk}\TS\), the set \(\Sigma(\TS)\), the local relations, the terms \(\mathrm{glob}(\TS)\), \(\mathrm{plc}(\TS)\), \(\mathrm{inr}(\TS)\) and the number \(\bd(\TS)\) of a Selmer datum (Definition~\ref{w2-def:selmer-datum}), with \(e_{\Oc} := \mathrm{ord}_{\Oc}(\ell)\); the bounds \(\mathrm{len}\,\Sel_Q(\TS\chi) \le d\) of Definition~\ref{w2-def:twisted-length}; sets \(Q\) admissible for \(\Sigma_0\) and \emph{characters for \(Q\)} (Definition~\ref{w2-def:chi}), that is, locally constant characters of \(G_E\) coming by \(y \mapsto y/\bar y\) from a finite idele class character of tame level \(Q\) trivial above \(\ell\); the elements \(\St_Q \in \Zl[\mathrm{Cl}_Q]\) and the number \(\bd(\St)\) of a Stickelberger system (Definition~\ref{w2-def:system}), with the value \(\chi(\St_Q)\) of a character \(\chi\) for \(Q\) (Section~\ref{w2-sec:systems}); and torsion levels (Definition~\ref{w2-def:torsion-level}).
 
+The insertion identity of Definition~\ref{w2-def:system} has a classical model over \(\Q\).  For \(u \ge 2\) put \(\theta^{\Q}_u := \sum_{1 \le a < u,\ (a,u)=1}\{a/u\}\,\sigma_a^{-1}\), so that \(\theta^{\Q}_p\) is the element \(\theta\) of Chapter~\ref{ds-chap}, and evaluate a character \(\chi\) of \((\Z/u)^\times\) on it by \(\chi(\sigma_a) := \chi(a)\); for a prime \(v \nmid u\) we also write \(\chi\) for its pullback to \((\Z/uv)^\times\).
+
+\begin{problem}\label{pr:insertion-model}
+For a nontrivial character \(\chi\) of \((\Z/u)^\times\) and a prime \(v \nmid u\), \(\chi(\theta^{\Q}_{uv}) = (1 - \chi(v)^{-1})\,\chi(\theta^{\Q}_u)\): an insertion identity with \(\alpha\) trivial, one sign and \(L = [0]\).  For \(u = 5\), \(\chi(2) = \mathrm i\) and \(v = 3\): \(\chi(\theta^{\Q}_5) = (-3 + \mathrm i)/5\) and \(\chi(\theta^{\Q}_{15}) = (-2 + 4\mathrm i)/5\).
+\end{problem}
+
 The polynomial input is Theorem~\ref{w2-thm:polynomials}; it is read from the proof and developed in Chapter~\ref{w2-chap}.  It holds for any finite \(\Sigma_0\) with \(g_0\) inertial at a place of \(\Sigma_0\) prime to \(\ell\); we use it with \(\Sigma_0\) containing the places above \(\ell\).  Fix a torsion level \(\ctor\) for the data.  The theorem gives an integer \(s_0 \ge 1\) and, for every rational \(\rho > 0\) with \(s_0\rho < 1\) and every sufficiently large \(h_1\), a set \(Q\) with homomorphisms \(\lg_w\colon G_E \to \Z/\ell^{h_1}\), \(w \in Q\), and for each datum and each system a polynomial \(F\) and a point, with the properties (1)--(3) stated there; \(\chi_\zeta := \prod_{w \in Q} \zeta_w^{\lg_w}\) is the character of Definition~\ref{w2-def:chi}.  Each \(\lg_w\) is a character for \(\{w\}\) with the value \(1\) at an element of an inertia group at \(w\); thus it is onto on inertia at \(w\), anticyclotomic, unramified outside \(w\) and \(\bar w\), and trivial on the decomposition groups above \(\ell\).
+
+Two local conditions of the same dimension can give Selmer groups of different lengths.
+
+\begin{problem}\label{pr:tilted-line}
+A continuous cocycle of \(G_{\Q_{11}}\) with values in \(\mathbb F_5\) and trivial action is a homomorphism; it is trivial on wild inertia and is determined by its values \((a, b)\) at a Frobenius lift and at a generator of tame inertia, and all \(25\) pairs occur.  The unramified classes form the line \(b = 0\), and the line \(b = 2a\) meets it only in \(0\).
+\end{problem}
+
+If restriction maps a space of global classes onto the line \(b = 0\), the classes satisfying \(b = 2a\) form the kernel of restriction, of codimension one in that space.  Problem~\ref{w3-pr:decrease} gives conditions under which such a choice of slope at a new tied prime decreases the sum of the tied Selmer lengths.
 
 \begin{problem}\label{pr:psi-power}
 For \(\chi_\zeta = \prod_{w} \zeta_w^{\lg_w}\) and \(n \ge 1\), \(\chi_\zeta^n = \prod_{w} (\zeta_w^n)^{\lg_w}\), and \(\chi_\zeta^{\ell^{h_1}} = 1\).  For \(w \in Q\) some \(g\) in an inertia group at \(w\) has \(\chi_\zeta(g) = \zeta_w\).
@@ -156,6 +171,8 @@ In the Lean proof \cite{GL} (\nolinkurl{grh/src/}, namespace \texttt{New.Selmer}
 
 \subsection*{Section~\ref{sec:twisting}}
 \begin{description}
+\item[\ref{pr:insertion-model}] Write \(a\) modulo \(uv\) as \(b + ku\) with \(0 \le k < v\), and remove the \(a\) divisible by \(v\).
+\item[\ref{pr:tilted-line}] In the quotient of \(G_{\Q_{11}}\) by wild inertia, an arithmetic Frobenius lift \(\varphi\) and a generator \(s\) of tame inertia satisfy \(\varphi s\varphi^{-1} = s^{11}\).  Reduce \(11\) modulo \(5\).
 \item[\ref{pr:psi-power}] For the last claim, the \(\lg_{w'}\) with \(w' \ne w\) are unramified at \(w\) because \(Q\) is admissible.
 \item[\ref{pr:inertia-sum}] \(\lg_w\) is trivial on wild inertia, and a generator of tame inertia at \(w\) maps to a generator of \(\Z/\ell^{h_1}\); so \(\chi_\zeta(s_w) = \zeta_w^a\) with \(a\) prime to \(\ell\), and \(\zeta_w^{an}\), \(\zeta_w^n\) have the same order.  At \(\bar w\) use \(\lg_w(g^c) = -\lg_w(g)\).  Then Problem~\ref{w1-pr:powers-far}.
 \item[\ref{pr:twist-from-roots}] Choose \(s_0\) as in Theorem~\ref{w2-thm:polynomials}, then a rational \(\rho > 0\) with \(s_0\rho \le \varepsilon/2\), then \(h_0\) by Corollary~\ref{w1-pr:powers} with the bounds \(\bd + 1 \ge 0\) (note \(0 \le \val(F) \le \bd + s_0\rho\)) and \(\varepsilon/2\), then a sufficiently large \(h_1 \ge h_0\) and the data of the input at level \(\ell^{h_1}\).  Use Problem~\ref{pr:psi-power}; for the ramification, Problem~\ref{w1-pr:powers-far}; for the last sum, Problem~\ref{pr:inertia-sum} and \(2\,\#Q \le s_0\).
