@@ -62,6 +62,14 @@
       button.title = pressed ? "Mark as not done" : "Mark as done";
     });
 
+    // The heading ("Problem 1.1.1") is a larger target for the same toggle,
+    // which matters on phones.  Selecting text in it does not toggle.
+    heading.addEventListener("click", event => {
+      if (event.target.closest("button, a")) return;
+      if (String(window.getSelection?.() || "")) return;
+      button.click();
+    });
+
     button.addEventListener("click", () => {
       try {
         if (ids.some(id => storage.getItem(prefix + id) !== null)) {
