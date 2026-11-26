@@ -1,0 +1,264 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[ps-]{20261125T010500--poincare-series-and-near-orthogonality__workbook}
+\externaldocument[dt-]{20261125T002000--definite-theta-lifts__workbook}
+\externaldocument[rl-]{20261125T010000--rank-lemma-and-zero-estimate__workbook}
+\externaldocument[da-]{20261126T030300--the-data__workbook}
+\externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
+\externaldocument[bp-]{20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook}
+\externaldocument[m2-]{20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T051900\endcsname
+  \chapnumber{20261126T051900}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\GL}{\mathrm{GL}}
+\newcommand{\Gb}{\bar G}
+\newcommand{\Rb}{\bar R_0}
+\newcommand{\Yc}{\mathcal Y}
+\newcommand{\Kc}{\mathcal K}
+\newcommand{\Uc}{\mathcal U}
+\newcommand{\Pc}{\mathcal P}
+\newcommand{\Po}{{\mathcal P^\circ}}
+\newcommand{\Sf}{\mathfrak S}
+\newcommand{\rB}{\rho_{\mathrm{Bes}}}
+\newcommand{\Amp}{\mathrm{Amp}}
+\newcommand{\Did}{D_{\mathrm{id}}}
+\newcommand{\Dmain}{D_{\mathrm{main}}}
+\newcommand{\Sym}{\operatorname{Sym}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\red}{\operatorname{red}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\tl}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\title{Unfolding twice: Gram operators as sums over rational points}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+From Chapter~\ref{bp-chap}: Sections~\ref{bp-sec:subgroup}--\ref{bp-sec:smallest}, in particular Problems~\ref{bp-pr:expansion} and~\ref{bp-pr:gram-toy}, and the scaled Poincar\'e map \(\Po\), its Gram operators \(\Kc_s=\Po^*\rho(s)\Po\), the covolume \(\nu\), the group \(\Rb\subseteq\Gb\) and its representation \(\rB\), from Section~\ref{bp-sec:gram} (Definitions~\ref{bp-def:scaled} and~\ref{bp-def:bessel-rep}), and Theorem~\ref{bp-thm:B}.  From Chapter~\ref{rl-chap}: Hilbert--Schmidt norms (Problem~\ref{rl-pr:hs}) and Problems~\ref{rl-pr:translate-gram} and~\ref{rl-pr:moment-min}.  From Chapter~\ref{ps-chap}: Poincar\'e series on \(\mathrm{SL}_2(\Z)\), Problems~\ref{ps-pr:unfold}, \ref{ps-pr:cosets} and~\ref{ps-pr:fourier} with its proof, and Theorem~\ref{ps-thm:petersson}.  From Chapter~\ref{dt-chap}: Problems~\ref{dt-pr:aut} and~\ref{dt-pr:sym-norm}.  From Chapters~\ref{da-chap} and~\ref{ob-chap}: the data, \(\Gb\), the source \(S\) and \(D_X=\dim S\).  Schur orthogonality for finite groups \cite[\S2.2]{Se}.  As in Chapter~\ref{bp-chap}, inner products are linear in the first variable, norms of operators are Hilbert--Schmidt norms, and a function \(\Theta\) on a group is of \emph{positive type} if \(\Theta(s^{-1}t)=\langle u_t,u_s\rangle\) for some vectors \(u_s\).
+
+\medskip
+This sheet serves the second moment in the proof of Theorem~\ref{bp-thm:B} of Chapter~\ref{bp-chap}.  There the scaled Poincar\'e map \(\Po\) is translated by the finite group \(\Gb\), and the sizes of the Gram operators \(\Kc_s\) decide how many translates span the target.  The proof computes \(\Kc_s\) by unfolding twice, as Petersson's formula computes the inner product of two Poincar\'e series: each entry of \(\Kc_s\) becomes a sum over the rational points whose reduction is \(s\).  What does this sum look like when the group is finite, which part of it is forced, and what is the least possible second moment \(\sum_s\lVert\Kc_s\rVert^2\)?
+
+\section{A finite model}\label{sec:model}
+
+Over a definite unitary group with one class, at the principal level of an ideal, a form is a function on the finite group \(\Gb\) of residues, equivariant for the integral points.  We take this as the model.
+
+\begin{definition}\label{def:model}
+A \emph{finite model} consists of a finite group \(\Gb\), a subgroup \(\Gamma\subseteq\Gb\) (the integral points), a unitary representation \(\pi\) of \(\Gamma\) on a space \(V_\pi\), a subgroup \(\Gamma_X\subseteq\Gamma\), a unitary representation \(\sigma_X\) of \(\Gamma_X\) on a space \(V_X\), and a \(\Gamma_X\)-equivariant linear map \(\jmath\colon V_X\to V_\pi\) with \(\jmath^*\jmath=c_0\) for a constant \(c_0>0\).  Its \emph{forms} are the functions \(\varphi\colon\Gb\to V_\pi\) with \(\varphi(\gamma g)=\pi(\gamma)\varphi(g)\) for \(\gamma\in\Gamma\); they form a space \(\Yc\) with \(\langle\varphi,\varphi'\rangle:=\sum_{g\in\Gamma\backslash\Gb}\langle\varphi(g),\varphi'(g)\rangle\), on which \(\Gb\) acts by \((\rho(s)\varphi)(g):=\varphi(gs)\).  Its \emph{Poincar\'e map} \(P\colon V_X\to\Yc\) sends \(w\) to the function equal to \(c_0^{-1/2}\pi(g)\jmath w\) at \(g\in\Gamma\) and to \(0\) off \(\Gamma\).
+\end{definition}
+
+In this sheet \(P\) without subscript is always this map.  In a finite model we write \(\Kc_s:=P^*\rho(s)P\), \(\Rb:=\Gamma_X\), \(\rB(s):=\sigma_X(s)\) for \(s\in\Gamma_X\) and \(\rB(s):=0\) for \(s\notin\Gamma_X\), and \(D_X:=\dim V_X\): they play the parts of the objects of the same names in Chapter~\ref{bp-chap}.
+
+\begin{problem}\label{pr:model-period}
+\(Pw\in\Yc\), and \(\langle\varphi,Pw\rangle=c_0^{-1/2}\langle\varphi(1),\jmath w\rangle\) for \(\varphi\in\Yc\): the map \(P\) represents the period \(\varphi\mapsto c_0^{-1/2}\jmath^*\varphi(1)\).
+\end{problem}
+
+\begin{problem}\label{pr:model-gram}
+\(\Kc_s=c_0^{-1}\jmath^*\pi(s)\jmath\) for \(s\in\Gamma\), and \(\Kc_s=0\) for \(s\notin\Gamma\).  In particular \(P\) is an isometry.
+\end{problem}
+
+\begin{problem}\label{pr:model-bessel}
+\(\Kc_s=\rB(s)\) for \(s\in\Rb\).  For \(t\in\Rb\) and \(s\in\Gb\), \(\rho(t)P=P\rB(t)\) and \(\Kc_{st}=\Kc_s\rB(t)\).
+\end{problem}
+
+\begin{problem}\label{pr:induced}
+Let \(\Gamma_X=\Gamma\), \(V_X=V_\pi\) and \(\jmath=1\).  Then \(\dim\Yc=[\Gb:\Gamma]\dim V_\pi\), \(\sum_{s\in\Gb}\lVert\Kc_s\rVert^2=\#\Gamma\dim V_\pi=\#\Gb\,(\dim V_\pi)^2/\dim\Yc\), and if \(J\) is a set of representatives of the cosets \(s\Gamma\), then \(\Yc\) is the orthogonal sum of the \(\rho(s)P(V_\pi)\), \(s\in J\).
+\end{problem}
+
+Now the smallest case.  Let \(\Gamma_{I_2}\) be the group of monomial \(2\times2\) matrices with entries in \(\mu_4\), of order \(32\) by Problem~\ref{dt-pr:aut}.  In \(\F_5\) the element \(3\) is a square root of \(-1\), and reduction modulo \(2+\ii\) is the ring map \(\Z[\ii]\to\F_5\), \(\ii\mapsto3\).
+
+\begin{problem}\label{pr:reduction}
+Reduction modulo \(2+\ii\) is an injective homomorphism \(\Gamma_{I_2}\to\GL_2(\F_5)\), and its image \(\Gamma\) has index \(15\) in \(\Gb:=\GL_2(\F_5)\), a group of order \(480\).  With \(\pi\) the standard representation of \(\Gamma_{I_2}\) on \(V_\pi=\C^2\), transported to \(\Gamma\), one has \(\dim\Yc=30=\#\Gb\cdot\mathrm{mass}_2\cdot\dim V_\pi\), where \(\mathrm{mass}_2=1/32\) is the mass of rank two, as in Chapter~\ref{bp-chap}.
+\end{problem}
+
+In this model take \(\Gamma_X:=\{\diag(u,1):u\in\mu_4\}\) (reduced modulo \(2+\ii\)), the stabilizer of \(\mathbf e_2\) as in Section~\ref{bp-sec:smallest}, \(V_X:=\C\mathbf e_1\) with \(\sigma_X(\diag(u,1))=u\), and \(\jmath\) the inclusion, so that \(c_0=1\) and \(D_X=1\).
+
+\begin{problem}\label{pr:level-toy}
+\(\lVert\Kc_s\rVert^2=1\) for the \(16\) diagonal \(s\in\Gamma\), and \(\Kc_s=0\) for the other \(464\) elements of \(\Gb\).  Hence \(\sum_{s\in\Gb}\lVert\Kc_s\rVert^2=16\): the four elements of \(\Rb\) contribute \(\#\Rb\cdot D_X=4\), with \(\Kc_s=\rB(s)\) there, and the three cosets \(\Rb\diag(1,u)\), \(u\ne1\), contribute \(4\) each.
+\end{problem}
+
+At level one the same elements land on the identity.
+
+\begin{problem}\label{pr:toy-fails}
+In the toy of Section~\ref{bp-sec:smallest}, let \(a\ge4\) be divisible by \(4\), let the source be the orthogonal direct sum of the lines \(\C\xi_j\) for \(4\mid j\) and \(0\le2j<a\), with their form norms, and let \(D_{\mathrm{toy}}\) be its dimension.  Let \(\Kc\) be the operator whose matrix in the unit basis \((\xi_j/\lVert\xi_j\rVert)_j\) has the entries \(\Kc_{jj'}\) of Problem~\ref{bp-pr:gram-toy}.  Then \(\lVert\Kc-1\rVert^2=9D_{\mathrm{toy}}>b^{-12}D_{\mathrm{toy}}\) for every \(b\ge1\): the conclusion of Problem~\ref{pr:near-one} below fails there.
+\end{problem}
+
+By Problem~\ref{bp-pr:gram-toy} the excess \(3\delta_{jj'}\) comes from the classes of \(\diag(1,u)\), \(u\ne1\), which preserve the line of \(z=\mathbf e_2\) without fixing \(z\).  In Problem~\ref{pr:level-toy} these elements reduce to \(\diag(1,u)\notin\Rb\); they contribute to \(\Kc_s\) for \(s\ne1\), and \(\Kc_1=1\).  The level has separated them from the Bessel subgroup.
+
+\section{The least second moment}\label{sec:least}
+
+By Problem~\ref{rl-pr:moment-min}, if \(p\) is the orthogonal projection onto a \(\Gb\)-stable subspace \(\Yc_0\subseteq\Yc\) and \(pP\) is an isometry, then \(\#\Gb\,D_X^2\le\dim\Yc_0\cdot\sum_{s\in\Gb}\lVert\Kc_s\rVert^2\).  When is this an equality?
+
+\begin{problem}\label{pr:schur-equality}
+If \(\pi\) is irreducible, then \(\sum_{s\in\Gb}\lVert\Kc_s\rVert^2=\#\Gamma\,D_X^2/\dim V_\pi\), and equality holds in Problem~\ref{rl-pr:moment-min} with \(\Yc_0=\Yc\).  In Problem~\ref{pr:level-toy}: \(32\cdot1/2=16\) and \(30\cdot16=480=\#\Gb\).
+\end{problem}
+
+Put \(\deg:=\dim V_\pi\), the formal degree of \(\pi\) for the Haar measure of total mass one, and \(\mathrm{mass}:=1/\#\Gamma\).  Then Problem~\ref{pr:schur-equality} says that the second moment equals \(D_X^2/(\deg\cdot\mathrm{mass})\), the quantity \(\Dmain\) of Definition~\ref{def:two-sizes} below.  Without irreducibility it is at least as large, by Problem~\ref{rl-pr:moment-min}, and it can be larger.
+
+\begin{problem}\label{pr:sym}
+(a) Let \(V_\pi=\Sym^a(\C^2)\), \(a\ge1\), with the inner product of Problem~\ref{dt-pr:sym-norm}, the other data as in Problem~\ref{pr:level-toy} but \(V_X=\C\,\mathbf e_1^j\mathbf e_2^{a-j}\), \(0\le j\le a\), with \(\sigma_X(\diag(u,1))=u^j\) and the norm induced from \(V_\pi\).  Then \(\sum_s\lVert\Kc_s\rVert^2=16\), or \(32\) if \(2j=a\), while \(\#\Gamma\,D_X^2/\dim V_\pi=32/(a+1)\); for \(a=8\), \(j=0\) the ratio is \(9/2\).
+(b) Let \(\Gb=\Gamma=S_3\) act on \(V_\pi=\{x\in\C^3:x_1+x_2+x_3=0\}\) by permuting coordinates, \(\Gamma_X=1\), \(V_X=\C\) and \(\jmath(1)=(\mathbf e_1-\mathbf e_2)/\sqrt2\).  In the lexicographic order of the permutations, written as \((s(1),s(2),s(3))\), the scalars \(\Kc_s\) are \(1,\frac12,-1,-\frac12,-\frac12,\frac12\), and \(\sum_s\lvert\Kc_s\rvert^2=3=6/2\).  Here \(\pi\) is irreducible, and this is the equality of Problem~\ref{pr:schur-equality}.
+\end{problem}
+
+So \(\Dmain\) is the value for integral points that are equidistributed against the coefficients of \(\pi\); in Problem~\ref{pr:sym}(a) a finite group has too few.  For the data the real group is not compact, and infinitely many rational \(\gamma\) lie over each \(s\).
+
+\section{The block identity}\label{sec:blocks}
+
+In Chapter~\ref{ps-chap}, unfolding \(\langle P_n,P_m\rangle\) and expanding \(P_n\) group the terms by double cosets of \(\Gamma_\infty\).
+
+\begin{problem}\label{pr:petersson-terms}
+In this problem and the next paragraph \(k\), \(m\), \(n\), \(c\) and \(P_n\) are the weight, the two indices, the lower left entry and the Poincar\'e series of Chapter~\ref{ps-chap}.  By Problems~\ref{ps-pr:unfold} and~\ref{ps-pr:fourier}, \(\langle P_n,P_m\rangle=\Gamma(k-1)(4\pi m)^{1-k}p_n(m)\).  In the series for \(P_n\), the \(m\)-th Fourier coefficient of the sum of the terms with \(\gamma\in\pm\Gamma_\infty\) is \(\delta(n,m)\), and for each \(c\ge1\) that of the sum of the terms with lower left entry \(\pm c\) is \(2\pi\ii^{-k}(m/n)^{(k-1)/2}c^{-1}S(n,m;c)J_{k-1}(4\pi\sqrt{mn}/c)\).
+\end{problem}
+
+In Theorem~\ref{thm:blocks} below, the rational points of the Bessel subgroup \(R=\Uc\rtimes U(X_0)\) replace \(\pm\Gamma_\infty\), a Bessel function at each infinite place replaces \(e(mz)\), a pair of a class of \(U(X_0)\) and a Bessel coordinate replaces \(m\), and the sum over the rational \(\gamma\) outside the Bessel subgroup with reduction \(s\) replaces the Kloosterman terms \(S(n,m;c)J_{k-1}\); the term \(\delta(n,m)\) becomes \(\rB(s)\).  The reduction \(s\in\Gb\) has no counterpart at level one.  The Bessel functions are the following.
+
+\begin{theorem}[Bessel functions]\label{thm:bessel-system}
+For the data, at each infinite place \(\tau\) there are a finite nonempty set \(I_\tau\), a number \(d_\tau>0\) equal to the formal degree of the discrete series of the real unitary group \(G_\tau\) of \(Y_0\) with doubled Harish-Chandra parameter \(2\varsigma_\tau\), an irreducible unitary representation of \(U(X_0)_\tau\) on \(\C^{I_\tau}\), and continuous functions \(W_\tau,W_\tau^\flat\colon G_\tau\to\C^{I_\tau}\) such that:
+\begin{enumerate}
+\item[(a)] \(W_\tau(xy)=\psi_{\Uc}(x)W_\tau(y)\) for \(x\in\Uc_\tau\), and \(W_\tau(hy)\) is the representation applied to \(W_\tau(y)\) for \(h\in U(X_0)_\tau\); the same holds for \(W_\tau^\flat\);
+\item[(b)] \(\int_{\Uc_\tau\backslash G_\tau}W_{\tau,i}\overline{W_{\tau,j}}=\delta_{ij}\) for \(i,j\in I_\tau\);
+\item[(c)] \(\int_{G_\tau}\bigl\lvert\int_{\Uc_\tau\backslash G_\tau}\langle W_\tau(y),W_\tau(yg)\rangle\,dy\bigr\rvert^2dg=(\#I_\tau)^2/d_\tau\);
+\item[(d)] by construction, \(W_\tau^\flat\) is \(W_\tau\) times a function of the Bessel length of \(y\) (a measure of the size of \(y\) modulo the Bessel subgroup on the left) with values in \([0,1]\), equal to \(1\) up to half the radius \(b^{6n+2}\), \(n=\varrho+1\), and to \(0\) beyond the radius; and \(\int_{\Uc_\tau\backslash G_\tau}\lVert W_\tau-W_\tau^\flat\rVert^2\le b^{-2r^3f}\,\#I_\tau\);
+\end{enumerate}
+with further bounds that later sheets use.
+\end{theorem}
+
+\noindent\emph{Status}: read from the proof, which constructs \(W_\tau\) as an average of a discrete-series coefficient over the Bessel subgroup and shows by Laplace's method that the average is not zero; see the remark at the end of the chapter.  We know no reference for the statement in this form.  The formal degree and Schur orthogonality for discrete series are due to Harish-Chandra \cite{HC66}, \cite{HC70}; (b) follows from the normalization \(\int\lVert W_\tau\rVert^2=\#I_\tau\) and the irreducibility, by Schur's lemma.
+
+Write \(W_i(y):=\prod_\tau W_{\tau,i_\tau}(y_\tau)\) for a Bessel coordinate \(i=(i_\tau)_\tau\).  The classes \(c\) with representatives \(h_c\), the coordinates \(e_{c,i}\) of the source (an orthonormal basis), the product \(G_\infty\) of the real groups in the rescaled bases with its product measure \(dy\), the components \(\gamma_\infty,\gamma_f\) of a rational \(\gamma\in U(Y_0)(F)\), and integrality and reduction in the lattice basis are those of Definition~\ref{bp-def:scaled}.  The \emph{class cutoff} \(u_c\ge0\) is a measurable function on \(G_\infty\) whose translates by the rational points \(u\) of \(\Uc\) with \(h_c^{-1}u_fh_c\) in the principal level sum to \(1\).
+
+\begin{definition}\label{def:amplitude}
+For classes \(c,c'\) and \(\gamma\in U(Y_0)(F)\), the \emph{amplitude} of \(\gamma\) is the matrix with entries
+\[
+ \Amp_\gamma(c,c')_{ij}:=\int_{G_\infty}u_c(y)\,u_{c'}(\gamma_\infty^{-1}y)\,W_i(y)\,\overline{W_j(\gamma_\infty^{-1}y)}\,dy .
+\]
+For a set \(\Sf\subseteq U(Y_0)(F)\) and \(s\in\Gb\), the \emph{amplitude sum} \(\Amp(\Sf;c,s,c')\) is the sum of \(\Amp_\gamma(c,c')\) over the \(\gamma\in\Sf\) such that \(h_c^{-1}\gamma_fh_{c'}\) is integral with reduction \(s\).
+\end{definition}
+
+The following is the analogue of Problems~\ref{pr:model-gram} and~\ref{bp-pr:expansion}.
+
+\begin{theorem}[the block identity]\label{thm:blocks}
+For all data, all classes \(c,c'\), Bessel coordinates \(i,j\) and \(s\in\Gb\),
+\[
+ \bigl\langle\Po e_{c,i},\,\rho(s)\Po e_{c',j}\bigr\rangle=\nu^{-1}\,\Amp\bigl(U(Y_0)(F);c,s,c'\bigr)_{ij} .
+\]
+Equivalently, the \(((c,i),(c',j))\) entry of \(\Kc_s\) is the complex conjugate of \(\nu^{-1}\Amp(U(Y_0)(F);c,s,c')_{ij}\).
+\end{theorem}
+
+\noindent Theorem~\ref{thm:blocks} is not proved here; see the remark.  Its proof unfolds one Poincar\'e series against the translate of the other, as in Problem~\ref{pr:model-period}; the coordinate \(e_{c,i}\) selects the class \(c\), and the finite indicator in the second series selects the \(\gamma\) of reduction \(s\), as \(\Gamma\) does in Problem~\ref{pr:model-gram}.  Recall from Definition~\ref{bp-def:bessel-rep} that \(\rB(s)\) has the same entries with the sum restricted to the rational Bessel subgroup, that \(\rB(s)=0\) for \(s\notin\Rb\), and that \(\rB\) is a unitary representation of \(\Rb\).  Moreover, for the data, \(\Kc_{st}=\Kc_s\rB(t)\) for all \(s\in\Gb\) and \(t\in\Rb\), as in Problem~\ref{pr:model-bessel}.
+
+\begin{definition}\label{def:two-sizes}
+\(\Did:=\#\Rb\cdot D_X\) and \(\Dmain:=D_X^2/(\deg\cdot\mathrm{mass}_r)\), with \(\deg\) the product of the \(d_\tau\) and \(\mathrm{mass}_r\) the mass of Chapter~\ref{bp-chap}.
+\end{definition}
+
+For the data, \(b^{11kf}\Did\le\Dmain\le(M/b^6)^{kf}\Did\); these two inequalities are read from the proof (see the remark).
+
+\begin{problem}\label{pr:hs-moment}
+\(\lVert\Kc_s\rVert^2=\nu^{-2}\sum_{c,c'}\lVert\Amp(U(Y_0)(F);c,s,c')\rVert^2\), where the norm of a matrix is the square root of the sum of the squared absolute values of its entries.
+\end{problem}
+
+\section{The Bessel subgroup and near isometry}\label{sec:bessel}
+
+The translates by \(\Rb\) keep the special role they have in Problem~\ref{pr:model-bessel}.  In Problems~\ref{pr:intertwine}--\ref{pr:positive-type}, \(\rho\) is a unitary representation of \(\Gb\), and \(\Po\), \(\Kc_s\), \(\rB\) need only satisfy the stated hypotheses.
+
+\begin{problem}\label{pr:intertwine}
+If \(\Kc_{st}=\Kc_s\rB(t)\) for all \(s\in\Gb\) and \(t\in\Rb\), then \(\rho(t)\Po=\Po\rB(t)\) for \(t\in\Rb\).
+\end{problem}
+
+\begin{problem}\label{pr:bessel-translate}
+If in addition \(\rB\) is a unitary representation of \(\Rb\), then \(\Kc_{ts}=\rB(t)\Kc_s\) for \(t\in\Rb\), \(s\in\Gb\), and \(\lVert\Kc_t-\rB(t)\rVert=\lVert\Po^*\Po-1\rVert\) for \(t\in\Rb\).  Moreover \(\sum_{t\in\Rb}\lVert\rB(t)\rVert^2=\Did\).
+\end{problem}
+
+\begin{problem}\label{pr:near-one}
+Under the hypotheses of Problem~\ref{pr:bessel-translate}, if \(\sum_{t\in\Rb}\lVert\Kc_t-\rB(t)\rVert^2\le b^{-12}\Did\), then \(\lVert\Po^*\Po-1\rVert^2\le b^{-12}D_X\).
+\end{problem}
+
+\begin{problem}\label{pr:P-one}
+If \(\lVert\Po^*\Po-1\rVert^2\le b^{-12}D_X\) and \(b\ge1000\), then \(\lVert\Kc_1\rVert^2\le2D_X\).
+\end{problem}
+
+\begin{problem}\label{pr:positive-type}
+\(s\mapsto\lVert\Kc_s\rVert^2\) is of positive type, and \(\lVert\Kc_s\rVert^2\le\lVert\Kc_1\rVert^2\) for every \(s\in\Gb\).
+\end{problem}
+
+\begin{problem}\label{pr:sizes-toy}
+In Problem~\ref{pr:level-toy}, \(\Did=4\) and \(\Dmain=16\) (with \(\deg\) and \(\mathrm{mass}\) as in Section~\ref{sec:least}), so \(\Did/\Dmain=1/4\).  For the data \(\Did/\Dmain\le b^{-11kf}\): if \(\lVert\Kc_1\rVert^2\le2D_X\), the elements of \(\Rb\) contribute at most \(2b^{-11kf}\Dmain\) to \(\sum_s\lVert\Kc_s\rVert^2\), so a second moment of size about \(\Dmain\) must come almost entirely from outside \(\Rb\).
+\end{problem}
+
+The hypothesis of Problem~\ref{pr:near-one} follows, by dropping the terms with \(s\notin\Rb\), from the estimate over the strip of Chapter~\ref{m2-chap}.  There the sum of \(\lVert\Kc_s-\rB(s)\rVert^2\) is written, by Theorem~\ref{thm:blocks} and Problem~\ref{pr:hs-moment}, as a sum over the rational \(\gamma\) outside the Bessel subgroup, which that chapter estimates.
+
+We have proved, in the finite model, the unfolding of the Gram operators, the role of the Bessel subgroup and the least second moment; for the data we have stated the block identity (Theorem~\ref{thm:blocks}) and the Bessel functions (Theorem~\ref{thm:bessel-system}), both taken from the proof, and derived from the block identity the norm formula of Problem~\ref{pr:hs-moment}, and from \(\Kc_{st}=\Kc_s\rB(t)\) the passage from the Bessel subgroup to near isometry and to \(\lVert\Kc_1\rVert^2\le2D_X\).  Also taken as given: the two properties of \(\rB\) recalled from Definition~\ref{bp-def:bessel-rep}, the identity \(\Kc_{st}=\Kc_s\rB(t)\) for the data, and the two inequalities between \(\Did\) and \(\Dmain\).  What remains is the sum over the \(\gamma\) outside the Bessel subgroup: over a strip around \(\Rb\) (Chapter~\ref{m2-chap}) and then over all of \(\Gb\), where it must be compared with \(\Dmain\).
+
+\begin{leanremark}
+\raggedright In the Lean proof \cite{GL}, Theorem~\ref{thm:blocks} is \tl{Data.hasAmplitudeBlocks\_scaledPoincare}, which is proved from \tl{Filling.Fits.petersson\_poincare}; the Lean inner product is conjugate-linear in its first variable, so its \(\langle\rho(s)\Po e_{c',j},\Po e_{c,i}\rangle\) is the left side of the display.  The amplitude and the amplitude sum of Definition~\ref{def:amplitude} are \tl{Filling.amplitude} and \tl{Filling.amplitudeSum}, the class cutoff is \tl{Filling.classCutoff}, the sizes of Definition~\ref{def:two-sizes} are \tl{Filling.identitySecondMoment} and \tl{Filling.mainSecondMoment}, and their two inequalities for the data are fields of \tl{Filling.IsAdmissible}.  Theorem~\ref{thm:bessel-system} is \tl{Data.exists\_besselSystem}, with the properties of the Bessel system it produces.  The identity \(\Kc_{st}=\Kc_s\rB(t)\) is \tl{Filling.HasAmplitudeBlocks.adjoint\_comp\_rep\_mul\_right}.
+\end{leanremark}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:model}}
+\begin{description}
+\item[\ref{pr:model-period}] Only the coset \(\Gamma\) contributes to the inner product.
+\item[\ref{pr:model-gram}] \(\langle\rho(s)Pw,Pw'\rangle\) has at most one nonzero term, at the coset of \(1\).
+\item[\ref{pr:model-bessel}] \(\jmath\) is equivariant and \(\jmath^*\jmath=c_0\).
+\item[\ref{pr:induced}] Problem~\ref{pr:model-gram}; the support of \(\rho(s)Pw\) is \(\Gamma s^{-1}\).
+\item[\ref{pr:reduction}] An element of \(\Gamma_{I_2}\) is determined by its residues, since \(\mu_4\) maps injectively into \(\F_5^\times\).
+\item[\ref{pr:level-toy}] Problem~\ref{pr:model-gram}: \(\Kc_s\) is the \((1,1)\) entry of the lift of \(s\) to \(\Gamma_{I_2}\).
+\item[\ref{pr:toy-fails}] Problem~\ref{bp-pr:gram-toy}.
+\end{description}
+
+\subsection*{\S\ref{sec:least}}
+\begin{description}
+\item[\ref{pr:schur-equality}] Schur orthogonality: \(\sum_{\gamma\in\Gamma}\lvert\langle\pi(\gamma)v,v'\rangle\rvert^2=\#\Gamma\lVert v\rVert^2\lVert v'\rVert^2/\dim V_\pi\); apply it to an orthonormal basis of \(V_X\) and use Problem~\ref{pr:model-gram}.  For the equality, compute \(\dim\Yc\).
+\item[\ref{pr:sym}] A monomial matrix sends a monomial to a multiple of a monomial.
+\end{description}
+
+\subsection*{\S\ref{sec:blocks}}
+\begin{description}
+\item[\ref{pr:petersson-terms}] Follow the proof of Problem~\ref{ps-pr:fourier}, with Problem~\ref{ps-pr:cosets}; for \(c\ne0\) the terms with lower left entry \(\pm c\) are indexed by \(d\) modulo \(c\) and an integer translation, and \(\Gamma_\infty\) contains \(\pm1\).
+\item[\ref{pr:hs-moment}] Problem~\ref{rl-pr:hs} with the coordinate basis; complex conjugation does not change absolute values.
+\end{description}
+
+\subsection*{\S\ref{sec:bessel}}
+\begin{description}
+\item[\ref{pr:intertwine}] Compute \(\Po^*\rho(s^{-1})d\) for \(d:=\rho(t)\Po x-\Po\rB(t)x\).
+\item[\ref{pr:bessel-translate}] Take adjoints in \(\rho(t^{-1})\Po=\Po\rB(t^{-1})\).  Multiplication by a unitary does not change a Hilbert--Schmidt norm, and \(\Kc_t=\Kc_1\rB(t)\).
+\item[\ref{pr:near-one}] Problem~\ref{pr:bessel-translate}: every term of the sum equals \(\lVert\Po^*\Po-1\rVert^2\).
+\item[\ref{pr:P-one}] \(\Kc_1=\Po^*\Po\), \(\lVert1\rVert^2=D_X\), and the triangle inequality.
+\item[\ref{pr:positive-type}] Problem~\ref{rl-pr:translate-gram} and the Cauchy--Schwarz inequality; \(\lVert\Po\Po^*\rVert=\lVert\Po^*\Po\rVert\).
+\end{description}
+
+\begin{thebibliography}{HC70}
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[HC66]{HC66} Harish-Chandra, \emph{Discrete series for semisimple Lie groups.~II}, Acta Math.\ \textbf{116} (1966), 1--111.
+\bibitem[HC70]{HC70} Harish-Chandra, \emph{Harmonic analysis on semisimple Lie groups}, Bull.\ Amer.\ Math.\ Soc.\ \textbf{76} (1970), 529--551.
+\bibitem[Se]{Se} J.-P.~Serre, \emph{Linear Representations of Finite Groups}, Grad.\ Texts in Math.\ 42, Springer, 1977.
+\end{thebibliography}
+\end{document}
