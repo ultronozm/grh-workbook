@@ -1,10 +1,16 @@
 # Status of the workbook
 
-**Status, 26 November 2026.**  The collection is being extended to cover the complete proof and is updated continuously.  Parts I–V and the side series are stable apart from small corrections.  The proof itself now occupies four Parts.  Part VI fixes the data and all the objects, and deduces the theorem from Theorems A, B and C.  Parts VII, VIII and IX state Theorems B, A and C, deduce each from its inputs, and state those inputs from the Lean code; the proofs of the inputs are being developed into further sheets, which will appear in batches after the chapter that states the result.  Developed so far: in Part VIII, the divisibility of one lift at a small non-split prime and the size of the composite lift (three sheets).
+**Status, 26 November 2026.**  The collection is being extended to cover the complete proof and is updated continuously.  Parts I–V and the side series are stable apart from small corrections.  The proof itself now occupies four Parts.  Part VI fixes the data and all the objects, and deduces the theorem from Theorems A, B and C.  Parts VII, VIII and IX state Theorems B, A and C, deduce each from its inputs, and state those inputs from the Lean code; the proofs of the inputs are being developed into further sheets, which will appear in batches after the chapter that states the result.  Developed so far: in Part VIII, the divisibility of one lift at a small non-split prime and the size of the composite lift; in Part IX, the determinant of a chain of lifts (four sheets: the norm of one lift, equal multiplicities, the exchange identity, the factorization).
 
 The site is <https://ultronozm.github.io/grh-workbook/>.  Each update appends an entry below, newest first.
 
 ## What changed
+
+### 26 November 2026: batch 2, the determinant of a chain
+
+- **Four new sheets in Part IX:** *The norm of one lift*, *Equal multiplicities*, *The exchange identity*, *Squares and the triangle*.
+- ***The determinant of a chain*** keeps the factorization and recalls the four inputs from the new sheets.
+- **Checks:** final audit rounds by an independent Claude Opus auditor; batch read by Claude Fable.
 
 ### 26 November 2026: batch 1, divisibility at a small prime and the size
 
