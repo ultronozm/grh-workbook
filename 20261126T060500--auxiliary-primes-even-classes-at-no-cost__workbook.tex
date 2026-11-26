@@ -1,0 +1,211 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[dp-]{20261126T030900--denominators-of-projections-to-lifts__workbook}
+\externaldocument[tt-]{20261125T004100--tate-twists-and-sha__workbook}
+\externaldocument[cp-]{20261126T070000--clearing-a-projection-two-classes__workbook}
+\externaldocument[n1-]{20261126T060400--congruences-bounded-by-lengths__workbook}
+
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T060500\endcsname
+  \chapnumber{20261126T060500}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Kc}{\mathcal{K}}
+\newcommand{\cyc}{\chi_{\mathrm{cyc}}}
+\newcommand{\Fr}{\mathrm{Fr}}
+\newcommand{\Nm}{\mathrm{Nm}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\len}{\operatorname{len}}
+\newcommand{\Shao}{\mathrm{Sha}^{\mathrm{odd}}}
+\newcommand{\val}{\operatorname{val}}
+\setlength{\emergencystretch}{3em}
+
+\title{Auxiliary primes: even classes at no cost}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Kummer theory and the Chebotarev density theorem \cite[IV \S3, VII \S13]{Ne}.  From Chapter~\ref{dp-chap}: the notation of Section~\ref{dp-sec:statement} (\(G_E\), \(g^c\), \(\cyc\), coefficient rings \(\Oc\), tame generators \(s_w\)), and Definition~\ref{dp-def:clearing-bound}.  From Chapter~\ref{cp-chap}: Problems~\ref{cp-pr:eleven-adjoint}, \ref{cp-pr:eleven-pr} and~\ref{cp-pr:kummer}.  From Chapter~\ref{tt-chap}: Definition~\ref{tt-def:shaodd}, Problem~\ref{tt-pr:c-action} and Theorem~\ref{tt-thm:oddsha}.
+
+\medskip
+The clearing bound \(\mathrm{cl}_\ell\) of Definition~\ref{dp-def:clearing-bound} pays for the odd classes through \(X_{\mathrm{odd}}\), and contains no length of even classes.  What happens to the even parts of the cocycles that congruences produce?  The proof allows ramification at auxiliary places, chosen one after another so that the vanishing conditions at the earlier places force vanishing at the next tame generator up to a controlled power of \(\ell\).  We work out the choice in a model over \(\Q\), prove some steps of the general choice, state the theorem used (Theorem~\ref{thm:triangle}), and show how the auxiliary places enter the bound only through powers of \(\ell\).
+
+\section{Even and odd parts}\label{sec:parity}
+
+Let \(\ell\) be a prime, let \(E\), \(G_E\), \(g^c = cgc\), \(\cyc\) and \(\Oc\) be as in Section~\ref{dp-sec:statement}, and let \(e, \nu \ge 0\) be integers.  Throughout, \(E\) is a CM field containing a primitive root of unity of order \(5040\).  A cocycle for \(\cyc^{-e}\) with values in \(\Oc/\ell^\nu\) is a map \(z\) with \(z(gh) = z(g) + \cyc(g)^{-e}z(h)\); put \(z^c(g) := z(g^c)\) and \(z^+ := z + z^c\).
+
+\begin{problem}\label{pr:even-odd}
+For such a cocycle \(z\), \(z^+\) and \(z^c - z\) are cocycles for \(\cyc^{-e}\), with \((z^+)^c = z^+\) and \((z^c - z)^c = -(z^c - z)\), and \(2z = z^+ - (z^c - z)\).  If \(\cyc(g) \equiv 1 \pmod{\ell^\nu}\), then \(z\bigl((g^c)^{-1}\bigr) = -z(g^c)\).
+\end{problem}
+
+\begin{definition}\label{def:even}
+Let \(\mathcal Q\) be a set of finite places of \(E\) and \(e \ge 0\).  An \emph{even class of exponent \(e\) for \(\mathcal Q\)} (at precision \(\nu\), over \(\Oc\)) is a locally constant cocycle \(z \colon G_E \to \Oc/\ell^\nu\) for \(\cyc^{-e}\) that vanishes on the inertia groups above the finite places neither dividing \(\ell\) nor in \(\mathcal Q \cup \bar{\mathcal Q}\), satisfies \(z^c = z\), and vanishes on the elements \(g\) with \(\cyc(g) = 1\) of the decomposition groups above \(\ell\).
+\end{definition}
+
+For \(e > 0\), \(\Shao_\ell(E,\Oc;e,\nu)\) (Definition~\ref{tt-def:shaodd}) consists of the locally constant cocycles with the local conditions of Definition~\ref{def:even} for \(\mathcal Q = \varnothing\) and \(z^c = -z\); under the hypotheses of Theorem~\ref{tt-thm:oddsha} its length \(\len\) (throughout this sheet, ordinary \(\Oc\)-length, with \(\ord_{\Oc}\) of a uniformizer equal to \(1\)) is at most \(\ord_{\Oc} X_{\mathrm{odd}}\).
+
+\section{A triangle of primes over \texorpdfstring{\(\Q\)}{Q}}\label{sec:toy}
+
+In this section \(\ell = 3\), the base field is \(\Q\), and the coefficients are \(\Z/3\) with trivial action.  Let \(\mathcal Q\) be a finite set of primes \(q \equiv 1 \pmod 3\) and \(\mathfrak n := \prod_{q \in \mathcal Q} q\).  By the Artin map for \(\Q\), normalized by \(a \mapsto (\zeta \mapsto \zeta^a)\) on roots of unity, continuous homomorphisms \(G_{\Q} \to \Z/3\) unramified outside \(\mathcal Q\) are homomorphisms \(z \colon (\Z/\mathfrak n)^\times \to \Z/3\); we call them \emph{classes ramified at \(\mathcal Q\)}.  For \(q \in \mathcal Q\) let \(\varpi_q\) be the least primitive root modulo \(q\), and let \(s_q \in (\Z/\mathfrak n)^\times\) be \(\equiv \varpi_q \bmod q\) and \(\equiv 1\) modulo the other primes of \(\mathcal Q\): the image of a tame generator at \(q\).  For a prime \(p \nmid \mathfrak n\), \(z(p)\) is the value at an arithmetic Frobenius element at \(p\).  For \(p \ne q\) let \(\mathrm{kum}_p(q) \in \Z/3\) be \(i \bmod 3\) where \(p \equiv \varpi_q^i \pmod q\).  This is the value of the Kummer class of \(p\) (Problem~\ref{cp-pr:kummer}) at an arithmetic Frobenius element at \(q\), when \(\mu_3(\mathbb F_q)\) is identified with \(\Z/3\) by sending \(\varpi_q^{(q-1)/3}\) to \(1\).
+
+\begin{problem}\label{pr:toy-reciprocity}
+Every class \(z\) ramified at \(\mathcal Q\) satisfies \(z(p) = \sum_{q \in \mathcal Q} \mathrm{kum}_p(q)\,z(s_q)\) for every prime \(p \nmid \mathfrak n\), and \(\mathrm{kum}_p(q) = 0\) if and only if \(p^{(q-1)/3} \equiv 1 \pmod q\).
+\end{problem}
+
+
+
+\begin{problem}\label{pr:toy-table}
+The least primitive roots modulo \(7, 13, 61, 73\) are \(3, 2, 2, 5\); \(3^{(q-1)/3} \bmod q\) is \(2, 3, 1, 1\), and \(\mathrm{kum}_3(q) = 1, 1, 0, 0\), for \(q = 7, 13, 61, 73\); \(7^{20} \equiv 47 \pmod{61}\) and \(7^{24} \equiv 1 \pmod{73}\), with \(\mathrm{kum}_7(61) = 1\) and \(\mathrm{kum}_7(73) = 0\).
+\end{problem}
+
+\begin{problem}\label{pr:toy-triangle}
+Let \(\mathcal Q = \{7, 61\}\) and let \(z\) be a class ramified at \(\mathcal Q\) with \(z(3) = 0\).  Then \(z(s_7) = 0\).  So \(z\) is a class ramified at \(\{61\}\); if moreover \(z(7) = 0\), then \(z(s_{61}) = 0\) and \(z = 0\).
+\end{problem}
+
+\begin{problem}\label{pr:toy-failure}
+For \(\mathcal Q = \{7, 13\}\), the class with \((z(s_7), z(s_{13})) = (1, 2)\) has \(z(3) = 0\) and \(z(s_7) \ne 0\).  For \(\mathcal Q = \{7, 73\}\), the class with \((z(s_7), z(s_{73})) = (0, 1)\) is unramified at \(7\), has \(z(3) = z(7) = 0\), and is not zero.
+\end{problem}
+
+The model has one infinite place and trivial action.  In the proof the base field is \(E\), the classes are even classes of exponent \(e\), and the relation used at the \(j\)-th place comes from a Kummer map through a reciprocity law that uses the local condition above \(\ell\) and the Frobenius conditions at the earlier places of the same exponent; twice the diagonal Kummer value divides \(\ell^{yh}\) in \(\Z/\ell^\nu\).
+
+\section{Choosing the places}\label{sec:choice}
+
+Let \(G_\nu := \ker(\cyc \bmod \ell^\nu) \subseteq G_E\).  A map \(\mathrm{kum} \colon G_E \to \Z/\ell^\nu\) has \emph{Kummer type \(e\)} if it is locally constant and, on \(G_\nu\), a homomorphism with \(\mathrm{kum}(a^c) = -\mathrm{kum}(a)\) and \(\mathrm{kum}(gag^{-1}) = \cyc(g)^{e+1}\mathrm{kum}(a)\) for \(g \in G_E\).
+
+\begin{problem}\label{pr:surjective}
+Let \(\nu\) be a positive integer and let \(\psi_1, \dots, \psi_n \colon G_0 \to \Z/\ell^\nu\) be homomorphisms on a group \(G_0\) whose reductions modulo \(\ell\) are linearly independent over \(\mathbb F_\ell\).  Then \(a \mapsto (\psi_i(a))_i\) maps \(G_0\) onto \((\Z/\ell^\nu)^n\).
+\end{problem}
+
+\begin{problem}\label{pr:separate}
+Let \(t_0\) be a nonnegative integer, \(s_0\) a subset of \(\{i\in\Z:0\le i<t_0\}\), \(\gamma_1 \in G_E\), \(\alpha := \cyc(\gamma_1) \bmod \ell^\nu\), and \(u \in G_\nu\).  Some \(u' \in G_\nu\) has \(\mathrm{kum}(u') = \prod_{e' \in s_0}(\alpha^d - \alpha^{e'})\,\mathrm{kum}(u)\) for every \(d \ge 0\) and every \(\mathrm{kum}\) of Kummer type \(d\).
+\end{problem}
+
+\begin{problem}\label{pr:two-values}
+Let \(\delta, g \in \ker\cyc\), \(u \in G_\nu\) (the same \(\nu\) as the precision of the classes), and \(\sigma := \delta^{\ell^\nu} g\,g^c\,u\,(u^c)^{-1}\).  Then \(\mathrm{kum}(\sigma) = 2\,\mathrm{kum}(u)\) for every \(\mathrm{kum}\) of Kummer type, and \(z(\sigma) = 2z(g)\) for every even class \(z\) for \(\varnothing\), of any exponent.
+\end{problem}
+
+Under the hypotheses of Theorem~\ref{thm:triangle} below, fix \(\nu > 0\).  The places are chosen in order \(j \in \Kc\), each with an exponent \(e_j\) and a test point \(g \in \ker\cyc\).  At step \(j\) the proof takes a Kummer map \(\mathrm{kum}_j\) for the earlier places of exponent \(e_j\) (defined below), with reduction on \(G_\nu\) outside the span of the reductions of the earlier maps of that exponent, and \(u \in G_\nu\) killing the earlier maps with \(\mathrm{kum}_j(u) = \prod_{e'}(\alpha^{e_j} - \alpha^{e'})\), over \(0 \le e' < t'\), \(e' \ne e_j\), where \(\alpha = \cyc(\gamma_1) \bmod \ell^\nu\) (Problems~\ref{pr:surjective}, \ref{pr:separate}).  With \(\delta\) given by the hypothesis on \(\mathcal W\) at \(g\,g^c u(u^c)^{-1}\) and \(\sigma\) as in Problem~\ref{pr:two-values}, Chebotarev's theorem \cite[VII (13.4)]{Ne} gives a Frobenius datum in \(\mathcal W\), off \(\ell\), fixing \(\mu_{\ell^\nu}\), above a new prime of \(E^+\) outside finitely many primes to be avoided, whose Frobenius element is so close to \(\sigma\) that the values of Problem~\ref{pr:two-values} hold there for the finitely many Kummer maps and for all even classes of exponent \(e_j\) for \(\varnothing\), over all coefficient rings.  \emph{Status}: read from the proof.
+
+Two inputs are taken from the proof \cite{GL}.  Let \(F := E^+\), and let \(\mathcal X_j\) be the finite family of earlier data of exponent \(e_j\); its places are off \(\ell\), its Frobenius elements fix \(\mu_{\ell^\nu}\), and the primes of \(F\) below them are distinct.  Extend \(\cyc\) to a character \(\chi^+\) of \(G_F\) with value \(1\) at complex conjugation, and take coefficients \(\Z/\ell^\nu\) with action \((\chi^+)^{-e_j}\); the local conditions on cocycles over \(F\) at the primes above \(\ell\) and below \(\mathcal X_j\) are vanishing on the chosen decomposition groups below \(\mathcal X_j\), and on the kernel of \(\chi^+\) in those above \(\ell\).  For a finite set \(\mathcal S\) of primes of \(F\) containing those above \(\ell\) and below \(\mathcal X_j\), a \emph{Kummer map for \(\mathcal X_j\) off \(\mathcal S\)} is a map \(G_E \to \Z/\ell^\nu\) obtained from a dual relation over \(F\) for these data, unramified outside \(\mathcal S\), in the sense of \cite{GL} (see the remark at the end).  \emph{The relation count:} if \(E\) has at least four infinite places, some such \(\mathcal S_j\) makes the reductions on \(G_\nu\) of the Kummer maps for \(\mathcal X_j\) off \(\mathcal S_j\) span an \(\mathbb F_\ell\)-space of dimension greater than \(\#\mathcal X_j\).  It rests on a count of dual relations over \(F\) related to the formula of Greenberg and Wiles \cite[Prop.~1.6]{Wi}, \cite[I.4.10]{ADT}.  \emph{Status}: read from the proof.  \emph{Reciprocity:} take \(\mathrm{kum}_j\) to be the chosen Kummer map for \(\mathcal X_j\) off \(\mathcal S_j\).  Let the data at \(w_i\), \(i \ge j\), be off \(\ell\), with Frobenius elements fixing \(\mu_{\ell^\nu}\), above distinct primes of \(F\) outside \(\mathcal S_j\), and let \(\tilde s_{w_i}\) be an element of inertia at \(\tilde w_i\) that multiplies an \(\ell^\nu\)-th root of a uniformizer of \(F\) at the prime below \(w_i\) by the same fixed primitive \(\ell^\nu\)-th root of unity for every \(i\).  If \(z\) is an even class of exponent \(e_j\) for \(\{w_i\}_{i \ge j}\) with \(z(\Fr_{w_i}) = 0\) for the \(i < j\) with \(e_i = e_j\), then
+\[
+  \sum_{i \ge j} \mathrm{kum}_j(\Fr_{w_i}) \cdot 2z(\tilde s_{w_i}) = 0 ,
+\]
+and the value of \(z\) at any element of inertia at \(\tilde w_i\) is a nonnegative integer multiple of \(z(\tilde s_{w_i})\).  \emph{Status}: read from the proof.
+
+\begin{problem}\label{pr:triangle-step}
+In an \(\Oc/\ell^\nu\)-module, suppose \(\sum_{i \ge j} \mathrm{kum}_j(\Fr_{w_i})\cdot 2z(\tilde s_{w_i}) = 0\), \(\mathrm{kum}_j(\Fr_{w_i}) = 0\) for \(i > j\), \(2\mathrm{kum}_j(\Fr_{w_j})\) divides the integer \(n\) in \(\Z/\ell^\nu\), and \(z(s_{w_j})\) is an integer multiple of \(z(\tilde s_{w_j})\).  Then \(n\,z(s_{w_j}) = 0\).
+\end{problem}
+
+\begin{problem}\label{pr:count}
+(a) Let \(t', y, h \ge 0\) be integers, \(n \in \Z_\ell\), and \(\alpha \in \Z_\ell^\times\) with \(\alpha^a - 1 \mid \ell^h\) for \(0 < a < t'\), let \(t' + 2 \le y\) and \(n \mid \ell^{3h}\).  Then \(n\prod_{i \ne e}(\alpha^e - \alpha^i) \mid \ell^{yh}\) for \(0 \le e < t'\), the product over \(0 \le i < t'\).  If \(\cyc(g) \equiv 1 \pmod 4\) for all \(g \in G_E\) (automatic for odd \(\ell\)) and \(\alpha = \cyc(\gamma_1)\), then \(4(\alpha^e - 1)^2 \mid \ell^{3h}\) for \(0 < e < t'\); divisibility is in \(\Z_\ell\).
+(b) If \(t' \ge 1\), \(\#\Kc \le (t'-1)\#\Sigma_*\), \(\#\Sigma_* \le y^{20}\) and \(t' + 2 \le y\), then \((\#\Kc + \#\Sigma_* + 1)\,yh \le y^{22}h\).
+\end{problem}
+
+A \emph{Frobenius datum} \((w, \tilde w, \Fr)\) is a finite place \(w\) of \(E\) of prime norm \(q_w\), a place \(\tilde w\) of \(\bar{\Q}\) above \(w\), and \(\Fr \in G_E\) whose inverse is an arithmetic Frobenius element at \(\tilde w\).  A set \(\mathcal W\) of data \emph{contains most data near} \(g \in G_E\) if there are a neighbourhood \(\Omega_g\) of \(g\) and a set \(\mathcal Y\) of data such that every datum in \(\mathcal Y\) whose Frobenius element is in \(\Omega_g\) lies in \(\mathcal W\), and every neighbourhood of a point of \(G_E\) contains a neighbourhood \(\Omega'\) of a point such that, for all but finitely many \(w\), every datum at \(w\) whose Frobenius element is in \(\Omega'\) lies in \(\mathcal Y\).
+
+\begin{definition}\label{def:tw}
+\emph{Taylor--Wiles places} of level \(\ell^\nu\) indexed by a finite set \(\Kc\) are Frobenius data \((w_j, \tilde w_j, \Fr_{w_j})_{j \in \Kc}\) such that the \(w_j\) are pairwise distinct, \(\bar w_i \ne w_j\) for all \(i, j\), and \(\ell^\nu \mid q_{w_j} - 1\).  When \(w_j\) is not above \(\ell\), \(s_{w_j}\) is the distinguished tame generator at \(\tilde w_j\).
+\end{definition}
+
+\begin{theorem}\label{thm:triangle}
+Let \(E \subset \bar{\Q}\) be a CM field with a primitive root of unity of order \(5040\) and at least four infinite places, contained in \(\Q(\mu_{N_0})\), \(N_0 > 0\).  Let \(t', y, h \ge 0\) be integers with \(N_0 + t' < y\); let \(\gamma_1\) generate \(G_E\) modulo \(\ker\cyc\) (the only closed subgroup containing \(\gamma_1\) and \(\ker\cyc\) is \(G_E\)), with \(\cyc(\gamma_1)^a - 1 \mid \ell^h\) in \(\Z_\ell\) for \(0 < a < t'\); let \(\ell \le y^2\) or \(h = 0\); and let \(\mathcal W\) be a set of Frobenius data such that for all \(\nu \ge 0\) and \(g \in G_E\) some \(\delta \in \ker\cyc\) makes \(\mathcal W\) contain most data near \(\delta^{\ell^\nu}g\).  Then there are a finite linearly ordered set \(\Kc\) and a nondecreasing map \(j \mapsto e_j \in \{1, \dots, t'-1\}\) such that for every \(\nu > 0\) there are Taylor--Wiles places of level \(\ell^\nu\) indexed by \(\Kc\), with data in \(\mathcal W\), such that:
+\begin{enumerate}
+\item[(a)] \(w_j\) is not above \(\ell\), and \(\Fr_{w_j}\) fixes \(\mu_{\ell^\nu}\);
+\item[(b)] there is a finite \(\Sigma_* \subseteq \ker\cyc\) with \((\#\Kc + \#\Sigma_* + 1)\,yh \le y^{22}h\) such that, for every coefficient ring \(\Oc\) and \(e \ge 0\), a locally constant cocycle for \(\cyc^{-e}\) in \(\Oc/\ell^\nu\), unramified off \(\ell\), that vanishes at \(\gamma_1^{-1}\) and on \(\Sigma_*\) is zero; and for each \(0 < e < t'\) and \(g \in \Sigma_*\) some \(j\) with \(e_j = e\) has \(z(\Fr_{w_j}) = 2z(g)\) for every \(\Oc\) and every even class \(z\) of exponent \(e\) for \(\varnothing\);
+\item[(c)] for \(0 \le e < t'\), \(\prod_{i \ne e}\bigl(\cyc(\gamma_1)^{e} - \cyc(\gamma_1)^{i}\bigr)\) divides \(\ell^{yh}\) in \(\Z_\ell\), the product over \(0 \le i < t'\); and for \(0 < e < t'\), \(4(\cyc(\gamma_1)^e - 1)^2\) divides \(\ell^{yh}\) in every \(\Oc\);
+\item[(d)] for every \(\Oc\), every \(j\) and every even class \(z\) of exponent \(e_j\) for \(\{w_i\}_{i \in \Kc}\), if \(z(s_{w_i}) = 0\) for \(i < j\) and \(z(\Fr_{w_i}) = 0\) for the \(i < j\) with \(e_i = e_j\), then \(\ell^{yh}z(s_{w_j}) = 0\).
+\end{enumerate}
+\end{theorem}
+
+\emph{Status}: read from the proof \cite{GL}.  Problems~\ref{pr:surjective}--\ref{pr:count} develop several steps of its construction.  The proof takes one finite set \(\Sigma_* \subseteq \ker\cyc\) that, together with \(\gamma_1^{-1}\), detects these cocycles at every precision and exponent, with at most \(y^{20}\) elements if \(N_0 \le y\) and \(\ell \le y^2\) (if \(h = 0\) the weighted count is zero); and \(\Kc = \{1,\dots,t'-1\} \times \Sigma_*\), ordered lexicographically after ordering \(\Sigma_*\).  In the application \(y = \Delta/2\), \(\gamma_1\) is the element \(g_{\mathrm{cyc}}\) of Problem~\ref{n1-pr:generator-sep} and \(h = h_\ell\) (Definition~\ref{n1-def:sep}), so that \(\ell^{yh}\) is the separation constant \(c_{\mathrm{sep}}\).  In the first-order lemma of Chapter~\ref{n1-chap} the index set \(J\) is \(\Kc\), its variables \(X_j\) are the \(\lambda_j\) of Definition~\ref{def:lambda}, \(n_{\mathrm{aux}} = \#\Kc\) and \(n_{\mathrm{test}} = \#\Sigma_* + 1\).
+
+\section{What the triangle buys}\label{sec:buys}
+
+Let \(\Fr'_{w_j} := (\Fr_{w_j}^c)^{-1}\) and \(s'_{w_j} := (s_{w_j}^c)^{-1}\); these serve the conjugate place.  Cocycles from congruences are Ribet cocycles (Definition~\ref{n1-def:ribet}): they obey the linear relations among the families \((U_\pi(g) - 1)_\pi\), \(U_\pi\) the normalized representation of a system \(\pi\) (the normalization of Definition~\ref{dp-def:main-summand}).  In the proof, after specializing at a character \(\cyc^{-e}\), the tied rows give, in the quotient presenting the character block over \(\Oc[\lambda_j : j \in \Kc]\), the two relations \(Y(s_{w_j}) = \lambda_j Y(\Fr_{w_j})\) and \(Y(s'_{w_j}) = \lambda_j Y(\Fr'_{w_j})\), with one variable for the place and its conjugate; here \(Y(g)\) is the vector that represents evaluation at \(g\).  For the length estimate the proof considers submodules of cocycles vanishing above \(\ell\) on the cyclotomic kernel in each decomposition group when \(e > 0\), and on inertia when \(e = 0\), vanishing at \(s_{w_j}\) and \(s'_{w_j}\) for every \(j\), and with \(z(\Fr_{w_j}) = z(\Fr'_{w_j})\) whenever \(e_j = e\).
+
+\begin{problem}\label{pr:even-kernel}
+Let the places be as in Theorem~\ref{thm:triangle}, \(0 < e < t'\), and let \(\mathcal Z\) be an \(\Oc\)-module of locally constant cocycles for \(\cyc^{-e}\) in \(\Oc/\ell^\nu\), unramified off \(\ell\), vanishing on the elements of \(\ker\cyc\) in the decomposition groups above \(\ell\), with \((\cyc(\gamma_1)^e - 1)z(\gamma_1^{-1}) = 0\) and \(z^+(\Fr_{w_j}) = 0\) whenever \(e_j = e\).  Then \(z \mapsto z^c - z\) maps \(\mathcal Z\) to \(\Shao_\ell(E, \Oc; e, \nu)\), its kernel is killed by \(\ell^{yh}\), and \(\len\bigl(\mathcal Z/\mathcal Z[\ell^{yh}]\bigr) \le \len\Shao_\ell(E,\Oc;e,\nu)\), where \(\mathcal Z[\ell^{yh}] = \{z \in \mathcal Z : \ell^{yh}z = 0\}\).
+\end{problem}
+
+
+
+\begin{definition}\label{def:lambda}
+The \emph{first-order variables} are indeterminates \(\lambda_j\), \(j \in \Kc\); for \(A \subseteq \Kc\), \(\lambda_A := \prod_{j \in A}\lambda_j\).
+\end{definition}
+
+For \(0 \le e < t'\) let \(I_e := \{j : e_j = e\}\) and \(\Lambda := \Oc[\lambda_j : j \in \Kc]\).  Let \(n_{\det}\) be the number of remaining coordinates of the character block, \(\mathrm{Rows}_e \subseteq \Lambda^{n_{\det}}\) the module of the tied rows after evaluation at \(\cyc^{-e}\) and elimination of the other coordinates, and \(\mathfrak a\) the ideal generated by the monomials that do not divide \(\lambda_{\Kc}\).  For \(e > 0\) the triangle cost uses Theorem~\ref{thm:triangle}(d) and Problem~\ref{pr:even-kernel}; for \(e = 0\) there are no indices of type zero, and the cocycles in question are everywhere unramified homomorphisms.  Applying a Fitting ideal estimate to the projected tied rows with these costs, the proof finds that the zeroth Fitting ideal of \(\Lambda^{n_{\det}}/\bigl(\mathrm{Rows}_e + (\mathfrak a : \lambda_{\{i : e_i < e\}})\Lambda^{n_{\det}}\bigr)\) contains \(\mathfrak F_e\,\lambda_{I_e}\) for some \(\mathfrak F_e \in \Lambda\) with
+\[
+  \ord_{\Oc} \mathfrak F_e(0) \le \mathrm{cost}_e + (\#I_e + n_{\det})\,\ord_{\Oc} \ell^{yh} ,
+\]
+where \(\mathrm{cost}_e\) bounds the sum of two lengths: of the module of cocycles for \(\cyc^{-e}\) modulo \(\ell^\nu\) obeying the linear relations among the \((U_\pi(g) - 1)_\pi\), modulo its submodule obeying the crystalline relations above \(\ell\); and of \(\Shao_\ell(E,\Oc;e,\nu)\) (at \(e = 0\), the continuous everywhere unramified homomorphisms).  \emph{Status}: read from the proof.  Ramification at \(w_j\) has become the factor \(\lambda_j\); no length of even classes appears.
+
+To use only the coefficient of \(\lambda_{\Kc}\), the proof works at level raised at the \(w_j\), where \(\Nm_j\) is the sum of the actions of \(\mathrm{GL}_{n'}(k_{w_j})\) and \(\partial_j\) is a first-order operator at \(w_j\); it uses the coefficients of the product of the commuting factors \(\Nm_j + \lambda_j\partial_j\).
+
+\begin{problem}\label{pr:top-coefficient}
+Let \(\Nm_j, \partial_j\) (\(j \in \Kc\)) be pairwise commuting operators, and write \(\Nm_B\), \(\partial_B\) for products over \(B \subseteq \Kc\).  Then \(\prod_j(\Nm_j + \lambda_j\partial_j) = \sum_{A}\lambda_A\,\mathbf N_A\) with \(\mathbf N_A := \partial_A\Nm_{\Kc \setminus A}\), and \(\mathbf N_\varnothing = \Nm_{\Kc}\).  Hence, if \(\mathfrak f_A\) (\(A \subseteq \Kc\)) are operators with \(\mathfrak f_A = 0\) for \(A \ne \Kc\), then \(\sum_A \mathbf N_{\Kc\setminus A}\,\mathfrak f_A = \Nm_{\Kc} \mathfrak f_{\Kc}\).
+\end{problem}
+
+\begin{problem}\label{pr:transversal}
+Let a finite group \(H\) act on a finite set \(\Omega\), with stabilizer orders dividing \(n_{\mathrm{st}}\), and on functions \(\varphi \colon \Omega \to \Z\) by \((h\varphi)(x) := \varphi(h^{-1}x)\).  There is a function \(\omega \colon \Omega \to \Z\) such that the operator \(\Psi\) of multiplication by \(\omega\) satisfies \(\sum_{h \in H} h^{-1}\Psi h = n_{\mathrm{st}}\).  If \(H\) acts freely, \(\omega\) can be \(n_{\mathrm{st}}\) times the indicator of a set of orbit representatives.
+\end{problem}
+
+In the proof \(\partial_j\) comes from a parahoric Hecke calculation that uses local--global compatibility at parahoric level, and the comparison with the product of the norms uses the integral operator modelled in Problem~\ref{pr:transversal} (for Taylor--Wiles places see \cite{CHT}).  \emph{Status}: read from the proof.  One more cost would seem to appear: the proof removes the base-level systems \(\pi\) for which \(U_\pi\) is not a weak lift (Definition~\ref{n1-def:weak}) by an integral operator.
+
+\begin{problem}\label{pr:weak}
+For finitely many systems \(\pi_k\) that are not weak lifts choose \(g_k\) with \(b_k := \det(1 - U_{\pi_k}(g_k)) \ne 0\), and let \(\beta_k(\pi) := \det(1 - U_\pi(g_k))\) (in this sheet).  Then \(\delta_0 := \prod_k(b_k - \beta_k)\) vanishes at every \(\pi_k\) and equals \(n_0 := \prod_k b_k\) at every weak lift.  For the two classes at \(11\), over \(\Q\) with \(\ell = 5\), let \(g\) be an arithmetic Frobenius element at \(2\), \(U = 1 \oplus \cyc\) on the constant function (a weak lift) and \(U = \rho_{11}\) on \(\varphi_{11}\) (Problem~\ref{cp-pr:eleven-adjoint}), with \(\det\rho_{11} = \cyc\).  Let \(\beta\) also denote the operator acting on each of these lines by its value at the corresponding system.  Then \(b = \det(1 - \rho_{11}(g)) = 5\), \(\beta = 3 - B(2)\), and \(b - \beta = B(2) + 2 = 5\,\mathrm{pr}\).
+\end{problem}
+
+In Problem~\ref{pr:weak} the factor \(5\) is an \(n_0\).  In the application the characteristic polynomials of the finitely many base-level systems are integral, so each \(b_k\) is a nonzero element of the valuation ring, and it costs nothing: the precision \(\nu > 0\) is chosen after the \(g_k\) and \(\Kc\), and before the places, so that \(2n'!\,(n_0\mathcal N^2)^{\#\Kc+1}\) divides \(\ell^\nu\) in the valuation ring; the operator congruence at the raised level holds modulo \(\ell^\nu/(2n'!)\), a multiple of \((n_0\mathcal N^2)^{\#\Kc+1}\), and the latter factor is cancelled on an integral vector.  \emph{Status}: read from the proof.  So, as Definition~\ref{dp-def:clearing-bound} shows, the clearing bound has the odd-class term \(t\,\val_\ell(X_{\mathrm{odd}})\), the separation term \(\bigl((4t+1)(\Delta/2)^{22} + \Delta/2\bigr)n_\ell\), and no term for even classes.
+
+{\raggedright
+\paragraph{What this sheet establishes.}  In the model over \(\Q\) the triangle argument runs in full: a class that vanishes at \(3\) and at the Frobenius element of the first prime is unramified at both primes, and each of the two requirements on the primes is needed (Problems~\ref{pr:toy-triangle} and~\ref{pr:toy-failure}).  In general the sheet proves the steps of the choice of the places that are algebra (Problems~\ref{pr:surjective}--\ref{pr:count}), the passage from even classes to the odd module (Problem~\ref{pr:even-kernel}), and the two formal steps of the extraction (Problems~\ref{pr:top-coefficient} and~\ref{pr:transversal}).  Taken from the proof \cite{GL}: Theorem~\ref{thm:triangle}; the relation count and the reciprocity relation behind it; the Fitting estimate for the character block; the first-order operators \(\partial_j\) at the raised level; and the choice of the precision.  Theorem~\ref{tt-thm:oddsha} bounds the odd module.  The theorem is one input of the bound for the denominators of projections, Theorem~\ref{dp-thm:denominators}: it is why the clearing bound has no term for even classes.
+
+\paragraph{In the Lean formalization.}
+In \cite{GL} (namespace \texttt{New.} omitted): Theorem~\ref{thm:triangle} is \texttt{Selmer.exists\_isPrimeTriangle}, with conclusion \texttt{Selmer.IsPrimeTriangle}; Definition~\ref{def:even} is \texttt{Selmer.evenClasses}, and Definition~\ref{def:tw} specializes \texttt{Patching.TaylorWilesPlaces} to finite index sets and level \(\ell^\nu\); the dimension bound is \texttt{Selmer.exists\_card\_lt\_finrank\_kummerReductions}, reciprocity \texttt{Selmer.IsKummerMap.sum\_eq\_zero}; the bound of Problem~\ref{pr:even-kernel} is \texttt{Selmer.relLength\_torsionBy\_le\_length\_shaOdd}; the Fitting bound for the character block is \texttt{Selmer.exists\_mem\_fittingIdeal\_character} (\(\lambda_j\) is \texttt{X j}); the coefficients of the product of the factors \(\Nm_j + \lambda_j\partial_j\) are constructed in the proof of \texttt{Patching.BaseLevel.exists\_deformed\_norm\_family}; the removal of the other base systems and the choice of precision are in \texttt{Selmer.exists\_ellVal\_le\_and\_diagOp\_mem\_ellIntegralForms}.  For the separately stated inputs see the \href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/FirstOrder/KummerMaps.lean\#L413}{definition of a Kummer map}, the \href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/FirstOrder/TrianglePrimes.lean\#L417}{choice of the next place}, the \href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/FirstOrder/TateTwistCocycles.lean\#L232}{triangle cost}, the \href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/FirstOrder/AuxiliaryPrimeTie.lean\#L449}{top-coefficient estimate}, the \href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Cyclotomic/OddSha.lean\#L264}{detecting points} and the \href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/FirstOrder/DenominatorBound.lean\#L297}{application}.  See also the \href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/FirstOrder/KummerMaps.lean\#L423}{Kummer type}, \href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/FirstOrder/TrianglePrimes.lean\#L176}{separation of exponents}, \href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/GaloisRep/Main/Defs.lean\#L192}{Frobenius data and their filters}, \href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/LocalLoss/Basic.lean\#L359}{linear relations on cocycles}, \href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/FirstOrder/TiedTraces.lean\#L516}{parahoric compatibility} and the \href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/GaloisRep/TaylorWiles.lean\#L778}{integral averaging operator}.\par}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:parity}}
+\begin{description}
+\item[\ref{pr:even-odd}] \(\cyc(g^c) = \cyc(g)\); expand \(z(x x^{-1})\).
+\end{description}
+
+\subsection*{\S\ref{sec:choice}}
+\begin{description}
+\item[\ref{pr:two-values}] Both maps are additive on \(G_\nu\).
+\item[\ref{pr:count}] \(\alpha^e - \alpha^i\) is a unit times \(\alpha^{|e-i|} - 1\).  For \(4\) with \(\ell = 2\): \(\alpha^e \equiv 1 \pmod 4\) forces \(h \ge 2\); for odd \(\ell\), \(4\) is a unit.
+\end{description}
+
+\subsection*{\S\ref{sec:buys}}
+\begin{description}
+\item[\ref{pr:even-kernel}] On the kernel \(z^+ = 2z\); use the Frobenius evaluations of Theorem~\ref{thm:triangle}(b), then its detection assertion for \(4(\cyc(\gamma_1)^e - 1)z\).
+\item[\ref{pr:weak}] At a weak lift \(\beta_k = 0\).  For the example use Problem~\ref{cp-pr:eleven-pr}.
+\end{description}
+
+\begin{thebibliography}{CHT}
+\bibitem[ADT]{ADT} J.~S.~Milne, \emph{Arithmetic Duality Theorems}, 2nd ed., BookSurge, 2006.
+\bibitem[CHT]{CHT} L.~Clozel, M.~Harris and R.~Taylor, \emph{Automorphy for some \(\ell\)-adic lifts of automorphic mod \(\ell\) Galois representations}, Publ.\ Math.\ IH\'ES \textbf{108} (2008), 1--181.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[Ne]{Ne} J.~Neukirch, \emph{Algebraic Number Theory}, Grundlehren 322, Springer, 1999.
+\bibitem[Wi]{Wi} A.~Wiles, \emph{Modular elliptic curves and Fermat's Last Theorem}, Ann.\ of Math.\ \textbf{141} (1995), 443--551.
+\end{thebibliography}
+
+\end{document}
