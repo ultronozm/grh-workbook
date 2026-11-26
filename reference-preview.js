@@ -4,6 +4,8 @@
   const hover = matchMedia("(hover: hover) and (pointer: fine)");
   const blocks = "div:is(.definition,.theorem,.proposition,.lemma,.problem,.remark)";
   const headings = "h1,h2,h3,h4,h5,h6";
+  const entries = ".thebibliography > p, .csl-entry, [role='doc-biblioentry']";
+  const footnotes = ".footnotes > ol > li, [role='doc-endnote'], [role='doc-footnote']";
   const pages = new Map();
   const previews = new Map();
   let active;
@@ -65,6 +67,8 @@
 
   function copyTarget(source, ref) {
     let target = source.getElementById(ref.id);
+    const entry = target?.closest(entries + ", " + footnotes);
+    if (entry) target = entry;
     // A display with several labels has empty anchors immediately before it.
     while (target?.matches("span[id]:empty:not([data-label])")) {
       target = target.nextElementSibling;
@@ -73,7 +77,7 @@
     const section = target.matches(headings) && /^§\s*\w/.test(target.textContent);
     const block = target.matches(blocks);
     const equation = target.matches(".math.display");
-    if (!section && !block && !equation) return null;
+    if (!section && !block && !equation && !entry) return null;
 
     const content = document.createElement("div");
     content.className = "reference-preview-content";
@@ -81,6 +85,7 @@
     const copy = target.cloneNode(true);
     if (block) copy.classList.add("reference-preview-block");
     if (section) copy.classList.add("reference-preview-heading");
+    if (entry) copy.classList.add("reference-preview-entry");
     content.append(copy);
     if (section) {
       for (let node = target.nextElementSibling; node && !node.matches(headings);
@@ -93,6 +98,7 @@
     }
     stripIds(content);
     content.querySelectorAll(".progress-toggle, .stable-tag, .used-in").forEach(node => node.remove());
+    if (entry) copy.querySelectorAll(".footnote-back, [role='doc-backlink']").forEach(node => node.remove());
     content.querySelectorAll("a[href]").forEach(link => {
       link.href = new URL(link.getAttribute("href"), ref.page).href;
     });
@@ -267,6 +273,7 @@
     if (event.target === window || !active?.card?.contains(event.target)) place();
   }, {capture: true, passive: true});
   window.addEventListener("resize", place);
+  window.addEventListener("popstate", dismiss);
   window.addEventListener("pagehide", dismiss);
   window.addEventListener("beforeprint", dismiss);
   hover.addEventListener("change", dismiss);

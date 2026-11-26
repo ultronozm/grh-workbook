@@ -205,6 +205,7 @@
 
   const modeKey = "grh-workbook:reading-mode";
   const cardKey = "grh-workbook:reading-card:" + location.pathname;
+  const positionKey = "grh-workbook:reading-position:" + location.pathname;
   function read(key) {
     try {
       return localStorage.getItem(key);
@@ -240,17 +241,81 @@
     return element;
   }
 
-  const toggle = make("button", "reading-toggle", "One at a time");
-  toggle.type = "button";
+  function button(className, text, label) {
+    const control = make("button", className, text);
+    control.type = "button";
+    if (label) control.setAttribute("aria-label", label);
+    return control;
+  }
+
+  const toggle = button("reading-toggle", "One at a time");
   const position = make("span", "reading-position");
-  position.setAttribute("role", "status");
   position.hidden = true;
+  const previous = button("reading-step", "‹", "Previous card");
+  const next = button("reading-step", "›", "Next card");
+  const counter = button("reading-counter");
+  counter.setAttribute("aria-expanded", "false");
+  const back = button("reading-back");
+  back.hidden = true;
+  const list = make("ul", "reading-card-list");
+  list.id = "reading-card-list";
+  list.hidden = true;
+  list.setAttribute("aria-label", "Choose a card");
+  counter.setAttribute("aria-controls", list.id);
+  position.append(previous, counter, next, back);
   (header.querySelector(".date") || header.querySelector(".title")).append(toggle, position);
+  header.append(list);
 
   let deck, cards, hiddenHints, restoreNodes, restoreHints;
   let current = -1;
   let pageTop = 0;
   let savedCard = read(cardKey);
+  let returnLabel = null;
+  let entryId;
+  let entrySequence = 0;
+  let saveTimer;
+  const positions = new Map();
+
+  function setReturn(label) {
+    returnLabel = label;
+    back.hidden = !label;
+    back.textContent = label ? `← ${label}` : "";
+  }
+
+  function closeList(restoreFocus = false) {
+    if (list.hidden) return;
+    list.hidden = true;
+    counter.setAttribute("aria-expanded", "false");
+    if (restoreFocus) counter.focus({preventScroll: true});
+  }
+
+  function snapshot() {
+    const {key, slide} = cards[current];
+    return {
+      id: entryId, key, top: slide.scrollTop, back: returnLabel,
+      open: [...slide.querySelectorAll("details")].map(details => details.open),
+    };
+  }
+
+  function newEntry() {
+    entryId = `${performance.timeOrigin}:${++entrySequence}`;
+  }
+
+  function remember(url = location.href, push = false) {
+    clearTimeout(saveTimer);
+    const state = snapshot();
+    positions.set(entryId, state);
+    if (push) history.pushState({readingCard: state}, "", url);
+    else if (location.href !== new URL(url, location.href).href ||
+             JSON.stringify(history.state?.readingCard) !== JSON.stringify(state)) {
+      history.replaceState({...history.state, readingCard: state}, "", url);
+    }
+  }
+
+  function scheduleSave() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => remember(), 350);
+  }
 
   function targetFor(hash) {
     if (!hash) return null;
@@ -322,21 +387,20 @@
 
   function activate(index) {
     if (index === current) return;
-    const previous = cards[current]?.slide;
-    const focused = previous?.contains(document.activeElement);
-    if (previous) previous.inert = true;
+    const oldSlide = cards[current]?.slide;
+    const focused = oldSlide?.contains(document.activeElement);
+    if (oldSlide) oldSlide.inert = true;
     current = index;
     const {slide, key, problem} = cards[current];
     slide.inert = false;
     if (focused) slide.focus({preventScroll: true});
-    position.textContent = `${current + 1} / ${cards.length}`;
+    counter.textContent = `${current + 1} / ${cards.length}`;
+    counter.setAttribute("aria-label", `Card ${current + 1} of ${cards.length}. Choose a card`);
+    previous.disabled = current === 0;
+    next.disabled = current === cards.length - 1;
     savedCard = key;
     save(cardKey, key);
     recordVisit(problem);
-
-    // A fragment takes precedence on reload until the reader pages away.
-    const hashCard = targetFor(location.hash)?.closest(".reading-card");
-    if (hashCard && hashCard !== slide) history.replaceState(history.state, "", location.pathname + location.search);
   }
 
   function show(index, target, focus = false) {
@@ -344,20 +408,90 @@
     deck.scrollLeft = index * deck.clientWidth;
     activate(index);
     if (target) {
-      const details = target.closest("details");
-      if (details) details.open = true;
+      for (let node = target; node && node !== slide; node = node.parentElement) {
+        if (node.matches("details")) node.open = true;
+      }
       slide.scrollTop += target.getBoundingClientRect().top - slide.getBoundingClientRect().top - 16;
     }
     if (focus) slide.focus({preventScroll: true});
   }
 
-  function reveal(target, focus = false) {
-    const index = cards.findIndex(({slide}) => slide.contains(target));
-    if (index < 0) return;
-    show(index, target, focus);
+  function cardFor(target) {
+    return cards.findIndex(({slide}) => slide.contains(target));
   }
 
-  function enter(revealHash = true) {
+  function restorePosition(state, revealHash = true) {
+    const index = cards.findIndex(({key}) => key === state?.key);
+    setReturn(state?.back ?? null);
+    if (index >= 0) {
+      entryId = state.id;
+      show(index);
+      const {slide} = cards[index];
+      slide.querySelectorAll("details").forEach((details, i) => { details.open = !!state.open[i]; });
+      slide.scrollTop = state.top;
+      return;
+    }
+    newEntry();
+    const target = revealHash && targetFor(location.hash);
+    const linked = target ? cardFor(target) : -1;
+    const remembered = cards.findIndex(({key}) => key === savedCard);
+    show(linked >= 0 ? linked : Math.max(0, remembered), linked >= 0 ? target : null);
+  }
+
+  function pageTo(index, moveDeck = true) {
+    if (!cards[index] || index === current) return;
+    closeList();
+    setReturn(null);
+    if (moveDeck) show(index);
+    else activate(index);
+    // The current card replaces any fragment left by a link.
+    remember(location.pathname + location.search);
+  }
+
+  counter.addEventListener("click", () => {
+    if (!list.hidden) {
+      closeList(true);
+      return;
+    }
+    let lastSection;
+    const items = cards.map(({problem, label, section}, index) => {
+      const item = document.createElement("li");
+      if (section && section !== lastSection) item.append(make("div", "reading-list-section", section));
+      lastSection = section;
+      const row = button("reading-list-card", label);
+      if (problem?.querySelector('.progress-toggle[aria-pressed="true"]')) {
+        const check = make("span", "reading-list-done", "✓");
+        check.setAttribute("aria-hidden", "true");
+        row.append(check);
+        row.setAttribute("aria-label", `${label}, done`);
+      }
+      if (index === current) row.setAttribute("aria-current", "true");
+      row.addEventListener("click", () => {
+        closeList(true);
+        pageTo(index);
+      });
+      item.append(row);
+      return item;
+    });
+    list.replaceChildren(...items);
+    list.hidden = false;
+    counter.setAttribute("aria-expanded", "true");
+    const active = list.querySelector('[aria-current="true"]');
+    active.focus({preventScroll: true});
+    active.scrollIntoView({block: "nearest"});
+  });
+
+  previous.addEventListener("click", () => pageTo(current - 1));
+  next.addEventListener("click", () => pageTo(current + 1));
+  back.addEventListener("click", () => {
+    remember();
+    history.back();
+  });
+  document.addEventListener("pointerdown", event => {
+    if (!position.contains(event.target) && !list.contains(event.target)) closeList();
+  });
+
+  function enter(state, revealHash = true) {
     const groups = [];
     const hintNodes = [];
     const nodes = [];
@@ -366,7 +500,7 @@
     for (let node = header.nextSibling; node && !node.matches?.("script"); node = node.nextSibling) {
       nodes.push(node);
       if (node.id === "hints") inHints = true;
-      else if (node.matches?.("h1")) inHints = false;
+      else if (node.matches?.("h1, .footnotes, [role='doc-endnotes']")) inHints = false;
 
       if (inHints) {
         hintNodes.push(node);
@@ -394,6 +528,7 @@
     nodes[0].before(deck, hiddenHints);
     hiddenHints.append(...hintNodes);
 
+    let section = "";
     cards = groups.map(({nodes, problem}, index) => {
       const slide = make("div", "reading-card");
       slide.setAttribute("role", "group");
@@ -402,6 +537,11 @@
       slide.inert = true;
       const content = make("div", "reading-card-content");
       for (const node of nodes) {
+        if (node.matches?.("h1, h2, h3, h4, h5, h6")) {
+          const heading = node.cloneNode(true);
+          heading.querySelector(".stable-tag")?.remove();
+          section = heading.textContent.replace(/\\[()]/g, "").trim();
+        }
         if (node.id === "TOC") {
           const contents = disclosure("Contents");
           contents.append(node);
@@ -413,7 +553,9 @@
       if (hints.has(problem)) addHint(content, hints.get(problem));
       slide.append(content);
       deck.append(slide);
-      return {slide, problem, key: problem ? problem.id || String(index) : "trailing"};
+      const label = problem?.querySelector(":scope > p:first-of-type > strong:first-child")?.textContent.trim();
+      return {slide, problem, key: problem ? problem.id || String(index) : "trailing",
+        label: label || "End of sheet", section};
     });
 
     document.body.setAttribute("data-reading-cards", "");
@@ -422,15 +564,20 @@
     deck.addEventListener("scroll", ({currentTarget}) => {
       if (currentTarget !== deck) return;
       const index = Math.round(deck.scrollLeft / deck.clientWidth);
-      if (cards[index]) activate(index);
+      pageTo(index, false);
     }, {passive: true});
-    const target = revealHash && targetFor(location.hash);
-    const linked = target ? cards.findIndex(({slide}) => slide.contains(target)) : -1;
-    const remembered = cards.findIndex(({key}) => key === savedCard);
-    show(linked >= 0 ? linked : Math.max(0, remembered), linked >= 0 ? target : null);
+    deck.addEventListener("scroll", event => {
+      if (event.target === cards[current].slide) scheduleSave();
+    }, {capture: true, passive: true});
+    deck.addEventListener("toggle", event => {
+      if (cards[current].slide.contains(event.target)) scheduleSave();
+    }, true);
+    restorePosition(state, revealHash);
   }
 
   function leave() {
+    clearTimeout(saveTimer);
+    closeList();
     restoreHints.forEach(restore => restore());
     for (const node of restoreNodes) deck.before(node);
     deck.remove();
@@ -440,12 +587,14 @@
     document.body.removeAttribute("data-reading-cards");
     toggle.textContent = "One at a time";
     position.hidden = true;
-    position.textContent = "";
   }
 
   toggle.addEventListener("click", () => {
     if (deck) {
+      setReturn(null);
+      remember();
       leave();
+      history.scrollRestoration = "auto";
       save(modeKey, "page");
       recordCurrentVisit();
       const target = targetFor(location.hash);
@@ -453,7 +602,7 @@
       else window.scrollTo(0, pageTop);
     } else {
       save(modeKey, "cards");
-      enter();
+      startCards();
     }
   });
 
@@ -464,39 +613,58 @@
     if (!link?.hash || (link.target && link.target !== "_self") || link.hasAttribute("download") ||
         link.origin !== location.origin || link.pathname !== location.pathname || link.search !== location.search) return;
     const target = targetFor(link.hash);
-    if (!target?.closest(".reading-card")) return;
+    const index = target ? cardFor(target) : -1;
+    if (index < 0) return;
     event.preventDefault();
-    if (link.hash !== location.hash) history.pushState(null, "", link.hash);
-    reveal(target, true);
+    remember();
+    closeList();
+    setReturn(cards[current].problem ? `Back to ${cards[current].label}` : "Back");
+    newEntry();
+    show(index, target, true);
+    remember(link.hash, true);
+  });
+  window.addEventListener("popstate", event => {
+    if (!deck) return;
+    // The outgoing card is still visible here, even if scrolling had not settled.
+    positions.set(entryId, snapshot());
+    const state = event.state?.readingCard;
+    restorePosition(positions.get(state?.id) ?? state);
+    history.scrollRestoration = "manual";
+    remember();
   });
   window.addEventListener("hashchange", () => {
-    if (deck) reveal(targetFor(location.hash));
-    else recordCurrentVisit();
+    if (!deck) recordCurrentVisit();
   });
 
   document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !list.hidden) {
+      event.preventDefault();
+      closeList(true);
+      return;
+    }
     if (!deck || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey ||
         event.target.matches?.("input, textarea, select") || event.target.isContentEditable) return;
-    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    const index = {ArrowLeft: current - 1, ArrowRight: current + 1, Home: 0, End: cards.length - 1}[event.key];
+    if (index === undefined) return;
     event.preventDefault();
-    const next = current + (event.key === "ArrowRight" ? 1 : -1);
-    if (cards[next]) show(next, null, true);
+    pageTo(index);
+    if (cards[index]) cards[index].slide.focus({preventScroll: true});
   });
 
   let printState;
   window.addEventListener("beforeprint", () => {
     if (!deck) return;
     printState = {
-      top: cards[current].slide.scrollTop,
+      position: snapshot(),
       open: [...deck.querySelectorAll("details")].map(details => details.open),
     };
     leave();
   });
   window.addEventListener("afterprint", () => {
     if (!printState) return;
-    enter(false);
+    enter(printState.position, false);
     deck.querySelectorAll("details").forEach((details, index) => { details.open = printState.open[index]; });
-    cards[current].slide.scrollTop = printState.top;
+    cards[current].slide.scrollTop = printState.position.top;
     printState = null;
   });
 
@@ -505,7 +673,33 @@
     recordVisit(problem);
   }
 
-  if (read(modeKey) === "cards") enter();
+  function startCards(state = history.state?.readingCard) {
+    history.scrollRestoration = "manual";
+    enter(state);
+    remember();
+  }
+
+  if (read(modeKey) === "cards") {
+    const state = history.state?.readingCard;
+    let lastPosition;
+    try {
+      lastPosition = JSON.parse(sessionStorage.getItem(positionKey));
+      sessionStorage.removeItem(positionKey);
+    } catch {
+      // History still holds the last saved position.
+    }
+    startCards(lastPosition?.id && lastPosition.id === state?.id ? lastPosition : state);
+  }
+  window.addEventListener("pagehide", () => {
+    if (!deck) return;
+    // A reload can copy history.state before pagehide runs.
+    try {
+      sessionStorage.setItem(positionKey, JSON.stringify(snapshot()));
+    } catch {
+      // History still holds the last saved position.
+    }
+    remember();
+  });
   recordCurrentVisit();
   window.addEventListener("pageshow", recordCurrentVisit);
 })();
