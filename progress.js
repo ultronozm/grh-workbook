@@ -92,6 +92,41 @@
   }
 
   const template = document.querySelector("#workbook-progress");
+  const lastVisitKey = "grh-workbook:last-visit";
+  if (template) {
+    const continuation = document.createElement("p");
+    continuation.className = "reading-continue";
+    continuation.hidden = true;
+    const link = document.createElement("a");
+    continuation.append("Continue: ", link);
+    const title = document.querySelector("#content > h1.title");
+    title?.after(continuation);
+
+    const update = () => {
+      let visit;
+      try {
+        visit = JSON.parse(storage.getItem(lastVisitKey));
+      } catch {
+        visit = null;
+      }
+      const sheet = [...document.querySelectorAll("a[data-sheet-progress]")]
+        .find(chapter => chapter.pathname === visit?.path);
+      continuation.hidden = !sheet;
+      if (!sheet) return;
+      link.href = sheet.href;
+      const chapter = sheet.textContent.trim().replace(/^(S?\d+)\.\s*/, "Chapter $1, ");
+      link.textContent = chapter;
+      if (visit.id && visit.label) {
+        link.hash = encodeURIComponent(visit.id);
+        link.textContent = `${chapter.split(",")[0]}, ${visit.label}`;
+      }
+    };
+    update();
+    window.addEventListener("pageshow", update);
+    window.addEventListener("storage", event => {
+      if (event.storageArea === storage && (!event.key || event.key === lastVisitKey)) update();
+    });
+  }
   if (template) {
     const panel = template.content.firstElementChild.cloneNode(true);
     const file = panel.querySelector('input[type="file"]');
@@ -153,7 +188,7 @@
   "use strict";
 
   const header = document.querySelector("#title-block-header");
-  if (!header || !document.querySelector("body > div.problem")) return;
+  if (!header || !document.querySelector('meta[name="workbook-chapter"]')) return;
 
   const modeKey = "grh-workbook:reading-mode";
   const cardKey = "grh-workbook:reading-card:" + location.pathname;
@@ -170,6 +205,19 @@
     } catch {
       // The reading mode also works without browser storage.
     }
+  }
+
+  function recordVisit(problem) {
+    const heading = problem?.querySelector(":scope > p:first-of-type > strong:first-child");
+    save("grh-workbook:last-visit", JSON.stringify({
+      path: location.pathname, id: problem?.id, label: heading?.textContent,
+    }));
+  }
+
+  if (!document.querySelector("body > div.problem")) {
+    recordVisit();
+    window.addEventListener("pageshow", () => recordVisit());
+    return;
   }
 
   function make(tag, className, text) {
@@ -265,12 +313,13 @@
     const focused = previous?.contains(document.activeElement);
     if (previous) previous.inert = true;
     current = index;
-    const {slide, key} = cards[current];
+    const {slide, key, problem} = cards[current];
     slide.inert = false;
     if (focused) slide.focus({preventScroll: true});
     position.textContent = `${current + 1} / ${cards.length}`;
     savedCard = key;
     save(cardKey, key);
+    recordVisit(problem);
 
     // A fragment takes precedence on reload until the reader pages away.
     const hashCard = targetFor(location.hash)?.closest(".reading-card");
@@ -351,7 +400,7 @@
       if (hints.has(problem)) addHint(content, hints.get(problem));
       slide.append(content);
       deck.append(slide);
-      return {slide, key: problem ? problem.id || String(index) : "trailing"};
+      return {slide, problem, key: problem ? problem.id || String(index) : "trailing"};
     });
 
     document.body.setAttribute("data-reading-cards", "");
@@ -385,6 +434,7 @@
     if (deck) {
       leave();
       save(modeKey, "page");
+      recordCurrentVisit();
       const target = targetFor(location.hash);
       if (target) target.scrollIntoView();
       else window.scrollTo(0, pageTop);
@@ -408,6 +458,7 @@
   });
   window.addEventListener("hashchange", () => {
     if (deck) reveal(targetFor(location.hash));
+    else recordCurrentVisit();
   });
 
   document.addEventListener("keydown", event => {
@@ -436,5 +487,12 @@
     printState = null;
   });
 
+  function recordCurrentVisit() {
+    const problem = deck ? cards[current]?.problem : targetFor(location.hash)?.closest("div.problem");
+    recordVisit(problem);
+  }
+
   if (read(modeKey) === "cards") enter();
+  recordCurrentVisit();
+  window.addEventListener("pageshow", recordCurrentVisit);
 })();

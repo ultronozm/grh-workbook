@@ -11,7 +11,7 @@
     <input type="search" aria-label="Search the workbook" placeholder="Search the workbook…" autocomplete="off">
     <p role="status"></p>
     <ol></ol>`;
-  heading.after(search);
+  (document.querySelector(".reading-continue") || heading).after(search);
 
   const input = search.querySelector("input");
   const status = search.querySelector("[role=status]");
