@@ -30,8 +30,9 @@ PAGE = """<!DOCTYPE html>
 <p>This sheet was withdrawn on 26 November 2026, when the workbook was
 rebuilt around the rewritten Lean proof.  The present sheets are listed in
 the <a href="index.html">index</a>.</p>
-<p>The earlier version of the workbook is kept in the repository under the tag
-<a href="{repo}/tree/original-route"><code>original-route</code></a>.</p>
+<p>See <a href="original-route/{stem}.html">the sheet as it stood on 25 November 2026</a>,
+in a snapshot of the earlier collection that is not maintained.  Its sources are kept in the
+repository under the tag <a href="{repo}/tree/original-route"><code>original-route</code></a>.</p>
 </body>
 </html>
 """
@@ -55,7 +56,7 @@ def main():
                 if os.path.exists(p):
                     os.remove(p)
             with open(os.path.join(site, stem + ".html"), "w", encoding="utf-8") as out:
-                out.write(PAGE.format(title=html.escape(title), repo=REPO))
+                out.write(PAGE.format(title=html.escape(title), repo=REPO, stem=stem))
             n += 1
     print(f"make-withdrawn: wrote {n} pages")
 

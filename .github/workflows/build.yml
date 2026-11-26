@@ -84,7 +84,9 @@ jobs:
             done
             # Sanity check: carried-forward artifacts must actually be present.
             have=$(find . -maxdepth 1 -type f -name '*.pdf' | wc -l)
-            expect=$(git ls-tree -r "origin/$DEPLOY_BRANCH" --name-only | grep -c '\.pdf$' || true)
+            # Top level only: original-route/ holds a frozen snapshot of the
+            # old site, tracked on main, which is not carried forward.
+            expect=$(git ls-tree "origin/$DEPLOY_BRANCH" --name-only | grep -c '\.pdf$' || true)
             echo "carried forward $have pdfs ($DEPLOY_BRANCH has $expect)"
             if [ "$have" -lt "$expect" ]; then
               echo "::error::Carry-forward incomplete: $have pdfs present, $DEPLOY_BRANCH has $expect"
