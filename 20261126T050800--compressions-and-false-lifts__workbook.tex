@@ -1,0 +1,277 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[da-]{20261126T030300--the-data__workbook}
+\externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
+\externaldocument[sd-]{20261125T000000--slope-method__workbook}
+\externaldocument[at-]{20261126T030100--a-twist-for-each-prime__workbook}
+\externaldocument[tn-]{20261125T002100--definite-theta-lifts-and-norms__workbook}
+\externaldocument[ho-]{20261125T016500--hecke-operators-and-theta-lifts__workbook}
+\externaldocument[cg-]{20261125T014100--congruence-modules__workbook}
+\externaldocument[dl-]{20261126T030500--divisibility-of-the-composite-lift__workbook}
+\externaldocument[col-]{20261126T030800--the-cost-of-one-lift__workbook}
+\externaldocument[c1-]{20261126T050400--the-norm-of-one-lift__workbook}
+\externaldocument[c2-]{20261126T050500--equal-multiplicities__workbook}
+\externaldocument[c3-]{20261126T050600--the-exchange-identity__workbook}
+\externaldocument[l5-]{20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T050800\endcsname
+  \chapnumber{20261126T050800}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+
+\newcommand{\Z}{{\mathbb{Z}}}
+\newcommand{\Q}{{\mathbb{Q}}}
+\newcommand{\R}{{\mathbb{R}}}
+\newcommand{\C}{{\mathbb{C}}}
+\newcommand{\Lc}{{\mathcal{L}}}
+\newcommand{\Hc}{{\mathcal{H}}}
+\newcommand{\Mch}{{\mathcal{M}}}
+\newcommand{\Oc}{{\mathcal{O}}}
+\newcommand{\Hb}{{\mathbf{H}}}
+\newcommand{\one}{{\mathbf{1}}}
+\newcommand{\pr}{\operatorname{pr}}
+\newcommand{\im}{\operatorname{im}}
+\newcommand{\End}{\operatorname{End}}
+\newcommand{\Aut}{\operatorname{Aut}}
+\newcommand{\Nm}{\operatorname{Nm}}
+\newcommand{\ex}{\mathrm{ex}}
+\newcommand{\cl}{\mathrm{cl}}
+\newcommand{\tl}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\title{Compressions and false lifts}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Linear algebra over \(\C\): adjoints, orthogonal projections, determinants as products of eigenvalues.  The fields \(\bar\Q_\ell\) and \(\C_\ell\), with \(\lvert\ell\rvert_\ell = 1/\ell\).  Inner products are conjugate-linear in the first variable.  From Chapter~\ref{cg-chap}: congruence modules, Problems~\ref{cg-pr:symmetry} and~\ref{cg-pr:denominator}.  From Chapter~\ref{tn-chap}: theta lifts between definite spaces and their norms (Theorem~\ref{tn-thm:norm}).  From Chapter~\ref{sd-chap}: isomorphisms \(\iota \mid \ell\) and heights of families (Section~\ref{sd-sec:heights}); from Chapter~\ref{at-chap}, Theorem~\ref{at-thm:twist}, which needs a height bound for \(Z(1)/Z(\theta_\iota)\).  For Section~\ref{sec:general} only: the data (Chapter~\ref{da-chap}) and the spaces, forms, twists and single lifts of Chapter~\ref{ob-chap}; the gauge and forms integral at a ring map \(\eta\) of Section~\ref{dl-sec:chain}; the exchange factors of Chapter~\ref{c3-chap}; Chapters~\ref{c1-chap} and~\ref{c2-chap} for two facts recalled there; and Theorem~\ref{ho-thm:eichler} as a model of a Hecke relation.
+
+\medskip
+This sheet serves Theorem~\ref{col-thm:main} of Chapter~\ref{col-chap}, \emph{The cost of one lift}: for a regular family \((\theta_\iota)\) of \(m\)-fold twists (Definition~\ref{l5-def:regular}), a bound for the height of \(\iota \mapsto Z_j(1)/Z_j(\theta_\iota)\), where \(Z_j(\theta_\iota)\) is the Gram determinant of the \(j\)-th single lift at the twist \(\theta_\iota^j\).  How can the ratio be bounded without evaluating either determinant?  The Gram determinant at a twist, times the determinant of the compression of a second operator to the image of the lift, is a fixed nonzero number times a power of a ratio of Hecke values (Theorem~\ref{thm:compression}).  The compression determinant is bounded under \(\Aut(\C)\) at the trivial twist, and at \(\ell\) at a twist prime to \(\ell\) at which the projection is cleared.  The second bound projects integral forms orthogonal to the \emph{false lifts}: forms that satisfy the equations of a lift and are orthogonal to the lifts (Definition~\ref{def:false}).  We model this on lines in \(\C^3\), then state the theorem of the proof.
+
+\section{Compressions}\label{sec:compress}
+
+Let \(A\) and \(V\) be finite-dimensional complex inner product spaces and \(u \colon A \to V\) an injective linear map, with image \(R\).  Write \(\pr_R\) for the orthogonal projection of \(V\) onto \(R\).
+
+\begin{definition}\label{def:compression}
+For \(G \in \End V\), the \emph{compression} of \(G\) to \(R\) is \(\pr_R G|_R \in \End R\).
+\end{definition}
+
+\begin{problem}\label{pr:compression}
+For every \(G \in \End V\),
+\[
+  \det(u^*u)\,\det(\pr_R G|_R) = \det(u^* G u) .
+\]
+\end{problem}
+
+Now let \(\vartheta\) run over a set with an element \(1\), and suppose given for each \(\vartheta\) an injective \(u_\vartheta \colon A \to V_\vartheta\) with image \(R_\vartheta\), an operator \(\Upsilon_\vartheta \in \End V_\vartheta\), and a complex number \(\rho_\vartheta \ne 0\).  In this section and the next, \(Z(\vartheta) := \det(u_\vartheta^* u_\vartheta)\), \(D_\vartheta := \det(\pr_{R_\vartheta} \Upsilon_\vartheta|_{R_\vartheta})\) and \(\rho_\vartheta\) are local notations, models of the objects of Section~\ref{sec:general}.
+
+\begin{problem}\label{pr:comparison}
+Suppose that some \(\Upsilon^\circ \in \End A\) has \(\langle y, \Upsilon^\circ y\rangle > 0\) for every \(y \ne 0\) and that \(\langle u_\vartheta y', \Upsilon_\vartheta u_\vartheta y\rangle = \rho_\vartheta \langle y', \Upsilon^\circ y\rangle\) for all \(\vartheta\) and \(y', y \in A\).  Then \(\det \Upsilon^\circ \ne 0\), every \(D_\vartheta\) is nonzero, and
+\[
+  Z(\vartheta)\,D_\vartheta = \det(\Upsilon^\circ)\, \rho_\vartheta^{\dim A}
+  \qquad\text{for every } \vartheta .
+\]
+If moreover \(\rho_1 = 1\), then \(Z(1)/Z(\vartheta) = (D_\vartheta/D_1)\,\rho_\vartheta^{-\dim A}\).
+\end{problem}
+
+So \(Z(\vartheta)\) is traded for \(\rho_\vartheta\) and \(D_\vartheta\).  The simplest operators have rank one.
+
+\begin{problem}\label{pr:rank-one}
+Let \(A = \C\), \(u_\vartheta(1) = v_\vartheta\), and \(\Upsilon_\vartheta = g_\vartheta g_\vartheta^*\) with \(g_\vartheta \colon \C \to V_\vartheta\), \(g_\vartheta(1) = w_\vartheta\).  Then \(Z(\vartheta) = \lVert v_\vartheta\rVert^2\) and \(D_\vartheta = \lvert\langle w_\vartheta, v_\vartheta\rangle\rvert^2/\lVert v_\vartheta\rVert^2\).  If \(\langle w_\vartheta, v_\vartheta\rangle = c_\vartheta^{-1} \mathrm{per}\) with numbers \(c_\vartheta \ne 0\) and \(\mathrm{per} \ne 0\), \(\mathrm{per}\) independent of \(\vartheta\), the hypothesis of Problem~\ref{pr:comparison} holds with \(\rho_\vartheta = \lvert c_1\rvert^2/\lvert c_\vartheta\rvert^2\) and \(\Upsilon^\circ = \lvert \mathrm{per}\rvert^2/\lvert c_1\rvert^2\).
+\end{problem}
+
+The \emph{toy} is the following pair of lines in \(\C^3\), with the standard inner product, and the set \(\{1, \vartheta\}\):
+\[
+  v_1 = (1,-1,0),\quad v_\vartheta = (1,1,-2),\qquad w_1 = (2,0,1),\quad w_\vartheta = (1,1,0),
+\]
+with \(u_1(z) = zv_1\), \(u_\vartheta(z) = zv_\vartheta\), \(\Upsilon_1 = w_1w_1^*\) and \(\Upsilon_\vartheta = w_\vartheta w_\vartheta^*\).
+
+\begin{problem}\label{pr:toy-Z}
+In the toy \(Z(1) = 2\) and \(Z(\vartheta) = 6\), \(D_1 = 2\) and \(D_\vartheta = 2/3\), and \(Z(1)D_1 = Z(\vartheta)D_\vartheta = 4\).
+\end{problem}
+
+\begin{problem}\label{pr:toy-scale}
+Replace \(w_\vartheta\) by \(3w_\vartheta\).  Then \(D_\vartheta = 6\), the hypothesis of Problem~\ref{pr:comparison} holds with \(\Upsilon^\circ = 4\), \(\rho_1 = 1\) and \(\rho_\vartheta = 9\), and \((D_\vartheta/D_1)\,\rho_\vartheta^{-1} = 1/3 = Z(1)/Z(\vartheta)\).
+\end{problem}
+
+Determinants are bounded through eigenvalues.
+
+\begin{problem}\label{pr:eigen}
+Let \(Y\) be a finite-dimensional complex vector space, \(G \in \End Y\), \(f_0 \colon \C \to F_0\) a ring homomorphism into a field with an absolute value, and \(c \in \R\).  If \(\lvert f_0(\alpha)\rvert \le c\) for every eigenvalue \(\alpha\) of \(G\), then \(\lvert f_0(\det G)\rvert \le c^{\dim Y}\).
+\end{problem}
+
+\section{False lifts in \texorpdfstring{\(\C^3\)}{C3}}\label{sec:toy}
+
+Where do bounds for \(D_\vartheta\) come from?  Let \(V = \C^n\) with \(\langle y, z\rangle = \sum \bar y_i z_i\).  An automorphism \(\sigma\) of \(\C\) acts on \(V\) coordinatewise; put \(\langle y, z\rangle_\sigma := \langle\sigma y, \sigma z\rangle\), so that \(\langle y, y\rangle_\sigma = \lVert\sigma y\rVert^2\).  For \(\iota \mid \ell\) let \(\Lc_\iota := \{y \in V : \lvert\iota(y_i)\rvert_\ell \le 1 \text{ for all } i\}\), the vectors \emph{integral at} \(\iota\).
+
+In this section let \(X \subseteq V\) be a subspace, the space cut out by the equations that every lift satisfies, and \(R \subseteq X\) a subspace, the \emph{lifts}.  Put \(F := X \cap R^\perp\), the \emph{false lifts}: they satisfy the equations that define \(X\) but are orthogonal to the lifts.  Let \(\Upsilon \in \End V\) with \(\Upsilon(R) \perp F\), and put \(D := \det(\pr_R \Upsilon|_R)\).  In Section~\ref{sec:general}, \(X\) is the intersection of the image of an idempotent with the kernel of a Hecke operator.
+
+\begin{problem}\label{pr:false}
+If \(y \perp F\), then \(\pr_R y = \pr_X y\).
+\end{problem}
+
+\begin{problem}\label{pr:perp}
+Let \(e, \Hb \in \End V\) with \(e = e^* = e^2\), and \(X = \im e \cap \ker \Hb\).  Then \(F^\perp = R + \ker e + \im \Hb^*\).  In the toy, with \(e\) the identity and \(\Hb\) the matrix with all entries \(1\), \(X = \{y : y_1 + y_2 + y_3 = 0\}\) contains \(R_1 = \C v_1\) and \(R_\vartheta = \C v_\vartheta\); the false lifts are \(F_1 = \C v_\vartheta\) and \(F_\vartheta = \C v_1\), and \(F_1^\perp = \C v_1 + \C(1,1,1)\).
+\end{problem}
+
+The projection to \(R\) can fail to commute with \(\sigma\).  The next two problems give sufficient conditions for \(\lVert\sigma(\pr_R y)\rVert \le \lVert\sigma y\rVert\) when \(y \perp F\).
+
+\begin{problem}\label{pr:conj}
+Let \(K_0 \subset \C\) be a subfield, Galois over \(\Q\) with abelian Galois group, such as \(\Q\) or \(\Q(\mathrm{i})\), and suppose that \(X\) is spanned by vectors with coordinates in \(K_0\).  For \(\sigma \in \Aut(\C)\) and \(y \in V\), \(\sigma(\pr_X y) = \pr_{\sigma X}(\sigma y)\), where \(\sigma X\) is spanned by the images under \(\sigma\) of such spanning vectors.  Hence \(\lVert\sigma(\pr_R y)\rVert \le \lVert\sigma y\rVert\) whenever \(y \perp F\).
+\end{problem}
+
+The next problem models, without rationality, the adjoint identities stated after Definition~\ref{def:false}.
+
+\begin{problem}\label{pr:sigma}
+Let \(e, \Hb\) and \(X\) be as in Problem~\ref{pr:perp}, and suppose that for every \(\sigma \in \Aut(\C)\): \(\langle e y, z\rangle_\sigma = \langle y, e z\rangle_\sigma\) for all \(y, z\), and \(\langle \Hb y, z\rangle_\sigma = 0\) whenever \(\Hb z = 0\).  Then \(\im\Hb^*=\im\Hb\).  For every \(y\perp F\) there are \(z\in R\) and \(x\in V\) such that \(y=z+x\) and \(\langle x,z'\rangle_\sigma=0\) for every \(z'\in R\) and every \(\sigma\in\Aut(\C)\).  For each such \(y\), \(\lVert\sigma(\pr_R y)\rVert\le\lVert\sigma y\rVert\) for every \(\sigma\in\Aut(\C)\).
+\end{problem}
+
+\begin{problem}\label{pr:arch}
+Suppose that \(\lVert\sigma(\pr_R y)\rVert \le \lVert\sigma y\rVert\) for every \(\sigma\) and every \(y \perp F\), and that \(\lVert\sigma(\Upsilon y)\rVert \le \exp(c)\,\lVert\sigma y\rVert\) for all \(y \in V\) and \(\sigma \in \Aut(\C)\).  Then \(\lvert\sigma(D)\rvert \le \exp(c\dim R)\) for all \(\sigma\).
+\end{problem}
+
+\begin{problem}\label{pr:padic}
+Suppose that \(\Upsilon(\Lc_\iota) \subseteq \Lc_\iota\), and that \(\Lambda \in \End R\) satisfies \(\Lambda(\pr_R y) \in \Lc_\iota\) for every \(y \in \Lc_\iota\) with \(y \perp F\).  Then \(\lvert\iota(\det\Lambda \cdot D)\rvert_\ell \le 1\).
+\end{problem}
+
+For \(X\) spanned by vectors in \(\Q^n\), the least positive integer \(c\) with \(c\pr_X(\Z^n)\subseteq\Z^n\) is the exponent of the congruence module of \(X\) for \(\Q^n=(X\cap\Q^n)\oplus(X^\perp\cap\Q^n)\) (Problem~\ref{cg-pr:denominator}).  We return to the toy, with \(w_\vartheta=(1,1,0)\) and \(X\) as in Problem~\ref{pr:perp}.
+
+\begin{problem}\label{pr:toy-cong}
+For the decomposition \(\Q^3 = (X \cap \Q^3) \oplus \Q(1,1,1)\), the congruence module of \(X\) in \(\Z^3\) is \(\Z/3\Z\), and \(3\pr_X(\Z^3) \subseteq \Z^3\).  Hence, for \(R = R_1\) and for \(R = R_\vartheta\) and at every \(\iota\), \(\Lambda = 3\) satisfies the hypothesis on \(\Lambda\) in Problem~\ref{pr:padic}.  For \(R = R_1\) already \(\Lambda = 1\) does.
+\end{problem}
+
+\begin{problem}\label{pr:toy-delta}
+In the toy, \(\Upsilon_1(R_1) \perp F_1\) and \(\Upsilon_\vartheta(R_\vartheta) \perp F_\vartheta\).  The hypotheses of Problem~\ref{pr:arch} hold for \(\Upsilon_1\) with \(\exp(c) = 5\), so \(\lvert\sigma(D_1)\rvert \le 5\) for every \(\sigma \in \Aut(\C)\); those of Problem~\ref{pr:padic} hold for \(\Upsilon_\vartheta\) at \(\iota \mid 3\) with \(\Lambda = 3\), so \(\lvert D_\vartheta\rvert_3 \le 3\), and equality holds.
+\end{problem}
+
+So for rational \(X\): if \(c\pr_X(\Z^n)\subseteq\Z^n\) and \(\Upsilon\) preserves \(\Lc_\iota\), then \(c^{\dim R}D\) is integral at \(\iota\); and under the hypotheses of Problem~\ref{pr:arch}, \(\lvert\sigma(D)\rvert\le\exp(c'\dim R)\), where \(\exp(c')\) is the operator bound there.  Neither bound uses \(\det(u^*u)\).
+
+\section{The general statement}\label{sec:general}
+
+We use the data of Chapter~\ref{da-chap} and the objects of Chapter~\ref{ob-chap}: the chosen places \(\Mch\) and their residue fields \(k_w\), with \(q_w := \#k_w\); the group \(\bar G\) and the idempotent \(e_0\); the good forms \(H_g(W_j)\); twists \(\vartheta\), with modulus \(Q_\vartheta\) and \(\Nm Q_\vartheta\), and \(m\)-fold twists; the characters \(\mu_j^0\), \(\upsilon\) and \(\chi_M\); the single lifts \(u_{\xi,j}\) and \(Z_j(\vartheta)\).  Fix \(1 \le j \le m\).  For a twist \(\vartheta\), the single lift \(u_{\vartheta,j}\) maps \(H_g(W_j)\) to the space of algebraic forms on \(V_j\) with the weight, level and level character prescribed by the lift datum.  Write \(R_{\vartheta,j}\) for its image and \(\pr_{\vartheta,j}\) for the orthogonal projection onto that image.  We use two facts from Chapters~\ref{c1-chap} and~\ref{c2-chap}: \(u_{\vartheta,j}\) is injective for every tame character \(\vartheta\) (Problem~\ref{c1-pr:injective} with Theorem~\ref{c1-thm:one-lift}), and \(\dim H_g(W_j) = d_T\) (Corollary~\ref{c2-cor:equal}).
+
+For \(\sigma \in \Aut(\C)\) and a form \(y\) on \(V_j\), in this sheet \(N_\sigma(y)\) is the class sum, weighted by the reciprocal orders of the stabilizers, of the squared Gram norms of the vectors \(\sigma(y(g))\); \(N_1(y) = \lVert y\rVert^2\).  For a ring homomorphism \(\eta \colon \C \to \C_\ell\), a form is \emph{integral at} \(\eta\) if its value at every finite adelic point has gauge at most \(1\), the gauge of Section~\ref{dl-sec:chain}; integral at \(\iota \mid \ell\) means integral at \(\iota\) followed by \(\bar\Q_\ell \subset \C_\ell\).
+
+\begin{definition}\label{def:hecke-product}
+Put \(z_\varnothing := (7m + k)/2\), \(z_+ := m\), \(z_- := m/2\), integers, as is \((t - 11m - 1)/2\), since \(m = 2^e\) and \(r = 3^{e'}\) (Definition~\ref{da-def:data}); \(\epsilon_\varnothing = \epsilon_+ = 1\) and \(\epsilon_- = -1\); \(\nu_\varnothing := \mu_j^0\,\upsilon^{\,j + (t - 11m - 1)/2}\) and \(\nu_\pm := \upsilon^{-z_\pm}\chi_M^{\pm j}\).  The \emph{Hecke value product} of lift \(j\) at a twist \(\vartheta\) is
+\begin{align*}
+  \Hc_j(\vartheta) &:= \prod_{i \in \{\varnothing, +, -\}} \ex_{z_i}\bigl(\Mch \cup Q_\vartheta,\, (\nu_i\vartheta^{\epsilon_i})^{-1}\bigr) \\
+  &= \prod_{i} \biggl[\Bigl(\prod_{w \in \Mch \cup Q_\vartheta} q_w\Bigr)^{z_i^2} \prod_{n=1}^{z_i} \bigl\lvert L^{\Mch \cup Q_\vartheta}\bigl(n, (\nu_i\vartheta^{\epsilon_i})^{-1}\bigr)\bigr\rvert^2\biggr] ,
+\end{align*}
+with the exchange factors of Definition~\ref{c3-def:exchange-factor} and the partial Hecke values \(L^S(z,\nu)\) of Definition~\ref{ob-def:pair}.
+\end{definition}
+
+Let \(w\) be a finite place of \(E\) with \(\bar w \ne w\) and \(w, \bar w \notin \Mch \cup Q_\vartheta\).  Let \(\Hb_w\) be the Hecke polynomial of lift \(j\) at \(w\), an operator on the forms on \(V_j\) made of the Hecke operators at \(w\), evaluated at its test value at \(w\), a number determined by the datum of the lift.  The group \(\bar G\) acts on these forms by right translation on the block of rank \(r\) of \(V_j\), twisted by the tame part of the character of the lift, and \(e_0\) acts through this action.
+
+\begin{definition}\label{def:false}
+The \emph{false lifts at} \(w\) are the forms in \(\im e_0 \cap \ker \Hb_w\) that are orthogonal to \(R_{\vartheta,j}\).  A form is \emph{orthogonal to the false lifts} if it is orthogonal to the false lifts at every such \(w\).
+\end{definition}
+
+For every such \(w\), the image \(R_{\vartheta,j}\) is contained in \(\im e_0 \cap \ker \Hb_w\): this is the unramified Hecke relation of a theta lift, with the equivariance of the lift under \(\bar G\); for its background see \cite{Ra82}, and Theorem~\ref{ho-thm:eichler} is a lattice-theta analogue.  \emph{Status}: we take the inclusion from the proof, as well as the estimate below.  So \(\im e_0 \cap \ker\Hb_w\) plays the part of \(X\) in Section~\ref{sec:toy}, at each \(w\).  For \(\sigma \in \Aut(\C)\) let \(\mathfrak b_\sigma\) be the pairing on forms that is \(\sigma^{-1}\) of the class sum of the Gram pairings of the values after \(\sigma\), so that \(N_\sigma(y)\) is the real part of \(\sigma(\mathfrak b_\sigma(y,y))\).  The \emph{projection estimate} is \(N_\sigma(\pr_{\vartheta,j}y) \le N_\sigma(y)\) for every \(\sigma\) and every \(y\) orthogonal to the false lifts; its proof is that of Problem~\ref{pr:sigma} at one place \(w\), using that for each \(\sigma\), \(e_0\) is self-adjoint for \(\mathfrak b_\sigma\) and \(\Hb_w\) has an adjoint for \(\mathfrak b_\sigma\) that commutes with \(\Hb_w\).
+
+\begin{definition}\label{def:comparison}
+A family of operators \(\Upsilon_\vartheta\) on the target space of \(u_{\vartheta,j}\), one for every twist \(\vartheta\), is a \emph{comparison operator} if:
+(1) the ratio \(\Hc_j(\vartheta)/\Hc_j(1)\) is defined and nonzero for every twist \(\vartheta\);
+(2) some \(\Upsilon^\circ \in \End H_g(W_j)\) has \(\langle y, \Upsilon^\circ y\rangle > 0\) for \(y \ne 0\) and \(\langle u_{\vartheta,j}y', \Upsilon_\vartheta u_{\vartheta,j}y\rangle = (\Hc_j(\vartheta)/\Hc_j(1))\langle y', \Upsilon^\circ y\rangle\) for every twist \(\vartheta\) and all \(y', y \in H_g(W_j)\);
+(3) for every twist \(\vartheta\) and \(z \in R_{\vartheta,j}\), \(\Upsilon_\vartheta z\) is orthogonal to the false lifts;
+(4) for every twist \(\vartheta\), every prime \(\ell\) prime to \(\Nm Q_\vartheta\), and every \(\eta \colon \C \to \C_\ell\), \(\Upsilon_\vartheta\) maps forms integral at \(\eta\) to forms integral at \(\eta\);
+(5) \(N_\sigma(\Upsilon_1 y) \le \exp(3fmb\log^2 b)^2\, N_\sigma(y)\) for every form \(y\) at the trivial twist and every \(\sigma \in \Aut(\C)\).
+\end{definition}
+
+For a comparison operator put
+\begin{equation}\label{eq:D}
+  D_\vartheta := \det\bigl(\pr_{\vartheta,j}\Upsilon_\vartheta|_{R_{\vartheta,j}}\bigr) .
+\end{equation}
+
+\begin{definition}\label{def:clears}
+For \(\iota \mid \ell\), a twist \(\vartheta\) and a real number \(\cl(\ell)\), say that \(\cl(\ell)\) \emph{clears the projection} at \((\iota,\vartheta,j)\) if some \(\Lambda \in \End R_{\vartheta,j}\) has \(\lvert\iota(\det\Lambda)\rvert_\ell \ge e^{-(\dim R_{\vartheta,j})\,r\,\cl(\ell)}\) and \(\Lambda(\pr_{\vartheta,j}y)\) is integral at \(\iota\) for every \(y\) that is integral at \(\iota\) and orthogonal to the false lifts.
+\end{definition}
+
+Every class of the finite adelic group modulo the rational points and the level has a representative whose components above \(\ell\) are integral, by weak approximation.
+
+\begin{problem}\label{pr:scale}
+Let \(y \ne 0\) be a form in the target space of \(u_{\vartheta,j}\), let \(\eta \colon \C \to \C_\ell\), and fix class representatives integral above \(\ell\).  At \(g = g_0 s g_1\), with \(g_0\) rational, \(s\) a representative and \(g_1\) in the level, the gauge of \(y(g)\) is the largest absolute value of a coordinate of \(\eta(y(s))\).  Hence there is \(c \in \C^\times\) such that \(cy\) is integral at \(\eta\) and \(\alpha c y\) is integral at \(\eta\) only if \(\lvert\eta(\alpha)\rvert_\ell \le 1\).
+\end{problem}
+
+Problems~\ref{pr:compression}, \ref{pr:comparison}, \ref{pr:eigen}, \ref{pr:arch}, \ref{pr:padic} and~\ref{pr:scale}, carried over to forms with the projection estimate, the facts that \(N_\sigma(y) > 0\) for \(y \ne 0\) and \(N_\sigma(ay) = \lvert\sigma(a)\rvert^2 N_\sigma(y)\), the injectivity of \(u_{\vartheta,j}\) and \(\dim H_g(W_j) = d_T\) (so that \(\dim R_{\vartheta,j} = d_T\)), prove the following equivalent form of the three results identified in the Lean remark below.
+
+\begin{theorem}\label{thm:compression}
+Let \(1 \le j \le m\) and let \((\Upsilon_\vartheta)\) be a comparison operator.
+\textup{(a)} The number \(\det(u_{\vartheta,j}^*u_{\vartheta,j})\,D_\vartheta\,(\Hc_j(\vartheta)/\Hc_j(1))^{-d_T}\) is nonzero and does not depend on the twist \(\vartheta\).
+\textup{(b)} For every twist \(\vartheta\), every \(\iota \mid \ell\) with \(\ell\) prime to \(\Nm Q_\vartheta\), and every real \(\cl(\ell)\) that clears the projection at \((\iota,\vartheta,j)\), \(\lvert\iota(D_\vartheta)\rvert_\ell \le e^{d_T r\,\cl(\ell)}\).
+\textup{(c)} \(\lvert\sigma(D_1)\rvert \le e^{3d_T fmb\log^2 b}\) for every \(\sigma \in \Aut(\C)\).
+\end{theorem}
+
+In particular every \(D_\vartheta\) is nonzero.  For an \(m\)-fold twist \(\vartheta\) the power \(\vartheta^j\) is a twist (Section~\ref{ob-sec:twists}), and \(1^j = 1\).
+
+\begin{problem}\label{pr:quotient}
+For every comparison operator and every \(m\)-fold twist \(\vartheta\),
+\[
+  \frac{Z_j(1)}{Z_j(\vartheta)} = \frac{D_{\vartheta^j}}{D_1}\Bigl(\frac{\Hc_j(\vartheta^j)}{\Hc_j(1)}\Bigr)^{-d_T} .
+\]
+\end{problem}
+
+Chapter~\ref{col-chap} combines Problem~\ref{pr:quotient} and Theorem~\ref{thm:compression}(b), (c) with the comparison operator of Theorem~\ref{col-thm:operator} and the height bound of Problem~\ref{col-pr:hecke-height} to prove Theorem~\ref{col-thm:main}.  Taken as given here: the injectivity of the single lifts, \(\dim H_g(W_j) = d_T\), the inclusion of the lifts in \(\im e_0 \cap \ker\Hb_w\), and the projection estimate.
+
+\begin{leanremark}
+\raggedright In the Lean proof \cite{GL}, in \tl{grh/src/New/OneLift/LiftVolumeHeight.lean} unless said otherwise: Theorem~\ref{thm:compression} is \tl{Data.IsComparisonOperator.exists\_normDet\_sq\_mul\_det\_eq} (a), \tl{.norm\_padic\_det\_liftCompression\_le} (b) and \tl{.norm\_map\_det\_liftCompression\_le} (c), stated with \(\dim H_g(W_j)\) in place of \(d_T\) and with a named constant in~(a); comparison operators are \tl{Data.IsComparisonOperator}; \(\Hc_j\) is \tl{Data.heckeValueProd} (\tl{New/OneLift/ComparisonOperator/ThreeExchanges.lean}); orthogonality to the false lifts is \tl{DescentPair.IsOrthogonalToFalseLifts} (\tl{New/OneLift/TestedForms.lean}); clearing is \tl{Data.ClearsProjection} (\tl{New/Determinant/Twist/FitTwists.lean}); the inclusion of the lifts in \(\im e_0 \cap \ker \Hb_w\) is \tl{Data.range\_goodLift\_le\_range\_inf\_ker}, the projection estimate is \tl{Data.normSqAt\_starProjection\_range\_goodLift\_le}, and the scaling conclusion of Problem~\ref{pr:scale} is the specialization of \tl{DescentPair.exists\_smul\_mem\_integralForms\_maximal} to the datum of lift \(j\), whose proof contains the gauge calculation.
+\end{leanremark}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:compress}}
+\begin{description}
+\item[\ref{pr:compression}] Since \(u^*\) kills \(R^\perp\), \(u^*Gu = u^*\pr_R G u\).  Write \(u\) as an isomorphism \(A \to R\) followed by the inclusion.
+\item[\ref{pr:comparison}] Problem~\ref{pr:compression} with \(G = \Upsilon_\vartheta\); the hypothesis says \(u_\vartheta^*\Upsilon_\vartheta u_\vartheta = \rho_\vartheta \Upsilon^\circ\).
+\item[\ref{pr:rank-one}] \(g_\vartheta^*v = \langle w_\vartheta, v\rangle\).
+\item[\ref{pr:toy-Z}] Problem~\ref{pr:rank-one}.
+\item[\ref{pr:eigen}] Factor the characteristic polynomial over \(\C\).
+\end{description}
+
+\subsection*{\S\ref{sec:toy}}
+\begin{description}
+\item[\ref{pr:false}] \(X = R \oplus F\), orthogonally.
+\item[\ref{pr:perp}] Take orthogonal complements in the definition of \(F\).
+\item[\ref{pr:conj}] \(\pr_X = \mathsf B(\mathsf B^*\mathsf B)^{-1}\mathsf B^*\) for a matrix \(\mathsf B\) whose columns form a basis of \(X\) and have coordinates in \(K_0\); on \(K_0\), complex conjugation commutes with \(\sigma\).
+\item[\ref{pr:sigma}] At \(\sigma = 1\), \(\ker\Hb \subseteq (\im\Hb)^\perp = \ker\Hb^*\).  Decompose \(y\) by Problem~\ref{pr:perp}, and use \(R \subseteq \im e \cap \ker \Hb\).
+\item[\ref{pr:arch}] Take an eigenvector \(z\) of \(\pr_R \Upsilon|_R\) and apply the hypothesis to \(\Upsilon z\); then Problem~\ref{pr:eigen}.
+\item[\ref{pr:padic}] Scale an eigenvector of \(\Lambda\pr_R \Upsilon|_R\) to be integral at \(\iota\) with a coordinate of absolute value \(1\).
+\item[\ref{pr:toy-cong}] Problem~\ref{cg-pr:symmetry}: the index of \((\Z^3 \cap X) \oplus \Z(1,1,1)\) in \(\Z^3\); then Problems~\ref{pr:false} and~\ref{cg-pr:denominator}.  For \(R_1\), write \(\pr_{R_1}y\) for \(y \perp v_\vartheta\).
+\item[\ref{pr:toy-delta}] \(\lVert w_1\rVert^2 = 5\), and \(w_1\) has rational coordinates; for equality, Problem~\ref{pr:toy-Z}.
+\end{description}
+
+\subsection*{\S\ref{sec:general}}
+\begin{description}
+\item[\ref{pr:scale}] Use the transformation law at \(g_0 s g_1\), whose level character has finite order, and compare the coordinates at all the representatives.
+\item[\ref{pr:quotient}] Theorem~\ref{thm:compression}(a) at \(\vartheta^j\) and at \(1\).
+\end{description}
+
+{\small
+\begin{thebibliography}{Ra82}
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[Ra82]{Ra82} S.~Rallis, \emph{Langlands' functoriality and the Weil representation}, Amer. J. Math. \textbf{104} (1982), 469--515.
+\end{thebibliography}
+}
+
+\end{document}
