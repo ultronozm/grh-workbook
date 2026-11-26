@@ -956,7 +956,14 @@ def render_page(sheets, parts, svg, g):
            ]
     out += ["", "* Sample seminar plans", "",
             "These are suggestions drafted by AI agents and have not been"
-            " tested in a seminar.  The sessions are 90 minutes.", ""]
+            " tested in a seminar.  The sessions are 90 minutes.  Both plans"
+            " cover the ingredients of the proof in their simplest settings"
+            " (Parts I-V) and end with the statements of Theorems A, B and C"
+            " and the deduction of the main inequality; neither covers the"
+            " proofs of Theorems A, B and C (Parts VII-IX).  Most sessions"
+            " contain far more problems than can be presented in 90 minutes,"
+            " so a presenter would choose a few and leave the rest as"
+            " reading.", ""]
     for p in data["plans"]:
         out.append(f"** {p['title']}")
         out.append("")
