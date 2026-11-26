@@ -1,10 +1,17 @@
 # Status of the workbook
 
-**Status, 26 November 2026.**  The collection is being extended to cover the complete proof and is updated continuously.  Parts I–V and the side series are stable apart from small corrections.  The proof itself now occupies four Parts.  Part VI fixes the data and all the objects, and deduces the theorem from Theorems A, B and C.  Part VIII now proves Theorem A from its inputs, each developed in a sheet, except two bounds (the projection to good forms; the dimension of the ramified forms) and the theorem on elementary divisors used at exceptional primes, which are stated from the Lean code.  Part IX develops the determinant of a chain and the cost of one lift, up to the auxiliary forms and one operator identity stated from the Lean code; its last two inputs, the denominators of projections and the twisting theorem, are stated with all their definitions and not proved here, apart from the local loss and a lemma on roots of unity.  The second moment behind Theorem B (Part VII) is stated from the Lean code and is being developed.
+**Status, 26 November 2026.**  The collection is being extended to cover the complete proof and is updated continuously.  Parts I–V and the side series are stable apart from small corrections.  The proof itself now occupies four Parts.  Part VI fixes the data and all the objects, and deduces the theorem from Theorems A, B and C.  Part VIII now proves Theorem A from its inputs, each developed in a sheet, except two bounds (the projection to good forms; the dimension of the ramified forms) and the theorem on elementary divisors used at exceptional primes, which are stated from the Lean code.  Part IX develops the determinant of a chain and the cost of one lift, up to the auxiliary forms and one operator identity stated from the Lean code; its last two inputs, the denominators of projections and the twisting theorem, are stated with all their definitions and not proved here, apart from the local loss and a lemma on roots of unity.  In Part VII the first half of the second moment is developed (three sheets: unfolding, the terms that survive, good forms and the count); the main term is being developed.
 
 The site is <https://ultronozm.github.io/grh-workbook/>.  Each update appends an entry below, newest first.
 
 ## What changed
+
+### 26 November 2026: batch 6, the second moment (first half); the whole collection as one PDF
+
+- **Three new sheets in Part VII:** *Unfolding twice: Gram operators as sums over rational points*, *Which terms survive: characters, minors and the gain at the level*, *Good forms and the count of the target*.
+- ***Theorem B: enough forms*** now defines the Poincaré maps, the scaled Poincaré map and the Bessel representation, and says what an admissible filling is.  It keeps the second moment as one statement and takes the near isometry of the good forms and the count of the target from the new sheets.  *The seesaw identity* now uses its Poincaré maps.
+- **One file.**  The whole collection is also available as one PDF, in the order of the index, with a contents page and bookmarks.  The link is on the index, below this paragraph.  The file is rebuilt with every update.
+- **Checks:** each new sheet passed a fidelity audit and a solver test; the batch was read as a whole, with an extra fidelity pass.
 
 ### 26 November 2026: batch 5, Theorem A closed; the statement-level steps; the flowchart
 
