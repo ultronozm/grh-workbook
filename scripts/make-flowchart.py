@@ -36,6 +36,7 @@ build and export flowchart.org to flowchart.html.
 """
 import argparse
 import html
+from pathlib import Path
 import json
 import os
 import re
@@ -647,6 +648,10 @@ STYLE = """
 .fc .n text .num { font-weight: 700; }
 .fc .n.asm text { font-size: 13px; }
 .fc .n.asm text .sub { font-size: 11px; font-style: italic; fill: #5b2a20; }
+@media screen {
+  .fc .n[data-completion="done"] rect { fill: #e0eee4; }
+  .fc .n[data-completion="partial"] rect { stroke: #648c79; stroke-width: 1.6; }
+}
 .fc a.n:hover rect, .fc a.n:focus rect { stroke: #1d4ed8; stroke-width: 2.2; }
 .fc .e { fill: none; stroke-linejoin: round; }
 .fc .e.dep { stroke: #4b5563; stroke-width: 1.1; }
@@ -703,6 +708,16 @@ def svg_path(pts, r=4):
         d.append(f"L{p1[0]:.1f},{p1[1]:.1f} Q{xb:.1f},{yb:.1f} {p2[0]:.1f},{p2[1]:.1f}")
     d.append(f"L{pts[-1][0]:.1f},{pts[-1][1]:.1f}")
     return " ".join(d)
+
+
+def sheet_progress(page):
+    try:
+        source = Path(page).read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return ""
+    # Same escaped lists of problem IDs (including aliases) as on the index.
+    ids = re.findall(r' data-progress-ids="([^"]+)"', source)
+    return f' data-flowchart-progress="[{",".join(ids)}]"' if ids else ""
 
 
 def render_svg(sheets, L):
@@ -771,7 +786,7 @@ def render_svg(sheets, L):
             spans += [f'<tspan class="sub" x="{tx:.1f}" dy="{lh}">{esc(t)}</tspan>'
                       for t in L["sub"]]
         out.append(f'<a class="{cls}" data-id="{s.id}" href="{esc(s.html)}" '
-                   f'xlink:href="{esc(s.html)}"><title>{esc(s.num)}. {esc(s.plain)}</title>'
+                   f'xlink:href="{esc(s.html)}"{sheet_progress(s.html)}><title>{esc(s.num)}. {esc(s.plain)}</title>'
                    f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" rx="4"/>'
                    f'<text x="{tx:.1f}" y="{ty:.1f}"{anchor}>{"".join(spans)}</text></a>')
     out.append(f"<script>//<![CDATA[{SCRIPT}//]]></script>")
@@ -908,6 +923,7 @@ def render_page(sheets, parts, svg, g):
            "#+OPTIONS: toc:nil num:nil author:nil date:nil",
            # The chart is drawn 1200 units wide; let it use the window
            # rather than the text column.
+           '#+HTML_HEAD: <script src="progress.js" defer></script>',
            "#+HTML_HEAD: <style>figure.fc-fig{position:relative;left:50%;"
            "transform:translateX(-50%);width:min(1200px,calc(100vw - 32px));"
            "margin:1em 0} figure.fc-fig svg{display:block;width:100%}</style>",

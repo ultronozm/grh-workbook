@@ -91,6 +91,19 @@
     addCount(link, JSON.parse(link.dataset.sheetProgress), true);
   }
 
+  for (const node of document.querySelectorAll("[data-flowchart-progress]")) {
+    const problems = JSON.parse(node.dataset.flowchartProgress);
+    const title = node.querySelector("title");
+    const label = title.textContent;
+    renderers.push(isDone => {
+      const done = problems.filter(isDone).length;
+      const total = problems.length;
+      if (done) node.dataset.completion = done === total ? "done" : "partial";
+      else delete node.dataset.completion;
+      title.textContent = done ? `${label} (${done} of ${total} done)` : label;
+    });
+  }
+
   const template = document.querySelector("#workbook-progress");
   const lastVisitKey = "grh-workbook:last-visit";
   if (template) {
