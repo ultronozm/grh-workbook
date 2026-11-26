@@ -505,7 +505,8 @@ def site(directory):
             '<title>{title}</title>\n{extra}'
             '<link rel="stylesheet" href="{css}">\n'
             '<script>window.MathJax = {{tex: {{inlineMath: [["$","$"],["\\\\(","\\\\)"]]}}}};</script>\n'
-            '<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"></script>\n'
+            '<script {loading} src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"></script>\n'
+            '{assets}'
             '</head>\n<body>\n')
 
     def describe(e):
@@ -543,14 +544,17 @@ def site(directory):
             rows.append(e)
         with open(path, "w", encoding="utf-8") as f:
             f.write(head.format(title=f"Tag {e.tag}", extra=extra,
-                                css="../tex.css"))
+                                css="../tex.css", loading="async", assets=""))
             f.write(body + '<p><a href="../tags.html">All tags</a></p>\n'
                     "</body>\n</html>\n")
 
     def chap_key(c):
         return (0, int(c), "") if c.isdigit() else (1, 0, c)
 
-    out = [head.format(title="Tags", extra="", css="tex.css"),
+    previews = ('<link rel="stylesheet" href="reference-preview.css">\n'
+                '<script src="reference-preview.js" defer></script>\n')
+    out = [head.format(title="Tags", extra="", css="tex.css",
+                       loading="defer", assets=previews),
            '<div class="my-links-container"><a href="." class="my-link">home</a></div>\n'
            '<h1 class="title">Tags</h1>\n'
            "<p>Chapter, section and problem numbers change when chapters or "

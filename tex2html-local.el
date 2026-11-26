@@ -318,6 +318,17 @@ labels with retired tags do not get an alias."
       (insert "<link rel=\"stylesheet\" href=\"progress.css\">\n"
               "<script src=\"progress.js\" defer></script>\n"))))
 
+(defun tex2html-local-add-reference-previews (auxfile)
+  "Add reference preview assets and the chapter number for AUXFILE."
+  (when-let* ((number (gethash "chap" (label-number-hash-table auxfile))))
+    (goto-char (point-min))
+    (search-forward "</head>")
+    (goto-char (match-beginning 0))
+    (insert "<meta name=\"workbook-chapter\" content=\""
+            (xml-escape-string number) "\">\n"
+            "<link rel=\"stylesheet\" href=\"reference-preview.css\">\n"
+            "<script src=\"reference-preview.js\" defer></script>\n")))
+
 (defun tex2html-local-index-progress (item _backend _info)
   "Attach the built sheet's IDs to the chapter link in Org list ITEM."
   (when (string-match
@@ -350,6 +361,7 @@ labels with retired tags do not get an alias."
 ;; After the table of contents, which copies the headings' text.
 (add-hook 'tex2html-postprocess-html-functions #'tex2html-local-add-tags t)
 (add-hook 'tex2html-postprocess-html-functions #'tex2html-local-add-progress t)
+(add-hook 'tex2html-postprocess-html-functions #'tex2html-local-add-reference-previews t)
 
 (provide 'tex2html-local)
 ;;; tex2html-local.el ends here
