@@ -56,7 +56,7 @@ Let \(D = d/dx\).  Then
 Hence the least positive integer \(c\) with \(c \, D(\mathrm{Int}_n) \subseteq \mathrm{Int}\) is \(\lcm(1, 2, \dots, n)\).
 \end{problem}
 
-The logarithm of this denominator is \(\sum_{p^a \le n} \log p\), of the size of \(n\).  Alpöge's note records a ``need for division'' \cite[item~14]{Alp}.  In Alp\"oge's proof the denominator that matters is that of the orthogonal projection of integral forms onto a space of theta lifts.  Chapter~\ref{cg-chap}, \emph{Congruence modules}, models the denominator of a projection of a whole lattice by a congruence module; for the test forms of the rewritten proof one needs an operator of controlled determinant that clears the projection.
+The logarithm of this denominator is \(\sum_{p^a \le n} \log p\), of the size of \(n\).  Alpöge's note records a ``need for division'' \cite[item~14]{Alp}.  Chapter~\ref{cg-chap}, \emph{Congruence modules}, models the denominator of a projection of a whole lattice by a congruence module.  For the orthogonal projection onto a space of lifts, the rewritten Lean proof requires an operator of controlled determinant on that space which makes the projections of suitable integral forms integral.
 
 An integral structure can be built one prime at a time.  For a lattice \(L \subset \Q^r\) and a prime \(p\), write \(L_p := L \otimes \Z_p \subset \Q_p^r\).
 
@@ -80,7 +80,7 @@ Suppose that \(L\) and \(M\) have the same rank.  Then \(\operatorname{covol}(M 
 where \(\det T\) is taken in orthonormal bases of \(L \otimes \R\) and \(M \otimes \R\).
 \end{problem}
 
-So a denominator costs \(\log\lvert(M + T(L))/M\rvert\), a sum of local terms by Problem~\ref{pr:length}.  If several maps \(T_1, \dots, T_k\) serve equally well, for instance because they have the same period, one may choose at each prime the lattice \((M + T_j(L))_p\) of smallest index over \(M_p\), and Problem~\ref{pr:local-global} assembles the choices into one lattice \(M^*\).  A map carrying \(L\) into \(M^*\) must then be found separately; for the Stickelberger element below it is a combination of the twists.
+The logarithmic cost of a denominator is \(\log[(M+T(L)):M]\).  Suppose that several maps \(T_1,\ldots,T_k\) serve equally well, for instance because they have the same period.  How small an index can one obtain by choosing a lattice separately at each prime?  A map taking \(L\) into the resulting lattice must still be found.  The Stickelberger example below uses combinations of twists on individual character components.
 
 \begin{problem}\label{pr:gcd}
 Let \(M_j := M + T_j(L)\), and let \(M^*\) be the lattice with \(M^*_p = (M_j)_p\) for a \(j = j(p)\) that minimizes \(\len_{\Z_p}\bigl((M_j)_p/M_p\bigr)\).  Then \(M^* \supseteq M\) and
@@ -90,10 +90,10 @@ Let \(M_j := M + T_j(L)\), and let \(M^*\) be the lattice with \(M^*_p = (M_j)_p
 If \(M = \Z\) and \(M_j = D_j^{-1}\Z\) with positive integers \(D_j\), then \([M^* : M] = \gcd(D_1, \dots, D_k)\).  For \(D_j = 6, 10, 15\) each map alone costs at least \(\log 6\), and together they cost nothing.
 \end{problem}
 
-Alpöge's note glues its integral structures in this way, ``across Hecke characters for a `gcd' '' \cite[item~15]{Alp}.  What no twist removes is, at each prime, a finite module; the note speaks of Galois cohomology classes ``that we couldn't kill by twisting'' \cite[item~17]{Alp}; in Alp\"oge's proof these modules are bounded through Selmer groups of twists, and what remains, besides local terms, is a module of odd cocycles for positive exponents (of unramified homomorphisms, bounded by the whole class group, at exponent zero), bounded at every prime by one integer (Chapter~\ref{oc-chap}, \emph{Odd classes by Gauss sums}).  The minus part of the class group, which is what the Stickelberger element below sees, is the cyclotomic model of the odd classes.  The simplest instance, a rational element whose twists are integral and whose remainder is measured by a class group, is the Stickelberger element of \(\Q(\zeta_p)\).
+Alpöge's note describes gluing an integral structure across Hecke characters to obtain a gcd \cite[item~15]{Alp}; Problem~\ref{pr:gcd} gives a lattice model for this.  The note also mentions Galois cohomology classes ``that we couldn't kill by twisting'' \cite[item~17]{Alp}.  This chapter serves the denominator step of the rewritten Lean proof: there real numbers \(\gamma(\ell)\), one for each prime \(\ell\), bound the logarithms of the denominators at \(\ell\), and their sum over any finite set of primes is at most a fixed budget.  The error term at \(\ell\) contains \(t\) times the \(\ell\)-adic valuation of one integer, whose valuation bounds the lengths of the modules of Definition~\ref{tt-def:shaodd} at every prime (Chapter~\ref{oc-chap}, \emph{Odd classes by Gauss sums}).  In the cyclotomic example below, integral twists of the Stickelberger element annihilate the class group, and their eigenvalues on the odd characters illustrate the connection with class groups.
 
 \paragraph{In the Lean formalization.}
-In the rewritten Lean proof \cite{GL} the denominator of the projection is \texttt{ClearsProjection}, in \texttt{New/Determinant/Twist/FitTwists.lean} of the readable edition.  For a twist, an isomorphism \(\iota \colon \mathbb{C} \simeq \bar\Q_\ell\), the space \(Z\) of lifts to a definite space and a real \(\beta\), it asks for an operator \(\Lambda\) on \(Z\) with \(\lvert\iota(\det\Lambda)\rvert \ge e^{-r\beta\dim Z}\), where \(r\) is a rank of the proof, such that \(\Lambda(\mathrm{pr}_Z\,y)\) is integral at \(\iota\) for every form \(y\) integral at \(\iota\) and orthogonal to certain false lifts.  The sum over \(\ell\) of the numbers \(\beta\) must stay within a budget (\texttt{IsDenominatorBound}).  The odd classes are bounded by \texttt{New.exists\_length\_shaOdd\_le}, in \texttt{Lib/Cyclotomic/OddSha.lean}.
+Paths are relative to \texttt{grh/src/} of the rewritten Lean proof \cite{GL}.  The corresponding statement for the operator clearing the projection is \texttt{New.Data.ClearsProjection}, and for the budget it is \texttt{New.Data.IsDenominatorBound}, both in \texttt{New/Determinant/Twist/FitTwists.lean}.  The corresponding statement for the bound on lengths of the modules of Definition~\ref{tt-def:shaodd} is \texttt{New.exists\_length\_shaOdd\_le}, in \texttt{Lib/Cyclotomic/OddSha.lean}; the integer and the error term are \texttt{New.Selmer.oddClassBound} and \texttt{New.Selmer.denominatorError}, in \texttt{New/Congruences/FirstOrder/TraceRelations.lean}.
 
 \section{The Stickelberger element}\label{sec:stickelberger}
 
@@ -122,7 +122,7 @@ with the denominator \(p\).  We use Stickelberger's theorem as a black box \cite
 If \(\beta \in \Z[G]\) and \(\beta\theta \in \Z[G]\), then \(\beta\theta\) annihilates \(\Cl(F)\).
 \end{theorem}
 
-The integral multiples of \(\theta\) are its twists.
+We shall use the following integral multiples of \(\theta\), indexed by integers \(c\) prime to \(p\).
 
 \begin{problem}\label{pr:c-twist}
 For \(c\) prime to \(p\), \((c - \sigma_c)\theta = \sum_{b=1}^{p-1} \lfloor cb/p \rfloor \, \sigma_b^{-1}\).  In particular \((c - \sigma_c)\theta \in \Z[G]\).
@@ -134,13 +134,13 @@ For a nontrivial Dirichlet character \(\chi\) modulo \(p\) let \(B_{1,\chi} := \
 \(\varepsilon_i \theta = B_{1,\omega^{-i}} \varepsilon_i\) for \(i \not\equiv 0\).  If \(i \not\equiv 0\) is even, then \(B_{1,\omega^{-i}} = 0\).
 \end{problem}
 
-So \(\theta\) says nothing about \(A^+\).  On \(A^{(i)}\) the twist \((c - \sigma_c)\theta\) acts as \((c - \omega(c)^i)B_{1,\omega^{-i}}\), and the gluing of Problem~\ref{pr:gcd} asks for the ideal generated by the factors \(c - \omega(c)^i\).
+So \(\theta\) says nothing about \(A^+\).  For \(i\not\equiv0\pmod{p-1}\), the twist \((c - \sigma_c)\theta\) acts on \(A^{(i)}\) as \((c - \omega(c)^i)B_{1,\omega^{-i}}\), and the gluing of Problem~\ref{pr:gcd} asks for the ideal generated by the factors \(c - \omega(c)^i\).
 
 \begin{problem}\label{pr:gcd-c}
 The ideal of \(\Z_p\) generated by the numbers \(c - \omega(c)^i\), \(c\) prime to \(p\), is \(\Z_p\) if \(i \not\equiv 1\) and \(p\Z_p\) if \(i \equiv 1\).  Moreover \(v_p(B_{1,\omega^{-1}}) = -1\).
 \end{problem}
 
-Thus on each \(A^{(i)}\) with \(i \not\equiv 0, 1\) the twists together act as \(B_{1,\omega^{-i}} \in \Z_p\): the gluing recovers the eigenvalue of \(\theta\) itself.  On \(A^{(1)}\) every factor \(c - \omega(c)\) is divisible by \(p\) and cancels the denominator of \(B_{1,\omega^{-1}}\), so the twists generate \(\Z_p\) and not \(p^{-1}\Z_p\): the gluing does not recover the eigenvalue of \(\theta\).  This \(p\) is the order of \(\mu_p\), on which \(G\) acts by \(\omega\).  (The group \(A^{(1)}\) vanishes for another reason \cite[Prop.~6.16]{Wa}.)  By Kummer's congruences \cite[Ch.~5]{Wa}, if \(i\) is odd and \(3 \le i \le p-2\), then
+For \(i\not\equiv0,1\pmod{p-1}\), the eigenvalues of the integral twists generate \(B_{1,\omega^{-i}}\Z_p\), so a \(\Z_p\)-linear combination recovers the eigenvalue of \(\theta\).  For \(i\equiv1\pmod{p-1}\) the twist eigenvalues generate \(\Z_p\), whereas \(B_{1,\omega^{-1}}\) has denominator \(p\).  This \(p\) is the order of \(\mu_p\), on which \(G\) acts by \(\omega\).  In particular \(A^{(1)}=0\) \cite[Prop.~6.16]{Wa}.  By Kummer's congruences \cite[Ch.~5]{Wa}, if \(i\) is odd and \(3 \le i \le p-2\), then
 \begin{equation}\label{eq:kummer}
   B_{1,\omega^{-i}} \equiv \frac{B_{p-i}}{p-i} \pmod p .
 \end{equation}
@@ -163,13 +163,13 @@ Let \(i\) be odd with \(3 \le i \le p-2\).  Then \(A^{(i)} \ne 0\) if and only i
 For \(p < 100\), the pairs \((p, k)\) with \(k\) even, \(2 \le k \le p-3\) and \(p \mid B_k\) are \((37, 32)\), \((59, 44)\) and \((67, 58)\).  Hence for \(p < 100\) the group \(A^-\) is nonzero only for \(p = 37, 59, 67\), and then exactly one odd eigenspace is nonzero, \(A^{(5)}\), \(A^{(15)}\) and \(A^{(9)}\) respectively.
 \end{problem}
 
-The plus part \(A^+\) is not seen by \(\theta\) (Problem~\ref{pr:eigen-theta}).  Its order is the \(p\)-part of an index of cyclotomic units in the units of \(F^+\) \cite[Thm.~8.2]{Wa}.  Vandiver's conjecture, that \(A^+ = 0\) for every \(p\), has not been proved; it has been verified for \(p < 2^{31}\) \cite{HHO}.  The next chapter meets the same division between minus and plus parts in Galois cohomology; the positive-twist bound of the rewritten proof uses the oddness condition of Definition~\ref{tt-def:shaodd}.
+The plus part \(A^+\) is not seen by \(\theta\) (Problem~\ref{pr:eigen-theta}).  Its order is the \(p\)-part of an index of cyclotomic units in the units of \(F^+\) \cite[Thm.~8.2]{Wa}.  Vandiver's conjecture, that \(A^+ = 0\) for every \(p\), has not been proved; it has been verified for \(p < 2^{31}\) \cite{HHO}.  The next chapter meets the same division between minus and plus parts in Galois cohomology; for \(e>0\) the rewritten Lean proof uses the condition \(z(cgc)=-z(g)\) of Definition~\ref{tt-def:shaodd}, where \(c\) is complex conjugation.
 
 \section*{Hints}
 
 \subsection*{\S\ref{sec:denominators}}
 \begin{description}
-\item[\ref{pr:intval}] Use the difference operator \(\Delta f(x) := f(x+1) - f(x)\) and \(\Delta \binom{x}{k} = \binom{x}{k-1}\).
+\item[\ref{pr:intval}] Use the difference operator \(\Delta f(x):=f(x+1)-f(x)\).  It kills constants and satisfies \(\Delta\binom{x}{k}=\binom{x}{k-1}\) for \(k\ge1\).
 \item[\ref{pr:derivative}] Formally \(D = \log(1 + \Delta)\).  For the sharpness, use the uniqueness in Problem~\ref{pr:intval}.
 \item[\ref{pr:local-global}] Choose an integer \(N\) with \(N \Z_p^r \subseteq \Lambda_p \subseteq N^{-1}\Z_p^r\) for all \(p\), and work in \(N^{-1}\Z^r / N\Z^r\).
 \item[\ref{pr:length}] The \(p\)-primary part of \(T\) is \(T \otimes \Z_p\).
