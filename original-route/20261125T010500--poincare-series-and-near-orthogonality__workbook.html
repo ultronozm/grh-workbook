@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="robots" content="noindex">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-25" />
+  <title>Poincaré series and near orthogonality</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","R":"\\mathbb{R}","C":"\\mathbb{C}","HH":"\\mathbb{H}","ii":"\\mathrm{i}","Ac":"\\mathcal{A}","Hc":"\\mathcal{H}","Pt":"\\widetilde{P}","vol":"\\operatorname{vol}"}}};</script>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<!-- snapshot-banner --><div style="border:1px solid #c9a227;background:#fff8e1;color:#3d3d3d;padding:.6em .9em;margin:.5em 0 1em 0;font:15px/1.4 system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;border-radius:6px"><strong>Snapshot of 25 November 2026.</strong> This is the collection as it stood before it was reorganized around the rewritten Lean proof. It is not maintained. Current version: <a href="../">ultronozm.github.io/grh-workbook</a>.</div>
+
+    <div class="my-links-container">
+2026-11-25 22:40:02
+      <a href="https://github.com/ultronozm/grh-workbook/blob/original-route/20261125T010500--poincare-series-and-near-orthogonality__workbook.tex" class="my-link">tex</a>
+      <a href="20261125T010500--poincare-series-and-near-orthogonality__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/original-route/20261125T010500--poincare-series-and-near-orthogonality__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Poincaré series and near orthogonality <a class="stable-tag" href="tag/22AY.html" title="Stable tag: cite as Tag 22AY">Tag 22AY</a></h1>
+<p class="date">November 25, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:poincare" id="toc-sec:poincare">§11.1. Poincaré series</a></li>
+<li><a href="#sec:petersson" id="toc-sec:petersson">§11.2. Petersson’s formula</a></li>
+<li><a href="#sec:near" id="toc-sec:near">§11.3. Near orthogonality</a></li>
+<li><a href="#sec:dim" id="toc-sec:dim">§11.4. The dimension as formal degree times covolume</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secpoincare" id="toc-secpoincare">§11.1</a></li>
+<li><a href="#secpetersson" id="toc-secpetersson">§11.2</a></li>
+<li><a href="#secnear" id="toc-secnear">§11.3</a></li>
+<li><a href="#secdim" id="toc-secdim">§11.4</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Modular forms for <span
+class="math inline">\(\mathrm{SL}_2(\mathbb{Z})\)</span>: <span
+class="math inline">\(q\)</span>-expansions, the cusp form <span
+class="math inline">\(\Delta\)</span> and the dimension formula <span
+class="citation" data-cites="SeA">[<a href="#ref-SeA">SeA</a>, Ch. VII,
+§3]</span>. The residue theorem and the mean value property of
+holomorphic functions. The power series <span
+class="math inline">\(J_\nu(x) = \sum_{j \ge 0} (-1)^j (x/2)^{\nu +
+2j}/(j!\,\Gamma(\nu + j + 1))\)</span>. Gershgorin’s theorem on the
+eigenvalues of a matrix. From Chapter <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#chap"
+data-reference-type="ref" data-reference="rl-chap">10</a>,
+<em>The rank lemma and the zero estimate</em>, Section <a
+href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#sec:gram" data-reference-type="ref"
+data-reference="rl-sec:gram">10.1</a> and the bound <a
+href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#eq:pair" data-reference-type="eqref"
+data-reference="rl-eq:pair">(10.1.1)</a>, and Theorem <a
+href="20261125T000100--slope-inequality-in-the-mean__workbook.html#thm:rank" data-reference-type="ref"
+data-reference="mn-thm:rank">7.3.1</a> of Chapter <a
+href="20261125T000100--slope-inequality-in-the-mean__workbook.html#chap" data-reference-type="ref"
+data-reference="mn-chap">7</a>, for the closing paragraphs
+only.</p>
+<p>Chapter <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#chap" data-reference-type="ref"
+data-reference="rl-chap">10</a> asked for a family of vectors in
+a space of automorphic forms whose Gram matrix is close to a scalar.
+Equidistribution of CM points gives such families only with a rate that
+amounts to a subconvex bound. There is a cheaper source. If the weight
+is large, Poincaré series of small index are almost orthogonal, and
+Petersson’s formula proves it with nothing more than a bound for a
+Bessel function. This chapter works it out on <span
+class="math inline">\(\mathrm{SL}_2(\mathbb{Z})\)</span>, where the
+vectors are holomorphic Poincaré series and their inner products are
+Fourier coefficients.</p>
+<p>Throughout, <span class="math inline">\(k \ge 4\)</span> is even,
+<span class="math inline">\(\Gamma :=
+\mathrm{SL}_2(\mathbb{Z})\)</span>, <span
+class="math inline">\(\Gamma_\infty := \{\pm\begin{pmatrix}1 &amp; n\\ 0
+&amp; 1\end{pmatrix}\}\)</span>, <span class="math inline">\(j(\gamma,z)
+:= cz + d\)</span> for <span class="math inline">\(\gamma =
+\begin{pmatrix}a &amp; b\\ c &amp; d\end{pmatrix}\)</span>, <span
+class="math inline">\(e(z) := e^{2\pi\mathrm{i}z}\)</span>, and <span
+class="math inline">\(d\nu := y^{-2}\,dx\,dy\)</span> on the upper
+half-plane <span class="math inline">\(\mathbb{H}\)</span>.</p>
+<h1 id="sec:poincare">§11.1. Poincaré series <a class="stable-tag" href="tag/22AZ.html" title="Stable tag: cite as Tag 22AZ">Tag 22AZ</a></h1>
+<p>Let <span class="math inline">\(S_k\)</span> be the space of cusp
+forms of weight <span class="math inline">\(k\)</span> for <span
+class="math inline">\(\Gamma\)</span>, with the Petersson inner product
+<span class="math inline">\(\langle f, g\rangle :=
+\int_{\Gamma\backslash\mathbb{H}}
+f(z)\overline{g(z)}\,y^k\,d\nu(z)\)</span>. For <span
+class="math inline">\(f \in S_k\)</span> write <span
+class="math inline">\(f(z) = \sum_{n \ge 1} a_f(n)\,e(nz)\)</span>. For
+<span class="math inline">\(m \ge 1\)</span> the <em>Poincaré
+series</em> <span class="math display">\[P_m(z) := \sum_{\gamma \in
+\Gamma_\infty\backslash\Gamma} j(\gamma,z)^{-k}\, e(m\gamma z)\]</span>
+converges absolutely and uniformly on compact sets, and <span
+class="math inline">\(P_m \in S_k\)</span> <span class="citation"
+data-cites="Iw">[<a href="#ref-Iw">Iw</a>]</span>.</p>
+<div id="pr:unfold" class="problem"><a class="stable-tag" href="tag/22B2.html" title="Stable tag: cite as Tag 22B2">Tag 22B2</a>
+<p><strong>Problem 11.1.1</strong>. For <span class="math inline">\(f \in
+S_k\)</span> and <span class="math inline">\(m \ge 1\)</span>, <span
+class="math display">\[\langle f, P_m\rangle = \frac{\Gamma(k-1)}{(4\pi
+m)^{k-1}}\, a_f(m) .\]</span></p>
+</div>
+<div id="pr:span" class="problem"><a class="stable-tag" href="tag/22B3.html" title="Stable tag: cite as Tag 22B3">Tag 22B3</a>
+<p><strong>Problem 11.1.2</strong>. The series <span
+class="math inline">\(P_m\)</span>, <span class="math inline">\(m \ge
+1\)</span>, span <span class="math inline">\(S_k\)</span>.</p>
+</div>
+<p>So <span class="math inline">\(P_m = 0\)</span> for <span
+class="math inline">\(k \in \{4, 6, 8, 10, 14\}\)</span>, where <span
+class="math inline">\(S_k = 0\)</span>, although no term of the series
+vanishes. The first nonzero case is <span class="math inline">\(k =
+12\)</span>, where <span class="math inline">\(S_{12} =
+\mathbb{C}\Delta\)</span> with <span class="math inline">\(\Delta =
+\sum_{n \ge 1}\tau(n)\,e(nz)\)</span>.</p>
+<div id="pr:k12" class="problem"><a class="stable-tag" href="tag/22B4.html" title="Stable tag: cite as Tag 22B4">Tag 22B4</a>
+<p><strong>Problem 11.1.3</strong>. For <span class="math inline">\(k =
+12\)</span>, <span class="math display">\[P_m =
+\frac{10!\;\tau(m)}{(4\pi m)^{11}\,\lVert\Delta\rVert^2}\,\Delta
+.\]</span> In particular <span class="math inline">\(P_1\)</span> and
+<span class="math inline">\(P_2\)</span> are proportional.</p>
+</div>
+<p>So distinct Poincaré series need not be independent. Petersson’s
+formula, in the next section, measures how far they are from
+orthogonal.</p>
+<h1 id="sec:petersson">§11.2. Petersson’s formula <a class="stable-tag" href="tag/22B5.html" title="Stable tag: cite as Tag 22B5">Tag 22B5</a></h1>
+<p>What is the Fourier expansion of <span
+class="math inline">\(P_m\)</span>? For integers <span
+class="math inline">\(m, n\)</span> and <span class="math inline">\(c
+\ge 1\)</span> let <span class="math display">\[S(m,n;c) :=
+\sum_{\substack{d \bmod c\\ (d,c) = 1}} e\Bigl(\frac{m\bar d +
+nd}{c}\Bigr), \qquad d\bar d \equiv 1 \pmod c,\]</span> be the
+Kloosterman sum. It is real, and <span class="math inline">\(S(m,n;c) =
+S(n,m;c)\)</span>.</p>
+<div id="pr:cosets" class="problem"><a class="stable-tag" href="tag/22B6.html" title="Stable tag: cite as Tag 22B6">Tag 22B6</a>
+<p><strong>Problem 11.2.1</strong>. The map <span
+class="math inline">\(\gamma \mapsto (c,d)\)</span> induces a bijection
+from <span class="math inline">\(\Gamma_\infty\backslash\Gamma\)</span>
+onto the set of pairs of coprime integers modulo <span
+class="math inline">\(\pm1\)</span>. If <span class="math inline">\(c
+\ne 0\)</span>, then <span class="math inline">\(\gamma z = \frac ac -
+\frac{1}{c(cz+d)}\)</span>.</p>
+</div>
+<div id="pr:lipschitz" class="problem"><a class="stable-tag" href="tag/22B7.html" title="Stable tag: cite as Tag 22B7">Tag 22B7</a>
+<p><strong>Problem 11.2.2</strong>. Let <span class="math inline">\(\ell \ge
+2\)</span> be an integer, <span class="math inline">\(\beta \in
+\mathbb{R}\)</span> and <span class="math inline">\(y &gt; 0\)</span>.
+Then <span class="math display">\[\int_{\mathrm{i}y -
+\infty}^{\mathrm{i}y + \infty} z^{-\ell}\, e(-\beta z)\, dz =
+  \begin{cases} (-2\pi\mathrm{i})^\ell\, \beta^{\ell-1}/(\ell-1)! &amp;
+\beta &gt; 0,\\ 0 &amp; \beta \le 0. \end{cases}\]</span></p>
+</div>
+<div id="pr:bessel-int" class="problem"><a class="stable-tag" href="tag/22B8.html" title="Stable tag: cite as Tag 22B8">Tag 22B8</a>
+<p><strong>Problem 11.2.3</strong>. Let <span class="math inline">\(\alpha
+&gt; 0\)</span>, <span class="math inline">\(\beta \in
+\mathbb{R}\)</span> and <span class="math inline">\(y &gt; 0\)</span>.
+Then <span class="math inline">\(\int_{\mathrm{i}y -
+\infty}^{\mathrm{i}y + \infty} z^{-k}\, e(-\alpha/z - \beta z)\,
+dz\)</span> vanishes for <span class="math inline">\(\beta \le
+0\)</span>, and for <span class="math inline">\(\beta &gt; 0\)</span>
+equals <span class="math display">\[2\pi\mathrm{i}^{-k}
+\Bigl(\frac\beta\alpha\Bigr)^{(k-1)/2}
+J_{k-1}\bigl(4\pi\sqrt{\alpha\beta}\bigr) .\]</span></p>
+</div>
+<div id="pr:fourier" class="problem"><a class="stable-tag" href="tag/22B9.html" title="Stable tag: cite as Tag 22B9">Tag 22B9</a>
+<p><strong>Problem 11.2.4</strong>. <span class="math inline">\(P_m(z) =
+\sum_{n \ge 1} p_m(n)\, e(nz)\)</span>, where <span
+class="math display">\[p_m(n) = \delta(m,n) + 2\pi\mathrm{i}^{-k}
+\Bigl(\frac nm\Bigr)^{(k-1)/2} \sum_{c \ge 1} \frac{S(m,n;c)}{c}\,
+J_{k-1}\Bigl(\frac{4\pi\sqrt{mn}}{c}\Bigr) .\]</span></p>
+</div>
+<p>Problems <a href="#pr:unfold" data-reference-type="ref"
+data-reference="pr:unfold">11.1.1</a> and <a href="#pr:fourier"
+data-reference-type="ref" data-reference="pr:fourier">11.2.4</a> together
+give Petersson’s formula <span class="citation"
+data-cites="Pe">[<a href="#ref-Pe">Pe</a>]</span>, <span class="citation"
+data-cites="Iw">[<a href="#ref-Iw">Iw</a>]</span>, <span class="citation"
+data-cites="ILS">[<a href="#ref-ILS">ILS</a>]</span>. Let <span
+class="math display">\[T_k(m,n) := 2\pi\mathrm{i}^{-k} \sum_{c \ge 1}
+\frac{S(m,n;c)}{c}\, J_{k-1}\Bigl(\frac{4\pi\sqrt{mn}}{c}\Bigr)
+,\]</span> a real symmetric function of <span class="math inline">\(m, n
+\ge 1\)</span>.</p>
+<div id="thm:petersson" class="theorem"><a class="stable-tag" href="tag/22BA.html" title="Stable tag: cite as Tag 22BA">Tag 22BA</a>
+<p><strong>Theorem 11.2.1</strong> (Petersson). <em>For every orthonormal
+basis <span class="math inline">\((f_j)\)</span> of <span
+class="math inline">\(S_k\)</span> and all <span
+class="math inline">\(m, n \ge 1\)</span>, <span
+class="math display">\[\frac{\Gamma(k-1)}{(4\pi\sqrt{mn})^{k-1}} \sum_j
+\overline{a_{f_j}(m)}\, a_{f_j}(n) = \delta(m,n) + T_k(m,n)
+.\]</span></em></p>
+</div>
+<div id="pr:vanishing" class="problem"><a class="stable-tag" href="tag/22BB.html" title="Stable tag: cite as Tag 22BB">Tag 22BB</a>
+<p><strong>Problem 11.2.5</strong>. For <span class="math inline">\(k \in
+\{4, 6, 8, 10, 14\}\)</span> and all <span class="math inline">\(m, n
+\ge 1\)</span>, <span class="math display">\[\sum_{c \ge 1}
+\frac{S(m,n;c)}{c}\, J_{k-1}\Bigl(\frac{4\pi\sqrt{mn}}{c}\Bigr) =
+-\frac{\mathrm{i}^k}{2\pi}\,\delta(m,n) .\]</span></p>
+</div>
+<p>Numerically, for <span class="math inline">\(m = n = 1\)</span> the
+partial sums over <span class="math inline">\(c \le 800\)</span>
+reproduce these values to within <span class="math inline">\(3 \cdot
+10^{-8}\)</span> for <span class="math inline">\(k = 4\)</span> and
+<span class="math inline">\(10^{-13}\)</span> for <span
+class="math inline">\(k \ge 6\)</span>. For <span
+class="math inline">\(k = 12\)</span> one finds <span
+class="math inline">\(1 + T_{12}(1,1) = 2.84028\ldots\)</span>, which by
+Theorem <a href="#thm:petersson" data-reference-type="ref"
+data-reference="thm:petersson">11.2.1</a> is <span
+class="math inline">\(10!/\bigl((4\pi)^{11}\lVert\Delta\rVert^2\bigr)\)</span>,
+so that <span class="math inline">\(\lVert\Delta\rVert^2 = 1.03536\ldots
+\cdot 10^{-6}\)</span>.</p>
+<h1 id="sec:near">§11.3. Near orthogonality <a class="stable-tag" href="tag/22BC.html" title="Stable tag: cite as Tag 22BC">Tag 22BC</a></h1>
+<p>Normalize the Poincaré series by <span
+class="math display">\[\widetilde{P}_m := \frac{(4\pi
+m)^{(k-1)/2}}{\Gamma(k-1)^{1/2}}\, P_m ,\]</span> and for <span
+class="math inline">\(M \ge 1\)</span> let <span
+class="math inline">\(G_M\)</span> be the <span class="math inline">\(M
+\times M\)</span> Gram matrix <span class="math inline">\(\bigl(\langle
+\widetilde{P}_m, \widetilde{P}_n\rangle\bigr)_{1 \le m,n \le
+M}\)</span>.</p>
+<div id="pr:gram" class="problem"><a class="stable-tag" href="tag/22BD.html" title="Stable tag: cite as Tag 22BD">Tag 22BD</a>
+<p><strong>Problem 11.3.1</strong>. <span class="math inline">\(\langle
+\widetilde{P}_m, \widetilde{P}_n\rangle = \delta(m,n) +
+T_k(m,n)\)</span>.</p>
+</div>
+<p>So <span class="math inline">\(G_M\)</span> is the identity plus the
+matrix of Kloosterman terms, and the question is how small <span
+class="math inline">\(J_{k-1}\)</span> is. We use Poisson’s integral
+<span class="math display">\[J_\nu(x) =
+\frac{(x/2)^\nu}{\sqrt\pi\,\Gamma(\nu + \frac12)} \int_{-1}^1 (1 -
+t^2)^{\nu - 1/2} \cos(xt)\, dt \qquad (\nu &gt; -\tfrac12,\ x &gt;
+0),\]</span> see <span class="citation"
+data-cites="DLMF">[<a href="#ref-DLMF">DLMF</a>]</span>.</p>
+<div id="pr:J-bound" class="problem"><a class="stable-tag" href="tag/22BE.html" title="Stable tag: cite as Tag 22BE">Tag 22BE</a>
+<p><strong>Problem 11.3.2</strong>. For <span class="math inline">\(\nu &gt;
+-\frac12\)</span> and <span class="math inline">\(x &gt; 0\)</span>,
+<span class="math inline">\(\lvert J_\nu(x)\rvert \le
+(x/2)^\nu/\Gamma(\nu + 1)\)</span>.</p>
+</div>
+<div id="pr:T-bound" class="problem"><a class="stable-tag" href="tag/22BF.html" title="Stable tag: cite as Tag 22BF">Tag 22BF</a>
+<p><strong>Problem 11.3.3</strong>. <span class="math inline">\(\lvert
+T_k(m,n)\rvert \le
+2\pi\,\zeta(k-1)\,(2\pi\sqrt{mn})^{k-1}/(k-1)!\)</span>.</p>
+</div>
+<div id="pr:gershgorin" class="problem"><a class="stable-tag" href="tag/22BG.html" title="Stable tag: cite as Tag 22BG">Tag 22BG</a>
+<p><strong>Problem 11.3.4</strong>. If <span class="math inline">\(1 \le M
+\le (k-1)/(4\pi e)\)</span>, then every eigenvalue of <span
+class="math inline">\(G_M\)</span> lies within <span
+class="math inline">\(k\,2^{-k}\)</span> of <span
+class="math inline">\(1\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:gram" data-reference-type="ref"
+data-reference="pr:gram">11.3.1</a>–<a href="#pr:gershgorin"
+data-reference-type="ref" data-reference="pr:gershgorin">11.3.4</a> prove
+the following.</p>
+<div id="thm:near" class="theorem"><a class="stable-tag" href="tag/22BH.html" title="Stable tag: cite as Tag 22BH">Tag 22BH</a>
+<p><strong>Theorem 11.3.1</strong>. <em>If <span class="math inline">\(1 \le
+M \le (k-1)/(4\pi e)\)</span>, then <span class="math inline">\(\lVert
+G_M - 1\rVert \le k\,2^{-k}\)</span>. In particular <span
+class="math inline">\(P_1, \dots, P_M\)</span> are linearly independent,
+and <span class="math inline">\(\dim S_k \ge \lfloor (k-1)/(4\pi
+e)\rfloor\)</span>.</em></p>
+</div>
+<p>Here <span class="math inline">\(e = 2.718\ldots\)</span> is Euler’s
+number, and <span class="math inline">\(4\pi e = 34.15\ldots\)</span>.
+The threshold is not the true one. For <span class="math inline">\(x \le
+r\nu\)</span> with <span class="math inline">\(r &lt; 1\)</span> fixed,
+the function <span class="math inline">\(J_\nu(x)\)</span> is
+exponentially small in <span class="math inline">\(\nu\)</span>, and
+Siegel’s inequality makes this precise: for <span
+class="math inline">\(\nu \ge 0\)</span> and <span
+class="math inline">\(0 &lt; x \le 1\)</span>, <span
+class="math display">\[\lvert J_\nu(\nu x)\rvert \le \Bigl(\frac{x\,
+e^{\sqrt{1 - x^2}}}{1 + \sqrt{1 - x^2}}\Bigr)^{\nu}\]</span> <span
+class="citation" data-cites="DLMF">[<a href="#ref-DLMF">DLMF</a>]</span>. The
+base is increasing in <span class="math inline">\(x\)</span> and equals
+<span class="math inline">\(1\)</span> at <span class="math inline">\(x
+= 1\)</span>.</p>
+<div id="pr:siegel" class="problem"><a class="stable-tag" href="tag/22BJ.html" title="Stable tag: cite as Tag 22BJ">Tag 22BJ</a>
+<p><strong>Problem 11.3.5</strong>. Let <span class="math inline">\(0 &lt;
+\theta &lt; 1/(4\pi)\)</span>. There are <span
+class="math inline">\(\varrho &lt; 1\)</span> and <span
+class="math inline">\(C\)</span>, depending only on <span
+class="math inline">\(\theta\)</span>, such that <span
+class="math inline">\(\lVert G_M - 1\rVert \le C k\varrho^k\)</span>
+whenever <span class="math inline">\(1 \le M \le
+\theta(k-1)\)</span>.</p>
+</div>
+<p>So for large <span class="math inline">\(k\)</span> the <span
+class="math inline">\(\widetilde{P}_m\)</span> with <span
+class="math inline">\(m \le \theta(k-1)\)</span>, for a fixed <span
+class="math inline">\(\theta &lt; 1/(4\pi)\)</span>, are almost
+orthonormal. For <span class="math inline">\(m\)</span> near <span
+class="math inline">\((k-1)/(4\pi)\)</span> the argument <span
+class="math inline">\(4\pi m\)</span> of the term <span
+class="math inline">\(c = 1\)</span> of <span
+class="math inline">\(T_k(m,m)\)</span> reaches the transition region
+<span class="math inline">\(x \approx \nu\)</span> of <span
+class="math inline">\(J_\nu\)</span>, where <span
+class="math inline">\(J_\nu(x)\)</span> is of size about <span
+class="math inline">\(\nu^{-1/3}\)</span>, and the diagonal entry is no
+longer exponentially close to <span class="math inline">\(1\)</span>.
+For <span class="math inline">\(k = 100\)</span>, where <span
+class="math inline">\((k-1)/(4\pi) = 7.87\ldots\)</span> and <span
+class="math inline">\(\dim S_{100} = 8\)</span>, a computation of the
+Kloosterman terms gives the following. The eigenvalues of <span
+class="math inline">\(G_7\)</span> lie in <span
+class="math inline">\([0.99999, 1.0094]\)</span>. Those of <span
+class="math inline">\(G_8\)</span> lie in <span
+class="math inline">\([0.982, 1.808]\)</span>, so <span
+class="math inline">\(P_1, \dots, P_8\)</span> are a basis of <span
+class="math inline">\(S_{100}\)</span> but far from an orthogonal one.
+<span class="math inline">\(G_9\)</span> is singular, as it must be.</p>
+<h1 id="sec:dim">§11.4. The dimension as formal degree times covolume <a class="stable-tag" href="tag/22BK.html" title="Stable tag: cite as Tag 22BK">Tag 22BK</a></h1>
+<p>How large a proportion of <span class="math inline">\(S_k\)</span>
+does Theorem <a href="#thm:near" data-reference-type="ref"
+data-reference="thm:near">11.3.1</a> fill? Let <span
+class="math inline">\(\Gamma\backslash\mathbb{H}\)</span> carry the
+measure <span class="math inline">\(\nu\)</span>.</p>
+<div id="pr:vol" class="problem"><a class="stable-tag" href="tag/22BL.html" title="Stable tag: cite as Tag 22BL">Tag 22BL</a>
+<p><strong>Problem 11.4.1</strong>. <span
+class="math inline">\(\nu(\Gamma\backslash\mathbb{H}) =
+\pi/3\)</span>.</p>
+</div>
+<div id="pr:dim" class="problem"><a class="stable-tag" href="tag/22BM.html" title="Stable tag: cite as Tag 22BM">Tag 22BM</a>
+<p><strong>Problem 11.4.2</strong>. <span class="math inline">\(\bigl\lvert
+\dim S_k - \frac{k-1}{12}\bigr\rvert \le \frac{13}{12}\)</span> for
+every even <span class="math inline">\(k \ge 4\)</span>.</p>
+</div>
+<p>So the series of Problem <a href="#pr:siegel"
+data-reference-type="ref" data-reference="pr:siegel">11.3.5</a> span a
+proportion close to <span class="math inline">\(12/(4\pi) = 3/\pi =
+0.954\ldots\)</span> of <span class="math inline">\(S_k\)</span>, and
+those of Theorem <a href="#thm:near" data-reference-type="ref"
+data-reference="thm:near">11.3.1</a> a proportion <span
+class="math inline">\(3/(\pi e) = 0.351\ldots\)</span>. Where does <span
+class="math inline">\((k-1)/12\)</span> come from? It is the product of
+<span class="math inline">\(\pi/3\)</span> and a constant attached to
+the weight alone.</p>
+<p>Let <span class="math inline">\(G :=
+\mathrm{PSL}_2(\mathbb{R})\)</span>, acting on <span
+class="math inline">\(\mathbb{H}\)</span>, and fix the Haar measure
+<span class="math inline">\(dg\)</span> on <span
+class="math inline">\(G\)</span> with <span class="math inline">\(\int_G
+F(g\mathrm{i})\,dg = \int_\mathbb{H}F\,d\nu\)</span>; then <span
+class="math inline">\(\mathrm{PSO}(2)\)</span> has volume <span
+class="math inline">\(1\)</span>, and <span
+class="math inline">\(\operatorname{vol}(\mathrm{PSL}_2(\mathbb{Z})\backslash
+G) = \pi/3\)</span>. Let <span
+class="math inline">\(\mathcal{A}_k\)</span> be the space of holomorphic
+functions <span class="math inline">\(f\)</span> on <span
+class="math inline">\(\mathbb{H}\)</span> with <span
+class="math inline">\(\lVert f\rVert^2 := \int_\mathbb{H}\lvert
+f\rvert^2 y^k\,d\nu &lt; \infty\)</span>, on which <span
+class="math inline">\(G\)</span> acts unitarily by <span
+class="math inline">\((\pi(g)f)(z) :=
+f(g^{-1}z)\,j(g^{-1},z)^{-k}\)</span>. This is the holomorphic discrete
+series of weight <span class="math inline">\(k\)</span>. For <span
+class="math inline">\(w \in \mathbb{H}\)</span> put <span
+class="math display">\[h_w(z) := \Bigl(\frac{z - \bar
+w}{2\mathrm{i}}\Bigr)^{-k} .\]</span> For a unit vector <span
+class="math inline">\(u\)</span> of an irreducible unitary
+representation <span class="math inline">\(\pi\)</span> with
+square-integrable matrix coefficients, the <em>formal degree</em> <span
+class="math inline">\(d_\pi\)</span> is defined by <span
+class="math inline">\(\int_G \lvert\langle\pi(g)u, u\rangle\rvert^2\,dg
+= 1/d_\pi\)</span>. It does not depend on <span
+class="math inline">\(u\)</span>, by the Schur orthogonality relations
+for such representations <span class="citation"
+data-cites="HC">[<a href="#ref-HC">HC</a>]</span>. We compute it with <span
+class="math inline">\(u\)</span> proportional to <span
+class="math inline">\(h_\mathrm{i}\)</span>.</p>
+<div id="pr:cayley" class="problem"><a class="stable-tag" href="tag/22BN.html" title="Stable tag: cite as Tag 22BN">Tag 22BN</a>
+<p><strong>Problem 11.4.3</strong>. <span class="math inline">\(h_w \in
+\mathcal{A}_k\)</span>, and <span class="math inline">\(\langle f,
+h_\mathrm{i}\rangle = \frac{4\pi}{k-1}\, f(\mathrm{i})\)</span> for
+every <span class="math inline">\(f \in \mathcal{A}_k\)</span>.</p>
+</div>
+<div id="pr:covariance" class="problem"><a class="stable-tag" href="tag/22BP.html" title="Stable tag: cite as Tag 22BP">Tag 22BP</a>
+<p><strong>Problem 11.4.4</strong>. <span class="math inline">\(\pi(g)h_w =
+\overline{j(g,w)}^{\,-k}\, h_{gw}\)</span> for <span
+class="math inline">\(g \in \mathrm{SL}_2(\mathbb{R})\)</span> and <span
+class="math inline">\(w \in \mathbb{H}\)</span>.</p>
+</div>
+<div id="pr:formal-degree" class="problem"><a class="stable-tag" href="tag/22BQ.html" title="Stable tag: cite as Tag 22BQ">Tag 22BQ</a>
+<p><strong>Problem 11.4.5</strong>. Let <span class="math inline">\(u :=
+h_\mathrm{i}/\lVert h_\mathrm{i}\rVert\)</span>, and <span
+class="math inline">\(w := g\mathrm{i}\)</span>. Then <span
+class="math inline">\(\lvert\langle\pi(g)u, u\rangle\rvert^2 =
+\bigl(4\operatorname{Im} w/\lvert w +
+\mathrm{i}\rvert^2\bigr)^k\)</span>, and the formal degree of <span
+class="math inline">\(\pi\)</span> is <span
+class="math inline">\((k-1)/(4\pi)\)</span>.</p>
+</div>
+<p>With Problem <a href="#pr:vol" data-reference-type="ref"
+data-reference="pr:vol">11.4.1</a> this gives <span
+class="math display">\[d_\pi \cdot
+\operatorname{vol}(\mathrm{PSL}_2(\mathbb{Z})\backslash G) =
+\frac{k-1}{4\pi}\cdot\frac\pi3 = \frac{k-1}{12} ,\]</span> which is
+<span class="math inline">\(\dim S_k\)</span> up to the bounded error of
+Problem <a href="#pr:dim" data-reference-type="ref"
+data-reference="pr:dim">11.4.2</a>. This is not a coincidence. As in
+Problem <a href="#pr:unfold" data-reference-type="ref"
+data-reference="pr:unfold">11.1.1</a>, and using Problems <a
+href="#pr:cayley" data-reference-type="ref"
+data-reference="pr:cayley">11.4.3</a> and <a href="#pr:covariance"
+data-reference-type="ref" data-reference="pr:covariance">11.4.4</a>, one
+checks that the reproducing kernel <span class="math inline">\(B(z,w) :=
+\sum_j f_j(z)\overline{f_j(w)}\)</span> of <span
+class="math inline">\(S_k\)</span>, for an orthonormal basis <span
+class="math inline">\((f_j)\)</span>, is <span
+class="math display">\[B(z,w) = \frac{k-1}{4\pi} \sum_{\gamma \in
+\mathrm{PSL}_2(\mathbb{Z})} j(\gamma,z)^{-k}\, h_w(\gamma z) .\]</span>
+Since <span class="math inline">\(\dim S_k =
+\int_{\Gamma\backslash\mathbb{H}} B(z,z)\,y^k\,d\nu(z)\)</span>, the
+term <span class="math inline">\(\gamma = 1\)</span> contributes exactly
+the formal degree times the covolume, and by Problem <a href="#pr:dim"
+data-reference-type="ref" data-reference="pr:dim">11.4.2</a> all other terms
+together contribute a bounded amount. On a definite unitary group the
+formal degree is the Weyl dimension of the representation at infinity,
+and the count of forms in Chapter <a href="20261125T002000--definite-theta-lifts__workbook.html#chap"
+data-reference-type="ref" data-reference="dt-chap">21</a> is the
+same product.</p>
+<p>In the notation of Section <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#sec:gram"
+data-reference-type="ref"
+data-reference="rl-sec:gram">10.1</a>, take <span
+class="math inline">\(\mathcal{H}= S_k\)</span>, <span
+class="math inline">\(D&#39; = \dim S_k\)</span>, and the maps <span
+class="math inline">\(B_m \colon \mathbb{C}\to S_k\)</span>, <span
+class="math inline">\(1 \mapsto
+\widetilde{P}_m/\lVert\widetilde{P}_m\rVert\)</span>, for <span
+class="math inline">\(m\)</span> in the range of Theorem <a
+href="#thm:near" data-reference-type="ref"
+data-reference="thm:near">11.3.1</a>, where <span
+class="math inline">\(\lVert\widetilde{P}_m\rVert\)</span> is
+exponentially close to <span class="math inline">\(1\)</span>. The
+bound <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#eq:pair" data-reference-type="eqref"
+data-reference="rl-eq:pair">(10.1.1)</a> asks for <span
+class="math inline">\(\lvert\langle B_m(1), B_n(1)\rangle\rvert^2 \le (1
++ \eta_0)/D&#39;\)</span> for <span class="math inline">\(m \ne
+n\)</span>, about <span class="math inline">\(12/k\)</span>. Theorem <a
+href="#thm:near" data-reference-type="ref"
+data-reference="thm:near">11.3.1</a> gives far more, an exponentially small
+bound, but only for <span class="math inline">\(m\)</span> up to a fixed
+proportion of <span class="math inline">\(D&#39;\)</span>. The images of
+these maps therefore do not fill <span
+class="math inline">\(S_k\)</span>, and the Poincaré series of larger
+index, which do fill it, are not nearly orthogonal. So Theorem <a
+href="#thm:near" data-reference-type="ref"
+data-reference="thm:near">11.3.1</a> alone does not give the hypothesis of
+Theorem <a href="20261125T000100--slope-inequality-in-the-mean__workbook.html#thm:rank" data-reference-type="ref"
+data-reference="mn-thm:rank">7.3.1</a> for <span
+class="math inline">\(S_k\)</span>. The argument uses many families at
+once, each of small rank, whose mutual correlations are only as small as
+those of random subspaces.</p>
+<h4 id="the-analogue-in-the-argument.">The analogue in the
+argument.</h4>
+<p>In the reconstruction <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> of Alpöge’s argument
+<span class="citation" data-cites="Alp">[<a href="#ref-Alp">Alp</a>]</span>,
+see also <span class="citation"
+data-cites="Zh">[<a href="#ref-Zh">Zh</a>]</span>, <span
+class="math inline">\(\mathrm{SL}_2\)</span> is replaced by a unitary
+group <span class="math inline">\(G = \mathrm{U}(V)\)</span> of a
+hermitian space <span class="math inline">\(V\)</span> over a CM
+extension <span class="math inline">\(E/F\)</span>, and <span
+class="math inline">\(\mathcal{A}_k\)</span> by a holomorphic discrete
+series of large weight at each real place. The Fourier coefficient <span
+class="math inline">\(a_f(m)\)</span>, an integral of <span
+class="math inline">\(f\)</span> against a character of the upper
+unipotent subgroup of <span
+class="math inline">\(\mathrm{SL}_2(\mathbb{R})\)</span>, becomes a
+Bessel period: an integral against a character of a subgroup <span
+class="math inline">\(S = \mathrm{U}(W) \ltimes N\)</span>, where <span
+class="math inline">\(W \subset V\)</span> is a nondegenerate subspace
+and <span class="math inline">\(N\)</span> is unipotent, as in the
+conjectures of Gan, Gross and Prasad <span class="citation"
+data-cites="GGP">[<a href="#ref-GGP">GGP</a>]</span>. To each word <span
+class="math inline">\(u\)</span> of the construction corresponds a space
+of Bessel Poincaré series, obtained by summing over <span
+class="math inline">\(S(F)\backslash G(F)\)</span> the analogue of <span
+class="math inline">\(j(\gamma,z)^{-k}e(m\gamma z)\)</span>, and
+unfolding their inner products is the analogue of Problem <a
+href="#pr:unfold" data-reference-type="ref"
+data-reference="pr:unfold">11.1.1</a> <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Prop. 14.5]</span>. The near
+orthogonality of the Gram operators <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Thm. 14.1]</span>, the bound <a
+href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#eq:pair" data-reference-type="eqref"
+data-reference="rl-eq:pair">(10.1.1)</a> for families whose size
+grows with a parameter <span class="math inline">\(x\)</span> and with
+<span class="math inline">\(\eta_0 \le \exp(-x^{c})\)</span> for some
+<span class="math inline">\(c &gt; 0\)</span>, is the analogue of
+Theorem <a href="#thm:near" data-reference-type="ref"
+data-reference="thm:near">11.3.1</a>, and as there no subconvex bound enters.
+The decay that replaces Problem <a href="#pr:J-bound"
+data-reference-type="ref" data-reference="pr:J-bound">11.3.2</a> is that of
+the matrix coefficients of the discrete series, as in Problem <a
+href="#pr:formal-degree" data-reference-type="ref"
+data-reference="pr:formal-degree">11.4.5</a>, and the number <span
+class="math inline">\(D^*\)</span> of <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> is the formal degree
+times the volume of <span class="math inline">\(G(F)\backslash
+G(\mathbb{A})\)</span> times the value at <span
+class="math inline">\(1\)</span> of the level idempotent. The deduction
+of the near orthogonality, and of <span
+class="math inline">\(\dim\mathcal{H}\approx D^*\)</span>, from counting
+and pre-trace statements is carried out there, but these statements
+themselves are assumed there: in <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> they are <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Hyps. 14.61
+and 14.71–14.77]</span>; see the ledger in Section <a href="20261125T021500--assembly-at-one-scale__workbook.html#sec:map"
+data-reference-type="ref" data-reference="as-sec:map">58.7</a>
+of Chapter <a href="20261125T021500--assembly-at-one-scale__workbook.html#chap" data-reference-type="ref"
+data-reference="as-chap">58</a>. This completes the method. It
+needs maps whose values are divisible at the inert primes and of
+controlled size; the next part, from Chapter <a href="20261124T223000--elliptic-curves-for-the-proof__workbook.html#chap"
+data-reference-type="ref" data-reference="ec-chap">12</a> on,
+finds the divisibility in theta functions with complex
+multiplication.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secpoincare">§<a href="#sec:poincare"
+data-reference-type="ref" data-reference="sec:poincare">11.1</a></h2>
+<dl>
+<dt><a href="#pr:unfold" data-reference-type="ref"
+data-reference="pr:unfold">11.1.1</a></dt>
+<dd>
+<p>Unfold the sum over <span
+class="math inline">\(\Gamma_\infty\backslash\Gamma\)</span> to the
+strip <span class="math inline">\(0 \le x \le 1\)</span>, <span
+class="math inline">\(y &gt; 0\)</span>, and integrate in <span
+class="math inline">\(x\)</span> first.</p>
+</dd>
+<dt><a href="#pr:span" data-reference-type="ref"
+data-reference="pr:span">11.1.2</a></dt>
+<dd>
+<p>Problem <a href="#pr:unfold" data-reference-type="ref"
+data-reference="pr:unfold">11.1.1</a>.</p>
+</dd>
+<dt><a href="#pr:k12" data-reference-type="ref"
+data-reference="pr:k12">11.1.3</a></dt>
+<dd>
+<p>Expand <span class="math inline">\(P_m\)</span> in the basis <span
+class="math inline">\(\Delta\)</span> and use Problem <a
+href="#pr:unfold" data-reference-type="ref"
+data-reference="pr:unfold">11.1.1</a>. Note that <span
+class="math inline">\(\tau(1) = 1\)</span>, <span
+class="math inline">\(\tau(2) = -24\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secpetersson">§<a href="#sec:petersson"
+data-reference-type="ref" data-reference="sec:petersson">11.2</a></h2>
+<dl>
+<dt><a href="#pr:cosets" data-reference-type="ref"
+data-reference="pr:cosets">11.2.1</a></dt>
+<dd>
+<p>The bottom row of a matrix in <span
+class="math inline">\(\Gamma\)</span> is coprime, and two matrices with
+the same bottom row differ by left multiplication by an element of <span
+class="math inline">\(\Gamma_\infty\)</span>.</p>
+</dd>
+<dt><a href="#pr:lipschitz" data-reference-type="ref"
+data-reference="pr:lipschitz">11.2.2</a></dt>
+<dd>
+<p>Close the contour in the half-plane where <span
+class="math inline">\(e(-\beta z)\)</span> decays.</p>
+</dd>
+<dt><a href="#pr:bessel-int" data-reference-type="ref"
+data-reference="pr:bessel-int">11.2.3</a></dt>
+<dd>
+<p>Expand <span class="math inline">\(e(-\alpha/z)\)</span> in its power
+series and apply Problem <a href="#pr:lipschitz"
+data-reference-type="ref" data-reference="pr:lipschitz">11.2.2</a> term by
+term. For <span class="math inline">\(\beta \le 0\)</span>, <span
+class="math inline">\(\lvert e(-\alpha/z)\rvert \le 1\)</span> in <span
+class="math inline">\(\mathbb{H}\)</span>.</p>
+</dd>
+<dt><a href="#pr:fourier" data-reference-type="ref"
+data-reference="pr:fourier">11.2.4</a></dt>
+<dd>
+<p>The terms with <span class="math inline">\(c &gt; 0\)</span> and
+fixed <span class="math inline">\(c\)</span> are indexed by <span
+class="math inline">\(d \in \mathbb{Z}\)</span> coprime to <span
+class="math inline">\(c\)</span>; group them by <span
+class="math inline">\(d \bmod c\)</span>. Each group is a sum over
+translates <span class="math inline">\(z \mapsto z + r\)</span>, <span
+class="math inline">\(r \in \mathbb{Z}\)</span>, so its <span
+class="math inline">\(n\)</span>-th Fourier coefficient is an integral
+over a whole horizontal line. Use Problems <a href="#pr:cosets"
+data-reference-type="ref" data-reference="pr:cosets">11.2.1</a> and <a
+href="#pr:bessel-int" data-reference-type="ref"
+data-reference="pr:bessel-int">11.2.3</a>.</p>
+</dd>
+<dt><a href="#pr:vanishing" data-reference-type="ref"
+data-reference="pr:vanishing">11.2.5</a></dt>
+<dd>
+<p>Theorem <a href="#thm:petersson" data-reference-type="ref"
+data-reference="thm:petersson">11.2.1</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secnear">§<a href="#sec:near"
+data-reference-type="ref" data-reference="sec:near">11.3</a></h2>
+<dl>
+<dt><a href="#pr:gram" data-reference-type="ref"
+data-reference="pr:gram">11.3.1</a></dt>
+<dd>
+<p>Problem <a href="#pr:unfold" data-reference-type="ref"
+data-reference="pr:unfold">11.1.1</a> with <span class="math inline">\(f =
+P_m\)</span>, and Problem <a href="#pr:fourier"
+data-reference-type="ref" data-reference="pr:fourier">11.2.4</a>.</p>
+</dd>
+<dt><a href="#pr:J-bound" data-reference-type="ref"
+data-reference="pr:J-bound">11.3.2</a></dt>
+<dd>
+<p>Bound <span class="math inline">\(\lvert\cos(xt)\rvert\)</span> by
+<span class="math inline">\(1\)</span> and evaluate the Beta
+integral.</p>
+</dd>
+<dt><a href="#pr:T-bound" data-reference-type="ref"
+data-reference="pr:T-bound">11.3.3</a></dt>
+<dd>
+<p><span class="math inline">\(\lvert S(m,n;c)\rvert \le c\)</span>.</p>
+</dd>
+<dt><a href="#pr:gershgorin" data-reference-type="ref"
+data-reference="pr:gershgorin">11.3.4</a></dt>
+<dd>
+<p><span class="math inline">\((k-1)! \ge ((k-1)/e)^{k-1}\)</span>. Then
+Gershgorin’s theorem.</p>
+</dd>
+<dt><a href="#pr:siegel" data-reference-type="ref"
+data-reference="pr:siegel">11.3.5</a></dt>
+<dd>
+<p>Treat the term <span class="math inline">\(c = 1\)</span> with
+Siegel’s inequality and the terms <span class="math inline">\(c \ge
+2\)</span> with Problem <a href="#pr:J-bound" data-reference-type="ref"
+data-reference="pr:J-bound">11.3.2</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secdim">§<a href="#sec:dim"
+data-reference-type="ref" data-reference="sec:dim">11.4</a></h2>
+<dl>
+<dt><a href="#pr:vol" data-reference-type="ref"
+data-reference="pr:vol">11.4.1</a></dt>
+<dd>
+<p>The standard fundamental domain <span class="math inline">\(\lvert
+x\rvert \le \frac12\)</span>, <span class="math inline">\(\lvert z\rvert
+\ge 1\)</span>; integrate in <span class="math inline">\(y\)</span>
+first.</p>
+</dd>
+<dt><a href="#pr:dim" data-reference-type="ref"
+data-reference="pr:dim">11.4.2</a></dt>
+<dd>
+<p>Write <span class="math inline">\(k = 12j + r\)</span> with <span
+class="math inline">\(0 \le r &lt; 12\)</span> and use the dimension
+formula.</p>
+</dd>
+<dt><a href="#pr:cayley" data-reference-type="ref"
+data-reference="pr:cayley">11.4.3</a></dt>
+<dd>
+<p>Put <span class="math inline">\(\zeta := (z - \mathrm{i})/(z +
+\mathrm{i})\)</span> and <span class="math inline">\(F(\zeta) :=
+f(z)\bigl((z+\mathrm{i})/2\mathrm{i}\bigr)^k\)</span>. Express <span
+class="math inline">\(\lvert f\rvert^2 y^k\,d\nu\)</span> in terms of
+<span class="math inline">\(F\)</span> and <span
+class="math inline">\(\zeta\)</span>, and use the mean value property on
+the circles <span class="math inline">\(\lvert\zeta\rvert = r\)</span>.
+For <span class="math inline">\(h_w \in \mathcal{A}_k\)</span>, use
+<span class="math inline">\(4\operatorname{Im}z\operatorname{Im}w/\lvert
+z - \bar w\rvert^2 = 1 - \lvert\zeta_w\rvert^2\)</span> with <span
+class="math inline">\(\zeta_w := (z - w)/(z - \bar w)\)</span>.</p>
+</dd>
+<dt><a href="#pr:covariance" data-reference-type="ref"
+data-reference="pr:covariance">11.4.4</a></dt>
+<dd>
+<p><span class="math inline">\(gz - \overline{gw} = (z - \bar
+w)/\bigl(j(g,z)\overline{j(g,w)}\bigr)\)</span>.</p>
+</dd>
+<dt><a href="#pr:formal-degree" data-reference-type="ref"
+data-reference="pr:formal-degree">11.4.5</a></dt>
+<dd>
+<p>Problems <a href="#pr:cayley" data-reference-type="ref"
+data-reference="pr:cayley">11.4.3</a> and <a href="#pr:covariance"
+data-reference-type="ref" data-reference="pr:covariance">11.4.4</a>. For the
+integral, use geodesic polar coordinates about <span
+class="math inline">\(\mathrm{i}\)</span>, in which <span
+class="math inline">\(4\operatorname{Im} w/\lvert w + \mathrm{i}\rvert^2
+= \cosh^{-2}(\rho/2)\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Adr"><span class="bib-label">[Adr]</span> J. Adriazola, <em>The Alpöge proof of the Riemann hypothesis</em>, manuscript, revised 24 November 2026, <a href="https://github.com/jimjamzola/RH-Alpoge-Reconstruction" class="uri">https://github.com/jimjamzola/RH-Alpoge-Reconstruction</a>.</p>
+<p id="ref-Alp"><span class="bib-label">[Alp]</span> L. Alpöge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, <a href="https://alpo.ge/remark.pdf" class="uri">https://alpo.ge/remark.pdf</a>.</p>
+<p id="ref-DLMF"><span class="bib-label">[DLMF]</span> F. W. J. Olver, D. W. Lozier, R. F. Boisvert and C. W. Clark (eds.), <em>NIST Handbook of Mathematical Functions</em>, Cambridge Univ. Press, 2010; <a href="https://dlmf.nist.gov" class="uri">https://dlmf.nist.gov</a>, Ch. 10.</p>
+<p id="ref-GGP"><span class="bib-label">[GGP]</span> W. T. Gan, B. H. Gross and D. Prasad, <em>Symplectic local root numbers, central critical <span class="math inline">\(L\)</span>-values, and restriction problems in the representation theory of classical groups</em>, Astérisque <strong>346</strong> (2012), 1–109.</p>
+<p id="ref-HC"><span class="bib-label">[HC]</span> Harish-Chandra, <em>Harmonic analysis on semisimple Lie groups</em>, Bull. Amer. Math. Soc. <strong>76</strong> (1970), 529–551.</p>
+<p id="ref-ILS"><span class="bib-label">[ILS]</span> H. Iwaniec, W. Luo and P. Sarnak, <em>Low lying zeros of families of <span class="math inline">\(L\)</span>-functions</em>, Publ. Math. IHÉS <strong>91</strong> (2000), 55–131.</p>
+<p id="ref-Iw"><span class="bib-label">[Iw]</span> H. Iwaniec, <em>Topics in Classical Automorphic Forms</em>, Grad. Stud. Math. <strong>17</strong>, Amer. Math. Soc., Providence, 1997.</p>
+<p id="ref-Pe"><span class="bib-label">[Pe]</span> H. Petersson, <em>Über die Entwicklungskoeffizienten der automorphen Formen</em>, Acta Math. <strong>58</strong> (1932), 169–215.</p>
+<p id="ref-SeA"><span class="bib-label">[SeA]</span> J.-P. Serre, <em>A Course in Arithmetic</em>, Grad. Texts in Math. 7, Springer, 1973.</p>
+<p id="ref-Zh"><span class="bib-label">[Zh]</span> R. Zhang, <em>A preliminary note on Alpöge’s proposed proof of the generalized Riemann hypothesis</em>, preprint, 2026, hexagon:2611.00809.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+</body>
+</html>

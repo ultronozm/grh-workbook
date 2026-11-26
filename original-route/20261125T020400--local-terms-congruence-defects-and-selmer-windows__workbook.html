@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="robots" content="noindex">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-25" />
+  <title>Local terms, congruence defects and Selmer windows</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb Z","Q":"\\mathbb Q","F":"\\mathbb F","Oc":"\\mathcal O","Sha":"\\mathrm{Sha}","len":"\\operatorname{length}","num":"\\operatorname{num}"}}};</script>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<!-- snapshot-banner --><div style="border:1px solid #c9a227;background:#fff8e1;color:#3d3d3d;padding:.6em .9em;margin:.5em 0 1em 0;font:15px/1.4 system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;border-radius:6px"><strong>Snapshot of 25 November 2026.</strong> This is the collection as it stood before it was reorganized around the rewritten Lean proof. It is not maintained. Current version: <a href="../">ultronozm.github.io/grh-workbook</a>.</div>
+
+    <div class="my-links-container">
+2026-11-25 19:20:17
+      <a href="https://github.com/ultronozm/grh-workbook/blob/original-route/20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.tex" class="my-link">tex</a>
+      <a href="20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/original-route/20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Local terms, congruence defects and Selmer
+windows</h1>
+<p class="date">November 25, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:local" id="toc-sec:local">§52.1. The two level primes</a></li>
+<li><a href="#sec:congruences" id="toc-sec:congruences">§52.2. The denominator of a projection</a></li>
+<li><a href="#sec:selmer" id="toc-sec:selmer">§52.3. Strict Selmer groups and the two signs</a></li>
+<li><a href="#sec:window" id="toc-sec:window">§52.4. The window and the congruence bound</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#seclocal" id="toc-seclocal">§52.1</a></li>
+<li><a href="#seccongruences" id="toc-seccongruences">§52.2</a></li>
+<li><a href="#secselmer" id="toc-secselmer">§52.3</a></li>
+<li><a href="#secwindow" id="toc-secwindow">§52.4</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Chapter <a href="20261125T000000--slope-method__workbook.html#chap" data-reference-type="ref"
+data-reference="sm-chap">6</a> reads a local norm from a lattice
+exponent (Problem <a href="20261125T000000--slope-method__workbook.html#pr:pairing-norm"
+data-reference-type="ref"
+data-reference="sm-pr:pairing-norm">6.5.1</a>). We use
+the eigenspaces of cyclotomic class groups from Chapter <a
+href="20261125T004000--denominators-and-sha__workbook.html#chap" data-reference-type="ref"
+data-reference="ds-chap">29</a>, Theorems <a
+href="20261125T004000--denominators-and-sha__workbook.html#thm:stickelberger" data-reference-type="ref"
+data-reference="ds-thm:stickelberger">29.2.1</a> and <a
+href="20261125T004000--denominators-and-sha__workbook.html#thm:HR" data-reference-type="ref"
+data-reference="ds-thm:HR">29.2.2</a>, and the strict Selmer groups
+over <span class="math inline">\(\mathbb Q\)</span> from Chapter <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#chap" data-reference-type="ref"
+data-reference="ts-chap">30</a>, Theorems <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#thm:sha-class" data-reference-type="ref"
+data-reference="ts-thm:sha-class">30.1.1</a> and <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#thm:MW" data-reference-type="ref"
+data-reference="ts-thm:MW">30.1.2</a>. Chapter <a href="20261125T014100--congruence-modules__workbook.html#chap"
+data-reference-type="ref" data-reference="cg-chap">31</a>,
+Problem <a href="20261125T014100--congruence-modules__workbook.html#pr:691" data-reference-type="ref"
+data-reference="cg-pr:691">31.2.2</a>, computes a projection of the
+weight-twelve lattice. Theorems <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#thm:ribet-lemma"
+data-reference-type="ref"
+data-reference="ei-thm:ribet-lemma">32.2.1</a> and <a
+href="20261125T014700--pseudocharacters-and-the-length-bound__workbook.html#thm:model" data-reference-type="ref"
+data-reference="pc-thm:model">33.4.1</a> construct a residual
+extension and bound a cotangent length, respectively. We also recall the
+local correspondence and the Galois representations of regular algebraic
+polarized cusp forms (Theorems <a href="20261125T011000--galois-representations-black-box__workbook.html#thm:LLC"
+data-reference-type="ref" data-reference="gb-thm:LLC">34.1.1</a>
+and <a href="20261125T011000--galois-representations-black-box__workbook.html#thm:galois" data-reference-type="ref"
+data-reference="gb-thm:galois">34.2.1</a>).</p>
+<p>Why does a split prime contribute exactly half its logarithm before
+one sums the local exponents? And what happens when projecting onto a
+Hecke eigenspace introduces a denominator? The first calculation gives a
+main term for each lift. To bound the denominator of the projection, the
+argument uses the orders of strict Selmer groups over a varying CM
+field.</p>
+<h1 id="sec:local">§52.1. The two level primes</h1>
+<p>Fix <span class="math inline">\(0&lt;\varepsilon&lt;1/52\)</span> and
+a large scale <span class="math inline">\(x\)</span>. Write <span
+class="math inline">\(y=x^\varepsilon\)</span>, <span
+class="math inline">\(b=e^y\)</span>. There are <span
+class="math inline">\(n\)</span> columns, <span
+class="math inline">\(f=2n\)</span> elements in the CM type <span
+class="math inline">\(\Phi\)</span> of the host field <span
+class="math inline">\(E\)</span>, and <span
+class="math inline">\(m\)</span> lifts. Write <span
+class="math inline">\(B_0:=fmby\)</span> and let <span
+class="math inline">\(A=\sum_t a_t\)</span> be the total weight of the
+tops. For a finite place <span class="math inline">\(w\mid p\)</span> of
+a Galois coefficient field <span class="math inline">\(L\supset
+E\)</span>, use the integer valuation <span
+class="math inline">\(v_w\)</span>, ramification index <span
+class="math inline">\(e_w\)</span>, residue degree <span
+class="math inline">\(f_w\)</span>, and weight <span
+class="math inline">\(\ell_w=f_w\log p/[L:\mathbb Q]\)</span>. Thus
+<span class="math inline">\(\sum_{w\mid p}\ell_we_w=\log p\)</span>.</p>
+<p>The two distinct level primes <span
+class="math inline">\(g_\iota=\pi_\iota\bar\pi_\iota\)</span>, <span
+class="math inline">\(\iota=0,1\)</span>, split in the imaginary
+quadratic subfield <span class="math inline">\(K\)</span> of <span
+class="math inline">\(E\)</span>. Set <span
+class="math inline">\(g=\log(g_0g_1)\)</span>. Let <span
+class="math inline">\(u\)</span> index a chain of lifts. At its <span
+class="math inline">\(j\)</span>-th lift the exponents <span
+class="math inline">\(n_{u,j}(\rho)\)</span> have sum <span
+class="math inline">\(n_{u,j}\)</span>, and the polynomial model has
+degree <span class="math inline">\(\Delta_j\)</span> and shift <span
+class="math inline">\(\kappa_j\ge0\)</span>. Let <span
+class="math inline">\(D_\Gamma\)</span> be a positive common multiple of
+the stabilizer orders in the lifts. At <span class="math inline">\(w\mid
+g_\iota\)</span> the local exponent is <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Def. 16.5]</span> <span
+class="math display">\[E_{u,j}(w)=v_{g_\iota}(D_\Gamma)-\tfrac12\Delta_j+\kappa_j+
+e_w^{-1}\sum_{\rho\in\Phi}n_{u,j}(\rho)v_w(\tau_\rho\bar\pi_\iota),\]</span>
+where <span class="math inline">\(\tau_\rho\)</span> extends <span
+class="math inline">\(\rho\)</span> to <span
+class="math inline">\(L\)</span>. Write <span
+class="math inline">\(T_u=\varpi_u\bar\varpi_u\)</span> for the terminal
+prime, distinct from <span class="math inline">\(g_0,g_1,d\)</span>. At
+<span class="math inline">\(w\mid T_u\)</span> the exponent is <span
+class="math inline">\(\varepsilon^T_u\ge0\)</span> when <span
+class="math inline">\(v_w(\tau_\rho\varpi_u)&gt;0\)</span> for every
+<span class="math inline">\(\rho\in\Phi\)</span>, and zero otherwise. At
+the remaining primes it is <span
+class="math inline">\(v_p(D_\Gamma)\)</span>, with an additional error
+<span class="math inline">\(\varepsilon^d_j\)</span> at <span
+class="math inline">\(d\)</span> or <span
+class="math inline">\(\varepsilon^{\rm in}_{j,p}\)</span> at the
+remaining primes in the inert loss set <span
+class="math inline">\(P^{\rm in}\)</span>. Write <span
+class="math inline">\(E_{u,j}:=\sum_w2\ell_we_w E_{u,j}(w)\)</span> and
+<span class="math inline">\(E_u=\sum_{j=1}^m E_{u,j}\)</span>.</p>
+<div id="pr:half-norm" class="problem">
+<p><strong>Problem 52.1.1</strong>. For <span class="math inline">\(K=\mathbb
+Q(\mathrm i)\)</span> and <span class="math inline">\(5=(2+\mathrm
+i)(2-\mathrm i)\)</span>, the places above <span
+class="math inline">\(5\)</span> contribute <span
+class="math inline">\(0\)</span> and <span
+class="math inline">\(\tfrac12\log5\)</span> to the weighted valuation
+of <span class="math inline">\(2-\mathrm i\)</span> in <span
+class="math inline">\(K\)</span>. In general <span
+class="math inline">\(\sum_{w\mid
+g_\iota}\ell_wv_w(\tau_\rho\bar\pi_\iota)=\tfrac12\log g_\iota\)</span>,
+independently of <span class="math inline">\(L\)</span> and <span
+class="math inline">\(\rho\)</span>.</p>
+</div>
+<div id="pr:level" class="problem">
+<p><strong>Problem 52.1.2</strong>. The contribution of <span
+class="math inline">\(g_\iota\)</span> to <span
+class="math inline">\(E_{u,j}\)</span> is <span
+class="math inline">\((2v_{g_\iota}(D_\Gamma)-\Delta_j+2\kappa_j+n_{u,j})\log
+g_\iota\)</span>.</p>
+</div>
+<div id="thm:local" class="theorem">
+<p><strong>Theorem 52.1.1</strong> (local terms). <em>Let the exponents <span
+class="math inline">\(E_{u,j}(w)\)</span> at the places other than <span
+class="math inline">\(g_0,g_1\)</span> be given by the formulas of
+Section <a href="20261126T020410--local-exponents-of-the-lifts__workbook.html#sec:def" data-reference-type="ref"
+data-reference="lx-sec:def">53.1</a> of Chapter <a
+href="20261126T020410--local-exponents-of-the-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="lx-chap">53</a>, and let the data satisfy the
+size conditions (S1)–(S5) there and Lemmas <a href="20261126T020410--local-exponents-of-the-lifts__workbook.html#lem:degree"
+data-reference-type="ref"
+data-reference="lx-lem:degree">53.2.1</a>, <a
+href="20261126T020410--local-exponents-of-the-lifts__workbook.html#lem:ramified" data-reference-type="ref"
+data-reference="lx-lem:ramified">53.3.1</a> and <a
+href="20261126T020410--local-exponents-of-the-lifts__workbook.html#lem:per-prime" data-reference-type="ref"
+data-reference="lx-lem:per-prime">53.4.1</a>. There are
+<span class="math inline">\(C\)</span> and <span
+class="math inline">\(x_0\)</span> such that <span
+class="math inline">\(\lvert E_{u,j}-Ag\rvert\le CB_0\)</span> for every
+datum at a scale <span class="math inline">\(x\ge x_0\)</span>, every
+<span class="math inline">\(u\)</span> and every <span
+class="math inline">\(1\le j\le m\)</span>.</em></p>
+</div>
+<p><em>Simplest incarnation:</em> the local exponent of a pairing in
+Problem <a href="20261125T000000--slope-method__workbook.html#pr:pairing-norm" data-reference-type="ref"
+data-reference="sm-pr:pairing-norm">6.5.1</a>.
+<em>Status</em>: proved in the Lean formalization <span class="citation"
+data-cites="Lean">[<a href="#ref-Lean">Lean</a>]</span>, for the family it
+constructs; Chapter <a href="20261126T020410--local-exponents-of-the-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="lx-chap">53</a> states the formulas and the
+lemmas, and outlines the proofs (Theorem <a href="20261126T020410--local-exponents-of-the-lifts__workbook.html#thm:local"
+data-reference-type="ref"
+data-reference="lx-thm:local">53.5.1</a>). The formalization
+proves the final theorem; the corresponding step in <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> is
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Thm. 16.6, Cor. 16.7]</span>, derived there for data satisfying the
+conditions (E1)–(E6) of <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>. These require <span
+class="math inline">\(\lvert
+n_{u,j}-\Delta_j-A\rvert\le\delta_j\)</span> and bound <span
+class="math display">\[(\delta_j+2\kappa_j)g,\quad 2\varepsilon^T_u\log
+T_u,\quad 2\log D_\Gamma,\quad
+2|\varepsilon^d_j|\log d,\quad \sum_{p\in P^{\rm in}}2|\varepsilon^{\rm
+in}_{j,p}|\log p\]</span> by constant multiples of <span
+class="math inline">\(B_0\)</span>. The size estimates and the bound for
+inert losses having an explicit formula are proved in <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Lemmas 16.10–16.12]</span>; the remaining orbit losses and the degrees
+and sizes for the constructed lifts are <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Hyps. 16.13–16.14]</span>,
+assumed there. In the formalization the numbers <span
+class="math inline">\(\kappa_j\)</span>, <span
+class="math inline">\(\varepsilon^T_u\)</span>, <span
+class="math inline">\(\varepsilon^d_j\)</span> and <span
+class="math inline">\(\varepsilon^{\rm in}_{j,p}\)</span> are given by
+formulas, and the orbit losses are part of <span
+class="math inline">\(\varepsilon^{\rm in}_{j,p}\)</span>.</p>
+<div id="pr:A5" class="problem">
+<p><strong>Problem 52.1.3</strong>. Summation gives <span
+class="math inline">\(|E_u-mAg|\le e_5=CmB_0\)</span>, hence (A5), <span
+class="math inline">\(E_u\le mAg+e_5\)</span>. With <span
+class="math inline">\(n,x\)</span> fixed this allowance is proportional
+to <span class="math inline">\(m^2\)</span>.</p>
+</div>
+<h1 id="sec:congruences">§52.2. The denominator of a projection</h1>
+<p>At a place <span class="math inline">\(w\)</span> where the local
+type of the lift differs from the standard type, let <span
+class="math inline">\(O=\mathcal O_{L_w}\)</span> and <span
+class="math inline">\(\ell=p_w\)</span>. For each maximal ideal <span
+class="math inline">\(\mathfrak m\)</span> of the Hecke algebra acting
+on integral forms, let <span class="math inline">\(\Lambda_{\mathfrak
+m}\)</span> be the localized lattice. Its rational span splits into the
+eigenspaces <span class="math inline">\(V_G\)</span> occurring in the
+lift and the complementary eigenspaces <span
+class="math inline">\(V_B\)</span>. Let <span
+class="math inline">\(\pi_G\)</span> project along <span
+class="math inline">\(V_B\)</span>. The congruence defect of <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Def. 17.1,
+Prop. 17.30]</span> is <span
+class="math display">\[\eta_j(w)=\frac1{e_w}\sum_{\mathfrak m}
+\operatorname{length}_O\frac{\pi_G\Lambda_{\mathfrak
+m}}{\Lambda_{\mathfrak m}\cap V_G}.\]</span> Here <span
+class="math inline">\(\operatorname{length}_O(O/\ell O)=e_w\)</span>. At
+a place of standard type put <span
+class="math inline">\(\eta_j(w)=0\)</span>.</p>
+<div id="pr:691" class="problem">
+<p><strong>Problem 52.2.1</strong>. In the classical model take <span
+class="math inline">\(\Lambda=M_{12}(\mathbb Z)\otimes\mathbb
+Z_{691}\)</span>, <span class="math inline">\(V_G=\mathbb
+Q_{691}\Delta\)</span> and <span class="math inline">\(V_B=\mathbb
+Q_{691}E_{12}\)</span>. The defect is <span
+class="math inline">\(1\)</span>, and its weighted contribution <span
+class="math inline">\(\ell_we_w\eta\)</span> over <span
+class="math inline">\(\mathbb Q\)</span> is <span
+class="math inline">\(\log691\)</span>.</p>
+</div>
+<div id="thm:fitting" class="theorem">
+<p><strong>Theorem 52.2.1</strong> (Fitting inequality, <span><span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Prop. 17.27]</span></span>). <em>Let <span
+class="math inline">\(O\)</span> be a complete discrete valuation ring
+with fraction field <span class="math inline">\(K_w\)</span>, and <span
+class="math inline">\(\mathbb T\subset\prod_{z\in X}  O\)</span> an
+<span class="math inline">\(O\)</span>-algebra on a finite set <span
+class="math inline">\(X\)</span>. Let <span
+class="math inline">\(\delta_{z_0}\)</span> be the least valuation of a
+nonzero entry at <span class="math inline">\(z_0\)</span> of an element
+supported there, or infinity if there is none. Let <span
+class="math inline">\(P\)</span> be an <span
+class="math inline">\(a&#39;\)</span>-by-<span
+class="math inline">\(s\)</span> matrix over an <span
+class="math inline">\(O\)</span>-algebra <span
+class="math inline">\(R&#39;\)</span>, <span
+class="math inline">\(a&#39;\ge s\)</span>, with representations <span
+class="math inline">\(\rho_z\)</span> over <span
+class="math inline">\(O\)</span>. Assume (F1)–(F4). For every <span
+class="math inline">\(s\)</span>-by-<span
+class="math inline">\(s\)</span> matrix <span
+class="math inline">\(Q\)</span> over <span
+class="math inline">\(R&#39;\)</span>, the function <span
+class="math inline">\(z\mapsto\det\rho_z(Q)\)</span> belongs to <span
+class="math inline">\(\mathbb T\)</span>. Each <span
+class="math inline">\(\rho_z(P)\)</span> for <span
+class="math inline">\(z\ne z_0\)</span> has nonzero rational kernel. The
+representation <span class="math inline">\(\rho_{z_0}\)</span> is block
+upper triangular, with diagonal blocks <span
+class="math inline">\(\rho_i\)</span> of sizes <span
+class="math inline">\(d_i\)</span> whose joint reduction maps onto the
+product of the full matrix algebras. The residue field has size <span
+class="math inline">\(&gt;s\sum_i d_i\)</span>. Then <span
+class="math display">\[\delta_{z_0}\le\sum_i\operatorname{length}_O\ker\bigl(\rho_i(P):(K_w/O)^{sd_i}\longrightarrow(K_w/O)^{a&#39;d_i}\bigr).\]</span></em></p>
+</div>
+<p><em>Simplest incarnation:</em> the two eigenvalues in the example
+following Theorem <a href="20261125T014700--pseudocharacters-and-the-length-bound__workbook.html#thm:model" data-reference-type="ref"
+data-reference="pc-thm:model">33.4.1</a>. <em>Status</em>:
+proved in <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>.</p>
+<div id="pr:fitting" class="problem">
+<p><strong>Problem 52.2.2</strong>. Let <span class="math inline">\(O=\mathbb
+Z_{691}\)</span> and <span class="math inline">\(R&#39;=\mathbb
+T=\{(v_1,v_2)\in O^2:v_1-v_2\in691O\}\)</span>, with its two coordinate
+representations. For the one-entry matrix <span
+class="math inline">\(P=((691,0))\)</span> and <span
+class="math inline">\(z_0\)</span> the first coordinate, both sides of
+Theorem <a href="#thm:fitting" data-reference-type="ref"
+data-reference="thm:fitting">52.2.1</a> are <span
+class="math inline">\(1\)</span>. The graded cotangent module in the
+weight-twelve example following Theorem <a href="20261125T014700--pseudocharacters-and-the-length-bound__workbook.html#thm:model"
+data-reference-type="ref"
+data-reference="pc-thm:model">33.4.1</a> thus has the same
+length.</p>
+</div>
+<h1 id="sec:selmer">§52.3. Strict Selmer groups and the two signs</h1>
+<p>For a number field <span class="math inline">\(F\)</span> use <span
+class="math inline">\(W_i=(\mathbb Q_\ell/\mathbb Z_\ell)(-i)\)</span>
+with cyclotomic action to the power <span
+class="math inline">\(-i\)</span>. The group <span
+class="math inline">\(\mathrm{Sha}_\ell(F,i)\)</span> consists of
+continuous <span class="math inline">\(H^1(F,W_i)\)</span> classes whose
+restrictions to inertia at every finite place and to the decomposition
+group at every place over <span class="math inline">\(\ell\)</span>
+vanish. For a finite <span class="math inline">\(\ell\)</span>-group
+<span class="math inline">\(U\)</span> put <span
+class="math inline">\(\lambda(U)=\operatorname{length}_{\mathbb
+Z_\ell}(U)\log\ell=\log|U|\)</span>. The sum used in the window <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Def. 17.2,
+Hyp. 17.11]</span> is <span
+class="math display">\[V(F,t)=\sum_{\ell}\sum_{1\le
+i&lt;t}\lambda(\mathrm{Sha}_\ell(F,i)).\]</span></p>
+<div id="thm:class" class="theorem">
+<p><strong>Theorem 52.3.1</strong> (restriction and class groups, <span><span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Props. 17.7–17.8]</span></span>). <em>Let <span
+class="math inline">\(\ell\)</span> be odd, <span
+class="math inline">\(i\ge1\)</span>, and <span
+class="math inline">\((\ell-1)\nmid i\)</span>. For <span
+class="math inline">\(E\subset\mathbb Q(\mu_N)\)</span>, <span
+class="math inline">\(\ell\nmid N\)</span>, restriction embeds <span
+class="math inline">\(\mathrm{Sha}_\ell(\mathbb Q,i)\)</span> into <span
+class="math inline">\(\mathrm{Sha}_\ell(E,i)\)</span> with
+Galois-invariant image. Let <span class="math inline">\(A_\ell\)</span>
+be the <span class="math inline">\(\ell\)</span>-part of the class group
+of <span class="math inline">\(\mathbb Q(\mu_\ell)\)</span>, and <span
+class="math inline">\(\omega\)</span> the Teichmüller character. The
+dimension of <span class="math inline">\(\mathrm{Sha}_\ell(\mathbb
+Q,i)[\ell]\)</span> is the <span
+class="math inline">\(\ell\)</span>-rank of <span
+class="math inline">\(A_\ell^{(\omega^{-i})}\)</span>.</em></p>
+</div>
+<p><em>Simplest incarnation:</em> Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:sha-class"
+data-reference-type="ref"
+data-reference="ts-thm:sha-class">30.1.1</a> identifies the
+two sides by duality. <em>Status</em>: classical.</p>
+<div id="pr:character" class="problem">
+<p><strong>Problem 52.3.1</strong>. In the Artin description of Theorem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#thm:sha-class" data-reference-type="ref"
+data-reference="ts-thm:sha-class">30.1.1</a>, an equivariant
+homomorphism <span class="math inline">\(\phi:A_\ell\to
+W_i[\ell]\)</span> satisfies <span class="math inline">\(\phi(\sigma
+z)=\omega(\sigma)^{-i}\phi(z)\)</span>. After choosing a basis of <span
+class="math inline">\(W_i[\ell]\)</span>, its possible values give
+precisely <span
+class="math inline">\(\operatorname{Hom}(A_\ell^{(\omega^{-i})},\mathbb
+F_\ell)\)</span>. For even <span class="math inline">\(i\)</span> the
+character is even.</p>
+</div>
+<div id="pr:odd" class="problem">
+<p><strong>Problem 52.3.2</strong>. For positive odd <span
+class="math inline">\(i\)</span>, Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:MW"
+data-reference-type="ref" data-reference="ts-thm:MW">30.1.2</a>
+gives <span class="math inline">\(\sum_{\ell\ {\rm
+odd}}\lambda(\mathrm{Sha}_\ell(\mathbb
+Q,i))\le\log|\operatorname{num}(B_{i+1}/(i+1))|\le(i+1)\log(i+1)+3\)</span>.
+For <span class="math inline">\(t=\lfloor x^{401}\rfloor\)</span> the
+sum over odd <span class="math inline">\(1\le i&lt;t\)</span> is <span
+class="math inline">\(O(t^2\log(2t))=o(\sqrt b)\)</span>.</p>
+</div>
+<p>For comparison, statement (V) of <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> asserts the existence of
+constants <span class="math inline">\(C,P_0\)</span> with the following
+property. For every even <span class="math inline">\(i\ge2\)</span> and
+finite set <span class="math inline">\(S\)</span> of primes <span
+class="math inline">\(\ell\ge5\)</span> with <span
+class="math inline">\((\ell-1)\nmid2i\)</span>, the groups below are
+finite and <span class="math display">\[\sum_{\ell\in
+S}\lambda(\mathrm{Sha}_\ell(\mathbb Q,i))\le C(i+1)^{P_0}.\]</span></p>
+<div id="pr:vanishing" class="problem">
+<p><strong>Problem 52.3.3</strong>. Assuming (V), <span
+class="math inline">\(A_\ell^{(\omega^{-i})}=0\)</span> once <span
+class="math inline">\(\log\ell&gt;C(i+1)^{P_0}\)</span> for these <span
+class="math inline">\(i,\ell\)</span> <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Cor. 17.15]</span>. The
+threshold is polynomial in <span class="math inline">\(i\)</span> for
+the logarithm of the prime.</p>
+</div>
+<p>Kurihara proved vanishing at <span
+class="math inline">\(i=2\)</span>. For <span
+class="math inline">\(i+1=\nu\)</span> odd, Soulé’s sufficient threshold
+for <span class="math inline">\(\log\ell\)</span> is <span
+class="math inline">\(\nu^{224\nu^4}\)</span>. The estimates of de la
+Torre Durán give <span
+class="math inline">\(\exp(O(\nu^2\log\nu))\)</span> in the same
+comparison <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Rem. 17.16]</span>, <span
+class="citation" data-cites="Kur So2 DT">[<a href="#ref-Kur">Kur</a>;
+<a href="#ref-So2">So2</a>; <a href="#ref-DT">DT</a>]</span>. The odd-twist
+estimate in Problem <a href="#pr:odd" data-reference-type="ref"
+data-reference="pr:odd">52.3.2</a> concerns <span
+class="math inline">\(\mathbb Q\)</span>: over <span
+class="math inline">\(\mathbb Q\)</span> the odd twists are classical
+(Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:MW" data-reference-type="ref"
+data-reference="ts-thm:MW">30.1.2</a>), while the bound for the
+even twists is not known even over <span class="math inline">\(\mathbb
+Q\)</span>. The window requires both signs over <span
+class="math inline">\(E\)</span>, and includes <span
+class="math inline">\(\ell=2\)</span>.</p>
+<div id="pr:ribet" class="problem">
+<p><strong>Problem 52.3.4</strong>. In the nonsplit residual extension of
+Theorem <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#thm:ribet-lemma" data-reference-type="ref"
+data-reference="ei-thm:ribet-lemma">32.2.1</a>, write the
+diagonal characters as <span
+class="math inline">\(\chi_1,\chi_2\)</span> and the upper entry as
+<span class="math inline">\(b_{12}(\sigma)\)</span>. Then <span
+class="math inline">\(b_{12}(\sigma)/\chi_2(\sigma)\)</span> represents
+a nonzero class with coefficients in <span
+class="math inline">\(\chi_1\chi_2^{-1}\)</span>. For the absolute
+Galois group of <span class="math inline">\(F\)</span>, if this
+coefficient line is <span class="math inline">\(W_i[\ell]\)</span>, the
+image of the class in <span class="math inline">\(H^1(F,W_i)\)</span>
+belongs to <span class="math inline">\(\mathrm{Sha}_\ell(F,i)\)</span>
+precisely when that image satisfies the two local conditions.</p>
+</div>
+<p>In (G1) of <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> a Selmer class gives a
+tangent vector at the Eisenstein point. Passing from such vectors to an
+automorphic count also requires (G3) and (G4). The comparison there with
+Allen–Newton–Thorne uses the distinction between individually conjugate
+self-dual constituents and a pair exchanged by conjugate duality.
+Newton–Thorne’s adjoint vanishing requires an enormous image. Kato’s
+vanishing applies at the reducible modular points.</p>
+<h1 id="sec:window">§52.4. The window and the congruence bound</h1>
+<p>Fix a primitive character <span class="math inline">\(\psi\)</span>
+of conductor <span class="math inline">\(M\)</span> and order <span
+class="math inline">\(o\)</span>, as in Chapter <a href="20261125T020000--the-analytic-frame__workbook.html#chap"
+data-reference-type="ref" data-reference="af-chap">36</a>, whose
+letters we keep: <span class="math inline">\(e\)</span> is the exponent
+of the <span class="math inline">\(2\)</span>-power tower. For an
+integer <span class="math inline">\(e\ge0\)</span> set <span
+class="math inline">\(N=\operatorname{lcm}(2^{e+2},M,q,d)\)</span>.
+Write <span class="math inline">\(E(\psi,e,q,d)\)</span> for the
+subfield of <span class="math inline">\(\mathbb Q(\mu_N)\)</span> fixed
+by classes <span class="math inline">\(a\equiv\pm1\bmod 2^{e+2}\)</span>
+with <span class="math inline">\(\psi(a)=1\)</span> and <span
+class="math inline">\((\frac aq)=(\frac ad)=1\)</span>. A window pair at
+<span class="math inline">\(Y_0\)</span> consists of primes <span
+class="math inline">\(q\equiv3\bmod8,\ d\equiv7\bmod16\)</span> with
+<span class="math inline">\(z=Y_0^{\varepsilon/5}\)</span>, <span
+class="math display">\[z/2&lt;\log q\le z,\qquad
+\tfrac12z\log^2Y_0&lt;\log d\le z\log^2Y_0,\]</span> such that <span
+class="math inline">\(q\)</span> and every odd prime <span
+class="math inline">\(p\le z\)</span> divide <span
+class="math inline">\(d+1\)</span> <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Defs. 17.9–17.10]</span>.</p>
+<div id="hyp:window" class="theorem">
+<p><strong>Theorem 52.4.1</strong> (Selmer window). <em>Write <span
+class="math inline">\(\alpha=2+8\varepsilon\)</span>. For each <span
+class="math inline">\(\psi,\varepsilon\)</span> and integer-valued
+function <span class="math inline">\(e\ge0\)</span> with <span
+class="math inline">\(x^\alpha\le2^{e(x)}\le2x^\alpha\)</span> for <span
+class="math inline">\(x\ge1\)</span>, there are <span
+class="math inline">\(J_1\ge1,X_0\)</span> such that for every <span
+class="math inline">\(X\ge X_0\)</span> and every window pair at <span
+class="math inline">\(Y_0=X^{1/J_1}\)</span> there is <span
+class="math inline">\(W\in[Y_0,\sqrt X]\)</span> with the following
+property. For every <span class="math inline">\(W\le x\le W^2\)</span>,
+with <span class="math inline">\(E=E(\psi,e(x),q,d)\)</span> and <span
+class="math inline">\(t=\lfloor x^{401}\rfloor\)</span>, all the groups
+defining <span class="math inline">\(V(E,t)\)</span> are finite and
+<span class="math inline">\(V(E,t)\le\sqrt b\)</span>.</em></p>
+</div>
+<p><em>Simplest incarnation:</em> the odd twists over <span
+class="math inline">\(\mathbb Q\)</span> in Problem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#pr:one-number" data-reference-type="ref"
+data-reference="ts-pr:one-number">30.2.4</a>.
+<em>Status</em>: proved in the Lean formalization <span class="citation"
+data-cites="Lean">[<a href="#ref-Lean">Lean</a>]</span>, as Theorem <a
+href="20261126T020450--windows-of-scales__workbook.html#thm:vwin" data-reference-type="ref"
+data-reference="ws-thm:vwin">57.1.1</a> of Chapter <a
+href="20261126T020450--windows-of-scales__workbook.html#chap" data-reference-type="ref"
+data-reference="ws-chap">57</a>, which outlines the proof: the
+minus part is bounded at every scale (Chapter <a href="20261126T020430--the-minus-part-by-gauss-sums__workbook.html#chap"
+data-reference-type="ref" data-reference="mi-chap">55</a>), the
+plus part given a bound on fixed layers at finitely many bad primes
+(Chapter <a href="20261126T020440--the-plus-part-by-congruences__workbook.html#chap" data-reference-type="ref"
+data-reference="pl-chap">56</a>), and a window of scales is
+chosen on which those layers and the prime <span
+class="math inline">\(2\)</span> contribute little (Chapter <a
+href="20261126T020420--exceptional-twists-in-cyclotomic-towers__workbook.html#chap" data-reference-type="ref"
+data-reference="tw-chap">54</a>). The corresponding step in <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> is
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Hyp. 17.11]</span>, assumed there. As <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> notes, the statement
+implies more towards Vandiver’s conjecture than any published
+result.</p>
+<div id="thm:signs" class="theorem">
+<p><strong>Theorem 52.4.2</strong> (the two signs, <span><span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Thm. 17.12]</span></span>). <em>For odd <span
+class="math inline">\(\ell\)</span> let <span
+class="math inline">\(P_\pm\)</span> sum <span
+class="math inline">\(\lambda\)</span> of the <span
+class="math inline">\(c=\pm(-1)^i\)</span> eigenspaces over these primes
+and <span class="math inline">\(1\le i&lt;t\)</span>, with <span
+class="math inline">\(c\)</span> complex conjugation. With <span
+class="math inline">\(P_2:=\sum_{1\le
+i&lt;t}\operatorname{length}_{\mathbb Z_2}\mathrm{Sha}_2(E,i)\)</span>,
+the two idempotents <span class="math inline">\((1\pm c)/2\)</span> at
+odd primes give <span
+class="math inline">\(V(E,t)=(\log2)P_2+P_++P_-\)</span>. Write <span
+class="math inline">\(F_E=\operatorname{cond}(E)\)</span> and <span
+class="math inline">\(d_E=[E:\mathbb Q]\)</span>. The following two
+estimates, including finiteness, imply the conclusion of Theorem <a
+href="#hyp:window" data-reference-type="ref"
+data-reference="hyp:window">52.4.1</a>.</em></p>
+<ul>
+<li><p><em>Fix <span class="math inline">\(\psi,\varepsilon\)</span>,
+and functions <span class="math inline">\(e,t\)</span> with <span
+class="math inline">\(e(x)\ge2,\ 2^{e(x)}\le x^4,\ 2\le t(x)\le
+x^{401}\)</span> for <span class="math inline">\(x\ge2\)</span>. There
+are <span class="math inline">\(J_1,C,P_0&#39;,X_1&gt;0\)</span> such
+that for <span class="math inline">\(X\ge X_1\)</span> and primes <span
+class="math inline">\(q,d\)</span> in the indicated residue classes,
+prime to <span class="math inline">\(M\)</span>, with <span
+class="math display">\[q,d&gt;\max(P_0&#39;,2X^{401}+1),\qquad
+\log(qd)\le X^{\varepsilon/(4J_1)},\]</span> there is <span
+class="math inline">\(W\in[X^{1/J_1},\sqrt X]\)</span> such that for
+<span class="math inline">\(W\le x\le W^2\)</span>, <span
+class="math display">\[P_2\le e^{x^{4\varepsilon/5}},\qquad
+P_+\le(F_Et)^C+C e^{x^{4\varepsilon/5}}.\]</span> Here <span
+class="math inline">\(E=E(\psi,e(x),q,d)\)</span> and <span
+class="math inline">\(t=t(x)\)</span>.</em></p></li>
+<li><p><em>For all such fields and <span
+class="math inline">\(t\ge2\)</span>, with an absolute constant <span
+class="math inline">\(C_-\)</span>, <span class="math display">\[P_-\le
+3d_Et^2\log(tF_E)+C_-\sum_{\substack{\ell\mid o\\\ell\ {\rm odd}}}
+          \ell d_E^2t^2\log^2(t\ell F_E).\]</span></em></p></li>
+</ul>
+</div>
+<p><em>Simplest incarnation:</em> the minus eigenspaces of Theorem <a
+href="20261125T004000--denominators-and-sha__workbook.html#thm:HR" data-reference-type="ref"
+data-reference="ds-thm:HR">29.2.2</a>. <em>Status</em>: proved in
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>
+as a reduction. For the restriction of a rational class, <span
+class="math inline">\(c\)</span> acts trivially, so even twists occur in
+<span class="math inline">\(P_+\)</span> and odd twists in <span
+class="math inline">\(P_-\)</span>. The estimates (I) and (II) are
+inputs of this reduction, not proved in <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>. The formalization
+proves (II) as Theorem <a href="20261126T020430--the-minus-part-by-gauss-sums__workbook.html#thm:minus" data-reference-type="ref"
+data-reference="mi-thm:minus">55.2.3</a>, at every scale, by a
+one-sided Euler-system bound with Gauss sums in the form of Kolyvagin
+and Rubin; the main conjecture is not used. It proves the plus estimate
+of (I) as Theorem <a href="20261126T020440--the-plus-part-by-congruences__workbook.html#thm:plus" data-reference-type="ref"
+data-reference="pl-thm:plus">56.4.1</a>, given a bound on fixed
+layers that holds on the windows of Chapter <a href="20261126T020450--windows-of-scales__workbook.html#chap"
+data-reference-type="ref" data-reference="ws-chap">57</a>. The
+generic plus estimate and (V) both use the character estimate (CorGK),
+for <span class="math inline">\(K=\mathbb Q(\sqrt{-3})\)</span> in the
+deduction of (V) <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Props. 17.14,
+17.19]</span>.</p>
+<div id="pr:conductor" class="problem">
+<p><strong>Problem 52.4.1</strong>. For <span
+class="math inline">\(e\)</span> as in Theorem <a href="#hyp:window"
+data-reference-type="ref" data-reference="hyp:window">52.4.1</a>, <span
+class="math inline">\(x\ge Y_0\)</span> and <span
+class="math inline">\(t=\lfloor x^{401}\rfloor\)</span>, the
+inequalities for the window pair give <span
+class="math inline">\(\log(F_Et)\le 2x^{\varepsilon/4}\)</span> for all
+sufficiently large <span class="math inline">\(x\)</span>. Consequently
+each fixed power of <span class="math inline">\(F_Et\)</span> and <span
+class="math inline">\(e^{x^{4\varepsilon/5}}\)</span> is <span
+class="math inline">\(o(\sqrt b)\)</span>.</p>
+</div>
+<div id="pr:window-consequence" class="problem">
+<p><strong>Problem 52.4.2</strong>. Fix <span
+class="math inline">\(\psi,\varepsilon,e\)</span> as in Theorem <a
+href="#hyp:window" data-reference-type="ref"
+data-reference="hyp:window">52.4.1</a> and assume its conclusion. Suppose
+window pairs exist at <span class="math inline">\(X^{1/J_1}\)</span> for
+unbounded <span class="math inline">\(X\)</span>. Then for arbitrarily
+large <span class="math inline">\(x\)</span> the sum of <span
+class="math inline">\(\lambda(\mathrm{Sha}_\ell(\mathbb Q,i))\)</span>
+over odd <span class="math inline">\(\ell\nmid M q_xd_x\)</span> and
+<span class="math inline">\(1\le i&lt;\lfloor x^{401}\rfloor\)</span>
+with <span class="math inline">\((\ell-1)\nmid i\)</span> is at most
+<span class="math inline">\(\sqrt b\)</span>. The two excluded window
+primes may vary with <span class="math inline">\(x\)</span> <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Prop. 17.22]</span>.</p>
+</div>
+<p>What uniform estimate would an order formula for these groups have to
+supply? Burns–Greither and Huber–Kings treat equivariant special values
+for abelian fields and Dirichlet characters <span class="citation"
+data-cites="BuG HK">[<a href="#ref-BuG">BuG</a>;
+<a href="#ref-HK">HK</a>]</span>.</p>
+<div id="pr:order-formula" class="problem">
+<p><strong>Problem 52.4.3</strong>. Suppose that for a given <span
+class="math inline">\(E,t\)</span> every <span
+class="math inline">\(\mathrm{Sha}_\ell(E,i)\)</span>, <span
+class="math inline">\(1\le i&lt;t\)</span>, has order <span
+class="math inline">\(\ell^{v_\ell(a_{\ell,i})}\)</span>, with nonzero
+<span class="math inline">\(a_{\ell,i}\in\mathbb Z_\ell\)</span>. Then
+the numerical condition in Theorem <a href="#hyp:window"
+data-reference-type="ref" data-reference="hyp:window">52.4.1</a> is exactly
+<span class="math inline">\(\sum_{\ell}\sum_{1\le
+i&lt;t}v_\ell(a_{\ell,i})\log\ell\le\sqrt b\)</span> at each scale in
+its window. Finiteness of the individual groups alone gives no such
+upper bound.</p>
+</div>
+<div id="thm:W3" class="theorem">
+<p><strong>Theorem 52.4.3</strong> (rescaled window, <span><span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Props. 18.3–18.4]</span></span>). <em>Assume the conclusion of
+Theorem <a href="#hyp:window" data-reference-type="ref"
+data-reference="hyp:window">52.4.1</a>. In the construction <span
+class="math inline">\(n=c_*2^{e(x)}\in[x^\alpha,2x^\alpha]\)</span> with
+<span class="math inline">\(c_*\mid o\)</span> eventually constant.
+There is <span class="math inline">\(J\ge2\)</span> and there are
+arbitrarily large <span class="math inline">\(Y\)</span> with base <span
+class="math inline">\(Y_0\le Y,\ Y^2\le Y_0^J\)</span> and a window pair
+at <span class="math inline">\(Y_0\)</span> such that throughout <span
+class="math inline">\(Y\le x\le Y^{3/2}\)</span>, <span
+class="math display">\[V(E,\lfloor x^{400}\rfloor)\le\sqrt b,\qquad
+E=E(\psi,e(x),q,d).\]</span> All groups in this sum are finite. With a
+sufficiently large base the same bound holds for all integer twists
+<span class="math inline">\(1\le i&lt;x^{400}\)</span>, as in
+(W3).</em></p>
+</div>
+<p><em>Simplest incarnation:</em> the single-field sum in Problem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#pr:one-number" data-reference-type="ref"
+data-reference="ts-pr:one-number">30.2.4</a>.
+<em>Status</em>: derived in <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Props. 18.3–18.4]</span> from
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Hyp. 17.11]</span>, the statement of Theorem <a href="#hyp:window"
+data-reference-type="ref" data-reference="hyp:window">52.4.1</a>, assumed
+there; with Theorem <a href="#hyp:window" data-reference-type="ref"
+data-reference="hyp:window">52.4.1</a> as the formalization proves it, the
+derivation is Problem <a href="#pr:rescale" data-reference-type="ref"
+data-reference="pr:rescale">52.4.4</a>. The formalization makes a similar
+passage to ranges of scales with exponent <span
+class="math inline">\(3/2\)</span> (Chapter <a href="20261126T020450--windows-of-scales__workbook.html#chap"
+data-reference-type="ref" data-reference="ws-chap">57</a>). The
+prime selections in <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Thms. 5.10, 5.12,
+Prop. 18.4]</span> supply pairs at arbitrarily large bases.</p>
+<div id="pr:rescale" class="problem">
+<p><strong>Problem 52.4.4</strong>. Write <span
+class="math inline">\(\theta=c_*^{1/\alpha}\)</span> and apply
+Theorem <a href="#hyp:window" data-reference-type="ref"
+data-reference="hyp:window">52.4.1</a> with exponent <span
+class="math inline">\(e(\theta s)\)</span> for sufficiently large <span
+class="math inline">\(s\)</span>. For <span
+class="math inline">\(Y=\theta W\)</span> and <span
+class="math inline">\(Y_0\ge\max(3,2\theta^{400})\)</span>, one has
+<span class="math inline">\(Y^2\le Y_0^{J_1+1}\)</span>. If <span
+class="math inline">\(Y\le x\le Y^{3/2}\)</span>, then <span
+class="math inline">\(s=x/\theta\in[W,W^2]\)</span> and <span
+class="math inline">\(2x^{400}\le s^{401}\)</span>. Thus every integer
+<span class="math inline">\(i&lt;x^{400}\)</span> lies below <span
+class="math inline">\(\lfloor s^{401}\rfloor\)</span>.</p>
+</div>
+<p>Let <span class="math inline">\(k\)</span> be the rank parameter for
+the lifts, <span class="math inline">\(T_2\)</span> the distinguished
+set of columns, and <span
+class="math inline">\(N_c=|T_2|kby^2/n^2\)</span>. Let <span
+class="math inline">\(t_r\)</span> count the copies of the auxiliary
+space added at each lift. The ranks in the construction give <span
+class="math inline">\(t_r\le x^{400}-1\)</span> <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Lemma 18.2]</span>. Write <span
+class="math inline">\(d_j^0\)</span> for the rank of lifted forms of
+standard type at step <span class="math inline">\(j\)</span>.</p>
+<div id="hyp:congruence" class="theorem">
+<p><strong>Theorem 52.4.4</strong> (congruences at the twisted places).
+<em>There are constants <span class="math inline">\(C_N,x_0\)</span>
+such that for every admissible datum at <span class="math inline">\(x\ge
+x_0\)</span> and every <span class="math inline">\(j\)</span>, if the
+groups in <span class="math inline">\(V(E,t_r)\)</span> are finite and
+the sum converges, then <span class="math display">\[\sum_{w\ {\rm
+twisted}}\ell_we_w\eta_j(w)
+\le d_j^0\{C_N(yB_0+(\log x)^2N_c)+V(E,t_r)\}.\]</span></em></p>
+</div>
+<p><em>Simplest incarnation:</em> the projection denominator in
+Problem <a href="20261125T014100--congruence-modules__workbook.html#pr:691" data-reference-type="ref"
+data-reference="cg-pr:691">31.2.2</a>. Theorem <a
+href="20261125T014100--congruence-modules__workbook.html#thm:hida" data-reference-type="ref"
+data-reference="cg-thm:hida">31.4.1</a> gives the classical
+cuspidal comparison. <em>Status</em>: in <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> this is <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Hyp. 17.24]</span>, assumed there, and <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> outlines a proof as
+follows. The formalization proves the final theorem; the corresponding
+step in <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> is this hypothesis. The
+lattice quotient is a sum of projection defects, bounded using the
+congruence exponent of each eigensystem with its multiplicity <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Props. 17.25,
+17.30]</span>. After removing eigensystems outside the chosen local
+types, the per-component inequalities and their weighted sum yield the
+congruence bound, under the multiplicity and size bounds in <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Prop. 17.34,
+Hyp. 17.36]</span>. The Galois representations of Theorem <a
+href="20261125T011000--galois-representations-black-box__workbook.html#thm:galois" data-reference-type="ref"
+data-reference="gb-thm:galois">34.2.1</a>, Poitou–Tate duality
+and Berger’s potential semistability theorem enter the comparison
+in <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>. The estimate for
+lifting crystalline classes with Wach modules, the other local estimates
+and the integral comparison with theta series are among the steps that
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>
+lists as not proved there.</p>
+<div id="pr:budget" class="problem">
+<p><strong>Problem 52.4.5</strong>. Assume the conclusion of Theorem <a
+href="#hyp:congruence" data-reference-type="ref"
+data-reference="hyp:congruence">52.4.4</a>, (W3), <span
+class="math inline">\(d_j^0\le D_0\)</span> and <span
+class="math inline">\((\log x)^2\le y\)</span>. Then <span
+class="math inline">\(\sum_w\ell_we_w\eta_j(w)\le
+(C_N+1)D_0y(B_0+N_c)\)</span> <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Thm. 17.37]</span>. Dividing by
+the positive rank bound <span class="math inline">\(D_0\)</span> and
+summing <span class="math inline">\(m\)</span> lifts puts <span
+class="math inline">\(mN_c\)</span>, with the common factor <span
+class="math inline">\(y\)</span>, in the height allowance. The formula
+for <span class="math inline">\(e_5\)</span> in Problem <a href="#pr:A5"
+data-reference-type="ref" data-reference="pr:A5">52.1.3</a> uses only <span
+class="math inline">\(B_0\)</span>.</p>
+</div>
+<div id="thm:congruence" class="theorem">
+<p><strong>Theorem 52.4.5</strong> (cost of the congruence defects,
+<span><span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Thm. 17.37]</span></span>). <em>On an admissible window satisfying (W3)
+and the conclusion of Theorem <a href="#hyp:congruence"
+data-reference-type="ref" data-reference="hyp:congruence">52.4.4</a>, if
+<span class="math inline">\(d_j^0\le D_0\)</span> for all <span
+class="math inline">\(j\)</span> and <span class="math inline">\((\log
+x)^2\le y\)</span>, each lift has weighted congruence defect at most
+<span class="math inline">\((C_N+1)D_0y(B_0+N_c)\)</span>.</em></p>
+</div>
+<p><em>Simplest incarnation:</em> the single summand at <span
+class="math inline">\(691\)</span> in Problem <a href="20261125T014100--congruence-modules__workbook.html#pr:691"
+data-reference-type="ref" data-reference="cg-pr:691">31.2.2</a>.
+<em>Status</em>: derived in <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Thm. 17.37]</span> from (W3)
+and <span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Hyp. 17.24]</span>, the statement of Theorem <a href="#hyp:congruence"
+data-reference-type="ref" data-reference="hyp:congruence">52.4.4</a>, assumed
+there; the step from these is Problem <a href="#pr:budget"
+data-reference-type="ref" data-reference="pr:budget">52.4.5</a>.</p>
+<h4 id="par:deliverable">§52.4. Deliverable.</h4>
+<p>For the chain record of <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Def. 18.9, Prop. 18.14]</span>,
+Theorem <a href="#thm:local" data-reference-type="ref"
+data-reference="thm:local">52.1.1</a> gives (K5), and Problem <a
+href="#pr:A5" data-reference-type="ref" data-reference="pr:A5">52.1.3</a>
+gives (A5). Theorem <a href="#thm:congruence" data-reference-type="ref"
+data-reference="thm:congruence">52.4.5</a> supplies the congruence
+contribution <span class="math inline">\(mN_c\)</span> in the error of
+(K4), hence of (A4), under the component and rank bounds. Theorem <a
+href="#thm:W3" data-reference-type="ref" data-reference="thm:W3">52.4.3</a>
+supplies the independent window input (W3) from Theorem <a
+href="#hyp:window" data-reference-type="ref"
+data-reference="hyp:window">52.4.1</a>, whose proof in the formalization
+Chapter <a href="20261126T020450--windows-of-scales__workbook.html#chap" data-reference-type="ref"
+data-reference="ws-chap">57</a> outlines. In <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> these
+rest on <span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Hyps. 16.13, 16.14, 17.11, 17.24 and 17.36]</span>, assumed there; the
+formalization proves the final theorem, and Chapter <a href="20261126T020410--local-exponents-of-the-lifts__workbook.html#chap"
+data-reference-type="ref" data-reference="lx-chap">53</a>
+develops its proof of Theorem <a href="#thm:local"
+data-reference-type="ref" data-reference="thm:local">52.1.1</a> (Section <a
+href="20261125T021500--assembly-at-one-scale__workbook.html#sec:map" data-reference-type="ref"
+data-reference="as-sec:map">58.7</a> of Chapter <a
+href="20261125T021500--assembly-at-one-scale__workbook.html#chap" data-reference-type="ref"
+data-reference="as-chap">58</a>).</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="seclocal">§<a href="#sec:local"
+data-reference-type="ref" data-reference="sec:local">52.1</a></h2>
+<dl>
+<dt><a href="#pr:half-norm" data-reference-type="ref"
+data-reference="pr:half-norm">52.1.1</a></dt>
+<dd>
+<p>Use the norm from <span class="math inline">\(L\)</span> to <span
+class="math inline">\(\mathbb Q\)</span> of an element of <span
+class="math inline">\(K\)</span>.</p>
+</dd>
+<dt><a href="#pr:level" data-reference-type="ref"
+data-reference="pr:level">52.1.2</a></dt>
+<dd>
+<p>Apply the two sums over <span class="math inline">\(w\mid
+g_\iota\)</span> to the two parts of the local exponent.</p>
+</dd>
+<dt><a href="#pr:A5" data-reference-type="ref"
+data-reference="pr:A5">52.1.3</a></dt>
+<dd>
+<p>Keep <span class="math inline">\(B_0\)</span> in the sum until its
+last occurrence.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="seccongruences">§<a href="#sec:congruences"
+data-reference-type="ref" data-reference="sec:congruences">52.2</a></h2>
+<dl>
+<dt><a href="#pr:691" data-reference-type="ref"
+data-reference="pr:691">52.2.1</a></dt>
+<dd>
+<p>Localize the two lattices in Problem <a href="20261125T014100--congruence-modules__workbook.html#pr:691"
+data-reference-type="ref"
+data-reference="cg-pr:691">31.2.2</a>.</p>
+</dd>
+<dt><a href="#pr:fitting" data-reference-type="ref"
+data-reference="pr:fitting">52.2.2</a></dt>
+<dd>
+<p>Find the elements supported on the first coordinate. Use <span
+class="math inline">\((K_w/O)[691]\)</span> on the other side.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secselmer">§<a href="#sec:selmer"
+data-reference-type="ref" data-reference="sec:selmer">52.3</a></h2>
+<dl>
+<dt><a href="#pr:character" data-reference-type="ref"
+data-reference="pr:character">52.3.1</a></dt>
+<dd>
+<p>Apply equivariance to each character summand of <span
+class="math inline">\(A_\ell/\ell A_\ell\)</span>.</p>
+</dd>
+<dt><a href="#pr:odd" data-reference-type="ref"
+data-reference="pr:odd">52.3.2</a></dt>
+<dd>
+<p>Use Problems <a href="20261125T004100--tate-twists-and-sha__workbook.html#pr:one-number" data-reference-type="ref"
+data-reference="ts-pr:one-number">30.2.4</a> and <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#pr:bernoulli-size" data-reference-type="ref"
+data-reference="ts-pr:bernoulli-size">30.2.5</a>, then
+compare logarithms.</p>
+</dd>
+<dt><a href="#pr:vanishing" data-reference-type="ref"
+data-reference="pr:vanishing">52.3.3</a></dt>
+<dd>
+<p>Apply (V) to a singleton prime.</p>
+</dd>
+<dt><a href="#pr:ribet" data-reference-type="ref"
+data-reference="pr:ribet">52.3.4</a></dt>
+<dd>
+<p>Multiply two upper triangular matrices and then change the basis of
+the extension.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secwindow">§<a href="#sec:window"
+data-reference-type="ref" data-reference="sec:window">52.4</a></h2>
+<dl>
+<dt><a href="#pr:conductor" data-reference-type="ref"
+data-reference="pr:conductor">52.4.1</a></dt>
+<dd>
+<p>Use <span class="math inline">\(F_E\le N\le 2^{e+2}Mqd\)</span> and
+<span
+class="math inline">\(\varepsilon/4-\varepsilon/5&gt;0\)</span>.</p>
+</dd>
+<dt><a href="#pr:window-consequence" data-reference-type="ref"
+data-reference="pr:window-consequence">52.4.2</a></dt>
+<dd>
+<p>Take <span class="math inline">\(x=W\)</span> and use Theorem <a
+href="#thm:class" data-reference-type="ref"
+data-reference="thm:class">52.3.1</a> prime by prime.</p>
+</dd>
+<dt><a href="#pr:order-formula" data-reference-type="ref"
+data-reference="pr:order-formula">52.4.3</a></dt>
+<dd>
+<p>Test the size condition on a single cyclic group.</p>
+</dd>
+<dt><a href="#pr:rescale" data-reference-type="ref"
+data-reference="pr:rescale">52.4.4</a></dt>
+<dd>
+<p>Compare <span class="math inline">\(\theta\)</span> and <span
+class="math inline">\(\theta^{400}\)</span> with the lower endpoint of
+the window.</p>
+</dd>
+<dt><a href="#pr:budget" data-reference-type="ref"
+data-reference="pr:budget">52.4.5</a></dt>
+<dd>
+<p>Compare <span class="math inline">\(\sqrt b\)</span> with <span
+class="math inline">\(B_0\)</span> before summing over <span
+class="math inline">\(j\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Adr"><span class="bib-label">[Adr]</span> J. Adriazola, <em>The Alpöge proof of the Riemann hypothesis</em>, manuscript, revised 24 November 2026, <a href="https://github.com/jimjamzola/RH-Alpoge-Reconstruction" class="uri">https://github.com/jimjamzola/RH-Alpoge-Reconstruction</a>.</p>
+<p id="ref-BuG"><span class="bib-label">[BuG]</span> D. Burns and C. Greither, <em>On the equivariant Tamagawa number conjecture for Tate motives</em>, Invent. Math. <strong>153</strong> (2003), 303–359.</p>
+<p id="ref-DT"><span class="bib-label">[DT]</span> A. de la Torre Durán, <em>Perfect forms and torsion bounds in algebraic <span class="math inline">\(K\)</span>-theory over totally real and CM fields</em>, <a href="https://arxiv.org/abs/2611.06300">arXiv:2611.06300</a>.</p>
+<p id="ref-HK"><span class="bib-label">[HK]</span> A. Huber and G. Kings, <em>Bloch–Kato conjecture and main conjecture of Iwasawa theory for Dirichlet characters</em>, <a href="https://arxiv.org/abs/math/0101071">arXiv:math/0101071</a>.</p>
+<p id="ref-Kur"><span class="bib-label">[Kur]</span> M. Kurihara, <em>Some remarks on conjectures about cyclotomic fields and <span class="math inline">\(K\)</span>-groups of <span class="math inline">\(\Z\)</span></em>, Compositio Math. <strong>81</strong> (1992), 223–236.</p>
+<p id="ref-Lean"><span class="bib-label">[Lean]</span> The Lean community, <em>riemann-hypothesis</em>, a Lean formalization of Alpöge’s argument, <a href="https://github.com/leanprover-community/riemann-hypothesis" class="uri">https://github.com/leanprover-community/riemann-hypothesis</a>.</p>
+<p id="ref-So2"><span class="bib-label">[So2]</span> C. Soulé, <em>Perfect forms and the Vandiver conjecture</em>, J. Reine Angew. Math. <strong>517</strong> (1999), 209–221.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+</body>
+</html>

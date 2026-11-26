@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="robots" content="noindex">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>The Bessel identity</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb Z","C":"\\mathbb C","Hc":"\\mathcal H","Ac":"\\mathcal A","Ec":"\\mathcal E","HS":"\\mathrm{HS}","Bper":"\\operatorname{Bper}","Pt":"\\operatorname{Pt}","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<!-- snapshot-banner --><div style="border:1px solid #c9a227;background:#fff8e1;color:#3d3d3d;padding:.6em .9em;margin:.5em 0 1em 0;font:15px/1.4 system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;border-radius:6px"><strong>Snapshot of 25 November 2026.</strong> This is the collection as it stood before it was reorganized around the rewritten Lean proof. It is not maintained. Current version: <a href="../">ultronozm.github.io/grh-workbook</a>.</div>
+
+    <div class="my-links-container">
+2026-11-25 19:20:02
+      <a href="https://github.com/ultronozm/grh-workbook/blob/original-route/20261126T020230--the-bessel-identity__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T020230--the-bessel-identity__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/original-route/20261126T020230--the-bessel-identity__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">The Bessel identity</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:statement" id="toc-sec:statement">§46.1. The statement</a></li>
+<li><a href="#sec:assembly" id="toc-sec:assembly">§46.2. From the kernel identity to the Bessel identity</a></li>
+<li><a href="#sec:bases" id="toc-sec:bases">§46.3. Bilinear forms on bases</a></li>
+<li><a href="#sec:mult" id="toc-sec:mult">§46.4. The multiplicity identity</a></li>
+<li><a href="#sec:use" id="toc-sec:use">§46.5. What the identity gives</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secstatement" id="toc-secstatement">§46.1</a></li>
+<li><a href="#secassembly" id="toc-secassembly">§46.2</a></li>
+<li><a href="#secbases" id="toc-secbases">§46.3</a></li>
+<li><a href="#secmult" id="toc-secmult">§46.4</a></li>
+<li><a href="#secuse" id="toc-secuse">§46.5</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>From Chapter <a href="20261126T000000--the-objects-of-the-construction__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">35</a>: the lattices and the period maps
+<span class="math inline">\(B_u\)</span> of Section <a
+href="20261126T000000--the-objects-of-the-construction__workbook.html#sec:lattices" data-reference-type="ref"
+data-reference="ob-sec:lattices">35.5</a>, and the
+coefficient field <span class="math inline">\(L\)</span> with its fixed
+embedding <span class="math inline">\(\sigma\colon L\to\mathbb
+C\)</span>. From Chapter <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#chap" data-reference-type="ref"
+data-reference="sb-chap">43</a>: Bessel realizations <a
+href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#eq:bessel" data-reference-type="eqref"
+data-reference="sb-eq:bessel">(1)</a>, Theorems <a
+href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#thm:frame" data-reference-type="ref"
+data-reference="sb-thm:frame">43.2.1</a>, <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#thm:gram"
+data-reference-type="ref" data-reference="sb-thm:gram">43.2.2</a>
+and <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#thm:A3" data-reference-type="ref"
+data-reference="sb-thm:A3">43.3.1</a>, and Problems <a
+href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#pr:ramified" data-reference-type="ref"
+data-reference="sb-pr:ramified">43.4.2</a> and <a
+href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#pr:kernel" data-reference-type="ref"
+data-reference="sb-pr:kernel">43.4.3</a>. From Chapter <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">44</a>: the Poincaré series <span
+class="math inline">\(P_u\)</span>, the spaces <span
+class="math inline">\(C_u\)</span>, the toy of Section <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:smallest" data-reference-type="ref"
+data-reference="bp-sec:smallest">44.3</a> and Theorem <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#thm:near" data-reference-type="ref"
+data-reference="bp-thm:near">44.4.1</a>. From Chapter <a
+href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#chap" data-reference-type="ref"
+data-reference="sx-chap">45</a>: Problems <a href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#pr:anchor"
+data-reference-type="ref"
+data-reference="sx-pr:anchor">45.1.2</a>, <a
+href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#pr:compose" data-reference-type="ref"
+data-reference="sx-pr:compose">45.1.3</a>, <a
+href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#pr:unit-ratio" data-reference-type="ref"
+data-reference="sx-pr:unit-ratio">45.1.4</a> and <a
+href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#pr:toy-chain" data-reference-type="ref"
+data-reference="sx-pr:toy-chain">45.3.2</a>, and Theorem <a
+href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#thm:bottom" data-reference-type="ref"
+data-reference="sx-thm:bottom">45.5.1</a>. From Chapter <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#chap" data-reference-type="ref"
+data-reference="tn-chap">23</a>: the period of Section <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#sec:seesaw" data-reference-type="ref"
+data-reference="tn-sec:seesaw">23.4</a>. Inner products on
+complex Hilbert spaces are conjugate-linear in the first variable, as in
+Chapter <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#chap" data-reference-type="ref"
+data-reference="sb-chap">43</a>.</p>
+<p>Condition (d) of Theorem <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#thm:A3"
+data-reference-type="ref" data-reference="sb-thm:A3">43.3.1</a>
+asks that the period maps have a Bessel realization: each <span
+class="math inline">\(B_u\)</span> is, up to unitary changes of variable
+and a scalar, an inner product with a Poincaré series. Chapter <a
+href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#chap" data-reference-type="ref"
+data-reference="sx-chap">45</a> moved the pairing at the top of
+the chain to a Bessel period at the bottom, and Chapter <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">44</a> wrote Bessel periods as inner
+products with Poincaré series. This chapter assembles these into the
+identity that the Lean formalization <span class="citation"
+data-cites="Lean">[<a href="#ref-Lean">Lean</a>]</span> proves, and says what
+it gives.</p>
+<h1 id="sec:statement">§46.1. The statement</h1>
+<p>For one record, let <span class="math inline">\(\mathcal H\)</span>
+be the space of automorphic forms of Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap"
+data-reference-type="ref" data-reference="bp-chap">44</a>, of
+dimension <span class="math inline">\(D\)</span>. Let <span
+class="math inline">\(\mathcal E_0:=(R\otimes
+L)\otimes_{L,\sigma}\mathbb C\)</span> be the complexification of the
+row space of Chapter <a href="20261126T000000--the-objects-of-the-construction__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">35</a>, of dimension <span
+class="math inline">\(D_{\rm r}\le D\)</span>, with the inner product
+given by the norm of <span class="math inline">\(R\)</span> at <span
+class="math inline">\(\sigma\)</span>, and let <span
+class="math inline">\(s\colon\mathcal E_0\to\mathcal H\)</span> be a
+conjugate-linear isometry, the row embedding. For each word <span
+class="math inline">\(u\)</span> let <span
+class="math inline">\(M_u\subset C_u\)</span> be the complexification of
+the forms of level <span class="math inline">\(0\)</span> of <span
+class="math inline">\(u\)</span> ramified at <span
+class="math inline">\(T_u\)</span>, with the inner product of <span
+class="math inline">\(C_u\)</span>, and <span
+class="math inline">\(P_u\colon C_u\to\mathcal H\)</span> the
+Bessel–Poincaré map. The period map gives a <span
+class="math inline">\(\mathbb C\)</span>-bilinear pairing <span
+class="math inline">\(B_u\colon M_u\times\mathcal E_0\to\mathbb
+C\)</span>; on vectors coming from the <span
+class="math inline">\(L\)</span>-structures it is defined, as in (B) of
+Section <a href="20261126T000000--the-objects-of-the-construction__workbook.html#sec:lattices" data-reference-type="ref"
+data-reference="ob-sec:lattices">35.5</a>, by the pairing
+at the end of the chain, and <span class="math inline">\(B_u^{\rm
+alg}\)</span> denotes the corresponding <span
+class="math inline">\(L\)</span>-valued pairing of the lattices.</p>
+<div id="thm:bessel" class="theorem">
+<p><strong>Theorem 46.1.1</strong> (Bessel identity). <em>For every record of
+the family at a large scale:</em></p>
+<ol>
+<li><p><em><span
+class="math inline">\(B_u(\varphi,F)=\sigma\bigl(B_u^{\rm
+alg}(\varphi,F)\bigr)\)</span> for <span
+class="math inline">\(\varphi\)</span> and <span
+class="math inline">\(F\)</span> in the <span
+class="math inline">\(L\)</span>-structures;</em></p></li>
+<li><p><em>there are a unitary operator <span
+class="math inline">\(V\)</span> of <span class="math inline">\(\mathcal
+E_0\)</span> and, for each word <span class="math inline">\(u\)</span>,
+a number <span class="math inline">\(a_u\ne0\)</span> and a unitary
+operator <span class="math inline">\(U_u\)</span> of <span
+class="math inline">\(M_u\)</span> with <span
+class="math display">\[B_u(\varphi,F)=a_u\,\langle sVF,\
+P_uU_u\varphi\rangle_\mathcal H\qquad(\varphi\in M_u,\ F\in\mathcal
+E_0).\]</span></em></p></li>
+</ol>
+</div>
+<p><em>Status</em>: proved in the formalization, for the family it
+constructs; the proof is the subject of this chapter, and we say at each
+step how far we have followed it. In <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> the statement is
+Theorem <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#thm:bessel" data-reference-type="ref"
+data-reference="sb-thm:bessel">43.4.3</a> of Chapter <a
+href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#chap" data-reference-type="ref"
+data-reference="sb-chap">43</a>, derived there from hypotheses
+assumed there, among them a seesaw relation for an abstract period map,
+which the formalization does not state.</p>
+<div id="pr:conj" class="problem">
+<p><strong>Problem 46.1.1</strong>. The right side of (ii) is <span
+class="math inline">\(\mathbb C\)</span>-linear in <span
+class="math inline">\(\varphi\)</span> and in <span
+class="math inline">\(F\)</span>. If <span
+class="math inline">\(s\)</span> were <span
+class="math inline">\(\mathbb C\)</span>-linear and (ii) held with <span
+class="math inline">\(B_u\)</span> bilinear, then <span
+class="math inline">\(B_u=0\)</span>.</p>
+</div>
+<div id="pr:realization" class="problem">
+<p><strong>Problem 46.1.2</strong>. By Theorem <a href="#thm:bessel"
+data-reference-type="ref" data-reference="thm:bessel">46.1.1</a>(i), <span
+class="math inline">\(B_u\)</span> is the <span
+class="math inline">\(\mathbb C\)</span>-bilinear extension of <span
+class="math inline">\(\sigma\circ B_u^{\rm alg}\)</span>, that is, the
+map <span class="math inline">\(B_{u,v}\)</span> of Chapter <a
+href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#chap" data-reference-type="ref"
+data-reference="sb-chap">43</a> at the place <span
+class="math inline">\(v\)</span> of <span
+class="math inline">\(\sigma\)</span>; so Theorem <a href="#thm:bessel"
+data-reference-type="ref" data-reference="thm:bessel">46.1.1</a>(i) and (ii)
+give a Bessel realization <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#eq:bessel"
+data-reference-type="eqref"
+data-reference="sb-eq:bessel">(1)</a> of the maps <span
+class="math inline">\(B_u\)</span>, with <span
+class="math inline">\(Y_v=\mathcal E_0\)</span>, <span
+class="math inline">\(V_{u,v}=M_u\)</span>, <span
+class="math inline">\(\iota_0=s\)</span>, <span
+class="math inline">\(U=V\)</span>, <span
+class="math inline">\(\alpha_u=a_u\)</span>, <span
+class="math inline">\(\iota_u\)</span> the inclusion <span
+class="math inline">\(M_u\subset C_u\)</span>, and the same <span
+class="math inline">\(U_u\)</span>.</p>
+</div>
+<p>In the toy of Section <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:smallest"
+data-reference-type="ref"
+data-reference="bp-sec:smallest">44.3</a>, let <span
+class="math inline">\(\mathcal E_0:=\mathcal A_{(a)}(2)\)</span>, with
+<span class="math inline">\(s(F)\)</span> the form whose coefficients in
+the basis <span class="math inline">\(e^\nu\)</span> are the complex
+conjugates of those of <span class="math inline">\(F\)</span>, let <span
+class="math inline">\(M_j=C_j:=\mathcal A_{(j)}(1)\)</span>, and put
+<span class="math inline">\(B_j(\xi,F):=B(sF,\xi)\)</span>, with the
+period <span class="math inline">\(B\)</span> of Section <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:poincare" data-reference-type="ref"
+data-reference="bp-sec:poincare">44.2</a> read with the
+inner product of this chapter, so that <span
+class="math inline">\(B(\psi,\xi)\)</span> is conjugate-linear in <span
+class="math inline">\(\psi\)</span>; it is the complex conjugate of the
+period <span class="math inline">\(P(\psi,\xi)\)</span> of Chapter <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#chap" data-reference-type="ref"
+data-reference="tn-chap">23</a> when the latter is read as linear
+in <span class="math inline">\(\psi\)</span>.</p>
+<div id="pr:toy" class="problem">
+<p><strong>Problem 46.1.3</strong>. <span class="math inline">\(s\)</span> is
+a conjugate-linear isometry of <span class="math inline">\(\mathcal
+A_{(a)}(2)\)</span>, <span class="math inline">\(B_j\)</span> is
+bilinear, and <span class="math inline">\(B_j(\xi,F)=\langle
+sF,P\xi\rangle\)</span>: Theorem <a href="#thm:bessel"
+data-reference-type="ref" data-reference="thm:bessel">46.1.1</a>(ii) holds
+with <span class="math inline">\(a_j=1\)</span> and <span
+class="math inline">\(U_j=V=1\)</span>. For <span
+class="math inline">\(a=8\)</span>: <span
+class="math inline">\(B_0(\xi_0,e_1^8+e_2^8)=1/4\)</span> and <span
+class="math inline">\(B_4(\xi_4,e_1^4e_2^4)=1/280\)</span>.</p>
+</div>
+<p>Problem <a href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#pr:toy-chain" data-reference-type="ref"
+data-reference="sx-pr:toy-chain">45.3.2</a> of Chapter <a
+href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#chap" data-reference-type="ref"
+data-reference="sx-chap">45</a> adds the chain: for <span
+class="math inline">\(F=\Theta_{(a)}\varphi\)</span> with <span
+class="math inline">\(\varphi\)</span> real, the period at the top
+equals <span class="math inline">\(B_j(\xi,F)\)</span>.</p>
+<h1 id="sec:assembly">§46.2. From the kernel identity to the Bessel
+identity</h1>
+<p>In the formalization the row space is reached from below: there are a
+finite-dimensional inner product space <span
+class="math inline">\(V_0\)</span> of forms and a linear map <span
+class="math inline">\(\iota\colon V_0\to\mathcal E_0\)</span> with <span
+class="math inline">\(\iota(V_0)=\mathcal E_0\)</span>, and <span
+class="math inline">\(B_u(\varphi,\iota
+q)=\mathrm{per}_u(\varphi,q)\)</span> for <span
+class="math inline">\(q\in(\ker\iota)^\perp\)</span>, where <span
+class="math inline">\(\mathrm{per}_u\)</span> is the pairing at the end
+of the chain of <span class="math inline">\(u\)</span> at the base
+twist. The <em>row dictionary</em> is an isometry <span
+class="math inline">\(j\)</span> of <span class="math inline">\(\mathcal
+E_0\)</span> into <span class="math inline">\(L^2\)</span> of the
+automorphic quotient with <span
+class="math inline">\(s(F)=\overline{j(F)}\)</span>. The <em>column
+dictionary</em> is a unitary operator <span
+class="math inline">\(W_u\)</span> of <span
+class="math inline">\(M_u\)</span>: the column of the definite side
+attached to <span class="math inline">\(\psi\in M_u\)</span> is the
+element <span class="math inline">\(W_u\psi\)</span> of <span
+class="math inline">\(M_u\subset C_u\)</span>. In Sections <a
+href="#sec:bases" data-reference-type="ref"
+data-reference="sec:bases">46.3</a> and <a href="#sec:mult"
+data-reference-type="ref" data-reference="sec:mult">46.4</a>, <span
+class="math inline">\(P_u\psi\)</span> for <span
+class="math inline">\(\psi\in M_u\)</span> means <span
+class="math inline">\(P_uW_u\psi\)</span>.</p>
+<div id="thm:kernel" class="theorem">
+<p><strong>Theorem 46.2.1</strong> (kernel identity). <em>There are a unitary
+operator <span class="math inline">\(V\)</span> of <span
+class="math inline">\(\mathcal E_0\)</span> and, for each word <span
+class="math inline">\(u\)</span>, a number <span
+class="math inline">\(a_u\ne0\)</span> and a unitary operator <span
+class="math inline">\(U_u\)</span> of <span
+class="math inline">\(M_u\)</span> such that <span
+class="math display">\[\mathrm{per}_u(\varphi,q)=a_u\,\bigl\langle\overline{j(V\iota
+q)},\ P_uW_uU_u\varphi\bigr\rangle\]</span> for all <span
+class="math inline">\(\varphi\in M_u\)</span> and <span
+class="math inline">\(q\in V_0\)</span>.</em></p>
+</div>
+<p><em>Status</em>: proved in the formalization from Theorem <a
+href="#thm:mult" data-reference-type="ref"
+data-reference="thm:mult">46.3.1</a> below by the argument of Section <a
+href="#sec:bases" data-reference-type="ref"
+data-reference="sec:bases">46.3</a>.</p>
+<div id="pr:lift-rows" class="problem">
+<p><strong>Problem 46.2.1</strong>. Let <span
+class="math inline">\(\iota\colon V_0\to\mathcal E_0\)</span> be a
+linear map of finite-dimensional inner product spaces with <span
+class="math inline">\(\iota(V_0)=\mathcal E_0\)</span>. For every <span
+class="math inline">\(x\in\mathcal E_0\)</span> there is <span
+class="math inline">\(q\in(\ker\iota)^\perp\)</span> with <span
+class="math inline">\(\iota q=x\)</span>.</p>
+</div>
+<div id="pr:assembly" class="problem">
+<p><strong>Problem 46.2.2</strong>. Theorem <a href="#thm:kernel"
+data-reference-type="ref" data-reference="thm:kernel">46.2.1</a>, the two
+dictionaries and <span class="math inline">\(B_u(\varphi,\iota
+q)=\mathrm{per}_u(\varphi,q)\)</span> imply Theorem <a
+href="#thm:bessel" data-reference-type="ref"
+data-reference="thm:bessel">46.1.1</a>(ii), with <span
+class="math inline">\(U_u\)</span> replaced by <span
+class="math inline">\(W_uU_u\)</span>.</p>
+</div>
+<h1 id="sec:bases">§46.3. Bilinear forms on bases</h1>
+<p>The step behind Theorem <a href="#thm:kernel"
+data-reference-type="ref" data-reference="thm:kernel">46.2.1</a> compares two
+bilinear forms on coordinate vectors. Fix an <span
+class="math inline">\(L\)</span>-basis <span
+class="math inline">\(m_1,\dots,m_d\)</span> of the <span
+class="math inline">\(L\)</span>-structure of <span
+class="math inline">\(M_u\)</span>, and write <span
+class="math inline">\(\varphi\in L^d\)</span> also for <span
+class="math inline">\(\sum_l\varphi_lm_l\in M_u\)</span>. The pairing
+<span class="math inline">\(\mathrm{per}_u\)</span> is <span
+class="math inline">\(\mathbb C\)</span>-bilinear on <span
+class="math inline">\(M_u\times V_0\)</span>, and <span
+class="math inline">\(V_0\)</span> has an <span
+class="math inline">\(L\)</span>-structure with a basis <span
+class="math inline">\(r_1,\dots,r_n\)</span>, which is a <span
+class="math inline">\(\mathbb C\)</span>-basis of <span
+class="math inline">\(V_0\)</span>; for <span class="math inline">\(F\in
+L^n\)</span> put <span
+class="math inline">\(\mathrm{row}(F):=\sum_kF_kr_k\in V_0\)</span>. For
+each twist <span class="math inline">\(t\)</span> there are row
+coordinates <span class="math inline">\(F\in L^{n_t}\)</span> (with
+<span class="math inline">\(n_{t_0}=n\)</span>), a <span
+class="math inline">\(\mathbb C\)</span>-linear map <span
+class="math inline">\(\Theta_t\)</span> from <span
+class="math inline">\(\mathbb C^{n_t}\)</span> to <span
+class="math inline">\(\mathcal E_0\)</span>, and an <span
+class="math inline">\(L\)</span>-bilinear period <span
+class="math inline">\(\operatorname{Pt}_{u,t}\colon L^d\times L^{n_t}\to
+L\)</span> of the definite side; the period map at the twist <span
+class="math inline">\(t\)</span> on coordinates is <span
+class="math inline">\(B_{u,t}(\varphi,F)=\sigma\operatorname{Pt}_{u,t}(\varphi,F)\)</span>,
+and at the base twist <span
+class="math inline">\(\mathrm{per}_u(\varphi,\mathrm{row}(F))=\sigma\operatorname{Pt}_{u,t_0}(\varphi,F)\)</span>
+(the <em>chain tie</em>). Finally <span
+class="math inline">\(\iota(\mathrm{row}(F))=\lambda^{-1}\Theta_{t_0}(F)\)</span>
+for a number <span class="math inline">\(\lambda\ne0\)</span> (the
+<em>row tie</em>).</p>
+<div id="thm:mult" class="theorem">
+<p><strong>Theorem 46.3.1</strong> (multiplicity identity). <em>There are a
+unitary operator <span class="math inline">\(V\)</span> of <span
+class="math inline">\(\mathcal E_0\)</span> and, for each word <span
+class="math inline">\(u\)</span>, numbers <span
+class="math inline">\(a_u\ne0\)</span>, a unitary operator <span
+class="math inline">\(U_u\)</span> of <span
+class="math inline">\(M_u\)</span>, and numbers <span
+class="math inline">\(\zeta(u,t)\ne0\)</span> with <span
+class="math inline">\(\zeta(u,t_0)=1\)</span>, such that <span
+class="math display">\[\zeta(u,t)\,\sigma\bigl(\operatorname{Pt}_{u,t}(\varphi,F)\bigr)=a_u\,\bigl\langle
+sV\Theta_t(F),\ P_uU_u\varphi\bigr\rangle\]</span> for all twists <span
+class="math inline">\(t\)</span> and all coordinate vectors <span
+class="math inline">\(\varphi\in L^d\)</span>, <span
+class="math inline">\(F\in L^{n_t}\)</span>. Moreover, if <span
+class="math inline">\(\zeta(u,t)=\sigma(a)\)</span> with <span
+class="math inline">\(a\in L\)</span>, then <span
+class="math inline">\(v_w(a)=0\)</span> at every finite place <span
+class="math inline">\(w\)</span> of <span
+class="math inline">\(L\)</span> above no prime of the set <span
+class="math inline">\(S_t\)</span> of Chapter <a href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#chap"
+data-reference-type="ref"
+data-reference="sx-chap">45</a>.</em></p>
+</div>
+<div id="pr:extend" class="problem">
+<p><strong>Problem 46.3.1</strong>. Let <span
+class="math inline">\(\beta\colon L^d\times L^n\to L\)</span> be <span
+class="math inline">\(L\)</span>-bilinear and <span
+class="math inline">\(\Phi\colon\mathbb C^d\times\mathbb C^n\to\mathbb
+C\)</span> be <span class="math inline">\(\mathbb C\)</span>-bilinear,
+with <span
+class="math inline">\(\Phi(e_i,e_k)=\sigma\beta(e_i,e_k)\)</span> on the
+standard basis vectors. Then <span class="math inline">\(\Phi(\sigma
+x,\sigma y)=\sigma\beta(x,y)\)</span> for all <span
+class="math inline">\(x\in L^d\)</span>, <span
+class="math inline">\(y\in L^n\)</span>, and <span
+class="math inline">\(\Phi\)</span> is determined by <span
+class="math inline">\(\beta\)</span>.</p>
+</div>
+<div id="pr:kernel-from-mult" class="problem">
+<p><strong>Problem 46.3.2</strong>. Assume Theorem <a href="#thm:mult"
+data-reference-type="ref" data-reference="thm:mult">46.3.1</a>, the chain tie
+and the row tie. Then the two <span class="math inline">\(\mathbb
+C\)</span>-bilinear forms <span
+class="math inline">\((\varphi,q)\mapsto\mathrm{per}_u(\varphi,q)\)</span>
+and <span class="math inline">\((\varphi,q)\mapsto a_u\lambda\langle
+sV\iota q,P_uU_u\varphi\rangle\)</span> on <span
+class="math inline">\(M_u\times V_0\)</span> agree on <span
+class="math inline">\((m_l,r_k)\)</span>, hence everywhere; this is
+Theorem <a href="#thm:kernel" data-reference-type="ref"
+data-reference="thm:kernel">46.2.1</a> with <span
+class="math inline">\(a_u\lambda\)</span> in place of <span
+class="math inline">\(a_u\)</span>.</p>
+</div>
+<p>In the formalization the embedding in the chain tie may be the
+complex conjugate of <span class="math inline">\(\sigma\)</span>, and
+then the scalars are conjugated accordingly; we suppress this.</p>
+<h1 id="sec:mult">§46.4. The multiplicity identity</h1>
+<p>Each <span class="math inline">\(e\in\mathcal E_0\)</span> has a
+theta lift <span class="math inline">\(\mathsf R_e\)</span>, an
+automorphic form on the indefinite group at the top, whose restriction
+to the base is a row form <span class="math inline">\(T_e\)</span> in
+the sense of Chapter <a href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#chap" data-reference-type="ref"
+data-reference="sx-chap">45</a>; every row form at the base is
+some <span class="math inline">\(T_e\)</span>, and <span
+class="math inline">\(\mathrm{row}_t(F)\)</span> of Chapter <a
+href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#chap" data-reference-type="ref"
+data-reference="sx-chap">45</a> is <span
+class="math inline">\(T_{\Theta_t(F)}\)</span>. Recall that <span
+class="math inline">\(P_ux\)</span> means <span
+class="math inline">\(P_uW_ux\)</span>. Theorem <a href="#thm:mult"
+data-reference-type="ref" data-reference="thm:mult">46.3.1</a> comes from
+five inputs.</p>
+<ul>
+<li><p>There are a vector <span class="math inline">\(v\)</span> of the
+archimedean discrete series and an isometric bijection <span
+class="math inline">\(J\)</span> from the space <span
+class="math inline">\(\{\mathsf R_e:e\in\mathcal E_0\}\)</span> onto
+<span class="math inline">\(\mathcal H\)</span>, such that <span
+class="math inline">\(J(\mathsf R_e)\)</span> is almost everywhere the
+complex conjugate of the evaluation of <span
+class="math inline">\(\mathsf R_e\)</span> at <span
+class="math inline">\(v\)</span>. <em>Status</em>: proved in the
+formalization from a proposition stating a classification of discrete
+series of unitary groups <span class="citation"
+data-cites="HC">[<a href="#ref-HC">HC</a>]</span>; we have not traced how
+that proposition is supplied.</p></li>
+<li><p>There are a unitary operator <span
+class="math inline">\(V\)</span> of <span class="math inline">\(\mathcal
+E_0\)</span>, induced by translation by a central element, and <span
+class="math inline">\(\kappa\ne0\)</span> such that <span
+class="math inline">\(\langle sVe,P_ux\rangle=\kappa\,b(e,x)\)</span>
+for <span class="math inline">\(e\in\mathcal E_0\)</span> and <span
+class="math inline">\(x\in M_u\)</span>, where <span
+class="math inline">\(b(e,x):=\langle J(\mathsf
+R_e),P_ux\rangle_\mathcal H\)</span> is the integral of the evaluated
+theta lift of <span class="math inline">\(e\)</span> against the
+Poincaré series of <span class="math inline">\(x\)</span>, without
+complex conjugation. <em>Status</em>: proved in the formalization; we
+have read only its statement.</p></li>
+<li><p>Theorem <a href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#thm:bottom" data-reference-type="ref"
+data-reference="sx-thm:bottom">45.5.1</a> of Chapter <a
+href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#chap" data-reference-type="ref"
+data-reference="sx-chap">45</a>, with its unitary operator <span
+class="math inline">\(U\)</span> of <span
+class="math inline">\(M_u\)</span>, its constants <span
+class="math inline">\(c_t\)</span> and, for each row form <span
+class="math inline">\(T\)</span>, its function <span
+class="math inline">\(p\)</span>.</p></li>
+<li><p>There is a unitary operator <span
+class="math inline">\(R_u\)</span> of <span
+class="math inline">\(M_u\)</span> such that for all <span
+class="math inline">\(e,e&#39;\in\mathcal E_0\)</span>, <span
+class="math inline">\(x,x&#39;\in M_u\)</span> and <span
+class="math inline">\(\alpha,\alpha&#39;\in\mathbb C\)</span>: if <span
+class="math inline">\(\alpha\operatorname{Bper}(x,T_e)+\alpha&#39;\operatorname{Bper}(x&#39;,T_{e&#39;})=0\)</span>,
+then <span class="math inline">\(\alpha
+b(e,R_ux)+\alpha&#39;b(e&#39;,R_ux&#39;)=0\)</span>. <em>Status</em>:
+proved in the formalization; by our reading it is the unfolding of
+Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">44</a>, but we have not read its
+proof.</p></li>
+<li><p>For every word <span class="math inline">\(u\)</span> there is
+<span class="math inline">\(\varphi\in M_u\)</span> with <span
+class="math inline">\(P_u\varphi\ne0\)</span>. <em>Status</em>: an
+assumption of the step of the formalization that proves Theorem <a
+href="#thm:mult" data-reference-type="ref"
+data-reference="thm:mult">46.3.1</a>; we have not traced where it is
+proved.</p></li>
+</ul>
+<div id="pr:nz" class="problem">
+<p><strong>Problem 46.4.1</strong>. Assume the second inequality of
+Theorem <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#thm:near" data-reference-type="ref"
+data-reference="bp-thm:near">44.4.1</a> with <span
+class="math inline">\(e_0\le\frac12\)</span>, and <span
+class="math inline">\(\dim M_u&gt;\frac12\dim C_u\)</span>. Then (NZ)
+holds.</p>
+</div>
+<div id="pr:anchor-pair" class="problem">
+<p><strong>Problem 46.4.2</strong>. (E) and (NZ) give, for every word <span
+class="math inline">\(u\)</span>, vectors <span
+class="math inline">\(e^\circ\in\mathcal E_0\)</span> and <span
+class="math inline">\(x^\circ\in M_u\)</span> with <span
+class="math inline">\(b(e^\circ,x^\circ)\ne0\)</span>.</p>
+</div>
+<div id="pr:prop" class="problem">
+<p><strong>Problem 46.4.3</strong>. Assume (J), (Bo) and the conclusion of
+Problem <a href="#pr:anchor-pair" data-reference-type="ref"
+data-reference="pr:anchor-pair">46.4.2</a>, and put <span
+class="math inline">\(b(t,\varphi,F):=b(\Theta_t(F),R_uU\varphi)\)</span>.
+There are numbers <span class="math inline">\(p_0\ne0\)</span> and <span
+class="math inline">\(b_0\ne0\)</span>, depending on <span
+class="math inline">\(u\)</span>, such that <span
+class="math inline">\(c_t\,B_{u,t}(\varphi,F)\,b_0=p_0\,b(t,\varphi,F)\)</span>
+for all <span class="math inline">\(t\)</span>, <span
+class="math inline">\(\varphi\)</span>, <span
+class="math inline">\(F\)</span>.</p>
+</div>
+<div id="pr:mult-assembly" class="problem">
+<p><strong>Problem 46.4.4</strong>. Assume Problem <a href="#pr:prop"
+data-reference-type="ref" data-reference="pr:prop">46.4.3</a> and (Pa). Then
+the identity of Theorem <a href="#thm:mult" data-reference-type="ref"
+data-reference="thm:mult">46.3.1</a> holds with <span
+class="math inline">\(\zeta(u,t)=c_t/c_{t_0}\)</span>, <span
+class="math inline">\(a_u=p_0/(\kappa b_0c_{t_0})\)</span> and <span
+class="math inline">\(U_u:=R_uU\)</span>.</p>
+</div>
+<div id="pr:zeta" class="problem">
+<p><strong>Problem 46.4.5</strong>. In Problem <a href="#pr:mult-assembly"
+data-reference-type="ref" data-reference="pr:mult-assembly">46.4.4</a>,
+<span class="math inline">\(\zeta(u,t_0)=1\)</span> and <span
+class="math inline">\(\zeta(u,t)\ne0\)</span>; and if <span
+class="math inline">\(\zeta(u,t)=\sigma(a)\)</span> with <span
+class="math inline">\(a\in L\)</span>, then <span
+class="math inline">\(v_w(a)=0\)</span> at every finite place <span
+class="math inline">\(w\)</span> of <span
+class="math inline">\(L\)</span> above no prime of the set <span
+class="math inline">\(S_t\)</span> of Chapter <a href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#chap"
+data-reference-type="ref" data-reference="sx-chap">45</a>.</p>
+</div>
+<p>Problems <a href="#pr:anchor-pair" data-reference-type="ref"
+data-reference="pr:anchor-pair">46.4.2</a>–<a href="#pr:zeta"
+data-reference-type="ref" data-reference="pr:zeta">46.4.5</a> prove
+Theorem <a href="#thm:mult" data-reference-type="ref"
+data-reference="thm:mult">46.3.1</a> from (E), (Pa), (J), (Bo) and (NZ);
+Problems <a href="#pr:extend" data-reference-type="ref"
+data-reference="pr:extend">46.3.1</a> and <a href="#pr:kernel-from-mult"
+data-reference-type="ref" data-reference="pr:kernel-from-mult">46.3.2</a>
+give Theorem <a href="#thm:kernel" data-reference-type="ref"
+data-reference="thm:kernel">46.2.1</a>; and Problems <a href="#pr:lift-rows"
+data-reference-type="ref" data-reference="pr:lift-rows">46.2.1</a> and <a
+href="#pr:assembly" data-reference-type="ref"
+data-reference="pr:assembly">46.2.2</a> give Theorem <a href="#thm:bessel"
+data-reference-type="ref" data-reference="thm:bessel">46.1.1</a>(ii).
+Part (i) is proved in the formalization from the same multiplicity
+identity and the chain tie, by an argument we have not followed.</p>
+<h1 id="sec:use">§46.5. What the identity gives</h1>
+<p>Fix orthonormal bases <span class="math inline">\((b_k)\)</span> of
+<span class="math inline">\(\mathcal E_0\)</span>, <span
+class="math inline">\((e_l)\)</span> of <span
+class="math inline">\(M_u\)</span> and <span
+class="math inline">\((f_i)\)</span> of <span
+class="math inline">\(\mathcal H\)</span>. In the bases of the <span
+class="math inline">\(L\)</span>-structures the matrix of <span
+class="math inline">\(B_u\)</span> differs from the one below by
+invertible matrices, the <span class="math inline">\(Y_i\)</span> and
+<span class="math inline">\(Y&#39;\)</span> of Theorem <a
+href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#thm:frame" data-reference-type="ref"
+data-reference="sb-thm:frame">43.2.1</a>.</p>
+<div id="pr:matrix" class="problem">
+<p><strong>Problem 46.5.1</strong>. Let <span class="math inline">\(\mathsf
+S_{ki}:=\langle sVb_k,f_i\rangle\)</span> and <span
+class="math inline">\(\Pi_{il}:=\langle f_i,P_uU_ue_l\rangle\)</span>.
+Then <span class="math inline">\(B_u(e_l,b_k)=a_u(\mathsf
+S\Pi)_{kl}\)</span>, and <span class="math inline">\(\mathsf S\)</span>
+is a <span class="math inline">\(D_{\rm r}\times D\)</span> matrix with
+orthonormal rows.</p>
+</div>
+<p>Complete <span class="math inline">\(\mathsf S\)</span> to a unitary
+<span class="math inline">\(D\times D\)</span> matrix <span
+class="math inline">\(\hat{\mathsf S}\)</span>, and put <span
+class="math inline">\(A_u:=\hat{\mathsf S}\Pi\)</span>, whose first
+<span class="math inline">\(D_{\rm r}\)</span> rows are <span
+class="math inline">\(a_u^{-1}\)</span> times the matrix of <span
+class="math inline">\(B_u\)</span>.</p>
+<div id="pr:gram" class="problem">
+<p><strong>Problem 46.5.2</strong>. With <span
+class="math inline">\(\gamma_u:=c_0(u)^{-1}\)</span> and <span
+class="math inline">\(K_{uu}\)</span> as in Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap"
+data-reference-type="ref" data-reference="bp-chap">44</a>, <span
+class="math inline">\(\gamma_uA_u^*A_u-1=U_u^*(\iota_u^*K_{uu}\iota_u-1)U_u\)</span>,
+where <span class="math inline">\(\iota_u\colon M_u\to C_u\)</span> is
+the inclusion; and <span
+class="math inline">\(Q:=\sum_u\gamma_uA_uA_u^*\)</span> is unitarily
+equivalent to <span
+class="math inline">\(\sum_u\gamma_uP_u\iota_u\iota_u^*P_u^*\)</span>.
+So the hypotheses of Theorem <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#thm:gram"
+data-reference-type="ref" data-reference="sb-thm:gram">43.2.2</a>
+for the matrices <span class="math inline">\(\hat{\mathsf S}P_u\)</span>
+and <span class="math inline">\(V_u:=\iota_uU_u\)</span> are those for
+<span class="math inline">\(P_u\)</span> and <span
+class="math inline">\(\iota_uU_u\)</span>.</p>
+</div>
+<div id="pr:rank" class="problem">
+<p><strong>Problem 46.5.3</strong>. Assume the second inequality of
+Theorem <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#thm:near" data-reference-type="ref"
+data-reference="bp-thm:near">44.4.1</a>. Then the rank of <span
+class="math inline">\(B_u\)</span> is at least <span
+class="math inline">\(\dim M_u-e_0\dim C_u-(D-D_{\rm r})\)</span>.</p>
+</div>
+<p>With Theorem <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#thm:near" data-reference-type="ref"
+data-reference="bp-thm:near">44.4.1</a> Problem <a
+href="#pr:gram" data-reference-type="ref"
+data-reference="pr:gram">46.5.2</a> gives conditions (v) and (vi) of
+Theorem <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#thm:frame" data-reference-type="ref"
+data-reference="sb-thm:frame">43.2.1</a>, through Theorem <a
+href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#thm:gram" data-reference-type="ref"
+data-reference="sb-thm:gram">43.2.2</a>, and Problem <a
+href="#pr:realization" data-reference-type="ref"
+data-reference="pr:realization">46.1.2</a> gives (d) of Theorem <a
+href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#thm:A3" data-reference-type="ref"
+data-reference="sb-thm:A3">43.3.1</a>.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. In <span class="citation"
+data-cites="Lean">[<a href="#ref-Lean">Lean</a>]</span>, Theorem <a
+href="#thm:bessel" data-reference-type="ref"
+data-reference="thm:bessel">46.1.1</a> is <code>BesselId</code>, a clause of
+<code>LinkDIV_at</code>; part (i) is <code>D7.BuRational</code>, proved
+through <code>buRat_rrFull_closed_alt</code>, and part (ii) is
+<code>adm13</code>, with <span class="math inline">\(\langle
+sF,P_u\varphi\rangle\)</span> the definition <code>D7.besS</code>. The
+period at the end of the chain is <code>perCol</code>
+(<code>PtilCol</code> of <code>ColumnChain.col</code>), tied to <span
+class="math inline">\(B_u\)</span> by <code>Rows.BuDefQ</code>.
+Problems <a href="#pr:lift-rows" data-reference-type="ref"
+data-reference="pr:lift-rows">46.2.1</a> and <a href="#pr:assembly"
+data-reference-type="ref" data-reference="pr:assembly">46.2.2</a> are
+<code>exists_Q_iota</code> and <code>besselId_of_joins</code>, reached
+from <code>adm13_of_kernel_join</code> and
+<code>adm13_of_colJoin</code>; Theorem <a href="#thm:kernel"
+data-reference-type="ref" data-reference="thm:kernel">46.2.1</a> is
+<code>KerJoinS</code>, and Problem <a href="#pr:kernel-from-mult"
+data-reference-type="ref" data-reference="pr:kernel-from-mult">46.3.2</a> is
+<code>kernelJoin_of_multiplicity</code>. Theorem <a href="#thm:mult"
+data-reference-type="ref" data-reference="thm:mult">46.3.1</a> is
+<code>MIstar2</code> (with <code>MIid</code>, <code>MIUnit2</code>,
+<code>AuNZ</code>), proved by <code>miStar2_at_realisation_alt</code>
+and <code>miStar2_of_anchored</code>. The inputs are
+<code>exists_conjVec</code> (E), <code>pairForm_alt</code> (Pa),
+<code>JointCondition</code> (J),
+<code>botRel_of_pin_of_mem_center</code> (Bo) and <code>PuNZ</code>
+(NZ); Problem <a href="#pr:prop" data-reference-type="ref"
+data-reference="pr:prop">46.4.3</a> is <code>anchor_pairs_alt</code> with
+<code>anchor_word_alt</code>. Problems <a href="#pr:matrix"
+data-reference-type="ref" data-reference="pr:matrix">46.5.1</a> and <a
+href="#pr:gram" data-reference-type="ref"
+data-reference="pr:gram">46.5.2</a> correspond to
+<code>blockReal_at_of</code> and <code>matK_at_of</code>.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secstatement">§<a href="#sec:statement"
+data-reference-type="ref" data-reference="sec:statement">46.1</a></h2>
+<dl>
+<dt><a href="#pr:conj" data-reference-type="ref"
+data-reference="pr:conj">46.1.1</a></dt>
+<dd>
+<p>Replace <span class="math inline">\(F\)</span> by <span
+class="math inline">\(\mathrm iF\)</span>.</p>
+</dd>
+<dt><a href="#pr:toy" data-reference-type="ref"
+data-reference="pr:toy">46.1.3</a></dt>
+<dd>
+<p>Problem <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#pr:unfold" data-reference-type="ref"
+data-reference="bp-pr:unfold">44.2.1</a>; Problem <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#pr:Pj" data-reference-type="ref"
+data-reference="bp-pr:Pj">44.3.2</a> and <span
+class="math inline">\(\lVert e^\nu\rVert^2=\nu!/a!\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secassembly">§<a href="#sec:assembly"
+data-reference-type="ref" data-reference="sec:assembly">46.2</a></h2>
+<dl>
+<dt><a href="#pr:lift-rows" data-reference-type="ref"
+data-reference="pr:lift-rows">46.2.1</a></dt>
+<dd>
+<p>Subtract from any preimage its projection to <span
+class="math inline">\(\ker\iota\)</span>.</p>
+</dd>
+<dt><a href="#pr:assembly" data-reference-type="ref"
+data-reference="pr:assembly">46.2.2</a></dt>
+<dd>
+<p>Write the second argument as <span class="math inline">\(\iota
+q\)</span> with <span
+class="math inline">\(q\in(\ker\iota)^\perp\)</span>, by Problem <a
+href="#pr:lift-rows" data-reference-type="ref"
+data-reference="pr:lift-rows">46.2.1</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secbases">§<a href="#sec:bases"
+data-reference-type="ref" data-reference="sec:bases">46.3</a></h2>
+<dl>
+<dt><a href="#pr:extend" data-reference-type="ref"
+data-reference="pr:extend">46.3.1</a></dt>
+<dd>
+<p>Expand in the bases.</p>
+</dd>
+<dt><a href="#pr:kernel-from-mult" data-reference-type="ref"
+data-reference="pr:kernel-from-mult">46.3.2</a></dt>
+<dd>
+<p>Problem <a href="#pr:extend" data-reference-type="ref"
+data-reference="pr:extend">46.3.1</a> at <span
+class="math inline">\(t=t_0\)</span>, where <span
+class="math inline">\(\zeta=1\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secmult">§<a href="#sec:mult"
+data-reference-type="ref" data-reference="sec:mult">46.4</a></h2>
+<dl>
+<dt><a href="#pr:nz" data-reference-type="ref"
+data-reference="pr:nz">46.4.1</a></dt>
+<dd>
+<p>Problem <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#pr:kernel" data-reference-type="ref"
+data-reference="sb-pr:kernel">43.4.3</a>.</p>
+</dd>
+<dt><a href="#pr:anchor-pair" data-reference-type="ref"
+data-reference="pr:anchor-pair">46.4.2</a></dt>
+<dd>
+<p><span class="math inline">\(J\)</span> is onto.</p>
+</dd>
+<dt><a href="#pr:prop" data-reference-type="ref"
+data-reference="pr:prop">46.4.3</a></dt>
+<dd>
+<p>Take <span class="math inline">\(T:=T_{e^\circ}\)</span> in (J).</p>
+</dd>
+<dt><a href="#pr:zeta" data-reference-type="ref"
+data-reference="pr:zeta">46.4.5</a></dt>
+<dd>
+<p>Theorem <a href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#thm:bottom" data-reference-type="ref"
+data-reference="sx-thm:bottom">45.5.1</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secuse">§<a href="#sec:use"
+data-reference-type="ref" data-reference="sec:use">46.5</a></h2>
+<dl>
+<dt><a href="#pr:matrix" data-reference-type="ref"
+data-reference="pr:matrix">46.5.1</a></dt>
+<dd>
+<p>Expand <span class="math inline">\(P_uU_ue_l\)</span> in the basis
+<span class="math inline">\((f_i)\)</span>; <span
+class="math inline">\(s\)</span> is a conjugate-linear isometry.</p>
+</dd>
+<dt><a href="#pr:gram" data-reference-type="ref"
+data-reference="pr:gram">46.5.2</a></dt>
+<dd>
+<p><span class="math inline">\(\hat{\mathsf S}^*\hat{\mathsf
+S}=1\)</span>.</p>
+</dd>
+<dt><a href="#pr:rank" data-reference-type="ref"
+data-reference="pr:rank">46.5.3</a></dt>
+<dd>
+<p>Problems <a href="#pr:matrix" data-reference-type="ref"
+data-reference="pr:matrix">46.5.1</a> and <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#pr:kernel"
+data-reference-type="ref"
+data-reference="sb-pr:kernel">43.4.3</a>; <span
+class="math inline">\(\mathsf S\)</span> has a kernel of dimension <span
+class="math inline">\(D-D_{\rm r}\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Adr"><span class="bib-label">[Adr]</span> J. Adriazola, <em>The Alpöge proof of the Riemann hypothesis</em>, manuscript, revised 24 November 2026, <a href="https://github.com/jimjamzola/RH-Alpoge-Reconstruction" class="uri">https://github.com/jimjamzola/RH-Alpoge-Reconstruction</a>.</p>
+<p id="ref-HC"><span class="bib-label">[HC]</span> Harish-Chandra, <em>Discrete series for semisimple Lie groups. II</em>, Acta Math. <strong>116</strong> (1966), 1–111.</p>
+<p id="ref-Lean"><span class="bib-label">[Lean]</span> The Lean community, <em>riemann-hypothesis</em>, a Lean formalization of Alpöge’s argument, <a href="https://github.com/leanprover-community/riemann-hypothesis" class="uri">https://github.com/leanprover-community/riemann-hypothesis</a>.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+</body>
+</html>

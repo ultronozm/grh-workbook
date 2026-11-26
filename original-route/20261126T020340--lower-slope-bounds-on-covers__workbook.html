@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="robots" content="noindex">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Lower slope bounds on covers</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb Z","Q":"\\mathbb Q","C":"\\mathbb C","Pb":"\\mathbb P","Oc":"\\mathcal O","rk":"\\operatorname{rk}","mus":"\\mu^\\sharp","dg":"\\widehat{\\deg}","cc":"\\hat{c}_1","vol":"\\widehat{\\mathrm{vol}}","rd":"\\operatorname{rd}","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<!-- snapshot-banner --><div style="border:1px solid #c9a227;background:#fff8e1;color:#3d3d3d;padding:.6em .9em;margin:.5em 0 1em 0;font:15px/1.4 system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;border-radius:6px"><strong>Snapshot of 25 November 2026.</strong> This is the collection as it stood before it was reorganized around the rewritten Lean proof. It is not maintained. Current version: <a href="../">ultronozm.github.io/grh-workbook</a>.</div>
+
+    <div class="my-links-container">
+2026-11-25 19:20:02
+      <a href="https://github.com/ultronozm/grh-workbook/blob/original-route/20261126T020340--lower-slope-bounds-on-covers__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T020340--lower-slope-bounds-on-covers__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/original-route/20261126T020340--lower-slope-bounds-on-covers__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Lower slope bounds on covers</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:hs" id="toc-sec:hs">§51.1. Hilbert–Samuel on one component</a></li>
+<li><a href="#sec:cover" id="toc-sec:cover">§51.2. From the components to the cover</a></li>
+<li><a href="#sec:heights" id="toc-sec:heights">§51.3. Heights of components</a></li>
+<li><a href="#sec:descend" id="toc-sec:descend">§51.4. Back to the core level</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#sechs" id="toc-sechs">§51.1</a></li>
+<li><a href="#seccover" id="toc-seccover">§51.2</a></li>
+<li><a href="#secheights" id="toc-secheights">§51.3</a></li>
+<li><a href="#secdescend" id="toc-secdescend">§51.4</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>From Chapter <a href="20261125T000000--slope-method__workbook.html#chap" data-reference-type="ref"
+data-reference="sm-chap">6</a>: <span
+class="math inline">\(\mu^\sharp\)</span> and Problem <a
+href="20261125T000000--slope-method__workbook.html#pr:additivity" data-reference-type="ref"
+data-reference="sm-pr:additivity">6.3.3</a>. From
+Chapter <a href="20261125T006000--covolumes__workbook.html#chap" data-reference-type="ref"
+data-reference="cv-chap">26</a>, <em>Covolumes of lattices of
+sections</em>: the lattices <span class="math inline">\(E_D\)</span>,
+Problems <a href="20261125T006000--covolumes__workbook.html#pr:degED" data-reference-type="ref"
+data-reference="cv-pr:degED">26.1.1</a> and <a
+href="20261125T006000--covolumes__workbook.html#pr:degED-asym" data-reference-type="ref"
+data-reference="cv-pr:degED-asym">26.1.2</a>, Theorem <a
+href="20261125T006000--covolumes__workbook.html#thm:HS" data-reference-type="ref"
+data-reference="cv-thm:HS">26.2.1</a> and formula <a
+href="20261125T006000--covolumes__workbook.html#eq:hPN" data-reference-type="eqref"
+data-reference="cv-eq:hPN">(1)</a>. From Chapter <a
+href="20261126T020320--slopes-of-lattices-of-forms__workbook.html#chap" data-reference-type="ref"
+data-reference="sg-chap">49</a>: Lemma <a href="20261126T020320--slopes-of-lattices-of-forms__workbook.html#lem:descent"
+data-reference-type="ref"
+data-reference="sg-lem:descent">49.3.1</a> and the notation of
+Section <a href="20261126T020320--slopes-of-lattices-of-forms__workbook.html#sec:reduction" data-reference-type="ref"
+data-reference="sg-sec:reduction">49.4</a> (the lift <span
+class="math inline">\(j\)</span>, <span class="math inline">\(y =
+x^\varepsilon\)</span>, <span class="math inline">\(b = e^y\)</span>,
+the error unit <span class="math inline">\(u = B_0\log\log x \ge
+1\)</span>, the main term <span class="math inline">\(T_j\)</span>, and
+<span class="math inline">\(\mu_{\mathrm{core}}\)</span>). From
+Chapter <a href="20261126T020330--the-cm-period-and-the-flat-line__workbook.html#chap" data-reference-type="ref"
+data-reference="fl-chap">50</a>: Theorem <a href="20261126T020330--the-cm-period-and-the-flat-line__workbook.html#thm:flatat"
+data-reference-type="ref"
+data-reference="fl-thm:flatat">50.3.2</a>, and the notation
+<span class="math inline">\(d\)</span>, <span
+class="math inline">\(c_\chi\)</span>, <span
+class="math inline">\(E\)</span>, <span
+class="math inline">\(\operatorname{rd}_E\)</span> of Section <a
+href="20261126T020330--the-cm-period-and-the-flat-line__workbook.html#sec:constant" data-reference-type="ref"
+data-reference="fl-sec:constant">50.1</a>. Heights of
+points and arithmetic intersection numbers are recalled in Section <a
+href="#sec:heights" data-reference-type="ref"
+data-reference="sec:heights">51.3</a> with references.</p>
+<p>Chapter <a href="20261126T020320--slopes-of-lattices-of-forms__workbook.html#chap" data-reference-type="ref"
+data-reference="sg-chap">49</a> reduced the covolume estimate to
+a lower bound <span class="math inline">\(\mu_{\mathrm{core}} \ge -T_j -
+C_Lu\)</span> for the slope of a lattice of holomorphic cusp forms on
+the Shimura variety <span class="math inline">\(S_j\)</span> of the
+<span class="math inline">\(j\)</span>th lift. How can one bound a slope
+from below with an error that is a fixed multiple of <span
+class="math inline">\(u\)</span>, uniformly in the point and the lift?
+In the Lean formalization <span class="citation"
+data-cites="Lean">[<a href="#ref-Lean">Lean</a>]</span>, for <span
+class="math inline">\(j &lt; m\)</span>, one passes to a cover of <span
+class="math inline">\(S_j\)</span>, changes the weight, applies an
+effective arithmetic Hilbert–Samuel inequality on each component, and
+descends. The last lift, <span class="math inline">\(j = m\)</span>, has
+<span class="math inline">\(q_m = 0\)</span> and is treated separately;
+we have not read that proof.</p>
+<p>Throughout, <span class="math inline">\(F\)</span> is a number field,
+the field of definition of the cover; for a lattice <span
+class="math inline">\(\Lambda\)</span> of sections we write <span
+class="math inline">\(\widehat{\deg}\Lambda := \deg\Lambda/[F:\mathbb
+Q]\)</span>, so that <span class="math inline">\(\mu^\sharp(\Lambda) =
+2\widehat{\deg}\Lambda/\operatorname{rk}\Lambda\)</span>.</p>
+<h1 id="sec:hs">§51.1. Hilbert–Samuel on one component</h1>
+<p>Let <span class="math inline">\(Z\)</span> be an integral projective
+arithmetic variety over <span class="math inline">\(\mathcal
+O_F\)</span> whose generic fibre has dimension <span
+class="math inline">\(\nu\)</span>, and <span
+class="math inline">\(L\)</span> a line bundle on <span
+class="math inline">\(Z\)</span> with a smooth Hermitian metric
+invariant under complex conjugation, ample on the generic fibre. Write
+<span class="math inline">\(\delta_Z := \deg L_F\)</span> and, following
+Zhang <span class="citation"
+data-cites="Zha">[<a href="#ref-Zha">Zha</a>]</span>, <span
+class="math display">\[h_Z :=
+\frac{\hat{c}_1(L)^{\nu+1}}{(\nu+1)\,[F:\mathbb Q]\,\delta_Z} .\]</span>
+For an integer <span class="math inline">\(T \ge 1\)</span> give <span
+class="math inline">\(H^0(Z, L^{\otimes T})\)</span> its <span
+class="math inline">\(L^2\)</span> norms; we use the inequality <span id="eq:hs"
+class="math display">\[\begin{equation}
+\label{eq:hs}\tag{1}
+  \widehat{\deg}H^0(Z, L^{\otimes T}) \ge
+\binom{T-1}{\nu}\,\delta_Z\,\bigl(Th_Z - 3(\nu+1)\lvert h_Z\rvert -
+A\log(2 + \lvert h_Z\rvert) - R\bigr) ,
+\end{equation}\]</span> where <span class="math inline">\(A &gt;
+0\)</span> and <span class="math inline">\(R \ge 0\)</span> are numbers
+with <span class="math inline">\(A\log\max(A,1) + R \le
+C_2u\)</span>.</p>
+<p><em>Status</em>: in the formalization <a href="#eq:hs"
+data-reference-type="eqref" data-reference="eq:hs">(1)</a> is
+proved, for the line bundles and components that occur and for the
+tensor power <span class="math inline">\(T\)</span> chosen there, from
+published theorems: Kawamata–Viehweg and Nadel vanishing,
+principalisation, toroidal compactification, and the arithmetic
+Hilbert–Samuel theorem; the proof also uses Chow forms (Chapter <a
+href="20261125T017500--chow-forms-and-effective-hilbert-samuel__workbook.html#chap" data-reference-type="ref"
+data-reference="cf-chap">27</a>). We have read its statement, not
+its proof, and we have not checked that the formalization’s height is
+normalized as <span class="math inline">\(h_Z\)</span> above. Problem <a
+href="#pr:hs-leading" data-reference-type="ref"
+data-reference="pr:hs-leading">51.1.2</a> shows that the leading terms agree
+with this normalization. Unlike Theorem <a href="20261125T006000--covolumes__workbook.html#thm:HS"
+data-reference-type="ref" data-reference="cv-thm:HS">26.2.1</a>, <a
+href="#eq:hs" data-reference-type="eqref"
+data-reference="eq:hs">(1)</a> is effective: it holds at one <span
+class="math inline">\(T\)</span>, with all errors explicit.</p>
+<div id="pr:binom" class="problem">
+<p><strong>Problem 51.1.1</strong>. For <span class="math inline">\(T &gt;
+\nu \ge 1\)</span>, <span class="math inline">\((T-\nu)^\nu/\nu! \le
+\binom{T-1}{\nu} \le T^\nu/\nu!\)</span>. For <span
+class="math inline">\(T = 100\)</span> and <span
+class="math inline">\(\nu = 3\)</span> the three numbers are <span
+class="math inline">\(152112.1\ldots\)</span>, <span
+class="math inline">\(156849\)</span> and <span
+class="math inline">\(166666.6\ldots\)</span></p>
+</div>
+<div id="pr:hs-leading" class="problem">
+<p><strong>Problem 51.1.2</strong>. For fixed <span
+class="math inline">\(Z\)</span>, <span
+class="math inline">\(L\)</span>, <span class="math inline">\(A\)</span>
+and <span class="math inline">\(R\)</span>, the right side of <a
+href="#eq:hs" data-reference-type="eqref"
+data-reference="eq:hs">(1)</a> is <span
+class="math inline">\(\hat{c}_1(L)^{\nu+1}T^{\nu+1}/((\nu+1)!\,[F:\mathbb
+Q]) + O(T^\nu)\)</span> as <span class="math inline">\(T \to
+\infty\)</span>, the leading term of Theorem <a href="20261125T006000--covolumes__workbook.html#thm:HS"
+data-reference-type="ref"
+data-reference="cv-thm:HS">26.2.1</a>.</p>
+</div>
+<div id="pr:hs-P1" class="problem">
+<p><strong>Problem 51.1.3</strong>. For <span class="math inline">\(Z =
+\mathbb P^1_\mathbb Z\)</span> and <span class="math inline">\(\mathcal
+O(1)\)</span> with the Fubini–Study metric, <span
+class="math inline">\(\nu = 1\)</span>, <span
+class="math inline">\(\delta_Z = 1\)</span> and <span
+class="math inline">\(h_Z = \frac14\)</span>. With <span
+class="math inline">\(A\)</span> and <span
+class="math inline">\(R\)</span> replaced by <span
+class="math inline">\(0\)</span>, <a href="#eq:hs"
+data-reference-type="eqref" data-reference="eq:hs">(1)</a> reads
+<span class="math inline">\(\deg E_T \ge (T-1)(\frac T4 -
+\frac32)\)</span>. This holds for <span class="math inline">\(1 \le T
+\le 400\)</span>, as one checks by machine, and for all large <span
+class="math inline">\(T\)</span> by Problem <a href="20261125T006000--covolumes__workbook.html#pr:degED-asym"
+data-reference-type="ref"
+data-reference="cv-pr:degED-asym">26.1.2</a>; for instance
+<span class="math inline">\(\deg E_{10} = 32.1969\ldots \ge 9\)</span>
+and <span class="math inline">\(\deg E_{50} = 677.4825\ldots \ge
+539\)</span>.</p>
+</div>
+<div id="pr:log-term" class="problem">
+<p><strong>Problem 51.1.4</strong>. For <span class="math inline">\(y \ge
+0\)</span> and <span class="math inline">\(A &gt; 0\)</span>, <span
+class="math inline">\(2y - A\log(2 + y) \ge -A\log\max(A,1) -
+1\)</span>.</p>
+</div>
+<div id="pr:abs-trick" class="problem">
+<p><strong>Problem 51.1.5</strong>. Let <span class="math inline">\(c_s \ge
+0\)</span>, <span class="math inline">\(h \ge -c_s\)</span> and <span
+class="math inline">\(T \ge 3\nu + 5\)</span>. Then <span
+class="math display">\[Th - 3(\nu+1)\lvert h\rvert - A\log(2 + \lvert
+h\rvert) \ge (T - 3\nu - 5)\,h - (6\nu + 10)\,c_s - A\log\max(A,1) - 1
+.\]</span></p>
+</div>
+<h1 id="sec:cover">§51.2. From the components to the cover</h1>
+<p>Let <span class="math inline">\(Y\)</span> be a cover of <span
+class="math inline">\(S_j\)</span>, <span class="math inline">\(j &lt;
+m\)</span>, of the kind described in Section <a href="#sec:descend"
+data-reference-type="ref" data-reference="sec:descend">51.4</a>. In the
+formalization a weight <span class="math inline">\(\lambda_M\)</span> is
+fixed which is <span class="math inline">\(T\)</span> times a weight
+<span class="math inline">\(\lambda_1\)</span>, and the integral cusp
+forms on <span class="math inline">\(Y\)</span> of weight <span
+class="math inline">\(\lambda_M\)</span> are compared with the sections
+of <span class="math inline">\(L^{\otimes T}\)</span> on the components
+<span class="math inline">\(Z\)</span> of a model attached to <span
+class="math inline">\(Y\)</span> and <span
+class="math inline">\(\lambda_1\)</span>. The number <span
+class="math inline">\(\nu\)</span> is attached to the signature; <span
+class="math inline">\(T\)</span> is chosen of size about <span
+class="math inline">\(\nu^2\)</span> times a large parameter, so that
+<span class="math inline">\(T \ge 3\nu + 5\)</span>. Write <span
+class="math inline">\(\mu_Y(\lambda) := \mu^\sharp\)</span> of the
+lattice of integral cusp forms of weight <span
+class="math inline">\(\lambda\)</span> on <span
+class="math inline">\(Y\)</span>, and, for each component <span
+class="math inline">\(Z\)</span>, <span
+class="math inline">\(r_Z\)</span> and <span
+class="math inline">\(\widehat{\deg}_Z\)</span> for the rank and the
+normalized degree of its lattice of sections. Let <span
+class="math inline">\(B := \binom{T-1}{\nu}\)</span>. The formalization
+proves:</p>
+<ul>
+<li><p><span class="math inline">\(\mu_Y(\lambda_M) \ge
+2\sum_Z\widehat{\deg}_Z\big/\sum_Zr_Z\)</span>;</p></li>
+<li><p><span class="math inline">\(r_Z \ge B\delta_Z\)</span> for every
+<span class="math inline">\(Z\)</span>;</p></li>
+<li><p>there are <span class="math inline">\(\delta&#39; &gt; 0\)</span>
+and <span class="math inline">\(0 \le \varrho &lt; 1\)</span> with <span
+class="math inline">\(\delta&#39; \le \delta_Z \le
+\delta&#39;/(1-\varrho)\)</span> for every <span
+class="math inline">\(Z\)</span>;</p></li>
+<li><p>there are <span class="math inline">\(c_s, c_c, X \ge 0\)</span>
+and real numbers <span class="math inline">\(s_Z\)</span> with <span
+class="math inline">\(h_Z + c_s \ge 0\)</span>, <span
+class="math inline">\((1-\varrho)\max(0, s_Z + c_s) \le h_Z + c_s +
+c_c\)</span>, and <span class="math inline">\(\frac1N\sum_Zs_Z \ge
+-X\)</span>, where <span class="math inline">\(N\)</span> is the number
+of components;</p></li>
+<li><p>the inequality <a href="#eq:hs" data-reference-type="eqref"
+data-reference="eq:hs">(1)</a> on every <span
+class="math inline">\(Z\)</span>;</p></li>
+<li><p><span class="math inline">\(TX \le C_1u\)</span>, <span
+class="math inline">\(Tc_c \le C_1u\)</span> and <span
+class="math inline">\((6\nu + 10 + 2\varrho T)\,c_s \le
+C_1u\)</span>.</p></li>
+</ul>
+<div id="pr:sum-orth" class="problem">
+<p><strong>Problem 51.2.1</strong>. If the lattice of forms on <span
+class="math inline">\(Y\)</span> is the orthogonal sum of the lattices
+of sections on the components, then (U1) is an equality.</p>
+</div>
+<div id="pr:weighted-mean" class="problem">
+<p><strong>Problem 51.2.2</strong>. Under (U3) and (U4), <span
+class="math display">\[\frac{\sum_Z\delta_Zh_Z}{\sum_Z\delta_Z} \ge -X -
+2\varrho c_s - c_c .\]</span></p>
+</div>
+<div id="pr:weighted-example" class="problem">
+<p><strong>Problem 51.2.3</strong>. Let <span class="math inline">\(\varrho =
+\frac12\)</span>, two components with <span class="math inline">\(\delta
+= (1, 2)\)</span>, <span class="math inline">\(s = (2, -2)\)</span>,
+<span class="math inline">\(c_s = 1\)</span>, <span
+class="math inline">\(c_c = 0\)</span>, <span class="math inline">\(X =
+0\)</span>, and <span class="math inline">\(h = (\frac12, -1)\)</span>.
+Then (U3) and (U4) hold, the weighted mean of <span
+class="math inline">\(h\)</span> is <span
+class="math inline">\(-\frac12\)</span>, its plain mean is <span
+class="math inline">\(-\frac14\)</span>, and the bound of Problem <a
+href="#pr:weighted-mean" data-reference-type="ref"
+data-reference="pr:weighted-mean">51.2.2</a> is <span
+class="math inline">\(-1\)</span>.</p>
+</div>
+<div id="pr:core" class="problem">
+<p><strong>Problem 51.2.4</strong>. Under (U1)–(U6), <span
+class="math display">\[\begin{align*}
+  \mu_Y(\lambda_M) &amp;\ge -2\bigl(TX + Tc_c + (6\nu + 10 + 2\varrho
+T)c_s + A\log\max(A,1) + R + 1\bigr)\\
+  &amp;\ge -2(3C_1 + C_2 + 1)\,u .
+\end{align*}\]</span></p>
+</div>
+<p>Problems <a href="#pr:abs-trick" data-reference-type="ref"
+data-reference="pr:abs-trick">51.1.5</a>, <a href="#pr:weighted-mean"
+data-reference-type="ref" data-reference="pr:weighted-mean">51.2.2</a> and <a
+href="#pr:core" data-reference-type="ref" data-reference="pr:core">51.2.4</a>
+prove the following.</p>
+<div id="thm:uniform" class="theorem">
+<p><strong>Theorem 51.2.1</strong> (uniform lower bound). <em>Under
+(U1)–(U6), <span class="math inline">\(\mu_Y(\lambda_M) \ge
+-C_Uu\)</span> with <span class="math inline">\(C_U = 2(3C_1 + C_2 +
+1)\)</span>.</em></p>
+</div>
+<p>The formalization proves Theorem <a href="#thm:uniform"
+data-reference-type="ref" data-reference="thm:uniform">51.2.1</a> with <span
+class="math inline">\(4\)</span> in place of <span
+class="math inline">\(1\)</span> in <span
+class="math inline">\(C_U\)</span>, under a version of (U2) with an
+upper bound for <span class="math inline">\(r_Z\)</span> as well, which
+the argument above does not need. The content is in (U4) and (U6): the
+heights of the components must be bounded below on average by <span
+class="math inline">\(-X\)</span> with <span class="math inline">\(TX
+\le C_1u\)</span>.</p>
+<h1 id="sec:heights">§51.3. Heights of components</h1>
+<p>Where does (U4) come from? For an algebraic point <span
+class="math inline">\(P\)</span> of <span
+class="math inline">\(Z_F\)</span> over a finite extension <span
+class="math inline">\(F&#39;\)</span>, extended to <span
+class="math inline">\(\mathcal O_{F&#39;}\)</span>, let <span
+class="math inline">\(h_L(P) := \deg(P^*L)/[F&#39;:\mathbb Q]\)</span>.
+For a real <span class="math inline">\(c\)</span>, let <span
+class="math inline">\(L(-c)\)</span> be <span
+class="math inline">\(L\)</span> with its norms multiplied by <span
+class="math inline">\(e^c\)</span>; then <span
+class="math inline">\(h_{L(-c)}(Z) = h_Z - c\)</span> <span
+class="citation" data-cites="Zha">[<a href="#ref-Zha">Zha</a>]</span>.</p>
+<div id="pr:rescale-height" class="problem">
+<p><strong>Problem 51.3.1</strong>. <span class="math inline">\(h_{L(-c)}(P)
+= h_L(P) - c\)</span> for every algebraic point <span
+class="math inline">\(P\)</span>.</p>
+</div>
+<div id="pr:small-section" class="problem">
+<p><strong>Problem 51.3.2</strong>. If <span class="math inline">\(s \in
+H^0(Z, L^{\otimes k})\)</span> is integral with <span
+class="math inline">\(\lVert s\rVert_{\sup} \le e^{-kc}\)</span> at
+every archimedean place, and <span class="math inline">\(P\)</span> is
+not in the zero locus of <span class="math inline">\(s\)</span>, then
+<span class="math inline">\(h_L(P) \ge c\)</span>.</p>
+</div>
+<p>Zhang used Problem <a href="#pr:small-section"
+data-reference-type="ref" data-reference="pr:small-section">51.3.2</a> and
+Minkowski’s theorem in the proof of his inequalities for successive
+minima <span class="citation" data-cites="Zha">[<a href="#ref-Zha">Zha</a>,
+proof of Thm. 5.2]</span>. Together with Moriwaki’s arithmetic
+Hilbert–Samuel formula for nef bundles <span class="citation"
+data-cites="Mo">[<a href="#ref-Mo">Mo</a>]</span> the same argument gives
+two comparisons, as explained in <span class="citation"
+data-cites="Zh">[<a href="#ref-Zh">Zh</a>]</span>: if <span
+class="math inline">\(h_L(P) \le b\)</span> on a Zariski dense set of
+points, then <span class="math inline">\(h_Z \le b\)</span>; and if
+<span class="math inline">\(h_L(P) \ge a\)</span> for all points, then
+<span class="math inline">\(h_Z \ge a\)</span>.</p>
+<div id="pr:P1-points" class="problem">
+<p><strong>Problem 51.3.3</strong>. On <span class="math inline">\(\mathbb
+P^1_\mathbb Z\)</span> with the Fubini–Study metric, <span
+class="math inline">\(h((p:q)) = \frac12\log(p^2 + q^2)\)</span> for
+coprime integers <span class="math inline">\(p, q\)</span>, and <span
+class="math inline">\(h((1:\zeta)) = \frac12\log2 =
+0.3465\ldots\)</span> for every root of unity <span
+class="math inline">\(\zeta\)</span>. The second family is Zariski
+dense, which is consistent with <span class="math inline">\(h_Z =
+\frac14\)</span>.</p>
+</div>
+<p>Zariski dense points of small height also exist on Grassmannians: for
+an <span class="math inline">\(a \times a&#39;\)</span> matrix <span
+class="math inline">\(W\)</span>, the row space of <span
+class="math inline">\((I_a\ W)\)</span> is a point of the Grassmannian
+of <span class="math inline">\(a\)</span>-planes in <span
+class="math inline">\(F^{a+a&#39;}\)</span>, and <span
+class="math inline">\(\frac12\log\det(I_a + WW^*)\)</span> is the
+archimedean part of its Plücker height for the Fubini–Study metric <span
+class="citation" data-cites="Zh">[<a href="#ref-Zh">Zh</a>]</span>.</p>
+<div id="pr:grassmann" class="problem">
+<p><strong>Problem 51.3.4</strong>. If <span
+class="math inline">\(W\)</span> is an <span class="math inline">\(a
+\times a&#39;\)</span> matrix whose entries are roots of unity, then
+<span class="math inline">\(\frac12\log\det(I_a + WW^*) \le \frac
+a2\log(a&#39; + 1)\)</span>. For <span class="math inline">\(a = a&#39;
+= 2\)</span> and <span class="math inline">\(W =
+\bigl(\begin{smallmatrix}1&amp;1\\1&amp;-1\end{smallmatrix}\bigr)\)</span>
+both sides equal <span class="math inline">\(\log3\)</span>.</p>
+</div>
+<p>The lower bound for heights needs small sections when <span
+class="math inline">\(L\)</span> is only nef. Moriwaki proved that if
+<span class="math inline">\(L\)</span> is nef on every fibre and on the
+generic fibre, with a smooth semipositive metric invariant under
+conjugation, then <span class="math inline">\(\widehat{\mathrm{vol}}(L)
+\ge \hat{c}_1(L)^{\nu+1}\)</span>, where <span
+class="math inline">\(\widehat{\mathrm{vol}}\)</span> is the arithmetic
+volume of Chapter <a href="20261125T006000--covolumes__workbook.html#chap" data-reference-type="ref"
+data-reference="cv-chap">26</a> <span class="citation"
+data-cites="Mo">[<a href="#ref-Mo">Mo</a>]</span>, after Yuan <span
+class="citation" data-cites="Yu">[<a href="#ref-Yu">Yu</a>]</span>.
+<em>Status</em>: this statement is proved in the formalization, from
+resolution of singularities, a Poincaré–Lelong formula and a density
+statement for curves; we have not read below these.</p>
+<p>At the finite places, the heights of points on the Shimura variety
+involve the integral structure of the invariant differentials, which the
+formalization controls with the following theorem. Let <span
+class="math inline">\(C\)</span> be an algebraically closed complete
+extension of <span class="math inline">\(\mathbb Q_p\)</span>, <span
+class="math inline">\(G\)</span> a <span
+class="math inline">\(p\)</span>-divisible group over <span
+class="math inline">\(\mathcal O_C\)</span>, and <span
+class="math inline">\(\alpha_G \colon T_p(G) \otimes \mathcal O_C \to
+\omega_{G^\vee}\)</span> its Hodge–Tate map: an element <span
+class="math inline">\(x\)</span> of <span class="math inline">\(T_p(G) =
+\operatorname{Hom}(G^\vee, \mu_{p^\infty})\)</span> is sent to the
+pullback <span class="math inline">\(x^*(dT/T)\)</span> of the invariant
+differential of <span class="math inline">\(\mu_{p^\infty}\)</span>.
+Then <span class="math inline">\(\kappa\cdot\omega_{G^\vee} \subseteq
+\operatorname{im}\alpha_G\)</span> for every <span
+class="math inline">\(\kappa\)</span> with <span
+class="math inline">\(v_p(\kappa) \ge 1/(p-1)\)</span> (with <span
+class="math inline">\(v_p(\kappa) \ge 2\)</span> if <span
+class="math inline">\(p = 2\)</span>) <span class="citation"
+data-cites="Fa">[<a href="#ref-Fa">Fa</a>]</span>, and the kernel of <span
+class="math inline">\(\alpha_G\)</span> is the annihilator, under the
+Tate pairing, of the kernel of the logarithmic differential of <span
+class="math inline">\(G^\vee\)</span> <span class="citation"
+data-cites="ALB">[<a href="#ref-ALB">ALB</a>]</span>. <em>Status</em>: the
+second statement is assumed in the formalization as a published theorem,
+and the first is derived from it there.</p>
+<div id="pr:HT-mult" class="problem">
+<p><strong>Problem 51.3.5</strong>. For <span class="math inline">\(G =
+\mathbb Q_p/\mathbb Z_p\)</span>, <span
+class="math inline">\(\alpha_G\)</span> maps <span
+class="math inline">\(T_p(G) \otimes \mathcal O_C\)</span> onto <span
+class="math inline">\(\omega_{\mu_{p^\infty}} = \mathcal
+O_C\,dT/T\)</span>; for <span class="math inline">\(G =
+\mu_{p^\infty}\)</span>, <span class="math inline">\(\omega_{G^\vee} =
+0\)</span>.</p>
+</div>
+<p>In the formalization, (U4) and (U6) follow from the following
+statement on covers. For every lift <span class="math inline">\(j &lt;
+m\)</span> with <span class="math inline">\(m^2 \le k\)</span>, and
+every good cover <span class="math inline">\(Y\)</span> of <span
+class="math inline">\(S_j\)</span> whose level has at most fifteen prime
+factors, the mean over the components of certain volume slopes <span
+class="math inline">\(s_Z\)</span> is at least <span
+class="math inline">\(-X\)</span>, where <span
+class="math inline">\(X\)</span> is a constant times an error depending
+on the weight and on <span class="math inline">\(\log\operatorname{rd}_E
++ \lvert c_\chi\rvert\)</span>. <em>Status</em>: proved in the
+formalization from Moriwaki’s theorem, the arithmetic Hilbert–Samuel
+formula for nef bundles, an absolute Siegel lemma <span class="citation"
+data-cites="Zh">[<a href="#ref-Zh">Zh</a>]</span>, resolution, the extension
+of homomorphisms of semi-abelian schemes, the Hodge–Tate theorem above,
+Zarhin’s trick, and a Riemann–Roch statement for nef bundles. We have
+not followed this proof, which goes through towers of covers and their
+volumes, and we do not state the error term.</p>
+<h1 id="sec:descend">§51.4. Back to the core level</h1>
+<p>A <em>good cover</em> of <span class="math inline">\(S_j\)</span> in
+the formalization has full level <span
+class="math inline">\(15^eg_0g_1\)</span>, with an exponent <span
+class="math inline">\(e\)</span> fixed by the size parameters of the
+family and <span class="math inline">\(g_0, g_1\)</span> the level
+primes, and a field of definition of bounded size; such covers exist by
+class field theory. Besides <span
+class="math inline">\(\lambda_M\)</span> it carries weights <span
+class="math inline">\(\lambda_-\)</span> and <span
+class="math inline">\(\lambda_+\)</span>, shifts of the weight of the
+<span class="math inline">\(j\)</span>th lift, and a lattice <span
+class="math inline">\(L_{\mathrm{deep}}\)</span> of forms on <span
+class="math inline">\(Y\)</span> pulled back from the core level. With a
+size parameter <span class="math inline">\(\Lambda_j &gt; 0\)</span>,
+the formalization proves:</p>
+<ul>
+<li><p><span class="math inline">\(1 \le b \le u\)</span>, <span
+class="math inline">\(\lvert T_j\rvert \le \Lambda_j\)</span> and <span
+class="math inline">\(b \le \Lambda_j\)</span>;</p></li>
+<li><p><span class="math inline">\(\mu^\sharp(L_{\mathrm{deep}}) - 2b
+\le \mu_{\mathrm{core}}\)</span>;</p></li>
+<li><p>there are <span class="math inline">\(n\)</span> maps from the
+forms of weight <span class="math inline">\(\lambda_-\)</span> to the
+forms of the weight of the <span class="math inline">\(j\)</span>th lift
+on <span class="math inline">\(Y\)</span>, jointly injective, mapping
+integral forms into <span
+class="math inline">\(L_{\mathrm{deep}}\)</span>, with <span
+class="math inline">\(\sum_h\lVert\varphi_hf\rVert^2 \le e^{2b}\lVert
+f\rVert^2\)</span>, and <span
+class="math inline">\(n\operatorname{rk}L_{\mathrm{deep}}\)</span> is at
+most the rank for <span
+class="math inline">\(\lambda_+\)</span>;</p></li>
+<li><p>the rank for <span class="math inline">\(\lambda_+\)</span> is at
+most <span class="math inline">\((1 + b/\Lambda_j)\)</span> times the
+rank for <span class="math inline">\(\lambda_-\)</span>;</p></li>
+<li><p><span class="math inline">\(L_{\mathrm{deep}}\)</span> is spanned
+by elements of norm at most <span
+class="math inline">\(e^{\Lambda_j}\)</span>.</p></li>
+</ul>
+<p><em>Status</em>: we have read the statements of (D2)–(D5), not their
+proofs; in particular we do not know which maps <span
+class="math inline">\(\varphi_h\)</span> are used.</p>
+<div id="pr:low-assembly" class="problem">
+<p><strong>Problem 51.4.1</strong>. Assume (D1)–(D5), Theorem <a
+href="20261126T020330--the-cm-period-and-the-flat-line__workbook.html#thm:flatat" data-reference-type="ref"
+data-reference="fl-thm:flatat">50.3.2</a> and Theorem <a
+href="#thm:uniform" data-reference-type="ref"
+data-reference="thm:uniform">51.2.1</a>. Then Lemma <a href="20261126T020320--slopes-of-lattices-of-forms__workbook.html#lem:descent"
+data-reference-type="ref"
+data-reference="sg-lem:descent">49.3.1</a> with <span
+class="math inline">\(t = -T_j - (C_F + C_U)u - 2b\)</span>, <span
+class="math inline">\(P = b\)</span>, <span
+class="math inline">\(\Lambda = \Lambda_j\)</span> and <span
+class="math inline">\(\epsilon = b/\Lambda_j\)</span> gives, if <span
+class="math inline">\(C_F \ge 0\)</span> (which we may assume), <span
+class="math display">\[\mu_{\mathrm{core}} \ge -T_j - \bigl(2(C_F + C_U)
++ 9\bigr)u .\]</span></p>
+</div>
+<div id="thm:low" class="theorem">
+<p><strong>Theorem 51.4.1</strong> (lower bound). <em>For every admissible
+family there is <span class="math inline">\(C_L\)</span> such that, for
+<span class="math inline">\(x\)</span> large, at every point and for
+every lift <span class="math inline">\(j\)</span>, <span
+class="math inline">\(\mu_{\mathrm{core}} \ge -T_j -
+C_Lu\)</span>.</em></p>
+</div>
+<p><em>Status</em>: proved in the formalization. For <span
+class="math inline">\(j &lt; m\)</span> it is Problem <a
+href="#pr:low-assembly" data-reference-type="ref"
+data-reference="pr:low-assembly">51.4.1</a>, from the inputs listed in this
+chapter and in Theorem <a href="20261126T020330--the-cm-period-and-the-flat-line__workbook.html#thm:flatat"
+data-reference-type="ref"
+data-reference="fl-thm:flatat">50.3.2</a>; for <span
+class="math inline">\(j = m\)</span> it is a separate argument that we
+have not read. With Theorem <a href="20261126T020320--slopes-of-lattices-of-forms__workbook.html#thm:reduction"
+data-reference-type="ref"
+data-reference="sg-thm:reduction">49.4.1</a> it gives the
+covolume estimate of Theorem <a href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#in:A4"
+data-reference-type="ref" data-reference="hp-in:A4">47.2.2</a>.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. In <span class="citation"
+data-cites="Lean">[<a href="#ref-Lean">Lean</a>]</span> Theorem <a
+href="#thm:low" data-reference-type="ref" data-reference="thm:low">51.4.1</a>
+is <code>LowAt</code>, proved by <code>low_of_cover_hypotheses</code>;
+for <span class="math inline">\(j &lt; m\)</span> the step of Problem <a
+href="#pr:low-assembly" data-reference-type="ref"
+data-reference="pr:low-assembly">51.4.1</a> is <code>lowAt_of_cover</code>,
+and for <span class="math inline">\(j = m\)</span> the input is
+<code>covering_low_defect_alt</code>. Good covers are <code>Deep</code>
+with <code>Deep.Good</code>, constructed by
+<code>exists_good_sized</code>. (D1)–(D5) are <code>SizeAt</code>,
+<code>RingAt</code>, <code>MapsAt</code>, <code>RkAt</code>,
+<code>GminAt</code>. Theorem <a href="#thm:uniform"
+data-reference-type="ref" data-reference="thm:uniform">51.2.1</a> is
+<code>UAt</code>, from <code>u_low_of_cover_hyps</code> and the
+numerical lemma <code>UniformLowerBoundOfSums.core</code>; (U1)–(U5) are
+<code>SumAt</code>, <code>ShareAt</code>, <code>DegAt</code>,
+<code>HeightAt</code>, <code>HSAt</code>, and <a href="#eq:hs"
+data-reference-type="eqref" data-reference="eq:hs">(1)</a> is proved
+by <code>hilbertSamuel_of_component_estimates_alt</code>. (U4) comes
+from <code>height_lower_bound_general_alt</code> and the statement on
+covers <code>DeepStR</code>, proved by <code>deepStR_of_use</code>.
+Moriwaki’s theorem is <code>MoriwakiBigStatement</code>, proved by
+<code>moriwakiBig_outright</code>; the Hodge–Tate theorem is
+<code>FarguesHodgeTate</code>, derived by
+<code>farguesHodgeTate_of_farguesExact</code>.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="sechs">§<a href="#sec:hs"
+data-reference-type="ref" data-reference="sec:hs">51.1</a></h2>
+<dl>
+<dt><a href="#pr:binom" data-reference-type="ref"
+data-reference="pr:binom">51.1.1</a></dt>
+<dd>
+<p><span class="math inline">\(\binom{T-1}{\nu} = \prod_{i=1}^\nu(T -
+i)/\nu!\)</span>.</p>
+</dd>
+<dt><a href="#pr:hs-leading" data-reference-type="ref"
+data-reference="pr:hs-leading">51.1.2</a></dt>
+<dd>
+<p>Problem <a href="#pr:binom" data-reference-type="ref"
+data-reference="pr:binom">51.1.1</a> and the definition of <span
+class="math inline">\(h_Z\)</span>.</p>
+</dd>
+<dt><a href="#pr:hs-P1" data-reference-type="ref"
+data-reference="pr:hs-P1">51.1.3</a></dt>
+<dd>
+<p>Formula <a href="20261125T006000--covolumes__workbook.html#eq:hPN" data-reference-type="eqref"
+data-reference="cv-eq:hPN">(1)</a> for <span
+class="math inline">\(N = 1\)</span>; compare with Problem <a
+href="20261125T006000--covolumes__workbook.html#pr:degED" data-reference-type="ref"
+data-reference="cv-pr:degED">26.1.1</a>.</p>
+</dd>
+<dt><a href="#pr:log-term" data-reference-type="ref"
+data-reference="pr:log-term">51.1.4</a></dt>
+<dd>
+<p>Minimize over <span class="math inline">\(y \ge 0\)</span>,
+separately for <span class="math inline">\(A \le 4\)</span> and <span
+class="math inline">\(A &gt; 4\)</span>.</p>
+</dd>
+<dt><a href="#pr:abs-trick" data-reference-type="ref"
+data-reference="pr:abs-trick">51.1.5</a></dt>
+<dd>
+<p>Problem <a href="#pr:log-term" data-reference-type="ref"
+data-reference="pr:log-term">51.1.4</a> with <span class="math inline">\(y =
+\lvert h\rvert\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="seccover">§<a href="#sec:cover"
+data-reference-type="ref" data-reference="sec:cover">51.2</a></h2>
+<dl>
+<dt><a href="#pr:sum-orth" data-reference-type="ref"
+data-reference="pr:sum-orth">51.2.1</a></dt>
+<dd>
+<p>Problem <a href="20261125T000000--slope-method__workbook.html#pr:additivity" data-reference-type="ref"
+data-reference="sm-pr:additivity">6.3.3</a>.</p>
+</dd>
+<dt><a href="#pr:weighted-mean" data-reference-type="ref"
+data-reference="pr:weighted-mean">51.2.2</a></dt>
+<dd>
+<p>Bound <span class="math inline">\(\sum_Z\delta_Z(h_Z + c_s +
+c_c)\)</span> below by <span
+class="math inline">\(\delta&#39;(1-\varrho)\sum_Z\max(0, s_Z +
+c_s)\)</span>, and <span class="math inline">\(\sum_Z\delta_Z\)</span>
+above by (U3).</p>
+</dd>
+<dt><a href="#pr:core" data-reference-type="ref"
+data-reference="pr:core">51.2.4</a></dt>
+<dd>
+<p>Problem <a href="#pr:abs-trick" data-reference-type="ref"
+data-reference="pr:abs-trick">51.1.5</a> on each component, then Problem <a
+href="#pr:weighted-mean" data-reference-type="ref"
+data-reference="pr:weighted-mean">51.2.2</a>; a negative numerator only gets
+smaller in absolute value when the denominator <span
+class="math inline">\(\sum r_Z\)</span> grows.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secheights">§<a href="#sec:heights"
+data-reference-type="ref" data-reference="sec:heights">51.3</a></h2>
+<dl>
+<dt><a href="#pr:rescale-height" data-reference-type="ref"
+data-reference="pr:rescale-height">51.3.1</a></dt>
+<dd>
+<p>The degree of a metrized line on <span class="math inline">\(\mathcal
+O_{F&#39;}\)</span> changes by <span
+class="math inline">\(-[F&#39;:\mathbb Q]c\)</span>.</p>
+</dd>
+<dt><a href="#pr:small-section" data-reference-type="ref"
+data-reference="pr:small-section">51.3.2</a></dt>
+<dd>
+<p>Compute <span class="math inline">\(\deg P^*L^{\otimes k}\)</span>
+with the section <span class="math inline">\(s(P)\)</span>.</p>
+</dd>
+<dt><a href="#pr:P1-points" data-reference-type="ref"
+data-reference="pr:P1-points">51.3.3</a></dt>
+<dd>
+<p>Use the section <span class="math inline">\(x\)</span> or <span
+class="math inline">\(y\)</span> that does not vanish at the point.</p>
+</dd>
+<dt><a href="#pr:grassmann" data-reference-type="ref"
+data-reference="pr:grassmann">51.3.4</a></dt>
+<dd>
+<p>Hadamard’s inequality for <span class="math inline">\(I_a +
+WW^*\)</span>.</p>
+</dd>
+<dt><a href="#pr:HT-mult" data-reference-type="ref"
+data-reference="pr:HT-mult">51.3.5</a></dt>
+<dd>
+<p><span class="math inline">\(\alpha_G(x)\)</span> is the pullback of
+<span class="math inline">\(dT/T\)</span> along <span
+class="math inline">\(x \colon G^\vee \to \mu_{p^\infty}\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secdescend">§<a href="#sec:descend"
+data-reference-type="ref" data-reference="sec:descend">51.4</a></h2>
+<dl>
+<dt><a href="#pr:low-assembly" data-reference-type="ref"
+data-reference="pr:low-assembly">51.4.1</a></dt>
+<dd>
+<p>Theorems <a href="20261126T020330--the-cm-period-and-the-flat-line__workbook.html#thm:flatat" data-reference-type="ref"
+data-reference="fl-thm:flatat">50.3.2</a> and <a
+href="#thm:uniform" data-reference-type="ref"
+data-reference="thm:uniform">51.2.1</a> bound <span
+class="math inline">\(\mu^\sharp\)</span> for <span
+class="math inline">\(\lambda_-\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-ALB"><span class="bib-label">[ALB]</span> J. Anschütz and A.-C. Le Bras, <em>Prismatic Dieudonné theory</em>, Forum Math. Pi <strong>11</strong> (2023), <a href="https://doi.org/10.1017/fmp.2022.22" class="uri">https://doi.org/10.1017/fmp.2022.22</a>.</p>
+<p id="ref-Fa"><span class="bib-label">[Fa]</span> L. Fargues, <em>La filtration canonique des points de torsion des groupes <span class="math inline">\(p\)</span>-divisibles</em>, Ann. Sci. Éc. Norm. Supér. (4) <strong>44</strong> (2011), 905–961.</p>
+<p id="ref-Lean"><span class="bib-label">[Lean]</span> The Lean community, <em>riemann-hypothesis</em>, a Lean formalization of Alpöge’s argument, <a href="https://github.com/leanprover-community/riemann-hypothesis" class="uri">https://github.com/leanprover-community/riemann-hypothesis</a>.</p>
+<p id="ref-Mo"><span class="bib-label">[Mo]</span> A. Moriwaki, <em>Continuity of volumes on arithmetic varieties</em>, J. Algebraic Geom. <strong>18</strong> (2009), 407–457.</p>
+<p id="ref-Yu"><span class="bib-label">[Yu]</span> X. Yuan, <em>Big line bundles over arithmetic varieties</em>, Invent. Math. <strong>173</strong> (2008), 603–649.</p>
+<p id="ref-Zh"><span class="bib-label">[Zh]</span> R. Zhang, <em>A preliminary note on Alpöge’s proposed proof of the generalized Riemann hypothesis</em>, 22 November 2026, <a href="https://hexagonmath.org/pdf/2611.00809v1" class="uri">https://hexagonmath.org/pdf/2611.00809v1</a>.</p>
+<p id="ref-Zha"><span class="bib-label">[Zha]</span> S. Zhang, <em>Positive line bundles on arithmetic varieties</em>, J. Amer. Math. Soc. <strong>8</strong> (1995), 187–221.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+</body>
+</html>

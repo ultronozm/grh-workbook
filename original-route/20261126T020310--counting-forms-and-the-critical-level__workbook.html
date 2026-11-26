@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="robots" content="noindex">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Counting forms and the critical level</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"mass":"\\operatorname{mass}","rd":"\\operatorname{rd}","GL":"\\mathrm{GL}","Q":"\\mathbb{Q}","F":"\\mathbb{F}","Tc":"T^{\\mathrm{cr}}","zr":"z^{\\mathrm{row}}","zc":"z^{\\mathrm{col}}"}}};</script>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<!-- snapshot-banner --><div style="border:1px solid #c9a227;background:#fff8e1;color:#3d3d3d;padding:.6em .9em;margin:.5em 0 1em 0;font:15px/1.4 system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;border-radius:6px"><strong>Snapshot of 25 November 2026.</strong> This is the collection as it stood before it was reorganized around the rewritten Lean proof. It is not maintained. Current version: <a href="../">ultronozm.github.io/grh-workbook</a>.</div>
+
+    <div class="my-links-container">
+2026-11-25 17:31:58
+      <a href="https://github.com/ultronozm/grh-workbook/blob/original-route/20261126T020310--counting-forms-and-the-critical-level__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T020310--counting-forms-and-the-critical-level__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/original-route/20261126T020310--counting-forms-and-the-critical-level__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Counting forms and the critical level</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:two" id="toc-sec:two">§48.1. Two dimensions</a></li>
+<li><a href="#sec:prime" id="toc-sec:prime">§48.2. The prime and the critical levels</a></li>
+<li><a href="#sec:below" id="toc-sec:below">§48.3. The critical level from below</a></li>
+<li><a href="#sec:A6" id="toc-sec:A6">§48.4. The auxiliary prime</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#sectwo" id="toc-sectwo">§48.1</a></li>
+<li><a href="#secprime" id="toc-secprime">§48.2</a></li>
+<li><a href="#secbelow" id="toc-secbelow">§48.3</a></li>
+<li><a href="#seca6" id="toc-seca6">§48.4</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>The mass of a genus, Weyl’s dimension formula and the count identity
+of Chapter <a href="20261125T002000--definite-theta-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="ms-chap">21</a>; the dimension budget, the level
+indices and the interval for the auxiliary prime in §<a
+href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#sec:prime" data-reference-type="ref"
+data-reference="hp-sec:prime">47.3</a>. We use the order of
+<span class="math inline">\(\mathrm{GL}_n(\mathbb{F}_q)\)</span>, the
+Euler product of the Dedekind zeta function of a number field, and <span
+class="math inline">\(\log(1+t)\le t\)</span>.</p>
+<p>This chapter develops the input (A6) of Chapter <a href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#chap"
+data-reference-type="ref" data-reference="hp-chap">47</a> from
+the Lean formalization <span class="citation"
+data-cites="Lean">[<a href="#ref-Lean">Lean</a>]</span>, where the published
+expositions stop. There the dimension budget is not an inequality: the
+rank of the source lattice and the budget are both given exactly by the
+mass formula, and their ratio is a product over the embeddings of a
+<em>critical level</em> divided by the auxiliary prime. The prime is
+then pinned to the geometric mean of the critical levels, and the lower
+bound (A6) becomes a lower bound for each critical level, which is a
+Vandermonde estimate.</p>
+<h1 id="sec:two">§48.1. Two dimensions</h1>
+<p>How many forms does each side of the final pairing carry? Let <span
+class="math inline">\(F\)</span> be a totally real number field of
+degree <span class="math inline">\(f\)</span>, and <span
+class="math inline">\(E\supset F\)</span> a CM field unramified over
+<span class="math inline">\(F\)</span> at every finite prime, so that
+<span class="math inline">\(|d_E|=d_F^2\)</span> for the discriminants.
+Let <span class="math inline">\(\chi\)</span> be the quadratic character
+of <span class="math inline">\(F\)</span> attached to <span
+class="math inline">\(E\)</span>, write <span
+class="math inline">\(\operatorname{rd}_E=|d_E|^{1/(2f)}\)</span> and
+<span class="math inline">\(v=\operatorname{rd}_E/2\)</span> as in
+Chapter <a href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="hp-chap">47</a>, and let <span
+class="math inline">\(\Phi\)</span> be a CM type, a set of <span
+class="math inline">\(f\)</span> complex embeddings <span
+class="math inline">\(\rho\)</span> of <span
+class="math inline">\(E\)</span>. For <span
+class="math inline">\(M\ge1\)</span> let <span
+class="math inline">\(\operatorname{mass}(M)\)</span> be the mass of the
+genus of the standard lattice <span class="math inline">\(\mathcal
+O_E^M\)</span> with <span class="math inline">\(h(x,y)=\sum_i\bar
+x_iy_i\)</span>, the sum of <span
+class="math inline">\(1/|\mathrm{Aut}|\)</span> over its classes.</p>
+<div id="in:mass" class="theorem">
+<p><strong>Theorem 48.1.1</strong> (Mass ratio). <em>For <span
+class="math inline">\(M\ge3\)</span>, <span
+class="math display">\[\frac{\operatorname{mass}(M)}{\operatorname{mass}(M-1)}
+=\bigl((M-1)!\,(v/\pi)^M\bigr)^f(2v)^{-f/2}\,L(M),
+\qquad L(M)=\prod_{\mathfrak P}e_{\mathfrak P}(M),\]</span> the product
+over the primes <span class="math inline">\(\mathfrak P\)</span> of
+<span class="math inline">\(E\)</span>, with <span
+class="math inline">\(e_{\mathfrak P}(M)=(1-(-1)^M N\mathfrak
+P^{-M/2})^{-1}\)</span> if <span class="math inline">\(\bar{\mathfrak
+P}=\mathfrak P\)</span> and <span class="math inline">\(e_{\mathfrak
+P}(M)=(1-N\mathfrak P^{-M})^{-1/2}\)</span> otherwise.</em></p>
+</div>
+<p><em>Status</em>: this follows from the exact mass formula of Gan,
+Hanke and Yu <span class="citation"
+data-cites="GHY">[<a href="#ref-GHY">GHY</a>]</span> and the functional
+equation. In <span class="citation"
+data-cites="Lean">[<a href="#ref-Lean">Lean</a>]</span> it is proved from a
+statement on representations of one by hermitian lattices; we have not
+followed that proof. Simplest incarnation: the Gaussian ratio <span
+class="math inline">\(M_r/M_{r-1}=(r-1)!\,\pi^{-r}\kappa_r\)</span> of
+<a href="20261125T002000--definite-theta-lifts__workbook.html#eq:kappa" data-reference-type="eqref"
+data-reference="ms-eq:kappa">(2)</a>, where <span
+class="math inline">\(\mathbb Q(\mathrm i)\)</span> is ramified at two
+and so lies outside the present hypotheses.</p>
+<div id="pr:euler" class="problem">
+<p><strong>Problem 48.1.1</strong>. For <span
+class="math inline">\(M\ge2\)</span>, <span
+class="math inline">\(L(M)=\zeta_F(M)\)</span> for even <span
+class="math inline">\(M\)</span>, and <span
+class="math inline">\(L(M)=L_F(M,\chi)\)</span> for odd <span
+class="math inline">\(M\)</span>.</p>
+</div>
+<div id="pr:Lbound" class="problem">
+<p><strong>Problem 48.1.2</strong>. For <span
+class="math inline">\(M\ge2\)</span>, <span class="math inline">\(|\log
+L(M)|\le\log\zeta_F(M)\le f\log\zeta(M)\)</span>.</p>
+</div>
+<p>Fix even <span class="math inline">\(m=2s+2\ge2\)</span>, <span
+class="math inline">\(k\ge m+3\)</span> and <span
+class="math inline">\(r=k+m-1\)</span>, and two primes <span
+class="math inline">\(g_0\ne g_1\)</span> split completely in <span
+class="math inline">\(E\)</span>. The level indices of §<a
+href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#sec:prime" data-reference-type="ref"
+data-reference="hp-sec:prime">47.3</a> are <span
+class="math inline">\(I_\Pi=(I_\Pi(g_0)I_\Pi(g_1))^f\)</span> and <span
+class="math inline">\(I_\Sigma=(I_\Sigma(g_0)I_\Sigma(g_1))^f\)</span>
+with <span class="math inline">\(I_\Pi(q)=\prod_{i=1}^k(q^i-1)\)</span>
+and <span
+class="math inline">\(I_\Sigma(q)=q^k\prod_{i=1}^r(q^i-1)\)</span>.</p>
+<div id="pr:glcard" class="problem">
+<p><strong>Problem 48.1.3</strong>. <span
+class="math inline">\(|\mathrm{GL}_n(\mathbb{F}_q)|=q^{n(n-1)/2}\prod_{i=1}^n(q^i-1)\)</span>.
+With <span class="math inline">\(N=s(2k+2s+1)\)</span> one has <span
+class="math inline">\(k^2+N+km+m(m-1)/2=r^2\)</span>, and hence <span
+class="math inline">\(I_\Sigma(q)=|\mathrm{GL}_r(\mathbb{F}_q)|/q^{N+k(k-1)/2}\)</span>.</p>
+</div>
+<div id="pr:index" class="problem">
+<p><strong>Problem 48.1.4</strong>. <span
+class="math inline">\(I_\Sigma(q)/I_\Pi(q)=q^{km+m(m-1)/2}\prod_{j=k+1}^{r}(1-q^{-j})\)</span>.
+For <span class="math inline">\(k=5\)</span> and <span
+class="math inline">\(m=2\)</span> this is <span
+class="math inline">\(q^5(q^6-1)\)</span>.</p>
+</div>
+<p>Recall from <a href="20261125T002000--definite-theta-lifts__workbook.html#eq:weyl" data-reference-type="eqref"
+data-reference="ms-eq:weyl">(4)</a> the Vandermonde product
+<span
+class="math inline">\(V_n(z)=\prod_{i&lt;i&#39;}(z_i-z_{i&#39;})\)</span>
+and <span
+class="math inline">\(D_n(z)=V_n(z)/\prod_{i=0}^{n-1}i!\)</span>. For
+each <span class="math inline">\(\rho\in\Phi\)</span> let <span
+class="math inline">\(z^{\mathrm{row}}_\rho\in\mathbb R^r\)</span> be
+the row parameter and, for each word <span
+class="math inline">\(u\)</span>, <span
+class="math inline">\(z^{\mathrm{col}}_{u\rho}\in\mathbb R^k\)</span>
+the column parameter, both strictly decreasing. Let <span
+class="math inline">\(T_u\)</span> be the auxiliary prime of the word,
+let <span class="math inline">\(d_u\)</span> be the rank of the source
+lattice <span class="math inline">\(N_u\)</span>, and <span
+class="math inline">\(D^*\)</span> the dimension budget.</p>
+<div id="in:counts" class="theorem">
+<p><strong>Theorem 48.1.2</strong> (The two counts). <em><span
+class="math display">\[d_u=\operatorname{mass}(k)\,I_\Pi\prod_{\rho\in\Phi}D_k(z^{\mathrm{col}}_{u\rho})\,(T_u^k-1)^f,
+\qquad
+D^*=\operatorname{mass}(r)\,I_\Sigma\prod_{\rho\in\Phi}D_r(z^{\mathrm{row}}_\rho).\]</span></em></p>
+</div>
+<p><em>Status</em>: the first is the class number formula for the column
+group at level <span class="math inline">\(T_u\)</span> together with
+Weyl’s dimension formula; the second is the volume of the row group
+times Harish-Chandra’s formal degrees <span class="citation"
+data-cites="HC">[<a href="#ref-HC">HC</a>]</span>, which are given by Weyl’s
+formula. Both are proved in <span class="citation"
+data-cites="Lean">[<a href="#ref-Lean">Lean</a>]</span> from these inputs; we
+have read the statements, not the proofs. In <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Hyp. 15.23]</span> the budget
+is only bounded below, with a factor <span
+class="math inline">\((2/3)^f\)</span>.</p>
+<p>For each word <span class="math inline">\(u\)</span> and <span
+class="math inline">\(\rho\in\Phi\)</span> define the <em>critical
+level</em> <span
+class="math inline">\(T^{\mathrm{cr}}_{u\rho}&gt;0\)</span> by <span
+class="math display">\[(T^{\mathrm{cr}}_{u\rho})^k=(v/\pi)^{(m-1)k+m(m-1)/2}\,\operatorname{rd}_E^{-(m-1)/2}\,
+(g_0g_1)^{km+m(m-1)/2}\,\frac{V_r(z^{\mathrm{row}}_\rho)}{V_k(z^{\mathrm{col}}_{u\rho})},\]</span>
+and put <span class="math display">\[E_a=\prod_{M=k+1}^{r}L(M)\cdot
+\prod_{i=0,1}\prod_{j=k+1}^{r}(1-g_i^{-j})^f\cdot(1-T_u^{-k})^{-f}.\]</span></p>
+<div id="pr:telescope" class="problem">
+<p><strong>Problem 48.1.5</strong>. <span
+class="math inline">\(\sum_{M=k+1}^{r}M=(m-1)k+m(m-1)/2\)</span>, and
+<span
+class="math display">\[\frac{\operatorname{mass}(r)}{\operatorname{mass}(k)}=\Bigl((v/\pi)^{(m-1)k+m(m-1)/2}\,
+\operatorname{rd}_E^{-(m-1)/2}\prod_{i=k}^{r-1}i!\Bigr)^f\prod_{M=k+1}^{r}L(M).\]</span></p>
+</div>
+<div id="pr:factorials" class="problem">
+<p><strong>Problem 48.1.6</strong>. <span
+class="math inline">\(\prod_{i=k}^{r-1}i!\cdot
+D_r(z)/D_k(z&#39;)=V_r(z)/V_k(z&#39;)\)</span> for all <span
+class="math inline">\(z\in\mathbb R^r\)</span> and <span
+class="math inline">\(z&#39;\in\mathbb R^k\)</span> with <span
+class="math inline">\(V_k(z&#39;)\ne0\)</span>.</p>
+</div>
+<p>Combining Theorem <a href="#in:counts" data-reference-type="ref"
+data-reference="in:counts">48.1.2</a> with Problems <a href="#pr:index"
+data-reference-type="ref" data-reference="pr:index">48.1.4</a>, <a
+href="#pr:telescope" data-reference-type="ref"
+data-reference="pr:telescope">48.1.5</a> and <a href="#pr:factorials"
+data-reference-type="ref" data-reference="pr:factorials">48.1.6</a> gives the
+following.</p>
+<div id="thm:count" class="theorem">
+<p><strong>Theorem 48.1.3</strong> (The count ratio). <em>For every word
+<span class="math inline">\(u\)</span>, <span
+class="math display">\[\frac{D^*}{d_u}=E_a\prod_{\rho\in\Phi}\Bigl(\frac{T^{\mathrm{cr}}_{u\rho}}{T_u}\Bigr)^k
+.\]</span></em></p>
+</div>
+<p>No factorial survives, as in the Gaussian count identity (Theorem <a
+href="20261125T002000--definite-theta-lifts__workbook.html#thm:count" data-reference-type="ref"
+data-reference="ms-thm:count">21.4.1</a>). What remains of the
+masses is the power of <span class="math inline">\(v/\pi\)</span> and
+the <span class="math inline">\(L\)</span>-values in <span
+class="math inline">\(E_a\)</span>.</p>
+<h1 id="sec:prime">§48.2. The prime and the critical levels</h1>
+<p>How close is <span class="math inline">\(T_u\)</span> to the critical
+levels? The factor <span class="math inline">\(E_a\)</span> is
+exponentially close to one in <span
+class="math inline">\(k\)</span>.</p>
+<div id="pr:zeta-tail" class="problem">
+<p><strong>Problem 48.2.1</strong>. For <span
+class="math inline">\(M\ge3\)</span>, <span
+class="math inline">\(\log\zeta(M)\le2^{1-M}\)</span>.</p>
+</div>
+<div id="pr:Ea" class="problem">
+<p><strong>Problem 48.2.2</strong>. If <span
+class="math inline">\(g_0,g_1\ge4\)</span> and <span
+class="math inline">\(T_u\ge2\)</span>, then <span
+class="math inline">\(|\log E_a|\le8f/2^k\)</span>.</p>
+</div>
+<p>The prime <span class="math inline">\(T_u\)</span> is chosen so that
+<span class="math inline">\(d_u\)</span> matches the budget up to the
+frame factor <span class="math inline">\(\Gamma_0\ge1\)</span> of §<a
+href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#sec:prime" data-reference-type="ref"
+data-reference="hp-sec:prime">47.3</a>, the same for all
+words: for a constant <span class="math inline">\(C_0\ge1\)</span>,
+<span id="eq:window" class="math display">\[\begin{equation}
+\label{eq:window}\tag{1}
+C_0^{-1}\Gamma_0^{-2}D^*\le d_u\le C_0\Gamma_0^{-2}D^*.
+\end{equation}\]</span> The formalization takes <span
+class="math inline">\(C_0=3\)</span>. The prime itself is part of its
+data, subject to the interval <span class="math inline">\(Z_u\le
+T_u\le(1+1/(fk))Z_u\)</span> of Problem <a href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#pr:interval"
+data-reference-type="ref"
+data-reference="hp-pr:interval">47.3.3</a>.</p>
+<div id="pr:window" class="problem">
+<p><strong>Problem 48.2.3</strong>. Assume <a href="#eq:window"
+data-reference-type="eqref" data-reference="eq:window">(1)</a>,
+<span class="math inline">\(8f/2^k\le\log2\)</span> and <span
+class="math inline">\(\log\Gamma_0\le k/8\)</span>, together with the
+hypotheses of Problem <a href="#pr:Ea" data-reference-type="ref"
+data-reference="pr:Ea">48.2.2</a>. Then <span
+class="math display">\[(2C_0)^{-1/k}\le\prod_{\rho\in\Phi}\frac{T^{\mathrm{cr}}_{u\rho}}{T_u}
+\le(2C_0)^{1/k}e^{1/4}.\]</span></p>
+</div>
+<p>In the application, <span
+class="math inline">\(\Gamma_0=\exp(C_\Gamma m^5fy)\)</span> with <span
+class="math inline">\(y=x^\varepsilon\)</span>, and the size condition
+<span class="math inline">\(8C_\Gamma m^5fy\le k\)</span> gives <span
+class="math inline">\(\log\Gamma_0\le k/8\)</span>. Thus <span
+class="math inline">\(\log T_u\)</span> is the mean of <span
+class="math inline">\(\log T^{\mathrm{cr}}_{u\rho}\)</span> over <span
+class="math inline">\(\Phi\)</span> up to <span
+class="math inline">\(O(1/f)\)</span>. The same comparison bounds the
+ratio of the primes of two words.</p>
+<div id="pr:ratio" class="problem">
+<p><strong>Problem 48.2.4</strong>. Let <span
+class="math inline">\(u,u&#39;\)</span> be words satisfying <a
+href="#eq:window" data-reference-type="eqref"
+data-reference="eq:window">(1)</a>, with <span
+class="math inline">\(|\log E_a|\le8f/2^k\)</span> for both and <span
+class="math inline">\(k\ge5\)</span>. If <span
+class="math inline">\(T^{\mathrm{cr}}_{u\rho}\le
+C_1T^{\mathrm{cr}}_{u&#39;\rho}\)</span> for every <span
+class="math inline">\(\rho\)</span>, then <span
+class="math inline">\(T_u\le eC_0C_1T_{u&#39;}\)</span>.</p>
+</div>
+<h1 id="sec:below">§48.3. The critical level from below</h1>
+<p>Which part of <span
+class="math inline">\(T^{\mathrm{cr}}_{u\rho}\)</span> is large? Fix
+<span class="math inline">\(\rho\)</span> and drop it from the notation.
+The row parameter is <span
+class="math inline">\(z^{\mathrm{row}}=(\alpha_1,\dots,\alpha_{k-1},-b_1,\dots,-b_m)\)</span>
+with <span
+class="math display">\[\alpha_i=\alpha_{k-1}+4\Delta(k-1-i),\qquad
+\alpha_{k-1}\ge0,\quad \alpha_1\le4k\Delta,\quad\Delta\ge1,\]</span> and
+nodes <span class="math inline">\(1\le b_1\)</span>, <span
+class="math inline">\(b_{j+1}\ge b_j+1\)</span>. A word is <span
+class="math inline">\(\delta\in\{0,1\}^{k-1}\)</span> with <span
+class="math inline">\(\delta_{k-1}=0\)</span>, and the column parameter
+is <span
+class="math inline">\(z^{\mathrm{col}}=(\gamma_1,\dots,\gamma_k)\)</span>
+with <span
+class="math display">\[\gamma_i=\alpha_{i-1}-\tfrac12-\delta_{i-1}\Delta\quad(2\le
+i\le k),
+\qquad \gamma_1-\alpha_1\ge4k\Delta,\]</span> and we put <span
+class="math inline">\(\eta=\gamma_1-\alpha_1\)</span>. This is the case
+of a place <span class="math inline">\(\rho\)</span> that is not a top.
+At a top the last entry is replaced by <span
+class="math inline">\(\gamma_k=-b&#39;\)</span> with <span
+class="math inline">\(b_1/2\le b&#39;\le b_1-3\)</span>, and we put
+<span class="math inline">\(\eta=\gamma_1b&#39;/(k\Delta)\)</span>
+instead.</p>
+<div id="pr:interlace" class="problem">
+<p><strong>Problem 48.3.1</strong>. <span
+class="math inline">\(\gamma_1&gt;\alpha_1&gt;\gamma_2&gt;\alpha_2&gt;\dots&gt;\alpha_{k-1}&gt;\gamma_k\)</span>,
+and <span class="math inline">\(z^{\mathrm{row}}\)</span> is strictly
+decreasing.</p>
+</div>
+<div id="pr:bracket" class="problem">
+<p><strong>Problem 48.3.2</strong>. Let <span
+class="math inline">\(B&gt;0\)</span> with <span
+class="math inline">\(B^k=(v/\pi)^{m(m-1)/2}\operatorname{rd}_E^{-(m-1)/2}(g_0g_1)^{m(m-1)/2}\)</span>.
+Then <span
+class="math display">\[T^{\mathrm{cr}}=(v/\pi)^{m-1}(g_0g_1)^m\,B\,
+\bigl(V_r(z^{\mathrm{row}})/V_k(z^{\mathrm{col}})\bigr)^{1/k},\]</span>
+and if <span class="math inline">\(\operatorname{rd}_E\ge1\)</span> and
+<span class="math inline">\(g_0g_1\ge2\pi\)</span>, then <span
+class="math inline">\(1\le
+B\le\exp\bigl(m^2\log(g_0g_1\operatorname{rd}_E)/(2k)\bigr)\)</span>.</p>
+</div>
+<div id="pr:row" class="problem">
+<p><strong>Problem 48.3.3</strong>. <span
+class="math display">\[V_r(z^{\mathrm{row}})=V_{k-1}(\alpha)\prod_{i,j}(\alpha_i+b_j)\prod_{j&lt;j&#39;}(b_{j&#39;}-b_j)
+\ge V_{k-1}(\alpha)\,(b_1\cdots b_m)^{k-1}.\]</span></p>
+</div>
+<div id="pr:split" class="problem">
+<p><strong>Problem 48.3.4</strong>. <span
+class="math inline">\(V_k(z^{\mathrm{col}})=\prod_{i=2}^k(\gamma_1-\gamma_i)\cdot
+V_{k-1}(\gamma_2,\dots,\gamma_k)\)</span>, and <span
+class="math display">\[V_{k-1}(\gamma_2,\dots,\gamma_k)=R_\delta\,V_{k-1}(\alpha),\qquad
+R_\delta=\prod_{1\le i&lt;i&#39;\le k-1}
+\Bigl(1+\frac{\delta_{i&#39;}-\delta_i}{4(i&#39;-i)}\Bigr).\]</span></p>
+</div>
+<div id="pr:R" class="problem">
+<p><strong>Problem 48.3.5</strong>. <span class="math inline">\(R_\delta\le
+e^{(k-2)/4}\)</span>.</p>
+</div>
+<p>The formalization also proves <span class="math inline">\(R_\delta\ge
+e^{-k/4}\)</span>; we do not need it.</p>
+<div id="pr:edge" class="problem">
+<p><strong>Problem 48.3.6</strong>. At a non-top place, <span
+class="math inline">\(\eta\le\gamma_1-\gamma_i\le2\eta\)</span> for
+<span class="math inline">\(2\le i\le k\)</span>. Hence <span
+class="math inline">\(V_k(z^{\mathrm{col}})\le(2\eta)^{k-1}e^{k/4}V_{k-1}(\alpha)\)</span>.</p>
+</div>
+<div id="pr:constant" class="problem">
+<p><strong>Problem 48.3.7</strong>. <span
+class="math inline">\(2\cdot0.38\cdot e^{1/4}&lt;1\)</span>. Let <span
+class="math inline">\(\beta=b_1\cdots b_m\)</span>, let <span
+class="math inline">\(b\ge1\)</span> with <span
+class="math inline">\(b_j\le b^2\)</span> for all <span
+class="math inline">\(j\)</span>, and put <span
+class="math inline">\(e_0=\exp(-2m\log b/k)\)</span>. Then <span
+class="math inline">\(e_0^k\beta\le1\)</span>, and <span
+class="math inline">\((0.38\,e_0\beta/\eta)^k\,V_k(z^{\mathrm{col}})\le\tfrac12V_{k-1}(\alpha)\beta^{k-1}\)</span>.</p>
+</div>
+<p>By Problems <a href="#pr:bracket" data-reference-type="ref"
+data-reference="pr:bracket">48.3.2</a>, <a href="#pr:row"
+data-reference-type="ref" data-reference="pr:row">48.3.3</a> and <a
+href="#pr:constant" data-reference-type="ref"
+data-reference="pr:constant">48.3.7</a>, at a non-top place <span
+class="math inline">\((V_r(z^{\mathrm{row}})/V_k(z^{\mathrm{col}}))^{1/k}\ge0.38\,e_0\beta/\eta\)</span>,
+and <span class="math inline">\(B\ge1\)</span>. The top case runs the
+same way with a separate Vandermonde count for the last column
+entry.</p>
+<div id="thm:below" class="theorem">
+<p><strong>Theorem 48.3.1</strong> (Lower bound for the critical level).
+<em>Let <span class="math inline">\(k\ge4\)</span>, <span
+class="math inline">\(b\ge1\)</span>, <span class="math inline">\(b_j\le
+b^2\)</span> for all <span class="math inline">\(j\)</span>, <span
+class="math inline">\(\operatorname{rd}_E\ge1\)</span> and <span
+class="math inline">\(g_0g_1\ge2\pi\)</span>. At a non-top place <span
+class="math display">\[T^{\mathrm{cr}}\ge
+c_1\,(g_0g_1)^m(v/\pi)^{m-1}\,\frac{b_1\cdots b_m}{\eta},
+\qquad c_1=0.38\exp(-2m\log b/k).\]</span> At a top, the same holds with
+<span class="math inline">\(c_1\)</span> divided by <span
+class="math inline">\(1+4k\Delta/b&#39;\)</span>, under <span
+class="math inline">\(40mk\Delta\le b_1\)</span> and <span
+class="math inline">\(20m\log b\le k\)</span>. <em>Status</em>: the
+non-top case is Problems <a href="#pr:bracket" data-reference-type="ref"
+data-reference="pr:bracket">48.3.2</a>–<a href="#pr:constant"
+data-reference-type="ref" data-reference="pr:constant">48.3.7</a>; the top
+case is proved in <span class="citation"
+data-cites="Lean">[<a href="#ref-Lean">Lean</a>]</span>, and we have not
+checked its Vandermonde count by hand.</em></p>
+</div>
+<div id="pr:c1" class="problem">
+<p><strong>Problem 48.3.8</strong>. If <span
+class="math inline">\(40mk\Delta\le b_1\)</span> and <span
+class="math inline">\(20m\log b\le k\)</span>, then <span
+class="math inline">\(c_1\ge1/5\)</span> in both cases of Theorem <a
+href="#thm:below" data-reference-type="ref"
+data-reference="thm:below">48.3.1</a>.</p>
+</div>
+<p>The word enters <span class="math inline">\(T^{\mathrm{cr}}\)</span>
+only through <span class="math inline">\(V_k(z^{\mathrm{col}})\)</span>.
+The formalization also proves that, for <span
+class="math inline">\(40mk\Delta\le b_1\)</span> and any two words <span
+class="math inline">\(\delta,\delta&#39;\)</span>, <span
+class="math inline">\(|\log(V_k(z^{\mathrm{col}}_{\delta&#39;})/V_k(z^{\mathrm{col}}_\delta))|\le
+k/2+1\)</span> <span class="citation"
+data-cites="Lean">[<a href="#ref-Lean">Lean</a>]</span>.</p>
+<div id="pr:words" class="problem">
+<p><strong>Problem 48.3.9</strong>. Under that bound and <span
+class="math inline">\(k\ge4\)</span>, the critical levels of two words
+differ by a factor between <span class="math inline">\(e^{-3/4}\)</span>
+and <span class="math inline">\(e^{3/4}\)</span>.</p>
+</div>
+<p>With Problem <a href="#pr:ratio" data-reference-type="ref"
+data-reference="pr:ratio">48.2.4</a> this gives <span
+class="math inline">\(T_u\le e^{7/4}C_0T_{u&#39;}\)</span> for any two
+words, comparing the critical levels at each place.</p>
+<h1 id="sec:A6">§48.4. The auxiliary prime</h1>
+<p>Combining Problem <a href="#pr:window" data-reference-type="ref"
+data-reference="pr:window">48.2.3</a> with Theorem <a href="#thm:below"
+data-reference-type="ref" data-reference="thm:below">48.3.1</a> and
+Problem <a href="#pr:c1" data-reference-type="ref"
+data-reference="pr:c1">48.3.8</a> gives the following.</p>
+<div id="thm:A6" class="theorem">
+<p><strong>Theorem 48.4.1</strong> (Lower bound for the prime). <em>Under the
+hypotheses of Problems <a href="#pr:window" data-reference-type="ref"
+data-reference="pr:window">48.2.3</a> and <a href="#pr:c1"
+data-reference-type="ref" data-reference="pr:c1">48.3.8</a> and of
+Theorem <a href="#thm:below" data-reference-type="ref"
+data-reference="thm:below">48.3.1</a> at every <span
+class="math inline">\(\rho\in\Phi\)</span>, with nodes <span
+class="math inline">\(b_{\rho j}\)</span> and <span
+class="math inline">\(\eta_{u\rho}\)</span> at <span
+class="math inline">\(\rho\)</span>, <span
+class="math display">\[\begin{multline*}
+\log T_u\ge m\log(g_0g_1)+(m-1)\log\frac v\pi
++\frac1f\sum_{\rho\in\Phi}\Bigl(\sum_{j=1}^m\log b_{\rho j}
+-\log\eta_{u\rho}\Bigr)\\
+-\log5-\frac1f\Bigl(\frac{\log(2C_0)}k+\frac14\Bigr).
+\end{multline*}\]</span></em></p>
+</div>
+<div id="pr:A6" class="problem">
+<p><strong>Problem 48.4.1</strong>. Theorem <a href="#thm:A6"
+data-reference-type="ref" data-reference="thm:A6">48.4.1</a> follows from
+Problem <a href="#pr:window" data-reference-type="ref"
+data-reference="pr:window">48.2.3</a>, Theorem <a href="#thm:below"
+data-reference-type="ref" data-reference="thm:below">48.3.1</a> and
+Problem <a href="#pr:c1" data-reference-type="ref"
+data-reference="pr:c1">48.3.8</a>.</p>
+</div>
+<div id="pr:compare" class="problem">
+<p><strong>Problem 48.4.2</strong>. Let <span class="math inline">\(y=\log
+b\)</span>, <span class="math inline">\(g=\log(g_0g_1)\)</span>, and
+suppose <span class="math inline">\(\log(v/\pi)\le y\)</span>, <span
+class="math inline">\(b_{\rho j}\le b^2\)</span> and <span
+class="math inline">\(\eta_{u\rho}\le b_{\rho1}b^{C_u}\)</span>. Then
+Theorem <a href="#thm:A6" data-reference-type="ref"
+data-reference="thm:A6">48.4.1</a> gives <span class="math display">\[\log
+T_u\ge\sum_{j=1}^m\frac1f\sum_{\rho\in\Phi}
+\log\frac{b_{\rho j}v}{\pi}+mg-(3+C_u)y-\log5
+-\frac1f\Bigl(\frac{\log(2C_0)}k+\frac14\Bigr).\]</span></p>
+</div>
+<p>This is Theorem <a href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#in:A6" data-reference-type="ref"
+data-reference="hp-in:A6">47.3.1</a>, the form of (A6) with the
+nodes <span class="math inline">\(b_{\rho j}\)</span> in place of <span
+class="math inline">\(w_{j\rho}\)</span> and an error of order <span
+class="math inline">\(y\)</span>. In <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> the nodes satisfy <span
+class="math inline">\(b_{\rho j}&lt;w_{j\rho}\le
+b_{\rho j}(1+1/x)\)</span>, so the two forms differ by at most <span
+class="math inline">\(m/x\)</span>. The formalization bounds the first
+column entry by <span class="math inline">\(\gamma_1\le
+b^{C_u}\)</span>, which gives <span
+class="math inline">\(\eta_{u\rho}\le b_{\rho1}b^{C_u}\)</span> at a
+top; elsewhere it imposes <span
+class="math inline">\(\eta_{u\rho}\le8k\Delta\)</span>, which is at most
+<span class="math inline">\(b_{\rho1}\)</span> when <span
+class="math inline">\(40mk\Delta\le b_{\rho1}\)</span>.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. The mass ratio is
+<code>SiegelMassRatioCM</code>, proved as
+<code>massRatio_all_unramified_cmFields</code>, with right side
+<code>massRatioRightSide</code> and <span
+class="math inline">\(L(M)\)</span> <code>lValEta</code>; the bound of
+Problem <a href="#pr:Lbound" data-reference-type="ref"
+data-reference="pr:Lbound">48.1.2</a> is
+<code>log_l_value_field_bound</code>. Theorem <a href="#in:counts"
+data-reference-type="ref" data-reference="in:counts">48.1.2</a> is
+<code>FamilyMidVolume</code>, proved by
+<code>admissible_ranks_of_mass_alt</code> through
+<code>Dstar_mass</code> and
+<code>admissibleRanks_of_mass_formula</code>, with formal degrees
+<code>DsigHC</code>. The critical level is <code>Tcrit</code>.
+Theorem <a href="#thm:count" data-reference-type="ref"
+data-reference="thm:count">48.1.3</a> is <code>Sz.PropA</code>, used in
+<code>degree_ratio_product_formula</code>; Problems <a href="#pr:Ea"
+data-reference-type="ref" data-reference="pr:Ea">48.2.2</a>, <a
+href="#pr:window" data-reference-type="ref"
+data-reference="pr:window">48.2.3</a> and <a href="#pr:ratio"
+data-reference-type="ref" data-reference="pr:ratio">48.2.4</a> are
+<code>Sz.EaSize</code>, <code>Sz.CorA</code> and
+<code>level_ratio_bound</code>. Section <a href="#sec:below"
+data-reference-type="ref" data-reference="sec:below">48.3</a> follows
+<code>BracketBound</code>, <code>VandLamLower</code>,
+<code>VandNonTop</code>, <code>VandTop</code>, <code>EdgeFactors</code>
+and <code>TcritLower</code> (proved as
+<code>critical_threshold_lower_bound</code>, used in
+<code>critical_level_lower_bound</code>), and the word comparison is
+<code>TcritWords</code>. The window <a href="#eq:window"
+data-reference-type="eqref" data-reference="eq:window">(1)</a>
+is part of <code>StandingNumericalData</code>; the interval for <span
+class="math inline">\(T_u\)</span> is <code>levelPrime_window</code>.
+Downstream, the formalization uses <span
+class="math inline">\(T_u\ge(g_0g_1v/\pi)^{m-2}\)</span>
+(<code>TFrameAt</code>) and <span class="math inline">\(b^{m/2}\le
+T_u\le b^{(4C_g+13)m}\)</span> (<code>levelPrime_size</code>) <span
+class="citation" data-cites="Lean">[<a href="#ref-Lean">Lean</a>]</span>.</p>
+</div>
+<p><em>Status</em>: we have not traced where the formalization uses a
+lower bound for <span class="math inline">\(\log T_u\)</span> in the
+mean slope inequality, nor how it constructs a prime in the window; we
+located only the consequences named above. Theorem <a href="#thm:A6"
+data-reference-type="ref" data-reference="thm:A6">48.4.1</a> is our
+combination of its lemmas.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="sectwo">§<a href="#sec:two"
+data-reference-type="ref" data-reference="sec:two">48.1</a></h2>
+<dl>
+<dt><a href="#pr:euler" data-reference-type="ref"
+data-reference="pr:euler">48.1.1</a></dt>
+<dd>
+<p>Since <span class="math inline">\(E/F\)</span> is unramified, <span
+class="math inline">\(\bar{\mathfrak P}=\mathfrak P\)</span> exactly
+when <span class="math inline">\(\mathfrak P\)</span> lies over an inert
+prime of <span class="math inline">\(F\)</span>. Group the factors over
+each prime of <span class="math inline">\(F\)</span>.</p>
+</dd>
+<dt><a href="#pr:Lbound" data-reference-type="ref"
+data-reference="pr:Lbound">48.1.2</a></dt>
+<dd>
+<p>Compare each Euler factor with <span
+class="math inline">\((1-N\mathfrak p^{-M})^{\pm1}\)</span>, and the
+primes of <span class="math inline">\(F\)</span> over <span
+class="math inline">\(p\)</span> with <span
+class="math inline">\((1-p^{-M})^{-f}\)</span>.</p>
+</dd>
+<dt><a href="#pr:glcard" data-reference-type="ref"
+data-reference="pr:glcard">48.1.3</a></dt>
+<dd>
+<p>Count ordered bases. For the identity, expand <span
+class="math inline">\(r^2\)</span> with <span
+class="math inline">\(r=k+2s+1\)</span>.</p>
+</dd>
+<dt><a href="#pr:telescope" data-reference-type="ref"
+data-reference="pr:telescope">48.1.5</a></dt>
+<dd>
+<p>Multiply Theorem <a href="#in:mass" data-reference-type="ref"
+data-reference="in:mass">48.1.1</a> over <span
+class="math inline">\(M\)</span>; use <span
+class="math inline">\(2v=\operatorname{rd}_E\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secprime">§<a href="#sec:prime"
+data-reference-type="ref" data-reference="sec:prime">48.2</a></h2>
+<dl>
+<dt><a href="#pr:zeta-tail" data-reference-type="ref"
+data-reference="pr:zeta-tail">48.2.1</a></dt>
+<dd>
+<p>Bound <span class="math inline">\(\sum_{n\ge3}n^{-M}\)</span> by an
+integral.</p>
+</dd>
+<dt><a href="#pr:Ea" data-reference-type="ref"
+data-reference="pr:Ea">48.2.2</a></dt>
+<dd>
+<p>Use <span class="math inline">\(-\log(1-t)\le2t\)</span> for <span
+class="math inline">\(0\le t\le\frac12\)</span> and Problems <a
+href="#pr:Lbound" data-reference-type="ref"
+data-reference="pr:Lbound">48.1.2</a> and <a href="#pr:zeta-tail"
+data-reference-type="ref" data-reference="pr:zeta-tail">48.2.1</a>.</p>
+</dd>
+<dt><a href="#pr:window" data-reference-type="ref"
+data-reference="pr:window">48.2.3</a></dt>
+<dd>
+<p>Theorem <a href="#thm:count" data-reference-type="ref"
+data-reference="thm:count">48.1.3</a> with <span
+class="math inline">\(\frac12\le E_a\le2\)</span>.</p>
+</dd>
+<dt><a href="#pr:ratio" data-reference-type="ref"
+data-reference="pr:ratio">48.2.4</a></dt>
+<dd>
+<p>Compare <span
+class="math inline">\(T_u^{kf}\prod_\rho(T^{\mathrm{cr}}_{u\rho}/T_u)^k\)</span>
+for <span class="math inline">\(u\)</span> and <span
+class="math inline">\(u&#39;\)</span>; <a href="#eq:window"
+data-reference-type="eqref" data-reference="eq:window">(1)</a>
+gives <span class="math inline">\(d_u\le C_0^2d_{u&#39;}\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secbelow">§<a href="#sec:below"
+data-reference-type="ref" data-reference="sec:below">48.3</a></h2>
+<dl>
+<dt><a href="#pr:bracket" data-reference-type="ref"
+data-reference="pr:bracket">48.3.2</a></dt>
+<dd>
+<p>Substitute <span
+class="math inline">\(\operatorname{rd}_E=2v\)</span> in <span
+class="math inline">\(B^k\)</span>.</p>
+</dd>
+<dt><a href="#pr:R" data-reference-type="ref"
+data-reference="pr:R">48.3.5</a></dt>
+<dd>
+<p>Group the pairs by <span
+class="math inline">\(d=i&#39;-i\)</span>.</p>
+</dd>
+<dt><a href="#pr:edge" data-reference-type="ref"
+data-reference="pr:edge">48.3.6</a></dt>
+<dd>
+<p><span class="math inline">\(\gamma_k\)</span> is the smallest column
+entry. Then use Problems <a href="#pr:split" data-reference-type="ref"
+data-reference="pr:split">48.3.4</a> and <a href="#pr:R"
+data-reference-type="ref" data-reference="pr:R">48.3.5</a>.</p>
+</dd>
+<dt><a href="#pr:constant" data-reference-type="ref"
+data-reference="pr:constant">48.3.7</a></dt>
+<dd>
+<p>Insert Problem <a href="#pr:edge" data-reference-type="ref"
+data-reference="pr:edge">48.3.6</a> and use <span
+class="math inline">\(\eta\ge1\)</span>.</p>
+</dd>
+<dt><a href="#pr:c1" data-reference-type="ref"
+data-reference="pr:c1">48.3.8</a></dt>
+<dd>
+<p>At a top, <span class="math inline">\(b&#39;\ge b_1/2\)</span>; and
+<span class="math inline">\(e^{-t}\ge1-t\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="seca6">§<a href="#sec:A6"
+data-reference-type="ref" data-reference="sec:A6">48.4</a></h2>
+<dl>
+<dt><a href="#pr:A6" data-reference-type="ref"
+data-reference="pr:A6">48.4.1</a></dt>
+<dd>
+<p>Take logarithms in Problem <a href="#pr:window"
+data-reference-type="ref" data-reference="pr:window">48.2.3</a> and average
+Theorem <a href="#thm:below" data-reference-type="ref"
+data-reference="thm:below">48.3.1</a> over <span
+class="math inline">\(\Phi\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Adr"><span class="bib-label">[Adr]</span> J. Adriazola, <em>The Alpöge proof of the Riemann hypothesis</em>, manuscript, revised 24 November 2026, <a href="https://github.com/jimjamzola/RH-Alpoge-Reconstruction" class="uri">https://github.com/jimjamzola/RH-Alpoge-Reconstruction</a>.</p>
+<p id="ref-GHY"><span class="bib-label">[GHY]</span> W. T. Gan, J. P. Hanke and J.-K. Yu, <em>On an exact mass formula of Shimura</em>, Duke Math. J. <strong>107</strong> (2001), 103–133.</p>
+<p id="ref-HC"><span class="bib-label">[HC]</span> Harish-Chandra, <em>Discrete series for semisimple Lie groups. II</em>, Acta Math. <strong>116</strong> (1966), 1–111.</p>
+<p id="ref-Lean"><span class="bib-label">[Lean]</span> The Lean community, <em>riemann-hypothesis</em>, a Lean formalization of Alpöge’s argument, <a href="https://github.com/leanprover-community/riemann-hypothesis" class="uri">https://github.com/leanprover-community/riemann-hypothesis</a>.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+</body>
+</html>
