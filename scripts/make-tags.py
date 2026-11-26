@@ -55,7 +55,7 @@ CHAPTERS = "chapters.tex"
 # in the index heading "* Part I. ...") and the side-series sheets (by
 # their names, "S1. ...").  Extend this when a Part settles.
 STABLE_PARTS = ["I", "II", "III", "IV", "V"]
-STABLE_SIDE = ["S1", "S2"]
+STABLE_SIDE = []
 
 # Environments whose labelled instances are tagged.
 TAGGED_ENVS = ["problem", "theorem", "proposition", "lemma", "definition"]

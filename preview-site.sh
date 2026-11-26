@@ -139,6 +139,13 @@ else
   FAILED="$FAILED tags.html"; echo "FAILED: tags.html"
 fi
 
+# Withdrawn sheets: a short page at each old URL (scripts/make-withdrawn.py).
+if python3 scripts/make-withdrawn.py --site . >/dev/null; then
+  echo "OK: withdrawn pages"
+else
+  FAILED="$FAILED withdrawn-pages"; echo "FAILED: withdrawn pages"
+fi
+
 # Check TeX links (warning-only); the report stays outside the site.
 emacs --batch -l ./tex2html.el --eval '(tex2html-check-links "link-check-report.md")' >/dev/null 2>&1 || true
 mv link-check-report.md "$root/link-check-report.md"

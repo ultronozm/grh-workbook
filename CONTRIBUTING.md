@@ -20,6 +20,7 @@ Each sheet treats one ingredient of the argument, in its simplest setting, in th
 **Sources.**
 - Prefer published sources.  The expositions listed in the index's *Sources* section may also be cited.
 - Every citation is checked to exist, and every numerical claim is checked by computation.
+- The rewritten Lean proof is cited as `[GL]`, with the same `\bibitem` text in every sheet (repository, commit `72fead1`, readable edition `grh/`); a statement read from it goes in a remark "In the Lean formalization" that names the declaration.
 
 **Acceptance.**
 A sheet is added only after an independent solver, given just the sheet, its hints, its prerequisites, the earlier sheets and the cited books, has worked every problem.  Problems found false, unclear, missing a step or needing an unstated result are fixed first.
@@ -35,8 +36,9 @@ The index `20261125T012000--grh-workbook__guide.org` is the only record of the c
 Build a sheet with `latexmk -pdf FILE.tex`; cross-sheet references use `xr`, so build earlier sheets first.  `./preview-site.sh` builds the whole site locally.
 
 **Tags.**
-Numbers change when chapters or problems are inserted; tags do not.  As in the Stacks project, every chapter, `\section` and labelled `problem`, `theorem`, `proposition`, `lemma` and `definition` of the settled parts (for now Parts I–V and S1–S2; the list is `STABLE_PARTS` and `STABLE_SIDE` in `scripts/make-tags.py`) has a four-character tag such as `2B7K`, recorded in `tags.tsv` as tag, sheet ID and label (empty for the chapter).  The HTML shows it in grey beside the item; `tag/2B7K.html` leads to the item wherever it is, and `tags.html` lists all tags.  The PDF does not show tags.
+Numbers change when chapters or problems are inserted; tags do not.  As in the Stacks project, every chapter, `\section` and labelled `problem`, `theorem`, `proposition`, `lemma` and `definition` of the settled parts (for now Parts I–V; the list is `STABLE_PARTS` and `STABLE_SIDE` in `scripts/make-tags.py`) has a four-character tag such as `2B7K`, recorded in `tags.tsv` as tag, sheet ID and label (empty for the chapter).  The HTML shows it in grey beside the item; `tag/2B7K.html` leads to the item wherever it is, and `tags.html` lists all tags.  The PDF does not show tags.
 - After adding an item to a settled part, run `scripts/make-tags.py`, which appends tags for the untagged items, and commit `tags.tsv` with the sheet.  Never edit, reorder or delete a line of `tags.tsv`, and never reuse a tag.
 - A tagged label must stay.  If its item must go, or changes beyond recognition, mark its line retired by adding a fourth column: `retired`, or `retired -> 2C3D` if the item `2C3D` replaces it, optionally followed by `; reason`.  A retired label may then be reused for a new item, which gets a new tag.
-- When a later part settles, add it to the stable list and run `scripts/make-tags.py`.
+- When Part VI settles, add it to the stable list and run `scripts/make-tags.py`.
+- A withdrawn sheet: retire all its tags, add a line for it to `scripts/withdrawn.tsv` (the site keeps a short page at its old URL), and remove it from the index.
 - `scripts/make-tags.py --check`, run by `./preview-site.sh` and CI, fails if a tagged label has disappeared without being retired, if a tag or an item is listed twice, or if a committed line was changed or deleted; it warns about untagged items.  A line not yet committed may still be dropped.
