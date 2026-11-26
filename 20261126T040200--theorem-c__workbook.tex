@@ -1,0 +1,168 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[sd-]{20261125T000000--slope-method__workbook}
+\externaldocument[at-]{20261126T030100--a-twist-for-each-prime__workbook}
+\externaldocument[da-]{20261126T030300--the-data__workbook}
+\externaldocument[ta-]{20261126T030600--theorem-a-short-forms__workbook}
+\externaldocument[dch-]{20261126T030700--the-determinant-of-a-chain__workbook}
+\externaldocument[col-]{20261126T030800--the-cost-of-one-lift__workbook}
+\externaldocument[tw-]{20261126T031000--twists-with-few-congruences__workbook}
+\externaldocument[mi-]{20261126T031100--theorem-c-and-the-main-inequality__workbook}
+\externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T040200\endcsname
+  \chapnumber{20261126T040200}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{{\mathbb{Z}}}
+\newcommand{\Q}{{\mathbb{Q}}}
+\newcommand{\R}{\mathbb R}
+\newcommand{\C}{{\mathbb{C}}}
+\newcommand{\Oc}{\mathcal O}
+\newcommand{\Lc}{\mathfrak L}
+\newcommand{\main}{h_{\mathrm{main}}}
+\newcommand{\rem}{\mathrm{rem}}
+\newcommand{\hdir}{h_{\mathrm{dir}}}
+\newcommand{\hgt}{\operatorname{ht}}
+\newcommand{\Gram}{\operatorname{Gram}}
+\newcommand{\lean}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\title{Theorem C}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Hadamard's and Fischer's inequalities for positive definite Hermitian matrices \cite[\S7.8]{HJ}.  From Chapter~\ref{sd-chap} heights, covolume and Problem~\ref{sd-pr:height-mul}; from Chapter~\ref{at-chap} the theorem on a twist for each prime; from Chapter~\ref{da-chap} the data and Problem~\ref{da-pr:main}; from Chapter~\ref{ob-chap} the objects and the target lattice; and the statements of the auxiliary forms, the factorization of the chain determinant and the bound for small ratios (Chapter~\ref{dch-chap}), of small ratios and the cost of one lift (Chapter~\ref{col-chap}), and of regular families (Chapter~\ref{tw-chap}).  Section~\ref{sec:toy} uses no earlier chapter.
+
+\medskip
+Theorem~C is the lower bound used in Chapter~\ref{mi-chap}, \emph{The main inequality}: a family of target forms that spans almost all of the target cannot have small covolume and small index together.  Why?  The determinant of the chain at the trivial twist is compared with its values at a twist chosen for each prime, and the cost of each single lift is bounded.  We first do this for one twist in a lattice, then state and prove Theorem~C in the form used in the proof.  This chapter heads Part~IX; the chapters that follow it develop its inputs.
+
+\section{The comparison in a lattice}\label{sec:toy}
+
+Let \(N \ge 1\) be an integer, and give \(\C^d\) the Hermitian form \(\langle v, w \rangle := N\, \bar v^{\mathsf T} w\).  For \(y_1, \dots, y_n \in \Q^d\) write \(\Gram(y) := \det(\langle y_i, y_j \rangle)_{i,j \le n}\), and let \(H := \log N\).
+
+\begin{problem}\label{pr:toy-int}
+If \(y_1, \dots, y_d \in \Z^d\) are linearly independent, then \(\Gram(y) \ge N^d\), so \(\log \Gram(y) \ge dH\).  For \(N = 5\), \(y_1 = (1, 2)\), \(y_2 = (2, -1)\) one has \(\Gram(y) = 625\).
+\end{problem}
+
+\begin{problem}\label{pr:toy-index}
+Let \(y_1, \dots, y_d \in \Q^d\) be linearly independent, and let \(u \in M_d(\Z)\) with \(\det u \ne 0\) be such that \(\sum_k u_{ik} y_k \in \Z^d\) for every \(i\).  If \(\log \Gram(y) \le c\) and \(\log\lvert\det u\rvert \le \delta\), then \(c + 2\delta \ge dH\).  For \(N = 5\), \(y_1 = (\tfrac12, 1)\), \(y_2 = (0, \tfrac13)\), \(u = \mathrm{diag}(2, 3)\), \(c = \log \Gram(y)\) and \(\delta = \log 6\) there is equality.
+\end{problem}
+
+Now let the family be shorter than the dimension.  It is completed to a basis by vectors whose lengths are known.
+
+\begin{problem}\label{pr:toy-complete}
+Let \(y_1, \dots, y_n\) and \(z_1, \dots, z_{n'}\) in \(\Z^d\) together form a basis of \(\Q^d\), with \(\langle z_i, z_i \rangle \le e^{\beta}\) for every \(i\).  Then \(\log \Gram(y) + n'\beta \ge dH\).  For \(d = 3\), \(N = 2\), \(y_1 = (1, 1, 0)\), \(y_2 = (0, 1, 1)\), \(z_1 = (1, 0, 0)\): \(\Gram(y) = 12\), \(\Gram(y, z) = 8\), and \(8 \le 12 \cdot 2\).
+\end{problem}
+
+\begin{problem}\label{pr:toy-steinitz}
+Every linearly independent family \(y_1, \dots, y_n \in \Z^d\) is completed to a basis of \(\Q^d\) by \(d - n\) of the standard basis vectors.  Hence \(\log \Gram(y) \ge nH\).
+\end{problem}
+
+Completing with \(d - n\) standard basis vectors costs at most \((d - n)H\) in the logarithm of the Gram determinant, where \(H\) is the logarithm of each vector's squared length.
+
+In Section~\ref{sec:thmC} the main amount enters through the height of the family \(\iota \mapsto Z(1)/Z(\theta_\iota)\), where the twist \(\theta_\iota\) is chosen for each pair \((\ell, \iota)\) (Problem~\ref{pr:volume}).
+
+\section{Theorem C}\label{sec:thmC}
+
+We use the parameters \(q_0, d\), the data and the objects of Chapter~\ref{ob-chap}, with their notation: the target forms \(T\), of dimension \(d_T\); the set \(\mathrm{Tw}\) of \(m\)-fold twists \(\vartheta\), with the trivial twist \(1\) and the norm \(\mathrm{Nm}\,Q_\vartheta\) of the modulus; the lower chain \(\Theta_\vartheta\); the determinants \(Z(\vartheta)\) of the chain and \(Z_j(\vartheta)\) of the \(j\)th single lift at \(\vartheta^j\); and families of twists \(\theta = (\theta_\iota)\), one twist for each \(\iota \mid \ell\).  Among the conditions on the data, the scales \(x < x_1 < b\) are integers with
+\[
+  (\log b)^{100} \le x , \qquad x^{10^6} \le x_1 , \qquad x_1^{10^6} \le b , \qquad (\log x_1)^6 \le \log b , \qquad \log\log b \ge 10^{12} ,
+\]
+the last because \(\log\log b\) is at least \(10^{12}\) times the parameter constant of that chapter, which is at least \(1\).  Further \(a = xb\), \(\sqrt x \le m \le 2\sqrt x\), \(x^5 \le r \le 3x^5\), \(k = r + 1 - m\), \(t = 5r\) and \(f \ge 1\).  With \(U = fa\log^3 b\) write \(F := U\log b\).  The main amount is \(\main = mk\,\hdir\), and \(\main \ge 0\) by Problem~\ref{da-pr:main}.  Heights of families \(\iota \mapsto u_\iota\) are those of Chapter~\ref{sd-chap}, Section~\ref{sd-sec:heights}; we write \(\hgt(u) \le c\).
+
+\emph{The target lattice.}  The target lattice on \(T\), with twists \(\mathrm{Tw}\), the injective lifts \(\Theta_\vartheta\), the twists allowed at \(\ell\), the lattices \(\Lc_{\vartheta,\iota}\), the norms \(\lVert v \rVert_\sigma\), and index and covolume of a family in \(T\), is that of Definition~\ref{ob-def:target-lattice}; its volume at \(\vartheta\) is \(Z(\vartheta)\).
+
+Theorem~\ref{at-thm:twist}, for this lattice, reads as follows.  Let \(y_1, \dots, y_n, z_1, \dots, z_{n'}\) be a basis of \(T\), where \(y\) has covolume at most \(c\) and index at most \(\delta\); let \(\theta\) be a family of twists with \(\theta_\iota\) allowed at \(\ell\), and \(\gamma \colon \mathrm{Tw} \to \C^\times\); suppose (i) \(\gamma(\vartheta)\Theta_\vartheta z_i \in \Lc_{\vartheta,\iota}\) for every \(i\), every \(\iota \mid \ell\) and every \(\vartheta\) allowed at \(\ell\); (ii) \(\lVert z_i \rVert_\sigma^2 \le e^{c_{\mathrm{short}}}\) for every \(i\) and \(\sigma\); (iii) \(\hgt(\lvert\gamma(\theta_\iota)\rvert^{-2}) \le c_{\mathrm{den}}\); (iv) \(\hgt(Z(1)/Z(\theta_\iota)) \le c_{\mathrm{vol}}\).  Then
+\begin{equation}\label{eq:twist}
+  0 \le c + 2\delta + n'(c_{\mathrm{short}} + c_{\mathrm{den}}) + c_{\mathrm{vol}} .
+\end{equation}
+
+Four inputs feed it.  (a) \emph{Auxiliary forms} (Theorem~\ref{dch-thm:aux}).  There are an integer \(e_\gamma\) and \(\gamma \colon \mathrm{Tw} \to \C^\times\) with \(\gamma(1) = 1\) and \(\lvert\gamma(\vartheta)\rvert = (\mathrm{Nm}\,Q_\vartheta)^{e_\gamma/2}\prod_{0 \le i, j < m} \rho'_{ij}(\vartheta)\) such that \(T\) is spanned by forms \(z\) with \(\gamma(\vartheta)\Theta_\vartheta z\) integral at \(\iota\) whenever \(\gcd(\ell, \mathrm{Nm}\,Q_\vartheta) = 1\) and with \(\lVert z \rVert_\sigma^2 \le \exp(2x_1^2b^2)\) for every \(\sigma\).  (b) \emph{Single lifts.}  There is a family \(\theta\) with small ratios (Definition~\ref{col-def:small-ratios}) such that \(\hgt(Z_j(1)/Z_j(\theta_\iota)) \le d_T(F/m - k\hdir)\) for \(1 \le j \le m\); this combines the cost of one lift (Chapter~\ref{col-chap}) with a regular family (Chapter~\ref{tw-chap}).  Each \(\theta_\iota\) of such a family is allowed at \(\ell\).  (c) \emph{Factorization} (Theorem~\ref{dch-thm:main}).  There is an integer \(e_Z\) such that for every \(\vartheta \in \mathrm{Tw}\)
+\[
+  \frac{Z(\vartheta)}{Z(1)} = \Bigl( (\mathrm{Nm}\,Q_\vartheta)^{e_Z/2} \prod_{1 \le i < j \le m} \rho_{ij}(\vartheta) \Bigr)^{d_T} \prod_{j=1}^m \frac{Z_j(\vartheta)}{Z_j(1)} .
+\]
+(d) \emph{Small ratios} (Theorem~\ref{dch-thm:small-ratios}).  If \(\theta\) has small ratios, then for every integer \(e\) both families \(\bigl((\mathrm{Nm}\,Q_{\theta_\iota})^{e/2}\prod_{0 \le i,j < m} \rho'_{ij}(\theta_\iota)\bigr)^{-1}\) and \(\bigl((\mathrm{Nm}\,Q_{\theta_\iota})^{e/2}\prod_{1 \le i < j \le m} \rho_{ij}(\theta_\iota)\bigr)^{-1}\) have height at most \(m^2tx_1\).
+
+\begin{problem}\label{pr:scales}
+The data satisfy \(2m^2tx_1 \le b\), \(4(2x_1^2 + b^{-1}) \le b\), \(b \le F\) and \(4/b^2 \le 1/2\).
+\end{problem}
+
+\begin{problem}\label{pr:completion}
+If \(n \ge (1 - 4/b^2)d_T\) and \(d_T = n + n'\), then \(n'(2x_1^2b^2 + b) \le d_T b\).
+\end{problem}
+
+So the allowance for one completing auxiliary form is \(2x_1^2b^2 + b\), and the total allowance for the \(n'\) completing forms is at most \(d_T b\).
+
+\begin{problem}\label{pr:denom}
+For \(\gamma\) as in (a) and \(\theta\) as in (b), \(\hgt(\lvert\gamma(\theta_\iota)\rvert^{-2}) \le b\).
+\end{problem}
+
+\begin{problem}\label{pr:volume}
+For \(\theta\) as in (b), \(\hgt(Z(1)/Z(\theta_\iota)) \le d_T(b + F - \main)\).
+\end{problem}
+
+\begin{problem}\label{pr:C}
+Let \(y_1, \dots, y_n \in T\) be linearly independent, with \(n \ge (1 - 4/b^2)d_T\), covolume at most \(c\) and index at most \(\delta\).  Then \(T\) has a basis \(y_1, \dots, y_n, z_1, \dots, z_{n'}\) with each \(z_i\) as in (a), and \(c + 2\delta \ge d_T(\main - 3F)\).
+\end{problem}
+
+Problems~\ref{pr:scales}--\ref{pr:C} prove the following.
+
+\begin{theorem}[Theorem C]\label{thm:C}
+Let \(y_1, \dots, y_n\) be linearly independent target forms with \((1 - 4/b^2)d_T \le n\), of index at most \(\delta\) and covolume at most \(c\).  Then
+\[
+  d_T(\main - 3fa\log^4 b) \le c + 2\delta .
+\]
+\end{theorem}
+
+\paragraph{In the Lean formalization.}  In the Lean proof~\cite{GL}, Theorem~\ref{thm:C} is \lean{New.Data.integral\_forms\_long}, in \lean{grh/src/New/Determinant/Twist/LongForms.lean}, and the input~(b) is \lean{New.Data.exists\_hasSmallRatios\_heightLe\_liftDeterminant\_div} in the same file; \eqref{eq:twist} is the case of the target lattice of \lean{New.TwistedLattice.covolume\_add\_index\_nonneg}, in \lean{grh/src/New/Reduction/Lattices/TwistedLattice.lean}.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:toy}}
+\begin{description}
+\item[\ref{pr:toy-int}] \((\langle y_i, y_j \rangle) = N\, Y Y^{\mathsf T}\) for the matrix \(Y\) with rows \(y_i\), and \(\det Y\) is a nonzero integer.
+\item[\ref{pr:toy-index}] Problem~\ref{pr:toy-int} for the rows of \(uY\).
+\item[\ref{pr:toy-complete}] Fischer's inequality for the Gram matrix of \((y, z)\), Hadamard's for \(\Gram(z)\), then Problem~\ref{pr:toy-int}.
+\item[\ref{pr:toy-steinitz}] Steinitz exchange.
+\end{description}
+
+\subsection*{\S\ref{sec:thmC}}
+\begin{description}
+
+\item[\ref{pr:scales}] \(m^2 \le 4x\), \(t \le 15x^5\) and \(x \ge 2\).
+\item[\ref{pr:completion}] \(n' \le 4d_T/b^2\).
+\item[\ref{pr:denom}] Input~(d), Problem~\ref{sd-pr:height-mul} and Problem~\ref{pr:scales}.
+\item[\ref{pr:volume}] Invert~(c); bound the scalar by~(d) and the single lifts by~(b), and add by Problem~\ref{sd-pr:height-mul}.
+\item[\ref{pr:C}] Apply~\eqref{eq:twist} with \(c_{\mathrm{short}} = 2x_1^2b^2\), \(c_{\mathrm{den}} = b\) and \(c_{\mathrm{vol}} = d_T(b + F - \main)\).
+\end{description}
+
+{\small
+\begin{thebibliography}{GL}
+\bibitem[Dav]{Dav} H.~Davenport, \emph{Multiplicative Number Theory}, 3rd ed., Grad.\ Texts in Math.\ 74, Springer, 2000.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[HJ]{HJ} R.~A.~Horn and C.~R.~Johnson, \emph{Matrix Analysis}, 2nd ed., Cambridge Univ.\ Press, 2013.
+\bibitem[RS]{RS} J.~B.~Rosser and L.~Schoenfeld, \emph{Approximate formulas for some functions of prime numbers}, Illinois J.\ Math.\ \textbf{6} (1962), 64--94.
+\end{thebibliography}
+}
+
+\end{document}
