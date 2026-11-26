@@ -15,6 +15,7 @@ KINDS = "definition theorem proposition lemma problem remark".split()
 LABEL = re.compile(r"^(" + "|".join(KINDS) + r")\s+S?\d+(?:\.\d+)*\b", re.I)
 VOID = set("area base br col embed hr img input link meta param source track wbr".split())
 BACKLINKS = re.compile(r"<!-- used-in:start -->.*?<!-- used-in:end -->\n", re.S)
+SHEET_MACROS = re.compile(r"window\.MathJax = \{tex: \{macros: (\{.*?\})\}\};</script>", re.S)
 
 
 @dataclass
@@ -165,7 +166,11 @@ def build_backlinks(sheets):
 
 def build_search(sheets):
     rows = []
+    macros = {}
     for name, sheet in sheets.items():
+        match = SHEET_MACROS.search(sheet.html)
+        if match:
+            macros[name] = json.loads(match[1])
         for element in sheet.titles + list(sheet.blocks.values()):
             if element.kind not in {"title", "section", "definition", "theorem", "problem"}:
                 continue
@@ -174,7 +179,8 @@ def build_search(sheets):
             body = element.plain[len(label):].lstrip(". ")
             rows.append([sheet.chapter, url, label, body])
     Path("workbook-search.json").write_text(
-        json.dumps(rows, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+        json.dumps({"rows": rows, "macros": macros}, ensure_ascii=False, separators=(",", ":"))
+        + "\n", encoding="utf-8")
 
 
 def add_theme(path):
