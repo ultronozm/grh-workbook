@@ -1,0 +1,293 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[da-]{20261126T030300--the-data__workbook}
+\externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
+\externaldocument[bp-]{20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook}
+\externaldocument[ss-]{20261126T030400--the-seesaw-identity__workbook}
+\externaldocument[s1-]{20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook}
+\externaldocument[s2-]{20261126T051300--two-lifts-at-a-time__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261126T051400}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}[problem]{Definition}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\A}{\mathbb{A}}
+\newcommand{\Af}{\mathbb{A}_f}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Pc}{\mathcal{P}}
+\newcommand{\Wc}{\mathcal{W}}
+\newcommand{\uu}{\mathfrak{u}}
+\newcommand{\au}{\mathfrak{a}}
+\newcommand{\st}{\mathrm{st}}
+\newcommand{\Cut}{\mathrm{Cut}}
+\newcommand{\mult}{\mathrm{mult}}
+\newcommand{\ssx}{\mathrm{ss}_\xi}
+\newcommand{\ev}{\mathrm{ev}}
+\newcommand{\res}{\mathrm{res}}
+\newcommand{\Sr}{S_{\mathrm{ram}}}
+\newcommand{\Nm}{\mathrm{Nm}\,}
+\newcommand{\Stab}{\operatorname{Stab}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\pr}{\operatorname{pr}}
+\newcommand{\KYo}[1]{K^{Y\circ}_{#1}}
+\newcommand{\KY}[1]{K^{Y}_{#1}(\xi)}
+\newcommand{\tl}[1]{\texttt{#1}}
+\newcommand{\gls}[3]{\href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/#1.lean\#L#2}{#3}}
+\newcommand{\glu}[3]{\gls{New/UpperBound/#1}{#2}{#3}}
+
+\setlength{\emergencystretch}{3em}
+
+\title{Lattices, cuts and the ramified forms}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Lattices and their duals \cite{OM}.  From Chapter~\ref{s2-chap}: stage functions \(\Wc_j\) (Definition~\ref{s2-def:stage}), the evaluated pair data \(\phi^{\ev}_i(\xi,y)\) (Definition~\ref{s2-def:evaluated}), the transposes \(\Theta^\top_{\xi,j}\) with \(\int z\,\Theta_{\xi,j}f=\int(\Theta^\top_{\xi,j}z)f\), the ordered pair tensors \(\Phi_\varrho\otimes\dots\otimes\Phi_0\), Problem~\ref{s2-pr:stage} and Theorem~\ref{s2-thm:two-lifts}; from Chapter~\ref{s1-chap}, the grades (Definition~\ref{s1-def:degree}) and the string maps \(\st_j\colon Y_{j-1}\to Y_j\) (Definition~\ref{s1-def:stringmap}).  From Section~\ref{ss-sec:theorem}: the lower and definite chains, their data, the definite lift \(\Theta^X_\xi(\cdot)\) of a tensor, its Weil action \(\omega^X\), and the restriction \(\res\); from Chapter~\ref{ss-chap}, Problems~\ref{ss-pr:cut}, \ref{ss-pr:mean-several} and~\ref{ss-pr:fixed}.  \(\KYo j\) is the lattice stabilizer on \(Y_j\), \(\KY j\) its subgroup reducing to \(1\) at the places dividing \(\pi_M\) and those of \(Q_\xi\).  \(K_M\) is the principal level of \(Y_0\) (Sections~\ref{ob-sec:forms} and~\ref{ss-sec:theorem}); \(\KY0\subseteq K_M\subseteq\KYo0\).  From Chapter~\ref{bp-chap}: the Bessel subgroups (Section~\ref{bp-sec:subgroup}).  The Poincar\'e map \(\Pc_{g,\lambda}\) is that of Section~\ref{ss-sec:theorem}.  From Chapter~\ref{ob-chap}: the spaces, \(S\supseteq\Sr\), \(T_w\), \(z_w\), tame characters \(\xi\) with \(Q_\xi\) and \(\Nm Q_\xi\).  \(R_j\) is the Bessel subgroup of \(Y_j\), \([R_j]:=R_j(F)\backslash R_j(\A)\); for \(0\le j<m\) the string has length \(m-1-j\), and \(R_m=U(Y_m)\).  \(\varrho=m/2-1\).  ``The proof'' is the one in \cite{GL}.
+
+\medskip
+The seesaw identity (Theorem~\ref{ss-thm:seesaw}) is proved by pairing \(\Theta_{\xi,m}\cdots\Theta_{\xi,1}\Pc_{g,\lambda}\varphi\) with a form on \(Y_m\) and transferring the Bessel period up the lower chain.  Chapter~\ref{s2-chap} computes what is left after the transfers as a function of the outer variables \((g_k,y_k)\in U(Y_k)(\A)\).  At stage zero the finite sum is over classes in \(K_M\).  At the subsequent stages the Bessel periods must be integrated over the remaining outer variables.  Which finite sets of level classes suffice to compute these integrals, and with which weights?  The answer uses the lattices of the finite points and, at one place, the hypothesis \(\varphi\in\Sr\).  The result is Theorem~\ref{thm:proportional}.
+
+
+\section{The first lift}\label{sec:first}
+
+\begin{problem}\label{pr:base}
+Let \(y\) and \(z'\) be functions on \([U(Y_0)]\), fixed by right translation by \(K_M\) and by \(\KY0\) respectively, with \(y z'\) integrable.  Then
+\[
+  \int_{[U(Y_0)]} y(h)\sum_{c\in K_M/\KY0} z'(hc)\,dh=[K_M:\KY0]\int_{[U(Y_0)]}y\,z' .
+\]
+Hence, for every tame \(\xi\), every \(\varphi\in S\) and every form \(z\) on \(Y_1\) as in Problem~\ref{s2-pr:stage},
+\[
+  \int_{[U(Y_1)]} z\;\Theta_{\xi,1}\Pc_{g,\lambda}\varphi=[\KYo0:K_M]\sum_{c\in K_M/\KY0}\ \int_{R_1(F)\backslash U(Y_1)(\A)}\Wc_1\,z ,
+\]
+where the summand uses \((g,\tilde c)\) in outer slot \(0\), with \(\tilde c\in K_M\) any representative of \(c\), and the identity in every other slot.
+\end{problem}
+
+
+\section{Lattices of finite points}\label{sec:lattices}
+
+The lattice of the finite point enters the support condition.  The classes used for the evaluated data are taken modulo \(\KY j\).  For \(0\le j\le m-1\) write \(X_j\) for the definite part of \(Y_j\) and \(X_j^\perp\) for the span of its string, both in the rational frame of Chapter~\ref{ob-chap}.
+
+\begin{definition}\label{def:lattices}
+The \emph{lattice} \(\Lambda(x)\) of a point \(x\in U(Y_j)(\Af)\) is the set of finite adelic vectors whose coordinates in the frame of \(x\) (the frame of Chapter~\ref{ob-chap} followed by \(x\)) are integral, so that \(\Lambda(x)=x\Lambda(1)\) when \(x\) acts in that frame.  Its \emph{string parts} are \(\Lambda^-(x):=\Lambda(x)\cap X_j^\perp\) and \(\Lambda^+(x):=\pr\Lambda(x)\), where \(\pr\) is the orthogonal projection to \(X_j^\perp\).  We write \(\Lambda^\pm_j\) when the stage must be named.
+\end{definition}
+
+\begin{definition}\label{def:graded}
+A lattice is \emph{graded} if it contains the part of each grade of each of its vectors.
+\end{definition}
+
+As the frame of \(x\) is orthonormal, \(\Lambda(x)\) is self-dual.  The standard lattice \(\Lambda(1)\) is graded.  At a place \(w\mid\pi_N\), the standard lattice of an odd string is spanned, in the last definite coordinate and the middle string coordinate, by vectors \((1,\epsilon/N)\) and \((0,\epsilon')\) with units \(\epsilon,\epsilon'\).  In the toy \(N=5\), the place has degree one, \(\epsilon=\epsilon'=1\).  In \(\Q_5^2=\Q_5e_1\oplus\Q_5e_2\) call \(e_1\) the definite coordinate and \(e_2\) the string coordinate, and define \(\Lambda^\pm\) as in Definition~\ref{def:lattices} with \(X^\perp=\Q_5e_2\); no form is fixed here.
+
+\begin{problem}\label{pr:toy-lattice}
+For \(\Lambda=B\Z_5^2\), \(B=\left(\begin{smallmatrix}1&0\\1/5&1\end{smallmatrix}\right)\): \(\Lambda^-=\Z_5e_2\), \(\Lambda^+=5^{-1}\Z_5e_2\) and \(\#\Lambda^+/\Lambda^-=5\).  For \(\Lambda=D'\Z_5^2\), \(D'=\diag(5,1/5)\): \(\Lambda^-=\Lambda^+=5^{-1}\Z_5e_2\).
+\end{problem}
+
+\begin{problem}\label{pr:dual}
+Over a DVR, or a product of two exchanged by the involution, let \(\Lambda\) be a lattice, self-dual for a nondegenerate hermitian form, in a space \(W\perp W'\).  Then the dual of \(\Lambda\cap W\) in \(W\) is the projection of \(\Lambda\) to \(W\).  Hence, for \(x,x'\in U(Y_j)(\Af)\) and a finite idele \(\varpi\), \(\varpi\Lambda^-(x)\subseteq\Lambda^-(x')\) implies \(\bar\varpi\Lambda^+(x')\subseteq\Lambda^+(x)\).
+\end{problem}
+
+\begin{problem}\label{pr:fourier}
+A function on \(\Z/25\) invariant under translation by \(5\Z/25\) has Fourier transform supported on \(5\Z/25\).
+\end{problem}
+
+\begin{definition}\label{def:u}
+Let \(\varpi_\xi\) and \(\varpi_M\) be the generator ideles fixed in the proof for the ideals \((\pi_M)\prod_{w\in Q_\xi}w\) and \((\pi_M)\); each has component \(1\) away from the places dividing its ideal.  The \emph{idele of the modulus} is \(\uu:=\varpi_\xi/\varpi_M\).  It is a uniformizer at every \(w\in Q_\xi\) and a unit at every other finite place.
+\end{definition}
+
+In this sheet \(\au:=\varpi_W/\bar\varpi_M\), where \(\varpi_W\) is the self-dual scale of the Weil data.  Throughout this paragraph let \(0\le j\le m-2\).  The finite datum of lift \(j+1\) is fixed by the finite Heisenberg translations by \(\varpi_\xi v\) for every integral vector \(v\) in the finite space of maps from \(Y_j\) to \(Y_{j+1}\).  The proof shows: let \(\Wc_{j+1}(g_\infty,x')\ne0\), so that the integrand defining it (Definitions~\ref{s1-def:transfer} and~\ref{s2-def:stage}) is nonzero at some \(r\in R_j(\A)\), and let \(x\) be the finite part of \(r(g_j,y_j)\); if \(r_1\in R_j(\Af)\) and \(r_2\in R_{j+1}(\Af)\) make \(\Lambda(r_1x)\) and \(\Lambda(r_2x')\) graded, then
+\[
+  (\bar\uu/\au)\,\st_{j+1}\Lambda^+_j(r_1x)\subseteq\Lambda^-_{j+1}(r_2x') .
+\]
+For the standard lattices it shows \(\st_{j+1}\Lambda^+_j(1)=\au\,\Lambda^-_{j+1}(1)\).
+
+\begin{problem}\label{pr:standard}
+Use the string matrices \(J_3=\left(\begin{smallmatrix}0&0&1\\0&-5&0\\1&0&0\end{smallmatrix}\right)\), \(J_2=\left(\begin{smallmatrix}0&1\\1&0\end{smallmatrix}\right)\) and \(\st_1=\left(\begin{smallmatrix}1&0&0\\0&-5&0\end{smallmatrix}\right)\) of Chapter~\ref{s2-chap} (\(N=5\), string constant \(1\)), and let \(\hat\Oc\) be the integral finite adeles of \(\Q(\mathrm{i})\).  On the first string let \(L^-=\hat\Oc^3\) and \(L^+=\diag(1,\tfrac15,1)\hat\Oc^3\), on the second \(L'=\hat\Oc^2\).  Then \(L^-\) and \(L^+\) are dual for \(J_3\), \(L'\) is self-dual for \(J_2\), and \(\st_1L^+=L'\).
+\end{problem}
+
+\begin{definition}\label{def:bounds}
+A point \(x\in U(Y_j)(\Af)\) has the \emph{lattice bounds} at stage \(j\) if \(\bar\uu^{\,j}\Lambda^-_j(1)\subseteq\Lambda^-_j(x)\) and \(\uu^{\,j}\Lambda^-_j(x)\subseteq\Lambda^-_j(1)\).
+\end{definition}
+
+\begin{problem}\label{pr:lower}
+Let \(0\le j\le m-2\), and suppose \(\uu^{\,j}\Lambda^-_j(r_1x)\subseteq\Lambda^-_j(1)\) and \((\bar\uu/\au)\,\st_{j+1}\Lambda^+_j(r_1x)\subseteq\Lambda^-_{j+1}(r_2x')\).  Then \(\bar\uu^{\,j+1}\Lambda^-_{j+1}(1)\subseteq\Lambda^-_{j+1}(r_2x')\).
+\end{problem}
+
+\begin{definition}\label{def:split}
+\(\Lambda(x)\) is \emph{split} at a finite place \(w\) if \(1_w\Lambda^+(x)\subseteq\Lambda^-(x)\), where \(1_w\) is the idempotent finite adele that is \(1\) at \(w\) and \(0\) elsewhere.
+\end{definition}
+
+The proof shows that \(\Lambda^+_j(1)=\Lambda^-_j(1)\) for an even string, and that for an odd string the two differ only in the middle coordinate, by a simple pole at the places above \(N\): at each \(w\mid N\) the quotient is the residue field \(k_w\), as in Problem~\ref{pr:toy-lattice}.
+
+\begin{problem}\label{pr:upper}
+Let \(1\le j\le m-1\) and \(\bar\uu^{\,j}\Lambda^-_j(1)\subseteq\Lambda^-_j(x)\), but \(\uu^{\,j}\Lambda^-_j(x)\not\subseteq\Lambda^-_j(1)\).  Then some \(\uu^{\,j}v\), \(v\in\Lambda^-_j(x)\), lies in \(\Lambda^+_j(1)\) but not in \(\Lambda^-_j(1)\).  Moreover, the string of \(Y_j\) is odd, \(j\) is even, and \(\Lambda(x)\) is split at a place \(w\) dividing \(\pi_N\).
+\end{problem}
+
+\begin{problem}\label{pr:scaling}
+For \(z=\diag(2,1)\), the scaling of the definite coordinate by a generator of \((\Z/5)^\times\): \(B^{-1}zB=\left(\begin{smallmatrix}2&0\\-1/5&1\end{smallmatrix}\right)\) is not integral, and \(D'^{-1}zD'=z\).
+\end{problem}
+
+In general, if \(\Lambda(x)\) is split at \(w\mid\pi_N\), then \(x^{-1}z_wx\), with \(z_w\) acting as a scalar on \(X_j\) and trivially on the string, is integral and \(1\) off \(w,\bar w\).  It belongs to \(\KY{j}\).
+
+\begin{problem}\label{pr:shift}
+For \(\mathrm{sh}\,e_k=e_{k+1\bmod 4}\) on \(\C^4\): \((1-\mathrm{sh})e_0=(1,-1,0,0)\) and \((1+\mathrm{sh}+\mathrm{sh}^2+\mathrm{sh}^3)(1-\mathrm{sh})e_0=0\).
+\end{problem}
+
+\begin{problem}\label{pr:kills}
+Suppose \(\omega^X(z_w,z_w)\) acts trivially on the data of every lift \(X_k\to X_{k+1}\), and \(\omega^X(1,z_w)\), acting on one factor alone, fixes a tensor \(v\) of data.  Then the (partial) chain \(\Theta^X_\xi(v)\) satisfies \(\Theta^X_\xi(v)\,T_w=\Theta^X_\xi(v)\), and it vanishes on \(\Sr\).
+\end{problem}
+
+For \(w\mid\pi_N\), the diagonal scaling \(\omega^X(z_w,z_w)\) is the identity on every lift: the base changes of the characters of the lifts are unramified at the places above \(N\).  For \(0\le i<\varrho\), embed \(U(X_{2i+2})\) into \(U(Y_{2i+2})\) by the identity on the string.  If \(y_{2i+2}^{-1}z_wy_{2i+2}\in\KY{2i+2}\), then \(\omega^X(1,z_w)\) on the second tensor factor fixes \(\phi^{\ev}_i(\xi,y)\).
+
+\begin{problem}\label{pr:vanish}
+Let \(\varphi\in\Sr\), \(2\le j\le m-1\) even, and \(\Lambda(x)\) split at some \(w\mid\pi_N\).  Then \(\Wc_j(\gamma(g_\infty,x))=0\) for every \(\gamma\in R_j(\A)\) and every archimedean point \(g_\infty\).
+\end{problem}
+
+\begin{problem}\label{pr:bounds}
+Let \(\varphi\in\Sr\), \(y_0\in K_M\), \(1\le j\le m-1\), and \(\Wc_j(g_\infty,x)\ne0\).  Then \(r_2x\) has the lattice bounds at stage \(j\) for every \(r_2\in R_j(\Af)\) with \(\Lambda(r_2x)\) graded.
+\end{problem}
+
+This is where the hypothesis \(\varphi\in\Sr\) enters.  We use two facts for the field \(E\) of the data, which contains a primitive \(5040\)th root of unity.  (i) Every finite point \(x\) has a translate \(ux\) with \(u\) in the unipotent subgroup of \(R_j(\Af)\) and \(\Lambda(ux)\) graded.  This is the lattice form of the Iwasawa decomposition \cite[3.3.2]{Ti}.  (ii) There is a finite set \(\mathcal Z_j\) of finite points equal to \(1\) outside \(Q_\xi\cup\bar Q_\xi\) such that, if the \(R_j(\Af)\)-orbit of \(x\) contains a graded point satisfying the bounds, then \(rx\in \mathcal Z_j\KYo j\) for some \(r\in R_j(\Af)\).  We use (ii) as proved in \cite{GL}.  Two classical lattice facts used there are that only finitely many lattices lie between two fixed full lattices, and that a lattice is determined by its local components \cite{OM}.
+
+
+\section{Cuts and multiplicities}\label{sec:cuts}
+
+In this sheet let a group \(G_0\) act on a set, let \(G_1\subseteq G_0\) be a subgroup and \(\Cut\) a finite \(G_1\)-stable subset, and put \(\mult(t):=\#\{rG_1\in G_0/G_1 : r^{-1}t\in\Cut\}\), with the value \(0\) for an infinite count.  For a finite group acting on a finite set, if the cut meets every orbit, this is the setting of Problem~\ref{ss-pr:cut} with translates counted modulo \(G_1\).
+
+\begin{problem}\label{pr:toy-cut}
+Let \(G_0=H=S_3\) act on \(H/H_0\), \(G_1=H_0:=\langle(1\,2)\rangle\), \(x=(1\,2\,3)\), \(\Cut:=\{h xH_0:h\in H_0\}\subset H/H_0\).  Then \(\#\Cut=2\), the multiplicities of the three cosets are \(2,2,2\), and for \(f_1(hH_0):=h(3)\),
+\[
+  \sum_{t\in H/H_0}f_1(t)=6=\sum_{rH_0\in H/H_0}\ \sum_{c\in\Cut}\frac{f_1(rc)}{\mult(rc)} .
+\]
+\end{problem}
+
+\begin{definition}\label{def:cut}
+\(\Cut_0(\xi)\) is the set of classes modulo \(\KY0\) of the elements of \(K_M\), with \(\mult_0:=1\).  For \(1\le j\le m-1\), let \(G_0=R_j(\Af)\) and \(G_1=R_j(\Af)\cap\KYo j\) act on \(U(Y_j)(\Af)/\KY j\); write \(\mult_j\) for the multiplicity above.  A \emph{cut} at stage \(j\) is a finite set \(\Cut_j(\xi)\) of classes such that: (a) it is \(G_1\)-stable; (b) its points are integral at every place not above a prime dividing \(\Nm Q_\xi\); (c) on it \(\mult_j\) divides a power of \(\Nm Q_\xi\); (d) \(\mult_j(x)\ne0\) whenever the \(G_0\)-orbit of \(x\) contains a point with graded lattice and the lattice bounds at stage \(j\).  The proof fixes one cut at each stage.
+\end{definition}
+
+For \(1\le j<m\) the proof shows that a cut exists by choosing, inside the image of \(\mathcal Z_j\KYo j\) modulo \(\KY j\), one class in each \(G_0\)-orbit meeting that image, and taking the \(G_1\)-saturation.  For \(x\) integral off \(Q_\xi\cup\bar Q_\xi\), such as the points of \(\mathcal Z_j\KYo j\), it shows that there is \(n\) with \((xux^{-1})^{(\Nm Q_\xi)^n}\in\KYo j\) for all \(u\in\KY j\).
+
+\begin{problem}\label{pr:stab}
+Let \(C\) meet each \(G_0\)-orbit in at most one point, and \(\Cut=G_1\cdot C\).  For \(c\in C\), \(\mult(c)=[\Stab_c:\Stab_c\cap G_1]\) with \(\Stab_c:=\Stab_{G_0}(c)\) (index \(0\) if infinite); and \(\mult(st)=\mult(t)\) for \(s\in G_0\).
+\end{problem}
+
+\begin{problem}\label{pr:mult-dvd}
+(a) A finite group in which every element has order dividing \(q^n\) has order dividing a power of \(q\).  (b) For \(u\equiv1\pmod p\) in \(\mathrm{GL}_2(\Z_p)\) and \(x=\diag(p^{-2},1)\), \(xu^px^{-1}\) is integral; for \(p=3\), \(u=\left(\begin{smallmatrix}4&3\\3&1\end{smallmatrix}\right)\), \(xux^{-1}\) is not.  (c) For the \(G_1\)-saturation of the classes chosen in the construction above, every \(c\) has \(\mult_j(c)\mid(\Nm Q_\xi)^n\) for some \(n\ge0\).
+\end{problem}
+
+\begin{problem}\label{pr:cut-count}
+For \(0\le j<m\), if \(Q_\xi=\varnothing\), every finite point representing a class of \(\Cut_j(\xi)\) lies in \(\KYo j\), and \(\#\Cut_j(\xi)\le\#\mathrm{GL}_{r+jt}(\Oc_E/\pi_M)\le M^{f(r+jt)^2}\le M^{fn_m^2}\).
+\end{problem}
+
+
+\section{Summing over the cuts}\label{sec:sum}
+
+Fix \(1\le j\le m-1\), and let \(G_0,G_1\) be as in Definition~\ref{def:cut}.  A level \(K'\) here means a subgroup of \(\KYo j\) containing a neighbourhood of the identity.
+
+\begin{problem}\label{pr:remove}
+Let \(F_\infty\) be a function on \(U(Y_j)_\infty\).  There is \(k(F_\infty)\in\C\) with the following property, for every level \(K'\), every finite \(G_1\)-stable set \(\Cut\) of classes modulo \(K'\), every complex function \(h_1\) on \(U(Y_j)(\Af)/K'\) and every continuous left \(R_j(F)\)-invariant function \(f_1\) on \(U(Y_j)(\A)\), integrable on \(R_j(F)\backslash U(Y_j)(\A)\), with \(\mult(x_f)\ne0\) wherever \(f_1(x)\ne0\).  If \(\int_{[R_j]}f_1(rx)\,dr=[\KYo j:K']\,F_\infty(x_\infty)\,h_1(x_fK')\) whenever \(x_fK'\in\Cut\), then
+\[
+  \int_{R_j(F)\backslash U(Y_j)(\A)}f_1=k(F_\infty)\sum_{c\in\Cut}\frac{h_1(c)}{\mult(c)} .
+\]
+\end{problem}
+
+Problem~\ref{pr:remove} uses quotient integration in stages \cite[Ch.~VII, \S2]{Bou}; \emph{Status}: classical.  Problems~\ref{pr:base} and~\ref{pr:remove}, with Problem~\ref{s2-pr:stage} and Problem~\ref{pr:bounds} for the support, give the following by induction.  Fix \(g,\lambda\), a stage \(0\le j\le m-1\), and the grading of \(Y_{j+1}\) used in the stage function.  For every complex function \(F_\infty\) of the tuple of archimedean outer points there is \(c_j(F_\infty)\in\C\) with the following property.  Let \(\xi\) be tame, \(\varphi\in\Sr\), \(z\) a form on \(Y_{j+1}\) as in Problem~\ref{s2-pr:stage}, and \(S_1\) a complex function of the tuple of finite level classes.  Suppose that for every tuple \((g_k,y_k)_k\) with \(y_0\in K_M\) and \(y_m=1\), the integral of \(\Wc_{j+1}z\) over \(R_{j+1}(F)\backslash U(Y_{j+1})(\A)\) equals \(F_\infty((g_k)_k)\,S_1((y_k\KY k)_k)\).  Then the integral of \(z\,\Theta_{\xi,j+1}\cdots\Theta_{\xi,1}\Pc_{g,\lambda}\varphi\) over \([U(Y_{j+1})]\) equals
+\[
+  c_j(F_\infty)\sum_{c_0\in\Cut_0(\xi),\dots,c_j\in\Cut_j(\xi)}\frac{S_1(c_0,\dots,c_j,1,1,\dots)}{\prod_{k=0}^j\mult_k(c_k)} ,
+\]
+where each \(1\) denotes the identity class at its stage.
+
+For interlacing highest weights, restriction from \(U(n+1)\) to \(U(n)\) has multiplicity one \cite[Thm.~8.1.1]{GW}; \emph{Status}: classical.  For the weights and integral Weyl modules of \(X_m,Y_m\), the proof fixes an integer matrix whose complex span is the space of intertwiners for the block embedding.
+
+\begin{problem}\label{pr:top}
+Let \(l\) be a linear form on the value space of the algebraic forms on \(X_m\) of the prescribed weight.  There is \(c(l)\in\C\) with the following property, for every such form \(\psi\) and every \(h'\) with \(h'(g_\infty,x)=\langle v^+,\rho(g_\infty^{-1})P'(x)\rangle\) for an algebraic form \(P'\) on \(Y_m\) of the weight of the lower chain.  Identify \(Y_m\) with the complement of the last basis vector of \(X_m\).  If \(F'(k)\) is the coefficient of \(\psi\) at \(l\), evaluated at \(\diag(k,1)\), for every \(k\in U(Y_m)(\A)\), then
+\[
+  \int_{[U(Y_m)]}F'\,\overline{h'}=c(l)\int_{[U(Y_m)]}(\res\psi)\,\overline{h'} ,
+\]
+where \(v^+\) is the highest-weight vector, \(\rho\) the action on the value space, the product is conjugate-linear in the first variable, and on the right \(\res\psi\) is read in the same way.
+\end{problem}
+
+\begin{definition}\label{def:ss}
+The \emph{seesaw tensor} of a tame character \(\xi\) is
+\[
+  \ssx:=\sum_{c_0\in\Cut_0(\xi),\dots,c_{m-1}\in\Cut_{m-1}(\xi)}\Bigl(\prod_{j=0}^{m-1}\frac1{\mult_j(c_j)}\Bigr)\,\bigl(\phi^{\ev}_\varrho(\xi,c)\otimes\dots\otimes\phi^{\ev}_0(\xi,c)\bigr),
+\]
+with \(c_m:=1\), in the order of Chapter~\ref{s2-chap}; the evaluated data do not depend on the representatives of the classes.
+\end{definition}
+
+In the proof \(\Theta^\top_{\xi,j+1}\) preserves the forms of Problem~\ref{s2-pr:stage}, and both sides below have the shape of \(h'\) in Problem~\ref{pr:top}, where pairing with such \(h'\) is nondegenerate.  So Problems~\ref{pr:base}, \ref{pr:bounds}, \ref{pr:remove} and~\ref{pr:top}, with Theorem~\ref{s2-thm:two-lifts} and the facts quoted, prove the following.
+
+\begin{theorem}\label{thm:proportional}
+Let \(\lambda\) be a linear form on the values of source forms and \(g\) a point of the archimedean unitary group of \(Y_0\).  There is \(c'\in\C\), possibly zero, such that for every tame character \(\xi\) and every \(\varphi\in\Sr\)
+\[
+  \Theta_{\xi,m}\cdots\Theta_{\xi,1}\Pc_{g,\lambda}\varphi=c'\,\res\,\Theta^X_\xi(\ssx)\varphi ,
+\]
+an equality of automorphic forms on \(Y_m\), with \(\res\) read in automorphic forms.
+\end{theorem}
+
+\begin{leanremark}
+{\raggedright Theorem~\ref{thm:proportional} is \tl{exists\_lowerChainUpTo\_poincareAt\_eq} in the Lean proof \cite{GL}; the string parts \(\Lambda^-\), \(\Lambda^+\) are \tl{latticeMinus}, \tl{latticePlus}; \(\uu\) is \tl{twistIdele}; the lattice bounds are \tl{HasLatticeBounds}; a split lattice is \tl{LatticeSplitsAt}; the cuts and multiplicities are \tl{cutPoints} and \tl{cutMultiplicity}; and \(\ssx\) is \tl{seesawDatum}.  Problem~\ref{pr:bounds} is \tl{hasLatticeBounds\_of\_unfoldStage\_ne\_zero}.  Other assertions attributed to the proof: \glu{Seesaw/UnfoldingStages}{1141}{the one-lift inclusion} (\glu{Seesaw/Frequency}{307}{in general}), \glu{Seesaw/UnfoldingStages}{1044}{the standard image}, \glu{Seesaw/StandardLines}{301}{the string parts of the standard lattice}, \gls{Lib/Weil/Periods/LatticeBounds}{195}{fact~(ii)}, \glu{Seesaw/IntegralAsCosetSum}{156}{the construction of a cut}, \glu{Seesaw/Cut}{44}{the common conjugate power}, \glu{Objects/Columns}{747}{the integer branching matrix}, \glu{Seesaw/SeesawIdentity}{173}{the transpose on conjugate-type forms} and \glu{Seesaw/SeesawIdentity}{569}{the comparison by pairing}.\par}
+\end{leanremark}
+
+We have proved Theorem~\ref{thm:proportional}.  Taken as given: the one-lift inclusion and the image of the standard lattice, the string parts of the standard lattice, facts (i) and (ii), the existence of a cut, quotient integration in stages, the branching rule with its integer matrix, and the statements marked ``in the proof''.  \(c'\) may vanish, and \(\ssx\) is not yet a combination of translated vacua.  The next step needs Definitions~\ref{def:cut} and~\ref{def:ss} and Problems~\ref{pr:mult-dvd} and~\ref{pr:cut-count}.
+
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:first}}
+\begin{description}
+\item[\ref{pr:base}] Then the transpose relation, the definition of \(\Pc_{g,\lambda}\) and Problem~\ref{s2-pr:stage}; \(\Theta^\top_{\xi,1}z\) is \(\KY0\)-fixed and the \(K_M\)-trace of its conjugate lies in \(H(Y_0)\).
+\end{description}
+
+\subsection*{\S\ref{sec:lattices}}
+\begin{description}
+\item[\ref{pr:toy-lattice}] \(\Lambda\) is spanned by \((1,\tfrac15)\) and \((0,1)\).
+\item[\ref{pr:dual}] A vector of \(W\) pairs with \(v\in\Lambda\) as with the projection of \(v\).
+\item[\ref{pr:fourier}] Translation invariance of the function.
+\item[\ref{pr:lower}] Apply Problem~\ref{pr:dual} to the upper bound at stage \(j\).
+\item[\ref{pr:upper}] Dualize the lower bound; work at a place above \(N\) (where \(\uu\) is a unit) at which \(\uu^{\,j}v\) is nonzero in the local quotient; the quotients at \(w\) and \(\bar w\) are dual (Problem~\ref{pr:dual}).  \(m\) is even.
+\item[\ref{pr:kills}] Problems~\ref{ss-pr:mean-several} and~\ref{ss-pr:fixed}, and the equivariance \(\Theta(\omega^X(g,h)f)=h\circ\Theta(f)\circ g^{-1}\) of each lift.  Note \(T_w^{N-1}=1\) on \(S\).
+\item[\ref{pr:vanish}] With \((g_\infty,x)\) as outer variable of stage \(j\), Theorem~\ref{s2-thm:two-lifts} and its proof give \(\Wc_j\) on \(R_j(\A)(g_\infty,x)\) via the first \(j/2\) double lifts.
+\item[\ref{pr:bounds}] Strong induction.  At stage zero the point \(\gamma_fy_0\) has the translate \(y_0\), with lattice \(\Lambda(1)\).  Later, use (i) and the earlier bounds where the integrand is nonzero, then Problems~\ref{pr:lower}, \ref{pr:upper} and~\ref{pr:vanish}.
+\end{description}
+
+\subsection*{\S\ref{sec:cuts}}
+\begin{description}
+\item[\ref{pr:toy-cut}] \(H\) is transitive on \(H/H_0\).
+\item[\ref{pr:stab}] The classes counted at \(c\) form a \(\Stab_c\)-orbit in \(G_0/G_1\).
+\item[\ref{pr:mult-dvd}] (a) Cauchy's theorem.  (b) \(u^p\equiv1\pmod{p^2}\).  (c) At a selected class \(c\), \([\Stab_c:\Stab_c\cap G_1]<\infty\); let \(\Stab_c\) act on \(\Stab_c/(\Stab_c\cap G_1)\); Problem~\ref{pr:stab}.
+\item[\ref{pr:cut-count}] Reduce integral representatives modulo \(\pi_M\); \(\#\Oc_E/(\pi_M)=M^f\).
+\end{description}
+
+\subsection*{\S\ref{sec:sum}}
+\begin{description}
+\item[\ref{pr:remove}] A cutoff \(\mathfrak k\ge0\) of \(R_j(\A)\)-orbit integral \(1\); the Haar measure \(du\) on \(G_0\) giving \(G_1\) measure \(1\); weight \(\int_{G_0}\mathfrak k(x_\infty,u)\,du\) times \(1/\mult(x_fK')\) on the cut, \(0\) off it.  Compare Problem~\ref{ss-pr:cut}.
+\item[\ref{pr:top}] Average \(v\mapsto l(v)v^+\) over \(U(Y_m)_\infty\) (a model: \(\frac14\sum_{u\in\mu_4}u^{-1}(2+3u)=3\) extracts one weight), then use branching and Schur orthogonality; \(R_m=U(Y_m)\).
+\end{description}
+
+\begin{thebibliography}{GW}
+\bibitem[Bou]{Bou} N.~Bourbaki, \emph{Int\'egration}, Ch.~VII--VIII, Hermann, Paris, 1963.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[GW]{GW} R.~Goodman, N.~R.~Wallach, \emph{Symmetry, Representations, and Invariants}, Grad.\ Texts in Math.\ 255, Springer, 2009.
+\bibitem[OM]{OM} O.~T.~O'Meara, \emph{Introduction to Quadratic Forms}, Grundlehren Math.\ Wiss.\ 117, Springer, 1963.
+\bibitem[Ti]{Ti} J.~Tits, Reductive groups over local fields, in \emph{Automorphic Forms, Representations and \(L\)-Functions}, Proc.\ Sympos.\ Pure Math.\ 33, Part~1, Amer.\ Math.\ Soc., 1979, 29--69.
+\end{thebibliography}
+
+\end{document}
