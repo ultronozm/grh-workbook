@@ -1,0 +1,256 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[da-]{20261126T030300--the-data__workbook}
+\externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
+\externaldocument[hn-]{20261125T013500--hecke-nondegeneracy-on-the-tree__workbook}
+\externaldocument[dl-]{20261126T030500--divisibility-of-the-composite-lift__workbook}
+\externaldocument[d3-]{20261126T051700--exceptional-primes-a-full-mark__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T060100\endcsname
+  \chapnumber{20261126T060100}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\numberwithin{equation}{section}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\GL}{\mathrm{GL}}
+\newcommand{\Oc}{\mathcal O}
+\newcommand{\Bc}{\mathcal B}
+\newcommand{\Cc}{\mathcal C}
+\newcommand{\Kc}{\mathcal K}
+\newcommand{\Ac}{\mathcal A}
+\newcommand{\Ec}{\mathcal E}
+\newcommand{\Mk}{\mathfrak M}
+\newcommand{\dpt}{\mathrm{dp}}
+\newcommand{\Deep}{\mathrm{Deep}}
+\newcommand{\cdiv}{c_{\mathrm{div}}}
+\newcommand{\val}{\operatorname{val}}
+\newcommand{\tl}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\title{A Hecke operator is nearly onto}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Elementary divisors over a discrete valuation ring \cite[Ch.~III, \S7]{La}.  Chapter~\ref{hn-chap}: Theorem~\ref{hn-thm:vertex}, the colength and the phrase ``\(U\) is onto \(\mathcal V_1\) modulo \(p^u\) up to colength \(c\)'' (Section~\ref{hn-sec:colength}, Problems~\ref{hn-pr:colength} and~\ref{hn-pr:onto-vertex}).  Chapter~\ref{dl-chap}: \(o_p\), \(r_p\), exceptional primes (Section~\ref{dl-sec:collisions}), \(S_\eta\) (Section~\ref{dl-sec:chain}), \(v_\sigma\), marks, \(a_v\), \(Y_v = p^{a_v}T_v\) (Section~\ref{dl-sec:exceptional}).  \(D_X = \dim_{\C} S\), \(\Oc_\eta\) (Chapter~\ref{ob-chap}); \(f_p\) (Definition~\ref{d3-def:fp}); \(f\) (Section~\ref{da-sec:field}), \(m, x, k, a\) (Definition~\ref{da-def:data} and the sentence after it).
+
+\medskip
+At an exceptional prime \(p < x_1\), Chapter~\ref{dl-chap} needs the colength of \(Y_v S_\eta + p^u S_\eta\) in \(S_\eta\) for the scaled Hecke operators \(Y_v\) of a mark.  The operator \(Y_v\) sums, with changes of basis and a scaling, the values of a form over the neighbours of index \(r_p\) at \(v\).  Chapter~\ref{hn-chap} saw at one vertex that such a sum loses little when the residue field is larger than the degree (Theorem~\ref{hn-thm:vertex}).  Here the degree is \(\mu\) in each of \(N_0\) Frobenius-twisted letters, and the total colength is at most \(3\cdiv + \theta u\) times the number of source coordinates (Theorem~\ref{thm:elementary-divisors}).  In Sections~\ref{sec:edge}--\ref{sec:theorem} all letters other than \(p\) are local to this chapter: \(\beta\) is a family of exponents, not the diagram of the data; \(X\), \(Z\), \(I\) are finite sets, \(U\) is an endomorphism, \(\theta\) a real number, \(P\) a prime power, \(q\) a residue field size, \(d\) a depth, and \(D\), \(R\), \(R'\), \(Q\), \(Q'\), \(C\), \(B\), \(M\) are matrices.  Section~\ref{sec:marked} gives their values for the data.
+
+\section{The edge Hecke operator}\label{sec:edge}
+
+Let \(N_0 \ge 1\), let \(W'\) be a commutative local ring with maximal ideal \(\mathfrak m\), and let \(O\) be a valuation domain of characteristic \(0\).
+
+\begin{definition}\label{def:cycle}
+A \emph{Frobenius cycle} of length \(N_0\) from \(W'\) to \(O\) consists of a prime \(p\), a power \(P \ge 5\) of \(p\), ring homomorphisms \(\iota_s \colon W' \to O\) for \(s \in \Z/N_0\), a parity, even or odd, for each \(s\), and an element \(\varpi \in O\), such that \(\varpi^2 = p\); \(p\) divides \(\iota_{s+1}(w) - \iota_s(w)^P\) in \(O\) for all \(s\) and all \(w \in W'\); the parities of \(s\) and \(s+1\) differ for every \(s\) (so \(N_0\) is even); and \(W'/\mathfrak m\) has \(q := P^{N_0}\) elements.  Fix integers \(n \ge 1\) (the rank), \(\mu \ge 0\) (the degree in each letter \(s\)) and \(r_0 \ge 0\).  Let \(\Bc\) be the set of families \(\beta = (\beta_s)_{s \in \Z/N_0}\) of maps \(\beta_s \colon \{0, \dots, n-1\} \to \Z_{\ge 0}\) with \(\sum_i \beta_s(i) = \mu\) for each \(s\).  For \(\gamma \in \GL_n(W')\) put \(\gamma_s = \iota_s(\gamma)\) if \(s\) is even and \(\gamma_s = \iota_s((\gamma^{-1})^{\mathsf T})\) if \(s\) is odd, and let \(\rho(\gamma)\) be the \(\Bc \times \Bc\) matrix whose \((\beta, \beta')\) entry is the product over \(s\) of the coefficients of \(z^{\beta_s}\) in \(\prod_i \bigl(\sum_j (\gamma_s)_{ji} z_j\bigr)^{\beta'_s(i)}\).  The \emph{depth} \(\dpt(\beta)\) is the sum of \(\beta_s(i)\) over the pairs \((i, s)\) with \(s\) even and \(i \ge r_0\), or \(s\) odd and \(i < r_0\) (the \emph{deep} pairs); and \(D\) is the diagonal matrix with entries \(p^{\dpt(\beta)}\).  Let \(\Kc_{r_0} \subseteq \GL_n(W')\) consist of the matrices whose \((i, j)\) entry lies in \(\mathfrak m\) whenever \(i < r_0 \le j\), and let \(\Cc = \GL_n(W')/\Kc_{r_0}\), the set of left cosets.
+\end{definition}
+
+\begin{definition}\label{def:edge}
+Let \(X\) and \(Z\) be finite sets.  \emph{Edge coordinates} on \((X, Z)\) are maps \(\pi \colon X \times \Cc \to X\), \(\gamma \colon X \times \Cc \to \GL_n(W')\), \(\gamma' \colon \Cc \to \GL_n(W')\) and \(\upsilon \colon X \times \Cc \to \GL_Z(O)\), such that \(\gamma'(\omega)^{-1} \Kc_{r_0} = \omega\) for every \(\omega \in \Cc\), and \(\varepsilon = \varepsilon'\) whenever \(\varepsilon, \varepsilon' \in X \times \Cc\) satisfy \(\pi(\varepsilon) = \pi(\varepsilon')\) and \(\gamma(\varepsilon)^{\mathsf T} (\gamma(\varepsilon')^{\mathsf T})^{-1} \in \Kc_{r_0}\).  For a finite set \(I\) and a bijection \(J = (J_1, J_2) \colon I \to \Bc \times Z\), the \emph{edge Hecke operator} \(\Ac\) is the \(O\)-linear endomorphism of \((O^I)^X\) given by
+\[
+  (\Ac F)(\lambda)_i = \sum_{\omega \in \Cc} \sum_{i' \in I} \upsilon(\lambda, \omega)_{J_2 i,\, J_2 i'}\, \bigl(\rho(\gamma(\lambda, \omega))\, D\, \rho(\gamma'(\omega))\bigr)_{J_1 i',\, J_1 i}\; F(\pi(\lambda, \omega))_{i'} .
+\]
+\end{definition}
+
+The \emph{model}: \(N_0 = 2\), \(n = 2\), \(r_0 = 1\), \(W' = \Z[\sqrt2]_{(5)}\), \(O\) the valuation ring of a prime of \(\Q(\sqrt2, \sqrt5)\) above \(5\), \(\iota_0\) the inclusion (even), \(\iota_1\) the conjugation \(\sqrt2 \mapsto -\sqrt2\) (odd), \(\varpi = \sqrt5\); \(X\) and \(Z\) are points, \(\upsilon = 1\), and for \(h_c = \bigl(\begin{smallmatrix}1 & i + j\sqrt2\\ 0 & 1\end{smallmatrix}\bigr)\) (\(i, j \in \Z\), \(\lvert i\rvert, \lvert j\rvert \le 2\)) and for the transposition \(h_c = \bigl(\begin{smallmatrix}0&1\\1&0\end{smallmatrix}\bigr)\) put \(\gamma'(\omega_c) = h_c\), \(\gamma(\cdot, \omega_c) = h_c^{\mathsf T}\), where \(\omega_c = h_c^{-1}\Kc_1\).  For \(\mu = 1\), \(ab\) is the index \(\beta\) using row \(a\) in letter \(0\) and row \(b\) in letter \(1\).
+
+\begin{problem}\label{pr:cycle-model}
+\((\sqrt2)^5 \equiv -\sqrt2 \pmod 5\), and these data are a Frobenius cycle with \(P = 5\), \(q = 25\).  The \(26\) matrices \(h_c\) give \(26\) distinct cosets \(\omega_c\), which exhaust \(\Cc\), and the maps above are edge coordinates.
+\end{problem}
+
+\begin{problem}\label{pr:depths}
+For \(\mu = 1\), in the basis \(\beta = 00, 01, 10, 11\), the depths are \(1, 0, 2, 1\) and \(D = \operatorname{diag}(5, 1, 25, 5)\).
+\end{problem}
+
+\begin{problem}\label{pr:factor}
+For \(\mu = 1\), \(\rho(\gamma^{\mathsf T}) = \rho(\gamma)^{\mathsf T}\) for every \(\gamma\).  Hence \(\Ac = \Ec^{\mathsf T}\Ec\), where \(\Ec\) is the \(104 \times 4\) matrix (in this sheet) whose rows are those of the \(26\) matrices \(D_\varpi\rho(h_c)\), with \(D_\varpi = \operatorname{diag}(\varpi^{\dpt(\beta)})\).
+\end{problem}
+
+In the model with \(\mu = 1\), \(\Ac\) restricts a vector to the \(26\) edges, then pairs and adds.
+
+\begin{problem}\label{pr:edge-matrix}
+(m) By machine: for \(\mu = 1\),
+\[
+  \Ac = \begin{pmatrix} 280 & 0 & 0 & 50\\ 0 & 50 & 50 & 0\\ 0 & 50 & 2576 & 0\\ 50 & 0 & 0 & 280 \end{pmatrix}, \qquad \det\Ac = 9586170000 = 2^4 3^2 5^4 \cdot 11 \cdot 23 \cdot 421,
+\]
+with elementary divisors \(2, 10, 30, 15976950\) over \(\Z\); over \(O\), with \(\val(5) = 1\), their valuations are \(0, 1, 1, 2\).
+\end{problem}
+
+\begin{problem}\label{pr:colength-model}
+For \(\mu = 1\), \(\Ac\) is onto \(O^4\) modulo \(5^u\) up to colength \(3\) for \(u = 1\) and \(4\) for \(u \ge 2\), and these are the least such numbers.
+\end{problem}
+
+The columns of \(\Ec\) span a direct summand of \(O^{104}\): for \(\mu = 1\) the loss comes from the pairing and the sum.  In general, with \(D_\varpi = \operatorname{diag}(\varpi^{\dpt(\beta)})\), let \(R\) send \(F\) to \(D_\varpi\rho(\gamma(\varepsilon)^{\mathsf T})F(\pi(\varepsilon))\) at each edge \(\varepsilon = (\lambda, \omega)\) (on the \(\Bc\) factor), and \(R'\) send it to \(D_\varpi\rho(\gamma'(\omega))F(\lambda)\).  On inputs multiplied by weights \(\mathrm{pw}_\beta\) (Section~\ref{sec:middle}), \(\Ac\) is \(R\), then \(\upsilon\) and the weighted pairing at each edge, summed against \(R'\) (read from the proof).  The theorem rests on the following accounting.
+
+\begin{problem}\label{pr:nakayama}
+Let \(O\) be a discrete valuation ring with uniformizer \(p\), \(A\) a square matrix of size \(N'\) over \(O\), \(c_1, u \ge 0\) integers and \(s_0 \subset O^{N'}\) a finite set with \(p^{c_1}O^{N'} \subseteq \operatorname{im}A + \operatorname{span}(s_0)\).  Then \(\operatorname{im}A + p^uO^{N'}\) has colength at most \(c_1N' + u\,\#s_0\) in \(O^{N'}\).
+\end{problem}
+
+\section{Deep forms: the two ends}\label{sec:ends}
+
+Let \(\Bbbk\) be a field of characteristic \(p\) with ring maps \(\iota_s \colon W' \to \Bbbk\), \(\iota_{s+1}(w) = \iota_s(w)^P\), and parities as in Definition~\ref{def:cycle}; \(\rho(\gamma)\) acts on \(\Bbbk^{\Bc}\) as before.  If \(p\) is not a unit in \(O\), reducing a Frobenius cycle to the residue field of \(O\) gives such maps.
+
+\begin{definition}\label{def:deep}
+For an integer \(d \ge 1\), \(\Deep_d \subseteq \Bbbk^{\Bc}\) is the space of \(F\) such that \((\rho(\gamma)F)_\beta = 0\) for every \(\gamma \in \GL_n(W')\) and every \(\beta\) with \(\dpt(\beta) < d\): all translates of \(F\) have depth at least \(d\).
+\end{definition}
+
+At the ends take \(p\) a nonunit in \(O\) and \(\Bbbk\) its residue field with the reduced maps.  The proof writes \(RC = Q\operatorname{diag}(t_j)\), with \(C\) invertible and \(Q\) having a left inverse; for each \(\delta \ge 0\) the columns \(C_j\) with \(t_j \nmid \varpi^\delta\) reduce to independent vectors of \((\Deep_{\delta+1})^{X \times Z}\).  So \(R = Qd_{\mathrm e}\), \(d_{\mathrm e} = \operatorname{diag}(t_j)C^{-1}\), with \(\det d_{\mathrm e} \mid \varpi^{\#X\#Z\sum_{j \ge 1}\dim\Deep_j}\); likewise \(R' = Q'd'_{\mathrm e}\) (read from the proof).  How large can deep forms be?  Give the deep pair \((i, s)\) the \emph{cost} \(P^{-2r_0}\) if \(i \ge 2r_0\) and \(P^{-1}\) if \(i < 2r_0\), the other pairs cost \(0\), and let \(c(\beta) = \sum_{(i,s)} \beta_s(i)\,\mathrm{cost}(i, s)\).
+
+\begin{problem}\label{pr:one-variable}
+(i) A nonzero \(f \in \F_q[\mathsf T]\) vanishing to order at least \(d\) at every point of \(\F_q\) has degree at least \(qd\).  [\((\mathsf T^3 - \mathsf T)^2 = \mathsf T^6 + \mathsf T^4 + \mathsf T^2\) over \(\F_3\).]  (ii) Over a local ring \(O_1\), if \(f \in O_1[\mathsf T]\) has unit leading coefficient and is divisible by \((\mathsf T - \mathsf a)^{\nu_0}\) for \(q\) elements \(\mathsf a\) pairwise distinct modulo the maximal ideal, then \(\deg f \ge q\nu_0\).
+\end{problem}
+
+Problem~\ref{pr:one-variable}(i) is a one-variable specialization of a weighted Nullstellensatz with multiplicities.  Give each of finitely many variables \(x_u\) the cost \(1/\kappa_u\), \(\kappa_u \ge 1\) an integer, and let \(S_0\) be a finite set of at least \(\prod_u\kappa_u\) points over a field such that for each \(u\) one polynomial \(g_u\) with monomials of cost \(< 1\) satisfies \(g_u(z) = z_u^{\kappa_u}\) for all \(z \in S_0\).  Then for every integer \(d \ge 0\) a nonzero polynomial vanishing to order at least \(d\) at every point of \(S_0\) has a monomial of cost \(\ge d\).  For grids see Alon \cite{Al} and Ball--Serra \cite{BS}.  \emph{Status}: the form stated here is read from the proof.  Specializing the shallow variables over a field of rational functions and using translates by unipotent matrices with off-diagonal entries in rows \(< r_0\) and columns \(\ge r_0\), the proof obtains: \emph{if \(2r_0 \le n\) and \(0 \ne F \in \Deep_d\), then \(F_\beta \ne 0\) for some \(\beta\) with \(c(\beta) \ge d\).}
+
+\begin{problem}\label{pr:deep-count}
+Assume the statement in italics, \(0 < r_0\) and \(2r_0 \le n\).  (i) \(\dim\Deep_d \le \#\{\beta : c(\beta) \ge d\}\).  (ii) The average of \(\beta_s(i)\) over \(\Bc\) is \(\mu/n\), each row \(i\) is deep at \(N_0/2\) letters, and \(\sum_\beta c(\beta) \le \cdiv\,\#\Bc\), where \(\cdiv = N_0\mu\bigl(P^{-2r_0} + r_0^2/(nP)\bigr)\).  Hence \(\sum_{d \ge 1}\dim\Deep_d \le \cdiv\,\#\Bc\).
+\end{problem}
+
+For \(0 < r_0\), \(2r_0 \le n\), Problem~\ref{pr:deep-count} shows that \(\det d_{\mathrm e}\) and \(\det d'_{\mathrm e}\) divide \(\varpi^{\#X\#Z\lfloor\cdiv\#\Bc\rfloor}\), and their product divides \(p^{\#X\#Z\lfloor\cdiv\#\Bc\rfloor}\).  In the model take \(\Bbbk = \F_{25}\), with variables \(z_0, z_1\) (letter \(0\)) and \(z'_0, z'_1\) (letter \(1\)); \(z_1\) and \(z'_0\) are deep.
+
+\begin{problem}\label{pr:invariant}
+For \(\mu = 6\), the form \((z_0^5z'_0 + z_1^5z'_1)(z_0z_0'^5 + z_1z_1'^5)\) is fixed by every \(\rho(\gamma)\), the depths of its four monomials are \(2, 6, 6, 10\) in some order, and it lies in \(\Deep_2\) but not in \(\Deep_3\).
+\end{problem}
+
+\begin{problem}\label{pr:deep-table}
+(m) By machine, in the model: \(\Deep_1 = 0\) for \(\mu \le 4\); for \(\mu = 5\) the dimensions of \(\Deep_1, \Deep_2\) are \(10, 0\), and for \(\mu = 6\) those of \(\Deep_1, \Deep_2, \Deep_3\) are \(23, 1, 0\).  The sums \(10\) and \(24\) lie below \(\cdiv\#\Bc = 252/5\) and \(2058/25\), and they are exactly the exponents \(e\) with \(\det d_{\mathrm e} \in \varpi^eO^\times\) for \(R = Qd_{\mathrm e}\), \(R\) stacking the \(26\) matrices \(D_\varpi\rho(h_c)\).
+\end{problem}
+
+\section{Defects: the middle}\label{sec:middle}
+
+The proof chooses weights \(\mathrm{pw}_\beta, \mathrm{pw}'_\beta \in O\), \(\beta \in \Bc\), whose properties are stated with the average below.  Let \(B\) act at each edge by \(\upsilon\) on \(Z\) and by \(\operatorname{diag}(\mathrm{pw}_\beta)\) on \(\Bc\); the middle matrix is \(M = Q'^{\mathsf T}BQ\).  The proof builds a near right inverse of \(Q'^{\mathsf T}B\) whose edge values satisfy congruences, measured by a defect, which bound the generators needed to supplement \(\operatorname{im}M\).  For \(i \in \Z/N_0\) write \([i]\) for its least residue in \(\{0, \dots, N_0 - 1\}\).
+
+\begin{definition}\label{def:defect}
+Let \(0 < r_0 < n\).  For \(s \in \Z/N_0\) let \(u_s = r_0\) and \(\bar u_s = r_0 - 1\) if \(s\) is even, \(u_s = r_0 - 1\) and \(\bar u_s = r_0\) if \(s\) is odd.  The \emph{defect} at the letter \(i\) of a real family \(\beta = (\beta_s)\) is
+\[
+  d_i(\beta) = \frac{1}{q-1}\sum_{s \in \Z/N_0}\Bigl(P^{1 + [s - 1 - i]}\beta_s(u_s) - P^{[s - i]}\beta_s(\bar u_s)\Bigr) .
+\]
+\end{definition}
+
+The proof shows (read from the proof): \emph{with \(\Bbbk\) as in Section~\ref{sec:ends}, \(0 < r_0 < n\), an integer \(t_0 \ge 2(n+1)\), \(0 < \theta \le 1\), \(0 < \mu\) and \(8N_0nt_0P^{2r_0} \le \theta\mu\); then \(\#\Cc\) times the dimension of the space of \(F \in \Bbbk^{\Bc}\) such that \((\rho(g)F)_\beta = 0\) for every block diagonal \(g\) (blocks of sizes \(r_0, n - r_0\)) and every \(\beta\) with \(d_i(\beta) > 3t_0\) at some letter \(i\), is at most \((1 + \theta)\#\Bc\).}
+
+\begin{problem}\label{pr:flags}
+\(\F_q^n\) has \(\prod_{l=1}^n (q^l - 1)/(q - 1)\) full flags, and for \(0 \le r_0 \le n\), \(\#\Cc\) is the number of subspaces of dimension \(n - r_0\) of \(\F_q^n\).  For \(n = 2\), \(r_0 = 1\), \(q = 25\) both are \(26\).
+\end{problem}
+
+\begin{problem}\label{pr:cone}
+(c) In the model, for real \(\beta \ge 0\), \(24d_0 = 25\beta_0(1) + 5\beta_1(0) - \beta_0(0) - 5\beta_1(1)\) and \(24d_1 = 5\beta_0(1) + 25\beta_1(0) - 5\beta_0(0) - \beta_1(1)\).  The region \(\beta \ge 0\), \(\beta_s(0) + \beta_s(1) \le 1\) (\(s = 0, 1\)) has volume \(1/4\); its part with \(d_0, d_1 \le 0\) has volume \(1/104\).  The ratio is \(1/26\).
+\end{problem}
+
+The average (read from the proof): let \(p\) be a nonunit in \(O\), \(0 < r_0 < n\), \(c_0 := n^2\log_p q\) and \(\langle h, h'\rangle := \sum_\beta h'_\beta \mathrm{pw}_\beta h_\beta\) where the weights \(\mathrm{pw}_\beta, \mathrm{pw}'_\beta\) make \(\rho(\gamma)\) and \(\rho(\gamma^{\mathsf T})\) adjoint and satisfy \(\mathrm{pw}_\beta\mathrm{pw}'_\beta = p^{N_0c_0}\); if \(N_0n(N_0/2 + 2)\mu + \mu + n < P^{N_0/2}\), then for every integer \(c \ge 0\) there is a matrix \(\mathrm{Av}\) over \(O\) such that for all \(h \in O^{\Bc}\): \(\varpi^c \mid (\rho(g)\mathrm{Av}\,h)_\beta\) for block diagonal \(g\) and \(d_i(\beta) > 9nc\) at some \(i\), and \(\langle \mathrm{Av}\,h, h'\rangle \equiv p^{N_0c_0}\langle h, h'\rangle \pmod{\varpi^c}\) for all \(h' \in O^{\Bc}\) with \(\varpi^lh' = D_\varpi h''\) for an integer \(l \ge 0\) and \(h'' \in O^{\Bc}\) and \(\varpi^l\) dividing every entry of every \(D_\varpi\rho(g)h''\), \(g \in \GL_n(W')\).  Under the hypotheses of Theorem~\ref{thm:elementary-divisors}, with \(c = 5N_0c_0\), the proof obtains a finite set \(s_0\) with
+\[
+  p^{2N_0c_0}\,O^{X \times I} \subseteq \operatorname{im}M + \operatorname{span}(s_0), \qquad \#s_0 \le \theta\,\#X\#I .
+\]
+
+\section{The theorem}\label{sec:theorem}
+
+\begin{problem}\label{pr:costs}
+(i) If \(u \ge 0\), \(c_1 \le 2\cdiv\), \(\#s_0 \le \theta\#X\#I\) and \(\#I = \#\Bc\,\#Z\), then \(\#X\#Z\lfloor\cdiv\#\Bc\rfloor + c_1\#X\#I + u\,\#s_0 \le (3\cdiv + \theta u)\#X\#I\).  (ii) For a Frobenius cycle, if \((N_0n\log q/\theta)^5P^{3r_0} \le \mu\) with \(0 < \theta \le 1\), then \(N_0c_0 = N_0n^2\log_p q \le \cdiv\).
+\end{problem}
+
+The following theorem is read from the proof, which bounds the colength for \(d'^{\mathsf T}_{\mathrm e}Md_{\mathrm e}\) by determinant divisibility over \(O\) (Problem~\ref{pr:nakayama} is a model over a discrete valuation ring) with the bound of Problem~\ref{pr:costs}, \(c_1 = 2N_0c_0\), and passes to \(\mathcal L\) by \(\psi\).
+
+\begin{theorem}\label{thm:elementary-divisors}
+Let a Frobenius cycle of length \(N_0 \ge 1\) from a commutative local ring \(W'\) to a valuation domain \(O\) of characteristic \(0\) be given, with prime \(p\), power \(P\) and \(q = P^{N_0}\) as above, and suppose that \(p\) is not a unit in \(O\).  Let \(n, \mu, r_0\) be integers and \(\theta\) a real number with, for the natural logarithm,
+\[
+  0 < r_0, \quad 2r_0 \le n, \quad 0 < \theta \le 1, \quad \mu^4 \le q, \quad \Bigl(\frac{N_0 n \log q}{\theta}\Bigr)^5 P^{3r_0} \le \mu .
+\]
+Let \(X\), \(Z\) and \(I\) be finite sets (\(\Cc\) is finite), \(J \colon I \to \Bc \times Z\) a bijection, edge coordinates on \((X, Z)\) with edge Hecke operator \(\Ac\), \(\mathcal M\) an \(O\)-module, \(\psi \colon (O^I)^X \to \mathcal M\) an \(O\)-linear map and \(U\) an endomorphism of \(\mathcal M\) with \(U \psi = \psi \Ac\).  Then for every integer \(u \ge 0\), \(U\) is onto \(\mathcal L = \psi\bigl((O^I)^X\bigr)\) modulo \(p^u\) up to colength
+\[
+  \bigl(3\,\cdiv + \theta u\bigr)\, \#X\, \#I, \qquad \cdiv = N_0 \mu \Bigl(\frac{1}{P^{2r_0}} + \frac{r_0^2}{n P}\Bigr) .
+\]
+\end{theorem}
+
+Neither Theorem~\ref{hn-thm:vertex} nor the model of Section~\ref{sec:edge} (where \(\mu^4 \le q\) forces \(\mu \le 2\)) is a case of it.
+
+\begin{problem}\label{pr:cycle}
+Under the hypotheses on \(n, \mu, r_0, \theta\) of Theorem~\ref{thm:elementary-divisors}, \(\mu > P^{3r_0}\) and \(N_0 > 12r_0\).  For \(N_0 = 14\), \(n = 2\), \(r_0 = 1\), \(\theta = 1/2\), \(P = 5^{100}\) and \(\mu = 5^{350}\) these hypotheses hold.
+\end{problem}
+
+\section{At a marked prime}\label{sec:marked}
+
+Let \(p < x_1\) be exceptional, \(\eta \colon \C \to \C_p\) a ring map, \(\Mk\) a mark at \((p, \eta)\), \(v \in \Mk\), and \(\tau_0 \in \Phi_a\) with \(v_{\tau_0} = v\).  The proof realizes \(Y_v\) as an edge Hecke operator (read from the proof): \emph{put \(N_0 := f_p/o_p\) and \(\tau_i := [-p^{o_p}]^{[i]}\tau_0\) for \(i \in \Z/N_0\); these are distinct and are exactly the \(a\)-places \(\sigma\) with \(v_\sigma \in \{v, \bar v\}\).  With \(W'\) the valuation ring of \(E\) at \(v\), \(O = \Oc_\eta\), \(P = p^{o_p}\), \(\iota_i = \Phi_{\tau_i}\) (even) if \(v_{\tau_i} = v\) and \(\iota_i = \Phi_{\tau_i} \circ (\text{complex conjugation})\) (odd) otherwise, and \(\varpi\) a square root of \(p\), they form a Frobenius cycle of length \(N_0\); and there are finite sets \(X, Z, I\) with \(\#X\#I = D_X\), a bijection \(J\), edge coordinates with \((n, \mu, r_0) = (k, a, r_p)\), and an \(\Oc_\eta\)-linear \(\psi \colon (\Oc_\eta^I)^X \to S\) with image \(S_\eta\) and \(Y_v\psi = \psi\Ac\).}  The \(\tau_i\) induce \(v\) and \(\bar v\) alternately (Problems~\ref{d3-pr:decomposition} and~\ref{d3-pr:orbit}; \(f_p\) is the order of \([-p]\), which is even), so exactly \(N_0/2\) of them induce \(v\), and \(a_v = aN_0/2\).  The proof checks the hypotheses of Theorem~\ref{thm:elementary-divisors} for \(\theta = 1/(m^2f)\).
+
+\begin{problem}\label{pr:specialize}
+With \((n, \mu, r_0, \theta, P, N_0) = (k, a, r_p, 1/(m^2f), p^{o_p}, f_p/o_p)\) and \(a_v = aN_0/2\): \(mp \le P^{2r_p}\), \(mr_p^2 \le k\), and \(3\cdiv \le 12a_v/(mp)\).
+\end{problem}
+
+So Theorem~\ref{thm:elementary-divisors} gives the colength used in Chapter~\ref{dl-chap}: for a mark \(\Mk\), \(v \in \Mk\) and every integer \(u \ge 0\),
+\begin{equation}\label{eq:mark-colength}
+  Y_v \text{ is onto } S_\eta \text{ modulo } p^u \text{ up to colength } \Bigl(\frac{12a_v}{mp} + \frac{u}{m^2f}\Bigr) D_X .
+\end{equation}
+Problems~\ref{dl-pr:colength-add} and~\ref{dl-pr:budget} add these over \(Y_{\Mk}^m\).
+
+\paragraph{What has been established.}  Proved here: the accounting (Problems~\ref{pr:nakayama}, \ref{pr:deep-count}, \ref{pr:costs}, \ref{pr:specialize}), and in the model with two letters the operator and its elementary divisors (Problems~\ref{pr:edge-matrix}, \ref{pr:colength-model}) and the deep forms (Problems~\ref{pr:invariant}, \ref{pr:deep-table}).  Taken as given, each read from the proof: Theorem~\ref{thm:elementary-divisors} itself, of which no case is computed here; in its proof, the identity for \(\Ac\) on weighted inputs, the factorizations at the two ends, the weighted Nullstellensatz and the monomial of large cost of a deep form, the count of forms with bounded defects, the average, and the bound for the middle matrix; and the realization of \(Y_v\) as an edge Hecke operator at a marked prime, with the check of the hypotheses.  The theorem, the realization and Problem~\ref{pr:specialize} give~\eqref{eq:mark-colength}, which is all that Chapter~\ref{dl-chap} uses.
+
+\begin{leanremark}
+\begin{sloppypar}
+In the Lean proof \cite{GL}, Theorem~\ref{thm:elementary-divisors} is \tl{FrobeniusCycle.\allowbreak elementary\_\allowbreak divisors} with the hypotheses \tl{IsLargeDegree}; Definition~\ref{def:deep} is \tl{deepForms}.  The identity for \(\Ac\) on weighted inputs is \tl{IsEdgePairing.\allowbreak edgeHecke\allowbreak Operator\_\allowbreak regroup}; the ends, \tl{exists\_\allowbreak origin\allowbreak Functions\_\allowbreak factorization\_\allowbreak det\_\allowbreak dvd}; the weight of a deep form, \tl{exists\_\allowbreak le\_\allowbreak weight\_\allowbreak of\_\allowbreak mem\_\allowbreak deepForms}; the weighted Nullstellensatz, \tl{New.\allowbreak exists\_\allowbreak le\_\allowbreak weight\_\allowbreak of\_\allowbreak mem\_\allowbreak vanishing\allowbreak Ideal\_\allowbreak pow}; the defect count, \tl{FrobeniusCycle.\allowbreak index\_\allowbreak mul\_\allowbreak fin\allowbreak rank\_\allowbreak defect\allowbreak Conditions\_\allowbreak le}; the average, \tl{exists\_\allowbreak average\_\allowbreak mem\_\allowbreak defect\allowbreak Conditions\_\allowbreak and\_\allowbreak dvd\_\allowbreak sub}; the middle bound, \tl{IsEdge\allowbreak Condition.\allowbreak exists\_\allowbreak finset\_\allowbreak smul\_\allowbreak top\_\allowbreak le\_\allowbreak range\_\allowbreak sup\_\allowbreak span}.  The edge coordinates and \(\psi\) are constructed in the proof of \tl{isOnto\allowbreak UpTo\allowbreak Colength\_\allowbreak scaled\allowbreak Hecke\allowbreak Operator\_\allowbreak of\_\allowbreak frobeniusCycle}; the orbit, the cycle and the size check in that of \tl{Data.\allowbreak IsMarked.\allowbreak isOnto\allowbreak UpTo\allowbreak Colength\_\allowbreak scaled\allowbreak Hecke\allowbreak Operator}, which is~\eqref{eq:mark-colength}.  In \tl{ElementaryDivisorTheorem.lean}, the proof obtains the pairing weights at line 1178, bounds each end determinant at lines 886--914, and constructs the near right inverse at lines 296--305, with its congruence at lines 958--989.  Lines 1095--1141 combine the end determinants with the middle bound, and lines 1200--1214 carry the bound to the image of \(\psi\).  The matrix in Problem~\ref{pr:edge-matrix} and the exact dimensions and determinant exponents in Problem~\ref{pr:deep-table} are computations in the model.
+\end{sloppypar}
+\end{leanremark}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:edge}}
+\begin{description}
+\item[\ref{pr:cycle-model}] \(\Z[\sqrt2]/5 = \F_{25}\).
+\item[\ref{pr:factor}] For \(\mu = 1\), \(\rho(\gamma) = \iota_0(\gamma) \otimes \iota_1((\gamma^{-1})^{\mathsf T})\).
+\item[\ref{pr:edge-matrix}] Sage's \texttt{elementary\_\allowbreak divisors}.
+\item[\ref{pr:colength-model}] As in Problem~\ref{hn-pr:onto-vertex}; count lengths in powers of \(\varpi\), \(5 = \varpi^2\).
+\end{description}
+
+\subsection*{\S\ref{sec:ends}}
+\begin{description}
+\item[\ref{pr:one-variable}] (i) Count roots with multiplicity.  (ii) The factors \((\mathsf T - \mathsf a)^{\nu_0}\) are pairwise comaximal.
+\item[\ref{pr:deep-count}] (i) Project to the coordinates with \(c(\beta) \ge d\).  (ii) Symmetry in the rows; exchange the sums.
+\item[\ref{pr:invariant}] \(F \leftrightarrow \sum_\beta F_\beta z^{\beta_0}z'^{\beta_1}\), \(\rho(\gamma)\) substitutes \(\gamma_s^{\mathsf T}\).  On \(\F_{25}\), \(y \mapsto y^5\) is additive of order \(2\).
+\item[\ref{pr:deep-table}] The largest subspace of \(\{F_\beta = 0 : \dpt(\beta) < d\}\) stable under generators of \(\GL_2(\F_{25})\).
+\end{description}
+
+\subsection*{\S\ref{sec:middle}}
+\begin{description}
+\item[\ref{pr:cone}] Compare the volume fraction with the reciprocal of the full-flag count in Problem~\ref{pr:flags}.
+\end{description}
+
+\subsection*{\S\ref{sec:theorem}}
+\begin{description}
+\item[\ref{pr:costs}] (ii) \(c_0 \le \mu P^{-2r_0}\).
+\end{description}
+
+\subsection*{\S\ref{sec:marked}}
+\begin{description}
+\item[\ref{pr:specialize}] \(m \le p^{r_p}\), \(r_p \le 1 + \log_2 m\), \(1 \le o_p\); \(m \le 2\sqrt x\) and \(k \ge x^5/2\) (Definition~\ref{da-def:data}, Problem~\ref{da-pr:m-big}).
+\end{description}
+
+\begin{thebibliography}{GL}
+\bibitem[Al]{Al} N.~Alon, Combinatorial Nullstellensatz, \emph{Combin. Probab. Comput.} \textbf{8} (1999), 7--29.
+\bibitem[BS]{BS} S.~Ball and O.~Serra, Punctured combinatorial Nullstellens\"atze, \emph{Combinatorica} \textbf{29} (2009), 511--522.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[La]{La} S.~Lang, \emph{Algebra}, rev.\ 3rd ed., Grad.\ Texts in Math.\ 211, Springer, 2002.
+\end{thebibliography}
+
+\end{document}
