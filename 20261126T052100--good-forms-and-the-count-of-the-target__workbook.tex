@@ -1,0 +1,265 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
+\externaldocument[bp-]{20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook}
+\externaldocument[m1-]{20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook}
+\externaldocument[m2-]{20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook}
+\externaldocument[c2-]{20261126T050500--equal-multiplicities__workbook}
+\externaldocument[rl-]{20261125T010000--rank-lemma-and-zero-estimate__workbook}
+\externaldocument[dt-]{20261125T002000--definite-theta-lifts__workbook}
+
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T052100\endcsname
+  \chapnumber{20261126T052100}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}[theorem]{Definition}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Gb}{\bar G}
+\newcommand{\Rb}{\bar R_0}
+\newcommand{\Po}{{\mathcal P^\circ}}
+\newcommand{\Kc}{\mathcal K}
+\newcommand{\Uc}{\mathcal U}
+\newcommand{\Mcal}{\mathcal M}
+\newcommand{\rB}{\rho_{\mathrm{Bes}}}
+\newcommand{\Did}{D_{\mathrm{id}}}
+\newcommand{\Dmain}{D_{\mathrm{main}}}
+\newcommand{\mass}{\mathrm{mass}_r}
+\newcommand{\GL}{\mathrm{GL}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\pr}{\mathrm{pr}}
+\newcommand{\End}{\operatorname{End}}
+\newcommand{\Ind}{\operatorname{Ind}}
+\newcommand{\tlus}{\textunderscore\allowbreak}
+\newcommand{\tl}[1]{{\let\_\tlus\texttt{#1}}}
+
+\setlength{\emergencystretch}{3em}
+
+\title{Good forms and the count of the target}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Characters of finite groups, central idempotents, induced representations and Mackey's formula \cite[\S\S2, 6, 7]{Se}; the characters of \(\GL_2(\F_q)\) \cite[\S5.2]{FH}.  From Chapter~\ref{ob-chap}, \emph{Spaces, forms and twists}: the chosen places \(\Mcal = \Mcal_0 \cup \Mcal_1\), the groups \(\Gb = \Gb_0 \times \Gb_1\), labels, the characters \(\Xi_c\), the idempotents \(e_c\), good families and the idempotent \(e_0\) (Section~\ref{ob-sec:chosen}), with the integer \(q_2\) of the data; the space \(W_m\) and the standard lattice stabilizer \(K^\circ(V)\) (Section~\ref{ob-sec:spaces}); principal forms \(H(V)\), good forms \(H_g(V)\), the target \(T\) of dimension \(d_T\) (Section~\ref{ob-sec:forms}); \(D_X\) (Section~\ref{ob-sec:source}).  From Chapter~\ref{bp-chap}: the unipotent group \(\Uc\) (Section~\ref{bp-sec:subgroup}) and the character \(\psi_{\Uc}\) that the proof fixes on its points (Section~\ref{bp-sec:poincare}), the scaled Poincar\'e map \(\Po\) and the Gram operators \(\Kc_s\) (Definition~\ref{bp-def:scaled}), the group \(\Rb\) and its representation \(\rB\) (Definition~\ref{bp-def:bessel-rep}), the product \(\deg\) of the degrees of the Bessel systems, the mass \(\mass\), and admissible fillings with Weil data (Section~\ref{bp-sec:gram}).  From Chapter~\ref{m1-chap}: the block identity (Theorem~\ref{m1-thm:blocks}), the sizes \(\Did\), \(\Dmain\) (Definition~\ref{m1-def:two-sizes}) and Problems~\ref{m1-pr:bessel-translate} and~\ref{m1-pr:near-one}.  From Chapter~\ref{m2-chap}: Theorem~\ref{m2-thm:strip} and Problems~\ref{m2-pr:agree}, \ref{m2-pr:near-one-data}, \ref{m2-pr:gl2-cells} and~\ref{m2-pr:gl3-cells}.  From Chapter~\ref{rl-chap}: Hilbert--Schmidt norms \(\lVert L\rVert^2 = \tr L^*L\), near isometries, Problem~\ref{rl-pr:near-isom} and Theorem~\ref{rl-thm:spread}.  From Chapter~\ref{dt-chap}: class sets, masses, forms and Weyl's formula~\eqref{dt-eq:weyl} (Section~\ref{dt-sec:forms}).  From Chapter~\ref{c2-chap}: Corollary~\ref{c2-cor:equal}.
+
+\medskip
+Theorem~B (Chapter~\ref{bp-chap}) is deduced from three estimates for the scaled Poincar\'e map: a second moment over \(\Gb\), the near isometry of \(e_0\Po\), and an upper bound for \(d_T\).  This sheet proves the last two from Chapters~\ref{m1-chap} and~\ref{m2-chap} and from equal multiplicities.  Why does cutting \(\Po\) down to the good forms lose so little, and why is the target no larger than \(\#\Gb\cdot\deg\cdot\mass\)?  The first answer is a trace against the Bessel representation, small because the conjugacy average of \(\psi_{\Uc}\) is small; the second is a count of classes on the definite space \(W_m\), where the level is free.
+
+\section{Central idempotents and their shares}\label{sec:shares}
+
+For a finite group \(H\), an element of \(\C[H]\) is written \(g = \sum_{t \in H} g(t)\,t\); in a representation \(\rho\) it acts by \(\rho(g) := \sum_t g(t)\rho(t)\).  It is a \emph{central idempotent} if \(g^2 = g\) and \(t \mapsto g(t)\) is a class function.
+
+\begin{definition}\label{def:share}
+The \emph{share} of a central idempotent \(g \in \C[H]\) is its coefficient \(g(1)\) at the identity.
+\end{definition}
+
+In this sheet \(q\) is the number of elements of a residue field.
+
+\begin{problem}\label{pr:labels}
+The labels of degree \(2\) over \(\F_3\) are \(X^2+1\), \(X^2+2\), \(X^2+X+2\) and \(X^2+2X+2\).  The multiplicative orders of their roots in \(\F_9^\times\) are \((4,4)\), \((1,2)\), \((8,8)\) and \((8,8)\).  Three of them have no root \(1\), and two are irreducible with a root of order \(8 = 3^2-1\).
+\end{problem}
+
+\noindent\emph{Green's degrees.}  For a label \(c\) of degree \(r\) over a finite field \(k\) with \(q = \#k\), the value \(d := \Xi_c(1)\) of the character of Section~\ref{ob-sec:chosen} satisfies
+\[
+ \operatorname{Re} d \ge 0, \qquad \frac{\lvert d\rvert^2}{\#\GL_r(k)} \ge \frac{1 - r/q}{q^r} .
+\]
+\emph{Status}: classical; Green \cite[Thms.~12--14]{Gr}.  For \(r = 2\) the degree is \(q+1\) for a label with two roots in \(k\), \(q-1\) for an irreducible one \cite[\S5.2]{FH}.
+
+\begin{problem}\label{pr:gl2-shares}
+In \(\GL_2(\F_3)\), of order \(48\), the idempotent \(e_c\) of the label \(X^2+2\) has share \(1/3\), and that of each irreducible label has share \(1/12 \ge (1 - 2/3)/9\).  The sum of the \(e_c\) over the three labels without root \(1\) is a central idempotent of share \(1/4\).
+\end{problem}
+
+\begin{problem}\label{pr:central-proj}
+Let \(g\) be a central idempotent of \(\C[H]\), \(H\) finite.  In every unitary representation of \(H\), \(g\) acts as an orthogonal projection, and \(g(1)\) is the share \(\dim(g\C[H])/\#H\) of the regular representation that \(g\) keeps.  Moreover \(\sum_{t \in H}\lvert g(t)\rvert^2 = g(1)\), and \(1 - g\) is a central idempotent.
+\end{problem}
+
+\paragraph{The idempotents of the data.}  For \(i = 0, 1\) let \(g_i \in \C[\Gb_i]\) be the sum, over the families \((c_w)_{w \in \Mcal_i}\) of labels such that no \(c_w\) has a root \(z \in k_w\) with \(z^{q_2} = 1\) and some \(c_w\) is irreducible with a root of order \(p_i^r - 1\), of the tensor products \(\bigotimes_w e_{c_w}\).  These are central idempotents, and \(g_0 \otimes g_1 \in \C[\Gb]\) acts on \(H(Y_0)\) as \(e_0\).  Call a label over \(k_w\) \emph{allowed} if it has no root \(z \in k_w\) with \(z^{q_2} = 1\), and \emph{primitive} if it is irreducible with a root of order \(q^r - 1\); at one place \(w \in \Mcal_i\), with \(q = p_i\), let \(A\) be the set of allowed labels, \(B\) the set of monic polynomials of degree \(r\) over \(k_w\) that are not primitive labels, and \(m' := (1 - r/q)/q^r\).  For \(1 < r < q\) the proof shows that each tensor product \(\bigotimes_w e_{c_w}\) has share at least \(m'^f\) (by Green's degrees), that \(\#A\cdot m' \ge 1 - \varepsilon'\) whenever \(\varepsilon' \ge (1 + q_2 + 2r)/q\), and that \(\#B\cdot m' \le \eta := \exp\bigl(-1/(2r(2r\log q + 1))\bigr)\).
+
+\begin{problem}\label{pr:bernoulli}
+Let \(f \ge 1\) be an integer, \(A\), \(B\) finite sets, \(m' > 0\), \(0 \le \varepsilon' \le 1\) and \(\eta \ge 0\), with \(\#A\cdot m' \ge 1 - \varepsilon'\) and \(\#B\cdot m' \le \eta\).  Then \((1 - \varepsilon')^f \ge 1 - f\varepsilon'\) and \(m'^f(\#A^f - \#B^f) \ge 1 - f\varepsilon' - \eta^f\).  Hence, in the paragraph above, the families counted in \(g_i\) include every family of allowed labels not all in \(B\), and \(\operatorname{Re}(1 - g_i)(1) \le f\varepsilon' + \eta^f\).
+\end{problem}
+
+With one place, \(\eta\) is close to \(1\); only its \(f\)-th power is small.  The proof takes \(\varepsilon' = (1 + q_2 + 2r)/p_i\) and checks, for the data, \(1 < r < p_i\), \(\varepsilon' \le 1\), \(2r(2r\log p_i + 1)\cdot 9\log b \le f\) and \(f\varepsilon' + e^{-9\log b} \le b^{-8}/2\).  So \(\operatorname{Re}(1 - g_i)(1) \le b^{-8}/2\) for \(i = 0, 1\).
+
+\begin{problem}\label{pr:two-proj}
+If \(p\) is an orthogonal projection, \(q'\) any operator on \(\mathcal Y\) and \(L\colon\mathcal X\to\mathcal Y\), then \(\lVert(1-pq')L\rVert^2\le\lVert(1-p)L\rVert^2+\lVert(1-q')L\rVert^2\).  In the regular representation of \(C_5 \times C_5\), with \(p\) and \(q'\) the projections removing one character of the first and of the second factor and \(L = 1\), the two sides divided by \(25\) are \(9/25 \le 2/5\).
+\end{problem}
+
+\section{The trace on the Bessel subgroup}\label{sec:trace}
+
+In this section, as in Theorem~\ref{m2-thm:strip}, consider an admissible filling over a CM field \(E\) with Weil data, a unitary representation \(\rho\) of \(\Gb\) on a finite-dimensional complex inner product space, and a linear map \(\Po\) from the coordinate space of Definition~\ref{bp-def:scaled} to it that satisfies the block identity of Theorem~\ref{m1-thm:blocks}; \(\Kc_s = \mathcal P^{\circ*}\rho(s)\Po\), \(\rB\), \(\Rb\), \(D_X\) and \(\Did = \#\Rb\cdot D_X\) are as there.  In this setting, as for the data, \(\rB(s) = 0\) for \(s \notin \Rb\), \(\rB\) is a unitary representation of \(\Rb\), and \(\Kc_{st} = \Kc_s\rB(t)\), \(\Kc_{ts} = \rB(t)\Kc_s\) for \(t \in \Rb\) (read from the proof; Problem~\ref{m1-pr:bessel-translate}).  In this sheet \(\iota_i\colon\Gb_i\to\Gb\) is the inclusion with identity component in the other factor, and \(\rho(g) := \sum_t g(t)\rho(\iota_i(t))\) for \(g \in \C[\Gb_i]\).
+
+\begin{problem}\label{pr:conv}
+(a) Let \(\varphi\colon H'\to H\) be a homomorphism of finite groups, \(g\) a central idempotent of \(\C[H']\), and \(F\) a function on \(H\) with values in an inner product space.  Then \(\sum_{s\in H}\lVert\sum_{t\in H'}g(t)F(s\varphi(t))\rVert^2\le\sum_{s\in H}\lVert F(s)\rVert^2\).
+
+(b) Let \(g \in \C[\Gb_i]\) be a central idempotent and \(D_g := \sum_{t \in \Gb_i} g(t)\bigl(\Kc_{\iota_i(t)} - \rB(\iota_i(t))\bigr)\).  Then \(\#\Rb\cdot\lVert D_g\rVert^2 \le b^{-12}\Did\), so \(\lVert D_g\rVert^2 \le b^{-12}D_X\) and \(\lvert\tr D_g\rvert \le b^{-6}D_X\).
+\end{problem}
+
+There remains the trace of \(\rB\) against \(g\).  The proof shows: if \(s \in \Gb\) has component \(1\) in \(\Gb_0\) or in \(\Gb_1\), then
+\[
+ \tr\rB(s) = D_X\,\psi_{\Uc}(s),
+\]
+where, in this sheet, \(\psi_{\Uc}(s)\) is the value of that character at an integral finite adelic element of \(\Uc\) reducing to \(s\), which does not depend on the element, and \(\psi_{\Uc}(s) := 0\) if there is none.  (A Bessel term reducing to \(1\) at one prime has trivial definite part, by an argument like that of Problem~\ref{pr:free}; the unipotent part multiplies the identity block by \(\psi_{\Uc}\).)
+
+\begin{definition}\label{def:conj-average}
+The \emph{conjugacy average} of a function \(\psi\) on a finite group \(H\) is \(\psi^\natural(s) := (\#H)^{-1}\sum_{y \in H}\psi(ysy^{-1})\).
+\end{definition}
+
+\begin{problem}\label{pr:s3-average}
+In \(S_3\) let \(\varphi = 1\) at \(1\), \(-1\) at \((12)\) and \(0\) elsewhere.  Its conjugacy average is \(1\), \(-1/3\), \(0\) on the identity, the transpositions and the \(3\)-cycles, and \(\sum_s\lvert\varphi(s)\rvert^2 = 2\), \(\sum_s\lvert\varphi^\natural(s)\rvert^2 = 4/3\).
+\end{problem}
+
+\begin{problem}\label{pr:conj-average}
+For a character \(\psi\) of a subgroup \(R \subseteq H\), extended by zero to \(H\), \(\sum_{s \in H}\lvert\psi^\natural(s)\rvert^2 = \#R^2\cdot\dim\End_H(\Ind_R^H\psi)/\#H\).
+\end{problem}
+
+\begin{problem}\label{pr:psi-average}
+Let \(U \subset \GL_2(\F_p)\) be the upper unitriangular group and \(\psi_U(u) := e^{2\pi\mathrm i u_{12}/p}\).  By Problem~\ref{m2-pr:gl2-cells}, \(\sum_s\lvert\psi_U^\natural(s)\rvert^2 = p^2/(p^2-1)\): \(9/8\) for \(p = 3\), \(25/24\) for \(p = 5\).  For the upper unitriangular group of \(\GL_3(\F_2)\) and \(\psi_U(u) = (-1)^{u_{12}+u_{23}}\), Problem~\ref{m2-pr:gl3-cells} gives \(32/21\).
+\end{problem}
+
+\noindent\emph{The conjugacy average of \(\psi_{\Uc}\).}  For an admissible filling with Weil data,
+\[
+ \sum_{s \in \Gb}\lvert\psi_{\Uc}^\natural(s)\rvert^2 \le 2 .
+\]
+\emph{Status}: read from the proof.  There the conjugacy average is written as an integral over the integral points at the chosen places and their conjugates, and bounded by a count of shells; this sheet does not treat it.
+
+\begin{problem}\label{pr:one-prime}
+Let \(g \in \C[\Gb_i]\) be a central idempotent with \(\operatorname{Re} g(1) \le b^{-8}/2\).  Then \(\bigl\lvert\sum_t g(t)\tr\rB(\iota_i(t))\bigr\rvert \le D_X\sqrt{2\operatorname{Re} g(1)} \le b^{-4}D_X\), and \(\lVert\rho(g)\Po\rVert^2 \le 2b^{-4}D_X\).
+\end{problem}
+
+Recall from Chapter~\ref{rl-chap} that \(L\colon\mathcal X\to\mathcal Y\) is a near isometry with error \(\varepsilon\) if \(\dim Z-\varepsilon\dim\mathcal X\le\lVert L\,\pr_Z\rVert^2\) for every subspace \(Z\subset\mathcal X\), where \(\pr_Z\) is the orthogonal projection onto \(Z\), and that by Problem~\ref{rl-pr:near-isom} this holds if \(\varepsilon\ge0\) and \(\lVert L^*L-1\rVert^2\le\varepsilon^2\dim\mathcal X\).
+
+\begin{problem}\label{pr:proj-comp}
+If \(L\) is a near isometry with error \(\varepsilon\), \(p\) is an orthogonal projection and \(\lVert(1-p)L\rVert^2\le\varepsilon'\dim\mathcal X\), then \(pL\) is a near isometry with error \(\varepsilon+\varepsilon'\).
+\end{problem}
+
+For central idempotents \(g_0 \in \C[\Gb_0]\), \(g_1 \in \C[\Gb_1]\), the element \(g_0 \otimes g_1 \in \C[\Gb]\) has coefficient \(g_0(s_0)g_1(s_1)\) at \((s_0, s_1)\), and \(\rho(g_0 \otimes g_1) = \rho(g_0)\rho(g_1)\), a product of two commuting orthogonal projections.  Problems~\ref{pr:central-proj}, \ref{pr:two-proj} and~\ref{pr:one-prime} (with \(g = 1 - g_i\)) prove part~(a) of the following theorem; Problem~\ref{m2-pr:near-one-data}, whose proof (Theorem~\ref{m2-thm:strip} on \(\Rb\) and Problem~\ref{m1-pr:near-one}) holds in the setting of this section, and Problems~\ref{rl-pr:near-isom} and~\ref{pr:proj-comp} then prove part~(b).  Part~(c) follows from (b) and the paragraph on the idempotents of the data.
+
+\begin{theorem}[good forms]\label{thm:good}
+In the setting of this section, let \(g_i \in \C[\Gb_i]\) be central idempotents with \(\operatorname{Re}(1 - g_i)(1) \le b^{-8}/2\) for \(i = 0, 1\), and \(e := \rho(g_0 \otimes g_1)\).  Then
+\begin{enumerate}
+\item[(a)] \(\lVert(1 - e)\Po\rVert^2 \le 4b^{-4}D_X\);
+\item[(b)] \(\lVert e\Po\,\pr_Z\rVert^2 \ge \dim Z - 5b^{-4}D_X\) for every subspace \(Z\) of the coordinate space: \(e\Po\) is a near isometry with error \(5b^{-4}\).
+\end{enumerate}
+(c) For the data, with \(\rho\) the action of \(\Gb\) on \(H(Y_0)\) and \(\Po\) the scaled Poincar\'e map, which satisfy the hypotheses of this section (Chapter~\ref{m1-chap}), the idempotents \(g_0, g_1\) of Section~\ref{sec:shares} satisfy these hypotheses and \(e\) is the action of \(e_0\): \(e_0\Po\) is a near isometry with error \(5b^{-4}\).
+\end{theorem}
+
+\section{The count of the target}\label{sec:count}
+
+On a definite group a form is a vector of the weight at each class, fixed by the stabilizer of the class.  First the smallest case.
+
+\begin{problem}\label{pr:gaussian-classes}
+Let \(E = \Q(\mathrm i)\), and let the unitary group of rank one over \(E\), at the level \(K\) of the lattice \(\Z[\mathrm i]\), have class number one, stabilizer \(\Gamma \cap K = \mu_4\) (\(\Gamma\) the rational points) and mass \(\mathrm{mass}_1 = 1/4\).  At the split prime \(13 = (3+2\mathrm i)(3-2\mathrm i)\) take the place \(w = (3+2\mathrm i)\), where \(\mathrm i \equiv 5\).  Then \(\mu_4\) reduces to \(\{1, 5, 12, 8\} \subset \F_{13}^\times\), no unit other than \(1\) reduces to \(1\), and the level of integral elements reducing to \(1\) at \(w\) has \(12/4 = 3\) classes, which is \(\#\Gb\cdot\mathrm{mass}_1\) for \(\Gb = \F_{13}^\times\).
+\end{problem}
+
+In Problem~\ref{pr:free}, \(n \ge 1\) is a size.
+
+\begin{problem}\label{pr:free}
+Let \(E\) be a CM field, \(\gamma\) a rational unitary matrix of size \(n\) of the standard definite space over \(E\), and \(h\) a finite adelic unitary matrix such that \(h^{-1}\gamma h\) is integral at every finite place and reduces to \(1\) at distinct finite places \(w_1, \dots, w_l\) with \((2n)^{[E:\Q]} < \prod_i \#k_{w_i}\).  Then \(\gamma = 1\).  In particular this holds if \((2n)^2 < p\), \([E:\Q] = 2f\), and \(w_1, \dots, w_f\) have residue fields with \(p\) elements.
+\end{problem}
+
+The proof checks this inequality at the \(f\) chosen places above \(p_0\) for the rank \(r\) of \(W_m\).  So every class of \(W_m\) at the principal level has trivial stabilizer.
+
+\begin{problem}\label{pr:class-count}
+Let \(\Gamma\) be the rational points of the finite adelic unitary group \(G_f\) of a definite space, \(K' \subseteq K\) compact open subgroups of \(G_f\), and \(\Gamma_h(K) := \Gamma \cap hKh^{-1}\).
+(a) \(\sum_{[h] \in \Gamma\backslash G_f/K'} 1/\#\Gamma_h(K') = [K : K']\sum_{[h] \in \Gamma\backslash G_f/K} 1/\#\Gamma_h(K)\).
+(b) If every \(\Gamma_h(K')\) is trivial and \(\pi\) is a representation of \(\Gamma\) on a space \(A\), the functions \(\varphi\colon G_f \to A\) with \(\varphi(\gamma h k) = \pi(\gamma)\varphi(h)\) for \(\gamma \in \Gamma\), \(k \in K'\) form a space of dimension \(\#(\Gamma\backslash G_f/K')\cdot\dim A\).
+(c) For \(W_m\), \(K = K^\circ(W_m)\) and \(K'\) the principal level, \([K : K'] = \#\Gb\), and, since the principal level is free and \(\mass\) is the sum of (a) at the level \(K\), the number of classes at the principal level is \(\#\Gb\cdot\mass\).
+\end{problem}
+
+\noindent\emph{Harish-Chandra's formal degree.}  Let \(\varepsilon\) be signs of rank \(r\) and \(l = (l_1, \dots, l_r)\) distinct integers \(\equiv r - 1 \pmod 2\) with \(\lvert l_i - l_j\rvert \ge 2(500r^3 + 10r^5)\) whenever \(\varepsilon_i \ne \varepsilon_j\).  The formal degree of the discrete series of the unitary group of the signs \(\varepsilon\) with doubled parameter \(l\) is
+\[
+ \prod_{l_i > l_j}\frac{l_i - l_j}{2}\Bigm/\prod_{a=0}^{r-1}a! ,
+\]
+whatever the signs.  \emph{Status}: classical; Harish-Chandra \cite[Thm.~16]{HC}.  For definite signs it is Weyl's formula~\eqref{dt-eq:weyl} with \(z = l/2 + (r-1)/2\).
+
+\begin{problem}\label{pr:weyl-check}
+For the doubled parameter \((6, 2, -2)\) the quotient is \(8\), the dimension of \(\mathbb S_{(2,1,0)}(\C^3)\).
+\end{problem}
+
+In the proof the degree of the Bessel system at each infinite place \(\tau\) is this product for the doubled parameter \(2\varsigma_\tau\), so \(\deg\) is the product over \(\tau\) of the formal degrees; and on the definite space \(W_m\) the principal forms are the functions of Problem~\ref{pr:class-count}(b), at the principal level, with values in a representation of dimension \(\deg\).
+
+\begin{problem}\label{pr:count-toy}
+Hence \(\dim H(W_m) = \#\Gb\cdot\mass\cdot\deg\), and with Corollary~\ref{c2-cor:equal} for \(j = m\), \(d_T \le \#\Gb\cdot\deg\cdot\mass\).  In the toy of Chapter~\ref{m1-chap}, where the \(32\) elements of \(\Gamma_{I_2}\) have distinct reductions modulo \(2 + \mathrm i\) in \(\GL_2(\F_5)\) (order \(480\)), and the weight is \(\C^2\): \(30 = 480\cdot\tfrac1{32}\cdot2\).
+\end{problem}
+
+Problems~\ref{pr:free}, \ref{pr:class-count} and~\ref{pr:count-toy}, with Corollary~\ref{c2-cor:equal}, Harish-Chandra's formal degree and the facts read from the proof stated after Problems~\ref{pr:free} and~\ref{pr:weyl-check}, prove the following.
+
+\begin{theorem}[the count]\label{thm:count}
+For all data, \(d_T \le \#\Gb\cdot\deg\cdot\mass\).
+\end{theorem}
+
+The second moment, Theorem~\ref{bp-thm:moments}, reads, in the notation of this sheet,
+\[
+ \sum_{s \in \Gb}\lVert\Kc_s\rVert^2 \le (1 + 9b^{-4})\,\Dmain ,
+\]
+with \(\Dmain = D_X^2/(\deg\cdot\mass)\).
+
+\begin{problem}\label{pr:spread-hyp}
+Then \(d_T\sum_{s \in \Gb}\lVert\Kc_s\rVert^2 \le \#\Gb\,(1 + 9b^{-4})\,D_X^2\): with Theorem~\ref{thm:good}(c), this is the hypothesis of Theorem~\ref{rl-thm:spread} for \(\Gamma = \Gb\), \(S\) the coordinate space, \(B = \Po\) and \(p\) the action of \(e_0\) on \(H(Y_0)\), whose image \(T_0\) is the target \(T\), and any \(\varepsilon \ge 9b^{-4}\).
+\end{problem}
+
+This sheet has proved Theorem~\ref{thm:good}(a), (b) from Theorem~\ref{m2-thm:strip}, Problem~\ref{m2-pr:near-one-data} and two statements taken as given (the trace of \(\rB\) and the bound for the conjugacy average of \(\psi_{\Uc}\)), and Theorem~\ref{thm:count} from equal multiplicities, freeness and class sums.  Also taken as given: Green's degrees, Harish-Chandra's formal degree, the facts read from the proof after Problems~\ref{pr:free} and~\ref{pr:weyl-check} and in the paragraph on the idempotents of the data.  Chapter~\ref{bp-chap} combines both theorems with the second moment to obtain Theorem~B.
+
+\paragraph{In the Lean formalization.}
+\begin{sloppypar}\raggedright
+In the Lean proof \cite{GL} (\tl{grh/src/}, namespace \tl{New} omitted), Theorem~\ref{thm:good}(a), (b) are \tl{Filling.HasAmplitudeBlocks.hilbertSchmidtNorm\_one\_sub\_piTensorElem\_comp\_sq\_le} and \tl{Filling.HasAmplitudeBlocks.isNearIsometry\_piTensorElem\_comp}; (c) is \tl{Data.bad\_types\_rare} with \tl{Data.isNearIsometry\_e\(_0\)\_comp\_scaledPoincare}.  The facts read from the proof opening Section~\ref{sec:trace} are \tl{Filling.besselTranslate\_eq\_zero}, \tl{Filling.besselTranslate\_one}, \tl{Filling.besselTranslate\_mul}, \tl{Filling.adjoint\_besselTranslate}, \tl{Filling.HasAmplitudeBlocks.adjoint\_comp\_rep\_mul\_right} and \tl{Filling.HasAmplitudeBlocks.adjoint\_comp\_rep\_mul\_left}.  The last bound of Problem~\ref{pr:one-prime} is \tl{Filling.HasAmplitudeBlocks.hilbertSchmidtNorm\_asAlgebraHom\_comp\_sq\_le}; for its first bound \tl{Filling.re\_sum\_coeff\_mul\_trace\_besselTranslate\_le} states the real part, and its proof bounds the absolute value.  The share bounds are \tl{re\_coeff\_one\_sub\_sum\_tupleIdem\_le} and \tl{Data.re\_coeff\_one\_sub\_goodIdempotentAbove\_le}, and the three facts of the paragraph on the idempotents of the data are \tl{prod\_le\_re\_tupleIdem\_coeff\_one}, \tl{one\_sub\_le\_card\_allowed\_mul} and \tl{card\_not\_primitive\_mul\_le}; the trace of \(\rB\) is \tl{Filling.trace\_besselTranslate\_eq\_mul\_reducedChar}; Definition~\ref{def:conj-average} for \(\psi_{\Uc}\) is \tl{Filling.reducedCharMean}, and its bound is \tl{Filling.sum\_norm\_reducedCharMean\_sq\_le}.  Green's degrees are \tl{labelChar\_degree\_bounds}, Harish-Chandra's formal degree the first part of \tl{Orbital.harish\_chandra\_degree\_and\_orbital}.  Theorem~\ref{thm:count} is \tl{Data.targetDim\_le\_card\_mul\_besselDegree\_mul\_mass}; freeness is \tl{Variety.eq\_one\_of\_reduceAt\_eq\_one}, stated there for \(E\) with at least two infinite places, and applied to \(W_m\) through \tl{Variety.classAut\_eq\_bot} in \tl{Data.classAut\_eq\_bot\_of\_le\_levelOf\_chosenPlace}, used by \tl{Data.classAut\_eq\_bot\_of\_le\_chosenLevel}; \(\dim H(W_m)\) is \tl{Data.finrank\_principalForms\_spaceW}, and the degree of the Bessel system is the field \tl{deg\_eq} of \tl{Filling.IsDiscreteSeriesBessel}, at the parameter \(2\varsigma_\tau\) by \tl{Data.isDiscreteSeriesBessel\_filling\_besselSystem}.
+\end{sloppypar}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:shares}}
+\begin{description}
+\item[\ref{pr:labels}] \(\F_9 = \F_3[\mathrm i]\).
+\item[\ref{pr:gl2-shares}] The share of \(e_c\) is \(\Xi_c(1)^2/\#\GL_2(\F_3)\).  Which labels are irreducible?
+\item[\ref{pr:central-proj}] Write \(g\) as a sum of the idempotents \(e_\chi\) of the irreducible characters.  For the last identity compare the coefficients at \(1\) of \(g^2\) and \(g\).
+\item[\ref{pr:bernoulli}] Induction on \(f\).  The good tuples are the tuples of allowed labels minus those with no primitive member.
+\item[\ref{pr:two-proj}] Split \(1 - pq'\) into two orthogonal pieces.
+\end{description}
+
+\subsection*{\S\ref{sec:trace}}
+\begin{description}
+\item[\ref{pr:conv}] (a) \(H'\) acts unitarily on functions on \(H\) by right translation through \(\varphi\).  (b) Apply (a), with \(\varphi = \iota_i\) and the Hilbert--Schmidt inner product, to \(\Kc_s - \rB(s)\) on the set of Theorem~\ref{m2-thm:strip} pinned in \(\Gb_{1-i}\), and \(0\) elsewhere.
+\item[\ref{pr:conj-average}] \(\psi^\natural\) is a multiple of the induced character.
+\item[\ref{pr:psi-average}] By Mackey, \(\dim\End_H(\Ind_U^H\psi_U)\) is the number of double cosets supporting the functions of Problem~\ref{m2-pr:agree}.
+\item[\ref{pr:one-prime}] Since \(g\) is a class function, \(\psi_{\Uc}\) may be replaced by \(\psi_{\Uc}^\natural\).  For the second bound, \(\lVert\rho(g)\Po\rVert^2 = \tr(\mathcal P^{\circ*}\rho(g)\Po)\).
+\end{description}
+
+\subsection*{\S\ref{sec:count}}
+\begin{description}
+\item[\ref{pr:gaussian-classes}] The classes are the orbits of \(\mu_4\) on \(\F_{13}^\times\).
+\item[\ref{pr:free}] Consider the norm from \(E\) to \(\Q\) of \(\tr(\gamma) - n\).
+\item[\ref{pr:class-count}] (a) Each \(K\)-class splits into \(K'\)-classes; count by orbit and stabilizer.  (c) \(W_m\) has identity Gram matrix, so \(\Gamma_h(K^\circ(W_m))\) is the automorphism group of the lattice \(h\) applied to the standard one.  Reduction maps \(K^\circ(W_m)\) onto \(\Gb\): the \(p_i\) split completely and \(\Mcal\) contains no two conjugate places.
+\item[\ref{pr:count-toy}] The principal forms on \(W_m\) contain the good ones.
+\end{description}
+
+{\small
+\begin{thebibliography}{HC}
+\bibitem[FH]{FH} W.~Fulton and J.~Harris, \emph{Representation Theory: A First Course}, Grad.\ Texts in Math.\ 129, Springer, 1991.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[Gr]{Gr} J.~A.~Green, \emph{The characters of the finite general linear groups}, Trans.\ Amer.\ Math.\ Soc.\ \textbf{80} (1955), 402--447.
+\bibitem[HC]{HC} Harish-Chandra, \emph{Discrete series for semisimple Lie groups.~II}, Acta Math.\ \textbf{116} (1966), 1--111.
+\bibitem[Se]{Se} J.-P.~Serre, \emph{Linear Representations of Finite Groups}, Grad.\ Texts in Math.\ 42, Springer, 1977.
+\end{thebibliography}
+}
+
+\end{document}
