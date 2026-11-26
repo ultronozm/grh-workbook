@@ -3,10 +3,8 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{xr-hyper}
 \usepackage[hidelinks]{hyperref}
-\externaldocument[hk-]{20261125T016500--hecke-operators-and-theta-lifts__workbook}
 \externaldocument[tt-]{20261125T004100--tate-twists-and-sha__workbook}
 \externaldocument[gs-]{20261126T020430--the-minus-part-by-gauss-sums__workbook}
-\externaldocument[cg-]{20261125T014100--congruence-modules__workbook}
 \externaldocument[ec-]{20261125T014500--eisenstein-congruences-and-selmer-classes__workbook}
 \externaldocument[pc-]{20261125T014700--pseudocharacters-and-the-length-bound__workbook}
 \externaldocument[gr-]{20261125T011000--galois-representations-black-box__workbook}
@@ -15,6 +13,7 @@
 \externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
 \externaldocument[l1-]{20261126T050800--compressions-and-false-lifts__workbook}
 \externaldocument[n3-]{20261126T051800--the-local-loss-and-the-sparse-places__workbook}
+\externaldocument[dl-]{20261126T030500--divisibility-of-the-composite-lift__workbook}
 
 % Chapter number; \ref{chap} gives it.
 \newcounter{chap}
@@ -36,7 +35,7 @@
 \newcommand{\pr}{\mathrm{pr}}
 \newcommand{\len}{\operatorname{len}}
 \newcommand{\GL}{\mathrm{GL}}
-\newcommand{\Frob}{\mathrm{Frob}}
+\newcommand{\Frob}{\mathrm{Fr}}
 \newcommand{\cyc}{\chi_{\mathrm{cyc}}}
 \newcommand{\DP}{\mathfrak{O}}
 \newcommand{\val}{\operatorname{val}}
@@ -55,132 +54,37 @@
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-Discrete valuation rings and lengths of modules; the elementary divisor theorem.  The Chebotarev density theorem and the Brauer--Nesbitt theorem \cite[(30.16)]{CR}.  From Chapter~\ref{cg-chap}, \emph{Congruence modules}: the congruence module \(\Cg(\,\cdot\,;\,\cdot\,)\) and Problems~\ref{cg-pr:symmetry} and~\ref{cg-pr:denominator}.  From Chapter~\ref{ec-chap}, \emph{Eisenstein congruences and Selmer classes}: Problem~\ref{ec-pr:diag} and Ribet's lemma, Theorem~\ref{ec-thm:ribet-lemma}.  From Chapter~\ref{hk-chap}, \emph{Hecke operators and theta lifts}: Section~\ref{hk-sec:brandt}, with Problems~\ref{hk-pr:brandt} and~\ref{hk-pr:basis}.  From Chapter~\ref{gr-chap}: Section~\ref{gr-sec:es} on \(X_0(11)\) and, for Section~\ref{sec:statement}, the Weil data, the eigenforms and the attached representations of Section~\ref{gr-sec:spherical}.  For Section~\ref{sec:classes}, Chapters~\ref{tt-chap} and~\ref{gs-chap} on Tate twists and odd classes; Chapter~\ref{pc-chap} is background.  For Section~\ref{sec:statement}, the data of Chapter~\ref{da-chap}; the single lifts \(u_{\vartheta,j}\), the good forms and the twists of Chapter~\ref{ob-chap}, whose notation we use; Definitions~\ref{l1-def:false} and~\ref{l1-def:clears}; \(\ell\)-adic representations of Galois groups, crystalline representations and their Hodge--Tate weights, at the level of definitions.
+The data of Chapter~\ref{da-chap}; the chosen places, labels, weights, twists and single lifts of Chapter~\ref{ob-chap}; Definitions~\ref{l1-def:false} and~\ref{l1-def:clears} and Theorem~\ref{l1-thm:compression}; the gauge of Definition~\ref{dl-def:gauge}; the Hecke operators \(T_{w,i}\), the eigenforms and the attached representations of Section~\ref{gr-sec:spherical}; Theorem~\ref{tt-thm:oddsha}.  \(\ell\)-adic representations of Galois groups, crystalline representations and their Hodge--Tate weights, at the level of definitions.  The companion sheet \emph{Clearing a projection: two classes} computes a clearing operator on a class set with two elements.  Its preceding two-dimensional example shows why the orthogonality condition on test forms is needed.  Chapter~\ref{n3-chap} bounds the sum of the local losses over the primes.
 
-To compare lifts at the trivial twist with lifts at a twist chosen for each \(\iota \mid \ell\), one needs to control the denominators of the orthogonal projections of integral test forms onto spaces of lifts.  How large can they be?  In Chapter~\ref{cg-chap} the exponent of a congruence module gave the scalar denominator of a projection onto an eigenspace, and in Chapter~\ref{ec-chap} a congruence produced a Galois cohomology class.  Here we measure a denominator by the determinant of an operator that clears it.  Sections~\ref{sec:clearing} and~\ref{sec:eleven} are models, the second the smallest example, a class set with two elements; Section~\ref{sec:classes} describes the Galois side; Section~\ref{sec:statement} gives the definitions and the statement.  Theorem~\ref{thm:denominators} is read from the proof \cite{GL}; of its bound, the local loss is developed in Chapter~\ref{n3-chap}.
-
-\section{Clearing a projection}\label{sec:clearing}
-
-Let \(\Oc\) be a discrete valuation ring with fraction field \(K\) and valuation \(\ord\), normalized by \(\ord(\varpi) = 1\) for a uniformizer \(\varpi\); we use \(\ord(0) = +\infty\).  Let \(V\) be a finite-dimensional \(K\)-vector space with a lattice \(L\), and let \(V = \mathcal F \oplus \mathcal F'\) with projection \(\pr \colon V \to \mathcal F\) along \(\mathcal F'\).  Write \(\Cg(L; \mathcal F) := \pr(L)/(L \cap \mathcal F)\), as in Chapter~\ref{cg-chap}.  An operator \(C_\ell \in \mathrm{End}_K(\mathcal F)\) (the subscript recalls the prime \(\ell\) of the later sections) \emph{clears} \(\pr\) on a subset \(Y \subseteq L\) if \(C_\ell(\pr(y)) \in L\) for every \(y \in Y\).  A scalar \(c\) clears \(\pr\) on \(L\) when \(c\,\pr(L) \subseteq L\); an operator may clear different directions of \(\mathcal F\) by different amounts, and we measure it by \(\ord(\det C_\ell)\).
-
-\begin{problem}\label{pr:clear-det}
-\(C_\ell\) clears \(\pr\) on \(L\) if and only if \(C_\ell(\pr(L)) \subseteq L \cap \mathcal F\).  The least value of \(\ord(\det C_\ell)\) over such \(C_\ell\) is \(\len_{\Oc} \Cg(L; \mathcal F)\).
-\end{problem}
-
-The operators that clear \(\pr\) on a given \(Y\) form an \(\Oc\)-module; the definitions make sense for any valuation ring \(\Oc\) and any \(\Oc\)-submodule \(L\) of \(V\).  The next problem combines clearing operators that are diagonal in one basis.
-
-\begin{problem}\label{pr:diagonal}
-Let \(\Oc\) be a valuation ring with infinite residue field and valuation \(\ord\), such as the ring of integers of \(\bar{\Q}_\ell\) with \(\ord(\ell) = 1\), and let \(b_1, \dots, b_n\) be a basis of \(\mathcal F\).  Let \(C_\ell^{(1)}, \dots, C_\ell^{(n)}\) clear \(\pr\) on \(Y\), with \(C_\ell^{(j)} b_i = \lambda_{ji} b_i\).  Then some \(C_\ell = \sum_j u_j C_\ell^{(j)}\) with \(u_j \in \Oc\) has \(C_\ell b_i = \mu_i b_i\) with \(\ord(\mu_i) \le \ord(\lambda_{ii})\) for every \(i\); it clears \(\pr\) on \(Y\).
-\end{problem}
-
-Now let \(K\) be a subfield of \(\C\) stable under complex conjugation, and \(\Oc\) a discrete valuation ring with fraction field \(K\).  Let \(V\) carry a positive definite hermitian form \(\langle\,,\rangle\), linear in the first variable, let \(\mathcal F' = \mathcal F^\perp\), and let \(T\) be a self-adjoint operator on \(V\) with \(T(L) \subseteq L\), diagonalizable with eigenvalues in \(\Oc\), such that \(\mathcal F \subseteq \ker(T - \lambda)\).  The vectors of \(\mathcal F^\perp\) with the eigenvalue of \(\mathcal F\),
-\[
-  F_T := \mathcal F^\perp \cap \ker(T - \lambda) ,
-\]
-are the \emph{false lifts} for \(T\).  Let \(\Pi(X) := \prod_\mu (X - \mu)\), the product over the eigenvalues \(\mu \ne \lambda\) of \(T\), each taken once.
-
-\begin{problem}\label{pr:hecke-clear}
-For \(y \in L\) orthogonal to \(F_T\), \(\Pi(T)\,y = \Pi(\lambda)\,\pr(y)\).  Hence the scalar \(\Pi(\lambda)\) clears \(\pr\) on the \(y \in L\) orthogonal to \(F_T\), and the determinant of the scalar \(\Pi(\lambda)\) acting on \(\mathcal F\) has valuation \(\dim \mathcal F \cdot \ord(\Pi(\lambda))\).
-\end{problem}
-
-The cost \(\ord(\Pi(\lambda)) = \sum_\mu \ord(\lambda - \mu)\) counts congruences between the eigenvalue of \(\mathcal F\) and the other eigenvalues.  The restriction to vectors orthogonal to the false lifts cannot be dropped.
-
-\begin{problem}\label{pr:false-needed}
-Let \(V = K^2\) with \(\langle x, y \rangle = x_1\bar y_1 + x_2\bar y_2\), \(L = \Oc^2\), \(T = \lambda\cdot 1\), \(\mathcal F = K(1,1)\), and suppose \(\ord(2) > 0\).  Then \(F_T = K(1,-1)\), no unit \(c \in \Oc^\times\) clears \(\pr\) on \(L\), and \(c = 1\) clears it on the \(y \in L\) orthogonal to \(F_T\).
-\end{problem}
-
-\section{Two classes}\label{sec:eleven}
-
-We take the class set of Section~\ref{hk-sec:brandt} of Chapter~\ref{hk-chap}: the two left ideal classes of a maximal order in the quaternion algebra over \(\Q\) ramified at \(11\) and \(\infty\), indexed by their right orders, with \(w_1 = 2\) and \(w_2 = 3\).  Functions on the two classes are vectors \(\varphi = (\varphi(1), \varphi(2))\), with
-\[
-  \langle \varphi, \varphi' \rangle := \frac{\varphi(1)\overline{\varphi'(1)}}{w_1} + \frac{\varphi(2)\overline{\varphi'(2)}}{w_2} ,
-\]
-and the Brandt matrix \(B(\ell)\), for a prime \(\ell \ne 11\), acts by \((B(\ell)\varphi)(i) = \sum_j B_{ij}(\ell)\varphi(j)\).  Recall from that section that \(B(\ell)\) has integer entries, that \(w_jB_{ij}(\ell) = w_iB_{ji}(\ell)\) and \(\sum_j B_{ij}(\ell) = \ell + 1\), and that \(B(\ell)\) is the action of \(T_\ell\) on \(M_2(\Gamma_0(11))\), which is spanned by an Eisenstein series of \(T_\ell\)-eigenvalue \(\ell + 1\) and by the form called \(f\) there; we write
-\[
-  f_{11} := q\prod_{n \ge 1}(1-q^n)^2(1-q^{11n})^2 = \sum_{n \ge 1} a_n q^n .
-\]
-By Problem~\ref{hk-pr:brandt}, \(B(2) = \begin{pmatrix} 1 & 2 \\ 3 & 0 \end{pmatrix}\) and \(B(3) = \begin{pmatrix} 2 & 2 \\ 3 & 1 \end{pmatrix}\).  The constant function \(1\) plays the role of the lifts: \(\mathcal F\) is the line of constant functions, and \(\pr\) is the orthogonal projection onto \(\mathcal F\).  The integral functions are \(L := \Z^2\).  To apply Section~\ref{sec:clearing} over \(\Z_{(\ell)}\), use the lattice \(\Z_{(\ell)}^2\) in \(\Q^2\).  Over \(\Q_\ell\) use the lattice \(\Z_\ell^2\) and the same bilinear formula without the bar.
-
-\begin{problem}\label{pr:eleven-adjoint}
-\(B(\ell)\) is self-adjoint for \(\langle\,,\rangle\), \(B(\ell)1 = (\ell + 1)1\), and \(\varphi_{11} := (2, -3)\) spans \(\mathcal F^\perp\) and satisfies \(B(\ell)\varphi_{11} = a_\ell\varphi_{11}\).
-\end{problem}
-
-\begin{problem}\label{pr:eleven-pr}
-\(\pr(\varphi) = \frac15\bigl(3\varphi(1) + 2\varphi(2)\bigr)\cdot 1\), and \(5\,\pr = B(2) + 2 = B(3) + 1\).  Hence \(\pr(L) = \frac15\Z\cdot 1\) and \(\Cg(L; \mathcal F) \cong \Z/5\Z\).  The least value of \(\val_5(\det C_\ell)\) for \(C_\ell\) clearing \(\pr\) on \(\Z_5^2\) is \(1\); for \(\ell \ne 5\) the identity clears \(\pr\) on \(\Z_\ell^2\).  The scalar \(\Pi(\lambda)\) of Problem~\ref{pr:hecke-clear} is \(5\) both for \(T = B(2)\) and for \(T = B(3)\).
-\end{problem}
-
-What congruence do the Brandt eigenvalues satisfy?
-
-\begin{problem}\label{pr:eleven-cong}
-\(B(\ell) - a_\ell = (\ell + 1 - a_\ell)\pr\).  Hence \(a_\ell \equiv 1 + \ell \pmod 5\) for every prime \(\ell \ne 11\); for example \(a_{13} = 4\) (Problem~\ref{gr-pr:coeffs}).
-\end{problem}
-
-The denominator \(5\) is the numerator of the mass \(1/w_1 + 1/w_2 = (11 - 1)/12 = 5/6\).  The next problem gives the denominator at primes dividing none of the weights.
-
-\begin{problem}\label{pr:mass}
-Let \(I\) be a nonempty finite set with positive integers \(w_i\), let \(\langle \varphi, \varphi' \rangle := \sum_i \varphi(i)\varphi'(i)/w_i\) on \(\Q_\ell^I\), let \(\mathcal F\) be the line of constant functions, and let \(\ell\) be a prime dividing no \(w_i\).  Then \(\mathfrak m := \sum_i 1/w_i\) has \(\val_\ell(\mathfrak m) \ge 0\), and \(\Cg(\Z_\ell^I; \mathcal F) \cong \Z/\ell^{\val_\ell(\mathfrak m)}\Z\).
-\end{problem}
-
-For the quaternion algebra ramified at a prime \(p\) and \(\infty\) the mass is \((p-1)/12\), and Mazur showed that the index of his Eisenstein ideal is the numerator of \((p-1)/12\) \cite{Ma}.  There is also an integrality question for the pairing of a cleared form with an integral form.
-
-\begin{problem}\label{pr:pairing}
-In the setting of Problem~\ref{pr:mass}, drop the condition on \(\ell\), and let \(n_0\) be a common multiple of the \(w_i\).  If \(C_\ell\) clears \(\pr\) on \(Y \subseteq \Z_\ell^I\), then so does \(n_0C_\ell\), and \(\langle n_0C_\ell\pr(y), \varphi' \rangle \in \Z_\ell\) for \(y \in Y\) and \(\varphi' \in \Z_\ell^I\).  In the class set with two elements, \(6\langle \varphi, \varphi' \rangle \in \Z\) for \(\varphi, \varphi' \in \Z^2\).
-\end{problem}
-
-\section{Lifts and the classes they produce}\label{sec:classes}
-
-Where does the congruence of Problem~\ref{pr:eleven-cong} come from?  The constant function carries the Galois representation \(1 \oplus \cyc\), where \(\cyc\) is the \(5\)-adic cyclotomic character; its trace at an arithmetic Frobenius \(\Frob_\ell\) is \(1 + \ell\) for \(\ell \ne 5\).  The form \(f_{11}\) carries the representation \(\rho_{11}\) of \(\mathrm{Gal}(\bar{\Q}/\Q)\) on the rational \(5\)-adic Tate module \(T_5(X_0(11)) \otimes \Q_5\), whose trace at \(\Frob_\ell\) is \(a_\ell\) for \(\ell \nmid 55\) (Section~\ref{gr-sec:es} of Chapter~\ref{gr-chap}).  Let \(\omega\) be the reduction of \(\cyc\) modulo \(5\).
-
-\begin{problem}\label{pr:residual}
-The semisimplification of the reduction of \(\rho_{11}\) modulo \(5\) is \(1 \oplus \omega\), and \(\omega(c) = -1\) for every complex conjugation \(c\).
-\end{problem}
-
-The representation \(\rho_{11}\) is irreducible: it is semisimple and its commutant is \(\Q_5\), by Faltings' theorem \cite{Fa}, since \(X_0(11)\) has no complex multiplication (its \(j\)-invariant \(-122023936/161051\) is not an integer).  Ribet's lemma, Theorem~\ref{ec-thm:ribet-lemma}, then gives a nonzero class with values in \(\F_5(\omega)\) or \(\F_5(\omega^{-1})\), an odd character.
-
-In the general setting a single theta lift takes values in forms on a standard definite unitary space for the CM extension \(E/E^+\).  For a main summand \(R\) for a pair \(\DP_0\) and a family \(\mathfrak s\), take a pair \(\DP\) with the same basis index sets for its two spaces and with character that of \(\DP_0\) times a tame character \(\xi\).  The normalization \(S\) of any representation attached to a lift eigenform for \(\mathfrak s\) on \(\DP\) satisfies \(\mathrm{tr}\,S(g)=\hat\xi(g)\,\mathrm{tr}\,R(g)+\sum_{0\le e<t'}\cyc(g)^{-e}\) for every \(g\in\mathrm{Gal}(\bar{\Q}/E)\).  Here \(t'\) is the rank difference, \(\cyc\) is the \(\ell\)-adic cyclotomic character, and \(\hat\xi\) is the inverse avatar of \(\xi\) (Definitions~\ref{def:aux-twist} and~\ref{def:main-summand}).  The constant function above has this shape, with no \(R\) and two characters, after a twist by the inverse \(5\)-adic cyclotomic character.  For an extension of \(\cyc^{-e'}\) by \(\cyc^{-e}\) modulo \(\ell^\nu\), the extension cocycle takes values in \((\Oc/\ell^\nu)(-a)\), where \(a = e - e'\).  On cocycles \(z\) of \(\mathrm{Gal}(\bar{\Q}/E)\) a complex conjugation \(c\) acts by \(z^c(g) := z(cgc)\); call \(z\) \emph{odd} if \(z^c = -z\) and \emph{even} if \(z^c = z\).
-
-\begin{problem}\label{pr:parity}
-Let \(\ell\) be odd and \(\Oc\) the ring of integers of a finite extension of \(\Q_\ell\).  Every cocycle of \(\mathrm{Gal}(\bar{\Q}/E^+)\) with values in \((\Oc/\ell^\nu)(-a)\) differs by a coboundary from one with \(z(c) = 0\).  For such \(z\), the restriction to \(\mathrm{Gal}(\bar{\Q}/E)\) satisfies \(z^c = (-1)^a z\).
-\end{problem}
-
-For odd \(\ell\) and odd \(a\), restriction from \(\mathrm{Gal}(\bar{\Q}/E^+)\) to \(\mathrm{Gal}(\bar{\Q}/E)\) therefore gives classes with odd representatives.  For the CM field \(E\subseteq\Q(\mu_{q_1d})\) of Chapter~\ref{da-chap}, let \(d_{q_1d}\) be the exponent of \((\Z/(q_1d)\Z)^\times\).  Theorem~\ref{tt-thm:oddsha}, proved using Gauss sums as in Chapter~\ref{gs-chap}, gives one positive integer \(X_{\mathrm{odd}}\) that works simultaneously for every prime \(\ell\), every ring of integers \(\Oc\) of a finite extension of \(\Q_\ell\) containing a primitive \(d_{q_1d}\)-th root of unity, every integer \(0\le a<t\) and every integer \(\nu\ge0\).  For \(a>0\) the \(\Oc\)-length of the module of continuous odd cocycles of \(\mathrm{Gal}(\bar{\Q}/E)\) with values in \((\Oc/\ell^\nu)(-a)\), unramified off \(\ell\) and zero on the kernel of \(\cyc\) in every decomposition group above \(\ell\), is at most \(\operatorname{ord}_{\Oc}(X_{\mathrm{odd}})\), with a uniformizer of order \(1\).  For \(a=0\) the same bound holds for the everywhere unramified continuous homomorphisms with values in \(\Oc/\ell^\nu\).  Definition~\ref{def:clearing-bound} contains no order of a group of even classes.  A class can be tested by its values at Frobenius elements; here is an example, for a Kummer class.
-
-\begin{problem}\label{pr:kummer}
-Let \(\ell\) be an odd prime, \(u \in \Q^\times\) not an \(\ell\)-th power, and \(\mathrm{kum}_u\) the Kummer class of \(u\) in \(H^1(\mathrm{Gal}(\bar{\Q}/\Q), \mu_\ell)\).  For a prime \(q \equiv 1 \pmod \ell\) with \(\val_q(u) = 0\), \(\mathrm{kum}_u\) is unramified at \(q\), and \(\mathrm{kum}_u(\Frob_q) = 0\), a condition independent of the choice of \(\Frob_q\), if and only if \(u^{(q-1)/\ell} \equiv 1 \pmod q\).  There are infinitely many such \(q\) with \(\mathrm{kum}_u(\Frob_q) \ne 0\).  For \(\ell = 3\) and \(u = 2\), \(q = 7\) detects \(\mathrm{kum}_2\) and \(q = 31\) does not.
-\end{problem}
-
-Ribet's lemma needs an element on which the two characters differ (Problem~\ref{ec-pr:diag}).  For the characters \(\cyc^{-e}\), \(0 \le e < t\), with \(\cyc\) the \(\ell\)-adic cyclotomic character, the cost of an element \(g\) is the valuations of the differences \(\cyc(g)^{a} - 1\), \(0 < a < t\).  If \(\cyc(g)\) reduces to a generator of \(\F_\ell^\times\) and \(t \le \ell - 1\), these valuations are \(0\), by Problem~\ref{pr:generator}.  If \(g\) is an arithmetic Frobenius element at a chosen place \(w\) not dividing \(\ell\) (Section~\ref{ob-sec:chosen}), then \(\cyc(g) = \#k_w\) and these valuations are at most \(\val_\ell(\mathcal N)\), by Problem~\ref{pr:gl-order} with \(n = rt\): the integer \(\mathcal N\) of that section is a multiple of \(\#\GL_{rt}(k_w)\).
-
-\begin{problem}\label{pr:generator}
-Let \(g \in \Z_\ell^\times\) reduce to a generator of \(\F_\ell^\times\).  Then \(g^a - 1 \in \Z_\ell^\times\) for \(0 < a < \ell - 1\).
-\end{problem}
-
-\begin{problem}\label{pr:gl-order}
-Let \(q\) be a prime power and \(1 \le a \le n\).  Then \(q^a - 1\) divides \(\#\GL_n(\F_q) = q^{n(n-1)/2}\prod_{i=1}^n (q^i - 1)\).
-\end{problem}
+To compare lifts at the trivial twist with lifts at a twist chosen for each \(\iota \mid \ell\), one needs to control the denominators of the orthogonal projections of integral test forms onto spaces of lifts.  We measure a denominator by the determinant of an operator that clears it, as in \emph{Clearing a projection: two classes}.  This chapter gives the definitions, a running instance of rank one, the statement, and the arithmetic of its bound.  Theorem~\ref{thm:denominators} is read from the proof \cite{GL} and not proved here; of its bound, the sum of the local losses over the primes is bounded in Chapter~\ref{n3-chap}.
 
 \section{The statement}\label{sec:statement}
 
 We use the data of Chapter~\ref{da-chap}: the CM field \(E\) with \(f\) infinite places, the rank \(r\), \(t = 5r\), the numbers \(m\) and \(k\), the level primes \(p_0, p_1\) with \(M = p_0p_1\), the level \(N\), the moduli \(q_1\) and \(d\), and the budget \(B\) of Definition~\ref{da-def:budget}.  From Chapter~\ref{ob-chap} we use the chosen places \(\mathcal M\), labels, the good idempotent \(e_0\) and the integer \(\mathcal N\) (Section~\ref{ob-sec:chosen}), the gap \(\Delta = 2r^8\) and the weights \(\kappa_j\) of the lifts (Section~\ref{ob-sec:weights}), tame characters \(\xi\) and twists \(\vartheta\) with their sets \(Q_\xi\), \(Q_\vartheta\) (Section~\ref{ob-sec:twists}), and the single lifts \(u_{\vartheta,j}\) on good forms (Section~\ref{ob-sec:chain}).
 
-Fix a prime \(\ell\) and a ring isomorphism \(\iota \colon \C \simeq \bar{\Q}_\ell\).  As in Chapter~\ref{ob-chap}, \(\val\) is the valuation of \(\bar{\Q}_\ell\) with \(\val(\ell) = 1\) and \(\val(0) = \infty\), read through \(\iota\) on complex numbers, and \(\val_+ := \max(\val, 0)\).  A form \(y\) is \emph{integral at \(\iota\)} if for every finite adelic point \(g\) the gauge of \(y(g)\) at \(g\) is at most \(1\).  To compute this gauge, use \(\iota\) followed by \(\bar{\Q}_\ell\subset\C_\ell\) on the weight coordinates, apply \(g^{-1}\) in the representation of that weight, and take the largest \(\ell\)-adic absolute value of a resulting coordinate.  At an infinite place \(\tau\) with chosen CM-type embedding \(\Phi_\tau\), the adelic action is read through \(x\mapsto\iota(\Phi_\tau(\bar x))\) at the induced \(\ell\)-adic place.  The field \(E\) is embedded in \(\bar{\Q}\), and \(G_E := \mathrm{Gal}(\bar{\Q}/E)\); with \(c\) the complex conjugation of \(\bar{\Q}\) fixed in the proof, \(g^c := cgc\) for \(g \in G_E\); and \(\cyc\) is the \(\ell\)-adic cyclotomic character.  For a place of \(\bar{\Q}\) above a finite place \(w\) of \(E\) not dividing \(\ell\), \(s_w\) denotes its distinguished generator of tame inertia; it depends on the place of \(\bar{\Q}\).
+Fix a prime \(\ell\) and a ring isomorphism \(\iota \colon \C \simeq \bar{\Q}_\ell\).  As in Chapter~\ref{ob-chap}, \(\val\) is the valuation of \(\bar{\Q}_\ell\) with \(\val(\ell) = 1\) and \(\val(0) = \infty\), read through \(\iota\) on complex numbers, and \(\val_+ := \max(\val, 0)\).  A form on a definite space is \emph{integral at \(\iota\)} if its gauge (Definition~\ref{dl-def:gauge}), for \(\iota\) followed by \(\bar{\Q}_\ell \subset \C_\ell\), is at most \(1\) at every finite adelic point.  We use the choices of complex conjugation, tame generators and local embeddings fixed in the proof; they are called \emph{of the proof} below.  The field \(E\) is embedded in \(\bar{\Q}\), and \(G_E := \mathrm{Gal}(\bar{\Q}/E)\); with \(c\) the complex conjugation of \(\bar{\Q}\) fixed in the proof, \(g^c := cgc\) for \(g \in G_E\); and \(\cyc\) is the \(\ell\)-adic cyclotomic character.  For a place of \(\bar{\Q}\) above a finite place \(w\) of \(E\) not dividing \(\ell\), \(s_w\) denotes its distinguished generator of tame inertia; it depends on the place of \(\bar{\Q}\).
 
 A \emph{coefficient ring} \(\Oc\) is the ring of integers of a finite Galois extension of \(\Q_\ell\) in \(\bar{\Q}_\ell\), and a statement holds \emph{for all large \(\Oc\)} if it holds for all coefficient rings containing a fixed one.  The \emph{normalized length} of an \(\Oc\)-module of finite length is its length divided by the ramification index \(e_{\Oc}\) of \(\Oc\) over \(\Z_\ell\); so \(\Oc/\ell\) has normalized length \(1\), and the normalized length does not change when \(\Oc\) is enlarged and the module extended.  An \(\Oc\)-module of infinite length has normalized length \(+\infty\).
 
 \begin{definition}\label{def:clearing-bound}
-Let \(n_\ell := \val_\ell(\mathcal N)\) and \(o_\ell := \val_\ell(X_{\mathrm{odd}})\), where \(X_{\mathrm{odd}}\) is the integer that the proof fixes for the length bound of Section~\ref{sec:classes}, with \(0 < X_{\mathrm{odd}} \le 2^{4(q_1d + t + 3)^{27}} h_E\) and \(h_E\) the class number of \(E\).  Let \(\loc_\ell = 4f\,\mathrm{defect}_\ell\) be the local loss of Definition~\ref{n3-def:loss}, and put
+Let \(X_{\mathrm{odd}}\) be the positive integer of Theorem~\ref{tt-thm:oddsha} for \(N = q_1d\), with \(X_{\mathrm{odd}} \le 2^{4(q_1d + t + 3)^{27}} h_E\) and \(h_E\) the class number of \(E\), and put \(n_\ell := \val_\ell(\mathcal N)\).  Let \(\mathrm{Int}_b\) be the product of the integers \(i\) with \(\max(0, b - 30(\Delta/2)^3) < i \le b + 30(\Delta/2)^3\), for the weight scale \(b\), and put
 \[
-  \mathrm{tw}_\ell := (4f + 3)\,r\,n_\ell + 2^{-\ell}, \qquad \varepsilon_\ell := t\,o_\ell + 8ft\,n_\ell + 2n_\ell + \bigl((4t + 1)(\Delta/2)^{22} + \Delta/2\bigr)n_\ell .
+  \mathrm{crys}_\ell := \val_\ell\bigl((2b)!\,\mathrm{Int}_b^{(\Delta/2)^3}\bigr), \qquad \mathrm{defect}_\ell := 10^6\,\frac mk\,\bigl(b\,\val_\ell(M) + \mathrm{crys}_\ell\bigr), \qquad \loc_\ell := 4f\,\mathrm{defect}_\ell ,
+\]
+\[
+  \mathrm{tw}_\ell := (4f + 3)\,r\,n_\ell + 2^{-\ell}, \qquad \varepsilon_\ell := t\,\val_\ell(X_{\mathrm{odd}}) + 8ft\,n_\ell + 2n_\ell + \bigl((4t + 1)(\Delta/2)^{22} + \Delta/2\bigr)n_\ell .
 \]
 The \emph{clearing bound} is \(\cl_\ell := \loc_\ell + (1 + 2t)\,\mathrm{tw}_\ell + \varepsilon_\ell + n_\ell\).
 \end{definition}
 
+The terms of \(\cl_\ell\) pay for the following.  \(\loc_\ell\): the crystalline condition above \(\ell\) (Chapter~\ref{n3-chap}).  \(\mathrm{tw}_\ell\): the Selmer length of the twisted main summand and, with the factor \(2t\), the ramification of the twist (Problem~\ref{pr:budget}).  The four terms of \(\varepsilon_\ell\), in order: the odd classes and the class group (the section on lifts and the classes they produce in \emph{Clearing a projection: two classes}); the places above \(M\); the idempotent and the stabilizers; and the congruences between the characters \(\cyc^{-e}\), \(0 \le e < t\) (the exercises on generators and general linear group orders in \emph{Clearing a projection: two classes}).  The last \(n_\ell\) is the cost of multiplying the clearing operator by \(\mathcal N\) to make its pairings integral.
+
 \begin{definition}\label{def:descent-pair}
-A \emph{descent pair} \(\DP\) has two finitely indexed families of finite places of \(E\), chosen places and twist places; all their entries are distinct, and none is the conjugate of any entry.  It has a hermitian space \(W\) of rank \(r'\) with signs on its basis indices and a specified adelic frame in which its Gram matrix is the diagonal matrix of the signs at every infinite place and the identity at every finite place, a natural number assigned to each index, an injection of those indices into the basis indices of the standard definite space \(V = I_{n'}\) with \(r' < n'\) (its image is the set of \emph{selected} indices), column multiplicities \(k^\pm(\tau,i)\) at each infinite place \(\tau\) and height \(i \ge 0\), and a continuous unitary character \(\mu\) of \(U(1)(\mathbb A)\), trivial on rational points, with specified integral weight at each infinite place and specified tame part, a character \(\psi_w\) of \(k_w^\times\) at each finite place \(w\), trivial off the two families.  Write \(K_0\) for the stabilizer of the standard integral lattice of \(V\) in the finite adelic group.  The \emph{level} of \(\DP\) consists of the elements of \(K_0\) whose reductions fix the selected basis vectors at the chosen places and preserve the span of the other basis vectors at the twist places.  Its \emph{level character} is the product over the twist places \(w\) of \(\psi_w^{-1}\) applied to the determinant of the block on the selected indices.  Its forms \(\mathcal A(\DP)\) are the algebraic forms on \(V\) on which the level acts through the level character, of the weight with column multiplicities \(k^+(\tau,i)+k^-(\tau,n'-i)\) at \(\tau\) and each height \(0\le i<n'\), and with determinant exponent \(-\sum_{1\le i<n'} k^-(\tau,i)\) at \(\tau\).  We write \(t' := n' - r'\) for its rank difference.
+A \emph{descent pair} \(\DP\) has two finitely indexed families of finite places of \(E\), chosen places and twist places; all their entries are distinct, and none is the conjugate of any entry.  It has a hermitian space \(W\) of rank \(r'\) with signs on its basis indices and a specified adelic frame in which its Gram matrix is the diagonal matrix of the signs at every infinite place and the identity at every finite place, a function from the basis indices of \(W\) to the natural numbers, an injection of those indices into the basis indices of the standard definite space \(V = I_{n'}\) with \(r' < n'\) (its image is the set of \emph{selected} indices), column multiplicities \(\beta^\pm(\tau,i)\) at each infinite place \(\tau\) and height \(i \ge 0\) (the diagrams of the weight, as in Definition~\ref{ob-def:diagram}), and a continuous unitary character \(\mu\) of \(U(1)(\mathbb A)\), trivial on rational points, with specified integral weight at each infinite place and specified tame part, a character \(\psi_w\) of \(k_w^\times\) at each finite place \(w\), trivial off the two families.  Write \(K_0\) for the stabilizer of the standard integral lattice of \(V\) in the finite adelic group.  The \emph{level} of \(\DP\) consists of the elements of \(K_0\) whose reductions fix the selected basis vectors at the chosen places and preserve the span of the other basis vectors at the twist places.  Its \emph{level character} is the product over the twist places \(w\) of \(\psi_w^{-1}\) applied to the determinant of the block on the selected indices.  Its forms \(\mathcal A(\DP)\) are the algebraic forms on \(V\) on which the level acts through the level character, of the weight with column multiplicities \(\beta^+(\tau,i)+\beta^-(\tau,n'-i)\) at \(\tau\) and each height \(0\le i<n'\), and with determinant exponent \(-\sum_{1\le i<n'} \beta^-(\tau,i)\) at \(\tau\).  We write \(t' := n' - r'\) for its rank difference.
 \end{definition}
 
 \begin{definition}\label{def:false-lift}
-Let \(e_1\) be an element of the complex group algebra of \(\prod_w \GL_{r'}(k_w)\) over the chosen places of \(\DP\), and \(A \subseteq \mathcal A(\DP)\) a subspace.  A tuple \(g = (g_w)_w\) of this group acts on \(\mathcal A(\DP)\) by right translation by an element of \(K_0\) that reduces to \(g_w\) on the selected block and to the identity on the other block at each chosen place \(w\), and to the identity at the twist places, multiplied by \(\prod_w \psi_w(\det g_w)\); write \(\mathrm{im}(e_1)\) for the image of the operator by which \(e_1\) then acts.  In this sheet \(\upsilon_E\) is the splitting character of the Weil data on the ideles of \(E\) (Section~\ref{gr-sec:spherical}), and \(\upsilon\) is its restriction to the norm-one ideles, as in Section~\ref{ob-sec:characters}.  For a character \(a\) of the norm-one ideles and a natural number \(N_0\ge 0\), the \emph{Frobenius value} of \(a\) in rank \(N_0\) at a finite place \(w\) is \(q_w^{N_0/2}\) times the value, at the finite idele with the chosen uniformizer at \(w\) and \(1\) elsewhere, of the Hecke character \(x \mapsto a(x/\bar x)\,\upsilon_E(x)^{-N_0}\); here \(q_w = \#k_w\).  For a split place \(w\) such that neither \(w\) nor \(\bar w\) is a place of \(\DP\), the \emph{false lifts} at \(w\) are the forms in \(\mathrm{im}(e_1) \cap A\) killed by the Hecke polynomial operator of \(\DP\) at \(w\) at the value \(\bigl(\nu_w q_w^{n'-r'-1}\bigr)^{-1}\) expected of a lift, where \(\nu_w\) is the Frobenius value at \(w\) of \(\upsilon^{r_-}\) in rank \(r'\), with \(r_-\) the number of negative signs of \(W\).  A form is \emph{orthogonal to the false lifts} for \((\DP, e_1, A)\) if it is orthogonal to the false lifts at every such \(w\).
+Let \(e_1\) be an element of the complex group algebra of \(\prod_w \GL_{r'}(k_w)\) over the chosen places of \(\DP\), and \(A \subseteq \mathcal A(\DP)\) a subspace.  A tuple \(g = (g_w)_w\) of this group acts on \(\mathcal A(\DP)\) by right translation by an element of \(K_0\) that reduces to \(\operatorname{diag}(g_w,1)\), in the order selected indices then complementary indices, at each chosen place \(w\), and to the identity at the twist places, multiplied by \(\prod_w \psi_w(\det g_w)\); write \(\mathrm{im}(e_1)\) for the image of the operator by which \(e_1\) then acts.  In this sheet \(\upsilon_E\) is the splitting character of the Weil data on the ideles of \(E\) (Section~\ref{gr-sec:spherical}), and \(\upsilon\) is its restriction to the norm-one ideles, as in Section~\ref{ob-sec:characters}.  For a character \(a\) of the norm-one ideles and a natural number \(N_0\ge 0\), the \emph{Frobenius value} of \(a\) in rank \(N_0\) at a finite place \(w\) is \(q_w^{N_0/2}\) times the value, at the finite idele with the chosen uniformizer at \(w\) and \(1\) elsewhere, of the Hecke character \(x \mapsto a(x/\bar x)\,\upsilon_E(x)^{-N_0}\); here \(q_w = \#k_w\).  For a split place \(w\) such that neither \(w\) nor \(\bar w\) is a place of \(\DP\), with the Hecke operators \(T_{w,i}\), \(0 \le i \le n'\), of Section~\ref{gr-sec:spherical} acting on \(\mathcal A(\DP)\), the \emph{Hecke polynomial operator at \(w\) at the value \(T \in \C\)} is \(\sum_{i=0}^{n'} (-T)^i q_w^{i(i-1)/2}\, T_{w,i}\).  The \emph{false lifts} at \(w\) are the forms in \(\mathrm{im}(e_1) \cap A\) killed by the Hecke polynomial operator of \(\DP\) at \(w\) at the value \(\bigl(\nu_w q_w^{n'-r'-1}\bigr)^{-1}\) expected of a lift, where \(\nu_w\) is the Frobenius value at \(w\) of \(\upsilon^{r_-}\) in rank \(r'\), with \(r_-\) the number of negative signs of \(W\).  A form is \emph{orthogonal to the false lifts} for \((\DP, e_1, A)\) if it is orthogonal to the false lifts at every such \(w\).
 \end{definition}
 
 \begin{definition}\label{def:denominator}
@@ -193,10 +97,16 @@ For a twist \(\vartheta\) and \(1 \le j \le m\), take the \(j\)-th descent pair 
 The \emph{inverse avatar} of a tame character \(\xi\) is the \(\ell\)-adic avatar \(\hat\xi \colon G_E \to \bar{\Q}_\ell^\times\), through \(\iota\), of the base change of \(\xi^{-1}\) to \(E\): the continuous character with \(\hat\xi(\mathrm{Art}\,x) = \iota\bigl(\xi(x/\bar x)\bigr)^{-1}\) for every finite idele \(x\) of \(E\), where \(\mathrm{Art}\) is the Artin map.  We use the Artin map of the proof, with values in the topological abelianization \(G_E^{\mathrm{ab}}\) and with a local uniformizer mapping to geometric Frobenius modulo inertia.  A character of \(G_E\) is evaluated there through the induced character.  Let \(\mathrm{ram} \in [0, \infty]\).  A twist \(\vartheta\) is \emph{auxiliary with ramification at most \(\mathrm{ram}\)} (at \(\iota\)) if:
 \begin{enumerate}
 \item[(a)] every place of \(Q_\vartheta\) has prime norm, and neither it nor its conjugate divides \(\ell MN\) (its conjugate is not in \(Q_\vartheta\), as for every tame character);
-\item[(b)] \(\hat\vartheta\) is locally constant, and there is a character \(\eta\) of the finite ideles of \(E\), with values in \(\bar{\Q}_\ell^\times\), such that \(\hat\vartheta(\mathrm{Art}\,x) = \eta(x/\bar x)\) for every finite idele \(x\), and \(\eta\) is trivial on \(E^\times\) and on every idele that is a unit at the places not above \(\ell\) and is congruent to \(1\) at the places of \(Q_\vartheta\);
+\item[(b)] \(\hat\vartheta\) is locally constant, and there is a character \(\chi_0\) of the finite ideles of \(E\), with values in \(\bar{\Q}_\ell^\times\), such that \(\hat\vartheta(\mathrm{Art}\,x) = \chi_0(x/\bar x)\) for every finite idele \(x\), and \(\chi_0\) is trivial on \(E^\times\) and on every idele that is a unit at the places not above \(\ell\) and is congruent to \(1\) at the places of \(Q_\vartheta\);
 \item[(c)] for some choice of a place of \(\bar{\Q}\) above each \(w \in Q_\vartheta\), with tame generators \(s_w\), \(\sum_{w \in Q_\vartheta} \val_+\bigl(\hat\vartheta(s_w) - 1\bigr) \le \mathrm{ram}\).
 \end{enumerate}
 \end{definition}
+
+For the rank-one case \(r'=1\), the main summand \(R\) is a character.  This case occurs for the lines of the lifts from \(U(1)\) attached to main pairs in Chapter~\ref{tw-chap}.  The line of constant functions in \emph{Clearing a projection: two classes} models the projection onto such a line.
+
+\begin{problem}\label{pr:trivial-aux}
+The trivial twist, with \(Q_\vartheta = \emptyset\), is auxiliary with ramification at most \(0\).
+\end{problem}
 
 \begin{definition}\label{def:jumps}
 Let \(r'\) and \(t'\) be natural numbers.  A family \(\HT = (\HT_\sigma)\) of finite multisets of integers, one for each embedding \(\sigma \colon E \to \C\), is \emph{admissible for \((r', t')\)} if:
@@ -223,6 +133,10 @@ Let \(t' \ge 0\) be an integer, \(\HT\) a family as in Definition~\ref{def:jumps
 The Hodge--Tate jumps are taken in the convention of the proof, in which the cyclotomic character has jump \(-1\).
 \end{definition}
 
+\begin{problem}\label{pr:rank-one}
+Let \(r' = 1\) and let \(R = \rho\) be a continuous character \(G_E \to \bar{\Q}_\ell^\times\).  (i) The trace pairing in (a) is nondegenerate, and the identity in (a) says \(\rho(g^c)\,\rho(g) = \cyc(g)^{-\max(t'-1,0)}\) for every \(g\).  (ii) The first half of (e) holds for every lattice of \(\rho\), and its second half holds if and only if some \(g \in G_E\) has \(\cyc(g) \in \{p_0, p_1\}\).  (iii) In (d), the two determinant inequalities become \(\val_+(\rho(\delta) - 1) \le n_\ell\) and \(\val_+(\rho((\delta^c)^{-1}) - 1) \le n_\ell\).
+\end{problem}
+
 \begin{definition}\label{def:main-summand}
 Let \(\mathfrak s = (\mathfrak s(w,i))\) be a family of complex numbers indexed by the finite places \(w\) of \(E\) and the integers \(i \ge 0\).  A form \(y \in \mathcal A(\DP)\) \emph{lifts} \(\mathfrak s\) if, at every split place \(w\) such that neither \(w\) nor \(\bar w\) is a place of \(\DP\), it is spherical and for every \(T \in \C\) the Hecke polynomial operator at \(w\) at the value \(T\) sends \(y\) to \(y\) multiplied by
 \[
@@ -230,17 +144,19 @@ Let \(\mathfrak s = (\mathfrak s(w,i))\) be a family of complex numbers indexed 
 \]
 where \(\nu_W\) and \(\nu_V\) are the Frobenius values at \(w\) of \(\upsilon^{r_-}\) in rank \(r'\) and of \(\mu\,\upsilon^{\lfloor n'/2\rfloor}\) in rank \(n'\), respectively, as in Definition~\ref{def:false-lift}.  A homomorphism \(R \colon G_E \to \GL_{r'}(\bar{\Q}_\ell)\) is a \emph{main summand} for a descent pair \(\DP_0\) of ranks \(r' < n'\) and \(\mathfrak s\) if it is main-summand-like for \((n' - r', \HT)\) for some \(\HT\), and
 \[
-  \mathrm{tr}\,S(g) = \hat\xi(g)\,\mathrm{tr}\,R(g) + \sum_{0 \le e < n'-r'} \cyc(g)^{-e} \qquad (g \in G_E)
+  \mathrm{tr}\,R^{\mathrm{nor}}(g) = \hat\xi(g)\,\mathrm{tr}\,R(g) + \sum_{0 \le e < n'-r'} \cyc(g)^{-e} \qquad (g \in G_E)
 \]
-for every tame character \(\xi\), every descent pair \(\DP\) with the same basis index sets for \(W\) and for \(V\) as \(\DP_0\) and with character \(\mu\) that of \(\DP_0\) times \(\xi\), every form in \(\mathcal A(\DP)\) lifting \(\mathfrak s\), every family \(P\) of polynomials for which that form is an eigenform, and every representation attached to \(P\) (Section~\ref{gr-sec:spherical}).  Here \(S\), the \emph{normalization} of that representation for \(\DP\), is its twist by the \(\ell\)-adic avatar, through \(\iota\), of the Hecke character \(x\mapsto\upsilon^{-r_-}(x/\bar x)\,\upsilon_E(x)^{r'}\,|x|^{r'/2}\), with \(r_-\) taken for \(\DP\) and \(|x|\) the idelic norm.
+for every tame character \(\xi\), every descent pair \(\DP\) with the same basis index sets for \(W\) and for \(V\) as \(\DP_0\) and with character \(\mu\) that of \(\DP_0\) times \(\xi\), every form in \(\mathcal A(\DP)\) lifting \(\mathfrak s\), every family \(P\) of polynomials for which that form is an eigenform, and every representation attached to \(P\) (Section~\ref{gr-sec:spherical}).  Here \(R^{\mathrm{nor}}\), the \emph{normalization} of that representation for \(\DP\), is its twist by the \(\ell\)-adic avatar, through \(\iota\), of the Hecke character \(x\mapsto\upsilon^{-r_-}(x/\bar x)\,\upsilon_E(x)^{r'}\,|x|^{r'/2}\), with \(r_-\) taken for \(\DP\) and \(|x|\) the idelic norm.
 \end{definition}
+
+The constant function in the two-class model illustrates the cyclotomic string in the trace formula.  Its representation \(1\oplus\cyc\) of \(\mathrm{Gal}(\bar{\Q}/\Q)\), twisted by the inverse \(5\)-adic cyclotomic character, is \(1\oplus\cyc^{-1}\).
 
 \begin{definition}\label{def:selmer-bound}
 Let \(R \colon G_E \to \GL_{r'}(\bar{\Q}_\ell)\) be a homomorphism, \(\xi\) a tame character, \(g_* \in G_E\) and \(\mathrm{sel} \in [0, \infty]\).  Let \(L\) be a lattice of \(R\) over a coefficient ring \(\Oc\) containing the values of \(\hat\xi\), and \(L_{\mathrm{tw}}\) the module \(\Oc^{r'}\) on which \(g \in G_E\) acts by \(\hat\xi(g)L(g)\).  For each \(v\mid\ell\), let \(G_v\) be the decomposition group of the chosen place above \(v\) and use the local embedding of \(G_v\) into \(\mathrm{Gal}(\bar{\Q}_\ell/\Q_\ell)\) fixed in the proof.  In the crystalline relations below, an integral crystalline cocycle means a function \(z_0\colon G_v\to L_{\mathrm{tw}}\) for which some \(b_0\in B_{\max}\otimes_{\Z_\ell} L_{\mathrm{tw}}\) satisfies \(1\otimes z_0(g)=g b_0-b_0\) for every \(g\in G_v\).  Here \(B_{\max}\) is the crystalline period ring of the proof, and \(G_v\) acts on the tensor product through its local embedding on \(B_{\max}\) and through \(L_{\mathrm{tw}}\) on the second factor.  Then \(\mathrm{Sel}(L_{\mathrm{tw}}, g_*)\) is the \(\Oc\)-module of locally constant maps \(z \colon G_E \to L_{\mathrm{tw}} \otimes_{\Oc} (\mathrm{Frac}(\Oc)/\Oc)\) such that: \(z(gh) = z(g) + g\,z(h)\) for all \(g, h\); \(z\) vanishes on the inertia groups above the finite places of \(E\) that neither divide \(\ell M\) nor lie in \(Q_\xi \cup \bar Q_\xi\); \(z\) satisfies the \emph{crystalline relations}, that is, for each \(v\mid\ell\) and every finite family of \(g_i \in G_v\) and \(a_i \in M_{r'}(\Oc)\) such that \(\sum_i a_i\,z_0(g_i) = 0\) for every integral crystalline cocycle \(z_0 \colon G_v \to L_{\mathrm{tw}}\), also \(\sum_i a_i\,z(g_i) = 0\); and \(z(g_*) = 0\).  The twist \(\hat\xi R\) \emph{has Selmer bound \(\mathrm{sel}\)} if there are an element \(g_*\) of an inertia group above a place of \(E\) not dividing \(\ell\) and an integer \(\zeta\) of \(\bar{\Q}_\ell\) such that, for all large \(\Oc\), there is a lattice \(L\) of \(R\) over \(\Oc\) for which \(\zeta \in \Oc\), \(\zeta - 1 \in \Oc^\times\), \(g_*\) acts on \(L_{\mathrm{tw}}\) by the scalar \(\zeta\), and \(\mathrm{Sel}(L_{\mathrm{tw}}, g_*)\) has normalized length at most \(\mathrm{sel}\).
 \end{definition}
 
 \begin{definition}\label{def:lift-setting}
-A descent pair \(\DP\) with a tuple of polynomials over the residue fields of its chosen places is in \emph{lift setting} for \(\vartheta\) if its indexed chosen and twist places agree with those of the data and of \(\vartheta\); its tame part is the \(j\)-th power of the tame part of \(\chi_M\) from Section~\ref{ob-sec:characters}, times the tame part of \(\vartheta\), for some \(1 \le j \le m\); \(r'\) and \(n' - r'\) are odd, with \(r' \le r\) and \(n' - r' \le t\); each polynomial is a label of degree \(r'\) (Section~\ref{ob-sec:chosen}), and none of its roots becomes \(1\) on multiplication by the element of \(k_w^\times\) naming the inverse tame character of \(\DP\) at its place \(w\); and above each \(p_i\) one polynomial is primitive with \(r' = r\), or equal to \(X - 1\) with \(r' = 1\).
+A descent pair \(\DP\) with a tuple of polynomials over the residue fields of its chosen places is in \emph{lift setting} for \(\vartheta\) if its indexed chosen and twist places agree with those of the data and of \(\vartheta\); its tame part is the \(j\)-th power of the tame part of \(\chi_M\) from Section~\ref{ob-sec:characters}, times the tame part of \(\vartheta\), for some \(1 \le j \le m\); \(r'\) and \(n' - r'\) are odd, with \(r' \le r\) and \(n' - r' \le t\); each polynomial is a label of degree \(r'\) (Section~\ref{ob-sec:chosen}), and none of its roots becomes \(1\) on multiplication by the element \(a_w\in k_w^\times\) defined as follows.  Write \(T_w\) for the fixed injective character of \(\overline{k_w}^{\,\times}\) from Section~\ref{ob-sec:chosen} and \(\psi_w\) for the tame part at \(w\).  Choose \(z_w\in k_w^\times\) with \(T_w(z_w)=\exp(2\pi i/(q_w-1))\).  Then \(T_w(a_w)=\psi_w(z_w)^{-1}\).  Finally, above each \(p_i\) one polynomial is irreducible with a root of order \((\#k_w)^{r} - 1\) (and then \(r' = r\)), or equal to \(X - 1\) with \(r' = 1\).
 \end{definition}
 
 \begin{definition}\label{def:lift-generator}
@@ -264,15 +180,19 @@ Let \(r', t'\) be integers with \(1 \le r' \le r\) and \(0 \le t' \le t\), and l
 \]
 \end{problem}
 
+\begin{problem}\label{pr:rank-one-budget}
+For \(r' = 1\), \(1 \le t' \le t\) and \(\mathrm{sel} = \mathrm{ram} = \mathrm{tw}_\ell\), the two sides of Problem~\ref{pr:budget} differ by exactly \(2(t - t')\,\mathrm{tw}_\ell\).
+\end{problem}
+
 \begin{problem}\label{pr:det-bound}
-Let \(\mathcal F\) be a finite-dimensional complex vector space, \(n_0 \ge 0\) an integer, \(u_0 \ge 0\), and \(C_\ell \in \mathrm{End}_{\C}(\mathcal F)\) with \(\val(n_0\iota(\mu)) \le u_0\) for every eigenvalue \(\mu\) of \(C_\ell\).  Then, with \(\lvert \ell \rvert_\ell = \ell^{-1}\), \(\lvert \iota(\det(n_0C_\ell)) \rvert_\ell \ge \exp(-\dim \mathcal F \cdot u_0 \log \ell)\).
+Let \(\mathcal F\) be a finite-dimensional complex vector space, \(n_0 \ge 0\) an integer, \(u_0\) a nonnegative real number, and \(C_\ell \in \mathrm{End}_{\C}(\mathcal F)\) with \(\val_+(n_0\iota(\mu)) \le u_0\) for every eigenvalue \(\mu\) of \(C_\ell\).  Then, with \(\lvert \ell \rvert_\ell = \ell^{-1}\), \(\lvert \iota(\det(n_0C_\ell)) \rvert_\ell \ge \exp(-\dim \mathcal F \cdot u_0 \log \ell)\).
 \end{problem}
 
 \begin{problem}\label{pr:negligible}
 The sum of \(2^{-\ell}\log \ell\) over all primes \(\ell\) is \(0.3776\ldots\), and for every finite set \(P_0\) of primes, \(\sum_{\ell \in P_0} \mathrm{tw}_\ell \log \ell \le (4f + 3)\,r \log \mathcal N + 0.378\).
 \end{problem}
 
-The clearing bounds of all primes together fit the budget \(B\): the proof bounds by \(B\) the sum in Problem~\ref{pr:budget-sum}.  Let \(C_1\) be the number of \(U(1)\) double cosets at the chosen level.  In Chapter~\ref{tw-chap} the allowance for the pairing on the rank-one lifts is \((\cl_\ell+\val_\ell(C_1))\log\ell\) (Section~\ref{tw-sec:regular}).  With \(x\) the length of the prime sum and \(b\) the weight scale of Chapter~\ref{da-chap}, consider the following five comparisons.
+The clearing bounds of all primes together fit the budget \(B\): the proof bounds by \(B\) the sum in Problem~\ref{pr:budget-sum}.  Let \(C_1\), the class number of \(U(1)\), be the number of double cosets of the finite adelic points of \(U(1)\) by the rational points and by the integral ideles congruent to \(1\) at every chosen place.  For a main pair at \(j\) and \(\vartheta=\theta_\iota^j\), the pairing of the projections of two test forms onto the line of the lift from \(U(1)\) has \(\ell\)-adic norm at most \(\exp((\cl_\ell+\val_\ell(C_1))\log\ell)\) (Section~\ref{tw-sec:regular}).  With \(x\) the length of the prime sum and \(b\) the weight scale of Chapter~\ref{da-chap}, consider the following five comparisons.
 \[
   \log\bigl(2^{4(q_1d + t + 3)^{27}} h_E\bigr) \le x^{2000}, \qquad (4f+3)\,r\log\mathcal N + 2 \le x^{999}, \qquad \log C_1 \le x^{30},
 \]
@@ -290,48 +210,24 @@ Granting the five displayed inequalities, for every finite set \(P_0\) of primes
 \]
 \end{problem}
 
-By Theorem~\ref{l1-thm:compression}(b), for a twist \(\vartheta\) of modulus prime to \(\ell\), a real \(\cl(\ell)\) that clears the projection at \((\iota,\vartheta,j)\) bounds the \(\ell\)-adic norm, through \(\iota\), of the determinant of the compression of a comparison operator to the image of \(u_{\vartheta,j}\) by \(\exp(\dim_{\C} H_g(W_j)\cdot r\cdot\cl(\ell))\).  For \(1 \le j \le m\), \(e_1 = e_0\) and \(\mathcal F\) the image of \(u_{\vartheta,j}\), so that \(r' = r\), the proof deduces from Theorem~\ref{thm:denominators} that every real \(\cl(\ell) \ge \cl_\ell\log\ell\) clears the projection at \((\iota, \vartheta, j)\) in the sense of Definition~\ref{l1-def:clears}, provided \(\vartheta\) is auxiliary with ramification at most \(\mathrm{tw}_\ell\) and every eigensystem occurring in a nonzero good form on \(W_m\) has a main summand, for the \(j\)-th descent pair of the trivial twist, whose twist by \(\hat\vartheta\) has Selmer bound \(\mathrm{tw}_\ell\).  Chapter~\ref{tw-chap} chooses an \(m\)-fold twist \(\theta_\iota\) for each \(\iota \mid \ell\), and at index \(j\) one takes \(\vartheta = \theta_\iota^j\).  Of the terms of \(\cl_\ell\), Chapter~\ref{n3-chap} develops the local loss \(\loc_\ell\) and proves the bound for its sum (Theorem~\ref{n3-thm:local-loss}); Theorem~\ref{thm:denominators} itself is taken from the proof.
+Fix \(1\le j\le m\).  By Theorem~\ref{l1-thm:compression}(b), for a twist \(\vartheta\) of modulus prime to \(\ell\), a real \(\cl(\ell)\) that clears the projection at \((\iota,\vartheta,j)\) bounds the \(\ell\)-adic norm, through \(\iota\), of the determinant of the compression of a comparison operator to the image of \(u_{\vartheta,j}\) by \(\exp(\dim_{\C} H_g(W_j)\cdot r\cdot\cl(\ell))\).  For \(1 \le j \le m\), \(e_1 = e_0\) and \(\mathcal F\) the image of \(u_{\vartheta,j}\), so that \(r' = r\), the proof deduces from Theorem~\ref{thm:denominators} that every real \(\cl(\ell) \ge \cl_\ell\log\ell\) clears the projection at \((\iota, \vartheta, j)\) in the sense of Definition~\ref{l1-def:clears}, provided \(\vartheta\) is auxiliary with ramification at most \(\mathrm{tw}_\ell\) and every eigensystem occurring in a nonzero good form on \(W_m\) has a main summand, for the \(j\)-th descent pair of the trivial twist, whose twist by \(\hat\vartheta\) has Selmer bound \(\mathrm{tw}_\ell\).  Chapter~\ref{tw-chap} chooses an \(m\)-fold twist \(\theta_\iota\) for each \(\iota \mid \ell\), and at index \(j\) one takes \(\vartheta = \theta_\iota^j\).  Chapter~\ref{n3-chap} explains the local loss \(\loc_\ell\) and proves the bound for its sum over the primes (Theorem~\ref{n3-thm:local-loss}); Theorem~\ref{thm:denominators} itself is taken from the proof.
 
 \paragraph{In the Lean formalization.}
-In the Lean proof \cite{GL} (\nolinkurl{grh/src/}, with the namespace \texttt{New.} omitted), Definition~\ref{def:clearing-bound} is \texttt{Selmer.clearingBound}, with \(X_{\mathrm{odd}}\) the integer \texttt{Selmer.oddClassBound}; Definitions~\ref{def:descent-pair}--\ref{def:denominator} are \texttt{DescentPair}, \texttt{DescentPair.falseLiftsAt} (the value at the chosen uniformizer is \texttt{HeckeChar.atUniformizer}) and \texttt{Selmer.DenominatorLe}; Definitions~\ref{def:aux-twist}--\ref{def:lift-generator} are \texttt{Selmer.IsAuxTwist} for \texttt{Selmer.badPlaces}, \(Q_\vartheta\) and \(\hat\vartheta\), with \texttt{Data.TameChar.invAvatar} and its formula \texttt{Selmer.invAvatar\_eq\_of\_artinMap\_eq} for the Artin map \texttt{artinMap}, \texttt{Selmer.IsMainSummandWeights}, \texttt{Selmer.IsMainSummandLike} (the jumps are those of \texttt{Period.jump}), \texttt{Selmer.IsMainSummand} (its eigenform and attachment conditions are \texttt{IsEigenform} and \texttt{GaloisRep.Attached}), the existential closure in \(g_*, \zeta\) of \texttt{Selmer.HasDivisibleSelmerLengthLe} with modulus \(Q_\xi\), \texttt{Selmer.IsLiftSetting} and \texttt{Selmer.IsLiftGenerator}.  The module in Definition~\ref{def:selmer-bound} has ordinary length \texttt{Selmer.crystallineSelmerLength} and uses \texttt{Selmer.crysRelations}; its local embedding and period ring are those of \texttt{Selmer.localChart} and \texttt{Period.crysCocycles}.  Theorem~\ref{thm:denominators} is \texttt{Selmer.denominatorLe\_clearingBound}, and the good-lift case is \texttt{Selmer.denominatorLe\_range\_goodLift}, followed by \texttt{Selmer.DenominatorLe.clearsProjection} for the passage to \(\cl(\ell)\ge\cl_\ell\log\ell\).  The two inequalities of Problem~\ref{pr:budget-sum} occur in the calculation of \texttt{Selmer.sum\_clearingBound\_add\_padicValNat\_le}, which states the bound by \(B\) for all admissible data and all finite sets of primes.
+In the Lean proof \cite{GL} (\nolinkurl{grh/src/}, with the namespace \texttt{New.} omitted), Definition~\ref{def:clearing-bound} is \texttt{Selmer.clearingBound}; Definitions~\ref{def:false-lift} and~\ref{def:denominator} are \texttt{DescentPair.falseLiftsAt} and \texttt{Selmer.DenominatorLe}; Definitions~\ref{def:aux-twist}, \ref{def:main-summand-like}, \ref{def:main-summand}, \ref{def:selmer-bound} and~\ref{def:lift-generator} are \texttt{Selmer.IsAuxTwist}, \texttt{Selmer.IsMainSummandLike}, \texttt{Selmer.IsMainSummand}, the existential closure in \(g_*, \zeta\) of \texttt{Selmer.HasDivisibleSelmerLengthLe}, and \texttt{Selmer.IsLiftGenerator}; Theorem~\ref{thm:denominators} is \texttt{Selmer.denominatorLe\_clearingBound}; and the bound by \(B\) behind Problem~\ref{pr:budget-sum} is \texttt{Selmer.sum\_clearingBound\_add\_padicValNat\_le}.
 
 \section*{Hints}
 
-\subsection*{\S\ref{sec:clearing}}
-\begin{description}
-\item[\ref{pr:clear-det}] \(C_\ell\) maps \(\mathcal F\) to \(\mathcal F\).  For the minimum, \(\pr(L)\) and \(L \cap \mathcal F\) are lattices in \(\mathcal F\); use elementary divisors.
-\item[\ref{pr:diagonal}] Choose the \(u_j\) generically modulo the maximal ideal.
-\item[\ref{pr:hecke-clear}] Decompose \(y\) into eigenvectors of \(T\); \(\ker(T - \lambda) = \mathcal F \oplus F_T\) is orthogonal to the other eigenspaces.
-\end{description}
-
-\subsection*{\S\ref{sec:eleven}}
-\begin{description}
-\item[\ref{pr:eleven-adjoint}] Apply the balance and row-sum identities to the two orthogonal lines.
-\item[\ref{pr:eleven-pr}] Apply the projection onto constants to the coordinate functions; then Problem~\ref{pr:clear-det}.
-\item[\ref{pr:eleven-cong}] Compare both sides on a basis.
-\item[\ref{pr:mass}] Compute \(\pr\) on the indicator functions.
-\item[\ref{pr:pairing}] Inspect each weight in the class sum.
-\end{description}
-
-\subsection*{\S\ref{sec:classes}}
-\begin{description}
-\item[\ref{pr:residual}] The characteristic polynomial of \(\rho_{11}(\Frob_\ell)\) is \(X^2 - a_\ell X + \ell\) for \(\ell \nmid 55\) (Section~\ref{gr-sec:es} of Chapter~\ref{gr-chap}).  Reduce on the lattice \(T_5(X_0(11))\); \(\rho_{11}\) is unramified outside \(55\).  Use Problem~\ref{pr:eleven-cong}, the Chebotarev density theorem and the Brauer--Nesbitt theorem for characteristic polynomials.
-\item[\ref{pr:parity}] Evaluate the cocycle relation on \(c \cdot c = 1\) and on \(c \cdot g \cdot c\), using \(\cyc(c) = -1\).
-\item[\ref{pr:kummer}] \(\mathrm{kum}_u(\Frob_q)\) is read off from the action of \(\Frob_q\) on \(u^{1/\ell}\) modulo a prime above \(q\).  Since \(u\) is not an \(\ell\)-th power, \([\Q(u^{1/\ell}):\Q] = \ell\), so \(\Q(\mu_\ell, u^{1/\ell})/\Q(\mu_\ell)\) has degree \(\ell\), as \(\gcd(\ell, \ell - 1) = 1\); apply the Chebotarev density theorem to its nontrivial elements.
-\end{description}
-
 \subsection*{\S\ref{sec:statement}}
 \begin{description}
+\item[\ref{pr:trivial-aux}] Compute the inverse avatar of the trivial character and try the trivial finite idele character in (b).
+\item[\ref{pr:rank-one}] For (ii), a lattice of a character is the character itself.
 \item[\ref{pr:budget}] Use \(r' \ge 1\) and \(t' \le t\).
 \item[\ref{pr:negligible}] Use the factorization of \(\mathcal N\).  For the prime sum, sum through \(31\) and bound the rest by \(\sum_{k > 31} k\,2^{-k}\).
 \item[\ref{pr:budget-sum}] Sum the four terms of \(\cl_\ell\) separately.  For \(\loc_\ell\) use Theorem~\ref{n3-thm:local-loss}; for \(\mathrm{tw}_\ell\), Problem~\ref{pr:negligible}; for \(\varepsilon_\ell\), \(n_\ell\) and \(\val_\ell(C_1)\), the inequality \(\sum_{\ell \in P_0} \val_\ell(n)\log\ell \le \log n\) for an integer \(n \ge 1\), with the bound for \(X_{\mathrm{odd}}\) of Definition~\ref{def:clearing-bound}.
 \end{description}
 
 \begin{thebibliography}{GL}
-\bibitem[CR]{CR} C.~W.~Curtis and I.~Reiner, \emph{Representation Theory of Finite Groups and Associative Algebras}, Interscience, 1962.
-\bibitem[Fa]{Fa} G.~Faltings, \emph{Endlichkeitss\"atze f\"ur abelsche Variet\"aten \"uber Zahlk\"orpern}, Invent.\ Math.\ \textbf{73} (1983), 349--366.
 \bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
-\bibitem[Ma]{Ma} B.~Mazur, \emph{Modular curves and the Eisenstein ideal}, Publ.\ Math.\ IH\'ES \textbf{47} (1977), 33--186.
 \end{thebibliography}
 
 \end{document}
