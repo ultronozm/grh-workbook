@@ -3,12 +3,15 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{xr-hyper}
 \usepackage[hidelinks]{hyperref}
+\externaldocument[c4-]{20261125T005500--columns-from-a-sphere__workbook}
+\externaldocument[c5-]{20261125T000000--slope-method__workbook}
 \externaldocument[c6-]{20261126T030100--a-twist-for-each-prime__workbook}
 \externaldocument[c25-]{20261125T004000--denominators-and-sha__workbook}
 \externaldocument[c29-]{20261125T014500--eisenstein-congruences-and-selmer-classes__workbook}
 \externaldocument[c32-]{20261126T030300--the-data__workbook}
 \externaldocument[c38-]{20261126T030800--the-cost-of-one-lift__workbook}
 \externaldocument[c39-]{20261126T030900--denominators-of-projections-to-lifts__workbook}
+\externaldocument[c41-]{20261126T031100--theorem-c-and-the-main-inequality__workbook}
 
 % Chapter number; \ref{chap} gives it.
 \newcounter{chap}
@@ -41,13 +44,13 @@
 Valuations on \(\Ql\) \cite[Ch.~II]{Ne}; roots of unity of prime power order \cite[Ch.~1--2]{Wa}.  Sections~\ref{sec:one} and~\ref{sec:several} use nothing else.  Sections~\ref{sec:twisting} and~\ref{sec:regular} use the data of Chapter~\ref{c32-chap}, the twist at each prime of Chapter~\ref{c6-chap}, Stickelberger elements (Chapter~\ref{c25-chap}), Selmer groups (Chapter~\ref{c29-chap}) and the denominators of projections to lifts (Chapter~\ref{c39-chap}).
 
 \medskip
-Chapter~\ref{c39-chap} bounds the denominator of a projection to lifts through the Selmer groups of twisted Galois representations (\texttt{denominatorLe\_clearingBound}).  The cost of comparing a lift at two twists also involves ratios of Hecke \(L\)-values (\texttt{heightLe\_liftDeterminant\_ratio}, \texttt{heightLe\_inv\_heckeValueProd\_div}).  For each prime \(\ell\) and each \(\iota\colon\C\simeq\Ql\), can one twist bound the Selmer lengths for a prescribed finite family satisfying the hypotheses of Theorem~\ref{thm:twisting} and the valuations of the ratios for every ramified critical pair and both signs?  The rewritten Lean proof \cite{GL} reduces both to values of polynomials at points \((\zeta_{\mathfrak q}-1)_{\mathfrak q}\), with \(\zeta_{\mathfrak q}\) roots of unity of \(\ell\)-power order; the corresponding statements of the rewritten Lean proof are \texttt{TwistPolynomials.groupRingEval\_eq\_eval}, \texttt{TwistPolynomials.length\_le} and \texttt{exists\_stickelbergerSystem\_ellVal\_ratio\_le}.  The exercises in Sections~\ref{sec:one} and~\ref{sec:several} lead to the lemma that chooses the roots of unity.
+Chapter~\ref{c39-chap} bounds the denominator of a projection to lifts through the Selmer groups of twisted Galois representations, and the cost of comparing a lift at two twists involves ratios of Hecke \(L\)-values (Chapter~\ref{c38-chap}).  For each prime \(\ell\) and each \(\iota \mid \ell\), can one twist bound the Selmer lengths for a prescribed finite family satisfying the hypotheses of Theorem~\ref{thm:twisting} and the valuations of the ratios for every ramified critical pair and both signs?  The rewritten Lean proof \cite{GL} reduces both to values of polynomials at points \((\zeta_{\mathfrak q}-1)_{\mathfrak q}\), with \(\zeta_{\mathfrak q}\) roots of unity of \(\ell\)-power order.  The exercises in Sections~\ref{sec:one} and~\ref{sec:several} lead to the lemma that chooses the roots of unity; Section~\ref{sec:regular} provides the regular families used in Chapters~\ref{c38-chap} and~\ref{c41-chap}.
 
 Throughout, \(\ell\) is a prime, \(v\) is the valuation of \(\Ql\) with \(v(\ell) = 1\) and \(v(0) = \infty\), \(\lVert y\rVert = \ell^{-v(y)}\), and \(\Zl = \{y : v(y) \ge 0\}\).  For \(h \ge 0\) put
 \[
   \rho_h := 1/\varphi(\ell^h),
 \]
-with Euler's function \(\varphi\).  For a polynomial \(g = \sum_i y_i Y^i \in \Ql[Y]\) and a rational \(\rho \ge 0\), the \emph{Gauss valuation} is \(v_\rho(g) := \min_i \bigl(v(y_i) + \rho i\bigr)\), and \(R_\rho(g)\) is the multiset of roots of \(g\) in \(\Ql\) of valuation exactly \(\rho\), counted with multiplicity; for the zero polynomial \(v_\rho(0) = \infty\) and \(R_\rho(0) = \varnothing\).  Below, \(g\) denotes a nonzero polynomial in \(\Zl[Y]\).  The code uses \(v_+(y) := \max(0, v(y))\), with \(v_+(0) = \infty\) (\texttt{ellVal}); it agrees with \(v\) on \(\Zl\), and \(v_+(y) \le c\) is equivalent to \(v(y) \le c\) for \(c \ge 0\).  ``Of order \(\ell^h\)'' means of exact order \(\ell^h\).
+with Euler's function \(\varphi\).  For a polynomial \(g = \sum_i y_i Y^i \in \Ql[Y]\) and a rational \(\rho \ge 0\), the \emph{Gauss valuation} is \(v_\rho(g) := \min_i \bigl(v(y_i) + \rho i\bigr)\), and \(R_\rho(g)\) is the multiset of roots of \(g\) in \(\Ql\) of valuation exactly \(\rho\), counted with multiplicity; for the zero polynomial \(v_\rho(0) = \infty\) and \(R_\rho(0) = \varnothing\).  Below, \(g\) denotes a nonzero polynomial in \(\Zl[Y]\).  ``Of order \(\ell^h\)'' means of exact order \(\ell^h\).
 
 \section{One variable}\label{sec:one}
 
@@ -84,7 +87,7 @@ The radius \(\rho_1 = 1/2\) is bad for this \(g\) because its roots lie on it.  
 \end{problem}
 
 \begin{problem}\label{pr:pigeon}
-Let \(\delta > 0\) and \(B \ge 0\), with \(B < \delta \sum_{h \in H(\rho, h_0)} 1/(h + 1)\).  If \(v_\rho(g) \le B\), then some \(h \in H(\rho, h_0)\) has \(\# R_{\rho_h}(g) \cdot \rho_h \le \delta/(h + 1)\).
+Let \(\delta > 0\) and \(\beta \ge 0\), with \(\beta < \delta \sum_{h \in H(\rho, h_0)} 1/(h + 1)\).  If \(v_\rho(g) \le \beta\), then some \(h \in H(\rho, h_0)\) has \(\# R_{\rho_h}(g) \cdot \rho_h \le \delta/(h + 1)\).
 \end{problem}
 
 Next, how close can the \(\zeta - 1\) of a given order be to a fixed point?
@@ -102,43 +105,40 @@ Let \(R\) be a finite multiset of elements of \(\Zl\) of positive valuation, and
 \end{problem}
 
 \begin{problem}\label{pr:one-variable}
-Let \(0 < \delta < 1\), \(\rho > 0\) rational, and \(B < \delta\sum_{h \in H(\rho, h_0)} 1/(h + 1)\).  If \(v_\rho(g) \le B\), then for some \(h \in H(\rho, h_0)\) and some \(\zeta\) of order \(\ell^h\),
+Let \(0 < \delta < 1\), \(\rho > 0\) rational, and \(\beta < \delta\sum_{h \in H(\rho, h_0)} 1/(h + 1)\).  If \(v_\rho(g) \le \beta\), then for some \(h \in H(\rho, h_0)\) and some \(\zeta\) of order \(\ell^h\),
 \[
   v\bigl(g(\zeta - 1)\bigr) \le v_{\rho_h}(g) + \delta .
 \]
 \end{problem}
 
 \begin{problem}\label{pr:harmonic}
-For rational \(\rho > 0\), real \(\delta > 0\) and \(B \ge 0\), some \(h_0\) has \(B < \delta\sum_{h \in H(\rho, h_0)} 1/(h + 1)\).  For \(\ell = 2\), \(\rho = \delta = 1/2\) and \(B = 1\), the least such \(h_0\) is \(18\).
+For rational \(\rho > 0\), real \(\delta > 0\) and \(\beta \ge 0\), some \(h_0\) has \(\beta < \delta\sum_{h \in H(\rho, h_0)} 1/(h + 1)\).  For \(\ell = 2\), \(\rho = \delta = 1/2\) and \(\beta = 1\), the least such \(h_0\) is \(18\).
 \end{problem}
 
 \begin{problem}\label{pr:one-var-point}
-Let \(\delta\), \(\rho\), \(B\), \(h_0\) be as in Problem~\ref{pr:one-variable}.  If \(v(x) \ge \rho\) and \(v(g(x)) \le B\), then some \(\zeta\) with \(\zeta^{\ell^{h_0}} = 1\) and \(v(\zeta - 1) \le \rho\) has \(v(g(\zeta - 1)) \le v(g(x)) + \delta\).
+Let \(\delta\), \(\rho\), \(\beta\), \(h_0\) be as in Problem~\ref{pr:one-variable}.  If \(v(x) \ge \rho\) and \(v(g(x)) \le \beta\), then some \(\zeta\) with \(\zeta^{\ell^{h_0}} = 1\) and \(v(\zeta - 1) \le \rho\) has \(v(g(\zeta - 1)) \le v(g(x)) + \delta\).
 \end{problem}
 
 \section{Several variables and several powers}\label{sec:several}
 
-Let \(\rho > 0\) be rational, and \(\sigma\) and \(I\) finite sets.  For \(i \in I\) let \(P_i \in \Zl[X_j : j \in \sigma]\), and let \(x_i \in \Zl^\sigma\) be a point.  We seek one tuple of roots of unity that works for every \(i\).
+Let \(\rho > 0\) be rational, and \(\mathcal V\) and \(I\) finite sets.  For \(i \in I\) let \(F_i \in \Zl[X_j : j \in \mathcal V]\), and let \(x_i \in \Zl^\mathcal V\) be a point.  We seek one tuple of roots of unity that works for every \(i\).
 
 \begin{problem}\label{pr:one-coordinate}
-Fix \(j \in \sigma\), and assume \(v(x_{ij}) \ge \rho\) for all \(i\) (the other coordinates are only integral).  Let \(0 < \delta < 1\), \(B < \delta\sum_{h \in H(\rho, h_0)} 1/(h + 1)\), and \(\sum_i v(P_i(x_i)) \le B\).  There is \(\zeta\) with \(\zeta^{\ell^{h_0}} = 1\) and \(v(\zeta - 1) \le \rho\) such that, if the coordinate \(x_{ij}\) is replaced by \(\zeta - 1\) for every \(i\), each \(v(P_i(x_i))\), and also their sum, grows by at most \(\delta\).
+Fix \(j \in \mathcal V\), and assume \(v(x_{ij}) \ge \rho\) for all \(i\) (the other coordinates are only integral).  Let \(0 < \delta < 1\), \(\beta < \delta\sum_{h \in H(\rho, h_0)} 1/(h + 1)\), and \(\sum_i v(F_i(x_i)) \le \beta\).  There is \(\zeta\) with \(\zeta^{\ell^{h_0}} = 1\) and \(v(\zeta - 1) \le \rho\) such that, if the coordinate \(x_{ij}\) is replaced by \(\zeta - 1\) for every \(i\), each \(v(F_i(x_i))\), and also their sum, grows by at most \(\delta\).
 \end{problem}
 
 \begin{problem}\label{pr:all-coordinates}
-Let \(0 < \delta < 1\), \(\#\sigma \cdot \delta \le 1\), \(\beta + 1 < \delta\sum_{h \in H(\rho, h_0)} 1/(h + 1)\), \(v(x_{ij}) \ge \rho\) for all \(i, j\), and \(\sum_i v(P_i(x_i)) \le \beta\).  There are \(\zeta_j\), \(j \in \sigma\), with \(\zeta_j^{\ell^{h_0}} = 1\), \(v(\zeta_j - 1) \le \rho\), and \(v\bigl(P_i((\zeta_j - 1)_j)\bigr) \le v(P_i(x_i)) + \#\sigma\cdot\delta\) for all \(i\).
+Let \(0 < \delta < 1\), \(\#\mathcal V \cdot \delta \le 1\), \(\beta + 1 < \delta\sum_{h \in H(\rho, h_0)} 1/(h + 1)\), \(v(x_{ij}) \ge \rho\) for all \(i, j\), and \(\sum_i v(F_i(x_i)) \le \beta\).  There are \(\zeta_j\), \(j \in \mathcal V\), with \(\zeta_j^{\ell^{h_0}} = 1\), \(v(\zeta_j - 1) \le \rho\), and \(v\bigl(F_i((\zeta_j - 1)_j)\bigr) \le v(F_i(x_i)) + \#\mathcal V\cdot\delta\) for all \(i\).
 \end{problem}
 
 Problems~\ref{pr:harmonic} and~\ref{pr:all-coordinates} give the following theorem.  The point is that \(h_0\) depends on \(\ell\), \(s_0\), \(\rho\), \(\beta\) and \(\varepsilon\), but not on the polynomials, their number or their degrees.
 
 \begin{theorem}\label{thm:roots}
-Let \(s_0 \ge 0\) be an integer, \(\rho > 0\) rational, \(\beta \ge 0\) and \(\varepsilon > 0\).  There is \(h_0\) with the following property.  Let \(\sigma\), \(I\) be finite sets with \(\#\sigma \le s_0\), let \(P_i \in \Zl[X_j : j \in \sigma]\) and \(x_i \in \Zl^\sigma\) for \(i \in I\), with \(v(x_{ij}) \ge \rho\) for all \(i, j\) and \(\sum_i v(P_i(x_i)) \le \beta\).  Then there are \(\zeta_j \in \Zl\), \(j \in \sigma\), with
+Let \(s_0 \ge 0\) be an integer, \(\rho > 0\) rational, \(\beta \ge 0\) and \(\varepsilon > 0\).  There is \(h_0\) with the following property.  Let \(\mathcal V\), \(I\) be finite sets with \(\#\mathcal V \le s_0\), let \(F_i \in \Zl[X_j : j \in \mathcal V]\) and \(x_i \in \Zl^\mathcal V\) for \(i \in I\), with \(v(x_{ij}) \ge \rho\) for all \(i, j\) and \(\sum_i v(F_i(x_i)) \le \beta\).  Then there are \(\zeta_j \in \Zl\), \(j \in \mathcal V\), with
 \[
-  \zeta_j^{\ell^{h_0}} = 1, \qquad v(\zeta_j - 1) \le \rho, \qquad v\bigl(P_i((\zeta_j - 1)_j)\bigr) \le v\bigl(P_i(x_i)\bigr) + \varepsilon \quad \text{for all } i.
+  \zeta_j^{\ell^{h_0}} = 1, \qquad v(\zeta_j - 1) \le \rho, \qquad v\bigl(F_i((\zeta_j - 1)_j)\bigr) \le v\bigl(F_i(x_i)\bigr) + \varepsilon \quad \text{for all } i.
 \]
 \end{theorem}
-
-\paragraph{In the rewritten Lean proof.}
-Theorem~\ref{thm:roots} is \texttt{New.Selmer.exists\_rootsOfUnity\_ellVal\_eval\_le\_add} in \texttt{New/Congruences/Selmer/RootsOfUnity.lean} of \cite{GL}; Problem~\ref{pr:one-variable} is the positive-radius form of \texttt{exists\_rootOfUnity\_eval\_le\_gaussVal\_add}, and Problem~\ref{pr:one-coordinate} is \texttt{exists\_ellVal\_eval\_update\_le\_add} for a finite set \(\sigma\), in the same file.
 
 \medskip
 A twist will be used through its first \(m\) powers at once, so the roots of unity must also serve for \(\zeta_j^n - 1\), \(1 \le n \le m\).
@@ -152,67 +152,62 @@ Let \(0 < \rho < 1\), \(1 \le n \le m\), and let \(\zeta\) have \(\ell\)-power o
 \end{problem}
 
 \begin{problem}\label{pr:powers}
-Let integers \(s_0 \ge 0\), \(m \ge 1\), a rational \(\rho > 0\), \(\varepsilon > 0\), a finite set \(I\) and numbers \(\beta_i \ge 0\), \(i \in I\), be given.  There is \(h_0\) such that, for every finite set \(\sigma\) with \(\#\sigma \le s_0\), all \(P_i \in \Zl[X_j : j \in \sigma]\) and all \(x_i \in \Zl^\sigma\) satisfying \(v(x_{ij}) \ge \rho\) for every \(i, j\) and \(v(P_i(x_i)) \le \beta_i\) for every \(i\), some \(\zeta_j\) with \(\zeta_j^{\ell^{h_0}} = 1\) and \(v(\zeta_j - 1) \le \rho/m\) satisfy
+Let integers \(s_0 \ge 0\), \(m \ge 1\), a rational \(\rho > 0\), \(\varepsilon > 0\), a finite set \(I\) and numbers \(\beta_i \ge 0\), \(i \in I\), be given.  There is \(h_0\) such that, for every finite set \(\mathcal V\) with \(\#\mathcal V \le s_0\), all \(F_i \in \Zl[X_j : j \in \mathcal V]\) and all \(x_i \in \Zl^\mathcal V\) satisfying \(v(x_{ij}) \ge \rho\) for every \(i, j\) and \(v(F_i(x_i)) \le \beta_i\) for every \(i\), some \(\zeta_j\) with \(\zeta_j^{\ell^{h_0}} = 1\) and \(v(\zeta_j - 1) \le \rho/m\) satisfy
 \[
-  v\bigl(P_i((\zeta_j^n - 1)_j)\bigr) \le v\bigl(P_i(x_i)\bigr) + \varepsilon \qquad (i \in I,\ 1 \le n \le m).
+  v\bigl(F_i((\zeta_j^n - 1)_j)\bigr) \le v\bigl(F_i(x_i)\bigr) + \varepsilon \qquad (i \in I,\ 1 \le n \le m).
 \]
 \end{problem}
 
 \section{The twisting theorem}\label{sec:twisting}
 
-Fix a CM field \(E\subseteq\bar\Q\), the chosen complex conjugation \(\jmath\in\mathrm{Gal}(\bar\Q/\Q)\) (\texttt{cmConj}), a finite set \(S_0\) of finite places of \(E\) containing those above \(\ell\), and an element \(g_0\) of inertia at a place of \(S_0\) prime to \(\ell\).  The rewritten Lean proof works with finitely many objects of two kinds, \texttt{SelmerDatum} and \texttt{StickelbergerSystem}; we describe them only as far as this section uses them.  Chapter~\ref{c29-chap} gives examples of Selmer classes arising from congruences, and Chapter~\ref{c25-chap} treats the classical cyclotomic Stickelberger element.  The Selmer data \(T\) have a common coefficient ring \(O\), the integers of a finite Galois extension of \(\Q_\ell\) in \(\Ql\).  Each has a lattice with continuous action unramified outside a set \(S_T \subseteq S_0\) containing the places above \(\ell\), local cocycle conditions above \(\ell\), and a distinguished inertial element \(\gamma_T\).  Write \(\beta_T\) for the normalized sum of its global and local terms, which include the valuations of \(\det(T(g) - 1)\) for \(g = g_0\) and \(g = (\jmath g_0 \jmath)^{-1}\) (\texttt{SelmerDatum.firstPrimeTerm}).  A bound \(\mathrm{len}\,\Sel_Q(T\psi) \le d\) means that for every sufficiently large coefficient ring \(O' \supseteq O\) there is an \(O'\)-valued model of \(\psi\) for which the following module has normalized length at most \(d\): the locally constant cocycles with coefficients in the extended twisted lattice tensored with \(\mathrm{Frac}(O')/O'\) that are unramified outside \(S_T \cup Q \cup \bar Q\), satisfy the local relations and vanish at \(\gamma_T\).  Normalized length (\texttt{CoeffRing.normLength}) gives \(O'/\ell O'\) length \(1\).  The length predicate is \texttt{SelmerDatum.TwistedLengthLe}.  Each system \(Y\) has elements \(\Theta_Q \in \Zl[\mathrm{Cl}_Q]\), where \(\mathrm{Cl}_Q\) is the norm-one idele class group of level \(Q\), and a number \(\beta_Y\); the corresponding statement of the rewritten Lean proof is \texttt{StickelbergerSystem.}\(\beta\).  A finite set \(Q\) of places is \emph{auxiliary} for \(S_0\) if its places have prime norm, and \(Q\), its conjugate \(\bar Q\) and \(S_0\) are pairwise disjoint (\texttt{IsAuxiliary}).
+Fix a CM field \(E\subseteq\bar\Q\), the chosen complex conjugation \(\jmath\in\mathrm{Gal}(\bar\Q/\Q)\), a finite set \(\Sigma_0\) of finite places of \(E\) containing those above \(\ell\), and an element \(g_0\) of inertia at a place of \(\Sigma_0\) prime to \(\ell\).  The rewritten Lean proof works with finitely many objects of two kinds, Selmer data and Stickelberger systems; we describe them only as far as this section uses them.  Chapter~\ref{c29-chap} gives examples of Selmer classes arising from congruences, and Chapter~\ref{c25-chap} treats the classical cyclotomic Stickelberger element.
 
-The following input is read from the code (\texttt{exists\_twistPolynomials}); its proof is a descent, which we do not treat.  Fix a natural number \(M_0\) such that, for every datum \(T\) of rank \(d_T\), \(\beta_T + 1 < M_0\) and \(2d_T\,\mathrm{ord}_O(\ell^{M_0}) + 1 < \#k_O\), where \(k_O\) is the residue field and \(\mathrm{ord}_O\) gives a uniformizer the value \(1\) (\texttt{IsTorsionLevel}).  There is an integer \(s_0 \ge 1\) such that for every rational \(\rho > 0\) with \(s_0\rho < 1\) and every sufficiently large \(N\) there are:
+The Selmer data \(T_{\mathrm{Sel}}\) have a common coefficient ring \(O\), the integers of a finite Galois extension of \(\Q_\ell\) in \(\Ql\).  Each is a lattice of rank \(\operatorname{rk} T_{\mathrm{Sel}}\) with continuous action unramified outside a set \(\Sigma(T_{\mathrm{Sel}}) \subseteq \Sigma_0\) containing the places above \(\ell\), with local cocycle conditions above \(\ell\) and a distinguished inertial element \(\gamma(T_{\mathrm{Sel}})\).  Write \(\beta(T_{\mathrm{Sel}})\) for the normalized sum of its global and local terms, which include the valuations of \(\det(T_{\mathrm{Sel}}(g) - 1)\) for \(g = g_0\) and \(g = (\jmath g_0 \jmath)^{-1}\).  A bound \(\mathrm{len}\,\Sel_Q(T_{\mathrm{Sel}}\psi) \le d\) means that for every sufficiently large coefficient ring \(O' \supseteq O\) there is an \(O'\)-valued model of \(\psi\) for which the following module has normalized length at most \(d\), normalized length giving \(O'/\ell O'\) length \(1\): the locally constant cocycles with coefficients in the extended twisted lattice tensored with \(\mathrm{Frac}(O')/O'\) that are unramified outside \(\Sigma(T_{\mathrm{Sel}}) \cup Q \cup \bar Q\), satisfy the local relations and vanish at \(\gamma(T_{\mathrm{Sel}})\).  A Stickelberger system \(Y\) has elements \(\Theta_Q \in \Zl[\mathrm{Cl}_Q]\), where \(\mathrm{Cl}_Q\) is the norm-one idele class group of level \(Q\), and a finite number \(\beta_Y\) attached to the system, whose definition we shall not need.  A finite set \(Q\) of places is \emph{auxiliary} for \(\Sigma_0\) if its places have prime norm, and \(Q\), its conjugate \(\bar Q\) and \(\Sigma_0\) are pairwise disjoint.
+
+The polynomial input below follows by descent, which we do not treat.  It holds for any finite \(\Sigma_0\) with \(g_0\) inertial at a place of \(\Sigma_0\) prime to \(\ell\), subject to the hypotheses on the data, systems and \(M_0\) below.  We use it with \(\Sigma_0\) containing the places above \(\ell\).  Fix a natural number \(M_0\) such that, for every datum, \(\beta(T_{\mathrm{Sel}}) + 1 < M_0\) and \(2\operatorname{rk} T_{\mathrm{Sel}}\,\mathrm{ord}_O(\ell^{M_0}) + 1 < \#k_O\), where \(k_O\) is the residue field and \(\mathrm{ord}_O\) gives a uniformizer the value \(1\).  There is an integer \(s_0 \ge 1\) such that for every rational \(\rho > 0\) with \(s_0\rho < 1\) and every sufficiently large \(h_1\) there are:
 \begin{enumerate}
-\item an auxiliary set \(Q\) of at most \(s_0/2\) primes, and for each \(\mathfrak q \in Q\) a locally constant homomorphism \(\lambda_{\mathfrak q}\colon \mathrm{Gal}(\bar\Q/E) \to \Z/\ell^N\), onto on inertia at \(\mathfrak q\), coming by \(y \mapsto y/\bar y\) from a finite idele class character of tame level \(\{\mathfrak q\}\) trivial above \(\ell\) (\texttt{IsFromU1}); thus it is anticyclotomic, unramified outside \(\mathfrak q\) and \(\bar{\mathfrak q}\), and trivial on the decomposition groups above \(\ell\);
-\item for each datum \(T\) and each system \(Y\) a polynomial \(P\) over \(\Zl\) in variables \(X_{\mathfrak q}\), \(\mathfrak q \in Q\), and a point with coordinates of valuation at least \(\rho\) at which \(v(P) \le \beta + s_0\rho\), where \(\beta\) is \(\beta_T\) or \(\beta_Y\);
-\item for \(\ell^N\)-th roots of unity \(\zeta_{\mathfrak q}\), with \(\psi := \prod_{\mathfrak q} \zeta_{\mathfrak q}^{\lambda_{\mathfrak q}}\) and \(x := (\zeta_{\mathfrak q} - 1)_{\mathfrak q}\): for a system, \(P(x) = \psi(\Theta_Q)\); for a datum with \(v(P(x)) < \beta_T + 1\), \(\mathrm{len}\,\Sel_Q(T\psi) \le v(P(x))\).
+\item an auxiliary set \(Q\) of at most \(s_0/2\) primes, and for each \(\mathfrak q \in Q\) a locally constant homomorphism \(\lambda_{\mathfrak q}\colon \mathrm{Gal}(\bar\Q/E) \to \Z/\ell^{h_1}\), onto on inertia at \(\mathfrak q\), coming by \(y \mapsto y/\bar y\) from a finite idele class character of tame level \(\{\mathfrak q\}\) trivial above \(\ell\); thus it is anticyclotomic, unramified outside \(\mathfrak q\) and \(\bar{\mathfrak q}\), and trivial on the decomposition groups above \(\ell\);
+\item for each datum and each system a polynomial \(F\) over \(\Zl\) in variables \(X_{\mathfrak q}\), \(\mathfrak q \in Q\), and a point with coordinates of valuation at least \(\rho\) at which \(v(F) \le \beta + s_0\rho\), where \(\beta\) is \(\beta(T_{\mathrm{Sel}})\) or \(\beta_Y\);
+\item for \(\ell^{h_1}\)-th roots of unity \(\zeta_{\mathfrak q}\), with \(\psi := \prod_{\mathfrak q} \zeta_{\mathfrak q}^{\lambda_{\mathfrak q}}\) and \(x := (\zeta_{\mathfrak q} - 1)_{\mathfrak q}\): for a system, \(F(x) = \psi(\Theta_Q)\); for a datum with \(v(F(x)) < \beta(T_{\mathrm{Sel}}) + 1\), \(\mathrm{len}\,\Sel_Q(T_{\mathrm{Sel}}\psi) \le v(F(x))\).
 \end{enumerate}
-These are the fields of \texttt{TwistPolynomials}.
 
 \begin{problem}\label{pr:psi-power}
-For \(\psi = \prod_{\mathfrak q} \zeta_{\mathfrak q}^{\lambda_{\mathfrak q}}\) and \(n \ge 1\), \(\psi^n = \prod_{\mathfrak q} (\zeta_{\mathfrak q}^n)^{\lambda_{\mathfrak q}}\), and \(\psi^{\ell^N} = 1\).  For \(\mathfrak q \in Q\) some \(g\) in an inertia group at \(\mathfrak q\) has \(\psi(g) = \zeta_{\mathfrak q}\).
+For \(\psi = \prod_{\mathfrak q} \zeta_{\mathfrak q}^{\lambda_{\mathfrak q}}\) and \(n \ge 1\), \(\psi^n = \prod_{\mathfrak q} (\zeta_{\mathfrak q}^n)^{\lambda_{\mathfrak q}}\), and \(\psi^{\ell^{h_1}} = 1\).  For \(\mathfrak q \in Q\) some \(g\) in an inertia group at \(\mathfrak q\) has \(\psi(g) = \zeta_{\mathfrak q}\).
 \end{problem}
 
 \begin{problem}\label{pr:twist-from-roots}
-Let \(0 < \varepsilon < 1\) and \(m \ge 1\).  There are auxiliary data as in the input and a character \(\psi = \prod_{\mathfrak q} \zeta_{\mathfrak q}^{\lambda_{\mathfrak q}}\) such that, for all \(1 \le n \le m\), \(\mathrm{len}\,\Sel_Q(T\psi^n) \le \beta_T + \varepsilon\) for every datum, \(v(\psi^n(\Theta_Q)) \le \beta_Y + \varepsilon\) for every system, and \(\psi^n\) is ramified at every prime of \(Q\).
+Let \(0 < \varepsilon < 1\) and \(m \ge 1\).  There are auxiliary data as in the input and a character \(\psi = \prod_{\mathfrak q} \zeta_{\mathfrak q}^{\lambda_{\mathfrak q}}\) such that, for all \(1 \le n \le m\), \(\mathrm{len}\,\Sel_Q(T_{\mathrm{Sel}}\psi^n) \le \beta(T_{\mathrm{Sel}}) + \varepsilon\) for every datum, \(v(\psi^n(\Theta_Q)) \le \beta_Y + \varepsilon\) for every system, and \(\psi^n\) is ramified at every prime of \(Q\).
 \end{problem}
 
-The general twisting theorem of the rewritten proof is \texttt{exists\_anticyclotomic\_twist} in \texttt{GeneralTheorem.lean}.  For every \(m \ge 1\) and every \(\varepsilon > 0\) the theorem gives one auxiliary \(Q\) and one \(\psi\) such that every \(\psi^n\), \(1 \le n \le m\), has the three properties of Problem~\ref{pr:twist-from-roots}, comes by \(y \mapsto y/\bar y\) from an idele class character of tame level \(Q\) trivial above \(\ell\), has \(\ell\)-power order, and has \(\sum v(\psi^n(\gamma_w) - 1) \le \varepsilon\) over the places \(w\) of \(Q \cup \bar Q\), for any generators \(\gamma_w\) of tame inertia (\texttt{IsSmallTwist}).  Problem~\ref{pr:twist-from-roots} treats the case \(0 < \varepsilon < 1\).
+The general twisting theorem of the rewritten Lean proof gives, for every \(m \ge 1\) and every \(\varepsilon > 0\), one auxiliary \(Q\) and one \(\psi\) such that every \(\psi^n\), \(1 \le n \le m\), has the three properties of Problem~\ref{pr:twist-from-roots}, comes by \(y \mapsto y/\bar y\) from an idele class character of tame level \(Q\) trivial above \(\ell\), has \(\ell\)-power order, and has \(\sum v(\psi^n(\gamma_w) - 1) \le \varepsilon\) over the places \(w\) of \(Q \cup \bar Q\), for any generators \(\gamma_w\) of tame inertia.  For \(0<\varepsilon<1\), Problem~\ref{pr:twist-from-roots} asks for the character constructed in that proof together with its Selmer and Stickelberger bounds and its ramification at every prime of \(Q\).
 
-For the data \(D\) of Chapter~\ref{c32-chap} the general theorem is applied inside \texttt{exists\_mFoldTwist\_hasDivisibleSelmerLengthLe}, with \(\varepsilon = 2^{-\ell}\), to Selmer data on lattices in given representations and to one Stickelberger system for each ramified critical pair and sign.  Let \(f\) be the number of infinite places of \(E\), \(r\) the rank of the spaces \(W_j\), \(t = 5r\), \(m\) the number of lifts, \(b\) the weight scale, \(p_0\), \(p_1\) the level primes, and \(G\) the product of the orders of \(\mathrm{GL}_{rt}\) over the residue fields of the chosen places.  Put
+For the data of Chapter~\ref{c32-chap} it is applied, with \(\varepsilon = 2^{-\ell}\), to Selmer data on lattices in given representations and to one Stickelberger system for each ramified critical pair and sign.  We use the notation of Chapter~\ref{c32-chap} (\(f\), \(r\), \(t\), \(m\), \(b\), \(p_0\), \(p_1\), \(N\), the chosen places \(\mathcal M\), \(m\)-fold twists \(\vartheta\) with modulus \(Q_\vartheta\)), the critical pairs \(P = (\nu, z)\), their ratios \(R_P(\vartheta, \epsilon)\), \(\epsilon = \pm1\), and ramified pairs of Definition~\ref{c38-def:pair}, and, as in Chapter~\ref{c39-chap}, \(\mathcal N := \prod_{w \in \mathcal M}\#\mathrm{GL}_{rt}(k_w)\) and
 \[
-  e'_\ell := (4f + 3)\, r\, v_\ell(G) + 2^{-\ell}.
+  \mathrm{tw}_\ell := (4f + 3)\, r\, v_\ell(\mathcal N) + 2^{-\ell}.
 \]
-In the notation of Chapter~\ref{c39-chap}, \(G = \mathcal N\) and \(e'_\ell = \mathrm{tw}_\ell\); \(e'_\ell\) is measured in valuations, and is multiplied by \(\log\ell\) in Problem~\ref{pr:vl-log}.
-The bad places are those dividing \(\ell p_0p_1N_D\), with \(N_D\) the level prime of the data.  Here a character of \(U(1)(\mathbb A)\) means a continuous circle-valued character trivial on the diagonal norm-one elements of \(E^\times\) (\texttt{AutChar}).  For such a character \(\nu\), its partial Hecke \(L\)-function is that of the base change \(y\mapsto\nu(y/\bar y)\) (\texttt{AutChar.baseChange}, \texttt{AutChar.L}).  A \emph{critical pair} \(p = (\nu, z)\) consists of a character \(\nu\) of \(U(1)(\mathbb A)\) of weight \(-c\) with tame part supported on the chosen places, and an integer \(1 \le z \le t\) such that \(z \le c(v) \le 4b\) at every infinite place \(v\).  It is \emph{ramified} if its tame part is nontrivial at every chosen place.  For a tame character \(\vartheta\) of weight zero with specified modulus \(Q\) (\texttt{TameChar}) and a sign \(s\in\{1,-1\}\),
-\[
-  \mathrm{ratio}_p(\vartheta, s) := \lvert L(z, (\nu\vartheta^s)^{-1})\rvert\big/\lvert L(z, \nu^{-1})\rvert,
-\]
-the Euler factors at the chosen places and their conjugates, and in the numerator also at \(Q\) and \(\bar Q\), being omitted.  An \emph{\(m\)-fold twist} is a character \(\tau\) of \(U(1)(\mathbb A)\) of weight zero, with tame part supported on a finite set \(Q\) disjoint from \(\bar Q\) and with \(\prod_{w \in Q}\#k_w\) prime to \(p_0p_1N_D\), such that at every \(w \in Q\) the \(n\)-th power of its tame part is nontrivial for every \(1 \le n \le m\).  The definitions are \texttt{twistError}, \texttt{chosenGroupOrder}, \texttt{badPlaces}, \texttt{CriticalPair.IsRamified}, \texttt{CriticalPair.ratio}, \texttt{CriticalPair}, \texttt{TameChar} and \texttt{MFoldTwist}.  The following is read from the code.
+The bad places are those dividing \(\ell p_0p_1N\).  The rewritten Lean proof also uses the truncated valuation \(v_+(y) := \max(0, v(y))\), \(v_+(0) = \infty\); \(v_+(y) \le c\) is equivalent to \(v(y) \le c\) for \(c \ge 0\).  The following is read from the code.
 
 \begin{theorem}[twisting theorem]\label{thm:twisting}
-Let \(\iota\colon \C \simeq \Ql\), and let \(R_i\) be finitely many \(\ell\)-adic representations of \(\mathrm{Gal}(\bar\Q/E)\) such that for each \(i\) there are a natural number \(u_i\) and a multiset of integers \(J_i(\sigma)\) for each embedding \(\sigma\colon E \hookrightarrow \C\), for which \(R_i\) satisfies \texttt{IsMainSummandLike} with parameters \(D, u_i, J_i\).  There is an \(m\)-fold twist \(\tau\) such that every \(\xi = \tau^n\), \(1 \le n \le m\), satisfies the following, where \(\psi\) is the \(\ell\)-adic avatar through \(\iota\) of the base change of \(\xi^{-1}\) to \(E\) (\texttt{invAvatar}).
+Let \(\iota\colon \C \simeq \Ql\), and let \(R_i\) be finitely many \(\ell\)-adic representations of \(\mathrm{Gal}(\bar\Q/E)\) such that for each \(i\) there are a natural number \(u_i\) and a multiset of integers \(J_i(\sigma)\) for each embedding \(\sigma\colon E \hookrightarrow \C\), for which \(R_i\) is main-summand-like for \((D, u_i, J_i)\).  There is an \(m\)-fold twist \(\vartheta\) such that for every \(1 \le n \le m\), with \(\psi_n\) the \(\ell\)-adic avatar through \(\iota\) of the base change of \(\vartheta^{-n}\) to \(E\):
 \begin{enumerate}
-\item \(\psi\) is locally constant and comes by \(y \mapsto y/\bar y\) from a finite idele class character of tame level \(Q\) trivial above \(\ell\); \(Q\) is auxiliary for the bad places; and \(\sum_{w \in Q} v(\psi(\gamma_w) - 1) \le e'_\ell\) for some choice, at each \(w\in Q\), of a place above \(w\) in \(\bar\Q\), with \(\gamma_w\) its distinguished tame inertia generator (\texttt{IsAuxTwist}).
-\item For each \(i\) there are an element \(\gamma\) of an inertia group away from \(\ell\) and a scalar \(\zeta \in \Zl\), with \(\zeta - 1\) a unit, such that for every sufficiently large coefficient ring \(O\) there are models of \(R_i\), \(\psi\), \(\zeta\) over \(O\) with the following properties.  Write \(L\) for the twisted \(O\)-lattice.  On \(L\) the element \(\gamma\) acts by the model of \(\zeta\).  The module of continuous cocycles with values in the discrete module \(L\otimes_O(\mathrm{Frac}(O)/O)\) that are unramified outside the places over \(\ell p_0p_1\) and the places of \(Q\cup\bar Q\), satisfy the crystalline cocycle relations above \(\ell\), and vanish at \(\gamma\), has normalized length at most \(e'_\ell\).
-\item For each ramified critical pair \(p\) and each sign \(s\), \(v_+\bigl(\iota(\mathrm{ratio}_p(\xi, s))\bigr) \le e'_\ell\).
+\item \(\psi_n\) is locally constant and comes by \(y \mapsto y/\bar y\) from a finite idele class character of tame level \(Q_\vartheta\) trivial above \(\ell\); \(Q_\vartheta\) is auxiliary for the bad places; and \(\sum_{w \in Q_\vartheta} v(\psi_n(\gamma_w) - 1) \le \mathrm{tw}_\ell\) for some choice, at each \(w\in Q_\vartheta\), of a place above \(w\) in \(\bar\Q\), with \(\gamma_w\) its distinguished tame inertia generator.
+\item For each \(i\) there are an element \(\gamma\) of an inertia group away from \(\ell\) and a scalar \(\zeta \in \Zl\), with \(\zeta - 1\) a unit, such that for every sufficiently large coefficient ring \(O\) there are models of \(R_i\), \(\psi_n\), \(\zeta\) over \(O\) with the following properties.  Write \(L\) for the twisted \(O\)-lattice.  On \(L\) the element \(\gamma\) acts by the model of \(\zeta\).  The module of continuous cocycles with values in the discrete module \(L\otimes_O(\mathrm{Frac}(O)/O)\) that are unramified outside the places over \(\ell p_0p_1\) and the places of \(Q_\vartheta\cup\bar Q_\vartheta\), satisfy the crystalline cocycle relations above \(\ell\), and vanish at \(\gamma\), has normalized length at most \(\mathrm{tw}_\ell\).
+\item For each ramified critical pair \(P\) and each sign \(\epsilon\), \(v_+\bigl(\iota(R_P(\vartheta^n, \epsilon))\bigr) \le \mathrm{tw}_\ell\).
 \end{enumerate}
 \end{theorem}
 
-\paragraph{In the rewritten Lean proof.}
-Theorem~\ref{thm:twisting} is \texttt{New.Selmer.exists\_mFoldTwist\_hasDivisibleSelmerLengthLe} in \texttt{New/Congruences/Selmer/TwistingTheorem.lean} of \cite{GL}; its second clause unfolds \texttt{HasDivisibleSelmerLengthLe}.
+Here ``main-summand-like'' is the hypothesis of the rewritten Lean proof named in the closing remark; Definition~\ref{c39-def:main-summand} summarizes it.  At each prolongation of a chosen place away from \(\ell\) it imposes the determinant bounds for the distinguished tame generator, and it does not include the separate trace identity for lifts.
 
 \begin{problem}\label{pr:vl-log}
-For an integer \(n \ge 1\) and a finite set \(T\) of primes, \(\sum_{l \in T} v_l(n)\log l \le \log n\).  Moreover \(\sum_l 2^{-l}\log l = 0.3776\ldots\), the sum over all primes.  Hence \(\sum_{l \in T} e'_l \log l \le (4f + 3)\, r \log G + 1\).
+For an integer \(n \ge 1\) and a finite set \(\mathcal F\) of primes, \(\sum_{\ell \in \mathcal F} v_\ell(n)\log \ell \le \log n\).  Moreover \(\sum_\ell 2^{-\ell}\log \ell = 0.3776\ldots\), the sum over all primes.  Hence \(\sum_{\ell \in \mathcal F} \mathrm{tw}_\ell \log \ell \le (4f + 3)\, r \log \mathcal N + 1\).
 \end{problem}
 
 \section{Regular families}\label{sec:regular}
 
-As in Chapter~\ref{c6-chap}, the twist may depend on the prime: it is chosen at every pair \(\kappa = (\ell, \iota)\) of a prime and an isomorphism \(\iota\colon \C \simeq \Ql\).  The rewritten Lean proof measures a family \(y = (y_\kappa)\) of complex numbers by its height: \(y\) has \emph{height at most \(c\)} if there are \(H \in \C^\times\), a real \(\alpha\) and reals \(h_l \ge 0\), one for each natural number \(l\), with \(\lvert \sigma H\rvert \le e^\alpha\) for every field automorphism \(\sigma\) of \(\C\), \(\lVert\iota(Hy_\kappa)\rVert \le \ell^{h_\ell}\) for every \(\kappa = (\ell, \iota)\), and \(\alpha + \sum_{l \in T} h_l \log l \le c\) for every finite set \(T\) of primes (\texttt{HeightLe}).
+As in Chapter~\ref{c6-chap}, the twist may depend on the prime: it is chosen for every \(\iota \mid \ell\), and families \(y = (y_\iota)\) are measured by their heights (Section~\ref{c5-sec:heights}).  Regular families and small ratios are those of Definitions~\ref{c38-def:regular} and~\ref{c38-def:small-ratios}; the denominators are measured against the budget \(B = U/(mk)\), \(U = fa\log^3 b\).
 
 \begin{problem}\label{pr:height}
-Let \(e_l \ge 0\) be reals with \(\sum_{l \in T} e_l\log l \le c\) for every finite set \(T\) of primes.  If \(\lVert \iota(y_\kappa)\rVert \le \ell^{e_\ell}\) for every \(\kappa = (\ell, \iota)\), then \(y\) has height at most \(c\).
+Let \(e_\ell \ge 0\) be reals with \(\sum_{\ell \in \mathcal F} e_\ell\log \ell \le c\) for every finite set \(\mathcal F\) of primes.  If \(\lVert \iota(y_\iota)\rVert \le \ell^{e_\ell}\) for every \(\iota \mid \ell\), then \(y\) has height at most \(c\).
 \end{problem}
 
 \begin{problem}\label{pr:inverse}
@@ -220,50 +215,39 @@ If \(y \in \C\) and \(v_+(\iota(y)) \le c\) for a real \(c \ge 0\), then \(y \ne
 \end{problem}
 
 \begin{problem}\label{pr:coprime}
-If \(Q\) is auxiliary for a set \(S_0\) containing the places above \(\ell\), then \(\ell\) does not divide the product of the norms of the places of \(Q\).
+If \(Q\) is auxiliary for a set \(\Sigma_0\) containing the places above \(\ell\), then \(\ell\) does not divide the product of the norms of the places of \(Q\).
 \end{problem}
 
-The denominators are measured against a budget.  Let \(x < x_1 < b\) be the scales, \(a = xb\) and \(k = r + 1 - m\), as in Chapter~\ref{c32-chap}, and
+The upper bound per unit of rank for the local defect at \(\ell\) is \(4f\,\mathrm{defect}_\ell\), where
 \[
-  \mathrm{budget} := \frac{f a \log^3 b}{m k}.
+  \mathrm{defect}_\ell := 10^6\,\frac{m}{k}\Bigl(b\, v_\ell(M) + v_\ell\bigl((2b)!\,\Gamma^{u}\bigr)\Bigr),
 \]
-The local loss at a prime \(l\) is \(4f\) times
-\[
-  \mathrm{loss}(l) := 10^6\,\frac{m}{k}\Bigl(b\, v_l(M) + v_l\bigl((2b)!\,\Pi^{u}\bigr)\Bigr),
-\]
-where \(M = p_0p_1\), \(u = r^{24}\), and \(\Pi\) is the product of the positive integers in \((b - 30u, b + 30u]\).  These are \texttt{denominatorBudget}, \texttt{defectBound}, \texttt{crystallineLoss} and \texttt{localDefectBound}, with \(u = \texttt{halfGap}^3\) and \(\texttt{halfGap} = r^8\).  For the data, \(m \ge 1\), \(k \ge 1\) and \(b > 1\).
+\(u = (\Delta/2)^3 = r^{24}\), and \(\Gamma\) is the product of the positive integers in \((b - 30u, b + 30u]\).  For the data, \(m \ge 1\), \(k \ge 1\) and \(b > 1\).
 
 \begin{problem}\label{pr:loss-sum}
-For every finite set \(T\) of primes, \(\sum_{l \in T} \mathrm{loss}(l) \log l \le 10^6 \frac{m}{k}\bigl(b\log M + \log\bigl((2b)!\,(b + 30u)^{60u^2}\bigr)\bigr)\).
+For every finite set \(\mathcal F\) of primes, \(\sum_{\ell \in \mathcal F} \mathrm{defect}_\ell \log \ell \le 10^6 \frac{m}{k}\bigl(b\log M + \log\bigl((2b)!\,(b + 30u)^{60u^2}\bigr)\bigr)\).
 \end{problem}
 
-The data of Chapter~\ref{c32-chap} satisfy \(b\log M + \log\bigl((2b)!\,(b + 30u)^{60u^2}\bigr) \le e^{180}\, b\log b\).  Hence \(\sum_{l \in T} 4f\,\mathrm{loss}(l)\log l \le 4\cdot 10^6 e^{180} f\frac{m}{k}\, b\log b\) for every finite set \(T\) of primes (\texttt{sum\_localDefectBound\_mul\_log\_le}, in \texttt{New/Congruences/FitTwistsExist.lean}).
+The data of Chapter~\ref{c32-chap} satisfy \(b\log M + \log\bigl((2b)!\,(b + 30u)^{60u^2}\bigr) \le e^{180}\, b\log b\).  Hence \(\sum_{\ell \in \mathcal F} 4f\,\mathrm{defect}_\ell\log \ell \le 4\cdot 10^6 e^{180} f\frac{m}{k}\, b\log b\) for every finite set \(\mathcal F\) of primes; this is read from the code.
 
 \begin{problem}\label{pr:budget}
-\(4\cdot 10^6 e^{180} f\frac{m}{k}\, b \log b \le \mathrm{budget}\) if and only if \(4\cdot 10^6 e^{180}\, m^2 \le x\log^2 b\).  In particular this holds if \(m^2 \le 4x\) and \(\log^2 b \ge 16\cdot 10^6 e^{180}\).
+\(4\cdot 10^6 e^{180} f\frac{m}{k}\, b \log b \le B\) if and only if \(4\cdot 10^6 e^{180}\, m^2 \le x\log^2 b\).  In particular this holds if \(m^2 \le 4x\) and \(\log^2 b \ge 16\cdot 10^6 e^{180}\).
 \end{problem}
 
-Problem~\ref{pr:budget} compares the upper bound for the sum of the local losses with the budget.  The data have \(x \le m^2 \le 4x\) (\texttt{m\_sq\_mem\_Icc}).  The rewriting uses the sparsity of the \(b\)-places in the local argument behind \(\mathrm{loss}(l)\) (\texttt{notMem\_bPlaces\_of\_short\_arc}, in \texttt{New/Congruences/LocalLoss/Basic.lean}); this chapter does not treat that argument.  The rewriting bounds the other terms of the denominator (the numbers \(e'_l\), odd classes, the order \(G\), class numbers of \(U(1)\)) and absorbs them in the budget as well (\texttt{sum\_clearingBound\_add\_padicValNat\_le}).
-
-A family \(\theta = (\theta_\kappa)\) of \(m\)-fold twists, one for each \(\kappa = (\ell, \iota)\), is \emph{regular} (\texttt{IsRegularFamily}) if:
-\begin{enumerate}
-\item the product of the norms of the places of the modulus \(Q\) of \(\theta_\kappa\) is prime to \(\ell\);
-\item for \(1 \le n \le m\), each ramified pair \(p\) and each sign \(s\), the family \(\kappa \mapsto \mathrm{ratio}_p(\theta_\kappa^n, s)^{-1}\) has height at most \(x_1\);
-\item for \(1 \le n \le m\) there are reals \(\gamma_l\), one for each natural number \(l\), with \(\sum_{l \in T}\gamma_l \le \mathrm{budget}\) for every finite set \(T\) of primes, such that at every \(\kappa = (\ell, \iota)\) the twist \(\theta_\kappa^n\) has denominators at most \(\gamma_\ell\) (\texttt{HasDenominatorsLe}).  That is: some operator \(\Lambda\) on the image \(Z\) of the lift of the good forms on \(W_n\) at this twist, with \(\lVert\iota(\det\Lambda)\rVert \ge e^{-\dim Z\cdot r\gamma_\ell}\), maps the orthogonal projection to \(Z\) of every \(\iota\)-integral form orthogonal to the false lifts for the good-form idempotent \(D.e_0\) and the subspace \(Z^\perp\) (\texttt{ClearsProjection}) to an \(\iota\)-integral form; and, for each critical pair \(p = (\nu, z)\) main for \(n\) in the sense of Chapter~\ref{c38-chap} (\texttt{CriticalPair.IsMainPair}), any two test forms have projections to the line spanned by the lift of the constant form for \(\nu\theta_\kappa^n\) whose inner product has \(\iota\)-adic norm at most \(e^{\gamma_\ell}\).  Here a test form is integral at every embedding \(\C\hookrightarrow\C_\ell\) and orthogonal to the false lifts in the kernel of the adjoint of this lift, for the idempotent with labels \(X - 1\) (\texttt{IsTestForm}).  Chapter~\ref{c39-chap} describes the clearing operator and orthogonality to false lifts.
-\end{enumerate}
+Problem~\ref{pr:budget} compares the sum of the local bounds per unit of rank with the budget; the data have \(x \le m^2 \le 4x\).  The bound \(4f\,\mathrm{defect}_\ell\) per unit of rank is where the sparsity of the \(b\)-places enters: the set \(\Phi_b\) is sparse for the primes up to \(kt\) in the sense of Chapter~\ref{c4-chap}.  The rewritten Lean proof uses this to exclude a third \(b\)-place on a short arc of Frobenius translates between two others, in the local argument at \(\ell\); this chapter does not treat that argument.  The other terms of the denominator (the numbers \(\mathrm{tw}_\ell\), odd classes, \(v_\ell(\mathcal N)\), class numbers of \(U(1)\)) are bounded in the same way and absorbed in the budget.
 
 \begin{theorem}\label{thm:regular}
-For all data \(D\) there is a regular family of \(m\)-fold twists.
+For all data \(D\) there is a regular family \(\theta = (\theta_\iota)\) of \(m\)-fold twists.
 \end{theorem}
 
 \begin{problem}\label{pr:assembly}
-Assume \(\sum_{l \in T} e'_l\log l \le x_1\) for every finite set \(T\) of primes.  If each \(\theta_\kappa\) satisfies the conclusions of Theorem~\ref{thm:twisting} at \(\kappa\), then \(\theta\) satisfies clauses~1 and~2 of regularity.
+Assume \(\sum_{\ell \in \mathcal F} \mathrm{tw}_\ell\log \ell \le x_1\) for every finite set \(\mathcal F\) of primes.  If each \(\theta_\iota\) satisfies the conclusions of Theorem~\ref{thm:twisting} at \(\iota\), then \(\theta\) has small ratios.
 \end{problem}
 
-For clause~3 the rewriting uses the auxiliary ramification and Selmer bounds of Theorem~\ref{thm:twisting} for the main summands of the good-form lifts and of the rank-one lifts attached to main pairs.  It applies the bound of Chapter~\ref{c39-chap} to the range of the good-form lift and the span of the rank-one lift (\texttt{denominatorLe\_range\_goodLift} and \texttt{denominatorLe\_span\_trivialLift}).  For the rank-one pairing, triviality of stabilizers at the chosen level gives the additional term \(v_\ell(h)\log\ell\), where \(h\) is the number of \(U(1)\) double cosets at that level (\texttt{DenominatorLe.norm\_inner\_starProjection\_le}).  The resulting allowances sum to at most the budget by \texttt{sum\_clearingBound\_add\_padicValNat\_le}, as in Problems~\ref{pr:vl-log}--\ref{pr:budget}.
+For the denominator clause of regularity, the rewritten Lean proof uses the ramification and Selmer bounds of Theorem~\ref{thm:twisting} for the main summands of the lifts of good forms and of the rank-one lifts attached to main pairs, applies Theorem~\ref{c39-thm:denominators} to the image of the good-form lift and to the line of the rank-one lift, and adds \(v_\ell(h)\log\ell\) to the logarithmic allowance for the rank-one pairing, where \(h\) is the number of \(U(1)\) double cosets at the chosen level.  For every finite set of primes the sum of the resulting logarithmic allowances is at most \(B\), by estimates as in Problems~\ref{pr:vl-log}--\ref{pr:budget}.
 
-\paragraph{In the rewritten Lean proof.}
-Theorem~\ref{thm:regular} is \texttt{New.exists\_isRegularFamily} in \texttt{New/Congruences/FitTwistsExist.lean} of \cite{GL}, with \texttt{IsRegularFamily}, \texttt{HasSmallRatios} and \texttt{HasDenominatorsLe} in \texttt{New/Determinant/Twist/FitTwists.lean}.  The twist at one \(\kappa\) is \texttt{New.Selmer.exists\_mFoldTwist\_hasDenominatorsLe}, with \(\gamma_\ell\) equal to \(\log\ell\) times the sum of the clearing bound of Chapter~\ref{c39-chap} and the \(\ell\)-adic valuation of the number of \(U(1)\) double cosets at the chosen level (\texttt{D.chosenLevel}).
+\paragraph{In the Lean formalization.}
+In the rewritten Lean proof \cite{GL}, Theorem~\ref{thm:roots} is \texttt{New.Selmer.exists\_rootsOfUnity\_ellVal\_eval\_le\_add} (\nolinkurl{New/Congruences/Selmer/RootsOfUnity.lean}); the input of Section~\ref{sec:twisting} is a specialization of \texttt{New.Selmer.exists\_twistPolynomials} (\nolinkurl{New/Congruences/Selmer/Line.lean}); Theorem~\ref{thm:twisting} is \texttt{New.Selmer.exists\_mFoldTwist\_hasDivisibleSelmerLengthLe} (\nolinkurl{New/Congruences/Selmer/TwistingTheorem.lean}), with hypothesis \texttt{New.Selmer.IsMainSummandLike}; Theorem~\ref{thm:regular} is \texttt{New.exists\_isRegularFamily} (\nolinkurl{New/Congruences/FitTwistsExist.lean}); the sparsity used for the local loss is \texttt{New.Parameters.IsSparse}, which enters through \texttt{New.Selmer.notMem\_bPlaces\_of\_short\_arc} (\nolinkurl{New/Congruences/LocalLoss/Basic.lean}).  The polynomial comparisons in the introduction are \nolinkurl{New.Selmer.TwistPolynomials.length_le}, \nolinkurl{New.Selmer.TwistPolynomials.groupRingEval_eq_eval} and \nolinkurl{New.Selmer.exists_stickelbergerSystem_ellVal_ratio_le}.  In the namespace \nolinkurl{New.Selmer}, the objects in Section~\ref{sec:twisting} are \nolinkurl{SelmerDatum} and \nolinkurl{StickelbergerSystem}, the length bound is \nolinkurl{SelmerDatum.TwistedLengthLe}, and the general twisting theorem is \nolinkurl{exists_anticyclotomic_twist}, with conclusions \nolinkurl{IsSmallTwist}.  The truncated valuation is \nolinkurl{New.ellVal}.  The bound per unit of rank and its sum are \nolinkurl{New.Selmer.localDefectBound} and \nolinkurl{New.Selmer.sum_localDefectBound_mul_log_le}; the estimate with \(e^{180}\) occurs in the proof of the latter.  The two projection bounds are \nolinkurl{New.Selmer.denominatorLe_range_goodLift} and \nolinkurl{New.Selmer.denominatorLe_span_trivialLift}.  The pairing estimate is \nolinkurl{New.Selmer.DenominatorLe.norm_inner_starProjection_le}, and the sum of the allowances is bounded in \nolinkurl{New.Selmer.sum_clearingBound_add_padicValNat_le}.
 
 \section*{Hints}
 
@@ -284,7 +268,7 @@ Theorem~\ref{thm:regular} is \texttt{New.exists\_isRegularFamily} in \texttt{New
 \subsection*{Section~\ref{sec:several}}
 \begin{description}
 \item[\ref{pr:one-coordinate}] Apply Problem~\ref{pr:one-variable} to the product of the one-variable polynomials \(g_i(Y)\) obtained by freeing the coordinate \(j\); for each \(i\) separately, use \(v(g_i(\zeta - 1)) \ge v_{\rho_h}(g_i)\).
-\item[\ref{pr:all-coordinates}] Induction on the number of coordinates moved, with Problem~\ref{pr:one-coordinate}, keeping the running sum at most \(\beta + 1\).  For Theorem~\ref{thm:roots} take \(\delta = \min(\varepsilon, 1)/(s_0 + 2)\) and \(h_0\) from Problem~\ref{pr:harmonic} with \(B = \beta + 1\).
+\item[\ref{pr:all-coordinates}] Induction on the number of coordinates moved, with Problem~\ref{pr:one-coordinate}, keeping the running sum at most \(\beta + 1\).  For Theorem~\ref{thm:roots} take \(\delta = \min(\varepsilon, 1)/(s_0 + 2)\) and \(h_0\) from Problem~\ref{pr:harmonic} with \(\beta + 1\) in place of \(\beta\).
 \item[\ref{pr:root-of-x}] The roots of \((1 + Y)^n - 1 - x\) have product \(\pm x\).
 \item[\ref{pr:powers-far}] First compare \(m\) with \(\varphi(\ell^h)\), where \(\ell^h\) is the order of \(\zeta\).  What is the order of \(\zeta^n\)?
 \item[\ref{pr:powers}] Theorem~\ref{thm:roots} with radius \(\rho/m\), after the substitution \(X_j \mapsto (1 + X_j)^n - 1\); Problem~\ref{pr:root-of-x}.
@@ -293,15 +277,15 @@ Theorem~\ref{thm:regular} is \texttt{New.exists\_isRegularFamily} in \texttt{New
 \subsection*{Section~\ref{sec:twisting}}
 \begin{description}
 \item[\ref{pr:psi-power}] For the last claim, the \(\lambda_{\mathfrak q'}\) with \(\mathfrak q' \ne \mathfrak q\) are unramified at \(\mathfrak q\) because \(Q\) is auxiliary.
-\item[\ref{pr:twist-from-roots}] Choose \(s_0\) as in the input, then a rational \(\rho > 0\) with \(s_0\rho \le \varepsilon/2\), then \(h_0\) by Problem~\ref{pr:powers} with the bounds \(\beta + 1 \ge 0\) (note \(0 \le v(P) \le \beta + s_0\rho\)) and \(\varepsilon/2\), then a sufficiently large \(N \ge h_0\) and the auxiliary data at level \(N\).  Use Problem~\ref{pr:psi-power}; for the ramification, Problem~\ref{pr:powers-far}.
-\item[\ref{pr:vl-log}] Factor \(n\); for the last claim take \(n = G\).
+\item[\ref{pr:twist-from-roots}] Choose \(s_0\) as in the input, then a rational \(\rho > 0\) with \(s_0\rho \le \varepsilon/2\), then \(h_0\) by Problem~\ref{pr:powers} with the bounds \(\beta + 1 \ge 0\) (note \(0 \le v(F) \le \beta + s_0\rho\)) and \(\varepsilon/2\), then a sufficiently large \(h_1 \ge h_0\) and the auxiliary data at level \(\ell^{h_1}\).  Use Problem~\ref{pr:psi-power}; for the ramification, Problem~\ref{pr:powers-far}.
+\item[\ref{pr:vl-log}] Factor \(n\); for the last claim take \(n = \mathcal N\).
 \end{description}
 
 \subsection*{Section~\ref{sec:regular}}
 \begin{description}
 \item[\ref{pr:height}] Which multiplier leaves the local inequalities unchanged?
 \item[\ref{pr:coprime}] A place of \(Q\) has prime norm and does not lie above \(\ell\).
-\item[\ref{pr:loss-sum}] Problem~\ref{pr:vl-log}, and count the factors of \(\Pi\).
+\item[\ref{pr:loss-sum}] Problem~\ref{pr:vl-log}, and count the factors of \(\Gamma\).
 \item[\ref{pr:budget}] Write \(a = xb\).
 \item[\ref{pr:assembly}] Problems~\ref{pr:coprime}, \ref{pr:inverse} and~\ref{pr:height}.
 \end{description}
