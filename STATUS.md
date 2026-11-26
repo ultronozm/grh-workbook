@@ -6,6 +6,10 @@ The site is <https://ultronozm.github.io/grh-workbook/>.  Each update appends an
 
 ## What changed
 
+### 26 November 2026. Reading progress on the website
+
+- Mark problems as done on the HTML sheets. Chapter counts and the controls for exporting, importing and clearing progress are on the index. Marks are saved in the reader's browser.
+
 ### 26 November 2026: batch 8, seven further sheets; the denominators split; Sources
 
 - **Seven new sheets.**  In Part VIII: *A Hecke operator is nearly onto*.  In Part IX: *Turns and the auxiliary forms*, *The comparison operator*, *Congruences bounded by lengths*, *Auxiliary primes: even classes at no cost*, *Lengths as values of polynomials*, *Tied primes*.  Each takes over a statement that its chapter had read from the Lean code.  It either deduces that statement from narrower statements read from the code, or states it with a model and its accounting (*A Hecke operator is nearly onto*).  The status paragraph names what is still read from the code.

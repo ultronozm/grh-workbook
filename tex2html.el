@@ -1118,12 +1118,15 @@ The check is warning-only; it returns the number of issues found."
     (with-temp-file data-file
       (insert (json-encode (vconcat data-list))))))
 
+(defvar tex2html-index-export-options nil
+  "Additional Org HTML export options for the site index.")
+
 (defun tex2html-make-index ()
   (interactive)
   (populate-listing-json)
   (find-file "index.org")
   (setq org-html-validation-link nil)
-  (org-html-export-to-html))
+  (org-html-export-to-html nil nil nil nil tex2html-index-export-options))
 
 (require 'org)
 (org-link-set-parameters

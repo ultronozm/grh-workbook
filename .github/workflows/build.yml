@@ -37,6 +37,7 @@ on:
       - 'config.json'
       - 'convert.sh'
       - 'index.org'
+      - 'progress.js'
       - 'tex2html.el'
       - 'scripts/**'
       - 'tags.tsv'
@@ -181,6 +182,10 @@ jobs:
                         awk -F'\t' '/^\+[^+#]/ {print $2}' | sort -u); do
               FILES="$FILES $(printf '%s\n' $ALL | grep "^$id--" || true)"
             done
+            # Converter changes affect every sheet, including carried-forward HTML.
+            if ! git diff --quiet "${{ github.event.before }}" "${{ github.event.after }}" -- convert.sh tex2html.el tex2html-local.el; then
+              FILES="$ALL"
+            fi
             # If the committed chapters.tex was stale, the numbers changed
             # here: rebuild every sheet that reads it.
             if ! git diff --quiet -- chapters.tex; then

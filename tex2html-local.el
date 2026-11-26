@@ -16,6 +16,7 @@
 ;; - Table-of-contents entries repeat the numbered heading text.
 ;; - Items with a stable tag in tags.tsv (scripts/make-tags.py) show it,
 ;;   small and grey, linking to tag/TAG.html.
+;; - Problems carry stable IDs for the browser's progress tracker.
 
 ;;; Code:
 
@@ -25,6 +26,7 @@
 (require 'xml)
 
 (defvar tex2html-theorem-names)
+(defvar tex2html-index-export-options)
 (declare-function label-number-hash-table "tex2html")
 (declare-function tex2html-detex "tex2html")
 
@@ -233,9 +235,10 @@ genuine aligned nested in another display environment; restore those."
           (goto-char text-beg)
           (insert text))))))
 
-(defun tex2html-local--tags (sheet)
+(defun tex2html-local--tags (sheet &optional retired)
   "Return the live tags of SHEET in tags.tsv as (TAG . LABEL) pairs.
-SHEET is a Denote timestamp; LABEL is \"\" for the chapter itself."
+SHEET is a Denote timestamp; LABEL is \"\" for the chapter itself.
+With RETIRED non-nil, return only the retired tags instead."
   (when (file-exists-p "tags.tsv")
     (with-temp-buffer
       (insert-file-contents "tags.tsv")
@@ -244,7 +247,8 @@ SHEET is a Denote timestamp; LABEL is \"\" for the chapter itself."
           (unless (string-prefix-p "#" line)
             (let ((cols (split-string line "\t")))
               (when (and (equal (string-trim (or (nth 1 cols) "")) sheet)
-                         (string-empty-p (string-trim (or (nth 3 cols) ""))))
+                         (eq (not retired)
+                             (string-empty-p (string-trim (or (nth 3 cols) "")))))
                 (push (cons (string-trim (nth 0 cols))
                             (string-trim (or (nth 2 cols) "")))
                       tags)))))
@@ -279,12 +283,73 @@ result's at the top of its box, each as a link to tag/TAG.html."
          (t (message "Warning: no element for tag %s (%s)"
                      (car tag) (cdr tag))))))))
 
+(defun tex2html-local-add-progress (auxfile)
+  "Emit progress IDs for the problems in AUXFILE's sheet.
+A tagged problem uses its tag, with the file-and-label ID accepted
+as an alias for marks made before the tag was assigned.  Reused
+labels with retired tags do not get an alias."
+  (let* ((texfile (concat (file-name-base auxfile) ".tex"))
+         (sheet (substring texfile 0 (min 15 (length texfile))))
+         (tags (tex2html-local--tags sheet))
+         (retired (tex2html-local--tags sheet t))
+         (seen (make-hash-table :test 'equal)))
+    (goto-char (point-min))
+    (while (re-search-forward
+            "<div\\(?: id=\"\\([^\"]+\\)\"\\)? class=\"problem\">" nil t)
+      (if-let* ((anchor (match-string 1))
+                (label (xml-substitute-special anchor)))
+          (let* ((fallback (concat texfile "#" label))
+                 (tag (car (rassoc label tags)))
+                 (ids (cond
+                       ((not tag) (vector fallback))
+                       ((rassoc label retired) (vector tag))
+                       (t (vector tag fallback)))))
+            (when (gethash (aref ids 0) seen)
+              (error "Duplicate progress ID %s in %s" (aref ids 0) texfile))
+            (puthash (aref ids 0) t seen)
+            (backward-char)
+            (insert " data-progress-ids=\"" (xml-escape-string (json-encode ids)) "\""))
+        (message "Warning: a problem in %s needs a LaTeX label for progress tracking"
+                 texfile)))
+    (unless (zerop (hash-table-count seen))
+      (goto-char (point-min))
+      (search-forward "</head>")
+      (goto-char (match-beginning 0))
+      (insert "<link rel=\"stylesheet\" href=\"progress.css\">\n"
+              "<script src=\"progress.js\" defer></script>\n"))))
+
+(defun tex2html-local-index-progress (item _backend _info)
+  "Attach the built sheet's IDs to the chapter link in Org list ITEM."
+  (when (string-match
+         (concat "\\`<li>[[:space:]]*\\(?:<p>[[:space:]]*\\)?"
+                 "<a href=\"\\([0-9]\\{8\\}T[0-9]\\{6\\}--[^/\"<>]+__workbook\\.html\\)\"")
+         item)
+    (let ((page (match-string 1 item))
+          (link-end (match-end 0))
+          ids)
+      (when (file-readable-p page)
+        (with-temp-buffer
+          (insert-file-contents page)
+          (goto-char (point-min))
+          ;; These values are already JSON-encoded and escaped for HTML.
+          (while (re-search-forward " data-progress-ids=\"\\([^\"]+\\)\"" nil t)
+            (push (match-string 1) ids))))
+      (when ids
+        (concat (substring item 0 link-end)
+                " data-sheet-progress=\"[" (mapconcat #'identity (nreverse ids) ",") "]\""
+                (substring item link-end))))))
+
+(setq tex2html-index-export-options
+      (plist-put tex2html-index-export-options :filter-item
+                 '(tex2html-local-index-progress)))
+
 (add-hook 'tex2html-postprocess-html-functions #'tex2html-local-fix-theorem-numbers)
 (add-hook 'tex2html-postprocess-html-functions #'tex2html-local-fix-bibliography t)
 (add-hook 'tex2html-postprocess-html-functions #'tex2html-local-fix-math t)
 (add-hook 'tex2html-postprocess-html-functions #'tex2html-local-fix-toc t)
 ;; After the table of contents, which copies the headings' text.
 (add-hook 'tex2html-postprocess-html-functions #'tex2html-local-add-tags t)
+(add-hook 'tex2html-postprocess-html-functions #'tex2html-local-add-progress t)
 
 (provide 'tex2html-local)
 ;;; tex2html-local.el ends here
