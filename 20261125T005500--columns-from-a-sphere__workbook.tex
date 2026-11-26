@@ -5,6 +5,9 @@
 \usepackage[hidelinks]{hyperref}
 \externaldocument[sm-]{20261125T000000--slope-method__workbook}
 \externaldocument[gf-]{20261125T005000--galois-fourier-and-averaging__workbook}
+\externaldocument[c18-]{20261126T030200--the-bound-is-attained__workbook}
+\externaldocument[c32-]{20261126T030300--the-data__workbook}
+\externaldocument[c40-]{20261126T031000--twists-with-few-congruences__workbook}
 
 % Chapter number; \ref{chap} gives it.
 \newcounter{chap}
@@ -36,58 +39,58 @@
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-The structure of \((\Z/p^N\Z)^\times\) for a prime \(p\) \cite[Ch.~4, \S1]{IR}.  Linearity of expectation.  From Chapter~\ref{gf-chap}: the places \(\Phi\) of \(E\) and their labels in \(U_{q_1}\), the map \(\pi\), the places \(u(v)\), the \(a\)-places \(A\) with \(h = \lvert A\rvert\), the \(b\)-places \(B\) with \(j = \lvert B\rvert\) (Section~\ref{gf-sec:places}), and Problems~\ref{gf-pr:fibres}, \ref{gf-pr:coef} and~\ref{gf-pr:dense}.
+The structure of \((\Z/p^c\Z)^\times\) for a prime \(p\) \cite[Ch.~4, \S1]{IR}.  Linearity of expectation.  From Chapter~\ref{gf-chap} we use the places \(\Phi\) of \(E\) and their labels, the reduction \(\mathrm{cl}\) of the label modulo \(q_0\), the place \([\nu]\) of an integer \(\nu\), the \(a\)-places \(\Phi_a\) and the \(b\)-places \(\Phi_b\) (Section~\ref{gf-sec:places}), and Problems~\ref{gf-pr:fibres}, \ref{gf-pr:coef} and~\ref{gf-pr:dense}.  From Chapter~\ref{c32-chap}, the admissible data.  We write \(U_m := (\Z/m\Z)^\times\) for \(m \ge 1\).
 
 \medskip
-In Chapter~\ref{gf-chap} a set \(B\) of places of class \(-1\) modulo \(q_0\) was given the weight \(b\), and Problem~\ref{gf-pr:dense} showed why it must be dense: if \(b > 1\) and \(h \le j\log b\), then
+In Chapter~\ref{gf-chap} a set \(\Phi_b\) of places of class \(-1\) modulo \(q_0\) was given the weight \(b\), and Problem~\ref{gf-pr:dense} showed why it must be dense: if \(b > 1\) and \(\#\Phi_a \le \#\Phi_b\log b\), then
 \[
-  R_{q_0}(x) \le \frac{\mathrm{rem}}{aj} + \lvert R_{q_0}(x_1)\rvert + \log b\,\lvert R_1(x_1)\rvert .
+  R_{q_0}(x) \le \frac{\mathrm{rem}}{a\,\#\Phi_b} + \lvert R_{q_0}(x_1)\rvert + \log b\,\lvert R_1(x_1)\rvert .
 \]
-How can \(B\) be chosen?  The argument asks for a second property, which pulls against density: \(B\) must be sparse along multiplication by every small prime.  In the rewritten Lean proof \cite{GL}, \texttt{New.Parameters.exists\_large\_isSparse} uses Behrend's construction \cite{Beh} to choose the exponents \(n\) in labels \(-g^n\), and \texttt{New.Parameters.IsLargeScale.exists\_isAdmissibleData} supplies \(B\) with the required density.  Lattice points on a sphere, written as digits in a large base, become exponents of one element of \(U_{q_1}\).
+How can \(\Phi_b\) be chosen?  The argument asks for a second property, which pulls against density: for every small prime \(\ell\), it restricts which signed powers of \(\ell\) can occur as ratios of labels of \(b\)-places after reduction modulo the prime-to-\(\ell\) part of \(q_1\).  The rewritten Lean proof \cite{GL} meets both with Behrend's construction \cite{Beh}: lattice points on a sphere, written as digits in a large base, become exponents of one element of \(U_{q_1}\).
 
-Throughout, for \(q' \mid q_1\) let \(\pi_{q'} \colon \Phi \to U_{q'}\) be the label reduced modulo \(q'\), so that \(\pi = \pi_{q_0}\); for a prime \(\ell\) let \(q_\ell\) be the largest divisor of \(q_1\) prime to \(\ell\).  The map is \texttt{New.Parameters.placeClass}; the modulus \(q_\ell\) is written \texttt{ordCompl}\([\ell]\,q_1\) in \texttt{New.Parameters.IsSparse}.  For the parameters \((q_0, d)\) of Chapter~\ref{gf-chap} (\texttt{New.Parameters}) and an integer \(s \ge 0\), the proof sets
+Throughout, for \(q' \mid q_1\) let \(\mathrm{cl}_{q'} \colon \Phi \to U_{q'}\) be the label reduced modulo \(q'\), so that \(\mathrm{cl} = \mathrm{cl}_{q_0}\); for a prime \(\ell\) let \(q_{(\ell)}\) be the largest divisor of \(q_1\) prime to \(\ell\).  For the parameters \((q_0, d)\) and an integer \(s \ge 0\), Chapter~\ref{c32-chap} sets
 \[
   l_0(s) = 3^{\lfloor \log_3 s\rfloor + 4}, \qquad q_1 = q_0 \cdot 3\,l_0(s)\,2^s ,
 \]
-with \(\lfloor\log_3 0\rfloor\) read as \(0\) (\texttt{New.l\textsubscript{0}}, \texttt{New.towerDeg}, \texttt{New.Parameters.q\textsubscript{1}}).  With \(e := \lfloor\log_3 s\rfloor\) this is the \(q_1 = q_0\,3^{e+5}2^s\) of Chapter~\ref{gf-chap}, and Problem~\ref{gf-pr:fibres} gives \(h = q_1/q_0 = 3l_0(s)2^s\) (see \texttt{New.Parameters.card\_placeClass\_eq\_one\_eq\_towerDeg} and \texttt{New.towerDeg\_eq}).  We write \(l_0\) when \(s\) is fixed.  Exponents in group powers and congruences are integers, as are the exponents in prime-power moduli.
+with \(\lfloor\log_3 0\rfloor\) read as \(0\).  With \(e := \lfloor\log_3 s\rfloor\) this is the \(q_1 = q_0\,3^{e+5}2^s\) of Chapter~\ref{gf-chap}, and Problem~\ref{gf-pr:fibres} gives \(\#\Phi_a = q_1/q_0 = 3l_0(s)2^s\).  We write \(l_0\) when \(s\) is fixed.  Exponents in group powers and congruences are integers, as are the exponents in prime-power moduli.
 
 \section{Two requirements}\label{sec:two}
 
 The first requirement is size, measured against the class of \(-1\).
 
 \begin{problem}\label{pr:avg-density}
-Multiplication by \(u(-1)\) maps \(A\) bijectively onto \(\pi^{-1}(-1)\), so \(\pi^{-1}(-1)\) has \(h\) elements.  In the toy example of Chapter~\ref{gf-chap}, \(q_0 = 4\), \(q_1 = 16\), it consists of the places with labels \(3, 7, 11, 15\).
+Multiplication by \([-1]\) maps \(\Phi_a\) bijectively onto \(\mathrm{cl}^{-1}(-1)\), so \(\mathrm{cl}^{-1}(-1)\) has \(\#\Phi_a\) elements.  In the toy example of Chapter~\ref{gf-chap}, \(q_0 = 4\), \(q_1 = 16\), it consists of the places with labels \(3, 7, 11, 15\).
 \end{problem}
 
-The field \texttt{New.Data.towerDeg\_le\_card\_bPlaces\_mul} of an admissible datum requires
+An admissible datum (Chapter~\ref{c32-chap}) requires
 \begin{equation}\label{eq:density}
-  q_1/q_0 \le j \log b ,
+  q_1/q_0 \le \#\Phi_b \log b ,
 \end{equation}
-so \(B\) must contain at least the proportion \(1/\log b\) of \(\pi^{-1}(-1)\).
+so \(\Phi_b\) must contain at least the proportion \(1/\log b\) of \(\mathrm{cl}^{-1}(-1)\).
 
-The second requirement concerns ratios of places.  For \(\ell \nmid q_1\), the label of \(u(\ell)\) is \(\ell \bmod q_1\).  For \(\ell \mid q_1\), the convention of Chapter~\ref{gf-chap} gives \(u(\ell) = 1\).  In both cases the sparsity condition compares the reduced label of a ratio with signed powers of \(\ell\) modulo \(q_\ell\).
+The second requirement concerns ratios of places.  For \(\ell \nmid q_1\), the label of \([\ell]\) is \(\ell \bmod q_1\).  For \(\ell \mid q_1\), the convention of Chapter~\ref{gf-chap} makes \([\ell]\) the identity.  In both cases the sparsity condition compares the reduced label of a ratio with signed powers of \(\ell\) modulo \(q_{(\ell)}\).
 
 \begin{problem}\label{pr:frob-prog}
-Let \(\ell\) be a prime, \(\sigma \in \Phi\) and \(i \ge 1\).  (i) If \(\ell \nmid q_1\), then \(q_\ell = q_1\), and the places \(\tau\) with \(\pi_{q_\ell}(\tau/\sigma) = \pm\ell^i\) are the two places \(u(\pm\ell^i)\sigma\).  (ii) If \(\ell^\nu \Vert q_1\) with \(\nu \ge 1\), then for each sign there are \(\ell^{\nu-1}(\ell-1)\) such places.  For \(q_1 = 36\), \(\ell = 3\) this is \(6\).
+Let \(\ell\) be a prime, \(\sigma \in \Phi\) and \(i \ge 1\).  (i) If \(\ell \nmid q_1\), then \(q_{(\ell)} = q_1\), and the places \(\tau\) with \(\mathrm{cl}_{q_{(\ell)}}(\tau/\sigma) = \pm\ell^i\) are the two places \([\pm\ell^i]\sigma\).  (ii) If \(\ell^\nu \Vert q_1\) with \(\nu \ge 1\), then for each sign there are \(\ell^{\nu-1}(\ell-1)\) such places.  For \(q_1 = 36\), \(\ell = 3\) this is \(6\).
 \end{problem}
 
-The definition \texttt{New.Parameters.IsSparse} of the rewritten Lean proof states the second requirement.  For a natural number \(L\), a finite set \(\Pc \subseteq \Phi\) is \emph{sparse for the primes up to \(L\)} if for every prime \(\ell \le L\) and all integers \(0 < i < i' < l_0(s)\) there are no \(\sigma, \tau, \tau' \in \Pc\), distinct or not, and no signs \(\varepsilon, \varepsilon' \in \{\pm1\}\) with
+The rewritten Lean proof states the second requirement as follows.  For a natural number \(L\), a finite set \(\Pc \subseteq \Phi\) is \emph{sparse for the primes up to \(L\)} if for every prime \(\ell \le L\) and all integers \(0 < i < i' < l_0(s)\) there are no \(\sigma, \tau, \tau' \in \Pc\), distinct or not, and no signs \(\varepsilon, \varepsilon' \in \{\pm1\}\) with
 \[
-  \pi_{q_\ell}(\tau/\sigma) = \varepsilon\,\ell^i \quad\text{and}\quad \pi_{q_\ell}(\tau'/\sigma) = \varepsilon'\ell^{i'} \quad\text{in } \Z/q_\ell\Z.
+  \mathrm{cl}_{q_{(\ell)}}(\tau/\sigma) = \varepsilon\,\ell^i \quad\text{and}\quad \mathrm{cl}_{q_{(\ell)}}(\tau'/\sigma) = \varepsilon'\ell^{i'} \quad\text{in } \Z/q_{(\ell)}\Z.
 \]
-The field \texttt{New.Data.sparse} of an admissible datum requires \(B\) to be sparse for the primes up to \(kt\), where \(k = r+1-m\) and \(t = 5r\) are \texttt{New.Data.k} and \texttt{New.Data.t}, with \(m\) the number of lifts and \(r\) the target rank of the datum.
+An admissible datum requires \(\Phi_b\) to be sparse for the primes up to \(kt\), where \(k = r+1-m\) and \(t = 5r\), with \(m\) the number of lifts and \(r\) the rank of the target (Chapter~\ref{c32-chap}).
 
 \begin{problem}\label{pr:short-orbit}
-Let \(\Pc\) be sparse for the primes up to \(L\), let \(\ell \le L\) be prime, \(v \in U_{q_\ell}\), and choose a sign \(\varepsilon_\mu\) for every integer \(\mu\).  Among any \(l_0\) consecutive integers \(\mu\), at most two have \(\varepsilon_\mu\ell^\mu v \in \pi_{q_\ell}(\Pc)\).
+Let \(\Pc\) be sparse for the primes up to \(L\), let \(\ell \le L\) be prime, \(v \in U_{q_{(\ell)}}\), and choose a sign \(\varepsilon_\mu\) for every integer \(\mu\).  Among any \(l_0\) consecutive integers \(\mu\), at most two have \(\varepsilon_\mu\ell^\mu v \in \mathrm{cl}_{q_{(\ell)}}(\Pc)\).
 \end{problem}
 
 \begin{problem}\label{pr:near-pairs}
-Let \(\Pc\) be sparse for the primes up to \(L\), let \(p \le L\) be a prime with \(p \nmid q_1\), and \(0 < i < i' < l_0\).  For no \(\sigma\) are all three of \(\sigma\), \(u(-p)^i\sigma\), \(u(-p)^{i'}\sigma\) in \(\Pc\).
+Let \(\Pc\) be sparse for the primes up to \(L\), let \(p \le L\) be a prime with \(p \nmid q_1\), and \(0 < i < i' < l_0\).  For no \(\sigma\) are all three of \(\sigma\), \([-p]^i\sigma\), \([-p]^{i'}\sigma\) in \(\Pc\).
 \end{problem}
 
-The rewritten Lean proof applies the field \texttt{New.Data.sparse} directly in two lemmas.  Problem~\ref{pr:near-pairs} for \(B\), with the hypotheses \(p \le k\) and \(\chi_d(p) \ne 1\) in place of \(p \le L\) and \(p \nmid q_1\), is \texttt{New.Data.notMem\_bPlaces\_of\_two\_partners}, used in the sharpness argument for the divisibility of derivatives; the second hypothesis gives \(p \nmid q_1\) by Problem~\ref{gf-pr:coef}(i).  The lemma \texttt{New.Selmer.notMem\_bPlaces\_of\_short\_arc}, used in the bound for local losses at a prime \(\ell \le kt\), applies the definition to three places of \(E\) obtained from one embedding \(E \to \bar\Q_\ell\) and three elements of \(\mathrm{Gal}(\bar\Q_\ell/\Q_\ell)\); its hypotheses give the two ratios, with exponents \(0 < i < i' < l_0\).
+The sparsity of \(\Phi_b\) is used twice.  Chapter~\ref{c18-chap} uses Problem~\ref{pr:near-pairs} for \(\Phi_b\) when \(p \le k\) and \(\chi_K(p) \ne 1\), in the sharpness argument for the divisibility of derivatives (Problem~\ref{c18-pr:near-pairs} and the paragraph before it); the condition \(\chi_K(p) \ne 1\) implies \(p \nmid q_1\), since every prime divisor of \(q_1\) divides \(q_0\) and Problem~\ref{gf-pr:coef}(i) applies.  Chapter~\ref{c40-chap}, Section~\ref{c40-sec:regular}, states the local loss bound \(4f\,\mathrm{defect}_\ell\) at primes \(\ell \le kt\), whose local argument excludes a third \(b\)-place on a short arc by the definition above; that chapter omits the argument.
 
-Why are the two requirements in tension?  We shall look for \(B\) among the places \(u(-g^n)\) for the integer \(g\) of Section~\ref{sec:places}, whose order modulo a power of \(2\) is \(2^s\) (\texttt{New.Parameters.exists\_orderOf\_placeClass\_eq}).  Section~\ref{sec:places} uses a set of exponents \(\Nc \subseteq [0, 2^s)\) with the following property: for all \(n_1, n_2, n_3 \in \Nc\) and positive integers \(\alpha, \alpha'\) with \(\alpha + \alpha' \le 2l_0\), the congruence \((\alpha+\alpha')n_2 \equiv \alpha n_1 + \alpha' n_3 \pmod{2^s}\) implies \(n_1 = n_2 = n_3\).  For \(\alpha = \alpha' = 1\) this excludes nonconstant three-term progressions.  The obvious sets without them are thin.
+Why are the two requirements in tension?  We shall look for \(\Phi_b\) among the places \([-g^n]\) for the integer \(g\) of Section~\ref{sec:places}, whose order modulo a power of \(2\) is \(2^s\) (Problem~\ref{pr:long-order}).  Section~\ref{sec:places} uses a set of exponents \(\Nc \subseteq [0, 2^s)\) with the following property: for all \(n_1, n_2, n_3 \in \Nc\) and positive integers \(\alpha, \alpha'\) with \(\alpha + \alpha' \le 2l_0\), the congruence \((\alpha+\alpha')n_2 \equiv \alpha n_1 + \alpha' n_3 \pmod{2^s}\) implies \(n_1 = n_2 = n_3\).  For \(\alpha = \alpha' = 1\) this excludes nonconstant three-term progressions.  The obvious sets without them are thin.
 
 \begin{problem}\label{pr:base3}
 For an integer \(\mu \ge 0\), let \(\Nc_\mu\) be the set of integers in \([0, 3^\mu)\) whose base-\(3\) digits are \(0\) or \(1\).  (i) \(\Nc_\mu\) contains no nonconstant three-term arithmetic progression, and \(\lvert \Nc_\mu\rvert = (3^\mu)^{\log 2/\log 3}\).  (ii) For \(\mu \ge 2\), \(\Nc_\mu\) contains \(0, 1, 3\), and \(3 \cdot 1 = 2 \cdot 0 + 1 \cdot 3\), a relation with \(\alpha = 2\), \(\alpha' = 1\).
@@ -103,7 +106,7 @@ Let \(o \ge 4\) be even, and let \(R \subseteq \Z/o\Z\) contain each element ind
 Let \(R\) be as in Problem~\ref{pr:random-ap}.  For each pair \((n, \eta)\) counted there choose one of \(n, n+\eta, n+2\eta\), and let \(R'\) be obtained from \(R\) by deleting the chosen points.  Then \(R'\) contains no three distinct points \(n, n+\eta, n+2\eta\), and its expected size is at least \(\delta o - \delta^3 o^2\).  For \(\delta \le (2o)^{-1/2}\) this is at least \(\delta o/2\).
 \end{problem}
 
-For an admissible datum let \(o = 2^s\).  Then \(o = m^{22}\) by \texttt{New.Data.m\_pow\_eq\_two\_pow\_towerExp}, \(\sqrt{x} \le m \le 2\sqrt{x}\) by \texttt{New.Data.m\_mem}, and \((\log b)^{100} \le x\) by \texttt{New.Data.logB\_pow\_le\_x}.  The density guaranteed by Problem~\ref{pr:random-deletion} is of order \(o^{-1/2}\) at best, and \((2o)^{-1/2} < x^{-5}\).  For places indexed injectively by exponents modulo \(o\), \eqref{eq:density} asks for an exponent density at least \(3l_0/\log b > x^{-1/100}\).  The deletion estimate falls short of the required density by a power of \(x\).  We now choose the exponents using lattice points on a sphere.
+For an admissible datum let \(o = 2^s\).  Then \(o = m^{22}\), \(\sqrt{x} \le m \le 2\sqrt{x}\) and \((\log b)^{100} \le x\) (Chapter~\ref{c32-chap}).  The density guaranteed by Problem~\ref{pr:random-deletion} is of order \(o^{-1/2}\) at best, and \((2o)^{-1/2} < x^{-5}\).  For places indexed injectively by exponents modulo \(o\), \eqref{eq:density} asks for an exponent density at least \(3l_0/\log b > x^{-1/100}\).  The deletion estimate falls short of the required density by a power of \(x\).  We now choose the exponents using lattice points on a sphere.
 
 \section{Behrend's construction}\label{sec:behrend}
 
@@ -141,21 +144,18 @@ Problems~\ref{pr:line-sphere}--\ref{pr:no-relation} and~\ref{pr:size} give the f
 If \(0 < Q\) and \((QH)^D \le o\), there is a finite set \(\Nc\) of natural numbers such that \(n < o\) for every \(n \in \Nc\), \(H^D/(DH^2) \le \#\Nc\), and for all \(n_1, n_2, n_3 \in \Nc\) and all natural numbers \(\alpha, \alpha'\) with \(0 < \alpha\), \(0 < \alpha'\), \(\alpha + \alpha' \le Q\), the congruence \((\alpha + \alpha')n_2 \equiv \alpha n_1 + \alpha' n_3 \pmod o\) implies \(n_1 = n_2\) and \(n_2 = n_3\).
 \end{theorem}
 
-\paragraph{In the Lean formalization.}
-In the rewritten Lean proof \cite{GL} this is the lemma \texttt{New.exists\_three\_term\_free}, in \texttt{New/Reduction/Data/Existence.lean} of the readable edition.
-
 For \(Q = 2\), the first Exercise below gives the density lower bound \(\exp(-C\sqrt{\log o})\) of Behrend's construction \cite{Beh}.  No construction gives a density bounded below by a positive constant independent of \(N\): by Roth's theorem \cite{Ro} a set of integers in \([0, N)\) without nonconstant three-term progressions has \(o(N)\) elements as \(N \to \infty\).  The size condition we need is~\eqref{eq:density}.
 
 \section{From exponents to places}\label{sec:places}
 
-The exponents of Theorem~\ref{thm:behrend} become places through one integer \(g\) prime to \(q_1\).  Let \(w = v_2(q_0)\), so that \(2^{s+w} \mid q_1\); since \(16 \mid 18480\), \(w \ge 4\), and the problems below use only \(w \ge 2\).  Following the construction in \texttt{New.Parameters.exists\_large\_isSparse}, let
+The exponents of Theorem~\ref{thm:behrend} become places through one integer \(g\) prime to \(q_1\).  Let \(w = v_2(q_0)\), so that \(2^{s+w} \mid q_1\); since \(16 \mid 18480\), \(w \ge 4\), and the problems below use only \(w \ge 2\).  Following the construction of the rewritten Lean proof, let
 \[
-  g := 1 + 3l_0q_0, \qquad \sigma_n := u(-g^n) \in \Phi \quad (n \ge 0).
+  g := 1 + 3l_0q_0, \qquad \sigma_n := [-g^n] \in \Phi \quad (n \ge 0).
 \]
 A toy of the same shape has \(q_0 = 4\) and \(l_0 = 3\) in place of the values of the proof, and \(s = 13\): then \(q_1 = 4 \cdot 9 \cdot 2^{13} = 294912\), \(w = 2\) and \(g = 37\).  In the toy the prime \(3\) divides \(q_1\) but not \(q_0\), which nothing below uses, and ``sparse'' is taken with \(l_0 = 3\).
 
 \begin{problem}\label{pr:cyclic}
-(i) If \(N \ge w \ge 2\) and \(y\) is odd, then \(1 + 2^w y\) has order \(2^{N-w}\) in \(U_{2^N}\).  (ii) If \(N \ge 1\), then \(4\) has order \(3^{N-1}\) in \(U_{3^N}\).  For example \(5^0, 5^1, 5^2, 5^3 \equiv 1, 5, 9, 13 \pmod{16}\), and \(4\) has order \(3\) modulo \(9\).
+(i) If \(c \ge w \ge 2\) and \(y\) is odd, then \(1 + 2^w y\) has order \(2^{c-w}\) in \(U_{2^c}\).  (ii) If \(c \ge 1\), then \(4\) has order \(3^{c-1}\) in \(U_{3^c}\).  For example \(5^0, 5^1, 5^2, 5^3 \equiv 1, 5, 9, 13 \pmod{16}\), and \(4\) has order \(3\) modulo \(9\).
 \end{problem}
 
 \begin{problem}\label{pr:long-order}
@@ -163,11 +163,11 @@ The integer \(g\) has order \(2^s\) modulo \(2^{s+w}\).  The places \(\sigma_n\)
 \end{problem}
 
 \begin{problem}\label{pr:short-order}
-Let \(0 < i < l_0\) and \(n, n' \ge 0\).  Then \(\pi_{q_2}(\sigma_{n'}/\sigma_n) \ne \pm 2^i\).
+Let \(0 < i < l_0\) and \(n, n' \ge 0\).  Then \(\mathrm{cl}_{q_{(2)}}(\sigma_{n'}/\sigma_n) \ne \pm 2^i\).
 \end{problem}
 
 \begin{problem}\label{pr:frob-thick}
-Let \(\ell\) be an odd prime, \(0 < i < i'\), and \(n_1, n_2, n_3 \ge 0\).  If \(\pi_{q_\ell}(\sigma_{n_2}/\sigma_{n_1}) = \pm\ell^i\) and \(\pi_{q_\ell}(\sigma_{n_3}/\sigma_{n_1}) = \pm\ell^{i'}\), then
+Let \(\ell\) be an odd prime, \(0 < i < i'\), and \(n_1, n_2, n_3 \ge 0\).  If \(\mathrm{cl}_{q_{(\ell)}}(\sigma_{n_2}/\sigma_{n_1}) = \pm\ell^i\) and \(\mathrm{cl}_{q_{(\ell)}}(\sigma_{n_3}/\sigma_{n_1}) = \pm\ell^{i'}\), then
 \[
   2i'\,n_2 \equiv 2(i' - i)\,n_1 + 2i\,n_3 \pmod{2^s}.
 \]
@@ -184,11 +184,8 @@ In the toy, the places \(\sigma_n\) for \(n = 20, 37, 326, 360, 649, 666\) have 
 Problems~\ref{pr:long-order}--\ref{pr:two-power}, with Theorem~\ref{thm:behrend} for \(Q = 2l_0\) and \(o = 2^s\), prove the next theorem.  It concerns the parameters \((q_0, d)\) and natural numbers \(s, D, H, L\), with the same convention for \(H^D/(DH^2)\) as in Theorem~\ref{thm:behrend}.
 
 \begin{theorem}\label{thm:progressions}
-If \((2l_0(s)H)^D \le 2^s\) and \(2l_0(s)(L+1) < 2^s\), there is a finite set \(\Pc \subseteq \Phi\) with \(\pi(\sigma) = -1\) for every \(\sigma \in \Pc\), with \(H^D/(DH^2) \le \#\Pc\), and sparse for the primes up to \(L\).
+If \((2l_0(s)H)^D \le 2^s\) and \(2l_0(s)(L+1) < 2^s\), there is a finite set \(\Pc \subseteq \Phi\) with \(\mathrm{cl}(\sigma) = -1\) for every \(\sigma \in \Pc\), with \(H^D/(DH^2) \le \#\Pc\), and sparse for the primes up to \(L\).
 \end{theorem}
-
-\paragraph{In the Lean formalization.}
-In the rewritten Lean proof \cite{GL} this is the lemma \texttt{New.Parameters.exists\_large\_isSparse}, in \texttt{New/Reduction/Data/Existence.lean} of the readable edition; sparsity is the definition \texttt{New.Parameters.IsSparse}, in \texttt{New/Reduction/Data/AdmissibleData.lean}.
 
 It remains to choose \(D\) and \(H\) so that \(\#\Pc\) is large compared with \(q_1/q_0\).
 
@@ -196,7 +193,10 @@ It remains to choose \(D\) and \(H\) so that \(\#\Pc\) is large compared with \(
 Let \(D \ge 1\) be an integer and \(W \ge 1\) real, with \(W \le 2^s \le W^D\), \((2l_0)^D \le W\) and \(3l_0 D 2^D \le W^3\), and let \(H\) be the largest power of \(2\) with \(H^D \le 2^s/W\).  Then \(H \le W\), \((2l_0 H)^D \le 2^s\), and \(q_1/q_0 \le W^6 H^D/(DH^2)\).
 \end{problem}
 
-With Theorem~\ref{thm:progressions} this gives a set of places of class \(-1\) modulo \(q_0\), sparse for the primes up to \(L\), with \(q_1/q_0 \le \#\Pc\cdot W^6\), under the hypotheses of Problem~\ref{pr:count} and \(2l_0(L+1) < 2^s\); in the rewritten Lean proof this is the lemma \texttt{New.Parameters.exists\_isSparse}.  In \texttt{New.Parameters.IsLargeScale.exists\_isAdmissibleData}, the scale \(b\) is chosen with \(W^6 \le \log b\), which gives~\eqref{eq:density}.  This ends the choice of places.  From Chapter~\ref{sm-chap} on, the next part develops the comparison of divisibility with size.
+With Theorem~\ref{thm:progressions} this gives a set of places of class \(-1\) modulo \(q_0\), sparse for the primes up to \(L\), with \(q_1/q_0 \le \#\Pc\cdot W^6\), under the hypotheses of Problem~\ref{pr:count} and \(2l_0(L+1) < 2^s\).  If moreover \(W^6 \le \log b\), then \(\Pc\) satisfies~\eqref{eq:density} in place of \(\Phi_b\).  This ends the choice of places.  From Chapter~\ref{sm-chap} on, the next part develops the comparison of divisibility with size.
+
+\paragraph{In the Lean formalization.}
+In the rewritten Lean proof \cite{GL}, sparsity is the definition \texttt{New.Parameters.IsSparse} (file \texttt{New/Reduction/Data/AdmissibleData.lean}), and Theorems~\ref{thm:behrend} and~\ref{thm:progressions} are \texttt{New.exists\_three\_term\_free} and \texttt{New.Parameters.exists\_large\_isSparse} (file \texttt{New/Reduction/Data/Existence.lean}); the proof of the latter is the construction of Section~\ref{sec:places}.
 
 \subsection*{Exercises}
 
@@ -210,7 +210,7 @@ With Theorem~\ref{thm:progressions} this gives a set of places of class \(-1\) m
 \subsection*{\S\ref{sec:two}}
 \begin{description}
 \item[\ref{pr:avg-density}] Problem~\ref{gf-pr:fibres}.
-\item[\ref{pr:frob-prog}] (ii) Count a fibre of \(U_{q_1} \to U_{q_\ell}\).
+\item[\ref{pr:frob-prog}] (ii) Count a fibre of \(U_{q_1} \to U_{q_{(\ell)}}\).
 \item[\ref{pr:short-orbit}] Take three such \(\mu\).
 \item[\ref{pr:near-pairs}] \((-p)^i = (-1)^ip^i\).
 \item[\ref{pr:base3}] (i) Add the outer terms digit by digit.
@@ -231,8 +231,8 @@ With Theorem~\ref{thm:progressions} this gives a set of places of class \(-1\) m
 \begin{description}
 \item[\ref{pr:cyclic}] Induction on the exponent of \(2\), resp.\ \(3\), in \((1+2^wy)^{2^r} - 1\), resp.\ \(4^{3^r} - 1\).
 \item[\ref{pr:long-order}] Problem~\ref{pr:cyclic}(i).
-\item[\ref{pr:short-order}] Use \(3l_0 \mid q_2\) and Problem~\ref{pr:cyclic}(ii).
-\item[\ref{pr:frob-thick}] For odd \(\ell\), \(2^{s+w} \mid q_\ell\).  Work modulo \(2^{s+w}\).
+\item[\ref{pr:short-order}] Use \(3l_0 \mid q_{(2)}\) and Problem~\ref{pr:cyclic}(ii).
+\item[\ref{pr:frob-thick}] For odd \(\ell\), \(2^{s+w} \mid q_{(\ell)}\).  Work modulo \(2^{s+w}\).
 \item[\ref{pr:two-power}] Compute \(v_2(\ell^\lambda - 1)\) for \(\lambda\) odd and for \(\lambda\) even; for \(\lambda\) even use \(\ell^2 - 1 = (\ell-1)(\ell+1)\) and Problem~\ref{pr:cyclic}(i) for \(\ell^2\).
 \item[\ref{pr:toy}] Problems~\ref{pr:example} (base \(18\)), \ref{pr:short-order} and~\ref{pr:frob-thick} with \(l_0 = 3\); if the exponents coincide, Problem~\ref{pr:two-power}.
 \item[\ref{pr:count}] Compare \((2H)^D\) with \(2^s/W\).
