@@ -2,6 +2,8 @@
   "use strict";
 
   const prefix = "grh-workbook:done:";
+  const solutionPrefix = "grh-workbook:solution:";
+  const requireSolutionKey = "grh-workbook:require-solution";
   let storage;
   try {
     storage = window.localStorage;
@@ -16,6 +18,290 @@
       if (key?.startsWith(prefix)) done.add(key.slice(prefix.length));
     }
     return done;
+  }
+
+  function readSolutions() {
+    const solutions = new Map();
+    for (let i = 0; i < storage.length; i++) {
+      const key = storage.key(i);
+      if (!key?.startsWith(solutionPrefix)) continue;
+      const text = storage.getItem(key);
+      if (text?.trim()) solutions.set(key.slice(solutionPrefix.length), text);
+    }
+    return solutions;
+  }
+
+  function readSolution(ids) {
+    for (const id of ids) {
+      const text = storage.getItem(solutionPrefix + id);
+      if (text?.trim()) return text;
+    }
+    return "";
+  }
+
+  function saveSolution([id, ...aliases], text) {
+    if (text.trim()) storage.setItem(solutionPrefix + id, text);
+    else storage.removeItem(solutionPrefix + id);
+    aliases.forEach(alias => storage.removeItem(solutionPrefix + alias));
+  }
+
+  function make(tag, className, text = "") {
+    const node = document.createElement(tag);
+    node.className = className;
+    node.textContent = text;
+    return node;
+  }
+
+  function solutionLink(text) {
+    const button = make("button", "solution-link", text);
+    button.type = "button";
+    return button;
+  }
+
+  function inlineMarkdown(parent, source, math) {
+    const literals = [];
+    // Protect math and code before interpreting Markdown punctuation.
+    const text = source.replace(/\0/g, "�").replace(
+      /`([^`\n]+)`|(\\\(([\s\S]+?)\\\)|\$((?:\\.|[^$\\\n])+)\$)|(\\\$)/g,
+      (_, code, formula, parens, dollars) => {
+        if (formula) {
+          const span = make("span", "solution-math", formula);
+          math.push([span, parens ?? dollars]);
+          literals.push(span);
+        } else {
+          literals.push(code ? make("code", "", code) : document.createTextNode("$"));
+        }
+        return `\0${literals.length - 1}\0`;
+      });
+
+    function append(node, input) {
+      const tokens = /\0(\d+)\0|\*\*(.+?)\*\*|__(.+?)__|\*([^*]+)\*|(?<!\w)_([^_]+)_(?!\w)/g;
+      let end = 0;
+      for (const match of input.matchAll(tokens)) {
+        node.append(input.slice(end, match.index));
+        const [, literal, boldStar, boldUnderscore, italicStar, italicUnderscore] = match;
+        if (literal !== undefined) node.append(literals[Number(literal)]);
+        else {
+          const strong = boldStar ?? boldUnderscore;
+          const emphasis = document.createElement(strong ? "strong" : "em");
+          append(emphasis, strong ?? italicStar ?? italicUnderscore);
+          node.append(emphasis);
+        }
+        end = match.index + match[0].length;
+      }
+      node.append(input.slice(end));
+    }
+    append(parent, text);
+  }
+
+  function renderMarkdown(source) {
+    const fragment = document.createDocumentFragment();
+    const math = [];
+    let paragraph = [];
+    let list;
+    let code;
+
+    function flushParagraph() {
+      if (!paragraph.length) return;
+      const node = document.createElement("p");
+      inlineMarkdown(node, paragraph.join(" "), math);
+      fragment.append(node);
+      paragraph = [];
+    }
+
+    for (const line of source.split("\n")) {
+      if (/^\s*```/.test(line)) {
+        flushParagraph();
+        list = null;
+        if (code) code = null;
+        else {
+          code = document.createElement("code");
+          const pre = document.createElement("pre");
+          pre.append(code);
+          fragment.append(pre);
+        }
+      } else if (code) {
+        code.append(line + "\n");
+      } else if (!line.trim()) {
+        flushParagraph();
+        list = null;
+      } else {
+        const item = /^\s*(?:[-*+]|(\d+)\.)\s+(.+)$/.exec(line);
+        if (!item) {
+          list = null;
+          paragraph.push(line.trim());
+          continue;
+        }
+        flushParagraph();
+        const kind = item[1] ? "ol" : "ul";
+        if (list?.localName !== kind) {
+          list = document.createElement(kind);
+          if (item[1] && item[1] !== "1") list.start = Number(item[1]);
+          fragment.append(list);
+        }
+        const li = document.createElement("li");
+        inlineMarkdown(li, item[2], math);
+        list.append(li);
+      }
+    }
+    flushParagraph();
+    return {fragment, math};
+  }
+
+  let mathDocument;
+  async function typesetSolution(math, current) {
+    const mj = window.MathJax;
+    await mj?.startup?.promise;
+    if (!mj?.startup?.document || !current()) return;
+    const main = mj.startup.document;
+    const engine = mj._.mathjax.mathjax;
+    // Keep draft macros and labels out of the sheet's TeX state. Use the
+    // math packages without the HTML and dynamic package-loading commands.
+    mathDocument ??= engine.document(document, {
+      InputJax: new main.inputJax[0].constructor({
+        macros: mj.config.tex?.macros,
+        packages: ["base", "ams", "newcommand", "configmacros", "noundefined"],
+      }),
+      OutputJax: main.outputJax,
+    });
+    for (const [span, tex] of math) {
+      if (!current()) return;
+      try {
+        const result = await engine.handleRetriesFor(() => mathDocument.convert(tex, {display: false}));
+        if (!current()) return;
+        result.removeAttribute("id");
+        result.querySelectorAll("[id]").forEach(node => node.removeAttribute("id"));
+        span.replaceChildren(result);
+      } catch {
+        // Leave the source visible if a formula cannot be rendered.
+      }
+    }
+  }
+
+  const solutionEditors = [];
+  function addSolutionEditor(problem, ids, label) {
+    const area = make("div", "problem-solution");
+    const toggle = solutionLink("Write solution");
+    area.append(toggle);
+    problem.append(area);
+    let editor, input, note, preview, status, timer, revision = 0;
+    let saved = "";
+    let dirty = false;
+
+    function refreshLink() {
+      saved = readSolution(ids);
+      toggle.textContent = saved ? "Edit solution" : "Write solution";
+      toggle.classList.toggle("solution-written", Boolean(saved));
+    }
+
+    function grow() {
+      if (CSS.supports("field-sizing", "content")) return;
+      input.style.height = "auto";
+      input.style.height = `${input.scrollHeight + input.offsetHeight - input.clientHeight}px`;
+    }
+
+    function updatePreview() {
+      const version = ++revision;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        const {fragment, math} = renderMarkdown(input.value);
+        preview.replaceChildren(fragment);
+        if (math.length) {
+          typesetSolution(math, () => revision === version).catch(() => {});
+        }
+      }, 250);
+    }
+
+    function showNote(required) {
+      note.hidden = !required;
+      if (required) input.setAttribute("aria-describedby", note.id);
+      else input.removeAttribute("aria-describedby");
+    }
+
+    function save() {
+      try {
+        saveSolution(ids, input.value);
+        dirty = false;
+        status.textContent = input.value.trim() ? "Saved" : "";
+        if (input.value.trim()) showNote(false);
+        refreshLink();
+      } catch {
+        dirty = true;
+        status.textContent = "Could not save in this browser.";
+      }
+    }
+
+    function close() {
+      if (dirty) {
+        save();
+        if (dirty) return;
+      }
+      clearTimeout(timer);
+      revision++;
+      editor.hidden = true;
+      preview.replaceChildren();
+      toggle.hidden = false;
+      toggle.focus();
+    }
+
+    function open(required = false) {
+      if (!editor) {
+        editor = make("div", "solution-editor");
+        editor.hidden = true;
+        note = make("p", "solution-note", "Write a solution before marking this problem done.");
+        note.id = `solution-note-${problem.id}`;
+        input = document.createElement("textarea");
+        input.rows = 3;
+        input.setAttribute("aria-label", `Solution for ${label} (Markdown and TeX)`);
+        input.placeholder = "Markdown and TeX";
+        preview = make("div", "solution-preview mathjax_ignore");
+        const actions = make("div", "solution-actions");
+        const done = solutionLink("Done");
+        status = make("span", "solution-status");
+        status.setAttribute("role", "status");
+        actions.append(done, status);
+        editor.append(note, input, preview, actions);
+        area.append(editor);
+        input.addEventListener("input", () => {
+          grow();
+          save();
+          updatePreview();
+        });
+        done.addEventListener("click", close);
+        editor.addEventListener("keydown", event => {
+          if (event.key !== "Escape" || event.isComposing) return;
+          event.preventDefault();
+          event.stopPropagation();
+          close();
+        });
+      }
+      if (editor.hidden) {
+        refreshLink();
+        input.value = saved;
+        status.textContent = saved ? "Saved" : "";
+        editor.hidden = false;
+        toggle.hidden = true;
+        grow();
+        updatePreview();
+      }
+      showNote(required);
+      input.focus();
+    }
+
+    toggle.addEventListener("click", () => open());
+    refreshLink();
+    solutionEditors.push(() => {
+      const previous = saved;
+      refreshLink();
+      if (!dirty && editor && !editor.hidden && previous !== saved) {
+        input.value = saved;
+        status.textContent = saved ? "Saved" : "";
+        if (saved) showNote(false);
+        grow();
+        updatePreview();
+      }
+    });
+    return open;
   }
 
   const renderers = [];
@@ -36,7 +322,7 @@
       const total = problems.length;
       const done = problems.filter(isDone).length;
       count.hidden = done === 0;
-      count.textContent = onIndex ? `${done}/${total}` : `${done} of ${total}`;
+      count.textContent = onIndex ? `${done}/${total}` : `${done} of ${total} done`;
       count.classList.toggle("progress-complete", onIndex && done === total);
     });
   }
@@ -47,6 +333,7 @@
     const heading = problem.querySelector(":scope > p:first-of-type > strong:first-child");
     if (!heading) continue;
     problems.push(ids);
+    const editSolution = addSolutionEditor(problem, ids, heading.textContent.trim());
 
     const button = document.createElement("button");
     button.type = "button";
@@ -75,6 +362,10 @@
         if (ids.some(id => storage.getItem(prefix + id) !== null)) {
           ids.forEach(id => storage.removeItem(prefix + id));
         } else {
+          if (storage.getItem(requireSolutionKey) === "1" && !readSolution(ids)) {
+            editSolution(true);
+            return;
+          }
           storage.setItem(prefix + ids[0], "1");
         }
       } catch {
@@ -144,16 +435,75 @@
     const panel = template.content.firstElementChild.cloneNode(true);
     const file = panel.querySelector('input[type="file"]');
     const status = panel.querySelector('[role="status"]');
+    const required = panel.querySelector("[data-require-solution]");
     document.body.append(panel);
 
-    panel.querySelector("[data-export]").addEventListener("click", () => {
-      const contents = JSON.stringify({version: 1, done: [...readDone()].sort()}, null, 2);
-      const url = URL.createObjectURL(new Blob([contents + "\n"], {type: "application/json"}));
+    const destinations = [];
+    for (const sheet of document.querySelectorAll("a[data-sheet-problems]")) {
+      const ids = JSON.parse(sheet.dataset.sheetProgress);
+      const chapter = sheet.textContent.trim().match(/^S?\d+/)?.[0];
+      JSON.parse(sheet.dataset.sheetProblems).forEach(([anchor, label], i) => {
+        const url = new URL(sheet.href);
+        url.hash = encodeURIComponent(anchor);
+        destinations.push({ids: ids[i], heading: `Chapter ${chapter}, ${label}`, url: url.href});
+      });
+    }
+    const knownIds = new Set(destinations.flatMap(({ids}) => ids));
+
+    function download(name, type, contents) {
+      const url = URL.createObjectURL(new Blob([contents + "\n"], {type}));
       const link = document.createElement("a");
       link.href = url;
-      link.download = "grh-workbook-progress.json";
+      link.download = name;
       link.click();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function updateSetting() {
+      required.checked = storage.getItem(requireSolutionKey) === "1";
+    }
+    updateSetting();
+    window.addEventListener("pageshow", updateSetting);
+    window.addEventListener("storage", event => {
+      if (event.storageArea === storage && (!event.key || event.key === requireSolutionKey)) updateSetting();
+    });
+    required.addEventListener("change", () => {
+      try {
+        if (required.checked) storage.setItem(requireSolutionKey, "1");
+        else storage.removeItem(requireSolutionKey);
+        status.textContent = "";
+      } catch {
+        updateSetting();
+        status.textContent = "Could not save the setting in this browser.";
+      }
+    });
+
+    panel.querySelector("[data-export]").addEventListener("click", () => {
+      const backup = {
+        version: 1,
+        done: [...readDone()].sort(),
+        solutions: Object.fromEntries([...readSolutions()].sort(([a], [b]) => a.localeCompare(b))),
+      };
+      download("grh-workbook-progress.json", "application/json", JSON.stringify(backup, null, 2));
+    });
+
+    panel.querySelector("[data-export-solutions]").addEventListener("click", () => {
+      const sections = [];
+      for (const {ids, heading, url} of destinations) {
+        const text = readSolution(ids);
+        if (text) sections.push(`## [${heading}](<${url}>)\n\n${text}`);
+      }
+      const other = [...readSolutions()].filter(([id]) => !knownIds.has(id));
+      if (other.length) {
+        sections.push("## Other saved solutions",
+          ...other.map(([id, text]) => `### ${id}\n\n${text}`));
+      }
+      if (sections.length) {
+        status.textContent = "";
+        download("grh-workbook-solutions.md", "text/markdown", sections.join("\n\n"));
+      } else {
+        status.textContent = "No saved solutions.";
+      }
     });
 
     panel.querySelector("[data-import]").addEventListener("click", () => file.click());
@@ -164,8 +514,12 @@
       let backup;
       try {
         backup = JSON.parse(await selected.text());
+        const solutions = backup?.solutions;
         if (backup?.version !== 1 || !Array.isArray(backup.done) ||
-            !backup.done.every(id => typeof id === "string" && id.length > 0)) {
+            !backup.done.every(id => typeof id === "string" && id.length > 0) ||
+            (solutions !== undefined && (!solutions || typeof solutions !== "object" ||
+              Array.isArray(solutions) || !Object.entries(solutions).every(([id, text]) =>
+                id && typeof text === "string" && text.trim())))) {
           throw new Error("Invalid progress backup");
         }
       } catch {
@@ -174,25 +528,41 @@
       }
       try {
         backup.done.forEach(id => storage.setItem(prefix + id, "1"));
+        const solutions = new Map(Object.entries(backup.solutions ?? {}));
+        for (const {ids} of destinations) {
+          const id = ids.find(id => solutions.has(id));
+          if (id) saveSolution(ids, solutions.get(id));
+        }
+        for (const [id, text] of solutions) {
+          if (!knownIds.has(id)) saveSolution([id], text);
+        }
         status.textContent = "Progress imported.";
       } catch {
-        status.textContent = "Browser storage is full. Some marks may not have been imported.";
+        status.textContent = "Browser storage is full. Some progress or solutions may not have been imported.";
       }
       render();
     });
 
     panel.querySelector("[data-clear]").addEventListener("click", () => {
       if (!window.confirm("Clear all saved progress for GRH via exercises?")) return;
+      const solutions = readSolutions();
+      const clearSolutions = solutions.size && window.confirm("Also clear all saved solutions?");
       readDone().forEach(id => storage.removeItem(prefix + id));
-      status.textContent = "Progress cleared.";
+      if (clearSolutions) {
+        for (const id of solutions.keys()) storage.removeItem(solutionPrefix + id);
+      }
+      status.textContent = clearSolutions ? "Progress and solutions cleared." : "Progress cleared.";
       render();
     });
   }
 
   window.addEventListener("storage", event => {
-    if (event.storageArea === storage && (!event.key || event.key.startsWith(prefix))) render();
+    if (event.storageArea !== storage) return;
+    if (!event.key || event.key.startsWith(prefix)) render();
+    if (!event.key || event.key.startsWith(solutionPrefix)) solutionEditors.forEach(update => update());
   });
   window.addEventListener("pageshow", render);
+  window.addEventListener("pageshow", () => solutionEditors.forEach(update => update()));
   render();
 })();
 
@@ -567,10 +937,10 @@
       pageTo(index, false);
     }, {passive: true});
     deck.addEventListener("scroll", event => {
-      if (event.target === cards[current].slide) scheduleSave();
+      if (event.currentTarget === deck && event.target === cards[current]?.slide) scheduleSave();
     }, {capture: true, passive: true});
     deck.addEventListener("toggle", event => {
-      if (cards[current].slide.contains(event.target)) scheduleSave();
+      if (event.currentTarget === deck && cards[current]?.slide.contains(event.target)) scheduleSave();
     }, true);
     restorePosition(state, revealHash);
   }

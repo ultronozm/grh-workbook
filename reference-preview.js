@@ -13,7 +13,8 @@
   let rendering = Promise.resolve();
 
   function destination(link) {
-    if (!link || link.closest(".reference-preview") || !link.hash ||
+    if (!link || link.closest(".reference-preview") ||
+        (!link.hash && !link.closest(".used-in")) ||
         link.origin !== location.origin || link.hasAttribute("download")) return null;
     const page = new URL(link.href);
     const local = page.pathname === location.pathname && page.search === location.search;
@@ -66,7 +67,8 @@
   }
 
   function copyTarget(source, ref) {
-    let target = source.getElementById(ref.id);
+    const chapterLink = !ref.id && source.querySelector('meta[name="workbook-chapter"]');
+    let target = chapterLink ? source.querySelector("#title-block-header") : source.getElementById(ref.id);
     const entry = target?.closest(entries + ", " + footnotes);
     if (entry) target = entry;
     // A display with several labels has empty anchors immediately before it.
@@ -77,17 +79,22 @@
     const section = target.matches(headings) && /^§\s*\w/.test(target.textContent);
     const block = target.matches(blocks);
     const equation = target.matches(".math.display");
-    if (!section && !block && !equation && !entry) return null;
+    if (!chapterLink && !section && !block && !equation && !entry) return null;
 
     const content = document.createElement("div");
     content.className = "reference-preview-content";
     if (equation) content.classList.add("reference-preview-equation");
-    const copy = target.cloneNode(true);
-    if (block) copy.classList.add("reference-preview-block");
-    if (section) copy.classList.add("reference-preview-heading");
-    if (entry) copy.classList.add("reference-preview-entry");
-    content.append(copy);
-    if (section) {
+    if (!chapterLink) {
+      const copy = target.cloneNode(true);
+      if (block) copy.classList.add("reference-preview-block");
+      if (section) copy.classList.add("reference-preview-heading");
+      if (entry) {
+        copy.classList.add("reference-preview-entry");
+        copy.querySelectorAll(".footnote-back, [role='doc-backlink']").forEach(node => node.remove());
+      }
+      content.append(copy);
+    }
+    if (section || chapterLink) {
       for (let node = target.nextElementSibling; node && !node.matches(headings);
            node = node.nextElementSibling) {
         if (node.matches("p")) {
@@ -97,15 +104,15 @@
       }
     }
     stripIds(content);
-    content.querySelectorAll(".progress-toggle, .stable-tag, .used-in").forEach(node => node.remove());
-    if (entry) copy.querySelectorAll(".footnote-back, [role='doc-backlink']").forEach(node => node.remove());
+    content.querySelectorAll(".progress-toggle, .problem-solution, .stable-tag, .used-in")
+      .forEach(node => node.remove());
     content.querySelectorAll("a[href]").forEach(link => {
       link.href = new URL(link.getAttribute("href"), ref.page).href;
     });
     content.querySelectorAll("img[src]").forEach(image => {
       image.src = new URL(image.getAttribute("src"), ref.page).href;
     });
-    if (!ref.local) {
+    if (!ref.local || chapterLink) {
       const chapter = source.querySelector('meta[name="workbook-chapter"]')?.content;
       const context = document.createElement("div");
       context.className = "reference-preview-context";

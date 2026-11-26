@@ -330,24 +330,35 @@ labels with retired tags do not get an alias."
             "<script src=\"reference-preview.js\" defer></script>\n")))
 
 (defun tex2html-local-index-progress (item _backend _info)
-  "Attach the built sheet's IDs to the chapter link in Org list ITEM."
+  "Attach the built sheet's problem IDs and destinations to Org list ITEM."
   (when (string-match
          (concat "\\`<li>[[:space:]]*\\(?:<p>[[:space:]]*\\)?"
                  "<a href=\"\\([0-9]\\{8\\}T[0-9]\\{6\\}--[^/\"<>]+__workbook\\.html\\)\"")
          item)
     (let ((page (match-string 1 item))
           (link-end (match-end 0))
-          ids)
+          ids destinations)
       (when (file-readable-p page)
         (with-temp-buffer
           (insert-file-contents page)
           (goto-char (point-min))
           ;; These values are already JSON-encoded and escaped for HTML.
-          (while (re-search-forward " data-progress-ids=\"\\([^\"]+\\)\"" nil t)
-            (push (match-string 1) ids))))
+          (while (re-search-forward
+                  (concat "<div id=\"\\([^\"]+\\)\" class=\"problem\""
+                          " data-progress-ids=\"\\([^\"]+\\)\">[[:space:]]*"
+                          "\\(?:<a class=\"stable-tag\"[^>]*>[^<]*</a>[[:space:]]*\\)?"
+                          "<p><strong>\\(Problem [^<]+\\)</strong>")
+                  nil t)
+            (let ((anchor (match-string 1))
+                  (label (match-string 3)))
+              (push (match-string 2) ids)
+              (push (vector (xml-substitute-special anchor) label) destinations)))))
       (when ids
         (concat (substring item 0 link-end)
                 " data-sheet-progress=\"[" (mapconcat #'identity (nreverse ids) ",") "]\""
+                " data-sheet-problems=\""
+                (xml-escape-string (json-encode (vconcat (nreverse destinations))))
+                "\""
                 (substring item link-end))))))
 
 (setq tex2html-index-export-options
