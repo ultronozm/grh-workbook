@@ -7,6 +7,10 @@
 \externaldocument[c3-]{20261125T005000--galois-fourier-and-averaging__workbook}
 \externaldocument[c4-]{20261125T005500--columns-from-a-sphere__workbook}
 \externaldocument[c7-]{20261125T003000--the-chain-and-the-square-root__workbook}
+\externaldocument[bp-]{20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook}
+\externaldocument[ss-]{20261126T030400--the-seesaw-identity__workbook}
+\externaldocument[dc-]{20261126T030500--divisibility-of-the-composite-lift__workbook}
+\externaldocument[c38-]{20261126T030800--the-cost-of-one-lift__workbook}
 
 % Chapter number; \ref{chap} gives it.
 \newcounter{chap}
@@ -28,7 +32,7 @@
 \newcommand{\hdir}{h_{\mathrm{dir}}}
 \newcommand{\sfin}{s_{\mathrm{fin}}}
 \newcommand{\smain}{s_{\mathrm{main}}}
-\newcommand{\main}{\mathrm{main}}
+\newcommand{\hmain}{h_{\mathrm{main}}}
 \newcommand{\rem}{\mathrm{rem}}
 
 \setlength{\emergencystretch}{3em}
@@ -45,7 +49,7 @@
 Cyclotomic fields: the degree of \(\Q(\zeta_n)\), the splitting of primes in it, and the conductor--discriminant formula \cite[Ch.~2--3]{Wa}.  The discriminant in a tower \cite[Ch.~III, \S2]{Ne}; finiteness of the class group \cite[Ch.~I, \S6]{Ne}.  Quadratic reciprocity \cite[Ch.~5]{IR}.  Chebyshev's function satisfies \(\psi(u) \le 2u\) for \(u \ge 1\) \cite[Thm.~12]{RS}.  From the earlier chapters: the character \(\chi_K\) and the weight \(1 - \chi_K\) (Chapter~\ref{c2-chap}), the infinite places of the CM field of Chapter~\ref{c3-chap} and the prime sums over them, sparse sets of places (Chapter~\ref{c4-chap}), and the chain of \(m \approx \sqrt x\) steps (Chapter~\ref{c7-chap}).
 
 \medskip
-Every later chapter of this part works with one collection of objects: two integers \(q_0\) and \(d\), a CM field \(E\) obtained by adjoining a root of unity to \(\Q(\sqrt{-d})\), three scales \(x < x_1 < b\), the number \(m\) of lifts, the ranks \(r\) and \(k\) and the step size \(t\), a set of places of \(E\) with weights, and three large primes.  This chapter lists them as the rewritten Lean proof \cite{GL} of Alpöge's theorem \cite{Alp} does, checks that their sizes fit together, defines the direction amount, the main amount and the total remainder used in the later bounds, and states that such data exist for every large integer \(x\).  No automorphic form appears.  We write \(\log\) for the natural logarithm.
+Every later chapter of this part works with one collection of objects: two integers \(q_0\) and \(d\), a CM field \(E\) obtained by adjoining a root of unity to \(\Q(\sqrt{-d})\), three scales \(x < x_1 < b\), the number \(m\) of lifts, the ranks \(r\) and \(k\) and the step size \(t\), a set of places of \(E\) with weights, and three large primes.  This chapter lists them as the rewritten Lean proof \cite{GL} of Alpöge's theorem \cite{Alp} does, checks that their sizes fit together, defines the direction amount, the main amount and the total remainder used in the later bounds, states that such data exist for every large integer \(x\), and, in its last section, fixes the spaces, forms and twists that the later chapters attach to the data.  We write \(\log\) for the natural logarithm.
 
 \section{The modulus and the prime \texorpdfstring{\(d\)}{d}}\label{sec:parameters}
 
@@ -97,13 +101,13 @@ For \(s \ge 1\), \(\rd_E \ge \rd_{\Q(\zeta_{2^s})} = 2^{s-1}\).
 
 Let \(\gamma\) be Euler's constant, \(\CS(d) := \gamma - L'(1, \chi_K)/L(1, \chi_K)\), and
 \[
-  C := V + (2d + 6) + q_0 + \lvert \CS(d) \rvert + \sum_{w} \bigl\lvert \log \lvert \Phi_{q_0}'(w) \rvert \bigr\rvert ,
+  C := v_0 + (2d + 6) + q_0 + \lvert \CS(d) \rvert + \sum_{w} \bigl\lvert \log \lvert \Phi_{q_0}'(w) \rvert \bigr\rvert ,
 \]
-the sum over the primitive \(q_0\)-th roots of unity \(w \in \C\), with \(\Phi_{q_0}\) the cyclotomic polynomial, and \(V \ge 0\) an integer that depends only on \(q_0\) and \(d\), fixed in the rewriting as follows: for every \(s\), a nonzero scalar multiple of the vacuum of the standard rank-one hermitian space over \(E_s\) has integral values at finite arguments, and all conjugates over \(K\) of these values have absolute value at most \(\exp(Vq_1^2)\).  In this chapter \(V\) enters only through \(C\).  For a finite set \(S \subset \Phi\) and a nonnegative integer \(H\), call \(S\) \emph{sparse up to \(H\)} if for every prime \(\ell \le H\) and all integers \(0 < i < j < l_0(s)\) there are no \(\sigma, \tau, \rho \in S\), distinct or not, with \(\tau/\sigma \equiv \pm \ell^i\) and \(\rho/\sigma \equiv \pm \ell^j\) (the two signs independent) modulo the largest divisor of \(q_1\) prime to \(\ell\).  For \(\kappa \colon \Phi \to \Z_{\ge 1}\), integers \(m \ge 0\) and \(M \ge 1\), and real \(L\), let
+the sum over the primitive \(q_0\)-th roots of unity \(w \in \C\), with \(\Phi_{q_0}\) the cyclotomic polynomial, and \(v_0 \ge 0\) the integer, depending only on \(q_0\) and \(d\), that the rewritten Lean proof fixes for the integral vacuum (Section~\ref{sec:objects}).  For a finite set \(\mathcal F \subset \Phi\) and a nonnegative integer \(\ell_0\), call \(\mathcal F\) \emph{sparse up to \(\ell_0\)} if for every prime \(\ell \le \ell_0\) and all integers \(0 < i < j < l_0(s)\) there are no \(\sigma, \tau, \rho \in \mathcal F\), distinct or not, with \(\tau/\sigma \equiv \pm \ell^i\) and \(\rho/\sigma \equiv \pm \ell^j\) (the two signs independent) modulo the largest divisor of \(q_1\) prime to \(\ell\).  For \(\kappa \colon \Phi \to \Z_{\ge 1}\), integers \(m \ge 0\) and \(M \ge 1\), and real \(L\), let
 \[
   L_-(\kappa, m, M, L) := \frac mf \sum_{\tau \in \Phi} \log \kappa(\tau) + (m - 1) \log \frac{M \rd_E}{2\pi} - \frac{15}{2} L .
 \]
-It depends on \(s\) through \(\Phi\), \(f\) and \(\rd_E\).  (The rewritten Lean proof defines the same expression for all natural values of \(\kappa\) and \(M\), with the convention \(\log 0 := 0\); only positive values occur below.)
+It depends on \(s\) through \(\Phi\), \(f\) and \(\rd_E\).  The Lean definition also permits \(M = 0\) and zero weights, using \(\log 0 = 0\).
 
 \begin{definition}\label{def:data}
 \emph{Data} for parameters \((q_0, d)\) consist of the following.
@@ -112,12 +116,12 @@ It depends on \(s\) through \(\Phi\), \(f\) and \(\rd_E\).  (The rewritten Lean 
 \item Integers \(m, r, s \ge 0\) with \(\sqrt x \le m \le 2\sqrt x\), \(x^5 \le r \le 3x^5\), \(m = 2^{e}\) and \(s = 22e\) for some integer \(e \ge 1\), \(r = 3^{e'}\) for some integer \(e' \ge 1\), \(s \le 32 \log x\), and \(q_1 x_1 \mid b\), where \(q_1 = q_0 T(s)\).  The field is \(E = E_s\).
 \item A set \(\Phi_b \subset \Phi\) of places of class \(-1\) modulo \(q_0\), with \(T(s) \le \#\Phi_b \log b\), sparse up to \((r + 1 - m) \cdot 5r\).
 \item The weight \(\kappa \colon \Phi \to \Z_{\ge 0}\): \(\kappa(\tau) = b\) for \(\tau \in \Phi_b\), and \(\kappa(\tau) = \lfloor xb/x_1 \rfloor\) otherwise.
-\item Distinct primes \(p_0, p_1 \equiv 1 \pmod{q_2^2}\) in \([b^{10}, b^{11}]\), and \(\alpha \in \Oc_K\) with \(\alpha\bar\alpha = p_0 p_1\).
+\item Distinct primes \(p_0, p_1 \equiv 1 \pmod{q_2^2}\) in \([b^{10}, b^{11}]\), and \(\alpha \in \Oc_K\) with \(\alpha\bar\alpha = p_0 p_1\); put \(\pi_M := \bar\alpha\).
 \item A prime \(N \equiv 1 \pmod{q_2^2}\) with \(L_- \le \log N \le L_- + \sqrt{\log b}\), where \(L_- := L_-(\kappa, m, p_0p_1, \log b)\), and \(\pi_N \in \Oc_E\) with \(\pi_N \bar\pi_N = N\).
 \end{enumerate}
 \end{definition}
 
-Write \(a := xb\), \(M := p_0 p_1\), \(k := r + 1 - m\), \(t := 5r\), and \(n_j := k + j(t + 1)\) for nonnegative integers \(j\).  In the rewritten Lean proof \(m\) is called the number of lifts in the chain, \(k\) the rank of the source and \(r\) the rank of the target; \(M\) is the principal level and \(N\) the level.
+Write \(a := xb\), \(M := p_0 p_1\), \(k := r + 1 - m\), \(t := 5r\), and \(n_j := k + j(t + 1)\) for nonnegative integers \(j\).  We call \(m\) the number of lifts, \(k\) the rank of the source and \(r\) the rank of the target, \(M\) the principal level and \(N\) the level.
 
 \begin{problem}\label{pr:chain}
 \(\log\log b \ge 10^{12} \cdot 18480\), and \(\log b < x < x_1 < b\).
@@ -131,7 +135,7 @@ Write \(a := xb\), \(M := p_0 p_1\), \(k := r + 1 - m\), \(t := 5r\), and \(n_j 
 \(x^{11} \le T(s) \le x^{11} (\log b)^{1/5}\), and \(x^{11} \varphi(q_0) \le f\).
 \end{problem}
 
-The ranks are those of a chain of hermitian spaces over \(E\).  For \(0 \le j < m\) let \(Y_j\) be the hermitian space whose Gram matrix, in suitable coordinates, is the orthogonal sum of the identity matrix of size \(n_j\) and the matrix \(S_j\) of size \(m - 1 - j\) with rows and columns indexed by \(0, \dots, m - 2 - j\), whose \((u, v)\) entry is \(0\) unless \(u + v = m - 2 - j\), is \(1\) if \(u + v = m - 2 - j\) and \(u \ne v\), and is \(-N\) if \(u = v = (m - 2 - j)/2\).  Let \(Y_m\) be the standard positive definite space of rank \(n_m - 1\).
+The ranks are those of a chain of hermitian spaces over \(E\).  For \(0 \le j < m\) let \(Y_j\) be the hermitian space whose Gram matrix, in suitable coordinates, is the orthogonal sum of the identity matrix of size \(n_j\) and the matrix \(\Sigma_j\) of size \(m - 1 - j\) with rows and columns indexed by \(0, \dots, m - 2 - j\), whose \((u, v)\) entry is \(0\) unless \(u + v = m - 2 - j\), is \(1\) if \(u + v = m - 2 - j\) and \(u \ne v\), and is \(-N\) if \(u = v = (m - 2 - j)/2\).  Let \(Y_m\) be the standard positive definite space of rank \(n_m - 1\).
 
 \begin{problem}\label{pr:signs}
 For \(0 \le j \le m\), \(Y_j\) has rank \(r + jt\) and exactly \(\lfloor (m - j)/2 \rfloor\) negative eigenvalues at each infinite place.  \(Y_0\) is the orthogonal sum of the identity of size \(k\), \(m/2 - 1\) hyperbolic planes and \(\langle -N \rangle\).  Formally, for matrices defined in the same way with \(m = 4\) (no data have \(m = 4\)), the numbers of negative eigenvalues of \(Y_0, \dots, Y_4\) are \(2, 1, 1, 0, 0\).
@@ -145,12 +149,13 @@ Let \(\Lambda_K(\nu) := \Lambda(\nu)(1 - \chi_K(\nu))\).  For real \(y\), \(\sig
   \qquad
   s_\infty(j) := \log j! + j \log \frac M\Omega ,
 \]
-where \(\Omega := e^{\CS(d)}\, 2\pi/\rd_E\) and \([-\nu]\sigma\) is the product in the group \(\Phi\).  The rewriting calls \(s_\infty(j)\) the size of a derivative of order \(j\); at \(j = \kappa(\sigma)\) it describes \(\sfin(j, \sigma)\) as the prime sum that measures the guaranteed divisibility of that derivative.  The \emph{direction amount} and the \emph{main amount} are
+where \(\Omega := e^{\CS(d)}\, 2\pi/\rd_E\) and \([-\nu]\sigma\) is the product in the group \(\Phi\).  We call \(s_\infty(j)\) the size of a derivative of order \(j\), and use \(\sfin(\kappa(\sigma),\sigma)\) to measure its guaranteed divisibility when \(j=\kappa(\sigma)\).  The \emph{direction amount} and the \emph{main amount} are
 \[
   \hdir := \sum_{\sigma \in \Phi} \bigl( s_\infty(\kappa(\sigma)) - \sfin(\kappa(\sigma), \sigma) \bigr),
   \qquad
-  \main := m k\, \hdir .
+  \hmain := m k\, \hdir .
 \]
+The \emph{unit of error} is \(U := f a \log^3 b\).
 With \(c_1 := -1 - \CS(d)\), the \emph{main prime sum} and the \emph{total remainder} are
 \[
   \smain := a \Bigl( \log a - \frac1f \sum_{\tau \in \Phi} \log \kappa(\tau) + c_1 \Bigr),
@@ -172,9 +177,9 @@ Let \(0 \le y \le a\).  The term of \(\sfin(y, \sigma)\) at \(\nu\) vanishes unl
 \end{problem}
 
 \begin{problem}\label{pr:jet}
-For integers \(0 \le y \le a\), \(20 y \log b \le s_\infty(y) \le 25 y \log b\).  For every integer \(y \ge 1\) there is a real \(\theta = \theta_y\) such that
+For integers \(0 \le y \le a\), \(20 y \log b \le s_\infty(y) \le 25 y \log b\).  For every integer \(y \ge 1\) there is a real \(\lambda_y\) such that
 \[
-  s_\infty(y) = y \log \frac{y M}{e\Omega} + \tfrac12 \log(2\pi y) + \frac{\theta}{12 y}, \qquad 0 < \theta < 1 .
+  s_\infty(y) = y \log \frac{y M}{e\Omega} + \tfrac12 \log(2\pi y) + \frac{\lambda_y}{12 y}, \qquad 0 < \lambda_y < 1 .
 \]
 \end{problem}
 
@@ -183,11 +188,11 @@ For every \(\tau \in \Phi\), \(\kappa(\tau)\log b \le s_\infty(\kappa(\tau)) - \
 \end{problem}
 
 \begin{problem}\label{pr:main}
-\(\main \ge x^4 f a\).
+\(\hmain \ge x^4 f a\).
 \end{problem}
 
 \begin{problem}\label{pr:smain}
-With \(\delta := \#\Phi_b/f\), \(\smain = a\bigl(\log x_1 - \delta \log(x_1/x) + c_1\bigr)\), and \(1/(\varphi(q_0)\log b) \le \delta \le 1/\varphi(q_0)\).
+With \(\delta_b := \#\Phi_b/f\), \(\smain = a\bigl(\log x_1 - \delta_b \log(x_1/x) + c_1\bigr)\), and \(1/(\varphi(q_0)\log b) \le \delta_b \le 1/\varphi(q_0)\).
 \end{problem}
 
 \section{The level primes}\label{sec:level}
@@ -213,14 +218,14 @@ For data, \(b^{20} \le M \le b^{22}\), \(m\log b \le \log N \le 30 m \log b\), a
 How should the scales be chosen, as functions of \(x\), so that Definition~\ref{def:data}(1)--(2) hold?
 
 \begin{problem}\label{pr:least}
-Let \(x > 1\), let \(m\) be the least power of \(2\) with \(m \ge \sqrt x\), and \(r\) the least power of \(3\) with \(r \ge x^5\).  Then \(2 \le m < 2\sqrt x\) and \(3 \le r < 3x^5\).  If \(B \ge 0\) and \(b\) is the least multiple of an integer \(Q \ge 1\) with \(b > B\), then \(b \le B + Q\).
+Let \(x > 1\), let \(m\) be the least power of \(2\) with \(m \ge \sqrt x\), and \(r\) the least power of \(3\) with \(r \ge x^5\).  Then \(2 \le m < 2\sqrt x\) and \(3 \le r < 3x^5\).  If \(c \ge 0\) and \(b\) is the least multiple of an integer \(n \ge 1\) with \(b > c\), then \(b \le c + n\).
 \end{problem}
 
 \begin{problem}\label{pr:eps}
 Fix parameters and \(0 < \varepsilon < 1/100\), and for each \(x\) let \(x_1 = \lfloor \exp(x^{\varepsilon/6}) \rfloor\) and let \(b\) be an integer with \(x^\varepsilon \le \log b \le x^\varepsilon + 1\).  Then the five inequalities of Definition~\ref{def:data}(1) hold for all large \(x\).  If instead \(x_1 = \lfloor \exp(x^{\beta}) \rfloor\) with \(\beta > \varepsilon/6\), then \((\log x_1)^6 > \log b\) for all large \(x\).  If instead \(\varepsilon > 1/100\) and \(x^\varepsilon \le \log b \le x^\varepsilon + 1\), then \((\log b)^{100} > x\) for all large \(x\).
 \end{problem}
 
-The other choices need more.  The rewriting uses the following window theorem.  Fix integers \(Q_0 \ge 1\) and \(A \ge 0\) with \(4 \mid Q_0\).  For every sufficiently large real \(W\), every integer \(v > 1\) with \(Q_0^v \le W^A\), and every real \(U \in [W, W^A]\), there is a prime \(p \equiv 1 \pmod{Q_0^v}\) with \(U \le \log p \le U + W\).  Taking \(Q_0 = q_0 d\) and \(v = 2(s + 6)\) gives the modulus \(q_2^2\) for \(p_0, p_1, N\).  The proof combines these windows with the norm constructions of Problems~\ref{pr:alpha} and~\ref{pr:piN}.  It obtains the sparse set \(\Phi_b\) from Behrend's construction (Chapter~\ref{c4-chap}).  Its existence theorem is as follows.
+The other choices need more.  The rewritten Lean proof uses the following window theorem.  Fix integers \(n_0 \ge 1\) and \(A \ge 0\) with \(4 \mid n_0\).  For every sufficiently large real \(w_0\), every integer \(v > 1\) with \(n_0^v \le w_0^A\), and every real \(u_0 \in [w_0, w_0^A]\), there is a prime \(p \equiv 1 \pmod{n_0^v}\) with \(u_0 \le \log p \le u_0 + w_0\).  Taking \(n_0 = q_0 d\) and \(v = 2(s + 6)\) gives the modulus \(q_2^2\) for \(p_0, p_1, N\).  The proof combines these windows with the norm constructions of Problems~\ref{pr:alpha} and~\ref{pr:piN}.  It obtains the sparse set \(\Phi_b\) from Behrend's construction (Chapter~\ref{c4-chap}).  Its existence theorem is as follows.
 
 \begin{theorem}\label{thm:existence}
 Let \((q_0, d)\) be parameters and \(0 < \varepsilon < 1/100\).  For every sufficiently large integer \(x\) there are data for \((q_0, d)\) whose first scale is \(x\), such that (1)~\(x_1 = \lfloor \exp(x^{\varepsilon/6}) \rfloor\); (2)~\(b\) is the least natural number that is divisible by \(q_1 x_1\) and exceeds \(\exp(x^\varepsilon)\); (3)~\(m\) is the least power of \(2\) with \(\sqrt x \le m\), and \(r\) is the least power of \(3\) with \(x^5 \le r\); (4)~\(x^{\varepsilon/6} - 1 \le \log x_1\) and \(x^\varepsilon \le \log b \le x^\varepsilon + 1\).
@@ -228,9 +233,60 @@ Let \((q_0, d)\) be parameters and \(0 < \varepsilon < 1/100\).  For every suffi
 
 ``Sufficiently large'' depends on \((q_0, d)\) and \(\varepsilon\); the statement gives no explicit threshold.  In its proof \(m\), \(r\), \(s\) and \(b\) are taken as above; the digits of the exponents defining \(\Phi_b\) form vectors on a common sphere (Chapter~\ref{c4-chap}); and the windows used to choose the primes have length \(x^{\varepsilon/6}\) in \(\log p\).
 
+\begin{problem}\label{pr:eps-bounds}
+For the data of Theorem~\ref{thm:existence} and all large \(x\): \(\log b \le 2x^{\varepsilon}\) and \(\log x_1 \ge x^{\varepsilon/12}\).
+\end{problem}
+
+\section{Spaces, forms and twists}\label{sec:objects}
+
+Which spaces, forms and characters does the proof attach to the data?  This section fixes them, as read from the rewritten Lean proof \cite{GL}; the later chapters use this notation.  The Poincar\'e map is defined in Chapter~\ref{bp-chap}, the composite lift and the data of each lift of the chain in Chapter~\ref{ss-chap}, gains and exceptional primes in Chapter~\ref{dc-chap}, and critical pairs in Chapter~\ref{c38-chap}.
+
+\paragraph{Chosen places, the group \(\bar G\) and the idempotent \(e_0\).}
+A finite place \(w\) of \(E\) is \emph{chosen} if it divides \(\pi_M\); let \(\mathcal M\) be the set of chosen places and \(\mathcal M_i\) those above \(p_i\) (\(i = 0, 1\)).  For \(w \in \mathcal M\) let \(k_w\) be the residue field, and put \(\bar G := \prod_{w \in \mathcal M} \mathrm{GL}_r(k_w)\).  A \emph{label} of degree \(r\) over \(k_w\) is a monic squarefree polynomial of degree \(r\) with nonzero constant term; after fixing an injective character \(\overline{k_w}^{\,\times}\to\C^\times\) for each residue field, Green's construction associates to the label an irreducible character \(\Xi_c\) of \(\mathrm{GL}_r(k_w)\) and the central idempotent \(e_c := (\Xi_c(1)/\#\mathrm{GL}_r(k_w)) \sum_g \overline{\Xi_c(g)}\, g\).  A family of labels \((c_w)_{w \in \mathcal M}\) is \emph{good} if, for \(i = 0, 1\), no \(c_w\) with \(w \in \mathcal M_i\) has a root \(z \in k_w\) with \(z^{q_2} = 1\), and at least one \(c_w\) with \(w \in \mathcal M_i\) is irreducible with a root in \(\overline{k_w}\) of order \((\#k_w)^r - 1\).  Let \(e_0 \in \C[\bar G]\) be the sum, over the good families, of the tensor products \(\bigotimes_w e_{c_w}\); it is a central idempotent.
+
+\paragraph{The gap and the weights of the lifts.}
+The \emph{gap} is \(\Delta := 2r^8\).  For \(j \ge 0\) and \(\tau \in \Phi\) the \emph{weight of lift \(j\)} is \(\kappa_j(\tau) := \kappa(\tau) + (j + \frac12)\Delta\).  The rank-\(r\) target uses the following initial segment \(\varsigma_\tau\) of the target parameter at \(\tau\):
+\[
+  \varsigma_\tau := \Bigl(\tfrac k2 - 1,\ \tfrac k2 - 2,\ \dots,\ 1 - \tfrac k2;\ \ -\kappa(\tau) - \Delta,\ -\kappa(\tau) - 2\Delta,\ \dots,\ -\kappa(\tau) - m\Delta\Bigr) ,
+\]
+with \(k - 1\) entries before the semicolon and \(m\) after it (\(k\) is even).  The full sequence continues with \(-\kappa(\tau)-(m+1)\Delta,-\kappa(\tau)-(m+2)\Delta,\dots\).
+
+\paragraph{The spaces.}
+Each space has a Gram matrix \(J\) over \(E\) and an adelic frame, chosen in the rewritten Lean proof, in which \(J\) becomes the specified diagonal sign matrix at infinity and the identity at the finite places; this frame is used for the rational subgroup and for all lattice and reduction conditions.  For \(j \ge 0\), \(X_j\) is the standard positive definite space of rank \(n_j\).  The spaces \(Y_j\), \(0 \le j \le m\), are those of Section~\ref{sec:data}; for \(j < m\) the identity block of \(Y_j\) is \(X_j\), and \(Y_m\) is identified, through a chosen bijection of bases, with the orthogonal complement in \(X_m\) of its last basis vector.  For \(1 \le j \le m\), number the \(r\) basis vectors of \(W_j\) from \(0\) to \(r-1\); its Gram matrix is diagonal, with sign \(+1\) at index \(i < k+j-1\) and \(-1\) at the other indices; and \(V_j\) is the standard positive definite space of rank \(r + t\).
+
+\paragraph{Principal forms, good forms and the target.}
+Let \(V\) be such a framed space of rank \(r\), with numbered signs, such as \(Y_0\) or \(W_j\); for \(Y_0\) the sign paired with entry \(i\), numbered from \(0\), is \((-1)^{\max(i+1-k,0)}\).  A \emph{principal form} on \(V\) is a bounded continuous complex function on its adelic unitary group, invariant on the left under the rational points and on the right under the \emph{principal level} of integral finite adelic unitary matrices that reduce to the identity at every \(w\in\mathcal M\), such that, if the product \(e\) over \(\tau\) of the discrete-series kernels with doubled parameter \(2\varsigma_\tau\) and the numbered signs of \(V\) is integrable, right convolution by \(e\) fixes the form.  They form a space \(H(V)\), on which \(\bar G\) acts by right translation through integral lifts.  The \emph{good forms} are \(H_g(V) := e_0 H(V)\).  The \emph{target forms} and their dimension are \(T := H_g(Y_0)\) and \(d_T := \dim_\C T\).
+
+\paragraph{Source forms.}
+The \emph{source forms} \(S\) are the algebraic modular forms on the unitary group of \(X_0\) with values in \(\bigotimes_{\tau\in\Phi} A_\tau\), where \(A_\tau\) is the Weyl module of highest weight \((a,0,\dots,0)\) for \(\tau\in\Phi_a\) and \(A_\tau=\C\) otherwise.  A form is evaluated on the finite adelic unitary group, and a rational element acts on its values through the entrywise conjugates of its archimedean components.  The level consists of the integral finite adelic unitary matrices reducing to the identity at every \(w\in\mathcal M\) and having last row congruent to \((0,\dots,0,1)\) modulo \(\pi_N\).  Put \(D_X := \dim_\C S\).  For each prime \(w \mid \pi_N\) of \(E\) fix an integral finite idele \(z_w\) of norm one, equal to \(1\) outside \(w\) and \(\bar w\), whose reduction at \(w\) has order \(N - 1\); right translation by the scalar \(z_w\) is an operator \(T_w\) on \(S\).  A source form \(\varphi\) is \emph{ramified} if \(\sum_{i=0}^{N-2} T_w^i\varphi = 0\) for every \(w \mid \pi_N\); the ramified forms are a subspace \(S_{\mathrm{ram}}\).  Write \(S_{\mathrm{ram}}^{\mathrm{int}}\) for the ramified forms whose gauge of Chapter~\ref{dc-chap} is at most \(1\) at every finite adelic argument, for every prime \(\ell\) and every field isomorphism \(\iota\colon\C\to\overline{\Q}_\ell\), composed with the inclusion into \(\C_\ell\).
+
+\paragraph{Tame characters and twists.}
+A \emph{tame character} \(\xi\) consists of a continuous unitary character of the norm-one ideles of \(E\), trivial on the norm-one elements of \(E^\times\), a finite set \(Q_\xi\) of finite places of \(E\), and characters \(\psi_w\) of \(k_w^\times\) for all finite places \(w\), such that: \(\xi\) has weight \(0\) and tame part \((\psi_w)\), that is, \(\xi(u) = \prod_w \psi_w(u_w \bmod w)\) for every norm-one idele \(u\) with integral finite part; \(\psi_w = 1\) for \(w \notin Q_\xi\); \(\bar w \notin Q_\xi\) for \(w \in Q_\xi\); and \(\mathrm{Nm}\,Q_\xi := \prod_{w \in Q_\xi} \#k_w\) is prime to \(MN\).  A \emph{twist} \(\vartheta\) is a tame character with \(\psi_w \ne 1\) for every \(w \in Q_\vartheta\); it is \emph{\(m\)-fold} if \(\psi_w^n \ne 1\) for every \(w \in Q_\vartheta\) and \(1 \le n \le m\).  The trivial twist \(1\) has \(Q = \varnothing\).  For a nonnegative integer \(n\), the power \(\xi^n\) as a tame character has the same set \(Q_\xi\) and tame part \((\psi_w^n)\).
+
+\paragraph{The characters of the lifts.}
+The rewritten Lean proof fixes two characters of the norm-one ideles, trivial on the rational points: \(\mu^\flat\), of weight \(-\kappa_0\) with trivial tame part, and \(\chi_M\), of weight \(0\), whose tame part \((\omega_w)\) is trivial off \(\mathcal M\) and has order \(q_2\) at each \(w \in \mathcal M\).  With \(\upsilon\) the splitting character of the Weil representation restricted to the norm-one ideles (weight \(1\), trivial tame part), the \emph{character of lift \(j\)} is \(\mu_j^0 := \mu^\flat\,(\upsilon^{-\Delta}\chi_M)^j\), of weight \(-\kappa_j\) and tame part \((\omega_w^j)\).
+
+\paragraph{The integral vacuum.}
+For each \(s\) the rewritten Lean proof fixes \(c_{\mathrm{vac}} \in \C^\times\) such that \(c_{\mathrm{vac}}\) times the vacuum of the standard rank-one space over \(E_s\) has values integral under every ring map \(\C \to \C_p\), for every prime \(p\), at all finite arguments, and all conjugates over \(K\) of these values have absolute value at most \(\exp(v_0 q_1^2)\), with \(v_0\) as in Section~\ref{sec:data}.  The \emph{integral vacuum} of a space of rank \(n\) is \(c_{\mathrm{vac}}^{\,n}\) times its vacuum.
+
+\paragraph{The chain and the single lifts.}
+For a tame character \(\xi\), the \emph{lower chain} \(\Theta_\xi\) is a linear map from \(H(Y_0)\) to algebraic forms on \(Y_m\): the composite of \(m\) normalized theta lifts \(Y_{j-1} \to Y_j\), \(1 \le j \le m\), whose \(j\)-th step is built from the character \(\mu_j^0\xi^j\), followed by the passage to algebraic forms on \(Y_m\).  For an \(m\)-fold twist \(\vartheta\), \(\Theta_\vartheta\) also denotes its restriction to \(T\), with target the algebraic forms on \(Y_m\) of the level and character determined by \(\vartheta\), and \(Z(\vartheta) := \det(\Theta_\vartheta^*\Theta_\vartheta)\).  For \(1 \le j \le m\), the \emph{single lift} \(u_{\xi,j}\) is the theta lift from \(H_g(W_j)\) to algebraic forms on \(V_j\) built from the character \(\mu_j^0\xi\), and for an \(m\)-fold twist \(\vartheta\), \(Z_j(\vartheta) := \det(u^*u)\) with \(u := u_{\vartheta^j, j}\).  The normalizations (the characters on each space, the scalar at each step, the level and character on \(Y_m\), and the inner products defining the adjoints) are not repeated here: the corresponding objects of the rewritten Lean proof are those named in the remark below, and Chapter~\ref{ss-chap} describes the steps of the chain.
+
+\begin{problem}\label{pr:signs-W}
+\(W_j\) has exactly \(m - j\) negative signs for \(1 \le j \le m\).  Formally, for \(r = 9\), \(m = 4\), \(j = 1\), the negative basis vectors are the last three.
+\end{problem}
+
+\begin{problem}\label{pr:parameter}
+The entries of \(\varsigma_\tau\) are strictly decreasing; its \(j\)-th entry after the semicolon is \(\Delta/2 - \kappa_j(\tau)\).
+\end{problem}
+
+\begin{problem}\label{pr:mfold}
+A character \(\psi\) of \(k_w^\times\) has \(\psi^n \ne 1\) for \(1 \le n \le m\) if and only if its order exceeds \(m\).  For \(k_w = \mathbb F_{13}\), exactly \(8\) of the \(12\) characters have order exceeding \(3\).
+\end{problem}
+
 \paragraph{In the Lean formalization.}
 \begin{sloppypar}
-In the rewritten Lean proof \cite{GL}, Definition~\ref{def:parameters} is the structure \texttt{New.Parameters} in \texttt{New/Reduction/Data/FieldsAndPlaces.lean}, Definition~\ref{def:data} is the structure \texttt{New.Data} in \texttt{New/Reduction/Data/AdmissibleData.lean}, and Theorem~\ref{thm:existence} is \texttt{New.eventually\_exists\_data} in \texttt{New/Reduction/Data/Existence.lean}.  There \(C\), sparsity, \(L_-\), \(\sfin\), \(s_\infty\) and \(\hdir\) are \texttt{constantBound}, \texttt{IsSparse}, \texttt{logLevelMin}, \texttt{primeSum}, \texttt{jetSize} and \texttt{directionAmount} (in \texttt{AdmissibleData.lean}), and \(\main\), \(\smain\), \(\rem\) are \texttt{mainAmount}, \texttt{mainPrimeSum}, \texttt{totalRemainder} (in \texttt{New/Reduction/PrimeSums.lean}).  The rewriting also proves Problem~\ref{pr:split}(ii) as \texttt{thirteen\_le\_of\_chiK\_ne\_one}; the formula for \(f\) and the count of \(\Phi_a\) in Problem~\ref{pr:degree} as \texttt{New.Parameters.numInfPlaces\_E} and \texttt{New.Parameters.card\_placeClass\_eq\_one\_eq\_towerDeg}; the bounds \(m \ge 10000\), \(r + 1 = k + m\) and \(k \le r\) of Problem~\ref{pr:m-big} as \texttt{ten\_thousand\_le\_m}, \texttt{r\_add\_one} and \texttt{k\_le\_r}; the bounds \(0 \le \sfin(y, \sigma) \le y\log b\), Problem~\ref{pr:omega}, the first statement of Problem~\ref{pr:jet}, Problem~\ref{pr:hdir} and Problem~\ref{pr:main} as \texttt{primeSum\_mem\_Icc}, \texttt{bigOmega\_le\_one} with \texttt{log\_M\_div\_bigOmega\_mem\_Icc}, \texttt{jetSize\_mem\_Icc}, \texttt{jetSize\_sub\_primeSum\_mem\_Icc} with \texttt{directionAmount\_mem\_Icc}, and \texttt{le\_mainAmount}; Problem~\ref{pr:Lminus} as \texttt{Parameters.logLevelMin\_mem\_Icc}; and the first two statements of Problem~\ref{pr:MN} as \texttt{M\_mem\_Icc} and \texttt{log\_N\_mem\_Icc}.  For \(j<m\) the Gram matrix of \(Y_j\) is given by \texttt{spaceY\_gram\_eq}; at \(j=m\), standardness is \texttt{isStd\_spaceY\_of\_le} and the rank is \texttt{card\_Y\_m}; the negative count is \texttt{negCount\_gridSigns} at \(z=\mathrm{false}\), \(i=0\), by the definition \texttt{signsY}.  The place group and its classes are \texttt{galOfPlace}, \texttt{placeMulEquiv}, \texttt{placeOfInt} and \texttt{placeClass} in \texttt{FieldsAndPlaces.lean}; \(\chi_K\), \(\CS(d)\), \(\Lambda_K\) are \texttt{New.chiK}, \texttt{New.chowlaSelbergConst} and \texttt{New.lambdaKResidueClass} at modulus one, and \(c_1 = -1 - \CS(d)\) is \texttt{New.re\_logDerivMean\_one}.  The constant \(V\) is \texttt{New.Parameters.vacuumBoundConst}, the witness chosen from \texttt{New.Parameters.exists\_mul\_vacElem\_integral\_bounded}.  The names of \(m\), \(k\), \(r\), \(M\), \(N\), \(s_\infty\), \(\sfin\) are from the documentation of these declarations.  The window theorem is \texttt{New.exists\_prime\_modEq\_one\_log\_mem} (in \texttt{Lib/Analytic/Primes.lean}), the norm constructions are \texttt{New.Parameters.exists\_prime\_pair\_norm} and \texttt{New.Parameters.exists\_mul\_star\_eq\_prime}, and the sphere construction is \texttt{New.exists\_three\_term\_free}.
+In the rewritten Lean proof \cite{GL} (\texttt{grh/src/New/}), Definition~\ref{def:parameters} is \texttt{Parameters} and Definition~\ref{def:data} is \texttt{Data}, with fields \texttt{natX}, \texttt{natX\(_1\)}, \texttt{natB}, \texttt{m}, \texttt{r}, \texttt{towerExp}, \texttt{bPlaces}, \texttt{weight}, \texttt{levelPrime}, \texttt{piMBar}, \texttt{N}, \texttt{piN} (\texttt{Reduction/Data/FieldsAndPlaces.lean}, \texttt{AdmissibleData.lean}); \(\hdir\), \(\hmain\), \(\rem\) are \texttt{Data.directionAmount}, \texttt{Data.mainAmount}, \texttt{Data.totalRemainder}; and Theorem~\ref{thm:existence} is \texttt{eventually\_exists\_data} (\texttt{Reduction/Data/Existence.lean}).  The objects of Section~\ref{sec:objects} are \texttt{Data.IsChosen}, \texttt{Data.chosenGL}, \texttt{Data.e\(_0\)}, \texttt{Data.gap}, \texttt{Data.liftWeight}, \texttt{Data.targetParameter}, \texttt{Data.spaceY}, \texttt{Data.spaceW}, \texttt{Data.descentPair}, \texttt{Data.principalForms}, \texttt{Data.goodForms}, \texttt{Data.targetForms}, \texttt{Data.SourceForm}, \texttt{Data.ramifiedSourceForms}, \texttt{Data.integralRamified}, \texttt{Data.TameChar}, \texttt{Data.Twist}, \texttt{Data.MFoldTwist}, \texttt{Data.untwistedLiftChar}, \texttt{Parameters.vacuumScale}, \texttt{intVacuum}, \texttt{Data.lowerChain}, \texttt{Data.\(\Theta\)}, \texttt{Data.goodLift}, \texttt{Data.chainDeterminant} and \texttt{Data.liftDeterminant}; the normalized steps of the chain are \texttt{Data.liftY}, its restriction to \(T\) is \texttt{Data.lowerChainAtLevel}, and the single lift before restriction is \texttt{Data.singleLift}.  The prime window is \texttt{exists\_prime\_modEq\_one\_log\_mem} (\texttt{Lib/Analytic/Primes.lean}); the proof of existence uses \texttt{exists\_three\_term\_free}, \texttt{Parameters.exists\_prime\_pair\_norm} and \texttt{Parameters.exists\_mul\_star\_eq\_prime}.  The constant \(v_0\) is \texttt{Parameters.vacuumBoundConst}; the characters \(\mu^\flat\), \(\chi_M\), \((\omega_w)\) are \texttt{Data.chiZero}, \texttt{Data.chiM}, \texttt{Data.chiMLocal}.
 \end{sloppypar}
 
 \section*{Hints}
@@ -254,7 +310,7 @@ In the rewritten Lean proof \cite{GL}, Definition~\ref{def:parameters} is the st
 \item[\ref{pr:chain}] \(C \ge q_0\).
 \item[\ref{pr:m-big}] \(\sqrt x \ge (\log b)^{50}\).
 \item[\ref{pr:T}] Problem~\ref{pr:l0} and \(s \le 32\log x\) bound the power of \(3\); \(\log b \ge (\log x_1)^6 \ge (10^6 \log x)^6\), and \(\log x \ge 100\log\log b\) is large.
-\item[\ref{pr:signs}] \(S_j\) is a sum of hyperbolic planes and, when \(m - 1 - j\) is odd, the middle entry.
+\item[\ref{pr:signs}] \(\Sigma_j\) is a sum of hyperbolic planes and, when \(m - 1 - j\) is odd, the middle entry.
 \end{description}
 
 \subsection*{\S\ref{sec:amounts}}
@@ -279,6 +335,14 @@ In the rewritten Lean proof \cite{GL}, Definition~\ref{def:parameters} is the st
 \subsection*{\S\ref{sec:existence}}
 \begin{description}
 \item[\ref{pr:eps}] Take logarithms to compare the five conditions; keep track of the floor in \(x_1\).
+\item[\ref{pr:eps-bounds}] \(x^\varepsilon + 1 \le 2x^\varepsilon\); \(\lfloor e^u \rfloor \ge e^{u/2}\) for \(u \ge 2\).
+\end{description}
+
+\subsection*{\S\ref{sec:objects}}
+\begin{description}
+\item[\ref{pr:signs-W}] \(r - (k + j - 1)\).
+\item[\ref{pr:parameter}] \(\kappa(\tau) + \Delta > k/2\).
+\item[\ref{pr:mfold}] \(\mathbb F_{13}^\times\) is cyclic of order \(12\).
 \end{description}
 
 {\small
