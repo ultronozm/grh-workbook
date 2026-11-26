@@ -7,16 +7,17 @@ Everything is read from the sources, so the chart follows the index:
     titles, IDs and Parts;
   * each sheet's \\externaldocument lines name the sheets it cites, and
     the references in its Prerequisites paragraph say which of them it
-    builds on.  These are the only arrows.  References to later chapters
-    are pointers, not prerequisites, and are dropped; so is an arrow
-    implied by a path of other arrows (transitive reduction).
+    builds on.  These are the only arrows; build_graph says which are
+    drawn and how.
 
-The chart is one grid, with a column per Part, the chapters of a Part
-stacked with the earliest at the bottom (layout_columns).  The Parts from
-Part VI on are the proof and are shaded; the side series sits under the
-shortest column.  Arrows run in the gutters between the columns and in
-the gaps below the rows.  (The older layout with the last Part as a row
-on top, layout(), is kept for reference.)  The layout and the orthogonal
+The chart has two sections (layout).  On top, set apart on a shaded
+band, the proof (the Parts from FIRST_PROOF_PART on): a column per Part,
+each a tree with the chapter stating the Part's results at its head, and
+above them the main inequality, which they all feed.  Below, the basics:
+a column per Part, the chapters stacked with the earliest at the bottom,
+and the side series under the shortest column.  The only per-sheet
+knowledge is in the index and the Prerequisites paragraphs, so the chart
+follows the index as sheets are added.  The layout and the orthogonal
 edge routing are done here, so Graphviz is not needed; a DOT file is
 written as well, for reference.
 
@@ -71,6 +72,7 @@ class Sheet:
         self.plain = re.sub(r"\$([^$]*)\$", r"\1", title)
         self.tex = f"{ident}--{slug}__workbook.tex"
         self.html = f"{ident}--{slug}__workbook.html"
+        self.desc = ""
 
     def __repr__(self):
         return f"<{self.num}>"
@@ -84,6 +86,12 @@ def read_index():
     sheets, parts = [], []
     heading = None
     for line in guide.split("\n"):
+        if sheets and line.startswith("  ") and not sheets[-1].desc:
+            # The description under an entry, without its math.
+            d = re.sub(r"\$[^$]*\$", "", line.strip())
+            d = re.sub(r"\s+([,.;:])", r"\1", re.sub(r"\s+", " ", d))
+            sheets[-1].desc = d.strip()
+            continue
         if line.startswith("* "):
             heading = line[2:].strip()
             continue
@@ -119,12 +127,19 @@ def prefixes(text):
     return {m.group("pre") for m in REF.finditer(text)}
 
 
-def read_deps(sheets):
-    """Map each sheet ID to the IDs of the earlier sheets named in its
-    Prerequisites paragraph."""
+# ---------------------------------------------------------------- graph
+
+# Part-level layout: Parts before this one are the basics, drawn as the
+# columns of the lower grid; this Part and the later ones (other than a
+# side series) are the proof, drawn as a separate section on top.
+FIRST_PROOF_PART = "Part VI"
+
+
+def read_cites(sheets):
+    """Map each sheet ID to the IDs of all sheets named in its
+    Prerequisites paragraph, earlier or later."""
     by_id = {s.id: s for s in sheets}
-    pos = {s.id: k for k, s in enumerate(sheets)}
-    deps = {}
+    cites = {}
     for s in sheets:
         with open(s.tex, encoding="utf-8") as f:
             src = f.read()
@@ -140,19 +155,114 @@ def read_deps(sheets):
                      "\\externaldocument")
             elif t not in by_id:
                 warn(f"{s.tex}: Prerequisites cites {t}, which is not in the index")
-            elif pos[t] < pos[s.id]:
+            elif t != s.id:
                 out.add(t)
-        deps[s.id] = out
-    return deps
+        cites[s.id] = out
+    return cites
 
 
-# ---------------------------------------------------------------- graph
+def build_graph(sheets, parts):
+    """The arrows of the chart, with their kinds.
 
-def build_graph(sheets):
-    deps = read_deps(sheets)
-    edges = {(u, v) for v, us in deps.items() for u in us}
+    * dep: within the basics (and the side series), from the Prerequisites
+      of the later chapter.
+    * inc: from a basics chapter into a chapter of the proof whose
+      Prerequisites name it.
+    * tree: inside a Part of the proof, from a sheet to the chapter it
+      serves.  The first chapter of the Part states its results; a sheet
+      it names hangs under it, a sheet named by such a sheet under that
+      one, and so on (breadth first, in index order); a sheet that no
+      chapter of the Part names hangs under the last placed chapter
+      before it in the index.
+    * main: into the sink, the chapter of the proof whose Prerequisites
+      name the first chapters of the most other Parts of the proof (the
+      main inequality); from the chapters of the proof it names that are
+      first chapters of their Parts or in its own Part.
+    Arrows between Parts of the proof other than into the sink are left
+    out.  An arrow of kind dep or inc implied by a path is dropped."""
+    by_id = {s.id: s for s in sheets}
+    pos = {s.id: k for k, s in enumerate(sheets)}
+    cites = read_cites(sheets)
+    keys = [k for k, _, _ in parts]
+    side_parts = [p for p in parts if by_id[p[2][0]].side]
+    main_parts = [p for p in parts if p not in side_parts]
+    start = (keys.index(FIRST_PROOF_PART) if FIRST_PROOF_PART in keys
+             else len(keys))
+    proof = [p for p in main_parts if keys.index(p[0]) >= start]
+    basics = [p for p in main_parts if keys.index(p[0]) < start]
+    proof_ids = {i for _, _, ids in proof for i in ids}
+    basic_ids = {i for _, _, ids in basics + side_parts for i in ids}
+    heads = {k: ids[0] for k, _, ids in proof}
+
+    def score(i):
+        return sum(1 for k, h in heads.items()
+                   if h in cites[i] and k != by_id[i].part)
+    sink = max(proof_ids, key=lambda i: (score(i), pos[i])) if proof_ids else None
+    if sink is not None and score(sink) == 0:
+        sink = None
+
+    kind = {}
+    for v in basic_ids:
+        for u in cites[v] & basic_ids:
+            if pos[u] < pos[v]:
+                kind[(u, v)] = "dep"
+    for v in proof_ids:
+        for u in cites[v] & basic_ids:
+            kind[(u, v)] = "inc"
+
+    parent, depth, order = {}, {}, {}
+    for key, _, ids in proof:
+        root = sink if sink in ids else ids[0]
+        members = [i for i in ids if i != root]
+        placed = {root: 0}
+        queue = [root]
+        while queue:
+            x = queue.pop(0)
+            for y in sorted(cites[x], key=pos.get):
+                if y in members and y not in placed:
+                    placed[y] = placed[x] + 1
+                    parent[y] = x
+                    queue.append(y)
+        last = root
+        for i in members:
+            if i in placed:
+                last = i
+            else:
+                parent[i] = last
+                placed[i] = placed[last] + 1
+        # The column, in depth-first order with children in index order.
+        children = defaultdict(list)
+        for i in members:
+            children[parent[i]].append(i)
+        col = []
+
+        def visit(x):
+            col.append(x)
+            for c in sorted(children[x], key=pos.get):
+                visit(c)
+        if root == sink:
+            for c in sorted(children[root], key=pos.get):
+                visit(c)
+            base = 1
+        else:
+            visit(root)
+            base = 0
+        order[key] = col
+        for i in col:
+            depth[i] = placed[i] - base
+        for i in members:
+            kind[(i, parent[i])] = "main" if parent[i] == sink else "tree"
+    if sink is not None:
+        for key, _, ids in proof:
+            h = ids[0]
+            if h != sink and sink not in ids and h in cites[sink]:
+                kind[(h, sink)] = "main"
+        for key, _, ids in proof:
+            if (sink not in ids and ids[0] not in cites[sink]):
+                warn(f"the main inequality does not name {by_id[ids[0]].tex}")
+
     succ = defaultdict(set)
-    for (u, v) in edges:
+    for (u, v) in kind:
         succ[u].add(v)
 
     def reaches(a, b, skip):
@@ -166,7 +276,10 @@ def build_graph(sheets):
                 stack.extend(succ[x])
         return False
 
-    return {e for e in edges if not reaches(e[0], e[1], e)}
+    kind = {e: k for e, k in kind.items()
+            if k in ("tree", "main") or not reaches(e[0], e[1], e)}
+    return dict(kind=kind, sink=sink, proof=proof, basics=basics,
+                side=side_parts, order=order, depth=depth, parent=parent)
 
 
 # ---------------------------------------------------------------- layout
@@ -175,10 +288,13 @@ FS = 11.5            # node font size
 LH = 13.5            # line height
 CHAR = 0.53 * FS     # average character width (sans-serif), a bit generous
 WIDTH = 1200
-WIDE = 1800          # width of the one-grid chart with a column per Part
 MARGIN = 6
 LANE = 6             # spacing of parallel edges
 PAD = 7              # cluster padding
+INDENT = 16          # indentation per level of a tree
+TRUNK = 10           # room left of the top boxes of a proof column
+TITLE_H = 2 * 12.5 + 10
+
 
 def wrap(text, width_px, max_lines=4):
     per = max(8, int(width_px / CHAR))
@@ -212,248 +328,250 @@ def assign_lanes(intervals):
     return lanes, len(ends)
 
 
+def label(s):
+    return f"{s.num}  {s.plain}"
 
-def layout(sheets, parts, edges):
-    """One grid: a column per Part but the last, the earliest chapter of
-    a Part at the bottom; the last Part as a row on top, its last chapter
-    above the row."""
-    if len(parts) < 2:
-        die("the chart needs at least two Parts")
-    by_side = {i for s in sheets if s.side for i in [s.id]}
-    side_parts = [p for p in parts if p[2][0] in by_side]
-    parts = [p for p in parts if p[2][0] not in by_side]
-    col_parts, (top_key, top_name, top_ids) = parts[:-1], parts[-1]
-    if len(top_ids) < 2:
-        die(f"{top_key} needs at least two chapters")
-    row_ids, top = top_ids[:-1], top_ids[-1]
-    C, K = len(col_parts), len(row_ids)
+
+def layout(sheets, g):
+    """The proof on top: the main inequality, and below it a column per
+    Part of the proof, each a tree under its first chapter.  The basics
+    below, set apart: a column per Part, the chapters stacked with the
+    earliest at the bottom; the side series under the shortest column.
+    Arrows among the basics run in the gutters between the columns and
+    in the gaps below the rows; arrows from the basics into the proof
+    cross the gap between the two sections and enter the boxes of the
+    proof from the right."""
+    by_id = {s.id: s for s in sheets}
+    kind, sink = g["kind"], g["sink"]
+    proof, basics = g["proof"], g["basics"]
+
+    # ---- the lower grid: columns and rows
+    C = len(basics)
     col_of, row_of = {}, {}
-    for c, (_, _, ids) in enumerate(col_parts):
+    for c, (_, _, ids) in enumerate(basics):
         for r, i in enumerate(reversed(ids)):
             col_of[i], row_of[i] = c, r
-    rows = max(len(p[2]) for p in col_parts)
-    # The side series: in the column with the fewest chapters, below them
-    # after one empty row, stacked like a Part.
-    side_start = {}
-    for key, name, ids in side_parts:
-        used = [1 + max((row_of[i] for i in col_of if col_of[i] == c), default=-1)
-                for c in range(C)]
+    rows = max((len(p[2]) for p in basics), default=0)
+    clusters = [(f"{k}. {n}" if n else k, ids, False) for k, n, ids in basics]
+    side_start = set()
+    for key, name, ids in g["side"]:
+        used = [sum(1 for i in col_of if col_of[i] == c) for c in range(C)]
         c = min(range(C), key=lambda c: (used[c], -c))
         start = used[c] + 1
+        side_start.add(start)
         for r, i in enumerate(reversed(ids)):
             col_of[i], row_of[i] = c, start + r
-        side_start[start] = True
         rows = max(rows, start + len(ids))
-    kcol = {i: k for k, i in enumerate(row_ids)}
+        clusters.append((f"{key}. {name}" if name else key, ids, False))
 
-    # Classify the edges, and choose sides and gutters from estimated
-    # positions (as fractions of the width).
+    # ---- the upper grid: a column per Part of the proof
+    K = len(proof)
+    col6 = {}
+    for k, (key, _, _) in enumerate(proof):
+        for i in g["order"][key]:
+            col6[i] = k
+
     plan = {}
-    for (u, v) in edges:
-        if u in col_of and v in col_of:
+    for e, k in kind.items():
+        u, v = e
+        if k == "dep":
             cu, ru, cv, rv = col_of[u], row_of[u], col_of[v], row_of[v]
             if cu == cv and ru == rv + 1:
-                plan[(u, v)] = ("straight",)
+                plan[e] = ("straight",)
             else:
                 gut, side = (cu + 1, "R") if cv > cu else (cu, "L")
-                plan[(u, v)] = ("routed", gut, side, rv)
-        elif u in col_of:
+                plan[e] = ("routed", gut, side, rv)
+        elif k == "inc":
+            # Toward the upper gutter right of the target's column.
             cu = col_of[u]
-            if v == top:
-                rg = min(K, max(0, round((cu + 0.5) / C * K)))
-                dest = rg / K
-            else:
-                rg, dest = None, (kcol[v] + 0.5) / K
-            gut, side = (cu + 1, "R") if dest > (cu + 0.5) / C else (cu, "L")
-            plan[(u, v)] = ("up", gut, side, rg) if v != top else ("uptop", gut, side, rg)
-        elif v == top:
-            plan[(u, v)] = ("rt",)
+            frac = (col6[v] + 1) / K
+            gut, side = (cu + 1, "R") if frac > (cu + 0.5) / C else (cu, "L")
+            plan[e] = ("up", gut, side)
         else:
-            plan[(u, v)] = ("rr",)
+            plan[e] = (k,)
 
-    # Vertical lanes in the gutters of the columns (in row units: row r at
-    # r, the gap below it at r + 0.5, the transfer gap at -0.5) and of the
-    # top row.
-    gutter_iv = defaultdict(dict)
-    rgut_iv = defaultdict(dict)
+    # Arrows from one basics chapter into the proof are bundled: one lane
+    # per source in the lower gutters, one per source and target column in
+    # the gap between the sections and in the upper gutters.
+    def lk(e):
+        return ("up", e[0], plan[e][1]) if plan[e][0] == "up" else e
+
+    def bk(e):
+        return (e[0], col6[e[1]])
+
+    # Lower gutters: lanes by row intervals ("up" edges rise to the top).
+    giv = defaultdict(dict)
     for e, p in plan.items():
         if p[0] == "routed":
-            _, gut, side, gap = p
             ru = row_of[e[0]]
-            gutter_iv[gut][e] = (min(ru, gap + 0.5), max(ru, gap + 0.5))
-        elif p[0] in ("up", "uptop"):
-            gutter_iv[p[1]][e] = (-0.5, row_of[e[0]])
-            if p[0] == "uptop":
-                rgut_iv[p[3]][e] = (0, 1)
-    lanes_g, nlanes_g = {}, {}
-    for gut, iv in gutter_iv.items():
+            giv[p[1]][e] = (min(ru, p[3] + 0.5), max(ru, p[3] + 0.5))
+        elif p[0] == "up":
+            giv[p[1]][lk(e)] = (-1, row_of[e[0]])
+    lanes_g, n_g = {}, {}
+    for gut, iv in giv.items():
         ln, n = assign_lanes({e: (a * 10, b * 10) for e, (a, b) in iv.items()})
         lanes_g.update(ln)
-        nlanes_g[gut] = n
-    lanes_r, nlanes_r = {}, {}
-    for gut, iv in rgut_iv.items():
-        ln, n = assign_lanes({e: (a * 10, b * 10) for e, (a, b) in iv.items()})
-        lanes_r.update(ln)
-        nlanes_r[gut] = n
-    GW = max(36, 2 * PAD + 10 + max(nlanes_g.values(), default=1) * LANE)
-    BW = (WIDTH - 2 * MARGIN - (C + 1) * GW) / C
-    GWr = max(18, 10 + max(nlanes_r.values(), default=1) * LANE)
-    BWr = (WIDTH - 2 * MARGIN - (K + 1) * GWr) / K
+        n_g[gut] = n
+    gw = [max(30, 2 * PAD + 10 + n_g.get(k, 0) * LANE) for k in range(C + 1)]
+    BW = (WIDTH - 2 * MARGIN - sum(gw)) / C
 
     def col_x(c):
-        return MARGIN + GW + c * (BW + GW)
+        return MARGIN + sum(gw[:c + 1]) + c * BW
 
     def gutter_x(gut, e):
-        n = nlanes_g[gut]
-        return MARGIN + gut * (BW + GW) + GW / 2 + (lanes_g[e] - (n - 1) / 2) * LANE
+        left = MARGIN + sum(gw[:gut]) + gut * BW
+        return left + gw[gut] / 2 + (lanes_g[lk(e)] - (n_g[gut] - 1) / 2) * LANE
 
-    def rcol_x(k):
-        return MARGIN + GWr + k * (BWr + GWr)
+    # Upper gutters: one lane per arrow entering from the right.
+    n6 = defaultdict(set)
+    for e, p in plan.items():
+        if p[0] == "up":
+            n6[col6[e[1]] + 1].add(bk(e))
+    n6 = {k: len(v) for k, v in n6.items()}
+    gw6 = [max(24, 2 * PAD + 6 + n6.get(k, 0) * LANE) for k in range(K + 1)]
+    BW6 = (WIDTH - 2 * MARGIN - sum(gw6)) / K
 
-    def rgut_x(gut, e):
-        n = nlanes_r[gut]
-        return MARGIN + gut * (BWr + GWr) + GWr / 2 + (lanes_r[e] - (n - 1) / 2) * LANE
+    def col6_x(c):
+        return MARGIN + sum(gw6[:c + 1]) + c * BW6
 
-    a_w = min(max(2 * BWr + GWr, 0.34 * WIDTH), WIDTH - 2 * MARGIN)
-    a_x = WIDTH / 2 - a_w / 2
-
-    by_id = {s.id: s for s in sheets}
     lines = {}
     for i in col_of:
-        s = by_id[i]
-        lines[i] = wrap(f"{s.num}  {s.plain}", BW - 12)
-    for i in row_ids:
-        s = by_id[i]
-        lines[i] = wrap(f"{s.num}  {s.plain}", BWr - 12, 6)
-    lines[top] = wrap(f"{by_id[top].num}  {by_id[top].plain}", a_w - 12, 2)
-    BH = max(len(lines[i]) for i in col_of) * LH + 10
-    BHr = max(len(lines[i]) for i in row_ids) * LH + 10
-    A_H = len(lines[top]) * LH + 14
+        lines[i] = wrap(label(by_id[i]), BW - 12)
+    for i in col6:
+        w = BW6 - TRUNK - INDENT * g["depth"][i]
+        lines[i] = wrap(label(by_id[i]), w - 12)
+    BH = max((len(lines[i]) for i in col_of), default=1) * LH + 10
 
-    # Attachment points on the top row and the last chapter.
-    def center(i):
-        if i == top:
-            return WIDTH / 2
-        if i in kcol:
-            return rcol_x(kcol[i]) + BWr / 2
-        return col_x(col_of[i]) + BW / 2
+    # ---- vertical positions, top down
+    box = {}
+    y = MARGIN
+    S_W = min(2.2 * BW6, WIDTH - 2 * MARGIN)
+    if sink is not None:
+        lines[sink] = wrap(label(by_id[sink]), S_W - 16, 2)
+        sub = wrap(by_id[sink].desc, S_W - 16, 2) if by_id[sink].desc else []
+        s_h = len(lines[sink]) * (LH + 1.5) + len(sub) * LH + 16
+        box[sink] = (WIDTH / 2 - S_W / 2, y + PAD, S_W, s_h)
+        y += PAD + s_h + 56
+    up_top = y
+    y6 = {}
+    bottoms = []
+    for k, (key, _, _) in enumerate(proof):
+        yy = up_top + TITLE_H
+        for i in g["order"][key]:
+            d = g["depth"][i]
+            x = col6_x(k) + TRUNK + INDENT * d
+            h = len(lines[i]) * LH + 10
+            box[i] = (x, yy, col6_x(k) + BW6 - x, h)
+            yy += h + 7
+        bottoms.append(yy)
+    up_bottom = max(bottoms, default=up_top) + PAD
 
-    def src_x(e):
-        p = plan[e]
-        if p[0] == "up":
-            return gutter_x(p[1], e)
-        if p[0] == "uptop":
-            return rgut_x(p[3], e)
-        return center(e[0])
-
-    def spread(x0, w, lst):
-        lst.sort(key=lambda t: t[0])
-        return {key: x0 + w * 0.12 + w * 0.76 * (k + 1) / (len(lst) + 1)
-                for k, (_, key) in enumerate(lst)}
-
-    bottom_in = defaultdict(list)      # row box or top <- from below
-    top_att = defaultdict(list)        # row box top: (other x, (e, end))
-    entries = defaultdict(list)        # lower boxes, from below
+    # Transfer gap: horizontal lanes from lower to upper gutters.
+    att = defaultdict(list)
     for e, p in plan.items():
-        u, v = e
         if p[0] == "up":
-            bottom_in[v].append((gutter_x(p[1], e), e))
-        elif p[0] in ("uptop", "rt"):
-            bottom_in[top].append((src_x(e), e))
-            if p[0] == "rt":
-                top_att[u].append((WIDTH / 2, (e, "u")))
-        elif p[0] == "rr":
-            top_att[u].append((center(v), (e, "u")))
-            top_att[v].append((center(u), (e, "v")))
-        elif p[0] == "straight":
-            entries[v].append((col_x(col_of[v]) + BW / 2, e))
-        else:
-            entries[v].append((gutter_x(p[1], e), e))
-    in_x = {}
-    for v, lst in bottom_in.items():
-        if v == top:
-            in_x.update(spread(a_x, a_w, lst))
-        else:
-            in_x.update(spread(rcol_x(kcol[v]), BWr, lst))
-    att_x = {}
-    for v, lst in top_att.items():
-        att_x.update(spread(rcol_x(kcol[v]), BWr, lst))
+            att[e[1]].append(e)
+    att_y = {}
+    for v, lst in att.items():
+        lst.sort(key=lambda e: (col_of[e[0]], -row_of[e[0]]))
+        x, y0, w, h = box[v]
+        for k, e in enumerate(lst):
+            att_y[e] = y0 + h * (k + 1) / (len(lst) + 1)
+    lane6 = {}
+    top_y = defaultdict(lambda: 1e9)
+    for e, p in plan.items():
+        if p[0] == "up":
+            top_y[bk(e)] = min(top_y[bk(e)], att_y[e])
+    byg = defaultdict(list)
+    for b in top_y:
+        byg[b[1] + 1].append(b)
+    for gut, lst in byg.items():
+        # The bundle reaching highest takes the outermost lane.
+        lst.sort(key=lambda b: -top_y[b])
+        for k, b in enumerate(lst):
+            lane6[b] = k
+
+    def gut6_x(e):
+        gut = col6[e[1]] + 1
+        left = MARGIN + sum(gw6[:gut]) + gut * BW6
+        return left + PAD + 3 + lane6[bk(e)] * LANE
+
+    tiv = {}
+    for e, p in plan.items():
+        if p[0] == "up":
+            a, b = gutter_x(p[1], e), gut6_x(e)
+            lo, hi = tiv.get(bk(e), (a, a))
+            tiv[bk(e)] = (min(lo, a, b), max(hi, a, b))
+    lanes_t, n_t = assign_lanes(tiv)
+    t_top = up_bottom + 6
+    y = t_top + 8 + n_t * LANE + 10
+
+    # Lower gaps: entries into the bottoms of boxes.
+    entries = defaultdict(list)
+    for e, p in plan.items():
+        if p[0] == "straight":
+            entries[e[1]].append((col_x(col_of[e[1]]) + BW / 2, e))
+        elif p[0] == "routed":
+            entries[e[1]].append((gutter_x(p[1], e), e))
     entry_x = {}
     for v, lst in entries.items():
-        entry_x.update(spread(col_x(col_of[v]), BW, lst))
-
-    # Horizontal lanes: gap "A" above the top row, the transfer gap -1
-    # below it, and the gaps r below the rows of the columns.
-    gap_iv = defaultdict(dict)
+        lst.sort(key=lambda t: t[0])
+        x0 = col_x(col_of[v])
+        for k, (_, e) in enumerate(lst):
+            entry_x[e] = x0 + BW * 0.15 + BW * 0.7 * (k + 1) / (len(lst) + 1)
+    hiv = defaultdict(dict)
     for e, p in plan.items():
         if p[0] == "routed":
             gx = gutter_x(p[1], e)
-            gap_iv[p[3]][e] = (min(gx, entry_x[e]), max(gx, entry_x[e]))
-        elif p[0] == "up":
-            gx = gutter_x(p[1], e)
-            gap_iv[-1][e] = (min(gx, in_x[e]), max(gx, in_x[e]))
-        elif p[0] == "uptop":
-            gx, rx = gutter_x(p[1], e), rgut_x(p[3], e)
-            gap_iv[-1][e] = (min(gx, rx), max(gx, rx))
-            gap_iv["A"][e] = (min(rx, in_x[e]), max(rx, in_x[e]))
-        elif p[0] == "rt":
-            ux = att_x[(e, "u")]
-            gap_iv["A"][e] = (min(ux, in_x[e]), max(ux, in_x[e]))
-        elif p[0] == "rr":
-            ux, vx = att_x[(e, "u")], att_x[(e, "v")]
-            gap_iv["A"][e] = (min(ux, vx), max(ux, vx))
-    lanes_h, nlanes_h = {}, {}
-    for gap, iv in gap_iv.items():
+            hiv[p[3]][e] = (min(gx, entry_x[e]), max(gx, entry_x[e]))
+    lanes_h, n_h = {}, {}
+    for gap, iv in hiv.items():
         ln, n = assign_lanes(iv)
-        for e, k in ln.items():
-            lanes_h[(gap, e)] = k
-        nlanes_h[gap] = n
+        lanes_h.update(ln)
+        n_h[gap] = n
 
-    def gap_h(gap):
-        return 10 + nlanes_h.get(gap, 0) * LANE
-
-    # Vertical positions.
-    TITLE_H = 2 * 12 + 8
-    TOP_TITLE = 22
-    y = MARGIN + PAD + TOP_TITLE
-    a_y = y
-    y += A_H
-    gap_top = {"A": y}
-    y += gap_h("A")
-    r_y = y
-    y += BHr + PAD
-    gap_top[-1] = y
-    y += gap_h(-1) + TITLE_H
-    row_y = {}
+    low_top = y
+    y += TITLE_H
+    row_y, gap_top = {}, {}
     for r in range(rows):
         row_y[r] = y
         y += BH
         gap_top[r] = y
-        y += gap_h(r) + (TITLE_H if (r + 1) in side_start else 0)
+        y += 10 + n_h.get(r, 0) * LANE + (TITLE_H if r + 1 in side_start else 0)
     height = y + MARGIN
-
-    def lane_y(gap, e):
-        return gap_top[gap] + 5 + (lanes_h[(gap, e)] + 0.5) * LANE
-
-    box = {}
     for i in col_of:
         box[i] = (col_x(col_of[i]), row_y[row_of[i]], BW, BH)
-    for i in row_ids:
-        box[i] = (rcol_x(kcol[i]), r_y, BWr, BHr)
-    box[top] = (a_x, a_y, a_w, A_H)
 
-    exits = defaultdict(list)
+    def lane_y(gap, e):
+        return gap_top[gap] + 5 + (lanes_h[e] + 0.5) * LANE
+
+    def t_y(e):
+        return t_top + 5 + (lanes_t[bk(e)] + 0.5) * LANE
+
+    # Exits from the sides of lower boxes.
+    exits = defaultdict(dict)
     for e, p in plan.items():
-        if p[0] in ("routed", "up", "uptop"):
-            exits[(e[0], p[2])].append(e)
+        if p[0] in ("routed", "up"):
+            exits[(e[0], p[2])].setdefault(lk(e), []).append(e)
     exit_y = {}
-    for (u, side), lst in exits.items():
-        lst.sort(key=lambda e: lane_y(plan[e][3] if plan[e][0] == "routed" else -1, e))
+    for (u, side), groups in exits.items():
+        keys = sorted(groups, key=lambda k: -1e9 if k[0] == "up"
+                      else lane_y(plan[k][3], k))
         x, y0, w, h = box[u]
-        for k, e in enumerate(lst):
-            exit_y[e] = y0 + h * (k + 1) / (len(lst) + 1)
+        for n, k in enumerate(keys):
+            for e in groups[k]:
+                exit_y[e] = y0 + h * (n + 1) / (len(keys) + 1)
 
     paths = {}
+    main_in = sorted((e for e, p in plan.items() if p[0] == "main"
+                      and e[1] == sink), key=lambda e: col6[e[0]])
+    by_col = defaultdict(list)
+    for e in main_in:
+        by_col[col6[e[0]]].append(e)
+    if sink is not None:
+        sx, sy, sw, sh = box[sink]
+        cols = sorted(by_col)
+        ent = {c: sx + sw * (k + 1) / (len(cols) + 1) for k, c in enumerate(cols)}
     for e, p in plan.items():
         u, v = e
         ux, uy, uw, uh = box[u]
@@ -462,209 +580,79 @@ def layout(sheets, parts, edges):
             ex = entry_x[e]
             paths[e] = [(ex, uy), (ex, vy + vh)]
         elif p[0] == "routed":
-            gx = gutter_x(p[1], e)
-            sx = ux + uw if p[2] == "R" else ux
-            hy = lane_y(p[3], e)
-            ex = entry_x[e]
-            paths[e] = [(sx, exit_y[e]), (gx, exit_y[e]), (gx, hy),
-                        (ex, hy), (ex, vy + vh)]
-        elif p[0] in ("up", "uptop"):
-            gx = gutter_x(p[1], e)
-            sx = ux + uw if p[2] == "R" else ux
-            hy = lane_y(-1, e)
-            pts = [(sx, exit_y[e]), (gx, exit_y[e]), (gx, hy)]
-            if p[0] == "up":
-                pts += [(in_x[e], hy), (in_x[e], vy + vh)]
-            else:
-                rx, ha = rgut_x(p[3], e), lane_y("A", e)
-                pts += [(rx, hy), (rx, ha), (in_x[e], ha), (in_x[e], vy + vh)]
-            paths[e] = pts
-        elif p[0] == "rt":
-            ux0, ha = att_x[(e, "u")], lane_y("A", e)
-            paths[e] = [(ux0, uy), (ux0, ha), (in_x[e], ha), (in_x[e], vy + vh)]
-        else:
-            ux0, vx0, ha = att_x[(e, "u")], att_x[(e, "v")], lane_y("A", e)
-            paths[e] = [(ux0, uy), (ux0, ha), (vx0, ha), (vx0, vy)]
-
-    clusters = []
-    xs = [box[i][0] for i in row_ids]
-    clusters.append((f"{top_key}. {top_name}" if top_name else top_key,
-                     min(xs) - PAD, a_y - TOP_TITLE,
-                     max(xs) + BWr + PAD - (min(xs) - PAD),
-                     r_y + BHr + PAD - (a_y - TOP_TITLE)))
-    for key, name, ids in col_parts + side_parts:
-        ys = [box[i][1] for i in ids]
-        ye = [box[i][1] + box[i][3] for i in ids]
-        clusters.append((f"{key}. {name}" if name else key,
-                         box[ids[0]][0] - PAD, min(ys) - TITLE_H,
-                         BW + 2 * PAD, max(ye) - min(ys) + TITLE_H + PAD))
-    return dict(box=box, lines=lines, paths=paths, clusters=clusters,
-                plan=plan, top=top, row_ids=row_ids,
-                width=WIDTH, height=height)
-
-
-
-def layout_columns(sheets, parts, edges, proof_from):
-    """One grid: a column per Part, the earliest chapter of a Part at the
-    bottom.  The Parts from PROOF_FROM on (the Parts of the proof) are
-    drawn in the colour of the proof.  The side series sits under the
-    shortest column."""
-    by_id = {s.id: s for s in sheets}
-    side_ids = {s.id for s in sheets if s.side}
-    side_parts = [p for p in parts if p[2][0] in side_ids]
-    col_parts = [p for p in parts if p[2][0] not in side_ids]
-    C = len(col_parts)
-    col_of, row_of = {}, {}
-    for c, (_, _, ids) in enumerate(col_parts):
-        for r, i in enumerate(reversed(ids)):
-            col_of[i], row_of[i] = c, r
-    rows = max(len(p[2]) for p in col_parts)
-    side_start = {}
-    for key, name, ids in side_parts:
-        used = [1 + max((row_of[i] for i in col_of if col_of[i] == c), default=-1)
-                for c in range(C)]
-        c = min(range(C), key=lambda c: (used[c], -c))
-        start = used[c] + 1
-        for r, i in enumerate(reversed(ids)):
-            col_of[i], row_of[i] = c, start + r
-        side_start[start] = True
-        rows = max(rows, start + len(ids))
-    proof_ids = {i for k, (_, _, ids) in enumerate(col_parts) if k >= proof_from for i in ids}
-    plan, kind = {}, {}
-    for (u, v) in edges:
-        cu, ru, cv, rv = col_of[u], row_of[u], col_of[v], row_of[v]
-        if cu == cv and ru == rv + 1:
-            plan[(u, v)] = ("straight",)
-        else:
-            gut, side = (cu + 1, "R") if cv > cu else (cu, "L")
-            plan[(u, v)] = ("routed", gut, side, rv)
-        kind[(u, v)] = ("top" if u in proof_ids and v in proof_ids
-                        else "inc" if v in proof_ids else "dep")
-    gutter_iv = defaultdict(dict)
-    for e, p in plan.items():
-        if p[0] == "routed":
             _, gut, side, gap = p
-            ru = row_of[e[0]]
-            gutter_iv[gut][e] = (min(ru, gap + 0.5), max(ru, gap + 0.5))
-    lanes_g, nlanes_g = {}, {}
-    for gut, iv in gutter_iv.items():
-        ln, n = assign_lanes({e: (a * 10, b * 10) for e, (a, b) in iv.items()})
-        lanes_g.update(ln)
-        nlanes_g[gut] = n
-    width = WIDE
-    GW = max(30, 2 * PAD + 8 + max(nlanes_g.values(), default=1) * LANE)
-    BW = (width - 2 * MARGIN - (C + 1) * GW) / C
-
-    def col_x(c):
-        return MARGIN + GW + c * (BW + GW)
-
-    def gutter_x(gut, e):
-        n = nlanes_g[gut]
-        return MARGIN + gut * (BW + GW) + GW / 2 + (lanes_g[e] - (n - 1) / 2) * LANE
-
-    lines = {i: wrap(f"{by_id[i].num}  {by_id[i].plain}", BW - 12, 5) for i in col_of}
-    BH = max(len(l) for l in lines.values()) * LH + 10
-
-    def spread(x0, w, lst):
-        lst.sort(key=lambda t: t[0])
-        return {key: x0 + w * 0.12 + w * 0.76 * (k + 1) / (len(lst) + 1)
-                for k, (_, key) in enumerate(lst)}
-
-    entries = defaultdict(list)
-    for e, p in plan.items():
-        u, v = e
-        if p[0] == "straight":
-            entries[v].append((col_x(col_of[v]) + BW / 2, e))
-        else:
-            entries[v].append((gutter_x(p[1], e), e))
-    entry_x = {}
-    for v, lst in entries.items():
-        entry_x.update(spread(col_x(col_of[v]), BW, lst))
-    gap_iv = defaultdict(dict)
-    for e, p in plan.items():
-        if p[0] == "routed":
-            gx = gutter_x(p[1], e)
-            gap_iv[p[3]][e] = (min(gx, entry_x[e]), max(gx, entry_x[e]))
-    lanes_h, nlanes_h = {}, {}
-    for gap, iv in gap_iv.items():
-        ln, n = assign_lanes(iv)
-        for e, k in ln.items():
-            lanes_h[(gap, e)] = k
-        nlanes_h[gap] = n
-
-    def gap_h(gap):
-        return 10 + nlanes_h.get(gap, 0) * LANE
-
-    TITLE_H = 3 * 12 + 8
-    y = MARGIN + TITLE_H
-    row_y, gap_top = {}, {}
-    for r in range(rows):
-        row_y[r] = y
-        y += BH
-        gap_top[r] = y
-        y += gap_h(r) + (TITLE_H if (r + 1) in side_start else 0)
-    height = y + MARGIN
-
-    def lane_y(gap, e):
-        return gap_top[gap] + 5 + (lanes_h[(gap, e)] + 0.5) * LANE
-
-    box = {i: (col_x(col_of[i]), row_y[row_of[i]], BW, BH) for i in col_of}
-    exits = defaultdict(list)
-    for e, p in plan.items():
-        if p[0] == "routed":
-            exits[(e[0], p[2])].append(e)
-    exit_y = {}
-    for (u, side), lst in exits.items():
-        lst.sort(key=lambda e: lane_y(plan[e][3], e))
-        x, y0, w, h = box[u]
-        for k, e in enumerate(lst):
-            exit_y[e] = y0 + h * (k + 1) / (len(lst) + 1)
-    paths = {}
-    for e, p in plan.items():
-        u, v = e
-        ux, uy, uw, uh = box[u]
-        vx, vy, vw, vh = box[v]
-        if p[0] == "straight":
-            paths[e] = [(entry_x[e], uy), (entry_x[e], vy + vh)]
-        else:
-            gx = gutter_x(p[1], e)
-            sx = ux + uw if p[2] == "R" else ux
-            hy = lane_y(p[3], e)
-            paths[e] = [(sx, exit_y[e]), (gx, exit_y[e]), (gx, hy),
+            gx = gutter_x(gut, e)
+            x0 = ux + uw if side == "R" else ux
+            hy = lane_y(gap, e)
+            paths[e] = [(x0, exit_y[e]), (gx, exit_y[e]), (gx, hy),
                         (entry_x[e], hy), (entry_x[e], vy + vh)]
-    clusters = []
-    for k, (key, name, ids) in enumerate(col_parts + side_parts):
+        elif p[0] == "up":
+            gx = gutter_x(p[1], e)
+            x0 = ux + uw if p[2] == "R" else ux
+            ty, x6 = t_y(e), gut6_x(e)
+            paths[e] = [(x0, exit_y[e]), (gx, exit_y[e]), (gx, ty), (x6, ty),
+                        (x6, att_y[e]), (vx + vw, att_y[e])]
+        elif p[0] == "tree":
+            tx = vx + 7
+            cy = uy + min(uh / 2, 12)
+            paths[e] = [(ux, cy), (tx, cy), (tx, vy + vh)]
+        elif p[0] == "main":
+            c = col6[u]
+            if len(by_col[c]) == 1:
+                paths[e] = [(ux + uw / 2, uy), (ent[c], sy + sh)]
+            else:
+                bx = col6_x(c) + 4
+                cy = uy + min(uh / 2, 12)
+                paths[e] = [(ux, cy), (bx, cy), (bx, up_top + 6),
+                            (ent[c], sy + sh)]
+
+    cl = []
+    for name, ids, _ in clusters:
+        xs = [box[i][0] for i in ids]
         ys = [box[i][1] for i in ids]
         ye = [box[i][1] + box[i][3] for i in ids]
-        clusters.append((f"{key}. {name}" if name else key,
-                         box[ids[0]][0] - PAD, min(ys) - TITLE_H,
-                         BW + 2 * PAD, max(ye) - min(ys) + TITLE_H + PAD,
-                         k >= proof_from and k < C))
-    return dict(box=box, lines=lines, paths=paths, clusters=clusters,
-                plan=plan, kind=kind, top=None, row_ids=sorted(proof_ids),
-                width=width, height=height)
+        cl.append((name, min(xs) - PAD, min(ys) - TITLE_H, BW + 2 * PAD,
+                   max(ye) - min(ys) + TITLE_H + PAD, False))
+    top = []
+    for k, (key, name, ids) in enumerate(proof):
+        x = col6_x(k) - PAD
+        top.append((f"{key}. {name}" if name else key, x, up_top,
+                    BW6 + 2 * PAD, bottoms[k] - up_top, True))
+    return dict(box=box, lines=lines, paths=paths, clusters=top + cl,
+                sub=sub if sink is not None else [],
+                kind=kind, sink=sink, width=WIDTH, height=height,
+                tops={ids[0] for _, _, ids in proof},
+                proof_ids=set(col6), split=(up_bottom + low_top) / 2)
 
 
 # ---------------------------------------------------------------- SVG
 
+COLORS = {"dep": "#4b5563", "inc": "#a9b4c2", "tree": "#b7791f",
+          "main": "#b4432f"}
+
 STYLE = """
 .fc text { font-family: system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+.fc .band { fill: #fdfaf3; stroke: #e8d9b8; stroke-width: 1; }
 .fc .cl rect { fill: #f5f6f8; stroke: #d5d9df; }
-.fc .cl.top rect { fill: #fbf7ef; stroke: #e2d3b4; }
+.fc .cl.top rect { fill: #fbf3e2; stroke: #e2cfa6; }
 .fc .cl text { font-size: 11.5px; font-weight: 600; fill: #4a5361;
   paint-order: stroke; stroke: #f5f6f8; stroke-width: 4px; }
-.fc .cl.top text { stroke: #fbf7ef; stroke-width: 6px; }
+.fc .cl.top text { stroke: #fbf3e2; stroke-width: 5px; }
 .fc .n rect { fill: #fff; stroke: #8b95a3; stroke-width: 1; }
+.fc .n.side rect { stroke-dasharray: 3 2; }
 .fc .n.mod rect { fill: #fff1d6; stroke: #b7791f; stroke-width: 1.4; }
+.fc .n.dev rect { fill: #fffbf3; stroke: #d6a85a; stroke-width: 1; }
 .fc .n.asm rect { fill: #fde2dc; stroke: #b4432f; stroke-width: 1.8; }
 .fc .n text { font-size: 11.5px; fill: #1f2933; }
 .fc .n text .num { font-weight: 700; }
 .fc .n.asm text { font-size: 13px; }
+.fc .n.asm text .sub { font-size: 11px; font-style: italic; fill: #5b2a20; }
 .fc a.n:hover rect, .fc a.n:focus rect { stroke: #1d4ed8; stroke-width: 2.2; }
 .fc .e { fill: none; stroke-linejoin: round; }
 .fc .e.dep { stroke: #4b5563; stroke-width: 1.1; }
 .fc .e.inc { stroke: #a9b4c2; stroke-width: 1.1; stroke-dasharray: 4 2; }
-.fc .e.top { stroke: #b7791f; stroke-width: 1.3; }
+.fc .e.tree { stroke: #b7791f; stroke-width: 1.2; }
+.fc .e.main { stroke: #b4432f; stroke-width: 2; }
 .fc.hl .e { opacity: 0.12; }
 .fc.hl .e.on { opacity: 1; stroke-width: 2.2; }
 """
@@ -693,16 +681,6 @@ SCRIPT = """
 """
 
 
-def edge_kind(L, e):
-    """Dark within Parts I-V, light dashed from them into the last Part,
-    amber inside the last Part."""
-    if "kind" in L:
-        return L["kind"][e]
-    p = L["plan"][e][0]
-    return {"straight": "dep", "routed": "dep", "up": "inc",
-            "uptop": "inc"}.get(p, "top")
-
-
 def esc(s):
     return html.escape(s, quote=True)
 
@@ -729,7 +707,7 @@ def svg_path(pts, r=4):
 
 def render_svg(sheets, L):
     by_id = {s.id: s for s in sheets}
-    top, row = L["top"], set(L["row_ids"])
+    sink, tops, proof_ids = L["sink"], L["tops"], L["proof_ids"]
     W, H = L["width"], L["height"]
     out = [f'<svg class="fc" xmlns="http://www.w3.org/2000/svg" '
            f'xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 {W} {H:.0f}" '
@@ -738,51 +716,60 @@ def render_svg(sheets, L):
            f'style="max-width:100%;height:auto">',
            "<title>How the chapters depend on each other</title>",
            "<defs>"]
-    for kind, color in (("dep", "#4b5563"), ("inc", "#a9b4c2"), ("top", "#b7791f")):
-        out.append(f'<marker id="ah-{kind}" viewBox="0 0 10 10" refX="9" refY="5" '
+    for k, color in COLORS.items():
+        out.append(f'<marker id="ah-{k}" viewBox="0 0 10 10" refX="9" refY="5" '
                    f'markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
                    f'<path d="M0,1 L10,5 L0,9 z" fill="{color}"/></marker>')
     out.append(f"</defs><style>/*<![CDATA[*/{STYLE}/*]]>*/</style>")
+    # The proof is set apart by a band behind its section.
+    out.append(f'<rect class="band" x="{MARGIN / 2}" y="{MARGIN / 2}" '
+               f'width="{W - MARGIN}" height="{L["split"]:.1f}" rx="10"/>')
     titles = []
-    for k, cl in enumerate(L["clusters"]):
-        name, x, y, w, h = cl[:5]
-        proofcl = cl[5] if len(cl) > 5 else (k == 0)
-        cls = "cl top" if proofcl else "cl"
-        tl = wrap(name, (w if (len(cl) > 5 or k) else 0.3 * w) - 2 * PAD, 3)
+    for name, x, y, w, h, upper in L["clusters"]:
+        cls = "cl top" if upper else "cl"
+        tl = wrap(name, w - 2 * PAD, 2)
         texts = "".join(f'<tspan x="{x + PAD:.1f}" dy="{0 if j == 0 else 12.5}">{esc(t)}</tspan>'
                         for j, t in enumerate(tl))
         out.append(f'<g class="{cls}"><rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" '
                    f'height="{h:.1f}" rx="8"/></g>')
         titles.append(f'<g class="{cls}"><text x="{x + PAD:.1f}" y="{y + 15:.1f}">'
                       f'{texts}</text></g>')
-    order = {"inc": 0, "dep": 1, "top": 2}
-    for e in sorted(L["paths"], key=lambda e: order[edge_kind(L, e)]):
+    order = {"inc": 0, "dep": 1, "tree": 2, "main": 3}
+    for e in sorted(L["paths"], key=lambda e: order[L["kind"][e]]):
         u, v = e
-        kind = edge_kind(L, e)
-        out.append(f'<path class="e {kind}" data-u="{u}" data-v="{v}" '
-                   f'd="{svg_path(L["paths"][e])}" marker-end="url(#ah-{kind})">'
+        k = L["kind"][e]
+        out.append(f'<path class="e {k}" data-u="{u}" data-v="{v}" '
+                   f'd="{svg_path(L["paths"][e])}" marker-end="url(#ah-{k})">'
                    f'<title>{esc(by_id[u].num)} → {esc(by_id[v].num)}</title></path>')
     out += titles
     for s in sheets:
         if s.id not in L["box"]:
             continue
         x, y, w, h = L["box"][s.id]
-        cls = "n asm" if s.id == top else "n mod" if s.id in row else "n"
+        cls = ("n asm" if s.id == sink else "n mod" if s.id in tops
+               else "n dev" if s.id in proof_ids else "n")
+        if s.side:
+            cls += " side"
         ls = L["lines"][s.id]
-        fs = 13 if (top and s.id == top) else FS
-        lh = LH + (1.5 if s.id == top else 0)
-        ty = y + h / 2 - (len(ls) - 1) * lh / 2 + fs * 0.35
-        tx = x + 6 if s.id != top else x + w / 2
-        anchor = "" if s.id != top else ' text-anchor="middle"'
+        big = s.id == sink
+        fs = 13 if big else FS
+        lh = LH + (1.5 if big else 0)
+        nsub = len(L["sub"]) if big else 0
+        ty = y + h / 2 - (len(ls) - 1 + nsub) * lh / 2 + fs * 0.35
+        tx = x + w / 2 if big else x + 6
+        anchor = ' text-anchor="middle"' if big else ""
         spans = []
         for j, t in enumerate(ls):
             dy = 0 if j == 0 else lh
             if j == 0 and t.startswith(f"{s.num}  "):
                 body = (f'<tspan class="num">{esc(s.num)}</tspan>'
-                        f'<tspan> {esc(t[len(s.num) + 2:])}</tspan>')
+                        f'<tspan> {esc(t[len(s.num) + 2:])}</tspan>')
             else:
                 body = esc(t)
             spans.append(f'<tspan x="{tx:.1f}" dy="{dy}">{body}</tspan>')
+        if big:
+            spans += [f'<tspan class="sub" x="{tx:.1f}" dy="{lh}">{esc(t)}</tspan>'
+                      for t in L["sub"]]
         out.append(f'<a class="{cls}" data-id="{s.id}" href="{esc(s.html)}" '
                    f'xlink:href="{esc(s.html)}"><title>{esc(s.num)}. {esc(s.plain)}</title>'
                    f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" rx="4"/>'
@@ -794,7 +781,7 @@ def render_svg(sheets, L):
 
 def render_dot(sheets, parts, L):
     by_id = {s.id: s for s in sheets}
-    top, row = L["top"], set(L["row_ids"])
+    sink, tops, proof_ids = L["sink"], L["tops"], L["proof_ids"]
     out = ["// Generated by scripts/make-flowchart.py; do not edit.",
            "digraph chapters {", '  rankdir=BT; node [shape=box, style="rounded,filled", '
            'fillcolor=white, fontname="Helvetica", fontsize=10];',
@@ -804,15 +791,16 @@ def render_dot(sheets, parts, L):
                    'style=filled; color="#d5d9df"; fillcolor="#f5f6f8";')
         for i in ids:
             s = by_id[i]
-            fill = "#fde2dc" if i == top else "#fff1d6" if i in row else "white"
-            label = f"{s.num}. {s.plain}".replace('"', '\\"')
-            out.append(f'    "{i}" [label="{label}", URL="{s.html}", fillcolor="{fill}"];')
+            fill = ("#fde2dc" if i == sink else "#fff1d6" if i in tops
+                    else "#fffaf0" if i in proof_ids else "white")
+            lab = f"{s.num}. {s.plain}".replace('"', '\\"')
+            out.append(f'    "{i}" [label="{lab}", URL="{s.html}", fillcolor="{fill}"];')
         out.append("  }")
-    for (u, v) in sorted(L["paths"]):
-        kind = edge_kind(L, (u, v))
-        attrs = {"inc": ' [color="#a9b4c2", style=dashed]',
-                 "top": ' [color="#b7791f"]'}.get(kind, "")
-        out.append(f'  "{u}" -> "{v}"{attrs};')
+    attrs = {"inc": ' [color="#a9b4c2", style=dashed]',
+             "tree": ' [color="#b7791f"]',
+             "main": ' [color="#b4432f", penwidth=2]'}
+    for (u, v), k in sorted(L["kind"].items()):
+        out.append(f'  "{u}" -> "{v}"{attrs.get(k, "")};')
     out.append("}")
     return "\n".join(out) + "\n"
 
@@ -888,7 +876,7 @@ def render_text(text, by_id, pos, checks):
     return text
 
 
-def render_page(sheets, parts, svg):
+def render_page(sheets, parts, svg, g):
     by_id = {s.id: s for s in sheets}
     side_note = [p for p in parts if by_id[p[2][0]].side]
     parts = [p for p in parts if not by_id[p[2][0]].side]
@@ -896,7 +884,24 @@ def render_page(sheets, parts, svg):
     with open(PLANS, encoding="utf-8") as f:
         data = json.load(f)
     checks = []
-    lower = f"{parts[0][0][5:]}–{parts[-2][0][5:]}" if len(parts) > 2 else parts[0][0][5:]
+    basics = g["basics"]
+    lower = (f"{basics[0][0][5:]}–{basics[-1][0][5:]}" if len(basics) > 1
+             else basics[0][0][5:] if basics else "")
+    intro = ("Each box is a chapter and links to it.  The shaded section on"
+             " top is the proof: a column for each of its Parts, with the"
+             " chapter stating the Part's results at the head and the sheets"
+             " that prove them hanging below it, each under the chapter it"
+             " serves.")
+    if g["sink"]:
+        intro += (f"  All of it feeds /{by_id[g['sink']].plain}/ at the top.")
+    intro += (f"  Below, set apart, Parts {lower} treat each ingredient in its"
+              " simplest setting, a column per Part read from the bottom up: a"
+              " chapter sits above the chapters it builds on.  Hover over a"
+              " chapter to pick out its arrows.")
+    if side_note:
+        intro += ("  The side series, a model in the function-field setting"
+                  " that the proof does not use, is drawn under the shortest"
+                  " column with dashed boxes.")
     out = ["# Generated by scripts/make-flowchart.py from the index, the sheets",
            f"# and {PLANS}; do not edit.",
            "#+TITLE: How the chapters fit together",
@@ -904,20 +909,12 @@ def render_page(sheets, parts, svg):
            # The chart is drawn 1200 units wide; let it use the window
            # rather than the text column.
            "#+HTML_HEAD: <style>figure.fc-fig{position:relative;left:50%;"
-           "transform:translateX(-50%);width:min(1800px,calc(100vw - 32px));"
+           "transform:translateX(-50%);width:min(1200px,calc(100vw - 32px));"
            "margin:1em 0} figure.fc-fig svg{display:block;width:100%}</style>",
            "",
            "Back to the [[file:index.html][index]].",
            "",
-           "Each box is a chapter and links to it.  Each Part is a column,"
-           " read from the bottom up: a chapter sits above the chapters of"
-           " its Part that it builds on.  The shaded columns on the right,"
-           " Parts VI–IX, are the proof itself: the frame and Theorems B, A"
-           " and C; the other columns treat each ingredient in its simplest"
-           " setting.  Hover over a chapter to pick out its arrows."
-           + ("  The side series, a model in the function-field setting that"
-              " the proof does not use, is drawn below the shortest column."
-              if side_note else ""),
+           intro,
            "",
            "#+BEGIN_EXPORT html",
            '<figure class="fc-fig">',
@@ -927,11 +924,17 @@ def render_page(sheets, parts, svg):
            "",
            "*Legend.*  Every arrow comes from the /Prerequisites/ paragraph of"
            " the chapter it points to.",
-           "- Dark arrow: within Parts I–V, the later chapter builds on the"
-           " earlier one.",
-           "- Light dashed arrow: a chapter of Parts VI–IX builds on a chapter of"
-           " Parts I–V, usually its simplest setting.",
-           "- Amber arrow: within Parts VI–IX.",
+           "- Red arrow: into the main inequality, from the frame and from the"
+           " chapters stating Theorems A, B and C.",
+           "- Amber line: within a Part of the proof, a sheet hangs under the"
+           " chapter that names it (a sheet that no chapter of its Part names"
+           " hangs under the chapter before it).  Other arrows between chapters"
+           " of the proof are left out; each sheet's /Prerequisites/ lists them.",
+           "- Light dashed arrow: a chapter of the proof builds on a chapter of"
+           f" Parts {lower}, usually its simplest setting.  Arrows from one"
+           " chapter into one column of the proof are drawn as one branching line.",
+           "- Dark arrow: within Parts " f"{lower}" ", the later chapter builds"
+           " on the earlier one.",
            "- An arrow is left out when a path of other arrows already leads"
            " from the one chapter to the other.",
            ]
@@ -969,18 +972,16 @@ def main():
     ap.add_argument("--outdir", default=".")
     args = ap.parse_args()
     sheets, parts = read_index()
-    edges = build_graph(sheets)
-    main_parts = [p for p in parts if not next(x for x in sheets if x.id == p[2][0]).side]
-    proof_from = next((k for k, p in enumerate(main_parts) if p[0] == "Part VI"), len(main_parts) - 1)
-    L = layout_columns(sheets, parts, edges, proof_from)
+    g = build_graph(sheets, parts)
+    L = layout(sheets, g)
     svg = render_svg(sheets, L)
     files = {"flowchart.svg": svg + "\n",
              "flowchart.dot": render_dot(sheets, parts, L),
-             "flowchart.org": render_page(sheets, parts, svg)}
+             "flowchart.org": render_page(sheets, parts, svg, g)}
     for name, text in files.items():
         with open(os.path.join(args.outdir, name), "w", encoding="utf-8") as f:
             f.write(text)
-    print(f"make-flowchart: {len(sheets)} chapters, {len(edges)} arrows; "
+    print(f"make-flowchart: {len(sheets)} chapters, {len(g['kind'])} arrows; "
           f"wrote {', '.join(files)}")
 
 
