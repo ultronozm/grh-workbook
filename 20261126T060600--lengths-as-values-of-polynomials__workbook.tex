@@ -1,0 +1,309 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[ds-]{20261125T004000--denominators-and-sha__workbook}
+\externaldocument[es-]{20261125T014500--eisenstein-congruences-and-selmer-classes__workbook}
+\externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
+\externaldocument[dp-]{20261126T030900--denominators-of-projections-to-lifts__workbook}
+\externaldocument[tw-]{20261126T031000--twists-with-few-congruences__workbook}
+\externaldocument[w1-]{20261126T040300--roots-of-unity-for-many-polynomials__workbook}
+\externaldocument[w3-]{20261126T060700--tied-primes__workbook}
+
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T060600\endcsname
+  \chapnumber{20261126T060600}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Ql}{\bar{\mathbb{Q}}_\ell}
+\newcommand{\Zl}{\bar{\mathbb{Z}}_\ell}
+\newcommand{\Sel}{\mathrm{Sel}}
+\newcommand{\val}{\operatorname{val}}
+\newcommand{\ord}{\mathrm{ord}}
+\newcommand{\rk}{\operatorname{rk}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\St}{\mathrm{St}}
+\newcommand{\bd}{\mathrm{bd}}
+\newcommand{\TS}{T_{\mathrm{Sel}}}
+\newcommand{\ctor}{c_{\mathrm{tor}}}
+\newcommand{\Fr}{\mathrm{Fr}}
+\newcommand{\sla}{\mathrm{sl}}
+\newcommand{\Ti}{T_{\mathrm{Sel},i}}
+\setlength{\emergencystretch}{3em}
+
+\title{Lengths as values of polynomials}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Modules over a discrete valuation ring: length, elementary divisors \cite[III, \S7]{La}; cocycles of a profinite group \cite[Ch.~VII, \S3 and Ch.~X, \S3]{SLF}; inertia, tame inertia and Frobenius elements at a finite place \cite[Ch.~I, \S8 and Ch.~IV, \S\S1--2]{SLF}.  Chapter~\ref{w1-chap}: the Gauss valuation \(v_\rho\) and Problems~\ref{w1-pr:radius}, \ref{w1-pr:gauss} and~\ref{w1-pr:at-point}.  Section~\ref{dp-sec:statement}: \(G_E\), \(g^c\), \(\chi_{\mathrm{cyc}}\), the tame generators \(s_w\), coefficient rings \(\Oc\) and normalized lengths; Definition~\ref{dp-def:aux-twist} (the inverse avatar \(\hat\xi\)).  Tame characters, twists, critical pairs and their ratios (Section~\ref{ob-sec:twists}, Definition~\ref{ob-def:pair}).  As background: Stickelberger's theorem (Theorem~\ref{ds-thm:stickelberger}) and Selmer classes (Chapter~\ref{es-chap}).
+
+\medskip
+The twisting theorem of Chapter~\ref{tw-chap} asks for one twist that bounds the lengths of many Selmer modules and the positive parts of the \(\ell\)-adic valuations of many ratios of Hecke values.  On the Galois side one constructs a character \(\chi_\zeta\) from roots of unity \(\zeta_w\) at auxiliary places \(w\); the tame twist in the twisting theorem has inverse avatar \(\chi_\zeta\).  Why should the length of a Selmer module of the twist by \(\chi_\zeta\) be bounded by the valuation of \emph{one polynomial} at the point \((\zeta_w - 1)_w\), and why should that polynomial have small valuation somewhere?  This sheet develops the answers and states Theorem~\ref{thm:polynomials}, the polynomial input of Section~\ref{tw-sec:twisting}.  Problem~\ref{w1-pr:powers} of Chapter~\ref{w1-chap} then gives one tuple of roots of unity that controls the polynomial values for the first \(m\) powers of the twist.
+
+Throughout, \(\ell\) is a prime, \(\val\) is the valuation of \(\Ql\) with \(\val(\ell) = 1\), \(\Zl\) is its valuation ring, \(\val_+ := \max(\val, 0)\), and \(\val_\ell\) is the \(\ell\)-adic valuation of integers.  A discrete valuation ring \(\Oc'\) has the valuation \(\ord_{\Oc'}\) with value \(1\) at a uniformizer; for a coefficient ring, \(\val = \ord_{\Oc'}/e_{\Oc'}\) on \(\Oc'\).  A \emph{cocycle} for a group \(G\) acting linearly on a module \(B\) is a map \(z \colon G \to B\) with \(z(gh) = z(g) + g\,z(h)\).  In this sheet \(\rho\) is a rational radius, and for \(g \in G_E\) we write \(g^{+} := g\) and \(g^{-} := (g^c)^{-1}\).
+
+\section{Lengths and minors}\label{sec:minors}
+
+\begin{problem}\label{pr:one-equation}
+Let \(\ell = 3\) and \(X \in \Z_3\).  The solutions \(u \in \Z/9\) of \(Xu = 0\) number \(9, 3, 9, 1\) for \(X = 0, 3, 9, 1\), and form a module of length \(\min(2, \val(X))\).  The solutions \((u, u') \in (\Z/9)^2\) of \(Xu + u' = 0\), \(Xu' = 0\) number \(9, 9, 1\) for \(X = 0, 3, 1\), and form a module of length \(\min(2, 2\val(X))\).
+\end{problem}
+
+\begin{problem}\label{pr:sharp}
+Let \(\Oc'\) be a discrete valuation ring, \(0 \ne a \in \Oc'\), and \(A\) a matrix over \(\Oc'\) with \(n\) columns and any set of rows.  Let \(A_a\) be \(A\) with the \(n\) rows of \(a I_n\) added.  Then the length of the \(\Oc'\)-module \(\{u \in (\Oc'/a)^n : Au = 0\}\) is the least \(\ord_{\Oc'}(P)\), for \(P\) running over the \(n \times n\) minors of \(A_a\).  For the two systems of Problem~\ref{pr:one-equation}, with \(a = 9\), the sets of minors are \(\{X, 9\}\) and, up to sign, \(\{X^2, 9, 9X, 0, 81\}\).
+\end{problem}
+
+\begin{problem}\label{pr:sharp-use}
+Let \(\Oc\) be a coefficient ring, \(Q\) a finite set, \(A\) a matrix with \(n\) columns and entries in \(\Oc[X_w : w \in Q]\), \(0 \ne a \in \Oc\), and \(\mathcal D\) the set of \(n \times n\) minors of \(A_a\); they are polynomials.  For a point \(x\) with coordinates in a coefficient ring \(\Oc' \supseteq \Oc\) let \(Z(x) := \{u \in (\Oc'/a)^n : A(x)u = 0\}\).
+\textup{(a)} The normalized length of \(Z(x)\) is \(\min_{P \in \mathcal D} \val(P(x))\), and it is at most \(n \val(a)\).
+\textup{(b)} Every \(P \in \mathcal D\) bounds the normalized length of \(Z(x)\) by \(\val(P(x))\) at \emph{every} point \(x\); we say \(P\) is \emph{sharp} at \(x_0\) if equality holds there.  A minor sharp at one point therefore computes the length there and bounds it everywhere.
+\textup{(c)} For \(\ell = 3\), \(Xu = 0\) and \(a = 9\): the minor \(9\) is sharp at \(X = 0\) and the minor \(X\) at \(X = 3\); the latter bounds the length at \(X = \zeta - 1\), \(\zeta\) of order \(9\), by \(1/6\).
+\end{problem}
+
+\section{A character with variables}\label{sec:universal}
+
+Fix a CM field \(E \subseteq \bar{\Q}\), a finite set \(\Sigma_0\) of finite places of \(E\) containing those above \(\ell\), and an element \(g_0\) of inertia at a place of \(\Sigma_0\) prime to \(\ell\).
+
+\begin{definition}\label{def:chi}
+A finite set \(Q\) of finite places of \(E\) is \emph{admissible} for \(\Sigma_0\) if its places have prime norm, and \(Q\), its conjugate \(\bar Q\) and \(\Sigma_0\) are pairwise disjoint.  A \emph{character for \(Q\)} is a locally constant character \(\chi\colon G_E\to\Ql^\times\) for which there is a character \(\chi_0\) of the finite ideles of \(E\), trivial on the principal ideles and on every idele that is a unit at the places not above \(\ell\) and congruent to \(1\) at the places of \(Q\) not above \(\ell\), with \(\chi(\mathrm{Art}\,y)=\chi_0(y/\bar y)\) for every finite idele \(y\); here \(\mathrm{Art}\) is the Artin map of Definition~\ref{dp-def:aux-twist}.  The same definition is used for homomorphisms to the additive group \(\Z/\ell^{h}\).
+
+Let \(h_1 \ge 1\) and, for each \(w \in Q\), let \(\lg_w \colon G_E \to \Z/\ell^{h_1}\) be a locally constant homomorphism; write \([n] \in \{0, \dots, \ell^{h_1} - 1\}\) for the representative of \(n \in \Z/\ell^{h_1}\).  For \(\ell^{h_1}\)-th roots of unity \(\zeta_w\) and for variables \(X_w\) put
+\[
+  \chi_\zeta(g) := \prod_{w \in Q} \zeta_w^{[\lg_w(g)]}, \qquad \chi_X(g) := \prod_{w \in Q} (1 + X_w)^{[\lg_w(g)]} \in \Z[X_w : w \in Q] .
+\]
+\end{definition}
+
+\begin{problem}\label{pr:universal}
+\textup{(a)} At \(X_w = \zeta_w - 1\) the polynomial \(\chi_X(g)\) takes the value \(\chi_\zeta(g)\); \(\chi_\zeta\) is a character of \(G_E\), and \(\chi_\zeta^n = \chi_{\zeta^n}\) for \(n \ge 1\), where \(\zeta^n := (\zeta_w^n)_w\).
+\textup{(b)} For \(g, h \in G_E\), \(\chi_X(gh) - \chi_X(g)\chi_X(h)\) lies in the ideal generated by the \((1 + X_w)^{\ell^{h_1}} - 1\), \(w \in Q\).
+\end{problem}
+
+The next problem is a model with a finite group in place of \(G_E\): \(s\) plays a tame generator at an auxiliary place, acting through \(1 + X\); \(g_1\) plays a Frobenius element there, acting trivially; \(\gamma\) plays an inertia element acting by a scalar.
+
+\begin{problem}\label{pr:model}
+Let \(\ell = 5\), and let \(G\) be the group of order \(100\) generated by \(g_1, \gamma, s\) with \(g_1^5 = \gamma^4 = s^5 = 1\), \(\gamma g_1 \gamma^{-1} = g_1^2\) and \(s\) central.  Let \(\zeta_5\) be a root of unity of order \(5\), \(\Oc' = \Z_5[\zeta_5]\) and \(B = \Oc'/5\), and let \(i \in \Z_5\) be the fourth root of unity with \(i \equiv 2 \pmod 5\).  For \(0 \le j \le 4\) let \(G\) act on \(B\) by the scalars \(g_1 \mapsto 1\), \(\gamma \mapsto i\), \(s \mapsto \zeta_5^j\).  The cocycles \(z \colon G \to B\) with \(z(\gamma) = 0\) are determined by \(u = z(g_1)\), and they are the \(u\) with \((\zeta_5^j - 1)u = 0\).  They number \(625, 5, 5, 5, 5\) for \(j = 0, \dots, 4\); the normalized length is \(\min(1, \val(\zeta_5^j - 1)) = 1, \tfrac14, \tfrac14, \tfrac14, \tfrac14\).  With \(1 + X\) for the scalar of \(s\), the minors of Problem~\ref{pr:sharp-use} for the equation \(Xu = 0\) on \(B\) are \(X\) and \(5\).
+\end{problem}
+
+\begin{problem}\label{pr:normalize}
+Let a group \(G\) act linearly on a module \(B\) over a commutative ring, and let \(\gamma \in G\) act by a scalar \(\lambda\) with \(\lambda - 1\) invertible.  Every cocycle \(G \to B\) is, in exactly one way, the sum of a coboundary \(g \mapsto gb - b\) and a cocycle vanishing at \(\gamma\).
+\end{problem}
+
+\emph{The finite presentation.}  Let \(\Oc\) be a coefficient ring, \(\TS \colon G_E \to \mathrm{GL}_{r'}(\Oc)\) a continuous homomorphism (for instance the action on a Selmer datum), \(c\) a nonnegative integer, \(S\) a finite set of finite places, and \(\mathcal L\) a set of relations \(\sum_j a_j z(g_j) = 0\) with finitely many \(g_j \in G_E\) and matrices \(a_j\) over \(\Oc\).  For a point \(x\) with coordinates in a commutative ring \(\Oc'\) with a ring map from \(\Oc\), let \(\Sel(x)\) be the \(\Oc'\)-module of locally constant maps \(z \colon G_E \to (\Oc'/\ell^{c})^{r'}\) with \(z(gh) = z(g) + \chi_x(g)\TS(g)z(h)\) that vanish on the inertia groups at the places outside \(S\) and satisfy the relations of \(\mathcal L\), with coefficients mapped to \(\Oc'\); here \(\chi_x(g)\) is the value of \(\chi_X(g)\) at \(x\).  (These are equations; \(\chi_x\) need not be a character.)  There is a matrix \(A\) over \(\Oc[X_w : w \in Q]\) with finitely many columns and possibly infinitely many rows such that, for every such \(\Oc'\) and \(x\), \(\Sel(x)\) is isomorphic to the kernel of \(A(x)\) on \((\Oc'/\ell^{c})^{n}\), \(n\) the number of columns.  Hence there is one set of polynomials over \(\Oc\) such that for every discrete valuation ring \(\Oc'\) of characteristic zero with a ring map from \(\Oc\), and every \(x\), the \(\Oc'\)-length of \(\Sel(x)\) is the least \(\ord_{\Oc'}(P(x))\), \(P\) in the set; for coefficient rings \(\Oc' \supseteq \Oc\) the normalized length is the least \(\val(P(x))\).  \emph{Status}: read from the proof \cite{GL}, in the case of a coefficient ring and a continuous representation.  The columns are indexed by the pairs of an element of a finite continuous quotient of \(G_E\) and a coordinate of \((\Oc'/\ell^c)^{r'}\); the quotient is the same for every \(\Oc'\) and \(x\), each \(\lg_w\) and the reduction of \(\TS\) modulo \(\ell^c\) are trivial on its kernel, and every \(z \in \Sel(x)\) vanishes there.  That it exists rests on the following fact.  \emph{For a finite discrete \(G_E\)-module with continuous action, only finitely many locally constant cocycles vanish on every inertia group at the places outside a fixed finite set.}  \emph{Status}: classical, by the theorem of Hermite and Minkowski \cite[Ch.~III, \S2]{Ne}.
+
+At a point \(x = (\zeta_w - 1)_w\) the \(z\) are cocycles for the twist of \(\TS\) by the character \(\chi_\zeta\), by Problem~\ref{pr:universal}.  The Selmer modules of Definition~\ref{def:twisted-length} below have coefficients in \(\mathrm{Frac}(\Oc')/\Oc'\); their elements take finitely many values, so each is killed by a power of \(\ell\), and those killed by \(\ell^{c}\) form the module with coefficients in \(\ell^{-c}\Oc'/\Oc' \cong \Oc'/\ell^{c}\).  The next problem compares the two.
+
+\begin{problem}\label{pr:cutoff}
+Let \(\Oc'\) be a coefficient ring, \(c \ge 1\) an integer, and \(Z\) an \(\Oc'\)-module in which every element is killed by a power of \(\ell\).  If the submodule \(Z[\ell^c]\) of elements killed by \(\ell^c\) has normalized length less than \(c\), then \(Z = Z[\ell^c]\).  For \(\ell = 3\), \(Z = \Z/27\) over \(\Z_3\) and \(c = 2\): \(Z[9]\) has \(9\) elements and length \(2\), and \(Z \ne Z[9]\).
+\end{problem}
+
+\section{Selmer data and tied primes}\label{sec:data}
+
+\begin{definition}\label{def:selmer-datum}
+Let \(\Oc\) be a coefficient ring.  A \emph{Selmer datum} for \((\Sigma_0, g_0)\) over \(\Oc\) is a free \(\Oc\)-module \(\TS\) of finite rank \(\rk\TS \ge 1\) with a continuous \(\Oc\)-linear action of \(G_E\), unramified outside a set \(\Sigma(\TS) \subseteq \Sigma_0\) containing the places above \(\ell\); write \(\TS(g)\) for the action of \(g\).  The endomorphisms \(\TS(g)\), \(g \in G_E\), span \(\operatorname{End}_{\Oc}(\TS)\) over \(\Oc\).  For each finite place \(w\) of \(E\) fix a place of \(\bar{\Q}\) above \(w\), and write \(G_w\) for its decomposition group.  For each \(w \mid \ell\) the datum supplies a finitely generated \(\Oc\)-module \(\mathcal Z_w\) of cocycles \(G_w \to \TS\) containing the coboundaries, with \(\sum_{w \mid \ell}(\rk \mathcal Z_w - \rk\TS) \le f_E \rk\TS\), where \(f_E\) is the number of infinite places of \(E\).  The \emph{local relations} at \(w\) are the relations \(\sum_j a_j z(g_j) = 0\), with finitely many \(g_j \in G_w\) and \(a_j \in \operatorname{End}_{\Oc}(\TS)\), satisfied by all \(z \in \mathcal Z_w\).  The datum also supplies an element \(\gamma(\TS)\) of inertia at a place of \(\Sigma(\TS)\) prime to \(\ell\) and a scalar \(\lambda \in \Oc\) with \(\lambda^2 - 1 \in \Oc^\times\); both \(\gamma(\TS)\) and \((\gamma(\TS)^c)^{-1}\) act on \(\TS\) by \(\lambda\).
+
+A datum has three terms, in the nonnegative extended integers.  For \(0 \ne a \in \Oc\) write \(\bar T_a := \TS/a\TS\), and \(\bar T_a^{*c}\) for the additive dual \(\operatorname{Hom}_{\Z}(\bar T_a, \Q/\Z)\), on which \(\Oc\) acts by precomposition and \(g \in G_E\) acts by \(y \mapsto y \circ \bigl(\chi_{\mathrm{cyc}}(g^c)\,\TS((g^c)^{-1})\bigr)\).  The \emph{global term} \(\mathrm{glob}(\TS)\) is the supremum, over \(0 \ne a \in \Oc\), of the \(\Oc\)-length of the module of \(\Oc\)-linear \(G_E\)-equivariant maps \(\bar T_a \to \bar T_a^{*c}\).  At a place \(v \in \Sigma(\TS)\) prime to \(\ell\), the local term is the supremum over the same \(a\) of the excess, taken to be \(0\) if negative, of the length of the module of restrictions to \(G_v\) of the locally constant cocycles \(G_E \to \bar T_a\) over the length of \(\bar T_a\); \(\mathrm{plc}(\TS)\) is the sum of these local terms over the places \(v \in \Sigma(\TS)\) prime to \(\ell\).  The third term is \(\mathrm{inr}(\TS) := \sum_g \ord_{\Oc}\det(\TS(g) - 1)\), with one summand for each of \(g = g_0^{+}\) and \(g = g_0^{-}\) (two summands even if they coincide).  For a datum, \(\mathrm{glob}(\TS)\) and \(\mathrm{plc}(\TS) + \mathrm{inr}(\TS)\) are finite.  Put
+\[
+  \bd(\TS) := \bigl(\mathrm{glob}(\TS) + \mathrm{plc}(\TS) + \mathrm{inr}(\TS)\bigr)/e_{\Oc} .
+\]
+\end{definition}
+
+\begin{definition}\label{def:twisted-length}
+For a Selmer datum \(\TS\) over \(\Oc\), a finite set \(Q\) of finite places and a character \(\chi\colon G_E \to \Ql^\times\), an \(\Oc'\)-valued model of \(\chi\) is a homomorphism \(\chi' \colon G_E \to \Oc'^\times\) with the same values, and the extended twisted lattice is \(\TS \otimes_{\Oc} \Oc'\) with \(g\) acting by \(\chi'(g)\TS(g)\).  A bound \(\mathrm{len}\,\Sel_Q(\TS\chi) \le d\) means that for every sufficiently large coefficient ring \(\Oc' \supseteq \Oc\) there is an \(\Oc'\)-valued model of \(\chi\) for which the following module has normalized length at most \(d\): the locally constant cocycles with coefficients in the extended twisted lattice tensored over \(\Oc'\) with \(\mathrm{Frac}(\Oc')/\Oc'\) that are unramified outside \(\Sigma(\TS) \cup Q \cup \bar Q\), satisfy the local relations with coefficients extended to \(\Oc'\), and vanish at \(\gamma(\TS)\).
+\end{definition}
+
+\begin{definition}\label{def:torsion-level}
+A natural number \(\ctor\) is a \emph{torsion level} for finitely many Selmer data over one coefficient ring \(\Oc\) if, for every datum, \(\bd(\TS) + 1 < \ctor\) and \(2\rk \TS\,\ord_{\Oc}(\ell^{\ctor}) + 1 < \#k_{\Oc}\), where \(k_{\Oc}\) is the residue field.
+\end{definition}
+
+\begin{definition}\label{def:tied}
+Let \(T_{\mathrm{Sel},1}, \dots, T_{\mathrm{Sel},n}\) be Selmer data for \((\Sigma_0, g_0)\) over \(\Oc\), let \(c \ge 0\) and \(h_1 \ge 1\) be integers and \(W \subseteq G_E\).  \emph{Tied primes} at level \(\ell^{h_1}\), for \(c\) and \(W\), consist of a set \(Q\) admissible for \(\Sigma_0\) with a \emph{first prime} \(w_* \in Q\); for each \(w \in Q\) a place of \(\bar{\Q}\) above \(w\), an arithmetic Frobenius element \(\Fr_w \in G_E\) and the tame generator \(s_w\) at that place, taken in its inertia group, and a homomorphism \(\lg_w \colon G_E \to \Z/\ell^{h_1}\); and \emph{slopes} \(\sla_i(w) \in \Oc\) for \(w \in Q\) and \(1 \le i \le n\); such that:
+\begin{enumerate}
+\item[(a)] for every \(w \in Q\): \(\#k_w \equiv 1 \pmod{\ell^{h_1}}\), where \(k_w\) is the residue field at \(w\), \(\lg_w\) is a character for \(\{w\}\) in the sense of Definition~\ref{def:chi}, and \(\lg_w(s_w) = 1\);
+\item[(b)] for \(w \in Q\) with \(w \ne w_*\) and for \(w' \in Q\): \(\lg_{w'}(\Fr_w)\) is \(1\) if \(w' = w_*\) and \(0\) otherwise;
+\item[(c)] \(\Fr_{w_*} \in W\); \(\sla_i(w_*) = 0\) for all \(i\); and no place of \(\Sigma_0\), and no place of \(Q\) other than \(w_*\), lies above the rational prime \(\#k_{w_*}\);
+\item[(d)] if \(\sla_i(w) \ne 0\), then \(\Ti(\Fr_w^{+})\) and \(\Ti(\Fr_w^{-})\) are the identity modulo \(\ell^{c}\).
+\end{enumerate}
+For \(Q' \subseteq Q\) and \(0 \ne a \in \Oc\), the module of \(\Ti\) \emph{tied at \(Q'\)} at level \(a\) consists of the locally constant cocycles \(z \colon G_E \to \Ti/a\Ti\) that vanish at \(\gamma(\Ti)\), are unramified outside \(\Sigma(\Ti) \cup Q \cup \bar Q\), satisfy the local relations of \(\Ti\), and satisfy the \emph{ties} \(z(s_w^{\pm}) = \sla_i(w)\, z(\Fr_w^{\pm})\) for \(w \in Q'\) and both signs.  The \emph{tied module} is the case \(Q' = Q\).
+\end{definition}
+
+\emph{Bounded tied primes.}  Let \(E \subseteq \bar{\Q}\) be a CM field, \(\Sigma_0\) a finite set of finite places of \(E\), and \(g_0\) an element of inertia at a place of \(\Sigma_0\) prime to \(\ell\).  Let \(T_{\mathrm{Sel},1}, \dots, T_{\mathrm{Sel},n}\) be Selmer data for \((\Sigma_0, g_0)\) over one coefficient ring \(\Oc\), let \(c\) be a nonnegative integer with \(2\rk \Ti\,\ord_{\Oc}(\ell^{c}) + 1 < \#k_{\Oc}\) for all \(i\), and let \(W\) be a neighbourhood of \(g_0\) in \(G_E\).  There is a nonnegative integer \(n_Q\) such that for every integer \(h_1 > c\) there are tied primes at level \(\ell^{h_1}\), for \(c\) and \(W\), with \(\#Q \le n_Q\), for which the tied module of each \(\Ti\) at level \(\ell^{c}\) has \(\Oc\)-length at most \(\mathrm{glob}(\Ti) + \mathrm{plc}(\Ti)\).  \emph{Status}: the coefficient-ring case of a result read from the proof \cite{GL}; not proved here.  Theorem~\ref{w3-thm:tied} of Chapter~\ref{w3-chap} treats the case in which \(\Sigma_0\) contains the places above \(\ell\).
+
+\section{Untying along a line}\label{sec:line}
+
+In the tied module the value of a cocycle at each tame generator is given by its value at a Frobenius element, and the term \(\mathrm{inr}\) is missing from the bound.  The twists we want are not tied.  The ties are removed along a line through the origin of the space of the \(X_w\).  In the construction below, \(\Fr_{w_*}^{+}\) and \(\Fr_{w_*}^{-}\) act modulo \(\ell^{\ctor}\) as \(g_0^{+}\) and \(g_0^{-}\); at the origin, releasing the two ties at \(w_*\) then increases the \(\Oc\)-length by at most \(\mathrm{inr}(\TS)\).  At the levels and radii specified below, the increase in length from the other primes is bounded by the valuation of a product of determinants evaluated on the line, and at a suitable point the normalized valuation of this product equals its Gauss valuation.
+
+\begin{problem}\label{pr:geometric}
+Let \(0 < \rho \le 1\), \(h\) a nonnegative integer, and \(\alpha \in \Zl\) with \(\val(\alpha - 1) \ge \rho\).  Then \(\val\bigl(\sum_{0 \le j < \ell^{h}} \alpha^j\bigr) \ge h\rho\); for \(\ell = 3\), \(\alpha = 4\), \(h = 2\) the sum is \(87381 = 9 \cdot 9709\).  Hence, let \(c\) be a nonnegative integer with \(h_1\rho \ge c\), and let \(x\) have coordinates in a coefficient ring \(\Oc'\) with \(\val(x_w) \ge \rho\) for every \(w \in Q\).  Modulo \(\ell^c\Oc'\), one has \((1 + x_w)^{\ell^{h_1}} \equiv 1\) for every \(w \in Q\) and \(\chi_x(gu) \equiv \chi_x(g)\chi_x(u)\) for all \(g, u \in G_E\).
+\end{problem}
+
+In the next two problems \(u\) and \(u'\) stand for the values of a cocycle at a tame generator \(s\) and at a Frobenius element \(\varphi\).
+
+\begin{problem}\label{pr:line-rank-one}
+Modulo \(9\), with \(y = 3\): the pairs \((u, u') \in (\Z/9)^2\) with \(\bigl((1 + y) - 1\bigr)(u - 2u') = 0\) number \(27\), and those with the tie \(u = 2u'\) number \(9\).  The lengths differ by \(1 = \val_3\bigl((1 + y) - 1\bigr)\).
+\end{problem}
+
+\begin{problem}\label{pr:line}
+Let a group \(G\) act linearly on a module \(B\) over a commutative ring \(\Lambda\), and let \(z \colon G \to B\) be a cocycle.  Let \(s, \varphi \in G\) with \(\varphi s \varphi^{-1} = s^{q}\) or \(\varphi^{-1} s \varphi = s^{q}\), where \(h\) is a nonnegative integer and \(q\) a positive integer with \(q \equiv 1 \pmod{\ell^{h}}\).  Let \(s\) act by a scalar \(\Gamma \in \Lambda\) with \(\sum_{0 \le j < \ell^{h}} \Gamma^j = 0\) on \(B\), and let \(\varphi\) act by \(\Phi\).
+\textup{(a)} \(z(s^{q}) = z(s)\), and \((\Phi - 1)\,z(s) = (\Gamma - 1)\,z(\varphi)\).
+\textup{(b)} If \(\Gamma = 1 + \sigma y\) and \(\Phi = (1 + y)A\) with \(\sigma, y \in \Lambda\) and a \(\Lambda\)-linear \(A\) such that \(\sigma(A - 1) = 0\) on \(B\), then \(\bigl((1 + y)A - 1\bigr)\bigl(z(s) - \sigma z(\varphi)\bigr) = 0\).
+\end{problem}
+
+Now fix one of the Selmer data, \(\TS = \Ti\), with a torsion level \(\ctor\), tied primes at level \(\ell^{h_1}\) for \(c = \ctor\) with \(h_1 > \ctor\), and a rational \(0 < \rho \le 1\) with \(h_1\rho \ge \ctor\).  Write \(\sla(w) := \sla_i(w)\).  Let \(\Sel(x)\) be the module of the finite presentation for \(\TS\), \(c = \ctor\), \(S = \Sigma(\TS) \cup Q \cup \bar Q\), and \(\mathcal L\) the local relations of \(\TS\) with the relation \(z(\gamma(\TS)) = 0\).  The \emph{line} of \(\TS\) consists of the points \(x(y)\) with \(x_{w_*} = y\) and \(x_w = \sla(w)\,y\) for \(w \ne w_*\).  For \(w \in Q\) with \(w \ne w_*\), the values on the line are \(\chi_{x(y)}(s_w^{\pm}) = 1 + \sla(w)y\) and \(\chi_{x(y)}(\Fr_w^{\pm}) = 1 + y\).  If \(y\) lies in a coefficient ring \(\Oc' \supseteq \Oc\) and \(\val(y) \ge \rho\), then for every \(z \in \Sel(x(y))\), every such \(w\) and both signs,
+\begin{equation}\label{eq:untie}
+  \bigl((1 + y)\,\TS(\Fr_w^{\pm}) - 1\bigr)\bigl(z(s_w^{\pm}) - \sla(w)\, z(\Fr_w^{\pm})\bigr) = 0 .
+\end{equation}
+
+\begin{problem}\label{pr:det-gauss}
+\textup{(a)} Let \(\Oc'\) be a discrete valuation ring, \(0 \ne a \in \Oc'\) and \(A\) an \(r' \times r'\) matrix over \(\Oc'\).  The kernel of \(A\) on \((\Oc'/a)^{r'}\) has length at most \(\ord_{\Oc'}\det A\).
+\textup{(b)} For \(A \in \mathrm{GL}_{r'}(\Oc)\) and rational \(\rho \ge 0\), \(v_\rho\bigl(\det((1 + Y)A - 1)\bigr) \le r'\rho\).  For \(A = \bigl(\begin{smallmatrix} 1 & 1 \\ 0 & 1 \end{smallmatrix}\bigr)\) the determinant is \(Y^2\).
+\end{problem}
+
+\begin{problem}\label{pr:generic}
+Let \(G_1, \dots, G_k \in \Zl[Y]\) be nonzero and \(\rho > 0\) rational.  Some \(y \in \Zl\) with \(\val(y) = \rho\) has \(\val(G_j(y)) = v_\rho(G_j)\) for every \(j\).  Moreover \(v_\rho(G_j) \le \val(G_j(0))\).
+\end{problem}
+
+\emph{The polynomial of a datum.}  Let \(\Sel'(x) \subseteq \Sel(x)\) be the submodule of the \(z\) that satisfy the ties at the \(w \ne w_*\); it is the module of the finite presentation for \(\mathcal L\) enlarged by these ties.  For \(\val(y) \ge \rho\), the length of \(\Sel(x(y))\) exceeds that of \(\Sel'(x(y))\) by at most \(\ord_{\Oc'} D_{\mathrm{tie}}(y)\), where, in this sheet,
+\[
+  D_{\mathrm{tie}}(Y) := \prod_{w \in Q,\ w \ne w_*}\ \prod_{\pm} \det\bigl((1 + Y)\,\TS(\Fr_w^{\pm}) - 1\bigr),
+\]
+and \(v_\rho(D_{\mathrm{tie}}) \le 2\rk \TS\,(\#Q - 1)\rho\) by Problem~\ref{pr:det-gauss}(b).
+At the origin \(\chi_0 = 1\), and \(\Sel'(0)\), taken over \(\Oc\), is the module of \(\TS\) tied at \(Q \smallsetminus \{w_*\}\) at level \(\ell^{\ctor}\).  Assume \(\TS(\Fr_{w_*}^{\pm}) \equiv \TS(g_0^{\pm}) \pmod{\ell^{\ctor}}\) for both signs.  If the tied module has \(\Oc\)-length at most \(\mathrm{glob}(\TS) + \mathrm{plc}(\TS)\), then \(\Sel'(0)\) has \(\Oc\)-length at most \(\mathrm{glob}(\TS) + \mathrm{plc}(\TS) + \mathrm{inr}(\TS)\): releasing the two ties at \(w_*\) costs at most \(\mathrm{inr}(\TS)\).  \emph{Status}: read from the proof \cite{GL}.  Consequently there are a polynomial \(F\) over \(\Oc\) in the variables \(X_w\) and a \(y \in \Zl\) with \(\val(y) = \rho\) such that
+\[
+  \val F(x(y)) \le \bd(\TS) + 2\rk \TS\,(\#Q - 1)\rho .
+\]
+For every discrete valuation ring \(\Oc'\) of characteristic zero with a ring map from \(\Oc\), and every \(x\) over \(\Oc'\), the \(\Oc'\)-length of \(\Sel(x)\) is at most \(\ord_{\Oc'} F(x)\); for coefficient rings \(\Oc' \supseteq \Oc\) this bounds the normalized length by \(\val F(x)\).  At \(x = (\zeta_w - 1)_w\), if \(\val F(x) < \ctor\), Problem~\ref{pr:cutoff} gives \(\mathrm{len}\,\Sel_Q(\TS\chi_\zeta) \le \val F(x)\).
+
+\section{Stickelberger systems}\label{sec:systems}
+
+For a finite set \(Q\) of finite places, write \(\mathrm{Cl}_Q\) for the group of finite ideles \(u\) of \(E\) with \(u\bar u = 1\), modulo the subgroup generated by those that are principal and those that are units at every place and congruent to \(1\) at every place of \(Q\).  Every class of \(\mathrm{Cl}_Q\) is represented by \(y/\bar y\) for a finite idele \(y\).  The value of a character \(\chi\) for \(Q\) at the class of \(y/\bar y\) is \(\chi(\mathrm{Art}\,y)\), where \(\mathrm{Art}\) is the Artin map; it depends only on the class.  Extend this evaluation linearly to \(\Zl[\mathrm{Cl}_Q]\).
+
+\begin{definition}\label{def:system}
+A \emph{Stickelberger system} \(\St\) for \((\Sigma_0, g_0)\) comprises a continuous character \(\alpha\colon G_E \to \Ql^\times\) unramified outside \(\Sigma_0\) with \(\alpha(g_0) \ne 1\), a finite list \(L\) of integer exponents, and an element \(\St_Q \in \Zl[\mathrm{Cl}_Q]\) for each finite set \(Q\) of finite places, such that \(1(\St_\varnothing) \ne 0\), where \(1\) denotes the trivial character.  If \(v \notin Q\) and \(Q \cup \{v\}\) is admissible for \(\Sigma_0\), then
+\[
+  \chi(\St_{Q \cup \{v\}})
+  = \chi(\St_Q) \prod_{e \in L} \prod_{\epsilon = \pm 1}
+      \bigl(1 - (\alpha(\Fr_v)\chi(\Fr_v))^{\epsilon}\, (\# k_v)^{-e}\bigr)
+\]
+for every character \(\chi\) for \(Q\) and every arithmetic Frobenius element \(\Fr_v\) at any place of \(\bar{\Q}\) above \(v\); the product over \(L\) counts entries with multiplicity, as does \(\#L\).  Put
+\[
+  \bd(\St) := \val\bigl(1(\St_\varnothing)\bigr) + 2\,\# L\,\val\bigl(\alpha(g_0) - 1\bigr) .
+\]
+\end{definition}
+
+\begin{problem}\label{pr:delete}
+The zeta function of \(\Q(i)\) at \(2\) without its Euler factors at the two primes \(6 \pm i\) of norm \(37\) is \(\zeta_{\Q(i)}(2)\,(1 - 37^{-2})^2\), and \((1 - 37^{-2})^2 = 1871424/1874161\) has \(3\)-adic valuation \(4\).  This factor equals the product on the right-hand side of the identity in Definition~\ref{def:system} for one place \(v\) of norm \(37\) (the two signs \(\epsilon\) give the factors at \(v\) and \(\bar v\)), with \(L = [2]\) and the values of \(\alpha\) and \(\chi\) at \(\Fr_v\) both set to \(1\).
+\end{problem}
+
+\begin{problem}\label{pr:euler-line}
+For \(\ell = 3\) and \(\zeta\) of order \(9\): \(\val\bigl((1 - \zeta/19)(1 - \zeta^{-1}/19)\bigr) = 1/3 = \val\bigl((1 - \zeta)(1 - \zeta^{-1})\bigr)\).  In general, let \(q \ne \ell\) be a prime, \(M' \ge 1\) an integer and \(\alpha_1, \alpha_0 \in \Zl^\times\) with \(q \equiv 1 \pmod{\ell^{M'}}\), \(\val(\alpha_1 - \alpha_0) \ge M'\) and \(\val(\alpha_0 - 1) < M'\).  Then \(\val\bigl(1 - \alpha_1^{\pm 1} q^{-e}\bigr) = \val(\alpha_0 - 1)\) for every integer \(e\) and both signs.
+\end{problem}
+
+Let \(\St\) be a Stickelberger system and let tied primes be given, with \(0 < \rho \le 1\).  For \(Q'\) with \(w_* \in Q' \subseteq Q\) let \(F_{Q'}(Y) \in \Zl[Y]\) be the result of replacing each class of \(\mathrm{Cl}_{Q'}\) in \(\St_{Q'}\), represented by \(y/\bar y\), by \((1 + Y)^{[\lg_{w_*}(\mathrm{Art}\,y)]}\), which does not depend on \(y\); so \(F_{Q'}(\zeta - 1) = \chi(\St_{Q'})\) for \(\chi = \zeta^{\lg_{w_*}}\) and \(\zeta^{\ell^{h_1}} = 1\).  Write \(\alpha_w := \alpha(\Fr_w)\) and \(q_w := \#k_w\); the values of \(\alpha\) lie in \(\Zl^\times\), since its image is compact.
+
+\begin{problem}\label{pr:system-congruence}
+Put, in this sheet, \(R_{\mathrm{Eu}}(Y) := \prod_{w \in Q,\, w \ne w_*} \prod_{e \in L} \bigl(1 - \alpha_w q_w^{-e}(1 + Y)\bigr)\bigl(1 + Y - \alpha_w^{-1} q_w^{-e}\bigr)\).  Then \(R_{\mathrm{Eu}} \in \Zl[Y]\), \(v_\rho(R_{\mathrm{Eu}}) \le 2\,\#L\,(\#Q - 1)\rho\), and
+\[
+  (1 + Y)^{\#L(\#Q - 1)}\, F_Q(Y) \equiv F_{\{w_*\}}(Y)\, R_{\mathrm{Eu}}(Y) \pmod{(1 + Y)^{\ell^{h_1}} - 1} \quad\text{in } \Zl[Y].
+\]
+\end{problem}
+
+\begin{problem}\label{pr:system-line}
+Let \(M'\) be an integer with \(\bd(\St) + 1 < M' \le h_1\rho\), and suppose \(\val\bigl(\alpha(\Fr_{w_*}) - \alpha(g_0)\bigr) \ge M'\) and \(2\,\#L\,\#Q\,\rho < 1\).
+\textup{(a)} \(\val F_{\{w_*\}}(0) = \bd(\St)\).
+\textup{(b)} Some \(y\) with \(\val(y) = \rho\) has \(\val F_Q(y) \le \bd(\St) + 2\,\#L\,(\#Q - 1)\rho\).
+\end{problem}
+
+For \(Q\) itself, define \(F = \chi_X(\St_Q)\) by replacing each class represented by \(u/\bar u\) by \(\chi_X(\mathrm{Art}\,u)\) and extending linearly; each \(\lg_w\) is a character for \(Q\), so the value does not depend on the representative.  The restriction of \(F\) to the \(w_*\)-axis is \(F_Q\).  At the point with coordinate \(y\) of Problem~\ref{pr:system-line}(b) at \(w_*\) and zero elsewhere, \(F\) has valuation at most \(\bd(\St) + 2\,\#L\,(\#Q - 1)\rho\), and at every point \(x = (\zeta_w - 1)_w\), \(F(x) = \chi_\zeta(\St_Q)\).
+
+\emph{The systems of the ratios.}  Use the data and the notation of Chapter~\ref{ob-chap}, and let \(\iota \colon \C \simeq \Ql\).  Let \(\Sigma_0\) be the set of places of \(E\) dividing \(\ell MN\), \(w_0\) a chosen place not above \(\ell\), and \(g_0 = s_{w_0}\) its tame generator at the place of \(\bar{\Q}\) fixed above \(w_0\).  For every ramified critical pair \(P = (\nu, z)\) and sign \(\epsilon = \pm 1\) there is a Stickelberger system \(\St\) for \((\Sigma_0, g_0)\) with \(\bd(\St) \le \val\bigl(1(\St_\varnothing)\bigr) + 4\val_\ell(\#k_{w_0} - 1)\) such that, for every twist \(\xi\) whose set \(Q_\xi\) is admissible for \(\Sigma_0\) and whose inverse avatar \(\hat\xi\) is a character for \(Q_\xi\),
+\[
+  \bigl\lVert \hat\xi(\St_{Q_\xi}) \bigr\rVert = \bigl\lVert 1(\St_\varnothing) \bigr\rVert \cdot \bigl\lVert \iota\bigl(R_P(\xi, \epsilon)\bigr) \bigr\rVert^{n_z}, \qquad n_z := 2 \text{ if } z = 1, \quad n_z := 1 \text{ otherwise,}
+\]
+where \(\lVert y \rVert = \ell^{-\val(y)}\).  \emph{Status}: read from the proof \cite{GL}; not proved here.
+
+\begin{problem}\label{pr:ratio-from-system}
+Let \(\St\) be a system satisfying the bound and the norm identity above for a ramified critical pair \(P\) and a sign \(\epsilon\), let \(\xi\) be a twist as above, and let \(\delta \ge 0\) be real.  If \(\val\bigl(\hat\xi(\St_{Q_\xi})\bigr) \le \bd(\St) + \delta\), then \(\val_+\bigl(\iota(R_P(\xi, \epsilon))\bigr) \le 4\val_\ell(\#k_{w_0} - 1) + \delta\).
+\end{problem}
+
+\section{The polynomial input}\label{sec:input}
+
+\begin{problem}\label{pr:order}
+Let \(c' \ge 1\) be an integer that bounds the ranks of finitely many Selmer data and the numbers \(\#L\) of finitely many Stickelberger systems, let \(n_Q\) be a nonnegative integer, and put \(s_0 := 2c'(1 + n_Q)\).  If \(Q\) is a nonempty finite set with \(\#Q \le n_Q\) and \(\rho > 0\) with \(s_0\rho < 1\), then \(\rho \le 1\), \(2c'\#Q \le s_0\), \(2\,\#Q \le s_0\), \(2\rk \TS\,(\#Q - 1)\rho \le s_0\rho\) and \(2\,\#L\,(\#Q - 1)\rho \le s_0\rho\) for each datum and system, and \(2\,\#L\,\#Q\,\rho < 1\).
+\end{problem}
+
+\begin{theorem}[the polynomial input]\label{thm:polynomials}
+Let \(E \subseteq \bar{\Q}\) be a CM field, \(\Sigma_0\) a finite set of finite places of \(E\), and \(g_0\) an element of inertia at a place of \(\Sigma_0\) prime to \(\ell\).  Let finitely many Selmer data for \((\Sigma_0, g_0)\) over one coefficient ring \(\Oc\) and finitely many Stickelberger systems for \((\Sigma_0, g_0)\) be given, and let \(\ctor\) be a torsion level for the data.  There is an integer \(s_0 \ge 1\) such that for every rational \(\rho > 0\) with \(s_0\rho < 1\) and every sufficiently large integer \(h_1\) there are:
+\begin{enumerate}
+\item a set \(Q\), admissible for \(\Sigma_0\), of at most \(s_0/2\) places, and for each \(w \in Q\) a homomorphism \(\lg_w\colon G_E \to \Z/\ell^{h_1}\) that is a character for \(\{w\}\) and takes the value \(1\) at an element of an inertia group at \(w\);
+\item for each datum and each system a polynomial \(F\) over \(\Zl\) in the variables \(X_w\), \(w \in Q\), and a point with coordinates in \(\Zl\) of valuation at least \(\rho\) at which \(\val(F) \le \bd + s_0\rho\), where \(\bd\) is \(\bd(\TS)\) or \(\bd(\St)\);
+\item for \(\ell^{h_1}\)-th roots of unity \(\zeta_w\), with \(x := (\zeta_w - 1)_w\): for a system, \(F(x) = \chi_\zeta(\St_Q)\); for a datum with \(\val(F(x)) < \bd(\TS) + 1\), \(\mathrm{len}\,\Sel_Q(\TS\chi_\zeta) \le \val(F(x))\).
+\end{enumerate}
+\end{theorem}
+
+\emph{Status}: read from the proof \cite{GL}.  In the proof, \(c'\) is an integer as in Problem~\ref{pr:order}, \(M'\) is a nonnegative integer with \(\bd(\St) + 1 < M'\) for every system, and \(W\) is a neighbourhood of \(g_0\) on which \(\TS(g^{\pm}) \equiv \TS(g_0^{\pm})\) modulo \(\ell^{\ctor}\) for every datum and \(\val(\alpha(g) - \alpha(g_0)) \ge M'\) for every system.  The bounded tied primes, for \(c = \ctor\) and this \(W\), give \(n_Q\), and \(s_0 := 2c'(1 + n_Q)\); the number \(n_Q\) is found before \(h_1\).  For the construction it suffices that \(h_1 > \ctor\), \(h_1\rho \ge \ctor\) and \(h_1\rho \ge M'\).  The set \(Q\) and the \(\lg_w\) are those of the tied primes.  The proof chooses a sharp minor on the line for each datum and evaluates the universal character on \(\St_Q\) for each system; its line parameters have valuation at least \(\rho\), and Sections~\ref{sec:line} and~\ref{sec:systems} choose them of valuation exactly \(\rho\).
+
+Problems~\ref{pr:sharp}, \ref{pr:sharp-use} and~\ref{pr:cutoff} give the length comparisons.  Problems~\ref{pr:geometric}, \ref{pr:line}, \ref{pr:det-gauss} and~\ref{pr:generic} give the geometric sum, the abstract cocycle relation, the determinant estimates and the choice of a point; Section~\ref{sec:line} applies them to the local relation~\eqref{eq:untie} and to the cost of releasing the remaining ties.  Problems~\ref{pr:system-congruence} and~\ref{pr:system-line} give the point for a system, and Problem~\ref{pr:order} verifies the bounds for the chosen \(s_0\).  Taken as given: the finite presentation, with the finiteness of cocycles unramified outside a finite set; the bound for releasing the ties at the first prime; the bounded tied primes, which are the subject of Chapter~\ref{w3-chap}; and the systems of the ratios.  Chapter~\ref{tw-chap} combines the polynomial input with Problem~\ref{w1-pr:powers} to obtain one twist whose first \(m\) powers are all small.  In the Lean proof of Theorem~\ref{tw-thm:twisting}, the implication of Problem~\ref{pr:ratio-from-system} gives the ratio bound for each of those powers.
+
+\paragraph{In the Lean formalization.}
+{\sloppy\emergencystretch=8em In the Lean proof \cite{GL} (\nolinkurl{grh/src/}, namespace \texttt{New.Selmer} unless stated otherwise), Theorem~\ref{thm:polynomials} is \texttt{exists\_twistPolynomials}, with conclusions \texttt{TwistPolynomials} and hypothesis \texttt{IsTorsionLevel}; the choices in the status paragraph occur in the proof of this theorem, whose final application is \texttt{nonempty\_twistPolynomials\_of\_isTiedPrimes}.  The objects are \texttt{SelmerDatum} (with \texttt{localRelations}, \texttt{globalTerm}, \texttt{placesTerm}, \texttt{firstPrimeTerm}), \texttt{SelmerDatum.TwistedLengthLe}, \texttt{StickelbergerSystem}, \texttt{New.IsAuxiliary}, \texttt{New.IsFromU1} (characters for \(Q\), with its set \(S\) the places above \(\ell\)), \texttt{pointChar} and \texttt{universalChar} (\(\chi_\zeta\), \(\chi_X\)).  Definition~\ref{def:tied} records the data of \texttt{IsTiedPrimes} on \(Q\), with its condition \(U_i(g)\) taken to be \(\Ti(g) \equiv 1 \pmod{\ell^c}\); the module tied at \(Q'\) is \texttt{SelmerDatum.tiedSelmer} with ambient set \(Q\) and tie set \(Q'\).  The minimum in Problem~\ref{pr:sharp} is the one in \texttt{isLeast\_length\_matrixKernel} for the identity ring map; Lean indexes the determinants by ordered choices of rows, allowing repetitions, which gives the same minimum.  The finite presentation is \texttt{exists\_matrix\_selmerAtPoint\_equiv} and \texttt{exists\_isLeast\_length\_selmerAtPoint}, and the finiteness \texttt{New.finite\_cocycles\_unramified\_outside}, proved there by class field theory; the passage to divisible coefficients is \texttt{SelmerDatum.twistedLengthLe\_pointChar}.  For \(w \ne w_*\), relation~\eqref{eq:untie} is the coefficient-ring case of \texttt{IsTiedPrimes.frob\_sub\_one\_smul\_tie\_eq\_zero\_of\_selmerOnLine}, the release of the first prime \texttt{SelmerDatum.length\_tiedSelmer\_erase\_le}, and the two sharp minors are chosen in \texttt{SelmerDatum.exists\_boundsSelmer\_and\_eval\_dvd}.  For the tied primes of this sheet, \texttt{SelmerDatum.exists\_boundsSelmer\_ellVal\_eval\_le} uses the bound on the module tied away from \(w_*\), \(h_1 \ne 0\), \(\rho \le 1\), \(\ctor \le h_1\rho\) and \(2\rk\TS\,\#Q \le s_0\).  The system estimate \texttt{StickelbergerSystem.exists\_point\_ellVal\_universalChar\_le} uses \(\bd(\St) + 1 < M' \le h_1\rho\), the Frobenius congruence of Problem~\ref{pr:system-line}, \(1 \le s_0\), \(2\,\#L\,\#Q \le s_0\) and \(s_0\rho < 1\).  Both estimates give the bound \(\bd + s_0\rho\) at a point with coordinates of valuation at least \(\rho\); the estimates in Sections~\ref{sec:line} and~\ref{sec:systems} retain \(\#Q - 1\) and give a line parameter of valuation exactly \(\rho\).  The lemma \texttt{StickelbergerSystem.exists\_congruence\_lineChar\_element} asserts the existence of an integral polynomial with the congruence and Gauss bound of Problem~\ref{pr:system-congruence}, for every rational \(\rho \ge 0\); the problem gives the product explicitly.  For the singleton in Problem~\ref{pr:system-line}(a), \texttt{StickelbergerSystem.ellVal\_one\_element\_singleton\_le} gives the upper bound \(\bd(\St)\); the problem asks for equality.  The bounded tied primes are \texttt{exists\_isTiedPrimes\_card\_le\_and\_length\_le}, stated there for a discrete valuation ring of characteristic zero that is finite free over \(\Z_\ell\) and has finite quotients by nonzero ideals.  The systems of the ratios are \texttt{exists\_stickelbergerSystem\_\(\beta\)\_le\_and\_norm\_eq}; Problem~\ref{pr:ratio-from-system} gives the implication for a finite allowance, as \texttt{ellVal\_le\_of\_norm\_eq\_mul\_pow} does, and \texttt{exists\_stickelbergerSystem\_ellVal\_ratio\_le} combines it with the choice of the system.  Torsion of each divisible-coefficient cocycle is \texttt{exists\_smul\_eq\_zero\_of\_mem\_selmerModule}; the two character values on the line are \texttt{IsTiedPrimes.universalChar\_tame\_gen} and \texttt{IsTiedPrimes.universalChar\_frob}; for the class group, \texttt{divStarClass\_surjective} gives the representatives and \texttt{New.IsFromU1.apply\_galoisLift} the independence of the representative; the evaluation on the first-prime axis is \texttt{eval\_single\_groupRingEval\_universalChar}.  The datum bound is \texttt{New.CoeffRing.normLength} applied to \texttt{SelmerDatum.\(\beta\)}, and the bound at every specialization in Section~\ref{sec:line} is \texttt{BoundsSelmer}.  The system bound is \texttt{StickelbergerSystem.\(\beta\)}, and its character has unit values by \texttt{StickelbergerSystem.norm\_twistChar}.  For \(w_* \in Q' \subseteq Q\), \texttt{New.IsFromU1.mono} allows the character for \(\{w_*\}\) to be used at level \(Q'\), and \texttt{coe\_eval\_groupRingEval\_lineChar} gives \(F_{Q'}(\zeta - 1)\) for \(\zeta^{\ell^{h_1}} = 1\).  Further steps of these proofs: \texttt{selmerAtPoint}, \texttt{exists\_matrix\_selmerModule\_equiv}, \texttt{length\_selmerModule\_divisibleQuot\_le}, \texttt{lineDirection}, \texttt{IsTiedPrimes.relLength\_tied\_le}, \texttt{gaussVal\_tiePolynomial\_le}, \texttt{U1ClassGroup}, \texttt{groupRingEval}, \texttt{StickelbergerSystem.element\_insert}, \texttt{coe\_eval\_groupRingEval\_universalChar}; the passage to powers and to the inverse avatar is in \texttt{exists\_anticyclotomic\_twist} and \texttt{exists\_mFoldTwist\_hasDivisibleSelmerLengthLe}.\par}
+
+\section*{Hints}
+
+\subsection*{Section~\ref{sec:minors}}
+\begin{description}
+\item[\ref{pr:sharp}] Let \(\Lambda_a\) be the lattice spanned by the rows of \(A_a\).  Compare the solution module with \(\operatorname{Hom}_{\Oc'}(\Oc'^n/\Lambda_a, \Oc'/a)\), and the ideal of maximal minors of \(A_a\) with the determinant of a basis of \(\Lambda_a\).
+\item[\ref{pr:sharp-use}] Apply Problem~\ref{pr:sharp} over \(\Oc'\) to \(A(x)\).  Which minor uses only rows of \(a I_n\)?
+\end{description}
+
+\subsection*{Section~\ref{sec:universal}}
+\begin{description}
+\item[\ref{pr:universal}] \([n + n']\) and \([n] + [n']\) differ by \(0\) or \(\ell^{h_1}\).
+\item[\ref{pr:model}] Compare \(z(\gamma g_1 \gamma^{-1})\) with \(z(g_1^2)\), and \(z(sg)\) with \(z(gs)\) for \(g = \gamma\) and \(g = g_1\).  Conversely, check that each such \(u\) defines a cocycle, for instance through the relations of \(G\) in \(B \rtimes G\).  \(\Oc'/5 = \mathbb F_5[\pi]/\pi^4\) with \(\pi = \zeta_5 - 1\).
+\item[\ref{pr:normalize}] Evaluate the decomposition at \(\gamma\).
+\item[\ref{pr:cutoff}] If \(z \notin Z[\ell^c]\), what is \((\Oc' z)[\ell^c]\)?
+\end{description}
+
+\subsection*{Section~\ref{sec:line}}
+\begin{description}
+\item[\ref{pr:geometric}] Factor the geometric sum into sums with \(\ell\) terms, and compare each factor with \(\ell\).  For the last part, \((1 + x)^{n} - 1 = x \sum_{j < n} (1 + x)^j\), and Problem~\ref{pr:universal}(b).
+\item[\ref{pr:line}] (a) \(z(s^n) = \sum_{j < n} \Gamma^j z(s)\) and \(\Gamma^{\ell^h} = 1\) on \(B\); then compute \(z(\varphi s) = z(s^q\varphi)\) in two ways.  In the second case compute \(z(s\varphi) = z(\varphi s^q)\).  (b) Apply \(\Phi - 1\) to \(z(s) - \sigma z(\varphi)\).
+\item[\eqref{eq:untie}] For a unit idele \(u\) supported at \(w\), examine the two components of \(u/\bar u\) when computing \(\lg_{w'}(s_w)\) \cite[Ch.~VI]{Ne}; use anticyclotomicity for the conjugate place.  Which of the two relations of Problem~\ref{pr:line} applies at \(w\), and which at \(\bar w\), and what happens to wild inertia?  Then Problem~\ref{pr:geometric} and Definition~\ref{def:tied}(d).
+\item[\ref{pr:det-gauss}] (a) Use Problem~\ref{pr:sharp}.  (b) Inspect the top coefficient.
+\item[\ref{pr:generic}] Problem~\ref{w1-pr:at-point}(b): avoid finitely many residue classes; the residue field of \(\Zl\) is infinite.
+\item[The polynomial of a datum] Consider the map that records the differences in the ties, with \eqref{eq:untie} and Problem~\ref{pr:det-gauss}(a).  For the polynomial bound, start with a minor sharp for \(\Sel'\) at the origin, restricted to the line, and use Problem~\ref{pr:generic}; then take \(F\) a minor of the presentation of \(\Sel\) sharp at \(x(y)\), and Problem~\ref{pr:sharp-use}(b).
+\end{description}
+
+\subsection*{Section~\ref{sec:systems}}
+\begin{description}
+\item[\ref{pr:euler-line}] Compare \(19 - \zeta\) with \(1 - \zeta\).  In general, compare each factor with \(1 - \alpha_0^{\pm 1}\) modulo \(\ell^{M'}\); how does inversion affect the valuation of the difference of two units?
+\item[\ref{pr:system-congruence}] Evaluate at the \(\ell^{h_1}\) distinct roots \(\zeta - 1\) of the monic polynomial \((1 + Y)^{\ell^{h_1}} - 1\), inserting the places \(w \ne w_*\) one at a time.  Which character occurs in the insertion identity, and what is its value at \(\Fr_w\)?
+\item[\ref{pr:system-line}] (a) Use the trivial character in the insertion identity at \(w_*\), and Problem~\ref{pr:euler-line}; treat the empty list separately (for \(\#L \ge 1\), \(\val(\alpha(g_0) - 1) \le \bd(\St)/2 < M'\)).  (b) Compare the valuation of the modulus with that of the right-hand side of the congruence at a generic point.
+\item[\ref{pr:ratio-from-system}] If \(\lVert\iota(R_P(\xi, \epsilon))\rVert \ge 1\) there is nothing to prove.
+\end{description}
+
+{\small
+\begin{thebibliography}{SLF}
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[La]{La} S.~Lang, \emph{Algebra}, 3rd ed., Grad.\ Texts in Math.\ 211, Springer, 2002.
+\bibitem[Ne]{Ne} J.~Neukirch, \emph{Algebraic Number Theory}, Grundlehren Math.\ Wiss.\ 322, Springer, 1999.
+\bibitem[SLF]{SLF} J.-P.~Serre, \emph{Local Fields}, Grad.\ Texts in Math.\ 67, Springer, 1979.
+\end{thebibliography}
+}
+
+\end{document}
