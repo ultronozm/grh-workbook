@@ -1,0 +1,248 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[da-]{20261126T030300--the-data__workbook}
+\externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
+\externaldocument[ho-]{20261125T016500--hecke-operators-and-theta-lifts__workbook}
+\externaldocument[dac-]{20261125T016700--divisibility-along-the-chain__workbook}
+\externaldocument[dl-]{20261126T030500--divisibility-of-the-composite-lift__workbook}
+\externaldocument[d1-]{20261126T050100--the-count-congruences-directions-and-factorials__workbook}
+\externaldocument[d2-]{20261126T050200--one-lift-at-a-small-non-split-prime__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261126T051700}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Oc}{\mathcal O}
+\newcommand{\Dc}{\mathcal D}
+\newcommand{\Ic}{\mathcal I}
+\newcommand{\Qc}{\mathcal Q}
+\newcommand{\Mk}{\mathfrak M}
+\newcommand{\Mb}{\bar{\mathfrak M}}
+\newcommand{\ch}{\mathfrak c}
+\newcommand{\val}{\operatorname{val}}
+\newcommand{\gain}{\operatorname{gain}}
+\newcommand{\bl}{\beta_{>1}}
+\newcommand{\bT}{\mathbf T}
+\newcommand{\tr}{r_p f(n_m + r_p)}
+\newcommand{\tl}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\title{Exceptional primes: a full mark}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Chapter~\ref{da-chap}: the data and the scale inequalities (Definition~\ref{da-def:data}, Problem~\ref{da-pr:T}).  Chapter~\ref{ob-chap}: the spaces \(X_j\) of rank \(n_j\) and the diagram \(\beta\) of the data (Definition~\ref{ob-def:diagram}).  Chapter~\ref{dl-chap}: \(c_p\), \(I_p\), \(\gain(p)\) (Section~\ref{dl-sec:gain}); \(C_p(\Phi')\), \(o_p\), \(r_p\), exceptional primes, \(L_p\) (Section~\ref{dl-sec:collisions}); gauges, valuations, \(S_\eta\), weak chain data, translations \(\mathfrak t\) with translated vacua \(v_j(\mathfrak t)\), and the restricted chain \(R_{\vartheta,\Psi}\) (Section~\ref{dl-sec:chain}); the primes \(v_\sigma\), marks, full marks, \(\Phi_{\Mk}\), \(a_v\), \(T_v\), \(Y_v = p^{a_v}T_v\) and \(Y_{\Mk}\), the product of the \(Y_v\) in a fixed order (Section~\ref{dl-sec:exceptional}).  Chapter~\ref{d1-chap}: \(\bl\) (Definition~\ref{d1-def:diagram}), charges (Definition~\ref{d1-def:charges}) and Theorem~\ref{d1-thm:count-charges}.  Chapter~\ref{d2-chap}: standard data (Definition~\ref{d2-def:standard}), ``multiplies gauges by at most'' (Definition~\ref{d2-def:raises}), the stage bound \(\Dc_j(\Phi')\) (Definition~\ref{d2-def:stage}), Theorem~\ref{d2-thm:stage}, statements (III) and (IV) of Section~\ref{d2-sec:kernel}, Problems~\ref{d2-pr:diagram}, \ref{d2-pr:fits}, \ref{d2-pr:kernel-bound} and~\ref{d2-pr:two-places}.  Hecke operators at a split place (Chapter~\ref{ho-chap}, Section~\ref{ho-sec:split}).  Decomposition groups in abelian extensions \cite[Ch.~I, \S9]{Ne}; elementary divisors over a discrete valuation ring.
+
+\medskip
+At an exceptional prime \(p < x_1\) the collision sum can exceed the unit of loss \(L_p\) (Problem~\ref{dl-pr:why-mark}).  Chapter~\ref{dl-chap} therefore applies the scaled Hecke operator \(Y_{\Mk}\) of a full mark before the chain, and uses the bound of Theorem~\ref{thm:full-mark} below.  How does a Hecke operator at primes above \(p\) remove the collisions, and what does it cost?
+
+\section{The primes above an exceptional prime}\label{sec:primes}
+
+Let \(p\) be a prime with \(\chi_K(p) = -1\) and \(\eta\colon \C \to \C_p\) a ring map.  Then \(p \ne d\), and \(p \nmid q_1\) by Problem~\ref{dl-pr:qone-split}; so \(p\) is unramified in \(E\).  For \(\sigma \in \Phi\), \(v_\sigma\) is the prime of \(E\) induced by \(\eta \circ \Phi_\sigma\), and \(\bar v\) is the complex conjugate of \(v\).
+
+\begin{definition}\label{def:fp}
+The \emph{residue degree above \(p\)} is \(f_p := \operatorname{lcm}(2, o)\), where \(o\) is the order of \([-p]\) in \(\Phi \cong (\Z/q_1)^\times\).
+\end{definition}
+
+\begin{problem}\label{pr:decomposition}
+For \(\sigma, \tau \in \Phi\): \(v_\sigma = v_\tau\) if and only if \(\sigma = [-p]^i\tau\) with \(i\) even, and \(v_\sigma = \bar v_\tau\) if and only if \(\sigma = [-p]^i\tau\) with \(i\) odd.  The residue field of every \(v \mid p\) has \(p^{f_p}\) elements.
+\end{problem}
+
+\begin{problem}\label{pr:o-r}
+Let \(q_0 = 18480\), \(d = 138599\) and \(m = 16384\).  The prime \(479\) is inert in \(K\), with \(o_{479} = 15\) and \(r_{479} = 2\); it is not exceptional.  The prime \(55439 \equiv 6287 \pmod m\) is inert, with \(o_{55439} = r_{55439} = 1\); it is exceptional.
+\end{problem}
+
+\begin{problem}\label{pr:m-divides}
+If \(p \not\equiv \pm 1 \pmod m\), then \(m\) divides the order of \([-p]\); so \(f_p\) is this order, it is even, and \(f_p \ge m\).  [Check, with \(m = 2^{14}\) and \(s = 308\): the order of \(-55439\) modulo \(q_1\) has \(2\)-adic valuation \(308\).]
+\end{problem}
+
+\begin{problem}\label{pr:orbit}
+Let \(p\) be exceptional.  For \(\tau \in \Phi_a\), \([-p^{o_p}]\tau \in \Phi_a\) and \(v_{[-p^{o_p}]\tau} = \bar v_\tau\).  No prime \(v \mid p\) equals \(\bar v\).
+\end{problem}
+
+\begin{problem}\label{pr:full-mark-exists}
+If \(p < x_1\) is exceptional, a full mark at \((p, \eta)\) exists.
+\end{problem}
+
+For a full mark, \(C_p(\Phi_{\Mk}) = 0\) (Problem~\ref{dl-pr:full-mark}).  Let \(\Mb := \{\bar v : v \in \Mk\}\) and \(\Phi_{\Mb} := \{\sigma : v_\sigma \in \Mb\}\).
+
+\begin{problem}\label{pr:no-b-place}
+Let \(\Mk\) be a mark.  No \(\sigma \in \Phi_{\Mk} \cup \Phi_{\Mb}\) is a \(b\)-place, so \(\kappa(\sigma) = a/x_1\) there.  For \(v \in \Mk\), \(\sigma \mapsto [-p]\sigma\) maps \(\{\sigma : v_\sigma = v\}\) bijectively onto \(\{\sigma : v_\sigma = \bar v\}\) and preserves \(\kappa\).
+\end{problem}
+
+The \emph{model} is that of Problem~\ref{d2-pr:two-places}: \(\Phi = (\Z/4)^\times = \{1, 3\}\), both places are \(a\)-places, \(a = 24\), and \(p = 5\) is treated as inert, so that \([-5^e]\) exchanges \(1\) and \(3\) for every \(e \in I_5\), the odd \(e \ge 1\).  Think of \(1\) as inducing \(v\) and \(3\) as inducing \(\bar v\), and put \(\Phi_{\Mk} := \{1\}\).  There are two rows, \(0\) and \(1\), and \(\beta\) has \(24\) columns of height one at each place and no others.  The model is bookkeeping, not data.
+
+\begin{problem}\label{pr:model-mark}
+In the model, \(C_5(\varnothing) = 10\) and \(C_5(\{1\}) = 0\); \(\Dc(\beta) = 0\), while \(\Dc(\beta \smallsetminus \{1\}) + \gamma_5 \cdot 24 = 10 = 48\gamma_5\), with \(\gamma_5 = 5/24\).
+\end{problem}
+
+Without the mark the collision takes the whole credit \(48\gamma_5\); with it, nothing is lost.  The erasure is not free: at a neighbour the charges and the diagonal cost \(a_v\) (Section~\ref{sec:neighbour}), and \(Y_v\) carries the factor \(p^{a_v}\) that pays for them.
+
+\section{One lift at a neighbour}\label{sec:neighbour}
+
+Let \(\Mk\) be a mark and \(j \ge 0\).  For \(v \in \Mk\) the pair \(\{v, \bar v\}\) is split (Problem~\ref{pr:orbit}), and the unitary group of \(X_{j+1}\) at it is \(\mathrm{GL}_{n_{j+1}}(E_v)\): \(g\) at \(v\) and \((\bar g^{\,t})^{-1}\) at \(\bar v\).  As \(p\) is unramified, it is a uniformizer of \(E_v\).
+
+\begin{definition}\label{def:neighbour}
+A \emph{neighbour of index at most \(r_p\)} at \(\Mk\) is an element of the finite adelic unitary group of \(X_{j+1}\) which is \(1\) away from \(\Mk \cup \Mb\) and whose component \(g_v\) at each \(v \in \Mk\) lies in the \(\mathrm{GL}_{n_{j+1}}(\Oc_v)\)-double coset of \(\operatorname{diag}(p 1_i, 1)\) for some \(i \le r_p\).
+\end{definition}
+
+\begin{problem}\label{pr:cartan}
+An element of the double coset of \(\operatorname{diag}(p1_i, 1)\) in \(\mathrm{GL}_n(E_v)\) is \(g_1 \operatorname{diag}(p 1_{\Ic}, 1)\, g_2\) with \(g_1, g_2 \in \mathrm{GL}_n(\Oc_v)\), for every set \(\Ic\) of \(i\) rows, \(\operatorname{diag}(p1_{\Ic}, 1)\) having \(p\) at the rows of \(\Ic\) and \(1\) elsewhere.
+\end{problem}
+
+Fix sets \(\Ic_v\) of rows, \(\#\Ic_v \le r_p\), for \(v \in \Mk\).  For \(\tau\) with \(v_\tau \in \Mk\) or \(\bar v_\tau \in \Mk\) let \(\Ic(\tau) := \Ic_v\) for that \(v \in \Mk\); otherwise \(\Ic(\tau) := \varnothing\).  The \emph{neighbour diagonal} \(g_{\Ic}\) is the neighbour (Definition~\ref{def:neighbour}) with component \(\operatorname{diag}(p1_{\Ic_v}, 1)\) at each \(v \in \Mk\).
+
+\begin{problem}\label{pr:diagonal}
+(i) At \(\tau\), the extension to finite adeles of \(u \mapsto \eta(\Phi_\tau(\bar u))\) sends \(g_{\Ic}\) to the diagonal matrix with entries \(p^{-\epsilon_\tau(i)}\), where \(\epsilon_\tau(i) = 1\) if \(v_\tau \in \Mk\) and \(i \in \Ic(\tau)\), \(\epsilon_\tau(i) = -1\) if \(\bar v_\tau \in \Mk\) and \(i \in \Ic(\tau)\), and \(\epsilon_\tau(i) = 0\) otherwise; so a box in row \(i\) at \(\tau\) has its gauge multiplied by \(\lvert p^{-\epsilon_\tau(i)}\rvert = p^{\epsilon_\tau(i)}\).  (ii) For every integer \(c\), \(\sum_{\tau :\, \kappa(\tau) = c}\, \sum_i \epsilon_\tau(i) = 0\).
+\end{problem}
+
+The following extends statement (II) of Section~\ref{d2-sec:kernel} from \(1\) to a diagonal; it is read from the proof.  \emph{(C)} Let \(\phi\) be a standard datum of denominator \(\delta\) on \(\mathrm{Hom}(X_j, X_{j+1})\), let \(g_1, g_2\) be elements of the finite adelic unitary group of \(X_{j+1}\) whose components at the places above \(p\) are integral with integral inverses, and let \(g_0\) be an element of the same group sent at each \(\tau\), as in Problem~\ref{pr:diagonal}, to a diagonal matrix with entries \(y_\tau(i)\).  For a filling \(\mathbf i\) put \(\mathrm{dw}(\mathbf i) := \prod_\tau \lvert\det y_\tau\rvert^{e_\tau} \prod_{\text{boxes}} \lvert y_\tau(\text{row})\rvert\), where \(e_\tau\), a function of \(\kappa(\tau)\) and \(j\), is the exponent of the determinant in the weight at \(\tau\).  If \(\mathrm{dw}(\mathbf i')\) times the absolute value of the entry \((\mathbf i', \mathbf i)\) of the Schur jet matrix of the jet series, at the scale of the kernel, of every standard datum of denominator \(\delta\) is at most \(\mathfrak b\), then \(\omega(1, g_1g_0g_2)\phi\) multiplies gauges by at most \(\mathfrak b\).
+
+For \(\tau \in \Phi\), \(h \ge 1\) and rows \(i\) let \(\ch(\tau, h, i) := 1\) if either \(v_\tau \in \Mk\), \(h = 1\) and \(i \notin \Ic(\tau)\), or \(\bar v_\tau \in \Mk\) and \(i \in \Ic(\tau)\); and \(\ch(\tau, h, i) := 0\) otherwise.
+
+\begin{problem}\label{pr:charges-mark}
+The numbers \(\ch\) are charges for \((\beta, \Phi_{\Mk})\), with \(\beta\) read at heights below \(n_{j+1}\).  [With two rows and \(\Ic_v = \{0\}\): \(\ch(\tau, 1, \cdot) = (0, 1)\) if \(v_\tau \in \Mk\), \(\ch(\tau, h, \cdot) = (1, 0)\) for every \(h\) if \(\bar v_\tau \in \Mk\), and in each pairing exempt by Definition~\ref{d1-def:charges} the two charges add up to \(1\) in each row.]
+\end{problem}
+
+\begin{problem}\label{pr:neighbour}
+Let \(\phi\) be a standard datum of denominator \(1\) on \(\mathrm{Hom}(X_j, X_{j+1})\) and \(g\) a neighbour of index at most \(r_p\) at \(\Mk\).  Then \(\omega(1, g)\phi\) multiplies gauges by at most
+\[
+  p^{\sum_{v \in \Mk} a_v + r_p \sum_{\sigma \in \Phi_{\Mk}} \bl(\sigma) - \Dc_j(\Phi_{\Mk})} ,
+\]
+with \(\beta\) read at heights below \(n_{j+1}\).
+\end{problem}
+
+In the model, with \(\Ic = \{0\}\) and one input coordinate, let \(F := \exp\bigl(\sum_{i=0,1}(z_{1i}^5 z_{3i} + z_{3i}^5 z_{1i})/5\bigr)\), which has the normal form with \(W = 1\).  A filling puts \(a_i\) boxes in row \(i\) at place \(1\) and \(a'_i\) at place \(3\) (in this sheet), \(a_0 + a_1 = a'_0 + a'_1 = 24\); its jet is \(\partial_{z_{10}}^{a_0}\partial_{z_{11}}^{a_1}\partial_{z_{30}}^{a'_0}\partial_{z_{31}}^{a'_1}F(0)\), its charges total \(a_1 + a'_0\), and the diagonal weights it by \(5^{a_0 - a'_0}\) in absolute value.
+
+\begin{problem}\label{pr:model-jets}
+(m) By machine: of the \(625\) fillings, \(25\) have a nonzero jet; every nonzero jet has valuation \(0\); and \(\val(\text{jet}) + a_1 + a'_0 \ge 8\), with equality only at \((a_0, a'_0) = (20, 4)\).
+\end{problem}
+
+So \(p^{24}\) times the weighted jets of the neighbour have valuation at least \(8\), against \(0\) for the plain kernel: the mark recovers \(8\) of the \(10\), and the missing \(2\) is the digit loss in the factorials, which the logarithmic term of Theorem~\ref{d1-thm:count-charges} pays for.  The model is a direct computation; the error term of that theorem is about \(54\) here.
+
+\section{Moving the Hecke operators into the data}\label{sec:transfer}
+
+For \(v \in \Mk\), \(q_v := p^{f_p}\), and \(0 \le i \le n_j\), let \(T^{(j)}_{v,i}\) be the Hecke operator at \(v\) of the double coset of \(\operatorname{diag}(p1_i, 1)\) on forms on \(X_j\), and \(\bT_j(X) := \sum_{i \le n_j} (-X)^i q_v^{\binom i2} T^{(j)}_{v,i}\) for an indeterminate \(X\); so \(T_v = T^{(0)}_{v,r_p}\).
+
+\emph{(A) The split unramified theta correspondence.}  Let \(w\) be a split place of norm \(q\), let hermitian spaces of ranks \(n\) and \(n + k'\) carry characters unramified at \(w\), let \(\phi_0\) be a vacuum at \(w\), and let \(\Theta(\phi; \varphi)\) be bilinear in data \(\phi\) and forms \(\varphi\) and equivariant at \(\phi_0\).  For \(\varphi\) spherical at \(w\), \(\Theta(\phi_0; \varphi)\) is spherical at \(w\) and \(\bT'(X)\Theta(\phi_0; \varphi) = \prod_{l<k'}(1 - q^l\mathrm{fr}\, X)\,\Theta\bigl(\phi_0; \bT(q^{k'}\mathrm{fr}\,\mathrm{fr}'^{-1}X)\varphi\bigr)\), where \(\bT\), \(\bT'\) are the Hecke polynomials of the two spaces and \(\mathrm{fr}\), \(\mathrm{fr}'\) the Frobenius values of the two characters at \(w\).  \emph{Status}: classical \cite{Ra, Ku}; the proof proves it.
+
+\emph{(B)} For the chain the proof reads (A) as follows.  Let \(\Psi\) be a weak chain datum for \(\vartheta\), \(p \nmid \mathrm{Nm}\,Q_\vartheta\), \(v \in \Mk\) and \(j \ge 0\).  Let \(\chi_{v,j}\) be the value at a uniformizer of \(E_v\) of the base change of the character of the lift \(X_j \to X_{j+1}\); then \(\lvert\eta\chi_{v,j}\rvert = 1\), and for every \(\mathfrak t\) in the support of \(\Psi\) the lift \(\Theta\) from \(X_j\) to \(X_{j+1}\) with datum \(v_j(\mathfrak t)\) maps forms spherical at \(v\) to forms spherical at \(v\), and on them
+\[
+  \bT_{j+1}(X)\,\Theta = \Qc_j(X)\, \Theta\, \bT_j\bigl(p^{(t+1)f_p/2}X\bigr), \qquad
+  \Qc_j(X) := \prod_{l=0}^{t}\bigl(1 - q_v^l\, p^{n_jf_p/2}\chi_{v,j} X\bigr) .
+\]
+
+\begin{problem}\label{pr:transfer-model}
+Model: \(q_v = 25\), \(p^{f_p/2} = 5\), \(\chi_{v,0} = 1\), ranks \(1\) and \(2\) (\(t = 0\)), and \(T^{(0)}_{v,1}\) acting by \(2\).  Then \(\Qc_0(X)\,(1 - 2 \cdot 5X) = (1 - 5X)(1 - 10X) = 1 - 15X + 50X^2\); so \(T^{(1)}_{v,1}\) acts by \(15\) and \(T^{(1)}_{v,2}\) by \(2\) on the image of \(\Theta\), and \(5\,\Theta T^{(0)}_{v,1} = (T^{(1)}_{v,1} - 5)\Theta\).
+\end{problem}
+
+\begin{problem}\label{pr:triangular}
+Let \(\Qc \in \Oc_\eta[X]\) with \(\Qc(0) = 1\), and let linear maps \(\Theta\), \(T_i\), \(T'_i\) (\(0 \le i \le n\)) satisfy \(\sum_i (-X)^i q_v^{\binom i2} T'_i\,\Theta = \Qc(X)\,\Theta \sum_i (-p^{(t+1)f_p/2}X)^i q_v^{\binom i2} T_i\) as polynomials in \(X\).  Then for every \(i\) there are \(c_{ii'} \in \Oc_\eta\), depending only on \(\Qc\) and \(q_v\), with \(p^{(t+1)if_p/2} q_v^{\binom i2}\,\Theta T_i = \sum_{i' \le i} c_{ii'} T'_{i'}\Theta\).
+\end{problem}
+
+\begin{problem}\label{pr:scalar}
+For \(i \le r_p\), \(p^{(t+1)if_p/2}q_v^{\binom i2}\) divides \(p^{fr_pt}\); and \((j+1) f r_p t \le \tr\) for \(j < m\).
+\end{problem}
+
+Iterating Problem~\ref{pr:triangular} along the first \(j+1\) lifts, the proof writes \(p^{\tr}\) times the chain of \(j+1\) lifts after \(T^{(0)}_{v,r_p}\) as \(\sum_{i \le r_p} c_i T^{(j+1)}_{v,i}\) after the chain, with \(c_i\) independent of the translation, and \(c_i \in \Oc_\eta\) for \(j < m\) (Problem~\ref{pr:scalar}); Theorem~\ref{dac-thm:move} computes such coefficients in a model.  A Hecke operator of the group of \(X_{j+1}\) acting on the datum passes to the lifted form, and is the sum of the translates \(\omega(1, u)\) over the cosets \(u\) of its double coset.  So the datum of lift \(j\) is replaced, for each \(v \in \Mk\) in turn, by \(\sum_i c_i p^{a_v - \tr}\, T^{(j+1)}_{v,i}\) applied to it; the chain with the new data, applied to \(\varphi\), is the chain applied to \(Y_{\Mk}^m\varphi\).  For \(j < m\), by Problem~\ref{pr:neighbour} and as \(\lvert\eta(c_ip^{a_v - \tr})\rvert \le p^{\tr - a_v}\), the new datum of lift \(j\) multiplies gauges by at most \(p\) to the power \(\#\Mk\cdot\tr + r_p\sum_{\Phi_{\Mk}}\bl - \Dc_j(\Phi_{\Mk})\): the \(a_v\) cancel.  The new data still commute with the levels, the exponents add as in Problem~\ref{dl-pr:gauge-chain}, and restriction to \(Y_m\) at \(p \ne N\) does not increase gauges.  The proof obtains, for a mark \(\Mk\), a weak chain datum \(\Psi\) for \(\vartheta\) with \(p \nmid \mathrm{Nm}\,Q_\vartheta\), and \(\varphi \in S_\eta\):
+
+\smallskip
+\noindent(\(\star\)) \(R_{\vartheta,\Psi}(Y_{\Mk}^m\varphi)\) has valuation at least
+\[
+  -\sum_{j<m}\Bigl(\#\Mk\cdot \tr + r_p \sum_{\sigma \in \Phi_{\Mk}} \bl(\sigma) - \Dc_j(\Phi_{\Mk})\Bigr) ,
+\]
+\(\beta\) read at heights below \(n_{j+1}\) in the \(j\)th term.
+
+\section{Paying for the transfer}\label{sec:pay}
+
+Let \(\Mk\) be a mark and \(0 \le j < m\), with \(\beta\) read at heights below \(n_{j+1}\).
+
+\begin{problem}\label{pr:low-columns}
+For \(\sigma \in \Phi_{\Mk}\), \(r_p\bl(\sigma) \le a/(pm) + \mathbf 1_{\Phi_a}(\sigma)\,a/x_1\).
+\end{problem}
+
+\begin{problem}\label{pr:transfer-paid}
+\(\#\Mk \cdot \tr + r_p \sum_{\sigma \in \Phi_{\Mk}} \bl(\sigma) \le L_p/m + \#(\Phi_a \cap \Phi_{\Mk})\, a/x_1\).
+\end{problem}
+
+\begin{problem}\label{pr:stage-cost}
+If \(\Mk\) is full, then \(\#\Mk\cdot\tr + r_p\sum_{\sigma \in \Phi_{\Mk}}\bl(\sigma) - \Dc_j(\Phi_{\Mk}) \le (2L_p - \gain(p))/m\).
+\end{problem}
+
+In the model of Problem~\ref{d2-pr:model-ineq} at \(p = 7\), the set \(\{1, 9\}\) plays the part of \(\Phi_{\Mk}\): \(C_7(\{1, 9\}) = 0\), and the left side there is \(46865/48\), against \(\gain(7)/m = 1022\) (Problems~\ref{d2-pr:toy-values} and~\ref{d2-pr:toy-gain}).  Summing Problem~\ref{pr:stage-cost} over \(j < m\) in (\(\star\)) gives the following theorem, read from the proof.
+
+\begin{theorem}\label{thm:full-mark}
+Let \(p\) be a prime, \(\eta\colon \C \to \C_p\) a ring map, \(\vartheta\) a twist, \(\Psi\) a weak chain datum for \(\vartheta\) with \(p \nmid \mathrm{Nm}\,Q_\vartheta\), and \(\Mk\) a full mark at \((p, \eta)\) (so \(p < x_1\) is exceptional).  For every \(\varphi \in S_\eta\), \(R_{\vartheta,\Psi}(Y_{\Mk}^m\varphi)\) has valuation at least \(\gain(p) - 2L_p\).
+\end{theorem}
+
+\paragraph{What has been established.}  Theorem~\ref{thm:full-mark}, from (\(\star\)) and Problems~\ref{pr:low-columns}--\ref{pr:stage-cost}; (\(\star\)) rests on Problem~\ref{pr:neighbour} (from Problems~\ref{pr:cartan}--\ref{pr:charges-mark}, (C), Theorem~\ref{d1-thm:count-charges} and (III), (IV) of Chapter~\ref{d2-chap}), on (A) and (B), and on Problems~\ref{pr:triangular} and~\ref{pr:scalar}.  A full mark exists (Problem~\ref{pr:full-mark-exists}).  Taken as given: the split unramified theta correspondence (A), classical; its form (B) for the chain and the kernel bound (C), read from the proof; the steps of Section~\ref{sec:transfer} that lead from Problems~\ref{pr:triangular} and~\ref{pr:scalar} to (\(\star\)), read from the proof; and, from the earlier chapters, Theorem~\ref{d1-thm:count-charges} and statements (III), (IV) of Chapter~\ref{d2-chap}.  Problem~\ref{dl-pr:two-pieces} adds \(p^{j_p}S_\eta\) to the image; what remains for the exceptional primes is the colength of \(Y_{\Mk}^mS_\eta + p^{j_p}S_\eta\) in \(S_\eta\) (Section~\ref{dl-sec:exceptional}).
+
+\begin{leanremark}
+\begin{sloppypar}
+In the Lean proof \cite{GL} (paths relative to \tl{grh/src/}; the namespace \tl{New.} is omitted from names), Theorem~\ref{thm:full-mark} is \tl{Data.IsWeakChainDatum.\allowbreak gaugeLe\_\allowbreak restrictedChain\_\allowbreak of\_\allowbreak isFullMark} (\tl{New/\allowbreak UpperBound/\allowbreak Divisibility/\allowbreak LocalDivisibility.lean}); (\(\star\)) is \tl{Data.IsWeakChainDatum.\allowbreak gaugeLe\_\allowbreak scaledHeckeOperator\_\allowbreak pow} and Problem~\ref{pr:neighbour} is \tl{Data.IsMarked.\allowbreak \(\omega\)\_\allowbreak ofSplitPlaces\_\allowbreak mem\_\allowbreak raises} (\tl{New/\allowbreak UpperBound/\allowbreak Divisibility/\allowbreak ValuationAtNonSplitPrimes.lean}); Problems~\ref{pr:full-mark-exists} and~\ref{pr:transfer-paid} are \tl{Data.exists\_\allowbreak isFullMark} and \tl{Data.IsMarked.\allowbreak card\_\allowbreak mul\_\allowbreak transferExponent\_\allowbreak add\_\allowbreak sum\_\allowbreak lowColumns\_\allowbreak le} (\tl{New/\allowbreak UpperBound/\allowbreak Divisibility/\allowbreak MarkedPrimes.lean}).  Statement (A) is \tl{SiegelWeil.\allowbreak hecke\_\allowbreak transfer\_\allowbreak of\_\allowbreak pairing}, (B) is \tl{Data.IsWeakChainDatum.\allowbreak exists\_\allowbreak heckePolyOp\_\allowbreak lift}, which states the existence of a polynomial with integral coefficients and constant term \(1\) (\(\Qc_j\) is the one its proof constructs), and (C) is \tl{Parameters.\allowbreak omega\_\allowbreak mem\_\allowbreak raises\_\allowbreak of\_\allowbreak schurJet\_\allowbreak le}.  In the derivation of (\(\star\)) in Section~\ref{sec:transfer}, the transfer through the first \(j+1\) lifts is \tl{Data.IsWeakChainDatum.\allowbreak exists\_\allowbreak hecke\_\allowbreak transfer}; the Hecke operator on the datum is \tl{Data.liftKernel\_\allowbreak lift\_\allowbreak heckeSplit} and \tl{Data.IsMarked.\allowbreak \(\omega\)\_\allowbreak heckeSplit\_\allowbreak mem\_\allowbreak raises}; the new data are \tl{Data.IsWeakChainDatum.\allowbreak exists\_\allowbreak lift\_\allowbreak eq\_\allowbreak chain\_\allowbreak scaledHeckeOperator}; the addition of the exponents and the restriction to \(Y_m\) are \tl{Data.IsWeakChainDatum.\allowbreak gaugeLe\_\allowbreak chain} and \tl{Data.GaugeLe.\allowbreak restrictToY} (\tl{New/\allowbreak UpperBound/\allowbreak Divisibility/\allowbreak ChainValuation.lean}).  The double coset of Definition~\ref{def:neighbour} is \tl{basicDoubleCoset}, with \tl{ofSplitPlaces}; \(f_p\) occurs in \tl{Parameters.\allowbreak q\_\allowbreak eq\_\allowbreak pow\_\allowbreak lcm\_\allowbreak of\_\allowbreak inert}.
+\end{sloppypar}
+\end{leanremark}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:primes}}
+\begin{description}
+\item[\ref{pr:decomposition}] \(\mathrm{Gal}(E/\mathbb Q) \cong \mathrm{Gal}(K/\mathbb Q) \times (\Z/q_1)^\times\); the Frobenius at \(p\) is \((\text{nontrivial}, p)\) and complex conjugation is \((\text{nontrivial}, -1)\).  Compare \(v_\sigma\) and \(v_\tau\) through the decomposition group.
+\item[\ref{pr:o-r}] Orders modulo \(18480\); \(r_p\) is the least \(h\) with \(m \le p^h\).
+\item[\ref{pr:m-divides}] \(2^{s+1} \mid q_1\) and \(m = 2^e\), \(s = 22e\) (Definition~\ref{da-def:data}).  Lift the exponent in \((-p)^o \equiv 1 \pmod{2^{s+1}}\).
+\item[\ref{pr:orbit}] Classes modulo \(q_0\); Problems~\ref{pr:decomposition} and~\ref{pr:m-divides}.
+\item[\ref{pr:full-mark-exists}] Choose one prime of each pair \(\{v_\tau, \bar v_\tau\}\), \(\tau \in \Phi_a\), by a total order; Problem~\ref{pr:orbit} for why both are induced by \(a\)-places.
+\item[\ref{pr:no-b-place}] The class of \([-p]^i\) modulo \(q_0\) lies in a group of odd order \(o_p\), which does not contain \(-1\).
+\item[\ref{pr:model-mark}] Geometric series in \(1/25\).
+\end{description}
+
+\subsection*{\S\ref{sec:neighbour}}
+\begin{description}
+\item[\ref{pr:cartan}] Elementary divisors over \(\Oc_v\), and permutation matrices.
+\item[\ref{pr:diagonal}] (i) The map is continuous for \(\bar v_\tau\).  (ii) Problem~\ref{pr:no-b-place}.
+\item[\ref{pr:charges-mark}] For \(e \in I_p\), \(v_{[-p^e]\tau} = \bar v_\tau\) and \(\Ic([-p^e]\tau) = \Ic(\tau)\).  Treat the rows in and out of \(\Ic(\tau)\) separately.
+\item[\ref{pr:neighbour}] Problem~\ref{pr:cartan} and (C); then, as in Problem~\ref{d2-pr:kernel-bound}, Theorem~\ref{d1-thm:count-charges} with Problem~\ref{pr:charges-mark}.  Count \(\epsilon + \ch\) box by box at \(\Phi_{\Mk}\) and at \(\Phi_{\Mb}\); a column has distinct rows.
+\item[\ref{pr:model-jets}] Only the monomials \((z_{1i}^5z_{3i})^k(z_{3i}^5z_{1i})^l\) contribute; exact rational arithmetic.
+\end{description}
+
+\subsection*{\S\ref{sec:transfer}}
+\begin{description}
+\item[\ref{pr:transfer-model}] Compare the coefficients of \(X\) and \(X^2\).
+\item[\ref{pr:triangular}] \(\Qc\) is a unit in \(\Oc_\eta[[X]]\).
+\item[\ref{pr:scalar}] \(f_p \le f\) and \(r_p \le t\); \(mt \le n_m\).
+\end{description}
+
+\subsection*{\S\ref{sec:pay}}
+\begin{description}
+\item[\ref{pr:low-columns}] Problems~\ref{d2-pr:diagram} and~\ref{pr:no-b-place}; \(r_p \le s\).  If \(p > m\), then \(r_p = o_p = 1\).
+\item[\ref{pr:transfer-paid}] \(\#\Mk \le f\); the scale inequalities make \(f^2 r_p(n_m + r_p)p + fa/m \le fa(\log b)^2/m\).
+\item[\ref{pr:stage-cost}] Theorem~\ref{d2-thm:stage}(b) and Problem~\ref{pr:transfer-paid}.
+\end{description}
+
+\begin{thebibliography}{GL}
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[Ku]{Ku} S.~S.~Kudla, On the local theta-correspondence, \emph{Invent. Math.} \textbf{83} (1986), 229--255.
+\bibitem[Ne]{Ne} J.~Neukirch, \emph{Algebraic Number Theory}, Grundlehren Math.\ Wiss.\ 322, Springer, 1999.
+\bibitem[Ra]{Ra} S.~Rallis, Langlands' functoriality and the Weil representation, \emph{Amer. J. Math.} \textbf{104} (1982), 469--515.
+\end{thebibliography}
+
+\end{document}
