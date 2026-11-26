@@ -1,0 +1,268 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[da-]{20261126T030300--the-data__workbook}
+\externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
+\externaldocument[dl-]{20261126T030500--divisibility-of-the-composite-lift__workbook}
+\externaldocument[d1-]{20261126T050100--the-count-congruences-directions-and-factorials__workbook}
+\externaldocument[pf-]{20261125T013700--pairings-on-a-formal-group-of-height-two__workbook}
+\externaldocument[ss-]{20261126T030400--the-seesaw-identity__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261126T050200}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+
+\newcommand{\Z}{{\mathbb{Z}}}
+\newcommand{\Q}{{\mathbb{Q}}}
+\newcommand{\C}{{\mathbb{C}}}
+\newcommand{\Oc}{\mathcal O}
+\newcommand{\Dc}{\mathcal D}
+\newcommand{\Jc}{\mathcal J}
+\newcommand{\val}{\operatorname{val}}
+\newcommand{\gain}{\operatorname{gain}}
+\newcommand{\sfp}{s_{\mathrm{fin},p}}
+\newcommand{\Heis}{\mathrm{Heis}}
+\newcommand{\cjet}{c_{\mathrm{jet}}}
+\newcommand{\cper}{c_{\mathrm{per}}}
+\newcommand{\nb}[1]{\lVert #1 \rVert}
+\newcommand{\bo}{\beta_1}
+\newcommand{\bl}{\beta_{>1}}
+\newcommand{\bb}{\nb{\beta}_{>1}}
+\newcommand{\tl}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\title{One lift at a small non-split prime}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Chapter~\ref{da-chap}: the scales, ranks and weights, in particular \(x_1 \mid a\) and \(a/x_1 \le \kappa(\tau) \le b\) (Problem~\ref{da-pr:weights}), and that \(x\) is very large.  Chapter~\ref{ob-chap}: the gap \(\Delta\), the weights \(\kappa_j\) (Section~\ref{ob-sec:weights}), the integral vacuum (Section~\ref{ob-sec:vacuum}), the diagram of the data (Definition~\ref{ob-def:diagram}), and the valuation \(\val\) and the ring \(\Oc_\eta\) of its opening paragraph.  Chapter~\ref{dl-chap}: \(c_p\), \(I_p\), \(\sfp\), \(\gain(p)\) (Section~\ref{dl-sec:gain}), collisions and \(C_p(\Phi')\) (Section~\ref{dl-sec:collisions}), the gauge \(\nb{\omega}_g\) of a Weyl vector and \(\gamma_p = 1/(p-1) - \rho(d, p)\) (Section~\ref{dl-sec:chain}).  Chapter~\ref{d1-chap}: diagrams, \(\bo\), \(\bl\), \(\bb\), \(\lvert\beta\rvert\) (Definition~\ref{d1-def:diagram}), the erased diagram \(\beta \smallsetminus \Phi'\) (Definition~\ref{d1-def:erase}) and the predicted divisibility \(\Dc(\beta)\) (Definition~\ref{d1-def:predicted}).  Chapter~\ref{pf-chap}, Section~\ref{pf-sec:count}: the exponent set \(I_p^\circ\), couplings, the normal form, standard fillings, products of minors \(P_\mu\), and Theorem~\ref{pf-thm:count}.  Chapter~\ref{ss-chap}: the definite chain with its data (Section~\ref{ss-sec:theorem}); we write \(\Heis(y)\) for the finite Heisenberg translation by \(y\).  The residue field \(\bar{\mathbb F}_p\) of \(\Oc_{\C_p}\), which is infinite.
+
+\medskip
+How divisible by \(p\) is a single lift of the chain, and where does it fall short of \(\gain(p)/m\)?  Chapter~\ref{dl-chap} composes \(m\) lifts and needs, at each stage, a bound for the kernel of the lift at a prime \(p < x_1\) with \(\chi_K(p) \ne 1\) (its inputs (ii) and (iii) in Section~\ref{dl-sec:chain}).  The stage bound deducts a logarithmic counting term from the predicted divisibility of the diagram of the lift and credits each erased box; we compare it with \(\gain(p)/m\), allowing a uniform error and the collision sum.  We work it out first on a model of the places, then for the data, and finally state how the bound reaches the kernel.
+
+\section{The stage bound}\label{sec:stage}
+
+Recall (Definitions~\ref{d1-def:diagram} and~\ref{d1-def:erase}) that a diagram \(\beta\) is read at heights below a fixed bound, the number of rows; \(\bo(\tau)\) is its number of columns of height one at \(\tau\), \(\bl(\tau)\) the number of its other columns, \(\bb(\tau)\) the number of boxes in these, and \(\lvert\beta\rvert\) the number of all its boxes; \(\beta \smallsetminus \Phi'\) deletes the columns of height one at the places of \(\Phi'\).  With \(\tau_e := [-p^e]\tau\),
+\[
+\begin{aligned}
+  \Dc(\beta) ={}& c_p \sum_{e \in I_p} \sum_{\tau \in \Phi} \Bigl[ \Bigl(\frac{\bo(\tau)}{p^e} - \bo(\tau_e) - \bl(\tau_e)\Bigr)_+ + \Bigl(\frac{\bb(\tau)}{p^e} - \bb(\tau_e)\Bigr)_+ \\
+  &\qquad - \frac{\bl(\tau)}{p^e} \Bigr] - [p = d]\, \frac12 \sum_{\tau \in \Phi} \operatorname{rc}(\tau) ,
+\end{aligned}
+\]
+with (a notation of this chapter) \(\operatorname{rc}(\tau) := \min(\bo(\tau), \bo(\tau_0) + \bl(\tau_0)) + \bl(\tau) + \min(\bb(\tau), \bb(\tau_0))\) (Definition~\ref{d1-def:predicted}).  The diagram of the data (Definition~\ref{ob-def:diagram}) has
+\[
+  \beta(\tau, 1) = a\,\mathbf 1_{\Phi_a}(\tau), \qquad \beta(\tau, k) = \kappa_1(\tau) - \Bigl\lfloor \frac{k + t + 1}{2} \Bigr\rfloor,
+\]
+\(\beta(\tau, h) = \Delta - (t + 1)\) if \(h > k\) and \((t+1) \mid h - k\),
+and \(\beta(\tau, h) = 0\) otherwise.  For \(0 \le j < m\) we read it at heights below \(n_{j+1}\) and keep the letter \(\beta\).
+
+\begin{definition}\label{def:stage}
+Let \(p\) be a prime with \(\chi_K(p) \ne 1\), \(j \ge 0\), \(\Phi' \subseteq \Phi\), and \(\beta\) the diagram of the data read at heights below \(n_{j+1}\).  The \emph{stage bound} is
+\[
+  \Dc_j(\Phi') := \Dc(\beta \smallsetminus \Phi') + \gamma_p\bigl(\lvert\beta\rvert - \lvert\beta \smallsetminus \Phi'\rvert\bigr) - f n_{j+1}^3 \bigl(1 + \log_p \max(\lvert\beta\rvert, 1)\bigr) .
+\]
+\end{definition}
+
+\begin{problem}\label{pr:diagram}
+Let \(0 \le j < m\).  Read at heights below \(n_{j+1}\), the diagram of the data has \(\bo(\tau) = a\,\mathbf 1_{\Phi_a}(\tau)\), \(\bl(\tau) \le \kappa(\tau) + x^{60}\) and \(k\kappa(\tau) \le \bb(\tau) \le k\kappa(\tau) + x^{60}\) for every \(\tau \in \Phi\).
+\end{problem}
+
+\section{A model on \texorpdfstring{\((\Z/40)^\times\)}{(Z/40)x}}\label{sec:model}
+
+For \(\tau \in \Phi_a\) and \(e \in I_p\), the first positive part in \(\Dc(\beta)\) compares \(a/p^e\) with \(\bo(\tau_e) + \bl(\tau_e)\); so does \(\sfp(a, \tau)\), with \(\kappa(\tau_e)\) in place of the columns.  We follow the comparison on a model.
+
+\begin{problem}\label{pr:gamma}
+By Problem~\ref{d1-pr:gamma-sum}, \(c_p \sum_{e \in I_p} p^{-e} = \gamma_p\).  Deduce that \(\gamma_p = p/(p^2 - 1)\) if \(\chi_K(p) = -1\), and \(\gamma_p = 1/(2d - 2)\) if \(p = d\).
+\end{problem}
+
+The \emph{model}: \(\Phi = (\Z/40)^\times\) with \([\nu]\) the class of \(\nu\) for \((\nu, 40) = 1\), \(q_0 = 8\), \(\Phi_a = \{\tau \equiv 1 \bmod 8\}\), \(\Phi_b = \{7\}\), \(x = 6\), \(b = 343\), \(a = xb = 2058\), \(x_1 = 49\), \(k = 2\), \(\kappa = b\) on \(\Phi_b\) and \(\kappa = a/x_1 = 42\) elsewhere.  The primes \(3\), \(7\) are treated as inert: \(c_p = 1\), \(I_p\) is the set of odd \(e \ge 1\), and \(\gamma_p := c_p\sum_{e \in I_p} p^{-e} = p/(p^2-1)\).  The \emph{model diagram} has \(a\) columns of height one at each \(a\)-place, \(\kappa(\tau)\) columns of height \(k\) at every \(\tau\), and no others; it is read at heights below \(3\).  These numbers are not data (\(18480 \nmid 8\)); the model keeps only the bookkeeping.
+
+\begin{problem}\label{pr:toy-classes}
+In the model, \(-3\) has order \(2\) modulo \(8\), and at \(p = 3\) no pair is a collision.  At \(p = 7\), \(-7 \equiv 33 \pmod{40}\), the powers of \(33\) are \(\{1, 33, 9, 17\} = \Phi_a\), and every \((\tau, e)\) with \(\tau \in \Phi_a\) and \(e\) odd is a collision outside \(\varnothing\).
+\end{problem}
+
+\begin{problem}\label{pr:toy-gain}
+In the model, \(\gain(3)/m = 25718/9\) and \(\gain(7)/m = 1022\); moreover \(C_7(\varnothing) = 2401/2\) and \(C_7(\{1, 9\}) = 0\).
+\end{problem}
+
+In the next three problems \(\beta\) is any diagram with \(\bo = a\,\mathbf 1_{\Phi_a}\) and, for some real \(\varepsilon \ge 0\) (a letter of this chapter only) and every \(\tau\), \(\bl(\tau) \le \kappa(\tau) + \varepsilon\) and \(k\kappa(\tau) \le \bb(\tau) \le k\kappa(\tau) + \varepsilon\); \(\Phi' \subseteq \Phi\), and \(\bo\), \(\bl\), \(\bb\) in the terms of \(\Dc(\beta \smallsetminus \Phi')\) are those of \(\beta \smallsetminus \Phi'\) (only \(\bo\) changes).  The model diagram is the case \(\varepsilon = 0\) with equalities.
+
+\begin{problem}\label{pr:low-rows}
+\((\bb(\tau)/p^e - \bb(\tau_e))_+ \ge k(\kappa(\tau)/p^e - \kappa(\tau_e))_+ - \varepsilon\), with equality and \(\varepsilon = 0\) for the model diagram.
+\end{problem}
+
+\begin{problem}\label{pr:long-row}
+Let \(\tau \in \Phi_a \smallsetminus \Phi'\) and \(e \in I_p\).  If \(\tau_e \notin \Phi_a \smallsetminus \Phi'\), the first positive part inside the brackets defining \(\Dc(\beta \smallsetminus \Phi')\) at \((\tau, e)\) is at least \((a/p^e - \kappa(\tau_e))_+ - \varepsilon\).  If \((\tau, e)\) is a collision outside \(\Phi'\), it is \(0\), which is at least \((a/p^e - \kappa(\tau_e))_+ - a/p^e\).
+\end{problem}
+
+\begin{problem}\label{pr:erased}
+Let \(1 \in I_p\), \(p < x_1\), and \(\kappa \ge a/x_1\) on \(\Phi\).  For every \(\tau\), \(\gamma_p a \ge c_p \sum_{e \in I_p} (a/p^e - \kappa(\tau_e))_+ + c_p a/x_1\).
+\end{problem}
+
+\begin{problem}\label{pr:model-ineq}
+In the model, let \(p \in \{3, 7\}\), \(\beta\) the model diagram and \(\Phi' \subseteq \Phi\).  Then
+\[
+  \Dc(\beta \smallsetminus \Phi') + \gamma_p a\, \#(\Phi_a \cap \Phi') \ \ge\ \frac{\gain(p)}{m} - C_p(\Phi') + \#(\Phi_a \cap \Phi')\, \frac{a}{x_1} - \gamma_p \sum_{\tau \in \Phi} \kappa(\tau) .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:toy-values}
+In the model, at \(p = 3\) and \(\Phi' = \varnothing\) both sides of Problem~\ref{pr:model-ineq} equal \(179473/72\).  At \(p = 7\) the left side is \(-6139/48\) for \(\Phi' = \varnothing\) (the right side is \(-15379/48\)); for \(\Phi' = \{1, 9\}\) it is \(46865/48\) and the right side is \(46277/48\), a slack of \(49/4\).
+\end{problem}
+
+\section{The data}\label{sec:data}
+
+Now let \(\beta\) be the diagram of the data read at heights below \(n_{j+1}\), \(0 \le j < m\), and let \(p < x_1\) be a prime with \(\chi_K(p) \ne 1\).  In this section take \(\varepsilon = x^{60}\).
+
+\begin{problem}\label{pr:errors}
+(i) If \(p^e \ge x_1\), then \((a/p^e - \kappa(\tau_e))_+ = 0\) and \((\kappa(\tau)/p^e - \kappa(\tau_e))_+ = 0\); and \(2c_p \lceil \log_p x_1 \rceil x^{60} \le a/(pm)\).  (ii) \(\gamma_p \bl(\tau) \le a/(pm)\) for every \(\tau\).  (iii) \(n_{j+1}^3 (1 + \log_p \max(\lvert\beta\rvert, 1)) \le a/(pm)\).
+\end{problem}
+
+\begin{problem}\label{pr:ramified-correction}
+Let \(p = d\).  For every \(\tau\), the places \(\tau\) and \(\tau_0 = [-1]\tau\) are neither both in \(\Phi_a\) nor both in \(\Phi_b\), and \(\operatorname{rc}(\tau) \le 3a/(dm)\), also for \(\beta \smallsetminus \Phi'\) in place of \(\beta\).  Hence the correction \(\frac12 \sum_\tau \operatorname{rc}(\tau)\) is at most \(2fa/(dm)\).
+\end{problem}
+
+\begin{problem}\label{pr:assemble}
+For every \(\Phi' \subseteq \Phi\), \(\Dc_j(\Phi') \ge \gain(p)/m - C_p(\Phi') + c_p\, \#(\Phi_a \cap \Phi')\, a/x_1 - 5fa/(pm)\).  Deduce part~(b) of Theorem~\ref{thm:stage}.
+\end{problem}
+
+\section{One kernel}\label{sec:kernel}
+
+Fix a twist \(\vartheta\) and \(j \ge 0\).  A \emph{datum} of the lift is an element of the finite part of the Schwartz space of \(\mathrm{Hom}(X_j, X_{j+1})\), the complex span of the finite Heisenberg translates of the vacuum.  For a datum \(\varphi\), let \(\Jc_\varphi\) denote, in this chapter, the kernel of the definite lift from \(X_j\) to \(X_{j+1}\) built from \(\vartheta\), evaluated at \(\varphi\) (Section~\ref{ss-sec:theorem}): a linear map from the Weyl vectors of the weight of \(X_j\) to those of \(X_{j+1}\).  Its diagram is \(\beta\) read at heights below \(n_{j+1}\).  Fix a prime \(p\) and a ring map \(\eta\colon \C \to \C_p\).
+
+\begin{definition}\label{def:standard}
+Let \(\delta \in \Oc_K\).  A \emph{standard datum of denominator \(\delta\)} on \(\mathrm{Hom}(X_j, X_{j+1})\) is an element of the \(\Oc_\eta\)-span of the translates by \(\Heis(y)\) of the integral vacuum, over the finite adelic \(y\) such that \(\delta y\) is integral at every finite place of \(E\) above \(p\).
+\end{definition}
+
+\begin{definition}\label{def:raises}
+A datum \(\varphi\) \emph{multiplies gauges by at most} \(c \in \mathbb R\) if \(\nb{\Jc_{(g,g')\varphi}\, \omega}_{g'} \le \max(c, 0)\, \nb{\omega}_g\) for all finite adelic points \(g\) of the unitary group of \(X_j\), \(g'\) of that of \(X_{j+1}\), and all Weyl vectors \(\omega\); here \((g, g')\varphi\) is the translate of \(\varphi\) under the Weil representation.
+\end{definition}
+
+\begin{definition}\label{def:jet-series}
+The \emph{jet series} of a datum \(\varphi\) at scale \(c_0 \in \C\) is the Taylor series at \(0\) of \(z \mapsto \mathrm{th}_\varphi(c_0 z)\), where \(\mathrm{th}_\varphi\) is the theta function of \(\varphi\), an entire function of a family \(z = (z_\tau)_{\tau \in \Phi}\) of \(n_{j+1}\times n_j\) matrices in the standard bases of \(X_{j+1}\) and \(X_j\).  The \emph{jet scale} is \(\cjet := \cper\sqrt{2\pi/\sqrt d}/\Omega_0\) (\tl{Parameters.jetScale}), where \(\cper\) is the period factor fixed in the proof (\tl{Parameters.periodFactor}) and \(\Omega_0\) (a letter of this chapter) is the complex number fixed in the proof (\tl{Parameters.cmPeriod}) such that \(\Omega_0\Oc_K\) is the period lattice of the CM curve of \(K\) (\tl{Parameters.latticeModule\_\allowbreak cmCurve}).  A \emph{jet} of a series \(F\) is \(Q(\partial)F(0)\) for a polynomial \(Q\).
+\end{definition}
+
+The kernel of the lift is the theta kernel at scale \(\pi_M \cjet\) (\tl{Data.liftKernel}), and \(\lvert \eta \pi_M \rvert \le 1\) (\tl{Data.norm\_\allowbreak star\_\allowbreak piMBar\_\allowbreak le\_\allowbreak one}) \cite{GL}.  Four statements are read from the proof \cite{GL}.
+
+\emph{(I) Integrality.}  If \(\delta \ne 0\) and \(\varphi\) is standard of denominator \(\delta\), then every jet of its jet series at scale \(\bar\delta d \cjet\), along a polynomial with coefficients in \(\Oc_\eta\), is integral at \(\eta\).
+
+\begin{problem}\label{pr:scaling}
+Let \(F\) be a power series over \(\C_p\), \(c' \in \C_p\), and \(Q\) homogeneous of degree \(l\) over \(\C_p\).  Then \(Q(\partial)[F(c'z)](0) = c'^l Q(\partial)F(0)\).  Hence, under (I), for \(c \in \C\) and homogeneous \(Q\) of degree \(l\) with coefficients in \(\Oc_\eta\), the jet along \(Q\) of the jet series of \(\varphi\) at scale \(c\cjet\) has absolute value at most \(\lvert \eta(c/(\bar\delta d)) \rvert^l\) after \(\eta\).
+\end{problem}
+
+\emph{(II) Kernel and jets.}  Let \(c_0 \in \C\) and \(\mathfrak b \in \mathbb R\).  If every entry of \(\mathrm{schur}_\beta(\partial)F(0)\) has absolute value at most \(\mathfrak b\) after \(\eta\), for the jet series \(F\) at scale \(c_0\) of every standard datum of denominator \(\delta\), then every standard datum of denominator \(\delta\) multiplies the gauges of the theta kernel at scale \(c_0\) by at most \(\mathfrak b\).  Here \(\mathrm{schur}_\beta(z)\) is the matrix, in the bases of standard fillings, of the map of Weyl modules of shape \(\beta\) induced by \(z\); its entries are polynomials with integral coefficients (\tl{schur}; for the change of coefficients \tl{map\_\allowbreak schur}).
+
+\emph{(III) Schur entries.}  If no column of \(\beta\) has height strictly between \(n_j\) and \(n_{j+1}\) (note \(n_j < n_{j+1}\)), then for every series \(F\) over \(\C_p\) and every entry of \(\mathrm{schur}_\beta(\partial)F(0)\) there is an integral family \(\mu\) such that the absolute value of the entry is at most \(\lvert P_\mu(\partial)F(0)\rvert\), for the product of minors \(P_\mu\) of the output filling indexing the row of that entry.
+
+\begin{problem}\label{pr:unit-value}
+A polynomial over \(\Oc_{\C_p}\) in finitely many variables with a unit coefficient takes a unit value at some point with integral coordinates.
+\end{problem}
+
+\begin{problem}\label{pr:fits}
+For every \(j \ge 0\), the diagram of the data has no column of height \(h\) with \(n_j < h < n_{j+1}\).
+\end{problem}
+
+\emph{(IV) Normal form.}  Let \(\chi_K(p) \ne 1\), \(\varphi\) a standard datum of denominator \(1\) and \(c \in \C\) with \(\lvert \eta c \rvert \le 1\).  Then the jet series of \(\varphi\) at scale \(c\cjet\), read in \(\C_p\) through \(\eta\), has the normal form of Section~\ref{pf-sec:count} for the exponents \(I_p^\circ\), the partner rule \(([-p^e]\cdot)_e\), some \(\varpi\) with \(\val \varpi = 1/(p-1) - \gamma_p\), and some integral family of coefficients.
+
+\emph{Status}: (I)--(IV) are read from the proof; (III) uses the standard basis theorem \cite{DEP} and (IV) Lubin--Tate theory \cite{LT}; for the formal group of an elliptic curve see \cite[Ch.~IV, \S\S1--2]{AEC}.
+
+\begin{problem}\label{pr:kernel-bound}
+Let \(\chi_K(p) \ne 1\).  For every standard datum of denominator \(1\), with jet series \(F\) at scale \(\pi_M\cjet\) read through \(\eta\), every standard filling and every integral family \(\mu\),
+\[
+  \val\bigl(P_\mu(\partial)F(0)\bigr) \ \ge\ \Dc(\beta) - f n_{j+1}^3 \bigl(1 + \log_p \max(\lvert\beta\rvert, 1)\bigr) = \Dc_j(\varnothing) .
+\]
+Hence every standard datum of denominator \(1\) multiplies gauges by at most \(p^{-\Dc_j(\varnothing)}\).
+\end{problem}
+
+This is part~(a) of the following theorem; part~(b) was proved in Section~\ref{sec:data}, and Problem~\ref{pr:model-ineq} is its model.
+
+\begin{theorem}\label{thm:stage}
+Let \(p\) be a prime and \(\eta\colon \C \to \C_p\) a ring map.
+\begin{enumerate}
+\item[(a)] If \(\chi_K(p) \ne 1\), then for every twist \(\vartheta\), every \(j \ge 0\) and every standard datum \(\varphi\) of denominator \(1\) on \(\mathrm{Hom}(X_j, X_{j+1})\), \(\varphi\) multiplies gauges by at most \(p^{-\Dc_j(\varnothing)}\).
+\item[(b)] If \(p < x_1\) and \(\chi_K(p) \ne 1\), then for every \(0 \le j < m\) and every \(\Phi' \subseteq \Phi\),
+\[
+  \Dc_j(\Phi') \ \ge\ \frac{\gain(p)}{m} - C_p(\Phi') + c_p\, \#(\Phi_a \cap \Phi')\, \frac{a}{x_1} - \frac{fa(\log b)^2}{mp} .
+\]
+\end{enumerate}
+\end{theorem}
+
+Problem~\ref{pr:kernel-bound} deduces part~(a) from (II)--(IV) and Theorem~\ref{pf-thm:count}.  Statement (I) and Problem~\ref{pr:scaling} give the jet integrality behind input (i) of Section~\ref{dl-sec:chain}.  Part~(a) is the single-kernel estimate in input (ii) there, and part~(b) is input (iii); Problem~\ref{dl-pr:collision-chain} uses them with \(\Phi' = \varnothing\).
+
+\section{The size of a collision sum}\label{sec:collision-size}
+
+How much can collisions cost?  Problem~\ref{dl-pr:crude} of Chapter~\ref{dl-chap} uses the crude bound \(m C_p(\varnothing) \le j_p := \lceil 2mfa/p \rceil\).
+
+\begin{problem}\label{pr:two-places}
+In a second model let \(\Phi = (\Z/4)^\times\), let both places be \(a\)-places, \(a = 24\), and treat \(p = 5\) as inert, so that \(I_5\) is the set of odd \(e \ge 1\) and \([-5^e]\) exchanges the two places for every \(e \in I_5\).  Then \(C_5(\varnothing) = 10\); with \(f = 2\) and \(m = 8\), \(m C_5(\varnothing) = 80 \le j_5 = 154\).
+\end{problem}
+
+\paragraph{What has been established.}  Theorem~\ref{thm:stage}.  Problem~\ref{pr:kernel-bound} deduces part~(a) from (II)--(IV) and Theorem~\ref{pf-thm:count}.  Part~(b), proved by Problems~\ref{pr:diagram}--\ref{pr:assemble}, bounds the shortfall of the stage bound from \(\gain(p)/m\) by \(C_p(\Phi') + fa(\log b)^2/(mp) - c_p\, \#(\Phi_a \cap \Phi')\, a/x_1\); each erased long row receives the credit \(\gamma_p a\) in the definition of the stage bound.  Section~\ref{dl-sec:chain} adds the exponents \(\Dc_j\) along the chain of \(m\) lifts, and at an exceptional prime a full mark makes the collision sum outside its induced places zero (Problem~\ref{dl-pr:full-mark}).
+
+\begin{leanremark}
+\begin{sloppypar}
+In the Lean proof \cite{GL} (paths relative to \tl{grh/src/}; the namespace \tl{New.} is omitted from names), Theorem~\ref{thm:stage}(a) is \tl{Data.mem\_\allowbreak raises\_\allowbreak neg\_\allowbreak divisibilityBound} (\tl{New/\allowbreak UpperBound/\allowbreak Divisibility/\allowbreak ValuationAtNonSplitPrimes.lean}) and (b) is \tl{Data.le\_\allowbreak divisibilityBound} (\tl{New/\allowbreak UpperBound/\allowbreak Divisibility/\allowbreak JetExponent.lean}), with \(\Dc_j(\Phi')\) \tl{Data.divisibilityBound}.  Standard data, ``multiplies gauges by at most'' and the jet series are \tl{Parameters.standardData}, \tl{Kernel.raises} (at base points \(1, 1\)) and \tl{Space.jetSeries}.  Statements (I)--(IV) specialize \tl{Parameters.norm\_\allowbreak jet\_\allowbreak jetSeries\_\allowbreak le\_\allowbreak one}, \tl{Parameters.omega\_\allowbreak mem\_\allowbreak raises\_\allowbreak of\_\allowbreak schurJet\_\allowbreak le}, \tl{exists\_\allowbreak norm\_\allowbreak schurJet\_\allowbreak le\_\allowbreak norm\_\allowbreak jet\_\allowbreak minorProd} and \tl{Parameters.exists\_\allowbreak hasNormalForm\_\allowbreak jetSeries}; in (II) the three translating points of the declaration are taken to be \(1\).
+\end{sloppypar}
+\end{leanremark}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:stage}}
+\begin{description}
+\item[\ref{pr:diagram}] Below \(n_{j+1}\) the possible heights are \(1\), \(k\) and \(k + i(t+1)\) with \(1 \le i \le j\); height \(1\) occurs exactly at the \(a\)-places.  Use \(\kappa_1 = \kappa + \tfrac32\Delta\), \(\Delta = 2r^8\), \(r \le 3x^5\), \(m \le 2\sqrt x\).
+\end{description}
+
+\subsection*{\S\ref{sec:model}}
+\begin{description}
+\item[\ref{pr:gamma}] Two geometric series.
+\item[\ref{pr:toy-gain}] At \(p = 3\) only \(e \in \{1, 3\}\) contribute, at \(p = 7\) only \(e = 1\) to \(\sfp\); \(C_7\) is a geometric series.
+\item[\ref{pr:low-rows}] \((y - z)_+\) is increasing in \(y\) and decreasing in \(z\).
+\item[\ref{pr:long-row}] In the first case \(\bo(\tau_e) = 0\) after erasure.
+\item[\ref{pr:erased}] Problem~\ref{pr:gamma}; compare the terms \(e = 1\), using \(p < x_1\) and \(\kappa \ge a/x_1\).
+\item[\ref{pr:model-ineq}] Problems~\ref{pr:low-rows}--\ref{pr:erased} with \(\varepsilon = 0\); the last term of \(\Dc\) is \(-\gamma_p \sum_\tau \kappa(\tau)\) by Problem~\ref{pr:gamma}.
+\end{description}
+
+\subsection*{\S\ref{sec:data}}
+\begin{description}
+\item[\ref{pr:errors}] (i) \(\kappa \ge a/x_1\) and \(\kappa \le b \le a\).  (ii) \(\gamma_p \le 2/p\) and Problem~\ref{pr:diagram}.  (iii) \(\lvert\beta\rvert \le fa + f(kb + x^{60})\), \(n_{j+1} \le n_m\), and \(a/(pm) \ge (x/m)(b/x_1)\); the scale inequalities of Chapter~\ref{da-chap} make \(x/m\) and \(b/x_1\) huge.
+\item[\ref{pr:assemble}] Use the row comparisons only for \(p^e < x_1\); Problem~\ref{pr:erased} is already summed over \(e\).  Count the low columns, the correction at \(d\) and the logarithmic term separately.  For the final deduction use \((\log b)^2 \ge 5\).
+\item[\ref{pr:ramified-correction}] \(\tau_0\) has class \(-c\) modulo \(q_0\) if \(\tau\) has class \(c\).  Bound each of the three terms of \(\operatorname{rc}(\tau)\) by \(a/(dm)\).
+\end{description}
+
+\subsection*{\S\ref{sec:kernel}}
+\begin{description}
+\item[\ref{pr:scaling}] Compare monomials; the jet series at scale \(c\cjet\) is that at scale \(\bar\delta d \cjet\) with \(z\) replaced by \((c/(\bar\delta d)) z\).
+\item[\ref{pr:unit-value}] Reduce modulo the maximal ideal; \(\bar{\mathbb F}_p\) is infinite.
+\item[\ref{pr:fits}] \(n_j = k + j(t+1)\).
+\item[\ref{pr:kernel-bound}] (IV) and Theorem~\ref{pf-thm:count} for each standard datum; the directions in (III) may depend on the entry, so use the common bound in (II).  Extend \(\beta\) by \(\beta(\tau, 0) = 0\) when comparing \(\Dc(\beta)\) with the predicted divisibility of Theorem~\ref{pf-thm:count}.
+\end{description}
+
+\subsection*{\S\ref{sec:collision-size}}
+\begin{description}
+\item[\ref{pr:two-places}] Count the collisions for each \(e \in I_5\).
+\end{description}
+
+\begin{thebibliography}{DEP}
+\bibitem[AEC]{AEC} J.~H.~Silverman, \emph{The Arithmetic of Elliptic Curves}, 2nd ed., Springer, 2009.
+\bibitem[DEP]{DEP} C.~De~Concini, D.~Eisenbud and C.~Procesi, Young diagrams and determinantal varieties, \emph{Invent. Math.} \textbf{56} (1980), 129--165.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[LT]{LT} J.~Lubin and J.~Tate, Formal complex multiplication in local fields, \emph{Ann. of Math.} \textbf{81} (1965), 380--387.
+\end{thebibliography}
+
+\end{document}
