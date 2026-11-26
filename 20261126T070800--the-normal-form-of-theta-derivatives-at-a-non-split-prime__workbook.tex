@@ -1,0 +1,232 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[da-]{20261126T030300--the-data__workbook}
+\externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
+\externaldocument[ba-]{20261126T030200--the-bound-is-attained__workbook}
+\externaldocument[pf-]{20261125T013700--pairings-on-a-formal-group-of-height-two__workbook}
+\externaldocument[dl-]{20261126T030500--divisibility-of-the-composite-lift__workbook}
+\externaldocument[d1-]{20261126T050100--the-count-congruences-directions-and-factorials__workbook}
+\externaldocument[d2-]{20261126T050200--one-lift-at-a-small-non-split-prime__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261126T070800}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Op}{\mathcal{O}_{\C_p}}
+\newcommand{\val}{\operatorname{val}}
+\newcommand{\Dc}{\mathcal{D}}
+\newcommand{\Ec}{\mathcal{E}}
+\newcommand{\cv}{c_\varpi}
+\newcommand{\tth}{\mathrm{th}}
+\newcommand{\cjet}{c_{\mathrm{jet}}}
+\newcommand{\cper}{c_{\mathrm{per}}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\tl}{\path}
+\makeatletter\g@addto@macro\UrlBreaks{\do\_}\makeatother
+\setlength{\emergencystretch}{3em}
+
+\title{The normal form of theta derivatives at a non-split prime}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Chapter~\ref{ba-chap}, Section~\ref{ba-sec:general}: CM lattices \(\Lambda\) with the point \(t\), the number \(a_1\) (not a Weierstrass coefficient) and the normalization \(g_2 = 12\wp(t)^2 - 4\), the series \(y\), and \(\gamma_p\).  Chapter~\ref{pf-chap}, Section~\ref{pf-sec:count}: couplings \(\Gamma_e\), partner rules, the normal form for \((S, r, \varpi, \lambda)\) with \(\lambda = (\lambda_{ej})_{e,j \ge 0}\), the set \(I_p^\circ\), and Theorem~\ref{pf-thm:count}.  Chapter~\ref{d1-chap}: \(\pi_p\), Problem~\ref{d1-pr:gamma-sum}, and the two-place model of Section~\ref{d1-sec:model}.  Chapter~\ref{da-chap}: the parameters \(q_0\), \(d\), the field \(E\), its places \(\Phi\), the places \([\nu]\tau\), and \(q_1\); Chapter~\ref{dl-chap}: \(c_p\), \(I_p\).  Chapter~\ref{d2-chap}, Definitions~\ref{d2-def:standard} and~\ref{d2-def:jet-series}: standard data, jet series, \(\cjet\).  Weierstrass functions \cite[Ch.~VI]{AEC}; \(\C_p\), \(\Op\), \(\Oc_\eta\) and \(\val\) as in Chapter~\ref{ob-chap}.  A series is \emph{integral} if its coefficients lie in \(\Op\).
+
+\medskip
+Chapter~\ref{d2-chap} uses Theorem~\ref{pf-thm:count} to bound the jets of standard data along products of minors; its estimates for Schur entries and for the kernel then give the gauge bound in the first part of input~(iii) of Section~\ref{dl-sec:chain} of Chapter~\ref{dl-chap}.  At a non-split prime, Theorem~\ref{pf-thm:count} takes a series \(F\) in the normal form with \(\val\varpi = 1/(p-1)-\gamma_p\).  That is, \(F(\varpi z) = W(z)\exp\bigl(\frac{\varpi^{p+1}}{p}\sum_{e \in I_p^\circ}\sum_{j \ge 0}\lambda_{ej}\Gamma_e^{p^j}\bigr)\), where \(W\) is integral and \(\Gamma_e = \sum_{\tau,i} z_{\tau i}^{p^e}z_{[-p^e]\tau,i}\).  At a non-split prime, why do these couplings occur in the jet series of a standard datum of denominator \(1\) at scale \(c\,\cjet\), \(\lvert\eta c\rvert \le 1\)?  We see it first for one CM curve and one pair of places at \(p = 5\), and then state the theorem of the proof.
+
+In this sheet \(\tth\) is the theta function of a CM lattice (below), \(g := -\log \tth\), and \(\cv := \varpi^{p+1}/p\) for \(\varpi \in \C_p\); \(\lambda_{ej}\) are always the coefficients of a normal form.
+
+\section{One curve}\label{sec:curve}
+
+Let \(d \equiv 7 \pmod 8\) be prime, \(K = \Q(\sqrt{-d})\), and \(\Lambda\), \(t\), \(a_1\) a CM lattice as in Section~\ref{ba-sec:general}, of area \(A_\Lambda\).  Write \(\sigma_\Lambda\) for the odd theta function with \(\sigma_\Lambda'(0) = 1\) for the form \(H_\Lambda(w, z) = (\pi/A_\Lambda)\bar w z\) and the multiplier equal to \(1\) on \(2\Lambda\) and \(-1\) elsewhere (it differs from Weierstrass' sigma function by a factor \(e^{cz^2}\)), and put \(\tth(z) := \exp(-H_\Lambda(t, z))\,\sigma_\Lambda(z+t)/\sigma_\Lambda(t)\).  Read its Taylor series through a ring map \(\eta\colon \C \to \C_p\).  We use four facts from the proof \cite{GL}: \(\tth\) is even; \(g'' = g''(0) + \wp(z+t) - \wp(t)\); \(\eta(\sqrt{-d})\, g''(0)\) is integral; and \(\wp(z+t) - \wp(t)\) lies in the ring \(\Op[[y]]\) of series \(G(y(z))\), \(G\) integral, which is closed under differentiation.  \emph{Status}: read from the proof.
+
+Our curve is \(\mathcal C\colon y^2 + xy = x^3 - x^2 - 2x - 1\), of \(j\)-invariant \(-3375\), with complex multiplication by the integers of \(K = \Q(\sqrt{-7})\) \cite[App.~A, \S3]{ATAEC}, and \(t\) is the point \((2,-1)\).
+
+\begin{problem}\label{pr:curve}
+(i) \(\#\mathcal C(\F_5) = 6\), and \(t\) has order \(2\).  (ii) For the lattice of the differential \(dx/(2y + x)\), \(\wp(t) = 7/4\) and \(g_2 = 35/4\); after scaling the lattice by \(7^{1/4}\), \(\wp(t) = \sqrt7/4\), \(g_2 = 5/4 = 12\wp(t)^2 - 4\) and \(a_1^2 = 3\sqrt7\).  (iii) Neither \(\omega t\) nor \(\bar\omega t\) lies in the lattice, \(\omega = (1+\sqrt{-7})/2\).
+\end{problem}
+
+From now on, for \(\mathcal C\), the lattice is the one scaled by \(7^{1/4}\).
+
+\begin{problem}\label{pr:g-coeff}
+\(\wp_t(z) := \wp(z+t) - \wp(t)\) satisfies \(\wp_t'' = 6\wp_t^2 + a_1^2 \wp_t + 2\).  For \(\mathcal C\), \(\wp_t = z^2 + \tfrac{\sqrt7}{4} z^4 + \tfrac38 z^6 + O(z^8)\), so \([z^4]g = 1/12\) and \([z^6]g = \sqrt7/120\).
+\end{problem}
+
+Now let \(p\) be a prime with \(\chi_K(p) \ne 1\).  The proof writes \(\tth(\varpi z)\) as an integral series times one exponential.
+
+\emph{One curve} \cite{GL}.  There are \(\varpi \in \C_p\) with \(\val\varpi = 1/(p-1) - \gamma_p\), integral series \(\widetilde W\), \(\Ec\) with \(\Ec(0) = 0\), and \(\lambda_{ej} \in \Op\) with
+\[
+  \tth(\varpi z) = \widetilde W(z)\exp\bigl(\cv\,\Ec(z)\bigr), \qquad
+  \Ec \equiv \sum_{e \in I_p^\circ}\sum_{j \ge 0} \lambda_{ej}\,(z^{p^e} z)^{p^j} \pmod{\pi_p};
+\]
+if \(\chi_K(p) = -1\), the \(\lambda_{e0}\), \(e\) odd, are units.  Moreover \(G(\varpi' z)\) is integral for \(G \in \Op[[y]]\) and \(\val\varpi' \ge 1/(p-1) - \gamma_p\).  \emph{Status}: read from the proof.
+
+\emph{How the proof gets it} (inert \(p\)).  The image of the proof's \(\Ec\) in \(\C_p[[z]]\) is \(-\cv^{-1} g_\flat(\varpi z)\), with \(g_\flat\) the part of \(g\) in the degrees \(\equiv p+1 \pmod{p^2-1}\), and all \(\lambda_{ej}\) are equal.  The proof chooses \(\varpi\) so that \(y_\varpi := \mathsf T(\varpi z)/\varpi\), where \(\mathsf T\) is the part of \(y\) in the degrees \(\equiv 1 \pmod{p^2-1}\), is integral and \(y_\varpi \equiv \sum_{j \ge 0} z^{p^{2j}} \pmod p\), and proves separately that \(\Ec \equiv \lambda_{10}\, y_\varpi^{p+1} \pmod p\).  \emph{Status}: read from the proof.  The next problem determines the support modulo \(p\).
+
+\begin{problem}\label{pr:support}
+Let \(p\) be odd and \(y_\varpi \in z + z^2\Op[[z]]\) with \(y_\varpi \equiv \sum_{j \ge 0} z^{p^{2j}} \pmod p\).  Then \(y_\varpi^{p+1} \equiv \sum_{e \text{ odd}} \sum_{j \ge 0} (z^{p^e}z)^{p^j} \pmod p\), each pair \((e, j)\) occurring once.  For \(p = 5\) the degrees up to \(200\) are \(6, 30, 126, 150\).
+\end{problem}
+
+\begin{problem}\label{pr:first-coefficient}
+Let \(\chi_K(p) = -1\).  With the \(\Ec\) of the proof, \([z^{p+1}]\Ec = -p\,[z^{p+1}]g \equiv \lambda_{10} \pmod{\pi_p}\).  For \(\mathcal C\) and \(p = 5\) this is \(-\sqrt7/24\), a unit.
+\end{problem}
+
+\begin{problem}\label{pr:absorb}
+If \(\val a \ge 1/(p-1)\) and \(G\) is integral in any number of variables with \(G(0) = 0\), then \(\exp(aG)\) is integral.  Hence \(\exp(\cv\pi_p G)\) is integral if \(\val\varpi = 1/(p-1) - \gamma_p\), and in the one-curve factorization one may replace \(\Ec\) by \(\Ec + \pi_p G\) for every \(G \in z\Op[[z]]\).
+\end{problem}
+
+In Section~\ref{sec:pair} let \(\tth\) be the theta function of the scaled curve \(\mathcal C\).
+
+\section{One pair of places}\label{sec:pair}
+
+Problem~\ref{pf-pr:nf-two}(i) exhibited a two-place coupling after a change of variable in a pairing on a formal group of height two.  Here they come from one variable and linear forms, through a congruence between the \(p^e\)-th power at a place and conjugation at its partner.
+
+The \emph{model}: \(p = 5\), \(K = \Q(\sqrt{-7})\) and \(E = K(\ii)\), with its two embeddings \(\tau_1, \tau_2\) extending the fixed embedding of \(K\), \(\tau_1(\ii) = \ii\), \(\tau_2(\ii) = -\ii\).  As \(\mathrm{Gal}(E/K) \simeq (\Z/4\Z)^\times\) and \(-5^e \equiv 3 \pmod 4\), the partner \([-5^e]\tau\) of each place is the other place.  The model is an analogue, not an instance: the parameters require \(18480\mid q_0\) (Definition~\ref{da-def:parameters}) and \(q_1=q_0T(s)\) (Section~\ref{da-sec:field}), so \(5 \mid q_1\); every prime factor of \(q_1\) splits in \(K\) (Section~\ref{pf-sec:count}), so \(\chi_K(5) = 1\) for every \(K\) of the proof.  Variables \(z_1 = z_{\tau_1}\), \(z_2 = z_{\tau_2}\); so \(\Gamma_e = z_1^{5^e} z_2 + z_2^{5^e} z_1\), as in the two-place model of Chapter~\ref{d1-chap}.  For \(u \in E\) let \(u^\dagger z := \eta(\overline{\tau_1(u)})\, z_1 + \eta(\overline{\tau_2(u)})\, z_2\), and let \(u_1 := (1+\ii)/2\), \(u_2 := (1-\ii)/2\), \(\mu_l := u_l^\dagger z\).
+
+\begin{problem}\label{pr:pair-resolution}
+\(\sum_{l=1}^2 \tau(u_l)\overline{\sigma(u_l)} = [\tau = \sigma]\) for \(\tau, \sigma \in \{\tau_1, \tau_2\}\).  Hence \(\mu_1 = \tfrac{1-\ii}{2}z_1 + \tfrac{1+\ii}{2}z_2\), \(\mu_2 = \tfrac{1+\ii}{2}z_1 + \tfrac{1-\ii}{2}z_2\) satisfy, as complex forms (without \(\eta\)), \(\lvert \mu_1\rvert^2 + \lvert \mu_2\rvert^2 = \lvert z_1\rvert^2 + \lvert z_2\rvert^2\) on \(\C^2\), and \(\sum_l \tau(u_l)\, \mu_l = z_\tau\) for both places.
+\end{problem}
+
+For the complex forms \(\mu = (\mu_1, \mu_2)\), the product \(\tth(\mu_1)\tth(\mu_2)\) is therefore, by Problem~\ref{pr:pair-resolution} (Parseval), a theta function on the lattice \(\mu^{-1}(\Lambda^2)\) whose hermitian form is \((\pi/A_\Lambda)(\bar w_1 z_1 + \bar w_2 z_2)\).  Section~\ref{sec:general} factors the jet series of a standard datum into a power of such a product and a series in the parameters.
+
+\begin{problem}\label{pr:frobenius}
+Let \(\Oc_{E,(5)} := \Z_{(5)}[\ii, \omega]\), \(\omega = (1+\sqrt{-7})/2\), the ring of elements of \(E\) integral at the primes above \(5\).  For \(\beta \in \Oc_{E,(5)}\) and odd \(e\), \(\overline{\tau_1(\beta)}^{\,5^e} - \tau_2(\beta)\) and \(\overline{\tau_2(\beta)}^{\,5^e} - \tau_1(\beta)\) lie in \(5\,\tau_2(\Oc_{E,(5)})\) and \(5\,\tau_1(\Oc_{E,(5)})\).  For \(e = 2\) and \(\beta = \sqrt{-7}\) the first fails.
+\end{problem}
+
+\begin{problem}\label{pr:pair-coupling}
+For odd \(e\), \(\mu_1^{5^e} \mu_1 + \mu_2^{5^e} \mu_2 \equiv \Gamma_e \pmod 5\).  The congruence also holds for even \(e\).  For \(e = 1\) the exact identity is \(\mu_1^6 + \mu_2^6 = -\tfrac32(z_1^5 z_2 + z_1 z_2^5) + 5 z_1^3 z_2^3\).
+\end{problem}
+
+\begin{problem}\label{pr:pair-exponent}
+\(\Ec(\mu_1) + \Ec(\mu_2) \equiv \sum_{e \text{ odd}}\sum_{j \ge 0} \lambda_{ej}\,\Gamma_e^{5^j} \pmod 5\), with \(\Ec\), \(\lambda\) of the one-curve statement for \(p = 5\).
+\end{problem}
+
+\begin{problem}\label{pr:pair-normal-form}
+For every series \(H = G(y(\mu_1), y(\mu_2))\) with \(G\) integral, \(\tth(\mu_1)\tth(\mu_2)H\) has the normal form for the odd \(e\), the transposition of the two places, and the \(\varpi\), \(\lambda\) of the one-curve statement.
+\end{problem}
+
+Let \(F := \tth(\mu_1)\tth(\mu_2)\).
+
+\begin{problem}\label{pr:pair-check}
+The part of degree \(6\) of \(\log F\) is \(\tfrac{\sqrt7}{80}(z_1^5 z_2 + z_1 z_2^5) - \tfrac{\sqrt7}{24} z_1^3 z_2^3\).  Moreover \(\partial_1^5\partial_2 F(0) = \tfrac32\sqrt7 - 5g''(0)\), a unit at \(5\), and \(\partial_1^6 F(0) = 0\).  By machine, \([z_1^{28}]F\) is a rational number of valuation \(-1\).
+\end{problem}
+
+How does the count turn this into divisibility?  For jet orders \(a, w \in \Z_{\ge 0}\) (as in Chapter~\ref{d1-chap}) write
+\[
+  \Dc(a, w) = \sum_{e \in I_p}\Bigl[\Bigl(\frac{a}{p^e} - w\Bigr)_+ + \Bigl(\frac{w}{p^e} - a\Bigr)_+\Bigr].
+\]
+
+\begin{problem}\label{pr:pair-count}
+For \(F = \tth(\mu_1)\tth(\mu_2)\), \(p = 5\) and \(a + w \ge 1\), \(\val(\partial_1^a\partial_2^w F(0)) \ge \Dc(a, w) - 2(1 + \log_5(a+w))\).  Moreover \(\Dc(126, 0) = 126\gamma_5 = 105/4\) and \(\Dc(125, 1) = 24\): moving one derivative to the partner variable lowers the predicted divisibility from \(105/4\) to \(24\), and the bound at \((125, 1)\) is about \(16\).  By machine, \(\partial_1^{125}\partial_2 F(0)\) is a polynomial in \(g''(0)\) whose coefficients have valuations \(25\) and \(28\).
+\end{problem}
+
+\section{The general statement}\label{sec:general}
+
+Now fix the parameters \(q_0\), \(d\) of Chapter~\ref{da-chap}, an integer \(s \ge 0\), a prime \(p\) and a ring map \(\eta\colon \C \to \C_p\).  Let \(E\), \(\Phi\), \(q_1\) be those of Chapter~\ref{da-chap} for \(s\), let \(\tth\) be the theta function of the CM curve of \(K\) fixed in the proof (a CM lattice as in Section~\ref{ba-sec:general}, with lattice the \(\Omega_0\Oc_K\) of Definition~\ref{d2-def:jet-series}), \(\mathcal I\) a finite set, and the variables \(z_{\tau i}\), \((\tau, i) \in \Phi \times \mathcal I\).  We write \(\tau_e := [-p^e]\tau\).  In this sheet \(m_l\) are multiplicities (the number of lifts does not occur).
+
+\begin{definition}\label{def:resolution}
+A \emph{resolution of the identity} on \(E^{\mathcal I}\) is a finite family \((u_l, m_l)_{l \in \mathcal L}\) of vectors \(u_l \in E^{\mathcal I}\) and integers \(m_l \ge 0\) such that \(\sum_{l} m_l\,\tau(u_{l,i})\,\overline{\sigma(u_{l,i'})} = [\tau = \sigma][i = i']\) for all \(\tau, \sigma \in \Phi\) and \(i, i' \in \mathcal I\).  For \(u \in E^{\mathcal I}\), \(u^\dagger z := \sum_{(\tau, i)} \eta(\overline{\tau(u_i)})\, z_{\tau i}\); and \(\Op[[y(u_l^\dagger z) : l \in \mathcal L]]\) is the set of series \(G\bigl((y(u_l^\dagger z))_{l \in \mathcal L}\bigr)\) with \(G\) integral.
+\end{definition}
+
+\emph{Standard data as theta products} \cite{GL}.  Let \(V\) be a standard positive definite space over \(E\) with coordinates \(\mathcal I\) (Section~\ref{ob-sec:spaces}); standard data and jet series on \(V\) are defined as in Definitions~\ref{d2-def:standard} and~\ref{d2-def:jet-series} with \(V\) in place of \(\mathrm{Hom}(X_j, X_{j+1})\).  Let \(\delta \in \Oc_K\), \(\delta \ne 0\), and \(\varphi\) standard of denominator \(\delta\).  There are a resolution \((u_l, m_l)_{l \in \mathcal L}\) of the identity, with \(\alpha_0^{-1}u_l\) integral at the primes above \(p\) for the finite idele \(\alpha_0\) of the Weil data, and \(H \in \Op[[y(u_l^\dagger z) : l \in \mathcal L]]\), such that the jet series of \(\varphi\) at scale \(\bar\delta\sqrt{2\pi/\sqrt d}/\Omega_0\), read through \(\eta\), is \(\bigl(\prod_l \tth(u_l^\dagger z)^{m_l}\bigr)^{\delta\bar\delta} H\).  The coefficients of \(\eta(\cper)\, u_l^\dagger z\) are integral; if \(p \nmid q_1\), the \(u_l\) are integral at the primes above \(p\) and \(\lvert\eta(\cper)\rvert = 1\).  \emph{Status}: read from the proof; it uses tight frames and finite Fourier inversion for theta functions \cite{Mu}.
+
+\begin{problem}\label{pr:partner}
+Let \(\chi_K(p) \ne 1\), \(e \in I_p^\circ\), \(\tau \in \Phi\), and \(\beta \in E\) integral at the primes above \(p\).  Then \(\eta(\overline{\tau(\beta)})^{p^e} \equiv \eta(\tau_e(\beta)) \pmod{\pi_p}\).
+\end{problem}
+
+\begin{problem}\label{pr:rescale}
+If \(F\) has the normal form for \((S, r, \varpi, \lambda)\) and \(c' \in \Op\), then \(F(c' z)\) has the normal form for \((S, r, \varpi, \lambda')\) with \(\lambda'_{ej} = c'^{\,(p^e+1)p^j}\lambda_{ej}\).
+\end{problem}
+
+For integrality at every prime, including \(p = d\), the scale carries a factor \(d\).
+
+\begin{problem}\label{pr:jet-ring}
+Let \(\mathfrak J\) be the subring of \(\C_p[[z]]\) generated by the series \(G(y(dz))\), \(G\) integral, and by \(\tth(dz)\) and \(g'(dz)\), for any CM lattice and any prime \(p\).  Then \(\mathfrak J\) is closed under differentiation, and its elements have integral constant terms.
+\end{problem}
+
+\begin{problem}\label{pr:derivatives}
+If a subring of a power series ring over \(\C_p\) in finitely many variables is closed under all partial derivatives and its elements have integral constant terms, then \(Q(\partial)F(0)\) is integral for each of its elements \(F\) and each polynomial \(Q\) over \(\Op\).  So \(d^n\tth^{(n)}(0)\) is integral for all \(n\), for every CM lattice.  For \(\mathcal C\) and \(p = 5\), \(\tth^{(6)}(0) = -15g''(0)^3 + 30g''(0) - 6\sqrt7\) is integral, while \([z^6]\tth\) has valuation \(-1\).
+\end{problem}
+
+Problems~\ref{pr:pair-resolution}--\ref{pr:pair-normal-form} prove the analogue of part~(a) below for the two forms \(\mu_l\) at \(p = 5\).  The proof of the general case \cite{GL} follows the same steps, with Problem~\ref{pr:partner} in place of Problem~\ref{pr:frobenius} and the weighted identity of Definition~\ref{def:resolution} in place of Problem~\ref{pr:pair-resolution}: this gives (a).  For (b), a non-split \(p\) does not divide \(q_1\), since every prime factor of \(q_1\) splits in \(K\); so the statement on standard data with \(\delta = 1\) gives a resolution by vectors integral above \(p\), and \(\lvert\eta(\cper)\rvert = 1\).  Then (a) gives the normal form at scale \(\sqrt{2\pi/\sqrt d}/\Omega_0\), and Problem~\ref{pr:rescale} with \(c' = \eta(c\,\cper)\) passes to the scale \(c\,\cjet\).  For (c), rescale the statement on standard data by \(d\,\cper\): the forms become \(d\) times the integral forms \(\eta(\cper)u_l^\dagger z\), the several-variable form of Problem~\ref{pr:jet-ring} gives a ring closed under the partial derivatives with integral constant terms.  \emph{Status}: read from the proof.  Problem~\ref{pr:derivatives} then gives the integrality of the jets.
+
+\begin{theorem}\label{thm:normal-form}
+Fix \(q_0\), \(d\), \(s\), a prime \(p\) and \(\eta\colon \C \to \C_p\) as above.
+\begin{enumerate}
+\item[(a)] If \(\chi_K(p) \ne 1\), there are \(\varpi \in \C_p\) with \(\val\varpi = 1/(p-1) - \gamma_p\) and \(\lambda = (\lambda_{ej})_{e,j \ge 0}\) in \(\Op\), with \(\lambda_{e0}\) a unit for every odd \(e\) if \(\chi_K(p) = -1\), such that for every finite set \(\mathcal I\), every resolution of the identity \((u_l, m_l)_{l \in \mathcal L}\) on \(E^{\mathcal I}\) with all coordinates of all \(u_l\) integral at the primes above \(p\), and every \(H \in \Op[[y(u_l^\dagger z) : l \in \mathcal L]]\), the series \(\bigl(\prod_{l} \tth(u_l^\dagger z)^{m_l}\bigr) H\) has the normal form for \((I_p^\circ, ([-p^e]\cdot)_e, \varpi, \lambda)\).
+\item[(b)] If \(\chi_K(p) \ne 1\), \(V\) is a standard positive definite space over \(E\), \(\varphi\) a standard datum of denominator \(1\) on \(V\), and \(c \in \C\) with \(\lvert\eta c\rvert \le 1\), then the jet series of \(\varphi\) at scale \(c\,\cjet\), read through \(\eta\), has the normal form for \((I_p^\circ, ([-p^e]\cdot)_e, \varpi, \lambda)\) for some \(\varpi\) with \(\val\varpi = 1/(p-1) - \gamma_p\) and some integral \(\lambda\).
+\item[(c)] For every standard positive definite space \(V\) over \(E\), if \(\delta \in \Oc_K\), \(\delta \ne 0\), and \(\varphi\) is standard of denominator \(\delta\) on \(V\), then every jet \(Q(\partial)F(0)\), \(Q\) a polynomial with coefficients in \(\Oc_\eta\), of the jet series \(F\) of \(\varphi\) at scale \(\bar\delta d\,\cjet\) is integral at \(\eta\).
+\end{enumerate}
+\end{theorem}
+
+On \(V = \mathrm{Hom}(X_j, X_{j+1})\), parts~(c) and~(b) give (I) and (IV), respectively, of Section~\ref{d2-sec:kernel}.  Statement~(I) gives the integrality used in Problem~\ref{d2-pr:scaling}.  Problem~\ref{d2-pr:kernel-bound} uses (IV) with Theorem~\ref{pf-thm:count}, then (III) and (II) to obtain the gauge bound.
+
+\paragraph{What has been established.}  The normal form and the two-place count for the product \(\tth(\mu_1)\tth(\mu_2)\) at \(p = 5\) (Problems~\ref{pr:pair-resolution}--\ref{pr:pair-count}); the general steps of Problems~\ref{pr:partner}--\ref{pr:derivatives}, which with the statements read from the proof give Theorem~\ref{thm:normal-form} as described before it.  We take from the proof \cite{GL} the four facts on \(\tth\), the one-curve statement, the statement on standard data, and the several-variable form of Problem~\ref{pr:jet-ring} used in part~(c).
+
+\begin{leanremark}
+\begin{sloppypar}
+In the Lean proof \cite{GL} (namespace \tl{New.} omitted), Theorem~\ref{thm:normal-form}(a), (b), (c) are \tl{Parameters.exists_hasNormalForm}, \tl{Parameters.exists_hasNormalForm_jetSeries} and \tl{Parameters.norm_jet_jetSeries_le_one}.  Definition~\ref{def:resolution} is \tl{IsResolution}, with \tl{daggerForms}; the normal form is \tl{HasNormalForm}; \(\tth\) is \tl{CMLattice.}\(\theta\).  The one-curve factorization, exponent congruence and inert unit condition are \tl{CMLattice.exists_exponent_tsum}; the standard-data factorization with its finite-image condition is \tl{Parameters.exists_jetSeries_map_eq_thetaProd_pow_mul}; the further clauses of these two statements, and the four facts on \(\tth\), are separate lemmas of the proof.  The splitting of the prime factors of \(q_1\) is \tl{Parameters.chiK_eq_one_of_dvd}.
+\end{sloppypar}
+\end{leanremark}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:curve}}
+\begin{description}
+\item[\ref{pr:curve}] (ii) \(\wp = x + b_2/12\) and \(g_2 = c_4/12\) for this differential \cite[\S VI.3]{AEC}; scaling the lattice by \(c_0 > 0\) multiplies \(\wp\) by \(c_0^{-2}\) and \(g_2\) by \(c_0^{-4}\).  (iii) The lattice is stable under conjugation and \(\bar t \equiv t\) modulo it, as \(t\) is a real point; use \(\omega + \bar\omega = 1\).
+\item[\ref{pr:g-coeff}] \(\wp'' = 6\wp^2 - g_2/2\); \(\wp_t(0) = \wp_t'(0) = 0\).  Then \(n(n-1)[z^n]g = [z^{n-2}]\wp_t\) for \(n \ge 3\).
+\item[\ref{pr:support}] Raising to the \(p\)-th power is additive modulo \(p\).  Write \(p^{2i} + p^{2k+1}\) as \(p^{\min}(1 + p^{\lvert\cdot\rvert})\).
+\item[\ref{pr:first-coefficient}] Which degrees \((p^e+1)p^j\), \(e\) odd, equal \(p+1\)?  Problem~\ref{pr:g-coeff}.
+\item[\ref{pr:absorb}] Legendre's formula: \(\val(k!) \le (k-1)/(p-1)\) for \(k \ge 1\).  Problem~\ref{d1-pr:gamma-sum}.
+\end{description}
+
+\subsection*{\S\ref{sec:pair}}
+\begin{description}
+\item[\ref{pr:pair-resolution}] \(\overline{u_1} = u_2\).  For the other two identities, expand the forms and use the first.
+\item[\ref{pr:frobenius}] Both sides are ring maps from \(\Oc_{E,(5)}\) to the quotient by \(5\); compare them on \(\ii\) and \(\sqrt{-7}\), using that \(5\) is inert in \(K\), so that \(x \mapsto x^5\) acts on \(\Oc_K/5\) as conjugation.
+\item[\ref{pr:pair-coupling}] Expand \(\mu_l^{5^e}\) modulo \(5\) by Problem~\ref{pr:frobenius}, then use the last identity of Problem~\ref{pr:pair-resolution}.  For even \(e\), examine the fifth-power map on \(\Z_{(5)}[\ii]/5\), which contains the reductions of the coefficients of both forms.
+\item[\ref{pr:pair-exponent}] Substitute \(\mu_l\) in the congruence for \(\Ec\) term by term; Problem~\ref{pr:pair-coupling} raised to the power \(5^j\).
+\item[\ref{pr:pair-normal-form}] \(\tth(\mu_l)(\varpi z) = (\tth(\varpi\,\cdot))(\mu_l)\); the forms \(\mu_l\) are integral.  For \(H\), the clause ``\(G(\varpi' z)\) is integral'' of the one-curve statement with \(G = y\).  Problems~\ref{pr:pair-exponent} and~\ref{pr:absorb}.
+\item[\ref{pr:pair-check}] \(\log F = -g(\mu_1) - g(\mu_2)\) and \(g\) is even; Problem~\ref{pr:g-coeff}.  For the jets also use the parts of degree \(2\) and \(4\); \(g''(0)\) is integral at \(5\) since \(\sqrt{-7}\) is a unit there.
+\item[\ref{pr:pair-count}] Apply Problems~\ref{d1-pr:model-bound} and~\ref{d1-pr:model-count} to Problem~\ref{pr:pair-normal-form} with \(H = 1\).
+\end{description}
+
+\subsection*{\S\ref{sec:general}}
+\begin{description}
+\item[\ref{pr:partner}] Write \(\beta = \alpha/b\) with \(\alpha \in \Oc_E\) and \(b\) prime to \(p\); \(\Oc_E = \Oc_K[\zeta_{q_1}]\) since the discriminants of \(K\) and \(\Q(\zeta_{q_1})\) are coprime \cite[Prop.~I.2.11]{Ne}.  Compare two ring maps \(\Oc_E \to \Op/\pi_p\) on \(\zeta_{q_1}\) and \((1+\sqrt{-d})/2\), as in Problem~\ref{pr:frobenius}.
+\item[\ref{pr:rescale}] Problem~\ref{pf-pr:coupling}(i).
+\item[\ref{pr:jet-ring}] \(\tth' = -g'\tth\); \(d\,g''(0) = -\eta(\sqrt{-d}) \cdot \eta(\sqrt{-d})g''(0)\).
+\item[\ref{pr:derivatives}] Consider the constant term of each iterated partial derivative of \(F\) separately, and then use the coefficients of \(Q\).  For \(\mathcal C\), \(g''(0)\) is integral at \(5\).
+\end{description}
+
+\begin{thebibliography}{ATAEC}
+\bibitem[AEC]{AEC} J.~H.~Silverman, \emph{The Arithmetic of Elliptic Curves}, 2nd ed., Springer, 2009.
+\bibitem[ATAEC]{ATAEC} J.~H.~Silverman, \emph{Advanced Topics in the Arithmetic of Elliptic Curves}, Springer, 1994.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[Mu]{Mu} D.~Mumford, \emph{Tata Lectures on Theta I}, Birkh\"auser, 1983.
+\bibitem[Ne]{Ne} J.~Neukirch, \emph{Algebraic Number Theory}, Springer, 1999.
+\end{thebibliography}
+
+\end{document}
