@@ -502,11 +502,13 @@ def site(directory):
 
     head = ('<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
             '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+            '<meta name="color-scheme" content="light dark">\n'
             '<title>{title}</title>\n{extra}'
             '<link rel="stylesheet" href="{css}">\n'
             '<script>window.MathJax = {{tex: {{inlineMath: [["$","$"],["\\\\(","\\\\)"]]}}}};</script>\n'
             '<script {loading} src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"></script>\n'
             '{assets}'
+            '<link rel="stylesheet" href="{theme}">\n'
             '</head>\n<body>\n')
 
     def describe(e):
@@ -544,7 +546,7 @@ def site(directory):
             rows.append(e)
         with open(path, "w", encoding="utf-8") as f:
             f.write(head.format(title=f"Tag {e.tag}", extra=extra,
-                                css="../tex.css", loading="async", assets=""))
+                                css="../tex.css", theme="../site-theme.css", loading="async", assets=""))
             f.write(body + '<p><a href="../tags.html">All tags</a></p>\n'
                     "</body>\n</html>\n")
 
@@ -553,7 +555,7 @@ def site(directory):
 
     previews = ('<link rel="stylesheet" href="reference-preview.css">\n'
                 '<script src="reference-preview.js" defer></script>\n')
-    out = [head.format(title="Tags", extra="", css="tex.css",
+    out = [head.format(title="Tags", extra="", css="tex.css", theme="site-theme.css",
                        loading="defer", assets=previews),
            '<div class="my-links-container"><a href="." class="my-link">home</a></div>\n'
            '<h1 class="title">Tags</h1>\n'

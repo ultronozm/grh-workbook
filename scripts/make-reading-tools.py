@@ -177,12 +177,22 @@ def build_search(sheets):
         json.dumps(rows, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
 
 
+def add_theme(path):
+    source = path.read_text(encoding="utf-8")
+    if '<meta name="color-scheme"' not in source:
+        source = source.replace("<head>", '<head>\n<meta name="color-scheme" content="light dark">', 1)
+        source = source.replace("</head>", '<link rel="stylesheet" href="site-theme.css">\n</head>', 1)
+        path.write_text(source, encoding="utf-8")
+
+
 def main():
     sheets = sorted((Sheet(path) for path in Path(".").glob("*__workbook.html")),
                     key=lambda sheet: (chapter_order(sheet.chapter), sheet.path.name))
     chapters = {sheet.path.name: sheet for sheet in sheets if sheet.chapter}
     build_backlinks(chapters)
     build_search(chapters)
+    for path in Path(".").glob("*.html"):
+        add_theme(path)
 
 
 if __name__ == "__main__":
