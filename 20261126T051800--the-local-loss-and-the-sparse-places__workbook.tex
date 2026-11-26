@@ -1,0 +1,234 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[da-]{20261126T030300--the-data__workbook}
+\externaldocument[sp-]{20261125T005500--columns-from-a-sphere__workbook}
+\externaldocument[pc-]{20261125T014700--pseudocharacters-and-the-length-bound__workbook}
+\externaldocument[dp-]{20261126T030900--denominators-of-projections-to-lifts__workbook}
+
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T051800\endcsname
+  \chapnumber{20261126T051800}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\val}{\operatorname{val}}
+\newcommand{\rk}{\operatorname{rk}}
+\newcommand{\loc}{\mathrm{loc}}
+\newcommand{\defect}{\mathrm{defect}}
+\newcommand{\crys}{\mathrm{crys}}
+\newcommand{\Int}{\mathrm{Int}}
+\newcommand{\cl}{\mathrm{cl}}
+\newcommand{\HT}{\mathrm{HT}}
+\newcommand{\Gl}{G_{\Q_\ell}}
+\newcommand{\half}{(\Delta/2)}
+\setlength{\emergencystretch}{3em}
+
+\title{The local loss and the sparse places}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Local fields: decomposition groups, the degree \([E_v : \Q_\ell] = e_vf_v\), Frobenius elements \cite[Ch.~I, IV]{SLF}; Legendre's formula \(\val_\ell(n!) = \sum_{i \ge 1}\lfloor n/\ell^i\rfloor\).  From Chapter~\ref{da-chap}: Definition~\ref{da-def:data} (the sparse set \(\Phi_b\), \(l_0(s)\)), Problems~\ref{da-pr:class}, \ref{da-pr:split}, \ref{da-pr:l0} and~\ref{da-pr:MN}, and the budget \(B\) of Definition~\ref{da-def:budget}; the construction of \(\Phi_b\) in Chapter~\ref{sp-chap}.  Theorem~\ref{pc-thm:graph}.  From Chapter~\ref{dp-chap}: coefficient rings \(\Oc\) and normalized lengths (Section~\ref{dp-sec:statement}), Definitions~\ref{dp-def:jumps}, \ref{dp-def:main-summand-like} and~\ref{dp-def:clearing-bound}.  \(p\)-adic Hodge theory enters only through three results stated in the text.
+
+\medskip
+The clearing bound \(\cl_\ell\) of Definition~\ref{dp-def:clearing-bound}, which controls the denominators of projections onto lifts in Chapter~\ref{dp-chap}, contains the term \(\loc_\ell\), counted per unit of rank; a main summand of rank \(r'\) pays \(r'\loc_\ell\) (Problem~\ref{dp-pr:budget}): the price of asking that the cocycles produced by a congruence be crystalline above \(\ell\).  Why is this price the valuation of one integer, and why is the sum of \(\loc_\ell\log\ell\) over all primes \(\ell\) only of size \(f(m/k)\,b\log b\), far below \(B\)?  The bound at one place above \(\ell\) is taken from the proof.  What this sheet proves is the arithmetic around it: the sum over the places and rows, the integer whose valuation is the loss, the sparse places that keep the small primes cheap, and the sum over \(\ell\).  For a prime \(\ell\) and a positive integer \(n\) we write \(\val_\ell(n)\) for the exponent of \(\ell\) in \(n\), the valuation \(\val\) at \(\ell\).
+
+\section{The loss at one place}\label{sec:loss}
+
+We use the data and the notation of Chapter~\ref{da-chap}: the field \(E\) with \(f\) infinite places, the scales, \(m\), \(r\), \(k = r + 1 - m\), \(t = 5r\), \(M = p_0p_1\), the gap \(\Delta = 2r^8\), so \(\Delta/2 = r^8\).
+
+\begin{definition}\label{def:loss}
+Let \(\Int_b\) be the product of the integers \(i\) with \(\max(0, b - 30\half^3) < i \le b + 30\half^3\).  For a prime \(\ell\) put
+\[
+  \crys_\ell := \val_\ell\bigl((2b)!\,\Int_b^{\half^3}\bigr), \qquad
+  \defect_\ell := 10^6\,\frac mk\,\bigl(b\,\val_\ell(M) + \crys_\ell\bigr),
+\]
+and \(\loc_\ell := 4f\,\defect_\ell\).
+\end{definition}
+
+Fix a prime \(\ell\), an isomorphism \(\iota\colon \C \simeq \overline{\Q}_\ell\), and \(\Gl := \mathrm{Gal}(\overline{\Q}_\ell/\Q_\ell)\).  For a place \(v \mid \ell\) of \(E\) choose an embedding \(\jmath\colon E \to \overline{\Q}_\ell\) inducing \(v\), and let \(\Gamma_v \subseteq \Gl\) be the subgroup fixing \(\jmath(E)\), the Galois group of the completion \(E_v\); thus \([\Gl : \Gamma_v] = [E_v : \Q_\ell]\).  In the proof of the denominators theorem, a congruence produces cocycles that obey the relations among the \(U_i(g) - 1\); by Theorem~\ref{pc-thm:graph} such a cocycle is the second coordinate of an integral cocycle on a lattice.  It need not be crystalline above \(\ell\).  The failure is priced on the dual side, and a finite model shows why the price is the same on both sides.
+
+\begin{problem}\label{pr:pairing-model}
+Let \(F_1 \times F_2 \to \Q/\Z\) be a perfect pairing of finite abelian groups and \(F_0 \subseteq F_1\) a subgroup.  Its orthogonal \(F_0^\perp \subseteq F_2\) has index \(\#F_0\).  For \(F_1 = F_2 = \Z/9\) with \(\langle y_1, y_2\rangle = y_1y_2/9\) and \(F_0\) generated by \(3\), \(F_0^\perp = \{0, 3, 6\}\), of index \(3\): one equation costs length \(1\) on either side.
+\end{problem}
+
+For a lattice with continuous action of \(\Gamma_v\), write \(Z_f(\cdot)\) for its integral crystalline cocycles.  The proof uses three results of \(p\)-adic Hodge theory.
+(i) \emph{Local duality in index form.}  Let \(L, L'\) be potentially crystalline \(\Z_\ell\)-lattices with \(\Gamma_v\)-action in perfect equivariant duality \(L' \times L \to \Z_\ell(1)\), let \(n \ge 1\), \(\mathrm{red}\colon L \to L/\ell^nL\), and let \(\mathcal Q\) be a group of maps \(\Gamma_v \to L'\) whose cup products modulo \(\ell^n\) with \(\mathrm{red} \circ y\) for all \(y \in Z_f(L)\), and with all members of a group \(\mathcal S\) of continuous cocycles \(\Gamma_v \to L/\ell^nL\), are coboundaries.  Then \([\mathcal S : \mathcal S \cap \mathrm{red}\, Z_f(L)]\) divides \([Z_f(L') : Z_f(L') \cap \mathcal Q]\).  The finite statement behind it is local Tate duality \cite[II, \S5.2, Thm.~2]{SGC}, \cite[I.2.3]{ADT}; the crystalline subgroups are exact annihilators of each other \cite[Prop.~3.8]{BK}.  \emph{Status}: classical in these forms; the integral form stated is read from the proof.
+(ii) \emph{Bloch--Kato.}  For a potentially crystalline \(\Z_\ell\)-lattice \(L\) with \(\Gamma_v\)-action, \(Z_f(L)\) is a finite free \(\Z_\ell\)-module of rank \(\rk_{\Z_\ell}L + [\Gl : \Gamma_v]\cdot n^-\), where \(n^-\) is the number of negative Hodge--Tate jumps of \(L\) at the inclusion \(\Q_\ell \subset \C_\ell\), counted with multiplicity \cite[\S3]{BK}.  \emph{Status}: classical; the integral form is read from the proof.
+(iii) The bound~\eqref{eq:dual-defect} below.  It rests on integral \(p\)-adic Hodge theory \cite{Ki}, \cite[\S4]{BMS}, and is read from the proof.
+
+\begin{definition}\label{def:dual-defect}
+Let \(\Oc\) be a coefficient ring, \(\mathcal C\) a class of \(\Oc\)-lattices with continuous \(\Gamma_v\)-action, and \(L'\) such a lattice.  In this sheet let \(\mathcal C^\perp(L')\) be the \(\Oc\)-module of maps \(c\colon \Gamma_v \to L'\) such that for every \(\tilde L \in \mathcal C\), every \(n \ge 0\), every pairing \(\langle\,,\rangle\colon \tilde L \times L' \to \Z/\ell^n(1)\) obtained from an \(\Oc\)-linear form \(\psi\colon \tilde L \otimes L' \to \Oc(1)\) whose coboundary \(g \mapsto g\psi - \psi\) is \(\ell^n\) times an integral crystalline cocycle, followed by a \(\Z_\ell\)-linear map \(\Oc \to \Z_\ell\) and reduction modulo \(\ell^n\), and every \(y \in Z_f(\tilde L)\), the cochain \((g, h) \mapsto \langle y(g), g\,c(h)\rangle\), with values in the roots of unity of \(\overline{\Q}_\ell\), is the coboundary of a continuous cochain \(\Gamma_v \to \overline{\Q}_\ell^\times\).  The \emph{dual defect} of \(L'\) for \(\mathcal C\) is the length of \(Z_f(L')/(Z_f(L') \cap \mathcal C^\perp(L'))\).  The \emph{dual defect at \(v\)} of a lattice \(L\) is the dual defect of its Tate dual \(L^*(1)\), in normalized length.
+\end{definition}
+
+Let \(R\) be main-summand-like for \((t', \HT)\) (Definition~\ref{dp-def:main-summand-like}).  The \emph{rows} at \(v\) are a \(\Gamma_v\)-stable \(\Oc\)-lattice \(L_0\) in \(R\), of rank \(r'\) and jumps \(\HT\), and the characters \(\Oc(-e) = \chi_{\mathrm{cyc}}^{-e}\) for \(0 \le e < t'\), of rank \(1\).  Let \(\mathcal C\) be a class adapted to the rows: its lattices have jumps among those of the rows, and it consists of crystalline lattices or, when \(\ell \in \{p_0, p_1\}\), of lattices of a fixed tame type.  The proof shows: given \(R\) and \(v\), for all large \(\Oc\), for every choice of the rows at \(v\) over \(\Oc\) and every class \(\mathcal C\) of \(\Oc\)-lattices adapted to them, every row \(L\) in \(\mathcal C\) has dual defect at \(v\) at most
+\begin{equation}\label{eq:dual-defect}
+  [\Gl : \Gamma_v]\,\rk(L)\,\defect_\ell / t_L, \qquad t_L = 1 \text{ for } L = L_0,\quad t_L = t \text{ for a character}.
+\end{equation}
+
+\begin{problem}\label{pr:local-degrees}
+\(\sum_{v \mid \ell} [\Gl : \Gamma_v] = [E : \Q] = 2f\).  In \(\Q(i)\) (a model, with \(1\) in place of \(f\)) the pairs \((e_v, f_v)\) are \((1, 2)\) above \(3\) and \((1, 1), (1, 1)\) above \(5\); the sum is \(2\) both times.
+\end{problem}
+
+\begin{problem}\label{pr:row-total}
+Let \(r' \ge 1\) and \(0 \le t' \le t\).  The bounds~\eqref{eq:dual-defect} for the main row and the \(t'\) character rows, summed over the rows and the places \(v \mid \ell\), total at most \(4fr'\,\defect_\ell = r'\loc_\ell\).
+\end{problem}
+
+In the proof these dual defects, added over the rows and the places above \(\ell\), bound what the crystalline relations above \(\ell\) cost, and Problem~\ref{pr:row-total} is the bound used for the sum.  This is the term \(r'\loc_\ell\) of the bound \(\mathrm{sel} + 2t'\,\mathrm{ram} + r'\loc_\ell + \varepsilon_\ell + n_\ell \le r'\cl_\ell\) of Problem~\ref{dp-pr:budget}.
+
+\section{The crystalline loss of one prime}\label{sec:one-prime}
+
+Why the factorial and the interval?  Each supplies one property of \(\crys_\ell\) that the local estimates need.
+
+\begin{problem}\label{pr:crys}
+\(\lfloor 2b/\ell\rfloor \le \crys_\ell\), so \(2b < \ell(\crys_\ell + 1)\).  If \(\ell\) divides an integer of the interval of Definition~\ref{def:loss}, then \(\crys_\ell \ge \half^3\).
+\end{problem}
+
+\begin{problem}\label{pr:model-integer}
+Formally take \(\Delta/2 = 1\) and \(b = 32\) (no data have these values).  The integer of Definition~\ref{def:loss} is \(64!\prod_{3 \le i \le 62} i\), and its valuations at \(\ell = 2, 3, 5, 31, 61, 67\) are \(119, 58, 28, 4, 2, 0\).
+\end{problem}
+
+The bound~\eqref{eq:dual-defect} is proved by cases, which we only describe.  If the class is tame (so \(\ell \in \{p_0, p_1\}\)), the cost is paid by the term \(b\,\val_\ell(M)\), as \(\val_\ell(M) \ge 1\).  Otherwise the class is crystalline, the allowed jumps lie in a low window around \(0\) and in far windows of bounded width starting near \(\pm b\) (at thick letters, Section~\ref{sec:letters}) or near \(\pm\lfloor a/x_1\rfloor\), and there are three cases: \(\ell \le kt\), where the thick letters are sparse (Section~\ref{sec:letters}); \(\ell > kt\) with \(\crys_\ell \ge \half^3\); and \(\ell > kt\) with \(\crys_\ell < \half^3\).  In the first two a power of \(\ell\) bounded through \(\lfloor 2\crys_\ell/(kt)\rfloor\) kills the quotient defining the dual defect, and (ii) bounds the number of generators.  In the third, by Problem~\ref{pr:crys}, \(\ell\) divides no integer of the interval, so no nonzero multiple of \(\ell\) lies near \(0\) or near the starts of the far windows, and the following estimate, read from the proof, applies.  In this sheet let \(\lambda, \lambda_0, \lambda_1 \ge 1\) be integers, \([-\lambda_0, \lambda_0]\) the low window and \(\lambda_1\) the width of the far windows.  At an unramified place with \(\ell \ge 5\), group the embeddings of \(\Oc\) by the root of unity of order \(\ell^{f_v} - 1\) that they give (the letters of the chart of \(E_v\)), and attach to each such letter \(i\) a start \(\mathrm{fs}_i\) and a sign \(\mathrm{sg}_i = \pm 1\).  Suppose \(\mathrm{fs}_i + \lambda_1 + \lambda_0 \le (\ell - 3)\lambda\) and \(6(\lambda + \lambda_0 + \lambda_1) < \mathrm{fs}_i\), and that \(\ell\) divides no nonzero integer within \(6(\lambda + \lambda_0 + \lambda_1)\) of \(0\) or \(\pm \mathrm{fs}_i\).  Let \(\mathcal C\) be the class of crystalline lattices with jumps in given sets \(\mathcal J\), and let \(L'\) be crystalline with jumps in sets \(\mathcal J'\), where over each letter \(i\) the set \(\mathcal J\) lies in \([-\lambda_0, \lambda_0] \cup -\mathrm{sg}_i[\mathrm{fs}_i, \mathrm{fs}_i + \lambda_1]\) and \(\mathcal J'\) lies in \([-\lambda_0, \lambda_0] \cup \mathrm{sg}_i[\mathrm{fs}_i, \mathrm{fs}_i + \lambda_1]\).  Then the dual defect of \(L'\) for \(\mathcal C\) vanishes if no member of \(\mathcal J\) or of \(\mathcal J'\) lies in \([-\lambda, 0)\), or if \(\mathcal J'\) lies in \([-\lambda_0, 0]\); and if at most \(n_{\mathrm{low}}\) jumps of \(L'\) lie in \([-\lambda_0, \lambda_0]\) at each embedding, it is at most \(11f_v(n_{\mathrm{low}}(\lambda + 1) + \rk(L')(\lambda_1 + 1))\) in normalized length.
+
+\begin{problem}\label{pr:far-start}
+For \(\ell = 101\), \(\lambda = \lambda_0 = \lambda_1 = 1\) and one start \(\mathrm{fs}_1 = 42\), the numerical hypotheses of this estimate hold: \(44 \le 98\), the radius \(6(\lambda + \lambda_0 + \lambda_1) = 18\) is less than \(42\), and no nonzero multiple of \(101\) lies within \(18\) of \(0\) or \(\pm 42\).
+\end{problem}
+
+\section{Thick letters}\label{sec:letters}
+
+For \(\ell \le kt\) no estimate uses \(\ell\) large, and what keeps the loss small is the position of the places of weight \(b\).  Fix \(\jmath\colon E \to \overline{\Q}_\ell\).  For \(g \in \Gl\) let \(\sigma_g := \iota^{-1}\circ g^{-1}\circ \jmath\), a complex embedding of \(E\), with place \([\sigma_g] \in \Phi\).  For a complex embedding \(\sigma\) its sign \(s_\sigma = \pm 1\) for the CM type (as in Definition~\ref{dp-def:jumps}) is given by \(\sigma(\sqrt{-d}) = s_\sigma\sqrt{-d}\), with \(K \subset \C\) as in Chapter~\ref{da-chap}; if \(\zeta \in \C\) is the image of \(\zeta_{q_1}\) under the fixed embedding \(E \to \C\) over \(K\), the class of \([\sigma]\) in \((\Z/q_1)^\times\) is the \(u\) with \(\sigma(\zeta_{q_1}) = \zeta^{s_\sigma u}\).
+
+\begin{definition}\label{def:thick}
+The embeddings \(\sigma_g\), \(g \in \Gl\), are the \emph{letters} over \(\jmath\).  A letter is \emph{thick} if its place lies in \(\Phi_b\).
+\end{definition}
+
+\begin{problem}\label{pr:cycle}
+Let \(\zeta_\jmath := \jmath(\zeta_{q_1})\), \(h, n \ge 0\), and \(g, g' \in \Gl\) with \((g'g^{-1})(\zeta_\jmath^{\ell^h}) = \zeta_\jmath^{\ell^{h+n}}\).  For every \(q' \mid q_1\) prime to \(\ell\), the class of \([\sigma_g]/[\sigma_{g'}]\) modulo \(q'\) is \(s_{\sigma_g}s_{\sigma_{g'}}\,\ell^n\).  For \(\ell = 2\) and \(31\) in place of \(q'\), the powers of \(\ell\) form the cycle \(1, 2, 4, 8, 16\), which does not contain \(-1\).
+\end{problem}
+
+A lift \(\mathrm{Fr}_\ell \in \Gl\) of the Frobenius of the residue field raises every root of unity of order prime to \(\ell\) to its \(\ell\)-th power.  So the letters \(\sigma_{\mathrm{Fr}_\ell^ng}\), \(n \in \Z\), form a cycle along which the classes of the places move by \(\pm\ell^{-1}\) modulo the prime-to-\(\ell\) part of \(q_1\).  The sparse condition of Definition~\ref{da-def:data}(3) is designed for this cycle.
+
+\begin{problem}\label{pr:sparse-window}
+Let \(\ell \le kt\), let \(\ell^h\) be the largest power of \(\ell\) dividing \(q_1\), and let \(1 \le i, j \le \lfloor \log_\ell \half^3\rfloor\).  Then \(\lfloor\log_\ell\half^3\rfloor \le 12s\), so \(i + j < l_0(s)\).  If \(g_0, g_1, g_2 \in \Gl\), \(g_2g_0^{-1}\) raises \(\zeta_\jmath^{\ell^h}\) to the power \(\ell^{i+j}\), \(g_2g_1^{-1}\) raises it to the power \(\ell^j\), and \(\sigma_{g_0}\), \(\sigma_{g_2}\) are thick, then \(\sigma_{g_1}\) is not thick.
+\end{problem}
+
+So along the cycle no three thick letters occur at two successive gaps of at most \(\lfloor\log_\ell\half^3\rfloor\), the gaps used by the local estimate for \(\ell \le kt\).
+
+\begin{problem}\label{pr:toy-window}
+In the cycle of Problem~\ref{pr:cycle}, call a set of elements of the cycle allowed if it contains no \(\sigma, \tau, \rho\) with \(\tau/\sigma \equiv \pm 2^i\), \(\rho/\sigma \equiv \pm 2^j\) and \(0 < i < j < 5\).  Then \(\{1, 2\}\) is allowed, \(\{1, 2, 8\}\) is not, and an allowed set has at most \(2\) letters.  With the true size \(l_0(s) \ge 81\) in place of \(5\), no nonempty set is allowed: a cycle of length \(5\) is far shorter than any that data produce.
+\end{problem}
+
+Which far window a thick letter uses depends on its sign.  For \(\ell \nmid q_1d\) the field \(E \subseteq \Q(\zeta_{q_1d})\) is unramified at \(\ell\), and \(\ell \ge 13\) since every prime below \(13\) divides \(q_0\); there the proof reads the sign of each letter separately.  For \(\ell \mid q_1d\) the proof needs that the thick letters have one sign, and this has two cases.
+
+\begin{problem}\label{pr:sign-q1}
+If \(\ell \mid q_1\), then \(s_{\sigma_g} = s_{\sigma_{g'}}\) for all \(g, g' \in \Gl\); in particular two thick letters have the same sign.
+\end{problem}
+
+\begin{problem}\label{pr:sign-d}
+\(d^2 \equiv 1\) and \(d \not\equiv \pm1 \pmod{q_0}\), so \(d^n \not\equiv -1 \pmod{q_0}\) for every \(n \ge 0\).  Hence two thick letters over \(\ell = d\) have the same sign.  For \(q_0 = 18480\) and \(d = 9239\), \(d^2 \bmod q_0 = 1\).
+\end{problem}
+
+\section{The sum over the primes}\label{sec:sum}
+
+The number \(\defect_\ell\) is \(10^6(m/k)\) times a combination of valuations at \(\ell\) of two integers, \(M^b\) and \((2b)!\,\Int_b^{\half^3}\).  Summed with weights \(\log\ell\), valuations give back logarithms.
+
+\begin{problem}\label{pr:sum-log}
+For an integer \(n \ge 1\) and a finite set \(A\) of primes, \(\sum_{\ell \in A} \val_\ell(n)\log\ell \le \log n\).  For the integer of Problem~\ref{pr:model-integer} the sum over \(\ell \le 67\) is \(401.34123\ldots\), its logarithm.
+\end{problem}
+
+\begin{problem}\label{pr:int-bound}
+\(\Int_b \le (b + 30\half^3)^{60\half^3}\).  For data,
+\[
+  b\log M + \log\Bigl((2b)!\,(b + 30\half^3)^{60\half^6}\Bigr) \le 26\, b\log b .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:defect-sum}
+For every finite set \(A\) of primes, \(\sum_{\ell \in A}\defect_\ell\log\ell \le 26\cdot 10^6\,(m/k)\,b\log b\).
+\end{problem}
+
+Since \(26 \le e^{180}\), Problem~\ref{pr:defect-sum} gives the following theorem; Problems~\ref{pr:sum-log}--\ref{pr:defect-sum} prove it.
+
+\begin{theorem}\label{thm:local-loss}
+For all data and every finite set \(A\) of primes,
+\[
+  \sum_{\ell \in A}\loc_\ell\log\ell \le 4\cdot10^6 e^{180}\, f\,\frac mk\, b\log b .
+\]
+\end{theorem}
+
+The proof states the theorem with the constant \(e^{180}\), which it obtains by a general comparison of the sizes of the data.
+
+\begin{problem}\label{pr:vs-budget}
+The right side of Theorem~\ref{thm:local-loss} is at most \(16\cdot10^6 e^{180}\,B/(\log b)^2\).
+\end{problem}
+
+So the local loss uses a fraction \(O((\log b)^{-2})\) of the budget \(B\).  Proved here: Problems~\ref{pr:row-total} and~\ref{pr:crys}, the spacing and signs of thick letters, and Theorem~\ref{thm:local-loss}.  Taken as given: local duality, the Bloch--Kato rank, and the bound~\eqref{eq:dual-defect} at one place with its case analysis.  Problem~\ref{dp-pr:budget-sum} adds Theorem~\ref{thm:local-loss} to the bounds for the other terms of \(\cl_\ell\), summed with weights \(\log\ell\), to fit the budget \(B\).
+
+\paragraph{In the Lean formalization.}
+\begin{sloppypar}
+In the Lean proof \cite{GL} (\texttt{grh/src/}; the prefixes \texttt{New.Selmer}, \texttt{New.Lift} and \texttt{New.Period} are omitted), Definition~\ref{def:loss} is \texttt{crystallineLoss}, \texttt{defectBound} (\texttt{New/Congruences/LocalLoss/Basic.lean}) and \texttt{localDefectBound} (\texttt{New/Congruences/FirstOrder/TraceRelations.lean}).  The cocycles that obey the relations and their graph are \texttt{ribetCocyclesIn} and \texttt{ribetCocycles.exists\_graph\_subrepresentation} (\texttt{LocalLoss/Basic.lean}).  Definition~\ref{def:dual-defect} is \texttt{dualDefect} (\texttt{Lib/ClassField/LocalDuality/CrystallineDuality.lean}), where (i) is \texttt{IsPotentiallyCrystalline.relIndex\_dvd\_of\_orthogonal}; (ii) is \texttt{crysCocycles.finrank\_eq} (\texttt{Lib/PadicHodge/BlochKato.lean}); the frame behind (iii) is in \texttt{Lib/PadicHodge/Kisin/}.  The bound~\eqref{eq:dual-defect} is \texttt{summand\_defect\_le\_at\_place} (\texttt{LocalLoss/CrystallineDefect.lean}); its case analysis is \texttt{normLength\_dualDefect\_le\_of\_crystallineSizes} (\texttt{LocalLoss/CrystallineCocycles.lean}) and, for a tame class, \texttt{normLength\_dualDefect\_le\_defectBound\_of\_isTameType} with \texttt{two\_mul\_tame\_exponent\_le\_defectBound}; the estimate before Problem~\ref{pr:far-start} is \texttt{KummerChart.dualDefect\_eq\_zero\_and\_dualDefect\_le} (\texttt{New/Congruences/Lifting/CupOrthogonalityBounds.lean}); the letters, their thickness and signs as the local estimates use them are \texttt{eventually\_exists\_lettersReadThick}.  The dual defects summed over rows and places are bounded by \(r'\loc_\ell\) in \texttt{eventually\_exists\_inClass\_sum\_dualDefect\_le}, and \(r'\loc_\ell\) is a term of \texttt{liftValuationBound} (\texttt{FirstOrder/DenominatorBound.lean}).  Problem~\ref{pr:row-total} is \texttt{sum\_index\_mul\_defectBound\_le}, whose step \texttt{h\_degrees} proves the form with \(\le\) of Problem~\ref{pr:local-degrees}, stated here with equality.  Problem~\ref{pr:crys} is \texttt{two\_mul\_lt\_mul\_crystallineLoss\_succ} and \texttt{cube\_le\_crystallineLoss\_of\_dvd}, its first inequality being a step in the proof of the former.  Problem~\ref{pr:cycle} is \texttt{placeClass\_eq\_cmSign\_mul\_pow}; Problem~\ref{pr:sparse-window} is \texttt{notMem\_bPlaces\_of\_short\_arc}, with the bound on the gaps from \texttt{notMem\_bPlaces\_of\_coefficientEmbedding\_eq\_pow}.  Problems~\ref{pr:sign-q1} and~\ref{pr:sign-d} are the two branches of \texttt{cmSign\_eq\_of\_mem\_bPlaces}, whose branch \(\ell \mid q_1\) does not use that the letters are thick, with \texttt{New.Parameters.d\_pow\_ne\_neg\_one} (\texttt{New/Reduction/Data/FieldsAndPlaces.lean}) for the first assertion of Problem~\ref{pr:sign-d}.  Problem~\ref{pr:sum-log} is \texttt{sum\_padicValNat\_mul\_log\_le}, the first part of Problem~\ref{pr:int-bound} is \texttt{prod\_Ioc\_natB\_le\_pow}, and Theorem~\ref{thm:local-loss} is \texttt{sum\_localDefectBound\_mul\_log\_le} (\texttt{New/Congruences/FitTwistsExist.lean}).  The comparison of sizes that gives \(e^{180}\) is \texttt{New.Data.le\_of\_hasLogBound}, and the sum of the clearing bounds is \texttt{sum\_clearingBound\_add\_padicValNat\_le}.  The constant \(26\), Problems~\ref{pr:pairing-model}, \ref{pr:model-integer}, \ref{pr:far-start}, \ref{pr:toy-window} and~\ref{pr:vs-budget}, and the numerical examples in Problems~\ref{pr:local-degrees}, \ref{pr:cycle}, \ref{pr:sign-d} and~\ref{pr:sum-log} are ours.
+\end{sloppypar}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:loss}}
+\begin{description}
+\item[\ref{pr:pairing-model}] The pairing identifies \(F_2\) with the dual of \(F_1\); describe \(F_0^\perp\) in these terms.
+\item[\ref{pr:local-degrees}] The places above \(\ell\) correspond to the double cosets of the embeddings; use \(\sum_v e_vf_v = [E:\Q]\) \cite[Ch.~I, \S4, Prop.~10]{SLF} and \([E_v : \Q_\ell] = e_vf_v\) \cite[Ch.~II, \S3]{SLF}.  \(-1\) is a square modulo \(5\), not modulo \(3\).
+\item[\ref{pr:row-total}] Sum first over the places, by Problem~\ref{pr:local-degrees}.
+\end{description}
+
+\subsection*{\S\ref{sec:one-prime}}
+\begin{description}
+\item[\ref{pr:crys}] Legendre's formula for \((2b)!\); the integer divides \(\Int_b\).
+\item[\ref{pr:model-integer}] Legendre's formula, plus the multiples of \(\ell\) in \([3, 62]\).
+\end{description}
+
+\subsection*{\S\ref{sec:letters}}
+\begin{description}
+\item[\ref{pr:cycle}] Write \(g(y) = y^{u_g}\) on roots of unity of order \(q_1\) in \(\overline{\Q}_\ell\), for \(g \in \Gl\), and compare \(\sigma_g(\zeta_{q_1})\) with \(\sigma_{g'}(\zeta_{q_1})\).
+\item[\ref{pr:sparse-window}] \(r \le 3x^5\) and \(2^s = m^{22} \ge x^{11}\); then Problem~\ref{da-pr:l0} and Problem~\ref{pr:cycle}.
+\item[\ref{pr:toy-window}] For three letters, read their exponents relative to one of them.  For the last assertion, \(\sigma, \tau, \rho\) need not be distinct.
+\item[\ref{pr:sign-q1}] Consider \(\theta_K = (1 + \sqrt{-d})/2\) and Problem~\ref{da-pr:split}.
+\item[\ref{pr:sign-d}] \(d + 1\) is an odd multiple of \(q_0/2\).  For the second assertion, \(d \nmid q_1\), and every element of \(G_{\Q_d}\) raises the roots of unity of order \(q_1\) to a power \(d^n\); use Problem~\ref{pr:cycle} with \(q' = q_0\) and the class of \(\Phi_b\) modulo \(q_0\).
+\end{description}
+
+\subsection*{\S\ref{sec:sum}}
+\begin{description}
+\item[\ref{pr:sum-log}] Factor \(n\).
+\item[\ref{pr:int-bound}] Count the factors.  Then Problem~\ref{da-pr:MN}, \((2b)! \le (2b)^{2b}\), and \(\half^6 = r^{48}\), which is tiny compared with \(b\) by Definition~\ref{da-def:data}.
+\item[\ref{pr:defect-sum}] Problem~\ref{pr:sum-log} for \(n = M^b\) and \(n = (2b)!\,\Int_b^{\half^3}\).
+\item[\ref{pr:vs-budget}] \(B = fxb\log^3b/(mk)\) and \(m \le 2\sqrt x\).
+\end{description}
+
+{\small
+\begin{thebibliography}{BMS}
+\bibitem[ADT]{ADT} J.~S.~Milne, \emph{Arithmetic Duality Theorems}, 2nd ed., BookSurge, 2006.
+\bibitem[BK]{BK} S.~Bloch and K.~Kato, \emph{\(L\)-functions and Tamagawa numbers of motives}, in: The Grothendieck Festschrift~I, Progr.\ Math.\ 86, Birkh\"auser, 1990, 333--400.
+\bibitem[BMS]{BMS} B.~Bhatt, M.~Morrow and P.~Scholze, \emph{Integral \(p\)-adic Hodge theory}, Publ.\ Math.\ IH\'ES \textbf{128} (2018), 219--397.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[Ki]{Ki} M.~Kisin, \emph{Crystalline representations and \(F\)-crystals}, in: Algebraic Geometry and Number Theory, Progr.\ Math.\ 253, Birkh\"auser, 2006, 459--496.
+\bibitem[SGC]{SGC} J.-P.~Serre, \emph{Galois Cohomology}, Springer, 1997.
+\bibitem[SLF]{SLF} J.-P.~Serre, \emph{Local Fields}, Grad.\ Texts in Math.\ 67, Springer, 1979.
+\end{thebibliography}
+}
+
+\end{document}
