@@ -1,0 +1,271 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[ip-]{20261124T214600--the-isotropic-plane__workbook}
+\externaldocument[pf-]{20261125T013700--pairings-on-a-formal-group-of-height-two__workbook}
+\externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
+\externaldocument[dl-]{20261126T030500--divisibility-of-the-composite-lift__workbook}
+\externaldocument[d2-]{20261126T050200--one-lift-at-a-small-non-split-prime__workbook}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261126T050100}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Op}{\mathcal{O}_{\C_p}}
+\newcommand{\val}{\operatorname{val}}
+\newcommand{\Dc}{\mathcal{D}}
+\newcommand{\ch}{\mathfrak{c}}
+\newcommand{\bi}{\mathbf{i}}
+\newcommand{\nb}[1]{\lVert #1 \rVert}
+\newcommand{\tl}[1]{\texttt{#1}}
+
+\setlength{\emergencystretch}{3em}
+
+\title{The count: congruences, directions and factorials}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Chapter~\ref{pf-chap}, \emph{Pairings on a formal group of height two}: Problems~\ref{pf-pr:gamma} and~\ref{pf-pr:exp-integral}, and Section~\ref{pf-sec:count} entire; Problem~\ref{pf-pr:mixed}.  Legendre's formula \(\val(n!) = (n - s_p(n))/(p-1)\), with \(s_p(n)\) the sum of the base-\(p\) digits of \(n\).  Determinants over a commutative ring; the field \(\C_p\), its ring of integers \(\Op\), and the valuation \(\val\) with \(\val(p) = 1\) (Chapter~\ref{ob-chap}).
+
+\medskip
+In Chapter~\ref{dl-chap} the kernel bound~(ii) of Section~\ref{dl-sec:chain} rests on a bound for the jets of a series in the normal form along products of minors, stated in Theorem~\ref{pf-thm:count}.  For the marks at exceptional primes \(p < x_1\) (Section~\ref{dl-sec:exceptional}) the proof \cite{GL} needs it in a stronger form, in which the columns of height one at some places are removed from the prediction and paid for by powers of \(p\) on the rows.  This sheet proves the bound for two places and states the general count with charges.  How much of the credit \(\gamma_p n\) of a jet of order \(n\), from the factorials and the rescaling by \(\varpi\), survives the couplings between a place and its partners?
+
+Throughout, \(d \equiv 7 \pmod 8\) is a prime, \(K = \Q(\sqrt{-d})\), \(p\) is a prime with \(\chi_K(p) = (\frac{p}{d}) \ne 1\), and \(c_p\), \(I_p\), \(I_p^\circ\), \(\rho(d,p)\) are as in Section~\ref{pf-sec:count}: \(c_p = 1/2\) if \(p = d\) and \(1\) otherwise, \(I_p^\circ\) is the set of \(e \ge 0\) with \(p = d\), or \(\chi_K(p) = -1\) and \(e\) odd, \(I_p = I_p^\circ \smallsetminus \{0\}\), and \(\rho(d,p) = c_p/(p^2 - 1)\) for \(p\) inert, \(c_p/(p-1)\) for \(p = d\).  As in Chapter~\ref{dl-chap}, \(\gamma_p := 1/(p-1) - \rho(d,p)\).  Let \(\pi_p := p\) if \(p \ne d\), and \(\pi_p := \eta(\sqrt{-d})\) if \(p = d\), for a fixed ring map \(\eta\colon \C \to \C_p\); so \(\val \pi_p = c_p\).  Integral series and jets \((Q(\partial)G)(0)\) are as in Section~\ref{pf-sec:count}.
+
+\section{Two places and one row}\label{sec:model}
+
+\begin{problem}\label{pr:gamma-sum}
+\(\gamma_p = c_p \sum_{e \in I_p} p^{-e}\).  If \(\varpi \in \C_p\) has \(\val \varpi = \rho(d,p)\), then \(\val(\varpi^{p+1}\pi_p/p) = 1/(p-1)\), both for \(p\) inert and for \(p = d\).  [Check: \(\gamma_3 = 3/8\) at an inert prime \(3\).]
+\end{problem}
+
+For the rest of this section \(\chi_K(p) = -1\), so that \(c_p = 1\), \(I_p^\circ = I_p\) is the set of odd \(e \ge 1\), and \(\val\varpi = \rho := 1/(p^2-1)\).  The \emph{two-place model} has two places \(1, 2\), one row and one input coordinate, hence two variables \(z_1, z_2\); the partner of each place, for every \(e\), is the other place.  So the couplings are \(\Gamma_e = z_1^{p^e} z_2 + z_2^{p^e} z_1\), and \(F \in \C_p[[z_1, z_2]]\) has the normal form for \((I_p, \varpi)\) if
+\[
+  F(\varpi z_1, \varpi z_2) = W(z_1, z_2)\, \exp\Bigl(\frac{\varpi^{p+1}}{p}\, \mathcal E(z_1, z_2)\Bigr),
+\]
+with \(W\) integral and \(\mathcal E\) a sum of the powers \(\Gamma_e^{p^j}\) (\(e \in I_p\), \(j \ge 0\)) with coefficients in \(\Op\).  In this sheet \(a\) and \(w\) are the orders of a jet \(\partial_1^a \partial_2^w\), with \(\partial_i := \partial/\partial z_i\).
+
+\begin{problem}\label{pr:first-series}
+Let \(p = 3\).  The series \(F_0 := \exp\bigl((z_1^3 z_2 + z_1 z_2^3)/3\bigr)\) has the normal form with \(W = 1\) and \(\mathcal E = \Gamma_1\).  Its jets at \((a, w) = (3k, k)\) are \((3k)!/3^k\), that is \(2, 80, 13440\) for \(k = 1, 2, 3\), of valuations \(0, 0, 1\).
+\end{problem}
+
+The credit comes from the factorials.
+
+\begin{problem}\label{pr:legendre}
+For integers \(\nu_1, \dots, \nu_q \ge 0\) with \(\nu_1 + \dots + \nu_q = n\), and \(\nu! := \nu_1! \cdots \nu_q!\),
+\[
+  \val(\nu!) \ \ge\ \frac{n}{p-1} - q\bigl(1 + \lfloor \log_p n \rfloor\bigr),
+\]
+with \(\lfloor \log_p 0 \rfloor := 0\).  [Check: \(p = 3\), \(\nu = (27, 1)\): \(13 \ge 14 - 8\).]
+\end{problem}
+
+\begin{problem}\label{pr:homogeneous}
+Let \(G\) be a power series over \(\C_p\) in \(q\) variables whose coefficients of degree \(n\) are integral, and let \(Q\) be a homogeneous polynomial of degree \(n\) with coefficients in \(\Op\).  Then \(\val\bigl((Q(\partial)G)(0)\bigr)\) is at least the bound of Problem~\ref{pr:legendre}.
+\end{problem}
+
+The debit comes from the couplings.  One differentiates along scaled directions.
+
+\begin{problem}\label{pr:rescale}
+For \(y_1, y_2 \in \C_p\) and \(G(u_1, u_2) := F(\varpi y_1 u_1, \varpi y_2 u_2)\),
+\(
+  (\partial_{u_1}^a \partial_{u_2}^w G)(0) = \varpi^{a+w} y_1^a y_2^w\, (\partial_1^a \partial_2^w F)(0) .
+\)
+\end{problem}
+
+\begin{problem}\label{pr:integral}
+Let \(F\) have the normal form, \(n \ge 0\), and \(y_1, y_2 \in \Op\) with \(y_1^{p^e} y_2 \equiv y_2^{p^e} y_1 \equiv 0 \pmod p\) for every \(e \in I_p\) with \(p^e \le n\).  Then the coefficients of degree at most \(n\) of \(F(\varpi y_1 u_1, \varpi y_2 u_2)\) are integral.
+\end{problem}
+
+\begin{problem}\label{pr:scalings}
+Fix \(e \in I_p\), and let \(p^{1/p^e} \in \Op\) be a root of \(X^{p^e} = p\).  The pairs \((y_1, y_2) = (1, p)\), \((p, 1)\), \((p^{1/p^e}, p^{1/p^e})\) satisfy both congruences of Problem~\ref{pr:integral} at \(e\), at the costs \(a \val y_1 + w \val y_2 = w\), \(a\), \((a + w)/p^e\).  There is also an integral pair satisfying both congruences at the cost
+\[
+  \min(a/p^e, w) + \min(w/p^e, a) .
+\]
+[Check: \(p = 3\), \((a, w) = (27, 1)\): \(4/3\) at \(e = 1\), \(28/27\) at \(e = 3\).]
+\end{problem}
+
+\begin{problem}\label{pr:model-bound}
+If \(F\) has the normal form, then for all \(a, w \ge 0\),
+\begin{multline*}
+  \val\bigl((\partial_1^a \partial_2^w F)(0)\bigr) \ \ge\ \gamma_p (a + w) - \sum_{e \in I_p,\ p^e \le a + w} \Bigl[\min\Bigl(\frac{a}{p^e}, w\Bigr) + \min\Bigl(\frac{w}{p^e}, a\Bigr)\Bigr] \\ - 2\bigl(1 + \lfloor \log_p(a + w) \rfloor\bigr).
+\end{multline*}
+\end{problem}
+
+\begin{problem}\label{pr:model-count}
+For \(a + w \ge 1\), the right side of Problem~\ref{pr:model-bound} is at least \(\Dc(a, w) - 2(1 + \log_p(a + w))\), where
+\[
+  \Dc(a, w) := \sum_{e \in I_p} \Bigl[\Bigl(\frac{a}{p^e} - w\Bigr)_+ + \Bigl(\frac{w}{p^e} - a\Bigr)_+\Bigr]
+\]
+is the predicted divisibility of Problem~\ref{pf-pr:predicted}.  [Check: \(p = 3\): \(\Dc(27, 1) = 8\), \(\Dc(54, 2) = 16\), \(\Dc(243, 1) = 88\).]
+\end{problem}
+
+\begin{problem}\label{pr:examples}
+Let \(p = 3\) and \(F_1 := F_0/(1 - z_1)\).  Then \(F_1\) has the normal form, and \((\partial_1^a \partial_2 F_1)(0) = a!/3\) for \(a \ge 3\), of valuation \(12\) at \(a = 27\) and \(120\) at \(a = 243\).  Problem~\ref{pf-pr:mixed} gives valuations \(11\) at \((27, 1)\) and \(22\) at \((54, 2)\) for \(\exp(-Q_{c, \sigma c})\), \(c\) a unit.  All four exceed \(\Dc(a, w)\).
+\end{problem}
+
+Problems~\ref{pr:legendre}--\ref{pr:model-count} prove the count for two places, one row and one input coordinate, with the error \(2(1 + \log_p\max(a+w, 1))\).  The model is not an instance of Theorem~\ref{pf-thm:count}: there the partners are the places \([-p^e]\tau\), and only columns of height less than the number \(n\) of rows count, so height-one columns need \(n \ge 2\); with \(n = 2\) and all boxes in row \(0\) the error is \(8f(1 + \log_p\max(a+w, 1))\).  In general a direction has one component per input coordinate, and at height \(h\) the proof takes integral combinations of the first \(h\) directions by an \(h \times h\) matrix.
+
+\section{Diagrams, directions and the cost}\label{sec:directions}
+
+From now on we are in the setting of Theorem~\ref{pf-thm:count}: \(q_0\), \(d\), \(s\), the set \(\Phi\) of infinite places of \(\Q(\sqrt{-d}, \zeta_{q_1})\) and \(f = \#\Phi\) are as there, \(p\) is a prime with \(\chi_K(p) \ne 1\), and the partner of \(\tau\) at \(e\) is \([-p^e]\tau\).  There are \(n\) rows \(0 \le i < n\) and \(n'\) input coordinates \(0 \le l < n'\), and the variables are \(z_{\tau i l}\).  The couplings are \(\Gamma_e = \sum_{\tau, i, l} z_{\tau i l}^{p^e}\, z_{[-p^e]\tau, i l}\), and \(\varpi \in \C_p\) has \(\val \varpi = \rho(d,p)\).  We say that \(F \in \C_p[[z]]\) has the normal form if it has the normal form of Section~\ref{pf-sec:count} for \((I_p^\circ, [-p^e]\cdot\,, \varpi)\) and some family of integral coefficients.
+
+\begin{definition}\label{def:diagram}
+A \emph{diagram} is a function \(\beta\colon \Phi \times \{1, 2, \dots\} \to \N\); \(\beta(\tau, h)\) is the number of columns of height \(h\) at \(\tau\).  Only the heights \(h < n\) count:
+\[
+  \beta_1(\tau) := \beta(\tau, 1), \qquad
+  \beta_{>1}(\tau) := \sum_{1 < h < n} \beta(\tau, h), \qquad
+  \nb{\beta}_{>1}(\tau) := \sum_{1 < h < n} h\, \beta(\tau, h),
+\]
+(with \(\beta_1 := 0\) if \(n \le 1\)), and the number of boxes is \(\lvert\beta\rvert := \sum_\tau \bigl(\beta_1(\tau) + \nb{\beta}_{>1}(\tau)\bigr)\).
+\end{definition}
+
+\begin{definition}\label{def:erase}
+For \(\Phi' \subseteq \Phi\), the \emph{erasure} \(\beta \smallsetminus \Phi'\) is the diagram equal to \(0\) at \((\tau, 1)\) for \(\tau \in \Phi'\) and to \(\beta\) elsewhere.
+\end{definition}
+
+\begin{definition}\label{def:predicted}
+With \(\tau' := [-p^e]\tau\) and \(\tau_0 := [-1]\tau\), the \emph{predicted divisibility} of \(\beta\) is
+\[
+\begin{aligned}
+  \Dc(\beta) :={}& c_p \sum_{e \in I_p} \sum_{\tau \in \Phi} \Bigl[ \Bigl(\frac{\beta_1(\tau)}{p^e} - \beta_1(\tau') - \beta_{>1}(\tau')\Bigr)_+ \\
+  &\qquad\qquad + \Bigl(\frac{\nb{\beta}_{>1}(\tau)}{p^e} - \nb{\beta}_{>1}(\tau')\Bigr)_+ - \frac{\beta_{>1}(\tau)}{p^e} \Bigr] \\
+  &- [p = d]\, \frac12 \sum_{\tau \in \Phi} \Bigl[ \min\bigl(\beta_1(\tau), \beta_1(\tau_0) + \beta_{>1}(\tau_0)\bigr) + \beta_{>1}(\tau) \\
+  &\qquad\qquad + \min\bigl(\nb{\beta}_{>1}(\tau), \nb{\beta}_{>1}(\tau_0)\bigr) \Bigr] ,
+\end{aligned}
+\]
+where \([p = d]\) is \(1\) if \(p = d\) and \(0\) otherwise.
+\end{definition}
+
+For the shape \(\kappa\) with \(\kappa(\tau, 0) = 0\) and \(\kappa = \beta\) at heights \(h \ge 1\) this is the number \(\Delta(\kappa)\) of Section~\ref{pf-sec:count}, and \(a_\tau, a'_\tau, l_\tau\) there are \(\beta_1(\tau), \beta_{>1}(\tau), \nb{\beta}_{>1}(\tau)\).  For a standard filling \(\bi\), which puts the row \(\bi(\tau, h, c, j)\) into box \(j < h\) of the \(c\)th column (\(1 \le c \le \beta(\tau,h)\)) of height \(h\) at \(\tau\), \(1 \le h < n\), and integral directions \(y = (y_{\tau l k})\) (\(k \ge 0\)), the product of minors of Section~\ref{pf-sec:count}, written \(P_\mu\) there for the family \(\mu = y\), is
+\[
+  P_y(z) = \prod_{\tau \in \Phi}\ \prod_{h < n}\ \prod_{1 \le c \le \beta(\tau, h)} \det\Bigl( \sum_{l} y_{\tau l k}\, z_{\tau, \bi(\tau, h, c, j), l} \Bigr)_{0 \le j, k < h} .
+\]
+
+Three facts of the general step are read from the proof (see the remark).  The proof replaces the given directions by new ones, \(y'_{\tau h k} := \sum_{k' < h} (g_{\tau h})_{k k'}\, y_{\tau \cdot k'}\), with one integral \(h \times h\) matrix \(g_{\tau h}\) for each place and height, shared by the \(\beta(\tau, h)\) columns.
+
+\begin{problem}\label{pr:eliminate}
+Let \(v_1, \dots, v_h \in \Op\) be the values of a linear form on the \(h\) rows of a matrix, and \(\varpi' \in \Op\).  Some \(g \in M_h(\Op)\) with \(\det g \mid \varpi'\) has \(\varpi' \mid (g v)_k\) for every \(k\).  For finitely many forms and moduli there is one \(g\), with \(\det g\) dividing the product of the moduli, that works for all of them.  [Over \(\Z_3\), for \(v = (1, 2)^t\) and \(\varpi' = 3\), there is such a \(g\) with \(gv = (3, 0)^t\) and \(\det g = 3\).]
+\end{problem}
+
+\begin{problem}\label{pr:det-column}
+Take one place (dropped from indices), \(n = 3\), \(n' = 2\), two columns of height \(2\) filled with the rows \(0, 1\), and the coordinate vectors as directions.  Then \(P_y = (z_{00} z_{11} - z_{01} z_{10})^2\) and \((P_y(\partial) P_y)(0) = 12\).  With the first direction scaled by \(3\), \(y = \mathrm{diag}(3, 1)\), the jet of \((z_{00} z_{11} - z_{01} z_{10})^2\) along \(P_y\) is \(108\).
+\end{problem}
+
+In general put \(z_{\tau i l} = \varpi \sum_{h < n,\ k < h} u_{\tau h k i}\, y'_{\tau h k, l}\) in new variables \(u_{\tau h k i}\), and let \(Q\) be the product, over the columns, of \(\det(u_{\tau h k\, \bi(\tau, h, c, j)})_{0 \le j, k < h}\).  First, by multilinearity of the determinants and the chain rule,
+\[
+  \bigl(Q(\partial_u)\, F(z(u))\bigr)(0) = \varpi^{\lvert\beta\rvert} \prod_{\tau \in \Phi}\ \prod_{h < n} (\det g_{\tau h})^{\beta(\tau, h)}\ \bigl(P_y(\partial) F\bigr)(0) ,
+\]
+the case of Problem~\ref{pr:rescale} with matrices in place of scalars.  Second, for a shift \(e\), a place \(\tau\) and its partner \(\tau' = [-p^e]\tau\), let
+\[
+  \mathrm{ded}_{e, \tau}(\beta) := \min\Bigl(\frac{\beta_1(\tau)}{p^e},\ \beta_1(\tau') + \beta_{>1}(\tau')\Bigr) + \frac{\beta_{>1}(\tau)}{p^e} + \min\Bigl(\frac{\nb{\beta}_{>1}(\tau)}{p^e},\ \nb{\beta}_{>1}(\tau')\Bigr) .
+\]
+The proof chooses the \(g_{\tau h}\) so that \(\pi_p\) divides \(\sum_l y'^{\,p^e}_{\tau h k, l}\, y'_{\tau' h' k', l}\) for all \(e \in I_p^\circ\) with \(e \le \lfloor \log_p \lvert\beta\rvert \rfloor\), all places, heights and directions, and so that
+\[
+  \sum_{\tau \in \Phi} \sum_{h < n} \beta(\tau, h) \val(\det g_{\tau h}) \ \le\ c_p \sum_{e \in I_p^\circ,\ e \le \lfloor \log_p \lvert\beta\rvert \rfloor}\ \sum_{\tau \in \Phi} \mathrm{ded}_{e, \tau}(\beta) .
+\]
+At the source the modulus is \(\pi_p^{1/p^e}\), at the partner \(\pi_p\), as in Problem~\ref{pr:scalings}; a source condition \(\sum_l y_l^{p^e} v_l \equiv 0 \pmod{\pi_p}\) follows from the linear condition \(\sum_l v_l^{1/p^e} y_l \equiv 0 \pmod{\pi_p^{1/p^e}}\), so Problem~\ref{pr:eliminate} applies.  Each height is weighted by its number of columns: the first minimum compares entry conditions at height one on the source with pairing conditions at the partner, the middle term counts source pairing conditions at the higher heights, and the last minimum compares entry conditions at those heights on the two sides.  Third, \(\pi_p\) divides \(\Gamma_e(z(u)/\varpi)\) for these \(e\), the series \(F(z(u))\) is integral through degree \(\lvert\beta\rvert\), and \(Q\) is homogeneous of degree \(\lvert\beta\rvert\).
+
+\begin{problem}\label{pr:deduction}
+\(c_p \sum_{e \in I_p^\circ} \sum_{\tau \in \Phi} \mathrm{ded}_{e, \tau}(\beta) = \gamma_p \lvert\beta\rvert - \Dc(\beta)\), the series converging.  The variables \(u_{\tau h k i}\) number at most \(f n^3\).
+\end{problem}
+
+As \(\mathrm{ded}_{e,\tau} \ge 0\), the truncated sum is at most the full one.  So Problems~\ref{pr:legendre}, \ref{pr:homogeneous} and~\ref{pr:deduction}, with the three facts read from the proof, give Theorem~\ref{pf-thm:count} for diagrams (with \(\lfloor\log_p 0\rfloor := 0\)).
+
+\begin{problem}\label{pr:zero-shift}
+Let \(p = d\) and \(n \ge 2\), let \(\sigma_1\) and \(\sigma_2 = [-1]\sigma_1\) be two places, and let \(\beta(\sigma_1, 1) = 12\), \(\beta(\sigma_2, 1) = 4\) and \(\beta = 0\) otherwise.  The shift \(e = 0\) debits \(c_p\bigl(\mathrm{ded}_{0, \sigma_1}(\beta) + \mathrm{ded}_{0, \sigma_2}(\beta)\bigr) = 4\), and the half sum in \(\Dc(\beta)\) contributes \(-4\).
+\end{problem}
+
+\section{Charges}\label{sec:charges}
+
+At an exceptional prime \(p < x_1\) the loss allowed in Section~\ref{dl-sec:collisions} need not cover the collisions between \(a\)-places.  The proof then removes the columns of height one at a set \(\Phi'\) of places from the prediction and pays for their pairings with factors \(p\) on rows.
+
+\begin{definition}\label{def:charges}
+Let \(\beta\) be a diagram and \(\Phi' \subseteq \Phi\).  \emph{Charges} for \((\beta, \Phi')\) are numbers \(\ch(\tau, h, i) \in \N\) (\(\tau \in \Phi\), \(h \ge 1\), \(0 \le i < n\)) such that, for all \(e \in I_p^\circ\), \(\tau \in \Phi\), \(h \ge 1\) and rows \(i\), with \(\tau' = [-p^e]\tau\):
+if both \(\beta(\tau, 1) \ne 0\) and \(\beta(\tau', h) \ne 0\), and if either \(\tau \in \Phi'\) or both \(h = 1\) and \(\tau' \in \Phi'\), then \(\ch(\tau, 1, i) + \ch(\tau', h, i) > 0\).  Here \(h\) runs over all heights, including \(h \ge n\).
+For a filling \(\bi\), the sum of the charges over the boxes is
+\(
+  \sum_{\text{boxes}} \ch := \sum_{\tau} \sum_{h < n} \sum_{1 \le c \le \beta(\tau, h)} \sum_{j < h} \ch\bigl(\tau, h, \bi(\tau, h, c, j)\bigr) .
+\)
+\end{definition}
+
+\begin{problem}\label{pr:model-charges}
+In the two-place model let \(F\) have the normal form.
+(i) \(\val\bigl((\partial_1^a \partial_2^w F)(0)\bigr) \ge \gamma_p(a + w) - w - 2(1 + \lfloor \log_p(a+w) \rfloor)\).
+(ii) With a second, empty row (\(n = 2\)), \(\beta(1,1) = a\), \(\beta(2,1) = w\), \(\beta = 0\) otherwise, \(\Phi' = \{1\}\), \(\ch(2, 1, i) = 1\) for both rows \(i\) and \(\ch = 0\) otherwise, the numbers \(\ch\) are charges for \((\beta, \Phi')\) for the partner rule of the model, and for the filling with all boxes in row \(0\) the main term \(\Dc(\beta \smallsetminus \Phi') + \gamma_p(\lvert\beta\rvert - \lvert\beta \smallsetminus \Phi'\rvert) - \sum_{\text{boxes}} \ch\) equals \(\gamma_p(a + w) - w\).
+[Check the main term in (ii) at \(p = 3\): \(719/8\) at \((243, 2)\), against \(\Dc(243, 2) = 86\); \(2177/8\) at \((729, 2)\), against \(\Dc(729, 2) = 267\).]
+\end{problem}
+
+In general the substitution becomes \(z_{\tau i l} = \varpi \sum_{h, k} p^{\ch(\tau, h, i)}\, u_{\tau h k i}\, y'_{\tau h k, l}\), and the multiplier gains the factor \(p^{\sum_{\text{boxes}} \ch}\).  The pairings of height one at \(\tau\) with height \(h\) at \(\tau'\), where \(\tau \in \Phi'\) or both \(h = 1\) and \(\tau' \in \Phi'\), are \emph{exempt}: no congruence is imposed on them, and the charge condition gives a factor \(p\) on one side of each row (after setting the charges to \(1\) where \(\beta(\tau, h) = 0\), which changes no box).  With \(S\) the set of \(e \in I_p^\circ\), \(e \le \lfloor\log_p\lvert\beta\rvert\rfloor\), the remaining congruences give \(\sum_{\tau}\sum_{h<n} \beta(\tau, h)\val(\det g_{\tau h}) \le c_p \sum_{e \in S} \sum_\tau \mathrm{ded}_{e,\tau}(\beta \smallsetminus \Phi')\), the cut-off using \(\lvert\beta\rvert\).
+
+\begin{problem}\label{pr:real-instance}
+(m) Let \(q_0 = 18480\), \(d = 138599\), \(s = 0\), \(p = 13\).  By machine: \(d\) is prime, \(q_0 \mid 2(d+1)\), \((d + 1) \bmod q_0 = 9240\), \(\chi_K(13) = -1\), \(f = \varphi(4490640) = 933120\), and \([-13^e] \ne 1\) for odd \(e\).  Take \(n = 2\) rows, one input coordinate, \(A := 13^{12}\) columns of height one at the identity place, all in row \(0\), the direction \(1\) at that place, and \(F := (z/\varpi)^A\) in the coordinate \(z\) of that row.  Then \(F\) has the normal form, \(\val\bigl(F^{(A)}(0)\bigr) = (A - 1)/12 - A/168 = 302875106592239/168\), and the bound of Theorem~\ref{pf-thm:count} is \(13A/168 - 933120 \cdot 2^3 \cdot 13 = 302858803119613/168\).
+\end{problem}
+
+We take the following theorem from the proof.  The construction of the directions uses the simultaneous elimination of Problem~\ref{pr:eliminate}; the proof uses both conclusions of Problem~\ref{pr:deduction}, applying the identity to the erased diagram; Problem~\ref{pr:model-charges} treats one marking in the two-place model.
+
+\begin{theorem}\label{thm:count-charges}
+Let \(q_0\), \(d\), \(s\), \(\Phi\), \(f\), \(p\) with \(\chi_K(p) \ne 1\), \(\eta\), the \(n\) rows and the \(n'\) input coordinates be as above, let \(\varpi \in \C_p\) with \(\val \varpi = 1/(p-1) - \gamma_p\), and let \(F \in \C_p[[z]]\) have the normal form.  Let \(\beta\) be a diagram, \(\Phi' \subseteq \Phi\), and \(\ch\) charges for \((\beta, \Phi')\).  Then for every standard filling \(\bi\) of \(\beta\) and all integral directions \(y\),
+\[
+  \val\bigl((P_y(\partial) F)(0)\bigr) + \sum_{\text{boxes}} \ch \ \ge\ \Dc(\beta \smallsetminus \Phi') + \gamma_p\bigl(\lvert\beta\rvert - \lvert\beta \smallsetminus \Phi'\rvert\bigr) - f n^3 \bigl(1 + \log_p \max(\lvert\beta\rvert, 1)\bigr) .
+\]
+\end{theorem}
+
+For \(\Phi' = \varnothing\) and \(\ch = 0\) it gives Theorem~\ref{pf-thm:count} for shapes with \(\kappa(\tau, 0) = 0\); that theorem keeps its place in Chapter~\ref{pf-chap}.  The theorem is read from the proof; which series have the normal form is a separate statement.
+
+\begin{leanremark}
+\raggedright In the Lean proof \cite{GL}, Theorem~\ref{thm:count-charges} is \tl{New.\allowbreak Parameters.\allowbreak norm\_jet\_minorProd\_le\_of\_charges} in \tl{grh/src/New/Derivatives/Divisibility/Count.lean}, stated as an upper bound for the norm of the jet, for diagrams \(\kappa\) on \(\Phi \times \N\); this sheet takes \(\kappa(\tau, 0) = 0\) (when \(n > 0\), columns of height \(0\) would count among the low columns).  In the same file, erasure, the predicted divisibility and the sum of the charges over the boxes are \tl{eraseHeightOne}, \tl{predictedDivisibility} and \tl{fillingCharge}; the multiplier is \tl{jet\_columnDetProd\_subst}; the divisibility of the substituted couplings, exempt pairs included, is \tl{dvd\_subst\_coupling\_directionSubst\_of\_charges}; and the identity of Problem~\ref{pr:deduction} is \tl{mul\_tsum\_deductionAt}.  In \tl{NullFrames.lean}, \(\mathrm{ded}_{e,\tau}\) is \tl{deductionTerm} with no marked places, and the change of directions with its determinant bound is \tl{exists\_newDirection\_dvd}.  The integrality through degree \(\lvert\beta\rvert\) is \tl{HasNormalForm.\allowbreak norm\_coeff\_subst\_le\_one} in \tl{NormalForm.lean}.
+\end{leanremark}
+
+This sheet has proved the two-place bounds, without marking and with place \(1\) marked (Problems~\ref{pr:model-count} and~\ref{pr:model-charges}); Theorem~\ref{thm:count-charges} is read from the proof.  Chapter~\ref{d2-chap} uses the normal form of the jet series of a standard datum and the uncharged count to bound the kernel of one lift; the charged count enters the estimate at a mark of an exceptional prime \(p < x_1\) \cite{GL}.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:model}}
+\begin{description}
+\item[\ref{pr:gamma-sum}] A geometric series; then \(\val(\varpi^{p+1}) + c_p - 1\).
+\item[\ref{pr:first-series}] Only \((z_1^3 z_2)^k\) contributes to the monomial \(z_1^{3k} z_2^k\).
+\item[\ref{pr:legendre}] Legendre's formula; \(s_p(\nu_i) \le (p-1)(1 + \lfloor \log_p n \rfloor)\).
+\item[\ref{pr:homogeneous}] The jet of \(G\) along \(u^\nu\) is \(\nu!\,[u^\nu]G\).
+\item[\ref{pr:integral}] Couplings with \(p^e > n\) have degree \(> n\).  In degrees \(\le n\) the exponent has coefficients of valuation \(\ge 1/(p-1)\) (Problem~\ref{pr:gamma-sum}); argue as in Problem~\ref{pf-pr:exp-integral}.
+\item[\ref{pr:scalings}] For each congruence compare a source scaling by \(p^{1/p^e}\) with a partner scaling by \(p\), and multiply the two choices.
+\item[\ref{pr:model-bound}] Take the product of the pairs of Problem~\ref{pr:scalings} over \(e \in I_p\), \(p^e \le a + w\); then Problems~\ref{pr:rescale}, \ref{pr:integral} and~\ref{pr:homogeneous}, and \(\gamma_p + \rho = 1/(p-1)\).
+\item[\ref{pr:model-count}] Compare \(z - \min(z, z')\) with \((z - z')_+\), and expand \(\gamma_p(a+w)\) by Problem~\ref{pr:gamma-sum}.
+\item[\ref{pr:examples}] Rescale the denominator of \(F_1\).  For the mixed jets, compare the valuations of Problem~\ref{pf-pr:mixed} directly with \(\Dc(a,w)\).
+\end{description}
+
+\subsection*{\S\ref{sec:directions}}
+\begin{description}
+\item[\ref{pr:eliminate}] Treat \(h = 0\) separately; otherwise look at an entry of least valuation.  For several forms, take the next form on the current rows.
+\item[\ref{pr:deduction}] Problem~\ref{pr:model-count} for each term, \(\sum_\tau (\beta_1(\tau) + \nb{\beta}_{>1}(\tau)) = \lvert\beta\rvert\), and Problem~\ref{pr:gamma-sum}; treat \(e = 0\) separately.  For the variables, \(\sum_{h < n} h \le n^2\).
+\end{description}
+
+\subsection*{\S\ref{sec:charges}}
+\begin{description}
+\item[\ref{pr:model-charges}] (i) Use \(y_1 = 1\), \(y_2 = p\) in Problems~\ref{pr:rescale}, \ref{pr:integral} and~\ref{pr:homogeneous}.  (ii) \(\Dc(\beta \smallsetminus \Phi')\) has only the terms \((w/p^e)_+\).
+\item[\ref{pr:real-instance}] Sage.  No odd shift returns to the identity place, so \(\Dc = \gamma_{13} A\).
+\end{description}
+
+\begin{thebibliography}{GL}
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\end{thebibliography}
+
+\end{document}
