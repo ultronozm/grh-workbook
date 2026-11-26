@@ -184,7 +184,7 @@ git ls-files --others -z | while IFS= read -r -d '' f; do
   case "$f" in
     tag/*.html) continue ;;
     */*) ;;
-    *.pdf|*.html|*.aux|listing.json) continue ;;
+    *.pdf|*.html|*.aux|listing.json|workbook-search.json) continue ;;
   esac
   rm -f -- "$f"
 done

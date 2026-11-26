@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
-"""Build backlinks from the converted workbook sheets."""
+"""Build backlinks and search data from the converted workbook sheets."""
 from collections import defaultdict
 from dataclasses import dataclass, field
 from html import escape
 from html.parser import HTMLParser
+import json
 from pathlib import Path
 import re
 from urllib.parse import unquote, urlsplit
 
 
+HEADINGS = {f"h{level}" for level in range(1, 7)}
 KINDS = "definition theorem proposition lemma problem remark".split()
 LABEL = re.compile(r"^(" + "|".join(KINDS) + r")\s+S?\d+(?:\.\d+)*\b", re.I)
 VOID = set("area base br col embed hr img input link meta param source track wbr".split())
@@ -42,6 +44,7 @@ class Sheet(HTMLParser):
         self.chapter = ""
         self.stack = []
         self.blocks = {}
+        self.titles = []
         self.links = []
         self.feed(self.html)
         self.close()
@@ -67,6 +70,10 @@ class Sheet(HTMLParser):
         kind = ""
         if tag == "div" and ident:
             kind = next((k for k in KINDS if k in classes), "")
+        if tag == "h1" and "title" in classes:
+            kind = "title"
+        elif tag in HEADINGS and ident:
+            kind = "section"
         if tag in {"script", "style"} or "stable-tag" in classes:
             kind = "skip"
         self.stack.append(Element(tag, ident, kind))
@@ -76,6 +83,8 @@ class Sheet(HTMLParser):
             element = self.stack[i]
             if element.tag == tag:
                 del self.stack[i:]
+                if element.kind in {"title", "section"}:
+                    self.titles.append(element)
                 if element.kind in KINDS and element.label:
                     line, column = self.getpos()
                     element.end = self.lines[line - 1] + column
@@ -88,7 +97,7 @@ class Sheet(HTMLParser):
         if any(e.kind == "skip" for e in self.stack):
             return
         for element in self.stack:
-            if element.kind in KINDS:
+            if element.kind in KINDS or element.kind in {"title", "section"}:
                 element.text.append(data)
 
 
@@ -154,10 +163,26 @@ def build_backlinks(sheets):
             sheet.path.write_text(output, encoding="utf-8")
 
 
+def build_search(sheets):
+    rows = []
+    for name, sheet in sheets.items():
+        for element in sheet.titles + list(sheet.blocks.values()):
+            if element.kind not in {"title", "section", "definition", "theorem", "problem"}:
+                continue
+            url = name + ("#" + element.ident if element.ident else "")
+            label = element.label or element.plain
+            body = element.plain[len(label):].lstrip(". ")
+            rows.append([sheet.chapter, url, label, body])
+    Path("workbook-search.json").write_text(
+        json.dumps(rows, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+
+
 def main():
     sheets = sorted((Sheet(path) for path in Path(".").glob("*__workbook.html")),
                     key=lambda sheet: (chapter_order(sheet.chapter), sheet.path.name))
-    build_backlinks({sheet.path.name: sheet for sheet in sheets if sheet.chapter})
+    chapters = {sheet.path.name: sheet for sheet in sheets if sheet.chapter}
+    build_backlinks(chapters)
+    build_search(chapters)
 
 
 if __name__ == "__main__":
