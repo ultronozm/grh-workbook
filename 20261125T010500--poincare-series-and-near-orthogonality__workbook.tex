@@ -139,7 +139,7 @@ Normalize the Poincar\'e series by
 \[
   \Pt_m := \frac{(4\pi m)^{(k-1)/2}}{\Gamma(k-1)^{1/2}}\, P_m ,
 \]
-and for each positive integer \(M\) let \(G_M\) be the \(M \times M\) Gram matrix \(\bigl(\langle \Pt_m, \Pt_n\rangle\bigr)_{1 \le m,n \le M}\).  We use the operator norm on \(\C^M\) with its Euclidean inner product.
+and for each positive integer \(M\) let \(G_M := \bigl(\langle \Pt_m, \Pt_n\rangle\bigr)_{1 \le m,n \le M}\) be the \(M \times M\) Gram matrix.  We use the operator norm on \(\C^M\) with its Euclidean inner product.
 
 \begin{problem}\label{pr:gram}
 \(\langle \Pt_m, \Pt_n\rangle = \delta(m,n) + T_k(m,n)\).
@@ -202,7 +202,7 @@ Let \(G:=\mathrm{PSL}_2(\R)\) act on \(\HH\), and normalize Haar measure \(dg\) 
 For a unit vector \(u\) of an irreducible unitary representation \(\pi\) with square-integrable matrix coefficients, the \emph{formal degree} \(d_\pi\) is defined by \(\int_G \lvert\langle\pi(g)u, u\rangle\rvert^2\,dg = 1/d_\pi\).  It does not depend on \(u\), by the Schur orthogonality relations for such representations \cite{HC}.  We compute it with \(u\) proportional to \(h_\ii\).
 
 \begin{problem}\label{pr:cayley}
-\(h_w \in \Ac_k\), and \(\langle f, h_\ii\rangle = \frac{4\pi}{k-1}\, f(\ii)\) for every \(f \in \Ac_k\).
+For every \(w \in \HH\), \(h_w \in \Ac_k\).  For every \(f \in \Ac_k\), \(\langle f, h_\ii\rangle = \frac{4\pi}{k-1}\, f(\ii)\).
 \end{problem}
 
 \begin{problem}\label{pr:covariance}
@@ -210,7 +210,7 @@ For a unit vector \(u\) of an irreducible unitary representation \(\pi\) with sq
 \end{problem}
 
 \begin{problem}\label{pr:formal-degree}
-Let \(u := h_\ii/\lVert h_\ii\rVert\), and \(w := g\ii\).  Then \(\lvert\langle\pi(g)u, u\rangle\rvert^2 = \bigl(4\operatorname{Im} w/\lvert w + \ii\rvert^2\bigr)^k\), and the formal degree of \(\pi\) is \((k-1)/(4\pi)\).
+Let \(u := h_\ii/\lVert h_\ii\rVert\), and for \(g \in G\) write \(w := g\ii\).  Then \(\lvert\langle\pi(g)u, u\rangle\rvert^2 = \bigl(4\operatorname{Im} w/\lvert w + \ii\rvert^2\bigr)^k\), and the formal degree of \(\pi\) is \((k-1)/(4\pi)\).
 \end{problem}
 
 With Problem~\ref{pr:vol} this gives
@@ -226,12 +226,12 @@ Since \(\dim S_k = \int_{\Gamma\backslash\HH} B(z,z)\,y^k\,d\nu(z)\), the term \
 Theorem~\ref{thm:near} says that the map \(\C^M \to S_k\), \(e_m \mapsto \Pt_m\), is almost an isometry when \(M\) is at most a fixed proportion of \(\dim S_k\).  Its image therefore occupies only part of \(S_k\).  Problem~\ref{pr:siegel} extends near orthonormality to a longer initial segment, and Problem~\ref{pr:span} shows that the full family spans \(S_k\).  In the setting of Chapter~\ref{rl-chap}, a finite group acts on the ambient space.  A near-isometry estimate for the projected map and a second-moment bound for the Gram operators of the unprojected map and its translates give a lower bound for the dimension spanned by a few projected translates in the target (Theorems~\ref{rl-thm:spread} and~\ref{rl-thm:few}).
 
 \paragraph{The analogue in the rewritten Lean proof.}
-This chapter gives a classical model for the estimates in Chapter~\ref{bp-chap}.  In the rewritten Lean proof \cite{GL}, the principal-level forms on the unitary group of a hermitian space \(Y_0\) over a CM field \(E\) play the role of \(S_k\).  Bessel periods play the role of Fourier coefficient extraction and are represented by a Poincar\'e map.  Its values on the source coordinate basis are Bessel--Poincar\'e series.  The two estimates below concern the map followed by the projector onto the good forms and the dimension of those forms.  For the definition of Bessel periods see \cite[\S\S12, 23]{GGP}.
+This chapter gives a classical model for the estimates in Chapter~\ref{bp-chap}.  In the rewritten Lean proof \cite{GL}, the principal-level forms on the unitary group of a hermitian space \(Y_0\) over a CM field \(E\) play the role of \(S_k\).  Bessel periods play the role of Fourier coefficient extraction and are represented by a Poincar\'e map.  Its values on the source coordinate basis are Bessel--Poincar\'e series.  The two estimates below concern the map followed by the projector onto the good forms and the dimension of those forms.  The next paragraph gives the declarations for these spaces, the period map and its values on the basis, and the two estimates.  For the definition of Bessel periods see \cite[\S\S12, 23]{GGP}.
 
 \paragraph{In the Lean formalization.}
-Fix admissible data \(D\) of the rewritten Lean proof \cite{GL}.  Write \(E\) for \texttt{Data.E}, \(Y_0\) for \texttt{D.spaceY 0}, and \(r\) for the rank of \(Y_0\) over \(E\).  Write \(S\) for the source forms \texttt{Data.SourceForm}, with coordinates \texttt{Data.sourceFormCoords}, and \(D_X\) for their complex dimension.  The Poincar\'e map \texttt{Data.poincare} represents the Bessel periods at the chosen point and linear form by \texttt{Data.inner\_poincareAt}.  By \texttt{Data.poincare\_eq\_poincareMap\_comp} and \texttt{Filling.Fits.coe\_poincareMap}, it takes the coordinate basis to the corresponding Bessel--Poincar\'e series.
+Fix admissible data \(D\) (\texttt{New.Data}) of the rewritten Lean proof \cite{GL}.  Write \(E\) for \texttt{Data.E}, \(Y_0\) for \texttt{D.spaceY 0}, and \(r\) for the rank of \(Y_0\) over \(E\).  Write \(S\) for the source forms \texttt{Data.SourceForm}, with coordinates \texttt{Data.sourceFormCoords}, and \(D_X\) for their complex dimension.  The Poincar\'e map \texttt{Data.poincare} is \texttt{Data.poincareAt} at the chosen archimedean point \texttt{Data.besselPoint} and linear form \texttt{Data.besselForm}.  By \texttt{Data.inner\_poincareAt} it represents the Bessel period for each source form and each principal-level test form.  By \texttt{Data.poincare\_eq\_poincareMap\_comp} and \texttt{Filling.Fits.coe\_poincareMap}, the inverse coordinate images of the standard basis vectors map to the corresponding Bessel--Poincar\'e series.
 
-Let \(P\) be \texttt{Data.scaledPoincare}, the Poincar\'e map in these Euclidean coordinates multiplied by the positive factor \texttt{Data.poincareScale}.  Its codomain is the space \texttt{Data.principalForms} on \(Y_0\), of the specified discrete-series type at infinity and principal level at the finite places.  Let \(e_0\) denote the action of \texttt{D.e\(_0\)} on this space.  It projects onto the space \(T\) of good forms (\texttt{Data.targetForms}), of complex dimension \(d_T\).  Let \(b\) be the weight \texttt{D.b} at the designated infinite places.  For every complex subspace \(U\) of the source coordinate space, \texttt{Data.isNearIsometry\_e\(_0\)\_comp\_scaledPoincare} gives
+Let \(P\) be \texttt{Data.scaledPoincare}, the Poincar\'e map in these Euclidean coordinates multiplied by the positive factor \texttt{Data.poincareScale}.  Its codomain is the space \texttt{Data.principalForms} on \(Y_0\), of the specified discrete-series type at infinity and fixed by the kernel of reduction at the chosen finite places inside the standard finite level.  Let \(e_0\) denote the action of the group-algebra idempotent \texttt{D.e\(_0\)} through \texttt{Data.principalRep} on this space.  It projects onto the space \(T\) of good forms (\texttt{Data.targetForms}), of complex dimension \(d_T\) (\texttt{Data.targetDim}).  Let \(b\) be the weight \texttt{D.b} at the infinite places \texttt{D.bPlaces}.  For every complex subspace \(U\) of the source coordinate space, \texttt{Data.isNearIsometry\_e\(_0\)\_comp\_scaledPoincare} gives
 \[
   \lVert e_0 P\,\mathrm{pr}_U\rVert_{\mathrm{HS}}^2
   \ge \dim U - 5b^{-4}D_X ,
@@ -242,7 +242,7 @@ By \texttt{Data.targetDim\_le\_card\_mul\_besselDegree\_mul\_mass},
 \[
   d_T \le \#\bar G \cdot \deg \cdot \mathrm{mass}(E,r) .
 \]
-Here \(\bar G\) is \texttt{Data.chosenGL}, the product of the residue general linear groups at the chosen places above the two level primes, \(\deg\) is the product over all infinite places of the degrees of the local Bessel systems, and \(\mathrm{mass}(E,r)\) is the mass of the genus of the standard hermitian lattice \(\mathcal O_E^r\).  Both inequalities are in \texttt{grh/src/New/Spanning/SecondMoment/SpanningTheorem.lean}.
+Here \(\bar G\) is \texttt{Data.chosenGL}, the product of \(\mathrm{GL}_r\) over the residue fields at the chosen places above the two level primes.  The constant \(\deg\) is \texttt{D.filling.besselDegree}, the product of the degrees of the local Bessel systems over all infinite places of \(E\).  The factor \(\mathrm{mass}(E,r)\) is \texttt{New.mass}, evaluated at \(E\) and \(r\), the mass of the genus of the standard hermitian lattice \(\mathcal O_E^r\).  Both inequalities are in \texttt{grh/src/New/Spanning/SecondMoment/SpanningTheorem.lean}.
 
 \section*{Hints}
 
