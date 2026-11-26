@@ -96,23 +96,28 @@
 }
 
 .progress-count,
-.progress-panel {
+.progress-panel,
+.reading-toggle,
+.reading-position,
+.reading-summary {
     color: #666;
     color: light-dark(#666, #aaa);
     font-size: 0.8em;
 }
 
-.progress-count {
+.progress-count,
+.reading-toggle,
+.reading-position {
     margin-inline-start: 0.6em;
     font-weight: normal;
     white-space: nowrap;
 }
 
-h1 > .progress-count {
+h1 > :is(.progress-count, .reading-toggle, .reading-position) {
     font-size: 0.38em;
 }
 
-.date > .progress-count {
+.date > :is(.progress-count, .reading-toggle, .reading-position) {
     font-size: 0.68em;
 }
 
@@ -173,7 +178,153 @@ h1 > .progress-count {
 }
 
 @media print {
-    .progress-toggle, .progress-count, .progress-panel {
+    .progress-toggle,
+    .progress-count,
+    .progress-panel,
+    .reading-toggle,
+    .reading-position {
         display: none;
+    }
+}
+
+.reading-toggle,
+.reading-summary {
+    min-block-size: 24px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+}
+
+.reading-position {
+    font-variant-numeric: tabular-nums;
+}
+
+@media screen {
+    body[data-reading-cards] {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: none;
+        height: 100vh;
+        height: 100dvh;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    [data-reading-cards] > .my-links-container,
+    [data-reading-cards] > #title-block-header {
+        box-sizing: border-box;
+        width: min(100%, 36rem);
+        margin: 0 auto;
+        padding-inline: 1.1rem;
+    }
+
+    [data-reading-cards] > .my-links-container {
+        position: static;
+        padding-block-start: 0.45rem;
+        text-align: end;
+        font-size: 0.8em;
+    }
+
+    [data-reading-cards] > #title-block-header {
+        margin-block-end: 0.6rem;
+    }
+
+    [data-reading-cards] .title {
+        margin: 0.4em 0 0.1em;
+        font-size: 1.7em;
+        line-height: 1.15;
+    }
+
+    [data-reading-cards] .title > .stable-tag {
+        float: none;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    @media (max-width: 600px) {
+        [data-reading-cards] .title {
+            font-size: 1.5em;
+        }
+    }
+
+    [data-reading-cards] .date {
+        margin: 0;
+    }
+
+    .reading-deck {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        overflow: auto hidden;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+    }
+
+    .reading-card {
+        box-sizing: border-box;
+        flex: 0 0 100%;
+        overflow: hidden auto;
+        overscroll-behavior-y: contain;
+        padding: 0.8rem 1.1rem 2.5rem;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+        scrollbar-width: thin;
+    }
+
+    @media (min-width: 601px) {
+        .reading-card {
+            scrollbar-gutter: stable both-edges;
+        }
+    }
+
+    .reading-card:focus-visible {
+        outline-offset: -2px;
+    }
+
+    .reading-card-content {
+        max-width: 36em;
+        margin: 0 auto;
+        display: flow-root;
+    }
+
+    .reading-card-content > :first-child {
+        margin-block-start: 0;
+    }
+
+    .reading-disclosure {
+        margin-block: 0 1em;
+    }
+
+    .reading-summary {
+        width: fit-content;
+        list-style: none;
+    }
+
+    .reading-summary::-webkit-details-marker {
+        display: none;
+    }
+
+    [data-reading-cards] #TOC li:has(> a[href="#hints"]),
+    [data-reading-cards] > .giscus {
+        display: none;
+    }
+
+    .reading-card .math.display {
+        display: block;
+        overflow: auto hidden;
+        overscroll-behavior-x: contain;
+        scrollbar-width: thin;
+    }
+
+    .reading-card .math.display mjx-container[display="true"] {
+        max-width: none;
+        overflow: visible;
     }
 }
