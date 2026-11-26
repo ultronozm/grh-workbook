@@ -3,6 +3,7 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{xr-hyper}
 \usepackage[hidelinks]{hyperref}
+\externaldocument[c5-]{20261125T000000--slope-method__workbook}
 \externaldocument[c6-]{20261126T030100--a-twist-for-each-prime__workbook}
 \externaldocument[c18-]{20261126T030200--the-bound-is-attained__workbook}
 \externaldocument[c22-]{20261125T002100--definite-theta-lifts-and-norms__workbook}
@@ -22,20 +23,24 @@
 \renewcommand{\thesection}{\thechap.\arabic{section}}
 \theoremstyle{definition}
 \newtheorem{problem}{Problem}[section]
+\newtheorem{definition}{Definition}[section]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
 \newcommand{\Z}{{\mathbb{Z}}}
 \newcommand{\Q}{{\mathbb{Q}}}
-\newcommand{\R}{\mathbb R}
-\newcommand{\N}{\mathbb N}
+\newcommand{\R}{{\mathbb{R}}}
+\newcommand{\N}{{\mathbb{N}}}
 \newcommand{\C}{{\mathbb{C}}}
-\newcommand{\Lc}{\mathcal L}
-\newcommand{\Ic}{\mathcal I}
+\newcommand{\Lc}{{\mathcal{L}}}
+\newcommand{\Uc}{{\mathcal{U}}}
+\newcommand{\Fc}{{\mathcal{F}}}
+\newcommand{\Hc}{{\mathcal{H}}}
 \newcommand{\ii}{\mathrm{i}}
 \newcommand{\pr}{\operatorname{pr}}
 \newcommand{\im}{\operatorname{im}}
 \newcommand{\End}{\operatorname{End}}
 \newcommand{\Aut}{\operatorname{Aut}}
+\newcommand{\Nm}{\operatorname{Nm}}
 \newcommand{\hdir}{h_{\mathrm{dir}}}
 \newcommand{\sfin}{s_{\mathrm{fin}}}
 \newcommand{\tl}[1]{\texttt{#1}}
@@ -50,182 +55,194 @@
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-Linear algebra over \(\C\): adjoints, orthogonal projections, determinants as products of eigenvalues.  The fields \(\bar\Q_\ell\) and \(\C_\ell\), with \(\lvert\ell\rvert_\ell = 1/\ell\), and the product formula for a number field.  From Chapter~\ref{c28-chap}: congruence modules, Problems~\ref{c28-pr:symmetry} and~\ref{c28-pr:denominator}.  From Chapter~\ref{c22-chap}: Problem~\ref{c22-pr:U1U1} and Theorem~\ref{c22-thm:norm}.  From Chapter~\ref{c6-chap}: sizes read at the trivial twist, valuations at a twist that depends on the prime.  For Section~\ref{sec:general} only: the data of Chapter~\ref{c32-chap} and the single lifts of the chain in Chapter~\ref{c37-chap}.
+Linear algebra over \(\C\): adjoints, orthogonal projections, determinants as products of eigenvalues.  The fields \(\bar\Q_\ell\) and \(\C_\ell\), with \(\lvert\ell\rvert_\ell = 1/\ell\).  From Chapter~\ref{c28-chap}: congruence modules, Problems~\ref{c28-pr:symmetry} and~\ref{c28-pr:denominator}.  From Chapter~\ref{c22-chap}: Problem~\ref{c22-pr:U1U1} and Theorem~\ref{c22-thm:norm}.  From Chapter~\ref{c5-chap}: heights of families (Section~\ref{c5-sec:heights}).  From Chapter~\ref{c6-chap}: sizes read at the trivial twist, valuations at a twist that depends on the prime.  For Section~\ref{sec:general} only: the data, spaces, forms and twists of Chapter~\ref{c32-chap} (Section~\ref{c32-sec:objects}), the factorization of Chapter~\ref{c37-chap}, and Chapter~\ref{c18-chap}.
 
 \medskip
-Chapter~\ref{c37-chap} reduces the Gram determinant of the chain to the Gram determinants \(Z_j(\xi)\) of single lifts, where for an \(m\)-fold twist \(\xi\) the \(j\)-th lift is taken at the twist \(\xi^j\).  The proof needs a bound for the height of \(Z_j(1)/Z_j(\xi)\) when \(\xi\) varies with the prime \(\ell\) and with an isomorphism \(\C \simeq \bar\Q_\ell\).  How does the rewritten proof bound the ratio without evaluating either determinant individually?  One multiplies the Gram determinant at a twist by the determinant of the compression of a second operator to the image of the lift, chosen so that the product is a fixed constant times a power of a ratio of Hecke values.  The compression determinant is then bounded under the automorphisms of \(\C\) at the trivial twist only, and at \(\ell\) at the twist.  We first do this for lines in \(\C^3\), then state the general theorem in the form of the rewritten Lean proof \cite{GL}.
+Chapter~\ref{c37-chap} reduces the Gram determinant of the chain to the determinants \(Z_j(\vartheta)\) of single lifts, where for an \(m\)-fold twist \(\vartheta\) the \(j\)-th lift is taken at the twist \(\vartheta^j\).  The rewritten Lean proof needs a bound for the height of \(Z_j(1)/Z_j(\vartheta)\) when \(\vartheta\) varies with the prime \(\ell\) and with an isomorphism \(\iota \mid \ell\).  How does the rewritten Lean proof bound the ratio without evaluating either determinant?  It multiplies the Gram determinant at a twist by the determinant of the compression of a second operator to the image of the lift, chosen so that the product is a fixed constant times a power of a ratio of Hecke values.  The compression determinant is then bounded under the automorphisms of \(\C\) at the trivial twist only, and at \(\ell\) at the twist.  We first do this for lines in \(\C^3\), then state the general theorem as the rewritten Lean proof \cite{GL} states it.  Theorems~\ref{thm:operator}, \ref{thm:compression}, \ref{thm:factor}, \ref{thm:attained} and~\ref{thm:main-pair} are read from the code; Theorem~\ref{thm:main} is derived here from them.
 
 \section{Compressions}\label{sec:compress}
 
-Let \(A\) and \(V\) be finite-dimensional complex inner product spaces, with inner products conjugate-linear in the first variable, and let \(u \colon A \to V\) be injective, with image \(R\).  Write \(\pr_R\) for the orthogonal projection of \(V\) onto \(R\).  For \(T \in \End V\) the \emph{compression} of \(T\) to \(R\) is \(\pr_R T|_R \in \End R\).
+Let \(A\) and \(V\) be finite-dimensional complex inner product spaces, with inner products conjugate-linear in the first variable, and let \(u \colon A \to V\) be injective, with image \(R\).  Write \(\pr_R\) for the orthogonal projection of \(V\) onto \(R\).  For \(G \in \End V\) the \emph{compression} of \(G\) to \(R\) is \(\pr_R G|_R \in \End R\).
 
 \begin{problem}\label{pr:compression}
-For every \(T \in \End V\),
+For every \(G \in \End V\),
 \[
-  \det(u^*u)\,\det(\pr_R T|_R) = \det(u^* T u) .
+  \det(u^*u)\,\det(\pr_R G|_R) = \det(u^* G u) .
 \]
 \end{problem}
 
-Now let \(\vartheta\) run over a set containing an element \(1\), and suppose given for each \(\vartheta\) an injective \(u_\vartheta \colon A \to V_\vartheta\) with image \(R_\vartheta\), an operator \(U_\vartheta \in \End V_\vartheta\), and a complex number \(\rho_\vartheta \ne 0\).  Put \(Z(\vartheta) := \det(u_\vartheta^* u_\vartheta)\) and \(\Delta_\vartheta := \det(\pr_{R_\vartheta} U_\vartheta|_{R_\vartheta})\).
+Now let \(\vartheta\) run over a set containing an element \(1\), and suppose given for each \(\vartheta\) an injective \(u_\vartheta \colon A \to V_\vartheta\) with image \(R_\vartheta\), an operator \(\Uc_\vartheta \in \End V_\vartheta\), and a complex number \(\rho_\vartheta \ne 0\).  Put \(Z(\vartheta) := \det(u_\vartheta^* u_\vartheta)\) and \(D_\vartheta := \det(\pr_{R_\vartheta} \Uc_\vartheta|_{R_\vartheta})\); in this section and the next these are local notations.
 
 \begin{problem}\label{pr:comparison}
-Suppose that some \(U_0 \in \End A\) has \(\langle y, U_0 y\rangle > 0\) for every \(y \ne 0\) and \(\langle u_\vartheta y', U_\vartheta u_\vartheta y\rangle = \rho_\vartheta \langle y', U_0 y\rangle\) for all \(\vartheta\) and \(y', y \in A\).  Then \(\det U_0 \ne 0\), every \(\Delta_\vartheta \ne 0\), and
+Suppose that some \(\Uc_0 \in \End A\) has \(\langle y, \Uc_0 y\rangle > 0\) for every \(y \ne 0\) and \(\langle u_\vartheta y', \Uc_\vartheta u_\vartheta y\rangle = \rho_\vartheta \langle y', \Uc_0 y\rangle\) for all \(\vartheta\) and \(y', y \in A\).  Then \(\det \Uc_0 \ne 0\), every \(D_\vartheta \ne 0\), and
 \[
-  Z(\vartheta)\,\Delta_\vartheta = \det(U_0)\, \rho_\vartheta^{\dim A}
+  Z(\vartheta)\,D_\vartheta = \det(\Uc_0)\, \rho_\vartheta^{\dim A}
   \qquad\text{for every } \vartheta .
 \]
-If moreover \(\rho_1 = 1\), then \(Z(1)/Z(\vartheta) = (\Delta_\vartheta/\Delta_1)\,\rho_\vartheta^{-\dim A}\).
+If moreover \(\rho_1 = 1\), then \(Z(1)/Z(\vartheta) = (D_\vartheta/D_1)\,\rho_\vartheta^{-\dim A}\).
 \end{problem}
 
-So the unknown \(Z(\vartheta)\) is traded for \(\rho_\vartheta\) and for \(\Delta_\vartheta\), the determinant of an operator on the image.  The simplest such operators have rank one.
+So the unknown \(Z(\vartheta)\) is traded for \(\rho_\vartheta\) and for \(D_\vartheta\), the determinant of an operator on the image.  The simplest such operators have rank one.
 
 \begin{problem}\label{pr:rank-one}
-Let \(A = \C\), \(u_\vartheta(1) = v_\vartheta\), and \(U_\vartheta = g_\vartheta g_\vartheta^*\) with \(g_\vartheta \colon \C \to V_\vartheta\), \(g_\vartheta(1) = w_\vartheta\).  Then \(Z(\vartheta) = \lVert v_\vartheta\rVert^2\) and \(\Delta_\vartheta = \lvert\langle w_\vartheta, v_\vartheta\rangle\rvert^2/\lVert v_\vartheta\rVert^2\).  If \(\langle w_\vartheta, v_\vartheta\rangle = c_\vartheta^{-1} P\) with \(c_\vartheta \ne 0\) and \(P \ne 0\) independent of \(\vartheta\), the hypothesis of Problem~\ref{pr:comparison} holds with \(\rho_\vartheta = \lvert c_1\rvert^2/\lvert c_\vartheta\rvert^2\) and \(U_0 = \lvert P\rvert^2/\lvert c_1\rvert^2\).
+Let \(A = \C\), \(u_\vartheta(1) = v_\vartheta\), and \(\Uc_\vartheta = g_\vartheta g_\vartheta^*\) with \(g_\vartheta \colon \C \to V_\vartheta\), \(g_\vartheta(1) = w_\vartheta\).  Then \(Z(\vartheta) = \lVert v_\vartheta\rVert^2\) and \(D_\vartheta = \lvert\langle w_\vartheta, v_\vartheta\rangle\rvert^2/\lVert v_\vartheta\rVert^2\).  If \(\langle w_\vartheta, v_\vartheta\rangle = c_\vartheta^{-1} P_0\) with \(c_\vartheta \ne 0\) and \(P_0 \ne 0\) independent of \(\vartheta\), the hypothesis of Problem~\ref{pr:comparison} holds with \(\rho_\vartheta = \lvert c_1\rvert^2/\lvert c_\vartheta\rvert^2\) and \(\Uc_0 = \lvert P_0\rvert^2/\lvert c_1\rvert^2\).
 \end{problem}
 
-For instance, if \(4 \mid a\) and \(c_a \ne 0\) (as for \(a = 0\)), the lift \(\Theta_{(a)}\) of Chapter~\ref{c22-chap} between two lines is multiplication by \(c_a/4\), with the Gaussian moment \(c_a\) of Section~\ref{c22-sec:smallest} (Problem~\ref{c22-pr:U1U1}); so \(A = V = \C\), and \(Z = c_a^2/16\) by Theorem~\ref{c22-thm:norm}.
+For instance, if \(4 \mid a\) and \(c_a \ne 0\) (as for \(a = 0\)), the lift \(\Theta_{(a)}\) of Chapter~\ref{c22-chap} between two lines is multiplication by \(c_a/4\), with the Gaussian moment \(c_a\) of Section~\ref{c22-sec:smallest} (Problem~\ref{c22-pr:U1U1}); so \(A = V = \C\), and \(Z = c_a^2/16\) by Theorem~\ref{c22-thm:norm}.  (In this sentence only, \(a\), \(c_a\) and \(\Theta_{(a)}\) have the meanings of Chapter~\ref{c22-chap}.)
 
 \begin{problem}\label{pr:eigen}
-Let \(L\) be a finite-dimensional complex vector space, \(T \in \End L\), \(f \colon \C \to F\) a ring homomorphism into a field with an absolute value, and \(B \in \R\).  If \(\lvert f(\alpha)\rvert \le B\) for every eigenvalue \(\alpha\) of \(T\), then \(\lvert f(\det T)\rvert \le B^{\dim L}\).
+Let \(Y\) be a finite-dimensional complex vector space, \(G \in \End Y\), \(f_0 \colon \C \to F_0\) a ring homomorphism into a field with an absolute value, and \(c \in \R\).  If \(\lvert f_0(\alpha)\rvert \le c\) for every eigenvalue \(\alpha\) of \(G\), then \(\lvert f_0(\det G)\rvert \le c^{\dim Y}\).
 \end{problem}
 
 \section{A line in \texorpdfstring{\(\C^3\)}{C3}}\label{sec:toy}
 
-Where do the bounds for \(\Delta_\vartheta\) come from?  Let \(V = \C^n\) with \(\langle y, z\rangle = \sum \bar y_i z_i\).  An automorphism \(\sigma\) of \(\C\) acts on \(V\) coordinatewise.  For a prime \(\ell\) and a field isomorphism \(\iota \colon \C \to \bar\Q_\ell\) let \(\Lc_\iota := \{y \in V : \lvert\iota(y_i)\rvert_\ell \le 1 \text{ for all } i\}\), the vectors \emph{integral at} \(\iota\).
+Where do the bounds for \(D_\vartheta\) come from?  Let \(V = \C^n\) with \(\langle y, z\rangle = \sum \bar y_i z_i\).  An automorphism \(\sigma\) of \(\C\) acts on \(V\) coordinatewise.  For \(\iota \mid \ell\) let \(\Lc_\iota := \{y \in V : \lvert\iota(y_i)\rvert_\ell \le 1 \text{ for all } i\}\), the vectors \emph{integral at} \(\iota\).
 
-Let \(K \subset \C\) be a subfield that is Galois over \(\Q\) with abelian Galois group, such as \(\Q\) or \(\Q(\ii)\), and let \(X \subseteq V\) be spanned by vectors with coordinates in \(K\); in Section~\ref{sec:general} the corresponding space is the intersection of the image of an idempotent with the kernel of a Hecke operator.  Let \(R \subseteq X\) be a subspace, the \emph{lifts}, which need not be spanned by vectors over \(K\), and let \(F := X \cap R^\perp\), the \emph{false lifts}: they satisfy the condition that defines \(X\) but are orthogonal to the lifts.  Let \(U \in \End V\) with \(U(R) \perp F\), and put \(\Delta := \det(\pr_R U|_R)\).
+Let \(K_0 \subset \C\) be a subfield that is Galois over \(\Q\) with abelian Galois group, such as \(\Q\) or \(\Q(\ii)\), and let \(X \subseteq V\) be spanned by vectors with coordinates in \(K_0\); in Section~\ref{sec:general} the corresponding space is the intersection of the image of an idempotent with the kernel of a Hecke operator.  Let \(R \subseteq X\) be a subspace, the \emph{lifts}, which need not be spanned by vectors over \(K_0\), and let \(F := X \cap R^\perp\), the \emph{false lifts}: they satisfy the condition that defines \(X\) but are orthogonal to the lifts.  Let \(\Uc \in \End V\) with \(\Uc(R) \perp F\), and put \(D := \det(\pr_R \Uc|_R)\).
 
 \begin{problem}\label{pr:false}
 If \(y \perp F\), then \(\pr_R y = \pr_X y\).
 \end{problem}
 
 \begin{problem}\label{pr:conj}
-For \(\sigma \in \Aut(\C)\) and \(y \in V\), \(\sigma(\pr_X y) = \pr_{\sigma X}(\sigma y)\), where \(\sigma X\) is spanned by the images under \(\sigma\) of the spanning vectors with coordinates in \(K\) (it does not depend on their choice).  Hence \(\lVert\sigma(\pr_R y)\rVert \le \lVert\sigma y\rVert\) whenever \(y \perp F\).
+For \(\sigma \in \Aut(\C)\) and \(y \in V\), \(\sigma(\pr_X y) = \pr_{\sigma X}(\sigma y)\), where \(\sigma X\) is spanned by the images under \(\sigma\) of the spanning vectors with coordinates in \(K_0\) (it does not depend on their choice).  Hence \(\lVert\sigma(\pr_R y)\rVert \le \lVert\sigma y\rVert\) whenever \(y \perp F\).
 \end{problem}
 
 \begin{problem}\label{pr:arch}
-If \(\lVert\sigma(U\varphi)\rVert \le e^{c}\lVert\sigma\varphi\rVert\) for all \(\varphi \in V\) and \(\sigma \in \Aut(\C)\), then \(\lvert\sigma(\Delta)\rvert \le e^{c\dim R}\) for all \(\sigma\).
+If \(\lVert\sigma(\Uc\varphi)\rVert \le e^{c}\lVert\sigma\varphi\rVert\) for all \(\varphi \in V\) and \(\sigma \in \Aut(\C)\), then \(\lvert\sigma(D)\rvert \le e^{c\dim R}\) for all \(\sigma\).
 \end{problem}
 
 \begin{problem}\label{pr:padic}
-Suppose that \(U(\Lc_\iota) \subseteq \Lc_\iota\), and that \(\Lambda \in \End R\) satisfies \(\Lambda(\pr_R y) \in \Lc_\iota\) for every \(y \in \Lc_\iota\) with \(y \perp F\).  Then \(\lvert\iota(\det\Lambda \cdot \Delta)\rvert_\ell \le 1\).
+Suppose that \(\Uc(\Lc_\iota) \subseteq \Lc_\iota\), and that \(\Lambda \in \End R\) satisfies \(\Lambda(\pr_R y) \in \Lc_\iota\) for every \(y \in \Lc_\iota\) with \(y \perp F\).  Then \(\lvert\iota(\det\Lambda \cdot D)\rvert_\ell \le 1\).
 \end{problem}
 
 \begin{problem}\label{pr:clear}
-Let \(K = \Q\), and let \(c\) be a positive integer with \(c \pr_X(\Z^n) \subseteq \Z^n\).  At every \(\iota\), the operator \(\Lambda = c \cdot \mathrm{id}_R\) satisfies \(\Lambda(\pr_R y) \in \Lc_\iota\) for every \(y \in \Lc_\iota\) with \(y \perp F\).  If moreover \(U(\Lc_\iota) \subseteq \Lc_\iota\), then \(\lvert\iota(\Delta)\rvert_\ell \le \lvert c\rvert_\ell^{-\dim R}\).
+Let \(K_0 = \Q\), and let \(c\) be a positive integer with \(c \pr_X(\Z^n) \subseteq \Z^n\).  At every \(\iota\), the operator \(\Lambda = c \cdot \mathrm{id}_R\) satisfies \(\Lambda(\pr_R y) \in \Lc_\iota\) for every \(y \in \Lc_\iota\) with \(y \perp F\).  If moreover \(\Uc(\Lc_\iota) \subseteq \Lc_\iota\), then \(\lvert\iota(D)\rvert_\ell \le \lvert c\rvert_\ell^{-\dim R}\).
 \end{problem}
 
-By Problem~\ref{c28-pr:denominator}, the least such \(c\) is the exponent of the congruence module of \(X\) in \(\Z^n\) for the decomposition \(\Q^n = (X \cap \Q^n) \oplus (X^\perp \cap \Q^n)\).  So the denominator of \(\Delta\) is bounded by a congruence module, and its conjugates by the size of \(U\); neither bound uses \(\det(u^*u)\).  Here is a three-dimensional example with a denominator, in which the lifts form a line inside a plane.  Let \(n = 3\) and \(X := \{y : y_1 + y_2 + y_3 = 0\}\).
+By Problem~\ref{c28-pr:denominator}, the least such \(c\) is the exponent of the congruence module of \(X\) in \(\Z^n\) for the decomposition \(\Q^n = (X \cap \Q^n) \oplus (X^\perp \cap \Q^n)\).  So the denominator of \(D\) is bounded by a congruence module, and its conjugates by the size of \(\Uc\); neither bound uses \(\det(u^*u)\).  Here is a three-dimensional example with a denominator, in which the lifts form a line inside a plane.  Let \(n = 3\) and \(X := \{y : y_1 + y_2 + y_3 = 0\}\).
 
 \begin{problem}\label{pr:toy-cong}
 The congruence module of \(X\) in \(\Z^3\) is \(\Z/3\Z\), and \(3\pr_X(\Z^3) \subseteq \Z^3\).
 \end{problem}
 
 \begin{problem}\label{pr:toy-delta}
-Let \(u_1(z) := zv_1\) and \(u_\vartheta(z) := zv_\vartheta\) for \(z \in \C\), with \(v_1 := (1,-1,0)\) and \(v_\vartheta := (1,1,-2)\), so that \(R_1 = \C v_1\) and \(R_\vartheta = \C v_\vartheta\); and let \(U_1 := w_1 w_1^*\) and \(U_\vartheta := w_\vartheta w_\vartheta^*\) with \(w_1 := (2,0,1)\) and \(w_\vartheta := (1,1,0)\).  Then \(U_1(R_1)\) and \(U_\vartheta(R_\vartheta)\) are orthogonal to the respective false lifts, \(\Delta_1 = 2\) and \(\Delta_\vartheta = 2/3\), and \(Z(1)\Delta_1 = Z(\vartheta)\Delta_\vartheta = 4\) although \(Z(1) = 2\) and \(Z(\vartheta) = 6\).  Moreover \(\lvert\sigma(\Delta_1)\rvert \le 5\) for every \(\sigma \in \Aut(\C)\), and \(\lvert\Delta_\vartheta\rvert_3 = 3\).
+Let \(u_1(z) := zv_1\) and \(u_\vartheta(z) := zv_\vartheta\) for \(z \in \C\), with \(v_1 := (1,-1,0)\) and \(v_\vartheta := (1,1,-2)\), so that \(R_1 = \C v_1\) and \(R_\vartheta = \C v_\vartheta\); and let \(\Uc_1 := w_1 w_1^*\) and \(\Uc_\vartheta := w_\vartheta w_\vartheta^*\) with \(w_1 := (2,0,1)\) and \(w_\vartheta := (1,1,0)\).  Then \(\Uc_1(R_1)\) and \(\Uc_\vartheta(R_\vartheta)\) are orthogonal to the respective false lifts, \(D_1 = 2\) and \(D_\vartheta = 2/3\), and \(Z(1)D_1 = Z(\vartheta)D_\vartheta = 4\) although \(Z(1) = 2\) and \(Z(\vartheta) = 6\).  Moreover \(\lvert\sigma(D_1)\rvert \le 5\) for every \(\sigma \in \Aut(\C)\), and \(\lvert D_\vartheta\rvert_3 = 3\).
 \end{problem}
 
 \section{Heights}\label{sec:heights}
 
-In Section~\ref{sec:general} the archimedean bound of Section~\ref{sec:toy} is used at the trivial twist, and the \(\ell\)-adic bound at a twist that may depend on \(\ell\) and \(\iota\), as in Chapter~\ref{c6-chap}.  The rewritten Lean proof combines the two through the following notion.  Let \(\Ic\) be the set of pairs \((\ell,\iota)\) of a prime \(\ell\) and a field isomorphism \(\iota \colon \C \to \bar\Q_\ell\).  For \(c \in \R\), a family \(y \colon \Ic \to \C\) has \emph{height at most} \(c\) if there are \(H \in \C\), \(\alpha \in \R\) and \(h \colon \N \to \R\) with \(H \ne 0\), \(h(n) \ge 0\) for all \(n\), \(\lvert\sigma H\rvert \le e^{\alpha}\) for every field automorphism \(\sigma\) of \(\C\), \(\lvert\iota(H y_{\ell,\iota})\rvert_\ell \le \ell^{h(\ell)}\) for every \((\ell,\iota) \in \Ic\), and \(\alpha + \sum_{\ell \in T} h(\ell)\log\ell \le c\) for every finite set \(T\) of primes.
+In Section~\ref{sec:general} the archimedean bound of Section~\ref{sec:toy} is used at the trivial twist, and the \(\ell\)-adic bound at a twist that may depend on \(\iota \mid \ell\), as in Chapter~\ref{c6-chap}.  The two are combined in a height bound \(\mathrm{ht}(y) \le c\) for a family \(y = (y_\iota)\), with a multiplier \(H\), as defined in Section~\ref{c5-sec:heights} of Chapter~\ref{c5-chap}; products and powers of families are treated in Problem~\ref{c5-pr:height-mul}.  We need two further operations.
 
 \begin{problem}\label{pr:of-mul}
-Let \(H \ne 0\) and \(\alpha \in \R\) with \(\lvert\sigma H\rvert \le e^\alpha\) for all \(\sigma\), and let \(g \colon \N \to \R\), of any sign, with \(\lvert\iota(H y_{\ell,\iota})\rvert_\ell \le e^{g(\ell)}\) for all \((\ell,\iota)\) and \(\alpha + \sum_{\ell \in T} g(\ell) \le c\) for every finite set \(T\) of primes.  Then \(y\) has height at most \(c\).
+Let \(H \ne 0\) and \(\alpha \in \R\) with \(\lvert\sigma H\rvert \le e^\alpha\) for all \(\sigma \in \Aut(\C)\), and let \(g(\ell) \in \R\), of any sign, one for each prime \(\ell\), with \(\lvert\iota(H y_\iota)\rvert_\ell \le e^{g(\ell)}\) for all \(\iota \mid \ell\) and \(\alpha + \sum_{\ell \in T_0} g(\ell) \le c\) for every finite set \(T_0\) of primes.  Then \(\mathrm{ht}(y) \le c\).
 \end{problem}
 
 \begin{problem}\label{pr:height-ops}
-If \(y\) and \(y'\) have heights at most \(c\) and \(c'\), respectively, then \(yy'\) has height at most \(c + c'\).  If \(y\) has height at most \(c\), then \(y^n\) has height at most \(nc\) for every \(n \in \N\).  If \(y\) has height at most \(c \le c''\) and \(\lvert\iota(y''_{\ell,\iota})\rvert_\ell \le \lvert\iota(y_{\ell,\iota})\rvert_\ell\) for all \((\ell,\iota)\), then \(y''\) has height at most \(c''\).
-\end{problem}
-
-\begin{problem}\label{pr:height-one}
-If the constant family \(1\) has height at most \(c\), then \(c \ge 0\).
+If \(\mathrm{ht}(y) \le c \le c''\) and \(\lvert\iota(y''_\iota)\rvert_\ell \le \lvert\iota(y_\iota)\rvert_\ell\) for every \(\iota \mid \ell\), then \(\mathrm{ht}(y'') \le c''\).
 \end{problem}
 
 \section{The general statement}\label{sec:general}
 
-We take the following theorems from the rewritten Lean proof \cite{GL}, using the notation below; the problems deduce the final height bound.  Let \(P\) and \(D\) be parameters and data as in Chapter~\ref{c32-chap}.  We use from them: the CM field \(E\), its set \(\Phi\) of infinite places and \(f := \#\Phi\); the scales \(x < x_1 < b\), \(L := \log b\), and the natural number \(a = xb\); the weights \(\kappa_\sigma\) at \(\sigma \in \Phi\); the number \(m\) of lifts and the ranks \(r\), \(k := r + 1 - m\) and \(t := 5r\); the integer \(M = p_0p_1\), the level prime \(N\) and the period \(\Omega\); the integer \(q_1\) with \(E = K(\zeta_{q_1})\), where \(K = \Q(\sqrt{-d})\).  Put
+We use the data, spaces, forms and twists of Chapter~\ref{c32-chap}: the CM field \(E\), its places \(\Phi\), \(f = \#\Phi\), the weights \(\kappa(\sigma)\) and \(\kappa_j(\sigma)\), the scales \(x < x_1 < b\) and \(a = xb\), \(L := \log b\), the number \(m\) of lifts, the ranks \(r\), \(k\), \(t\), the levels \(M\) and \(N\), the element \(\pi_M\) and the chosen places \(\mathcal M\), the prime sum \(\sfin\), the size \(s_\infty\), the direction amount \(\hdir\) and the unit \(U = fa\log^3 b\); twists \(\vartheta\) and \(m\)-fold twists, with modulus \(Q_\vartheta\) and \(\Nm Q_\vartheta\); the idempotent \(e_0\), the good forms \(H_g(W_j)\), of dimension \(d_T\); and the single lifts \(u_{\vartheta,j}\) from \(H_g(W_j)\) to the algebraic forms on \(V_j\), injective, with \(Z_j(\vartheta) = \det(u_{\vartheta^j,j}^*u_{\vartheta^j,j})\) for an \(m\)-fold twist \(\vartheta\) (Section~\ref{c32-sec:objects}).  For \(1 \le j \le m\) and a twist \(\vartheta\), let \(\Fc_{\vartheta,j}\) be the target space of \(u_{\vartheta,j}\), \(R_{\vartheta,j}\) its image and \(\pr_{\vartheta,j}\) the orthogonal projection onto it.
+
+For a ring homomorphism \(\eta \colon \C \to \C_\ell\), a form \(y \in \Fc_{\vartheta,j}\) is \emph{integral at} \(\eta\) if, for every finite adelic point \(g\) of the definite unitary group, the vector \(\eta(y(g))\) moved by \(g^{-1}\) in the weight representation has coordinates of absolute value at most \(1\); integral at \(\iota \mid \ell\) means integral at the composite of \(\iota\) with \(\bar\Q_\ell \subset \C_\ell\).  For \(\sigma \in \Aut(\C)\), \(N_\sigma(y)\) is the squared norm of \(y\) computed after applying \(\sigma\) to its values.  Let \(w\) be a finite place of \(E\) with \(\bar w \ne w\), not among the places of the lift or their conjugates.  The \emph{false lifts at} \(w\) are the forms in \(\im e_0\) that are killed by the Hecke polynomial \(\mathbf H_w\) of the lift at its test value \(\lambda_w\) and are orthogonal to \(R_{\vartheta,j}\); the lifts lie in \(\im e_0 \cap \ker \mathbf H_w(\lambda_w)\), which plays the part of \(X\) in Section~\ref{sec:toy}.  A form is \emph{orthogonal to the false lifts} if it is orthogonal to the false lifts at every such \(w\).
+
+\paragraph{Hecke values.}  For \(1 \le j \le m\) and a twist \(\vartheta\), let \(S := \mathcal M \cup Q_\vartheta\) and
 \[
-  s_\infty(n) := \log n! + n\log(M/\Omega), \qquad
-  \sfin(y,\sigma) := \sum_{\nu=1}^{a} \Lambda(\nu)\bigl(1 - \chi_K(\nu)\bigr)\Bigl(\frac{y}{\nu} - \kappa_{-\nu\sigma}\Bigr)_{\!+},
+  \Hc_j(\vartheta) := \prod_{i \in \{\varnothing, +, -\}} \biggl[\Bigl(\prod_{w \in S} \# k_w\Bigr)^{z_i^2} \prod_{n=1}^{z_i} \bigl\lvert L^{S}\bigl(n, (\nu_i\vartheta^{\epsilon_i})^{-1}\bigr)\bigr\rvert^2\biggr] ,
 \]
-where \(-\nu\sigma\) is the product of \(\sigma\) with the infinite place attached to \(-\nu\) modulo \(q_1\) (the identity place if \(\nu\) is not prime to \(q_1\)), and
-\[
-  \hdir := \sum_{\sigma \in \Phi} \bigl(s_\infty(\kappa_\sigma) - \sfin(\kappa_\sigma,\sigma)\bigr), \qquad
-  B := \frac{faL^3}{mk} .
-\]
-Here \(s_\infty(n)\) is the size of a derivative of order \(n\) and \(\sfin\) the prime sum that measures its guaranteed divisibility; \(\hdir\) is the \emph{direction amount} and \(B\) the \emph{denominator budget}.
+where \(k_w\) is the residue field at \(w\), \(\epsilon_\varnothing = \epsilon_+ = 1\), \(\epsilon_- = -1\), \(z_\varnothing = 7\lfloor m/2\rfloor + \lfloor k/2\rfloor\), \(z_+ = m\), \(z_- = \lfloor m/2\rfloor\), \(\nu_\varnothing := \mu_j^0\upsilon^{j + \lfloor(t - 11m - 1)/2\rfloor}\) and \(\nu_\pm := \upsilon^{-z_\pm}\chi_M^{\pm j}\), with \(\mu_j^0\), \(\upsilon\) and \(\chi_M\) as in Chapter~\ref{c32-chap}.  For these characters \(\mu\), the Hecke character \(x \mapsto \mu(x/\bar x)\) of \(E\) is unramified outside \(S\) and the conjugates of its places, and \(L^S(n,\mu)\) is its \(L\)-function without the Euler factors at these places.  Put \(\rho_\vartheta := \Hc_j(\vartheta)/\Hc_j(1)\).
 
-\paragraph{Twists and lifts.}  A \emph{tame character} \(\vartheta\) consists of an automorphic character of the norm-one torus \(U(1)\) for \(E/E^+\), with \(E^+\) the maximal totally real subfield of \(E\), of weight zero, a finite set \(Q_\vartheta\) of finite places with \(\bar w \notin Q_\vartheta\) for \(w \in Q_\vartheta\) and \(N_{Q_\vartheta} := \prod_{w \in Q_\vartheta} q_w\) prime to \(MN\), and residue characters \(\psi_w\), trivial for \(w \notin Q_\vartheta\), that give its tame part.  It is a \emph{twist} if \(\psi_w \ne 1\) for \(w \in Q_\vartheta\), and an \emph{\(m\)-fold twist} if \(\psi_w^n \ne 1\) for \(w \in Q_\vartheta\) and \(1 \le n \le m\); then \(\vartheta^j\), with the same set \(Q_\vartheta\), is a twist for \(1 \le j \le m\).  The trivial twist \(1\) has \(Q_1 = \varnothing\).  For \(1 \le j \le m\) and a twist \(\vartheta\), let \(\Theta_{\vartheta j} \colon G_j \to A_{\vartheta j}\) be the lift of Chapter~\ref{c37-chap} at the twist \(\vartheta\), from the good forms on the Hermitian space \(W_j\) of rank \(r\) to the algebraic forms on the definite space of rank \(r + t\) with the weight, level and character of its datum \(O_{\vartheta j}\).  It is injective, and \(\dim G_j = d_T\), the dimension of the good target forms.  Let \(R_{\vartheta j}\) be its image, \(\pr_{\vartheta j}\) the orthogonal projection onto it, and \(Z_{\vartheta j} := \det(\Theta_{\vartheta j}^*\Theta_{\vartheta j})\).  For an \(m\)-fold twist \(\xi\), \(Z_j(\xi) := Z_{\xi^j j}\), as in Chapter~\ref{c37-chap}; in particular \(Z_j(1) = Z_{1j}\).
-
-For a ring homomorphism \(\eta \colon \C \to \C_\ell\), a form \(y \in A_{\vartheta j}\) is \emph{integral at} \(\eta\) if, for every finite adelic point \(g\) of the definite unitary group, the vector \(\eta(y(g))\) moved by \(g^{-1}\) in the weight representation has coordinates of absolute value at most \(1\).  For \((\ell,\iota) \in \Ic\), integral at \(\iota\) means integral at the composite of \(\iota\) with the inclusion \(\bar\Q_\ell \subset \C_\ell\).  For \(\sigma \in \Aut(\C)\), \(N_\sigma(y)\) is the squared norm of \(y\) computed after applying \(\sigma\) to its values: a weighted sum over classes of the integral Weyl Gram form.  Let \(w\) be a finite place of \(E\) with \(\bar w \ne w\), not among the places of \(O_{\vartheta j}\) or their conjugates.  The \emph{false lifts at} \(w\) are the forms in the image of the idempotent \(e_0\) that are killed by the Hecke polynomial \(H_w\) of \(O_{\vartheta j}\) at its test value \(\lambda_w\), and are orthogonal to \(R_{\vartheta j}\); the lifts lie in \(\im e_0 \cap \ker H_w(\lambda_w)\), which plays the part of \(X\) in Section~\ref{sec:toy}.  A form is \emph{orthogonal to the false lifts} if it is orthogonal to the false lifts at every such \(w\).
-
-\paragraph{Hecke values.}  For \(1 \le j \le m\) and a twist \(\vartheta\), let \(S := S_M \cup Q_\vartheta\), where \(S_M\) is the set of places of \(E\) dividing the fixed element \(\pi_M\) of norm \(M\) from \(K\), and \(q_w\) is the cardinality of the residue field at \(w\).  Put
-\[
-  H_j(\vartheta) := \prod_{i \in \{\varnothing, +, -\}} \biggl[\Bigl(\prod_{w \in S} q_w\Bigr)^{z_i^2} \prod_{n=1}^{z_i} \bigl\lvert L^{S}\bigl(n, (\nu_i\vartheta^{\epsilon_i})^{-1}\bigr)\bigr\rvert^2\biggr] ,
-\]
-where \(\epsilon_\varnothing = \epsilon_+ = 1\), \(\epsilon_- = -1\), \(z_\varnothing = 7\lfloor m/2\rfloor + \lfloor k/2\rfloor\), \(z_+ = m\), \(z_- = \lfloor m/2\rfloor\), \(\nu_\varnothing := \mu_j^0\upsilon^{j + \lfloor(t - 11m - 1)/2\rfloor}\) and \(\nu_\pm := \upsilon^{-z_\pm}\chi_M^{\pm j}\).  Here \(\mu_j^0\) is the untwisted character of the \(j\)-th lift, \(\upsilon\) the restriction to \(U(1)\) of the splitting character of the Weil data, and \(\chi_M\) the fixed character of weight zero whose residue characters \(\omega_w\) are trivial off \(S_M\); for the characters \(\mu\) used here, the Hecke character \(x \mapsto \mu(x/\bar x)\) of \(E\) is unramified outside \(S\) and the conjugates of its places, and \(L^S(n,\mu)\) is its \(L\)-function without the Euler factors at these places.  Put \(\rho_\vartheta := H_j(\vartheta)/H_j(1)\).
-
-\paragraph{Comparison operators.}  Fix \(1 \le j \le m\).  A family of operators \(U_\vartheta \in \End_\C A_{\vartheta j}\), one for every twist \(\vartheta\), is a \emph{comparison operator} if:
-(1) \(\rho_\vartheta \ne 0\) for every twist \(\vartheta\);
-(2) some \(U_0 \in \End G_j\) has \(\langle y, U_0 y\rangle > 0\) for \(y \ne 0\) and \(\langle\Theta_{\vartheta j}y', U_\vartheta\Theta_{\vartheta j}y\rangle = \rho_\vartheta\langle y', U_0 y\rangle\) for every twist \(\vartheta\) and all \(y', y \in G_j\);
-(3) for every twist \(\vartheta\) and \(z \in R_{\vartheta j}\), \(U_\vartheta z\) is orthogonal to the false lifts;
-(4) for every twist \(\vartheta\), every prime \(\ell\) prime to \(N_{Q_\vartheta}\), and every \(\eta \colon \C \to \C_\ell\), \(U_\vartheta\) maps forms integral at \(\eta\) to forms integral at \(\eta\);
-(5) \(N_\sigma(U_1\varphi) \le \exp(3fmbL^2)^2 N_\sigma(\varphi)\) for every \(\varphi \in A_{1j}\) and every \(\sigma \in \Aut(\C)\).
+\paragraph{Comparison operators.}  Fix \(1 \le j \le m\).  A family of operators \(\Uc_\vartheta \in \End_\C \Fc_{\vartheta,j}\), one for every twist \(\vartheta\), is a \emph{comparison operator} if:
+(1) \(\Hc_j(1) \ne 0\) and \(\rho_\vartheta \ne 0\) for every twist \(\vartheta\);
+(2) some \(\Uc_0 \in \End H_g(W_j)\) has \(\langle y, \Uc_0 y\rangle > 0\) for \(y \ne 0\) and \(\langle u_{\vartheta,j}y', \Uc_\vartheta u_{\vartheta,j}y\rangle = \rho_\vartheta\langle y', \Uc_0 y\rangle\) for every twist \(\vartheta\) and all \(y', y \in H_g(W_j)\);
+(3) for every twist \(\vartheta\) and \(z \in R_{\vartheta,j}\), \(\Uc_\vartheta z\) is orthogonal to the false lifts;
+(4) for every twist \(\vartheta\), every prime \(\ell\) prime to \(\Nm Q_\vartheta\), and every \(\eta \colon \C \to \C_\ell\), \(\Uc_\vartheta\) maps forms integral at \(\eta\) to forms integral at \(\eta\);
+(5) \(N_\sigma(\Uc_1\varphi) \le \exp(3fmbL^2)^2 N_\sigma(\varphi)\) for every \(\varphi \in \Fc_{1,j}\) and every \(\sigma \in \Aut(\C)\).
 
 \begin{theorem}\label{thm:operator}
-For every \(1 \le j \le m\) the operators \(U_\vartheta := n\, h^2\, g_\vartheta g_\vartheta^*\) form a comparison operator.  Here \(g_\vartheta\) is a gluing map from tuples of forms on a smaller definite space to \(A_{\vartheta j}\), \(h\) is the hook number of the diagram of the weight of those forms, and \(n := \prod_{w \in S_M} \#\mathrm{GL}_{rt}(\mathcal O_E/w)\), a common multiple of the orders of the stabilizers at the levels used.
+For every \(1 \le j \le m\) the operators \(\Uc_\vartheta := \mathcal N h^2\, g_\vartheta g_\vartheta^*\) form a comparison operator.  Here \(g_\vartheta\) is a gluing map from tuples of forms on a smaller definite space to \(\Fc_{\vartheta,j}\), \(h\) is the hook number of the diagram of the weight of those forms, and \(\mathcal N := \prod_{w \in \mathcal M} \#\mathrm{GL}_{r\cdot t}(k_w)\), a common multiple of the orders of the stabilizers at the levels used.
 \end{theorem}
 
-The rewriting proves (1) and (2) by the mechanism of Problem~\ref{pr:rank-one}, with \(g_\vartheta^*\Theta_{\vartheta j} = c_\vartheta^{\prime\,-1}\Theta^\circ\) for a nonzero scalar \(c'_\vartheta\) and an injective map \(\Theta^\circ\) independent of \(\vartheta\); and (4) and (5) by writing \(U_\vartheta\) as a sum of operators of rank at most one over a tight frame of tuples.
+The rewritten Lean proof proves (1) and (2) by the mechanism of Problem~\ref{pr:rank-one}, with \(g_\vartheta^*u_{\vartheta,j} = c_\vartheta^{\prime\,-1}u^\circ\) for a nonzero scalar \(c'_\vartheta\) and an injective map \(u^\circ\) independent of \(\vartheta\); and (4) and (5) by writing \(\Uc_\vartheta\) as a sum of operators of rank at most one over a tight frame of tuples.
 
-For a comparison operator put \(\Delta_\vartheta := \det(\pr_{\vartheta j}U_\vartheta|_{R_{\vartheta j}})\).  For \((\ell,\iota) \in \Ic\), a twist \(\vartheta\) and \(\beta \in \R\), say that \(\beta\) \emph{clears the projection} at \((\iota,\vartheta,j)\) if some \(\Lambda \in \End R_{\vartheta j}\) has \(\lvert\iota(\det\Lambda)\rvert_\ell \ge e^{-(\dim R_{\vartheta j})\,r\beta}\) and \(\Lambda(\pr_{\vartheta j}y)\) is integral at \(\iota\) for every \(y\) that is integral at \(\iota\) and orthogonal to the false lifts.
+For a comparison operator put \(D_\vartheta := \det(\pr_{\vartheta,j}\Uc_\vartheta|_{R_{\vartheta,j}})\).  For \(\iota \mid \ell\), a twist \(\vartheta\) and \(\beta \in \R\), say that \(\beta\) \emph{clears the projection} at \((\iota,\vartheta,j)\) if some \(\Lambda \in \End R_{\vartheta,j}\) has \(\lvert\iota(\det\Lambda)\rvert_\ell \ge e^{-(\dim R_{\vartheta,j})\,r\beta}\) and \(\Lambda(\pr_{\vartheta,j}y)\) is integral at \(\iota\) for every \(y\) that is integral at \(\iota\) and orthogonal to the false lifts.
 
 \begin{theorem}\label{thm:compression}
-Let \(1 \le j \le m\) and let \((U_\vartheta)\) be a comparison operator.
-\textup{(a)} There is \(C \in \C\), \(C \ne 0\), with \(Z_{\vartheta j}\Delta_\vartheta = C\rho_\vartheta^{d_T}\) for every twist \(\vartheta\).
-\textup{(b)} For every twist \(\vartheta\), every \((\ell,\iota) \in \Ic\) with \(\ell\) prime to \(N_{Q_\vartheta}\), and every \(\beta\) that clears the projection at \((\iota,\vartheta,j)\), \(\lvert\iota(\Delta_\vartheta)\rvert_\ell \le e^{d_T r\beta}\).
-\textup{(c)} \(\lvert\sigma(\Delta_1)\rvert \le e^{3d_T fmbL^2}\) for every \(\sigma \in \Aut(\C)\).
+Let \(1 \le j \le m\) and let \((\Uc_\vartheta)\) be a comparison operator.
+\textup{(a)} There is \(C \in \C\), \(C \ne 0\), with \(\det(u_{\vartheta,j}^*u_{\vartheta,j})\,D_\vartheta = C\rho_\vartheta^{d_T}\) for every twist \(\vartheta\).
+\textup{(b)} For every twist \(\vartheta\), every \(\iota \mid \ell\) with \(\ell\) prime to \(\Nm Q_\vartheta\), and every \(\beta\) that clears the projection at \((\iota,\vartheta,j)\), \(\lvert\iota(D_\vartheta)\rvert_\ell \le e^{d_T r\beta}\).
+\textup{(c)} \(\lvert\sigma(D_1)\rvert \le e^{3d_T fmbL^2}\) for every \(\sigma \in \Aut(\C)\).
 \end{theorem}
 
-The rewriting proves (a)--(c) along the lines of Section~\ref{sec:compress} and Section~\ref{sec:toy}; for (c) it uses that \(N_\sigma(\pr_{\vartheta j}y) \le N_\sigma(y)\) for every \(y\) orthogonal to the false lifts.
+The rewritten Lean proof proves (a)--(c) along the lines of Sections~\ref{sec:compress} and~\ref{sec:toy}; for (c) it uses that \(N_\sigma(\pr_{\vartheta,j}y) \le N_\sigma(y)\) for every \(y\) orthogonal to the false lifts.
 
-\paragraph{Ratios of \(L\)-values.}  A \emph{critical pair} \(p\) consists of an automorphic character \(\nu\) of the norm-one torus \(U(1)\) of weight \(-c\), with \(c \colon \Phi \to \N\), residue characters \(\psi_w\) that give its tame part and are trivial off \(S_M\), and an integer \(z\) with \(1 \le z \le t\) and \(z \le c_\sigma \le 4b\) for all \(\sigma\).  It is \emph{ramified} if \(\psi_w \ne 1\) exactly for \(w \in S_M\), and \emph{main for} \(j\) if \(z \ge 10\), \(m < z \le r\), \(1 \le j \le m\), \(\psi = \omega^j\) for the fixed residue characters \(\omega\) of \(\chi_M\), and \(w_j(\sigma) + r - t \le c_\sigma \le w_j(\sigma)\) for all \(\sigma\), where \(-w_j\) is the weight of the character of the \(j\)-th lift.  For a tame character \(\vartheta\) and \(s = \pm1\) put
+\paragraph{Critical pairs.}
+
+\begin{definition}\label{def:pair}
+A \emph{critical pair} \(P = (\nu, z)\) consists of an automorphic character \(\nu\) of the norm-one torus \(U(1)\) of weight \(-c_P\), with \(c_P \colon \Phi \to \N\), residue characters \(\psi_w\) that give its tame part and are trivial off \(\mathcal M\), and an integer \(z\) with \(1 \le z \le t\) and \(z \le c_P(\sigma) \le 4b\) for all \(\sigma\).  It is \emph{ramified} if \(\psi_w \ne 1\) exactly for \(w \in \mathcal M\), and \emph{main for} \(j\) if \(z \ge 10\), \(m < z \le r\), \(1 \le j \le m\), \(\psi = \omega^j\) for the residue characters \(\omega\) of \(\chi_M\), and \(\kappa_j(\sigma) + r - t \le c_P(\sigma) \le \kappa_j(\sigma)\) for all \(\sigma\).  For a tame character \(\xi\) and \(\epsilon = \pm1\) its \emph{ratio} is
 \[
-  R_p(\vartheta, s) := \frac{\lvert L^{S_M \cup Q_\vartheta}(z, (\nu\vartheta^{s})^{-1})\rvert}{\lvert L^{S_M}(z, \nu^{-1})\rvert}, \qquad R_p(\vartheta) := R_p(\vartheta, 1) ,
+  R_P(\xi, \epsilon) := \frac{\lvert L^{\mathcal M \cup Q_\xi}(z, (\nu\xi^{\epsilon})^{-1})\rvert}{\lvert L^{\mathcal M}(z, \nu^{-1})\rvert}, \qquad R_P(\xi) := R_P(\xi, 1) ,
 \]
-the Euler factors at the conjugate places being omitted as well.  For a critical pair with \(z \ge 2\), let \(\phi_\vartheta\) be the lift of the constant form \(1\) on \(U(1)\) to the definite space of rank \(2z\), for the datum with character \(\nu\vartheta\), multiplied by the index of the chosen level and by a fixed scale of the pair, both independent of \(\vartheta\).  The rewritten Lean proof shows that \(R_p(\vartheta) = (\lVert\phi_\vartheta\rVert^2/N_{Q_\vartheta}^{2z-1})/\lVert\phi_1\rVert^2\) for every tame \(\vartheta\); so \(R_p(\vartheta)^{-1} = N_{Q_\vartheta}^{2z-1}\lVert\phi_1\rVert^2/\lVert\phi_\vartheta\rVert^2\), and the inverse ratios are, up to a power of \(N_{Q_\vartheta}\), ratios of squared norms of lifts.
+the Euler factors at the conjugate places being omitted as well.
+\end{definition}
+
+For a critical pair with \(z \ge 2\), let \(\phi_\xi\) be the lift of the constant form \(1\) on \(U(1)\) to the definite space of rank \(2z\), for the datum with character \(\nu\xi\), multiplied by the index of the chosen level and by a fixed scale of the pair, both independent of \(\xi\).  The rewritten Lean proof shows that \(R_P(\xi) = (\lVert\phi_\xi\rVert^2/(\Nm Q_\xi)^{2z-1})/\lVert\phi_1\rVert^2\) for every tame character \(\xi\); so the inverse ratios are, up to a power of \(\Nm Q_\xi\), ratios of squared norms of lifts.
 
 \begin{theorem}\label{thm:factor}
-For every \(1 \le j \le m\) there are \(e \in \N\), finite subsets \(A_{\mathrm{main}} \subset \N\) and \(A_{\mathrm{ram}} \subset \{\varnothing,+,-\} \times \N\), families of critical pairs \((p_a)_{a \in \N}\) and \((q_b)_{b \in \{\varnothing,+,-\} \times \N}\), and signs \((s_b)_{b \in \{\varnothing,+,-\} \times \N}\), with \(2\#A_{\mathrm{main}} = k\) and \(\#A_{\mathrm{ram}} = 5m\), such that \(p_a\) is main for \(j\) for every \(a \in A_{\mathrm{main}}\), \(q_b\) is ramified for every \(b\), and for every twist \(\vartheta\)
+For every \(1 \le j \le m\) there are \(e_{\Hc} \in \N\), finite subsets \(A_{\mathrm{main}} \subset \N\) and \(A_{\mathrm{ram}} \subset \{\varnothing,+,-\} \times \N\), families of critical pairs \((P_a)_{a \in \N}\) and \((P'_b)_{b \in \{\varnothing,+,-\} \times \N}\), and signs \((\epsilon_b)_{b \in \{\varnothing,+,-\} \times \N}\), with \(2\#A_{\mathrm{main}} = k\) and \(\#A_{\mathrm{ram}} = 5m\), such that \(P_a\) is main for \(j\) for every \(a \in A_{\mathrm{main}}\), \(P'_b\) is ramified for every \(b\), and for every twist \(\vartheta\)
 \[
-  H_j(\vartheta) = N_{Q_\vartheta}^{e}\Bigl(\prod_{a \in A_{\mathrm{main}}} R_{p_a}(\vartheta)\prod_{b \in A_{\mathrm{ram}}} R_{q_b}(\vartheta, s_b)\Bigr)^2 H_j(1) .
+  \Hc_j(\vartheta) = (\Nm Q_\vartheta)^{e_{\Hc}}\Bigl(\prod_{a \in A_{\mathrm{main}}} R_{P_a}(\vartheta)\prod_{b \in A_{\mathrm{ram}}} R_{P'_b}(\vartheta, \epsilon_b)\Bigr)^2 \Hc_j(1) .
 \]
 \end{theorem}
 
-\paragraph{Regular families.}  Let \(\theta\) assign an \(m\)-fold twist \(\theta_{\ell,\iota}\) to every \((\ell,\iota) \in \Ic\).  It is \emph{regular} if:
-(i) \(\ell\) is prime to \(N_{Q_{\theta_{\ell,\iota}}}\) for every \((\ell,\iota)\);
-(ii) for every \(1 \le j \le m\), every ramified critical pair \(q\) and \(s = \pm1\), the family \((\ell,\iota) \mapsto R_q(\theta_{\ell,\iota}^j, s)^{-1}\) has height at most \(x_1\);
-(iii) for every \(1 \le j \le m\) there is \(\gamma \colon \N \to \R\) with \(\sum_{\ell \in T}\gamma(\ell) \le B\) for every finite set \(T\) of primes, such that for every \((\ell,\iota)\), with \(\vartheta := \theta_{\ell,\iota}^j\): \(\gamma(\ell)\) clears the projection at \((\iota,\vartheta,j)\); and for every critical pair \(p\) main for \(j\) and any two test forms \(\Xi, \Xi'\) for \(\ell\) in the space of the lift of \(\nu\vartheta\) to the definite space of rank \(2z\), \(\lvert\iota\langle\pr\Xi, \pr\Xi'\rangle\rvert_\ell \le e^{\gamma(\ell)}\), where \(\pr\) is the orthogonal projection onto the line of that lift.
-Here, for the datum \(O\) of that lift, a \emph{test form} for \(\ell\) is a form that is integral at every ring homomorphism \(\eta \colon \C \to \C_\ell\) and, at every place \(w\) with \(\bar w \ne w\) off the places of \(O\) and their conjugates, orthogonal to \(\im e_{X-1} \cap \ker H_w(\lambda_w) \cap \ker O^*\); here \(e_{X-1}\) is the idempotent with label \(X - 1\) at every chosen place (in rank one, the mean over the product of the multiplicative groups of the residue fields), and \(O^*\) is the adjoint of the lift.  Chapter~\ref{c39-chap} treats the denominators in (iii), and Chapter~\ref{c40-chap} the existence of regular families.
+\paragraph{Regular families.}  Recall that a family of twists \(\theta = (\theta_\iota)\) has one \(m\)-fold twist for each \(\iota \mid \ell\).
 
-\begin{theorem}\label{thm:main-pair}
-Let \(\theta\) be regular, \(1 \le j \le m\), and \(p\) a critical pair main for \(j\).  Then the family \((\ell,\iota) \mapsto R_p(\theta_{\ell,\iota}^j)^{-1}\) has height at most \(6B - \hdir\).
+\begin{definition}\label{def:small-ratios}
+A family \(\theta\) has \emph{small ratios} if (i) \(\ell\) is prime to \(\Nm Q_{\theta_\iota}\) for every \(\iota \mid \ell\), and (ii) for every \(1 \le j \le m\), every ramified critical pair \(P\) and \(\epsilon = \pm1\), the family \(\iota \mapsto R_P(\theta_\iota^j, \epsilon)^{-1}\) has height at most \(x_1\).
+\end{definition}
+
+\begin{definition}\label{def:regular}
+The \emph{denominator budget} is \(B := U/(mk) = faL^3/(mk)\).  A family \(\theta\) is \emph{regular} if it has small ratios and (iii) for every \(1 \le j \le m\) there are reals \(\gamma(\ell)\), one for each prime \(\ell\), with \(\sum_{\ell \in T_0}\gamma(\ell) \le B\) for every finite set \(T_0\) of primes, such that for every \(\iota \mid \ell\), with \(\vartheta := \theta_\iota^j\): \(\gamma(\ell)\) clears the projection at \((\iota,\vartheta,j)\); and for every critical pair \(P\) main for \(j\) and any two test forms \(\Xi, \Xi'\) for \(\ell\) in the space of the lift of \(\nu\vartheta\) to the definite space of rank \(2z\), \(\lvert\iota\langle\pr\Xi, \pr\Xi'\rangle\rvert_\ell \le e^{\gamma(\ell)}\), where \(\pr\) is the orthogonal projection onto the line of that lift.  Here, for the datum \(O\) of that lift, a \emph{test form} for \(\ell\) is integral at every ring homomorphism \(\eta \colon \C \to \C_\ell\) and, at every place \(w\) with \(\bar w \ne w\) off the places of \(O\) and their conjugates, orthogonal to \(\im e_{X-1} \cap \ker \mathbf H_w(\lambda_w) \cap \ker O^*\), where \(e_{X-1}\) is the idempotent with label \(X - 1\) at every chosen place (in rank one, the mean over the product of the multiplicative groups of the residue fields) and \(O^*\) is the adjoint of the lift.
+\end{definition}
+
+Chapter~\ref{c39-chap} treats the denominators in (iii), and Chapter~\ref{c40-chap} the existence of regular families.
+
+\paragraph{Sharpness at many places.}  The pairings of test forms with \(\phi_\vartheta\) are bounded below through the sharpness of Chapter~\ref{c18-chap}.  There, for a prime \(p \le k\) that does not split, the rewritten Lean proof couples the near pairs of places on six copies of the variables and applies Theorem~\ref{c18-thm:katz} along a linear form with unit coefficients on six more (Section~\ref{c18-sec:places}); the primes that split, and the inert primes \(p > k\), for which it couples every place with its partner, are treated separately.  The \emph{twelve copies} are the variables \(z_{\tau,i}\), \(\tau \in \Phi\), \(1 \le i \le 12\), one coordinate of \(\operatorname{Hom}(E, E^{12})\) at each infinite place and each of the twelve basis vectors.  The linear forms come from a \emph{tight frame}: elements \(w_\beta \in E\) and integers \(c_\beta \ge 0\), \(\beta\) in a finite set, with \(\sum_\beta c_\beta\,\tau'(w_\beta)\overline{\tau(w_\beta)} = M\delta_{\tau'\tau}\) for \(\tau, \tau' \in \Phi\), each \(w_\beta\) lying in the fractional ideal of the finite idele of the \emph{Weil data}; the Weil data are the auxiliary choices fixed with \(E\) in the rewritten Lean proof (among them a splitting character, a purely imaginary element \(\jmath\) of \(E\) and a finite idele \(\alpha_0\) such that \(\jmath\alpha_0\bar\alpha_0\) has the order of the inverse different at every finite place; \tl{WeilData}).  The forms are \(z \mapsto \sum_\tau c_{\mathrm{per}}\overline{\tau(w_\beta)}\,z_\tau\), where \(c_{\mathrm{per}}\) is a nonzero complex number attached to \(E\) that normalizes the Taylor series of theta functions, a datum of the rewritten Lean proof (\tl{periodFactor}); it is not the \(\Omega\) of Chapter~\ref{c32-chap}.  A \emph{modulus} of \(E\) is a nonzero ideal of \(\mathcal O_E\) that is prime to its complex conjugate: no prime ideal divides it together with its conjugate (so no self-conjugate prime ideal divides it).  For a prime \(p\) let
+\[
+  S_p := \sum_{\tau \in \Phi} c_p \sum_{e} \Bigl(\frac{\kappa(\tau)}{p^e} - \kappa([-p^e]\tau)\Bigr)_{\!+} ,
+\]
+the inner sum over the odd \(e \ge 1\) if \(p\) is inert in \(K\), over all \(e \ge 1\) if \(p = d\), and empty if \(p\) splits; \(c_p = 1/2\) if \(p = d\) and \(c_p = 1\) otherwise.  From the coupling the rewritten Lean proof deduces the following.
+
+\begin{theorem}\label{thm:attained}
+Let \(l \colon \Phi \to \N\) satisfy \(\kappa(\tau) \le l(\tau) \le \kappa(\tau) + x^{42}\) for every \(\tau\).  There is \(t_0 \in \C\), \(t_0 \ne 0\), with \(\lvert \sigma(t_0) \rvert \le \exp(fmb/k)\) for every \(\sigma \in \Aut(\C)\), such that: for every modulus \(\mathfrak m\) of \(E\) with ideal \((\pi_M)\), every prime \(p\) and every ring homomorphism \(\eta \colon \C \to \C_p\), there are a multi-index \(\alpha\) in the twelve copies with \(\sum_i \alpha(\tau, i) = l(\tau)\) for every \(\tau\), and a class \(y_0 \in (\mathcal O_E/\mathfrak m)^{12}\), such that
+\[
+  v\Bigl( \eta\Bigl( \frac{c_{\mathrm{vac}}^{12}}{t_0} \prod_{\tau \in \Phi} l(\tau)! \cdot [z^\alpha]\, J_{y_0} \Bigr) \Bigr) \ \le\ S_p ,
+\]
+where \(v\) is the valuation with \(v(p) = 1\) and \(J_{y_0}\) is the Taylor series at zero, in the twelve copies, of \(z \mapsto \mathrm{Th}_{y_0}(\pi_M \delta_0 z)\), with \(\delta_0\) a fixed complex period scale of the data (a datum of the rewritten Lean proof, \tl{jetScale}).  Here \(\mathrm{Th}_{y_0}\) is the theta function for the datum on \(\operatorname{Hom}(E, E^{12})\) with the Gaussian at infinity, the indicator of \(y_0\) at the places dividing \(\mathfrak m\), and the vacuum at the other finite places, and \(c_{\mathrm{vac}}\) is the scalar of the integral vacuum (Section~\ref{c32-sec:objects}).
 \end{theorem}
 
-The rewriting uses (i) and the coefficient estimate of Theorem~\ref{c18-thm:attained} to obtain the test forms.  Up to a power of \(N_{Q_{\theta_{\ell,\iota}^j}}\), it expresses \(R_p(\theta_{\ell,\iota}^j)^{-1}\) as a product of four families.  Conditions (ii) and (iii) enter the estimates for these factors, whose height bounds sum to at most \(6B - \hdir\).
+In the rewritten Lean proof of Theorem~\ref{thm:main-pair} the common factor \(t_0\) enters the multiplier for the pairings.  Fix \(1 \le j \le m\), a critical pair \(P = (\nu_P, z_P)\) main for \(j\), and a ramified critical pair \(P' = (\nu', 2)\) with \(c_{P'} = 2\), lifted to rank four.  That proof applies Theorem~\ref{thm:attained} with \(l(\tau) = c_P(\tau) - z_P\).  There is \(c_0' \ne 0\) with \(\lvert \sigma(c_0') \rvert \le \exp(fmb/k + 3x^{34})\) for every \(\sigma \in \Aut(\C)\) such that for every prime \(\ell\), every ring homomorphism \(\eta \colon \C \to \C_\ell\), and every twist \(\vartheta\) with \(\ell\) prime to \(\Nm Q_\vartheta\), there is a test form \(\Xi\) whose pairing with \(\phi_\vartheta\), read through \(\eta\), has valuation at most \(v(\eta(c_0' R_{P'}(\vartheta))) + S_\ell\).
 
-\paragraph{The cost of one lift.}  Let \(\theta\) be regular and \(1 \le j \le m\), let \((U_\vartheta)\) be the comparison operator of Theorem~\ref{thm:operator}, and write \(\vartheta_{\ell,\iota} := \theta_{\ell,\iota}^j\).
+\begin{theorem}\label{thm:main-pair}
+Let \(\theta\) be regular, \(1 \le j \le m\), and \(P\) a critical pair main for \(j\).  Then the family \(\iota \mapsto R_P(\theta_\iota^j)^{-1}\) has height at most \(6B - \hdir\).
+\end{theorem}
+
+The rewritten Lean proof uses (i) and Theorem~\ref{thm:attained} to obtain the test forms.  Up to a power of \(\Nm Q_{\theta_\iota^j}\), it expresses \(R_P(\theta_\iota^j)^{-1}\) as a product of four families.  Conditions (ii) and (iii) enter the estimates for these factors, whose height bounds sum to at most \(6B - \hdir\).
+
+\paragraph{The cost of one lift.}  Let \(\theta\) be regular and \(1 \le j \le m\), let \((\Uc_\vartheta)\) be the comparison operator of Theorem~\ref{thm:operator}, and write \(\vartheta_\iota := \theta_\iota^j\).
 
 \begin{problem}\label{pr:delta-height}
-The family \((\ell,\iota) \mapsto \Delta_{\vartheta_{\ell,\iota}}/\Delta_1\) has height at most \(d_T(3fmbL^2 + rB)\).
+The family \(\iota \mapsto D_{\vartheta_\iota}/D_1\) has height at most \(d_T(3fmbL^2 + rB)\).
 \end{problem}
 
 \begin{problem}\label{pr:hecke-height}
-The family \((\ell,\iota) \mapsto \rho_{\vartheta_{\ell,\iota}}^{-1}\) has height at most \(10mx_1 + k(6B - \hdir)\).
+The family \(\iota \mapsto \rho_{\vartheta_\iota}^{-1}\) has height at most \(10mx_1 + k(6B - \hdir)\).
 \end{problem}
 
 \begin{problem}\label{pr:identity}
-For every \(m\)-fold twist \(\xi\), \(Z_j(1)/Z_j(\xi) = (\Delta_{\xi^j}/\Delta_1)\,\rho_{\xi^j}^{-d_T}\).
+For every \(m\)-fold twist \(\vartheta\), \(Z_j(1)/Z_j(\vartheta) = (D_{\vartheta^j}/D_1)\,\rho_{\vartheta^j}^{-d_T}\).
 \end{problem}
 
 It remains to compare the constants.  The following inequality is derived here from the sizes of the data.
@@ -238,30 +255,28 @@ Let \(f \ge 1\), \(b > 1\) with \(L = \log b \ge 16\), \(x \ge 1\), \(\sqrt x \l
 The data satisfy these hypotheses.
 \end{problem}
 
-Problems~\ref{pr:delta-height}, \ref{pr:hecke-height}, \ref{pr:identity}, \ref{pr:height-ops} and~\ref{pr:budget} give the following height bound.
+Problems~\ref{pr:delta-height}, \ref{pr:hecke-height}, \ref{pr:identity}, \ref{pr:height-ops} and~\ref{pr:budget}, with Problem~\ref{c5-pr:height-mul}, prove the following.
 
 \begin{theorem}\label{thm:main}
-For all parameters \(P\) and data \(D\), every regular family \(\theta\) of \(m\)-fold twists, and every \(1 \le j \le m\), the family
+For the data, every regular family \(\theta\) of \(m\)-fold twists, and every \(1 \le j \le m\), the family
 \[
-  (\ell,\iota) \longmapsto \frac{Z_j(1)}{Z_j(\theta_{\ell,\iota})}
+  \iota \longmapsto \frac{Z_j(1)}{Z_j(\theta_\iota)}
 \]
 has height at most \(d_T\, k\,(LB - \hdir)\).
 \end{theorem}
 
+So the bound of Theorem~\ref{thm:main} is, per unit of \(d_T\), \(k\) times the budget \(LB\) less \(k\) times the direction amount.  Chapter~\ref{c37-chap} combines such bounds for \(j = 1, \dots, m\) with the factorization of the chain determinant.
+
 {\raggedright
 \paragraph{In the Lean formalization.}
-In the rewritten Lean proof \cite{GL}, Theorem~\ref{thm:main} is \tl{New.Data.heightLe\_liftDeterminant\_ratio} in \tl{New/OneLift/LiftVolumeHeight.lean} of the readable edition, where \(Z_j(\xi)\) is \tl{D.liftDeterminant} at \(\xi\) and \(j\), comparison operators are \tl{IsComparisonOperator}, Theorem~\ref{thm:operator} is \tl{isComparisonOperator\_comparisonOp} and Theorem~\ref{thm:compression} is \tl{IsComparisonOperator.exists\_normDet\_sq\_mul\_det\_eq}, \tl{.norm\_padic\_det\_liftCompression\_le} and \tl{.norm\_map\_det\_liftCompression\_le}; Theorems~\ref{thm:factor} and~\ref{thm:main-pair} are \tl{exists\_heckeValueProd\_eq\_mul\_prod\_ratio} and \tl{heightLe\_inv\_ratio} in \tl{New/OneLift/HeckeValues/TwistedValueHeights.lean}, Problem~\ref{pr:hecke-height} is \tl{heightLe\_inv\_heckeValueProd\_div} there, the forward formula for \(R_p(\vartheta)\) at \(z \ge 2\) is \tl{ratio\_eq\_algPart\_div} in \tl{New/OneLift/HeckeValues/TwistedRatio.lean} after expanding \tl{algPart}, and inversion gives the formula for \(R_p(\vartheta)^{-1}\), heights are \tl{HeightLe}, and regular families are \tl{IsRegularFamily}.
-The objects of Section~\ref{sec:general} are, there: \tl{jetSize}, \tl{primeSum}, \tl{directionAmount}, \tl{denominatorBudget}; \tl{TameChar}, \tl{Twist}, \tl{MFoldTwist}; \tl{goodLift} (with \tl{finrank\_range\_goodLift} and \tl{targetDim\_eq\_finrank\_goodForms\_spaceW}); \tl{integralForms}, \tl{normSqAt}; \tl{falseLiftsAt}, \tl{IsOrthogonalToFalseLifts}, \tl{range\_goodLift\_le\_range\_inf\_ker}; \tl{heckeValueProd}, \tl{exchangePair}, \tl{Exchange.lValueProd}; \tl{comparisonOp}, \tl{adjoint\_glue\_goodLift}, \tl{heckeValueProd\_div\_eq}, \tl{comparisonOp\_eq\_sum}, \tl{exists\_tight\_frame\_formTuples}, \tl{comparisonOp\_mem\_integralForms}, \tl{normSqAt\_comparisonOp\_le}; \tl{liftCompression}, \tl{ClearsProjection}, \tl{normSqAt\_starProjection\_range\_goodLift\_le}; \tl{CriticalPair}, \tl{CriticalPair.IsRamified}, \tl{CriticalPair.IsMainPair}, \tl{CriticalPair.ratio}; \tl{HasSmallRatios}, \tl{IsDenominatorBound}, \tl{HasDenominatorsLe}, \tl{DescentPair.IsTestForm}; \tl{heightLe\_norm\_trivialLift\_sq} and \tl{exists\_isTestForm\_le\_norm\_inner\_trivialLift} in the proof of \tl{heightLe\_inv\_ratio}.  Problems~\ref{pr:of-mul}, \ref{pr:height-ops} and~\ref{pr:height-one} are \tl{HeightLe.of\_mul\_le}, \tl{.mul}, \tl{.pow}, \tl{.mono} and \tl{.nonneg\_of\_one}; Problem~\ref{pr:delta-height} and the instance \(\xi = \theta_{\ell,\iota}\) of Problem~\ref{pr:identity} occur in the proof of \tl{heightLe\_liftDeterminant\_ratio}, which obtains the inequality of Problem~\ref{pr:budget} from \tl{le\_of\_hasLogBound}, a comparison of orders of magnitude.
-The chain comparison of Chapter~\ref{c37-chap} is \tl{exists\_chainDeterminant\_pos\_and\_div\_chainDeterminant\_one\_eq}, and \tl{heightLe\_chainDeterminant\_one\_div} takes the bounds for the single lifts as a hypothesis.  The identity in Problem~\ref{pr:compression} is \tl{normDet\_sq\_mul\_det\_compression}, and the bound in Problem~\ref{pr:eigen} is \tl{norm\_map\_det\_le\_pow}.  The index set \(\Ic\) is \tl{PrimePadicIso}, with the place \(\C \to \C_\ell\) given by \tl{PadicPlace.ofIso}.  The integers \(n\), \(h\) and the map \(\Theta^\circ\) are \tl{chosenGroupOrder}, \tl{hookNumberMinus} and \tl{periodLift} (injective by \tl{periodLift\_injective}).  The characters use \tl{untwistedLiftChar}, \tl{upsilonU1} and \tl{AutChar.L}; the lifts \(\phi_\vartheta\) use \tl{CriticalPair.trivialLift} and \tl{LValueData.trivialLift\_eq\_smul\_thetaLift}.  The coefficient estimate of Theorem~\ref{c18-thm:attained} is \tl{exists\_rpow\_neg\_localPrimeSumTotal\_le\_norm\_coeff}, and the proof of \tl{heightLe\_inv\_ratio} fixes its auxiliary ramified pair by \tl{exists\_hasEmptyRow}.\par}
-
-So the bound of Theorem~\ref{thm:main} is, per unit of \(d_T\), \(k\) times the budget \(LB\) less \(k\) times the direction amount, the size of the derivatives less their guaranteed divisibility.
+In the rewritten Lean proof \cite{GL}, in the readable edition: Theorem~\ref{thm:main} is \tl{Data.heightLe\_liftDeterminant\_ratio}, comparison operators are \tl{Data.IsComparisonOperator}, Theorem~\ref{thm:operator} is \tl{Data.isComparisonOperator\_comparisonOp}, and Theorem~\ref{thm:compression} is \tl{IsComparisonOperator.exists\_normDet\_sq\_mul\_det\_eq}, \tl{.norm\_padic\_det\_liftCompression\_le} and \tl{.norm\_map\_det\_liftCompression\_le}, all in \tl{New/OneLift/LiftVolumeHeight.lean}; clearing is \tl{Data.ClearsProjection} and \(\Hc_j\) is \tl{Data.heckeValueProd}.  Definition~\ref{def:pair} is \tl{Data.CriticalPair}, \tl{CriticalPair.IsRamified}, \tl{CriticalPair.IsMainPair} and \tl{CriticalPair.ratio}; Definitions~\ref{def:small-ratios} and~\ref{def:regular} are \tl{Data.HasSmallRatios}, \tl{Data.denominatorBudget} and \tl{Data.IsRegularFamily} (in \tl{New/Determinant/Twist/FitTwists.lean}).  Theorems~\ref{thm:factor} and~\ref{thm:main-pair} are \tl{Data.exists\_heckeValueProd\_eq\_mul\_prod\_ratio} and \tl{Data.heightLe\_inv\_ratio} in \tl{New/OneLift/HeckeValues/TwistedValueHeights.lean}, and Theorem~\ref{thm:attained} is \tl{Data.exists\_rpow\_neg\_localPrimeSumTotal\_le\_norm\_coeff} in \tl{New/Derivatives/Sharpness/BoundAttained.lean}, stated with norms, with \(J_{y_0}\) the series \tl{twelveTaylor} of \tl{indicatorDatum} and \(c_{\mathrm{vac}}\) the scalar \tl{vacuumScale}.  The formula for \(R_P(\xi)\) is \tl{CriticalPair.ratio\_eq\_algPart\_div} in \tl{New/OneLift/HeckeValues/TwistedRatio.lean}; clause (iii) of Definition~\ref{def:regular} is \tl{Data.IsDenominatorBound} and \tl{Data.HasDenominatorsLe}, and test forms are \tl{DescentPair.IsTestForm}.\par}
 
 \section*{Hints}
 
 \subsection*{\S\ref{sec:compress}}
 \begin{description}
-\item[\ref{pr:compression}] Since \(u^*\) kills \(R^\perp\), \(u^*Tu = u^*\pr_R T u\).  Write \(u\) as an isomorphism \(A \to R\) followed by the inclusion.
-\item[\ref{pr:comparison}] Problem~\ref{pr:compression} with \(T = U_\vartheta\); the hypothesis says \(u_\vartheta^*U_\vartheta u_\vartheta = \rho_\vartheta U_0\).
+\item[\ref{pr:compression}] Since \(u^*\) kills \(R^\perp\), \(u^*Gu = u^*\pr_R G u\).  Write \(u\) as an isomorphism \(A \to R\) followed by the inclusion.
+\item[\ref{pr:comparison}] Problem~\ref{pr:compression} with \(G = \Uc_\vartheta\); the hypothesis says \(u_\vartheta^*\Uc_\vartheta u_\vartheta = \rho_\vartheta \Uc_0\).
 \item[\ref{pr:rank-one}] \(g_\vartheta^*v = \langle w_\vartheta, v\rangle\).
 \item[\ref{pr:eigen}] Factor the characteristic polynomial over \(\C\).
 \end{description}
@@ -269,9 +284,9 @@ So the bound of Theorem~\ref{thm:main} is, per unit of \(d_T\), \(k\) times the 
 \subsection*{\S\ref{sec:toy}}
 \begin{description}
 \item[\ref{pr:false}] \(X = R \oplus F\), orthogonally.
-\item[\ref{pr:conj}] \(\pr_X = M(M^*M)^{-1}M^*\) for a matrix \(M\) whose columns form a basis of \(X\) and have coordinates in \(K\); on \(K\), complex conjugation commutes with \(\sigma\).
-\item[\ref{pr:arch}] Take an eigenvector \(z\) of \(\pr_R U|_R\) and apply Problems~\ref{pr:false} and~\ref{pr:conj} to \(Uz\); then Problem~\ref{pr:eigen}.
-\item[\ref{pr:padic}] Scale an eigenvector of \(\Lambda\pr_R U|_R\) to be integral at \(\iota\) with a coordinate of absolute value \(1\).
+\item[\ref{pr:conj}] \(\pr_X = M_0(M_0^*M_0)^{-1}M_0^*\) for a matrix \(M_0\) whose columns form a basis of \(X\) and have coordinates in \(K_0\); on \(K_0\), complex conjugation commutes with \(\sigma\).
+\item[\ref{pr:arch}] Take an eigenvector \(z\) of \(\pr_R \Uc|_R\) and apply Problems~\ref{pr:false} and~\ref{pr:conj} to \(\Uc z\); then Problem~\ref{pr:eigen}.
+\item[\ref{pr:padic}] Scale an eigenvector of \(\Lambda\pr_R \Uc|_R\) to be integral at \(\iota\) with a coordinate of absolute value \(1\).
 \item[\ref{pr:clear}] Every vector of \(\Lc_\iota\) is a combination of \(e_1, \dots, e_n\) with coefficients \(t_i\) satisfying \(\lvert\iota t_i\rvert_\ell \le 1\); use Problem~\ref{pr:false}.
 \item[\ref{pr:toy-cong}] Problem~\ref{c28-pr:symmetry}: the index of \((\Z^3 \cap X) \oplus \Z(1,1,1)\) in \(\Z^3\).
 \item[\ref{pr:toy-delta}] The false lifts for \(R_1\) are spanned by \(v_\vartheta\), and conversely; use Problem~\ref{pr:rank-one}.  For the bounds, \(\lVert w_1\rVert^2 = 5\), and Problem~\ref{pr:toy-cong}.
@@ -279,16 +294,15 @@ So the bound of Theorem~\ref{thm:main} is, per unit of \(d_T\), \(k\) times the 
 
 \subsection*{\S\ref{sec:heights}}
 \begin{description}
-\item[\ref{pr:of-mul}] Try \(h(\ell) := \max(g(\ell), 0)/\log\ell\) for primes \(\ell\), and \(h(n) := 0\) for the other \(n\).
-\item[\ref{pr:height-ops}] Multiply the multipliers \(H\).
-\item[\ref{pr:height-one}] \(H\) is algebraic, since \(\Aut(\C)\) moves a transcendental number to any other; apply the product formula to \(H\) in a Galois number field, noting that every embedding of that field into \(\bar\Q_\ell\) extends to some \(\iota\).
+\item[\ref{pr:of-mul}] Try \(h(\ell) := \max(g(\ell), 0)/\log\ell\).
+\item[\ref{pr:height-ops}] Keep the multiplier \(H\).
 \end{description}
 
 \subsection*{\S\ref{sec:general}}
 \begin{description}
-\item[\ref{pr:delta-height}] Problem~\ref{pr:of-mul} with \(H = \Delta_1\), Theorem~\ref{thm:compression}(b) and~(c), and the function \(\gamma\) of~(iii).
-\item[\ref{pr:hecke-height}] Theorems~\ref{thm:factor} and~\ref{thm:main-pair}, condition~(ii) and Problem~\ref{pr:height-ops}; by~(i), \(N_{Q}\) is a unit at \(\ell\).
-\item[\ref{pr:identity}] Theorem~\ref{thm:compression}(a) at \(\xi^j\) and at \(1\).
+\item[\ref{pr:delta-height}] Problem~\ref{pr:of-mul} with \(H = D_1\), which is nonzero by Theorem~\ref{thm:compression}(a), Theorem~\ref{thm:compression}(b) and~(c), and the reals \(\gamma(\ell)\) of~(iii).
+\item[\ref{pr:hecke-height}] Theorems~\ref{thm:factor} and~\ref{thm:main-pair}, condition~(ii), Problems~\ref{c5-pr:height-mul} and~\ref{pr:height-ops}; by~(i), \(\Nm Q\) is a unit at \(\ell\).
+\item[\ref{pr:identity}] Theorem~\ref{thm:compression}(a) at \(\vartheta^j\) and at \(1\).
 \item[\ref{pr:budget}] The terms in \(\hdir\) cancel.  Compare everything with \(kB = fxbL^3/m \ge fmbL^3/4\), and use \(r \le 2k\).  For the data, use the inequalities between \(m\), \(r\), \(x\), \(x_1\) and \(b\) in Chapter~\ref{c32-chap}.
 \end{description}
 
