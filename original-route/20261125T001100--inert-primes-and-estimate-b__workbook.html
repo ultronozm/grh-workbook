@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="robots" content="noindex">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-25" />
+  <title>Inert primes and Estimate B</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","R":"\\mathbb{R}","Re":"\\operatorname{Re}","Im":"\\operatorname{Im}","one":"\\mathbf{1}"}}};</script>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<!-- snapshot-banner --><div style="border:1px solid #c9a227;background:#fff8e1;color:#3d3d3d;padding:.6em .9em;margin:.5em 0 1em 0;font:15px/1.4 system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;border-radius:6px"><strong>Snapshot of 25 November 2026.</strong> This is the collection as it stood before it was reorganized around the rewritten Lean proof. It is not maintained. Current version: <a href="../">ultronozm.github.io/grh-workbook</a>.</div>
+
+    <div class="my-links-container">
+2026-11-25 22:40:18
+      <a href="https://github.com/ultronozm/grh-workbook/blob/original-route/20261125T001100--inert-primes-and-estimate-b__workbook.tex" class="my-link">tex</a>
+      <a href="20261125T001100--inert-primes-and-estimate-b__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/original-route/20261125T001100--inert-primes-and-estimate-b__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Inert primes and Estimate B <a class="stable-tag" href="tag/2239.html" title="Stable tag: cite as Tag 2239">Tag 2239</a></h1>
+<p class="date">November 25, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:inert" id="toc-sec:inert">§2.1. Inert primes and a quadratic character</a></li>
+<li><a href="#sec:estB" id="toc-sec:estB">§2.2. Estimate B in a simple form</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secinert" id="toc-secinert">§2.1</a></li>
+<li><a href="#secestb" id="toc-secestb">§2.2</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Chapter <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#chap" data-reference-type="ref"
+data-reference="zr-chap">1</a>, <em>From zeros to a one-sided
+ramp sum</em> (Sections <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#sec:ramp" data-reference-type="ref"
+data-reference="zr-sec:ramp">1.1</a>–<a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#sec:dirichlet" data-reference-type="ref"
+data-reference="zr-sec:dirichlet">1.4</a>): the functions
+<span class="math inline">\(G\)</span> and <span
+class="math inline">\(G_\chi\)</span> of its equations <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:G" data-reference-type="eqref"
+data-reference="zr-eq:G">(1)</a> and <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:Gchi"
+data-reference-type="eqref"
+data-reference="zr-eq:Gchi">(3)</a>, the argument of Problem <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#pr:real-zero" data-reference-type="ref"
+data-reference="zr-pr:real-zero">1.2.4</a>, and Theorem <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#thm:intervals" data-reference-type="ref"
+data-reference="zr-thm:intervals">1.2.3</a>. Quadratic
+reciprocity with its supplements <span class="citation"
+data-cites="SeA">[<a href="#ref-SeA">SeA</a>, Ch. I, §3]</span>, and the
+splitting of primes in an imaginary quadratic field <span
+class="citation" data-cites="Ne">[<a href="#ref-Ne">Ne</a>, Ch. I,
+§8]</span>. Orthogonality of Dirichlet characters and the prime number
+theorem in progressions to a fixed modulus <span class="citation"
+data-cites="Dav">[<a href="#ref-Dav">Dav</a>, Ch. 4 and 20]</span>.</p>
+<p>The arithmetic gives upper bounds for ramp sums over odd powers of
+primes inert in an imaginary quadratic field, not for the full ramp sum
+<span class="math inline">\(S\)</span>. How far is such a sum from <span
+class="math inline">\(G\)</span>, and what must be known about the
+quadratic characters involved to recover a bound for <span
+class="math inline">\(G\)</span>?</p>
+<h1 id="sec:inert">§2.1. Inert primes and a quadratic character <a class="stable-tag" href="tag/223A.html" title="Stable tag: cite as Tag 223A">Tag 223A</a></h1>
+<p>Let <span class="math inline">\(d \equiv 3 \pmod 4\)</span> be a
+prime, let <span class="math inline">\(K :=
+\mathbb{Q}(\sqrt{-d})\)</span>, and let <span
+class="math inline">\(\chi_d(n) := \bigl(\frac{n}{d}\bigr)\)</span> be
+the Legendre symbol.</p>
+<div id="pr:kronecker" class="problem"><a class="stable-tag" href="tag/223B.html" title="Stable tag: cite as Tag 223B">Tag 223B</a>
+<p><strong>Problem 2.1.1</strong>. (i) For every prime <span
+class="math inline">\(p\)</span>, <span
+class="math inline">\(\chi_d(p)\)</span> is <span
+class="math inline">\(1\)</span>, <span
+class="math inline">\(-1\)</span> or <span
+class="math inline">\(0\)</span> according as <span
+class="math inline">\(p\)</span> splits, is inert, or ramifies in <span
+class="math inline">\(K\)</span>. (ii) For a prime power <span
+class="math inline">\(r = p^h\)</span>, <span class="math inline">\(1 -
+\chi_d(r)\)</span> is <span class="math inline">\(2\)</span> if <span
+class="math inline">\(p\)</span> is inert and <span
+class="math inline">\(h\)</span> is odd, <span
+class="math inline">\(1\)</span> if <span class="math inline">\(p =
+d\)</span>, and <span class="math inline">\(0\)</span> otherwise.</p>
+</div>
+<p>The ramp sum over odd powers of inert primes, with weight <span
+class="math inline">\(2\)</span>, and over powers of <span
+class="math inline">\(d\)</span>, with weight <span
+class="math inline">\(1\)</span>, is therefore <span
+class="math display">\[S_d(x) := \sum_r \Lambda(r) \bigl(1 -
+\chi_d(r)\bigr) \Bigl(\frac{x}{r} - 1\Bigr)_+ .\]</span> For a primitive
+nonprincipal character <span class="math inline">\(\chi\)</span> let
+<span class="math inline">\(\Psi_\chi(t) := \sum_{n \le t} \Lambda(n)
+\chi(n)\)</span>, and let <span class="math inline">\(c_\chi\)</span>
+and <span class="math inline">\(G_\chi\)</span> be as in <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:Gchi" data-reference-type="eqref"
+data-reference="zr-eq:Gchi">(3)</a>.</p>
+<div id="pr:Gchi-min" class="problem"><a class="stable-tag" href="tag/223C.html" title="Stable tag: cite as Tag 223C">Tag 223C</a>
+<p><strong>Problem 2.1.2</strong>. <span class="math inline">\(G_\chi(x) =
+-\sum_n \Lambda(n) \chi(n) \min(1, x/n) = -x \int_x^\infty \Psi_\chi(t)
+\, t^{-2} \, d t\)</span>.</p>
+</div>
+<div id="pr:G-minus" class="problem"><a class="stable-tag" href="tag/223D.html" title="Stable tag: cite as Tag 223D">Tag 223D</a>
+<p><strong>Problem 2.1.3</strong>. <span class="math inline">\(S_d(x) - x
+\log x + (1 + \gamma - c_{\chi_d}) x = G(x) -
+G_{\chi_d}(x)\)</span>.</p>
+</div>
+<p>The arithmetic thus bounds <span class="math inline">\(G -
+G_{\chi_d}\)</span>, not <span class="math inline">\(G\)</span>. How
+much does such a bound say about the zeros of <span
+class="math inline">\(\zeta\)</span>?</p>
+<div id="pr:fixed-d" class="problem"><a class="stable-tag" href="tag/223E.html" title="Stable tag: cite as Tag 223E">Tag 223E</a>
+<p><strong>Problem 2.1.4</strong>. Let <span class="math inline">\(0 &lt;
+\theta &lt; 1\)</span>. Suppose that <span class="math inline">\(L(s,
+\chi_d)\)</span> has no real zero in <span
+class="math inline">\((\theta, 1)\)</span>, and that <span
+class="math inline">\(G(x) - G_{\chi_d}(x) \le x^\theta\)</span> for all
+large <span class="math inline">\(x\)</span>. Then every zero of <span
+class="math inline">\(\zeta(s)\)</span> or of <span
+class="math inline">\(L(s, \chi_d)\)</span> in <span
+class="math inline">\(\operatorname{Re}s &gt; \theta\)</span> is a zero
+of both, with the same multiplicity.</p>
+</div>
+<p>A one-sided bound for <span class="math inline">\(G -
+G_{\chi_d}\)</span> thus cannot exclude a zero of <span
+class="math inline">\(\zeta\)</span> that <span
+class="math inline">\(L(s, \chi_d)\)</span> shares, and the argument
+needs a separate hypothesis on real zeros of <span
+class="math inline">\(L(s, \chi_d)\)</span>. The way out is to bound
+<span class="math inline">\(G_{\chi_d}(x)\)</span> from both sides, for
+one well-chosen <span class="math inline">\(d\)</span> and for <span
+class="math inline">\(x\)</span> in a given range only (§<a
+href="#sec:estB" data-reference-type="ref"
+data-reference="sec:estB">2.2</a>).</p>
+<p>A second quadratic character enters through a table of residue
+classes. Let <span class="math inline">\(q \equiv 3 \pmod 8\)</span> and
+<span class="math inline">\(d \equiv 7 \pmod 8\)</span> be primes with
+<span class="math inline">\(q \mid d + 1\)</span>, and let <span
+class="math inline">\(\chi_q(n) := \bigl(\frac{n}{q}\bigr)\)</span>.</p>
+<div id="pr:congruences" class="problem"><a class="stable-tag" href="tag/223F.html" title="Stable tag: cite as Tag 223F">Tag 223F</a>
+<p><strong>Problem 2.1.5</strong>. <span class="math inline">\(\chi_d(2) =
+\chi_d(q) = 1\)</span>. Hence <span class="math inline">\(1 -
+\chi_d(r)\)</span> vanishes at every power of <span
+class="math inline">\(2\)</span> and of <span
+class="math inline">\(q\)</span>.</p>
+</div>
+<p>Let <span class="math inline">\(n\)</span> be a power of <span
+class="math inline">\(2\)</span>, let <span class="math inline">\(N :=
+4n\)</span>, and let <span class="math inline">\(H :=
+(\mathbb{Z}/N\mathbb{Z})^\times/\{\pm 1\}\)</span>, a group of order
+<span class="math inline">\(n\)</span>; write <span
+class="math inline">\([r]\)</span> for the class of an odd integer <span
+class="math inline">\(r\)</span>. Assign an odd prime power <span
+class="math inline">\(r\)</span> prime to <span
+class="math inline">\(q\)</span> to the <em>cell</em> <span
+class="math inline">\((v(r), [r])\)</span>, where <span
+class="math inline">\(v(r) := \frac12(1 + \chi_q(r))\)</span> is the
+<em>row</em>. There are <span class="math inline">\(2n\)</span> cells.
+To each cell <span class="math inline">\(i\)</span> attach a weight
+<span class="math inline">\(w_i &gt; 0\)</span>, and for <span
+class="math inline">\(a &gt; 0\)</span> consider the sum over these
+<span class="math inline">\(r\)</span> <span class="math display">\[P :=
+\sum_r \Lambda(r) \bigl(1 - \chi_d(r)\bigr) \Bigl(\frac{a}{r} -
+w_{\mathrm{cell}(r)}\Bigr)_+ .\]</span> As in Section <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#sec:smoothing" data-reference-type="ref"
+data-reference="zr-sec:smoothing">1.3</a>, cell <span
+class="math inline">\(i\)</span> contributes <span
+class="math inline">\(w_i\)</span> times its own ramp sum at <span
+class="math inline">\(a/w_i\)</span>. Problem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#pr:table"
+data-reference-type="ref" data-reference="gf-pr:table">4.1.4</a>
+of Chapter <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap" data-reference-type="ref"
+data-reference="gf-chap">4</a> fills in the table for <span
+class="math inline">\(q = 11\)</span>, <span class="math inline">\(d =
+1319\)</span> and <span class="math inline">\(N = 16\)</span>.</p>
+<p>Let <span class="math inline">\(b &gt; 0\)</span> and <span
+class="math inline">\(T_2 \subset H\)</span>, and let <span
+class="math inline">\(\delta := \lvert T_2 \rvert/n\)</span>. For <span
+class="math inline">\(u \in H\)</span>, call the cells <span
+class="math inline">\((1, s)\)</span> with <span class="math inline">\(s
+\in u T_2\)</span> <em>distinguished</em>, give them weight <span
+class="math inline">\(b\)</span>, and give the others weights so small
+that <span class="math inline">\(a/w_i\)</span> is enormous. Averaging
+over the translates <span class="math inline">\(u\)</span> removes the
+column condition:</p>
+<div id="pr:translates" class="problem"><a class="stable-tag" href="tag/223G.html" title="Stable tag: cite as Tag 223G">Tag 223G</a>
+<p><strong>Problem 2.1.6</strong>. For every odd <span
+class="math inline">\(r\)</span> prime to <span
+class="math inline">\(q\)</span>, <span class="math inline">\(\frac1n
+\sum_{u \in H} \mathbf{1}\bigl[v(r) = 1,\ [r] \in u T_2\bigr] =
+\frac{\delta}{2}\bigl(1 + \chi_q(r)\bigr)\)</span>.</p>
+</div>
+<p>So the average over <span class="math inline">\(u\)</span> of the
+distinguished part of <span class="math inline">\(P\)</span> is <span
+class="math inline">\(\frac{\delta b}{2} S_{q,d}(a/b)\)</span>, where
+<span class="math display">\[S_{q,d}(x) := \sum_r \Lambda(r) \bigl(1 +
+\chi_q(r)\bigr)\bigl(1 - \chi_d(r)\bigr)\Bigl(\frac{x}{r} - 1\Bigr)_+
+.\]</span></p>
+<div id="pr:Rqd" class="problem"><a class="stable-tag" href="tag/223H.html" title="Stable tag: cite as Tag 223H">Tag 223H</a>
+<p><strong>Problem 2.1.7</strong>. Let <span class="math inline">\(\eta :=
+\chi_q \chi_d\)</span>. Then <span class="math display">\[S_{q,d}(x) - x
+\log x + (1 + \gamma + c_{\chi_q} - c_{\chi_d} - c_\eta) x
+  = G(x) + G_{\chi_q}(x) - G_{\chi_d}(x) - G_\eta(x) .\]</span></p>
+</div>
+<p>The function <span class="math inline">\(G\)</span> appears with
+coefficient <span class="math inline">\(+1\)</span>, so an upper bound
+for the left side and two-sided bounds for <span
+class="math inline">\(G_{\chi_q}\)</span>, <span
+class="math inline">\(G_{\chi_d}\)</span> and <span
+class="math inline">\(G_\eta\)</span> give an upper bound for <span
+class="math inline">\(G\)</span>. The other cells test primes at the
+enormous scales <span class="math inline">\(a/w_i\)</span>. There the
+remainder of each cell must be small with a saving better than any power
+of <span class="math inline">\(x\)</span>, and for this one expands the
+cell in characters. By Problem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#pr:cell-expansion"
+data-reference-type="ref"
+data-reference="gf-pr:cell-expansion">4.2.2</a> of
+Chapter <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap" data-reference-type="ref"
+data-reference="gf-chap">4</a>, for <span
+class="math inline">\(r\)</span> prime to <span
+class="math inline">\(2qd\)</span> the function <span
+class="math inline">\(r \mapsto \bigl(1 -
+\chi_d(r)\bigr)\mathbf{1}[\mathrm{cell}(r) = (v, s)]\)</span> is a
+linear combination <span class="math inline">\(\sum_\chi f_\chi
+\chi(r)\)</span> of the <span class="math inline">\(4n\)</span>
+characters <span class="math inline">\(\xi \chi_q^i \chi_d^j\)</span>,
+<span class="math inline">\(\xi\)</span> a character of <span
+class="math inline">\(H\)</span> and <span class="math inline">\(i, j
+\in \{0, 1\}\)</span>, with <span class="math inline">\(\sum_\chi \lvert
+f_\chi \rvert = 2\)</span>.</p>
+<p>Hence, apart from explicit terms from the powers of <span
+class="math inline">\(2\)</span>, <span class="math inline">\(q\)</span>
+and <span class="math inline">\(d\)</span>, the remainder of a cell is a
+combination, with total mass <span class="math inline">\(2\)</span>, of
+the functions <span class="math inline">\(G_{\chi^*}\)</span>, where
+<span class="math inline">\(\chi^*\)</span> is the primitive character
+inducing <span class="math inline">\(\chi\)</span> and <span
+class="math inline">\(G_{\chi^*} := G\)</span> for <span
+class="math inline">\(\chi\)</span> principal; and a uniform bound <span
+class="math inline">\(\lvert G_{\chi^*}(y) \rvert \le \vartheta
+y\)</span>, with <span class="math inline">\(\vartheta &gt; 0\)</span>
+small, for these characters at the large scales makes the other cells
+negligible. Such a bound comes from a zero-free region for the <span
+class="math inline">\(L(s, \chi)\)</span> <span class="citation"
+data-cites="Dav">[<a href="#ref-Dav">Dav</a>, Ch. 14]</span>, which is
+effective here, even if there is an exceptional real zero <span
+class="citation" data-cites="Dav">[<a href="#ref-Dav">Dav</a>, Ch. 14,
+(12)]</span>, because the large scales may be taken with <span
+class="math inline">\(\log y &gt; qdN\)</span>.</p>
+<h1 id="sec:estB">§2.2. Estimate B in a simple form <a class="stable-tag" href="tag/223J.html" title="Stable tag: cite as Tag 223J">Tag 223J</a></h1>
+<p>To use Problem <a href="#pr:Rqd" data-reference-type="ref"
+data-reference="pr:Rqd">2.1.7</a> one needs two-sided bounds <span
+class="math inline">\(\lvert G_\chi(x) \rvert \le x^{1/2 +
+\varepsilon}\)</span> for <span class="math inline">\(\chi =
+\chi_q\)</span>, <span class="math inline">\(\chi_d\)</span> and <span
+class="math inline">\(\chi_q\chi_d\)</span>. For one fixed character and
+all large <span class="math inline">\(x\)</span> this is as hard as the
+problem we started from:</p>
+<div id="pr:fixed-chi" class="problem"><a class="stable-tag" href="tag/223K.html" title="Stable tag: cite as Tag 223K">Tag 223K</a>
+<p><strong>Problem 2.2.1</strong>. Let <span
+class="math inline">\(\chi\)</span> be primitive and nonprincipal, and
+<span class="math inline">\(0 &lt; \theta &lt; 1\)</span>. If <span
+class="math inline">\(\lvert G_\chi(x) \rvert \le x^\theta\)</span> for
+all large <span class="math inline">\(x\)</span>, then <span
+class="math inline">\(L(s, \chi) \ne 0\)</span> for <span
+class="math inline">\(\operatorname{Re}s &gt; \theta\)</span>.</p>
+</div>
+<p>What is needed is weaker: the bound for <span
+class="math inline">\(x\)</span> in one interval <span
+class="math inline">\([Y, Y^{3/2}]\)</span>, for some <span
+class="math inline">\(q\)</span> and <span
+class="math inline">\(d\)</span> that may be chosen after <span
+class="math inline">\(Y\)</span>. One takes the moduli enormous, with
+<span class="math inline">\(\log q\)</span> and <span
+class="math inline">\(\log d\)</span> powers of <span
+class="math inline">\(Y\)</span>. For most of them a character sum of
+length far below the modulus behaves like a random sum, of size about
+<span class="math inline">\(\sqrt{x}\)</span>, and one good choice
+suffices.</p>
+<p>For <span class="math inline">\(1 \le x \le Z\)</span> let <span
+class="math inline">\(a_n(x) := \Lambda(n)\min(1, x/n)\)</span>, and for
+a Dirichlet character <span class="math inline">\(\chi\)</span> let
+<span class="math display">\[S_Z(x, \chi) := \sum_{n \le Z} a_n(x)
+\chi(n) ,
+  \qquad
+  t_\chi(Z) := \sum_{n &gt; Z} \frac{\Lambda(n) \chi(n)}{n} ,\]</span>
+the second for <span class="math inline">\(\chi\)</span> nonprincipal.
+By Problem <a href="#pr:Gchi-min" data-reference-type="ref"
+data-reference="pr:Gchi-min">2.1.2</a>, <span
+class="math inline">\(G_\chi(x) = -S_Z(x, \chi) - x\, t_\chi(Z)\)</span>
+for primitive nonprincipal <span
+class="math inline">\(\chi\)</span>.</p>
+<div id="pr:diag" class="problem"><a class="stable-tag" href="tag/223L.html" title="Stable tag: cite as Tag 223L">Tag 223L</a>
+<p><strong>Problem 2.2.2</strong>. <span class="math inline">\(\sum_{n \le
+Z} a_n(x)^2 \le C x \log x\)</span> for <span class="math inline">\(2
+\le x \le Z\)</span>, with <span class="math inline">\(C\)</span>
+absolute.</p>
+</div>
+<div id="pr:all-chars" class="problem"><a class="stable-tag" href="tag/223M.html" title="Stable tag: cite as Tag 223M">Tag 223M</a>
+<p><strong>Problem 2.2.3</strong>. Let <span class="math inline">\(Q &gt;
+Z\)</span> be prime, and let <span class="math inline">\(b_n\)</span> be
+complex numbers. Then <span class="math inline">\(\frac{1}{Q -
+1}\sum_{\chi \bmod Q} \bigl\lvert \sum_{n \le Z} b_n \chi(n)
+\bigr\rvert^2 = \sum_{n \le Z} \lvert b_n \rvert^2\)</span>. Hence, for
+<span class="math inline">\(2 \le x \le Z\)</span>, at most <span
+class="math inline">\(C (Q - 1) x^{-2\varepsilon} \log x\)</span>
+characters <span class="math inline">\(\chi\)</span> modulo <span
+class="math inline">\(Q\)</span> satisfy <span
+class="math inline">\(\lvert S_Z(x, \chi) \rvert &gt; x^{1/2 +
+\varepsilon}\)</span>.</p>
+</div>
+<p>The characters of the argument are quadratic. For an odd prime <span
+class="math inline">\(q\)</span> let <span
+class="math inline">\(\chi_q(n) := \bigl(\frac{n}{q}\bigr)\)</span>, and
+let <span class="math inline">\(\mathcal{P}(U)\)</span> be the set of
+primes in <span class="math inline">\((U, 2U]\)</span>.</p>
+<div id="pr:recip" class="problem"><a class="stable-tag" href="tag/223N.html" title="Stable tag: cite as Tag 223N">Tag 223N</a>
+<p><strong>Problem 2.2.4</strong>. Let <span class="math inline">\(m \ge
+1\)</span> be an integer that is not a square. There is a nonprincipal
+Dirichlet character <span class="math inline">\(\omega_m\)</span> modulo
+<span class="math inline">\(4m\)</span> with <span
+class="math inline">\(\bigl(\frac{m}{q}\bigr) = \omega_m(q)\)</span> for
+every odd prime <span class="math inline">\(q \nmid m\)</span>.</p>
+</div>
+<div id="pr:quad-ms" class="problem"><a class="stable-tag" href="tag/223P.html" title="Stable tag: cite as Tag 223P">Tag 223P</a>
+<p><strong>Problem 2.2.5</strong>. Fix <span class="math inline">\(2 \le x
+\le Z\)</span> and real numbers <span class="math inline">\(b_n\)</span>
+with <span class="math inline">\(\lvert b_n \rvert \le a_n(x)\)</span>.
+As <span class="math inline">\(U \to \infty\)</span>, <span
+class="math display">\[\frac{1}{\lvert \mathcal{P}(U) \rvert} \sum_{q
+\in \mathcal{P}(U)} \Bigl( \sum_{n \le Z} b_n \chi_q(n) \Bigr)^2
+  \ \longrightarrow\ \sum_{\substack{n, n&#39; \le Z \\ n n&#39; =
+\square}} b_n b_{n&#39;}
+  \ \le\ C x \log x ,\]</span> the sum being over the pairs with <span
+class="math inline">\(n n&#39;\)</span> a square.</p>
+</div>
+<p>Problem <a href="#pr:quad-ms" data-reference-type="ref"
+data-reference="pr:quad-ms">2.2.5</a> and Chebyshev’s inequality give the
+following.</p>
+<div id="thm:good-q" class="theorem"><a class="stable-tag" href="tag/223Q.html" title="Stable tag: cite as Tag 223Q">Tag 223Q</a>
+<p><strong>Theorem 2.2.1</strong>. <em>Let <span class="math inline">\(2 \le
+x \le Z\)</span> and <span class="math inline">\(\varepsilon &gt;
+0\)</span>. For all <span class="math inline">\(U\)</span> large in
+terms of <span class="math inline">\(Z\)</span>, the proportion of <span
+class="math inline">\(q \in \mathcal{P}(U)\)</span> with <span
+class="math inline">\(\lvert S_Z(x, \chi_q) \rvert &gt; x^{1/2 +
+\varepsilon}\)</span> is at most <span class="math inline">\(C
+x^{-2\varepsilon} \log x\)</span>, with <span
+class="math inline">\(C\)</span> absolute.</em></p>
+</div>
+<p>A good modulus at one point <span class="math inline">\(x\)</span> is
+not yet enough; one wants the bound at all <span
+class="math inline">\(x\)</span> of an interval simultaneously.</p>
+<div id="pr:derivative" class="problem"><a class="stable-tag" href="tag/223R.html" title="Stable tag: cite as Tag 223R">Tag 223R</a>
+<p><strong>Problem 2.2.6</strong>. As a function of <span
+class="math inline">\(y \in [1, Z]\)</span>, <span
+class="math inline">\(S_Z(y, \chi)\)</span> is continuous and piecewise
+linear, and off the integers its derivative <span
+class="math inline">\(D(y)\)</span> satisfies <span
+class="math inline">\(y D(y) = \sum_{y &lt; n \le Z} a_n(y)
+\chi(n)\)</span>.</p>
+</div>
+<div id="pr:block" class="problem"><a class="stable-tag" href="tag/223S.html" title="Stable tag: cite as Tag 223S">Tag 223S</a>
+<p><strong>Problem 2.2.7</strong>. For <span class="math inline">\(1 \le W
+\le V \le \min(2W, Z)\)</span> and <span class="math inline">\(y \in [W,
+V]\)</span>, <span class="math inline">\(\lvert S_Z(y, \chi) \rvert^2
+\le 2 \lvert S_Z(W, \chi) \rvert^2 + 2W \int_W^{V} \lvert D(t) \rvert^2
+\, d t\)</span>.</p>
+</div>
+<p>By Problem <a href="#pr:derivative" data-reference-type="ref"
+data-reference="pr:derivative">2.2.6</a>, Problem <a href="#pr:quad-ms"
+data-reference-type="ref" data-reference="pr:quad-ms">2.2.5</a> applies to
+<span class="math inline">\(y D(y)\)</span> as well. Applying
+Problems <a href="#pr:quad-ms" data-reference-type="ref"
+data-reference="pr:quad-ms">2.2.5</a> and <a href="#pr:block"
+data-reference-type="ref" data-reference="pr:block">2.2.7</a> on the blocks
+<span class="math inline">\([2^k Y, \min(2^{k+1} Y, Y^A)]\)</span> and
+summing over <span class="math inline">\(k\)</span> gives:</p>
+<div id="thm:good-q-interval" class="theorem"><a class="stable-tag" href="tag/223T.html" title="Stable tag: cite as Tag 223T">Tag 223T</a>
+<p><strong>Theorem 2.2.2</strong>. <em>Let <span class="math inline">\(Y \ge
+2\)</span>, <span class="math inline">\(A \ge 1\)</span>, <span
+class="math inline">\(Z \ge Y^A\)</span> and <span
+class="math inline">\(\varepsilon &gt; 0\)</span>. For all <span
+class="math inline">\(U\)</span> large in terms of <span
+class="math inline">\(Z\)</span>, the proportion of <span
+class="math inline">\(q \in \mathcal{P}(U)\)</span> for which <span
+class="math inline">\(\lvert S_Z(y, \chi_q) \rvert &gt; y^{1/2 +
+\varepsilon}\)</span> for some <span class="math inline">\(y \in [Y,
+Y^A]\)</span> is <span
+class="math inline">\(O_\varepsilon(Y^{-\varepsilon})\)</span>.</em></p>
+</div>
+<p>It remains to make <span class="math inline">\(x\,
+t_{\chi_q}(Z)\)</span> small. For a fixed character <span
+class="math inline">\(t_\chi(Z) \to 0\)</span>, but at a rate governed
+by the zeros of <span class="math inline">\(L(s, \chi)\)</span> near
+<span class="math inline">\(\operatorname{Re}s = 1\)</span>, and here
+<span class="math inline">\(q\)</span> is far larger than <span
+class="math inline">\(Z\)</span>. One needs a box <span
+class="math inline">\(\operatorname{Re}s &gt; 1 - \delta_0\)</span>,
+<span class="math inline">\(\lvert \operatorname{Im}s \rvert \le
+T\)</span> free of zeros of <span class="math inline">\(L(s,
+\chi_q)\)</span> for all but a small proportion of <span
+class="math inline">\(q \in \mathcal{P}(U)\)</span>; zero-density
+estimates near <span class="math inline">\(\operatorname{Re}s =
+1\)</span> give such boxes for most moduli <span class="citation"
+data-cites="Mon">[<a href="#ref-Mon">Mon</a>, Theorem 12.2]</span>. To have
+<span class="math inline">\(\log q\)</span> a small power of <span
+class="math inline">\(Y\)</span>, instead of letting <span
+class="math inline">\(U \to \infty\)</span>, one needs primes in
+progressions to large moduli <span class="citation"
+data-cites="Gal">[<a href="#ref-Gal">Gal</a>, Thm. 7]</span>, and Page’s
+theorem that at most one primitive real character of conductor at most
+<span class="math inline">\(R\)</span> has a real zero within <span
+class="math inline">\(c/\log R\)</span> of <span
+class="math inline">\(1\)</span> <span class="citation"
+data-cites="Pa">[<a href="#ref-Pa">Pa</a>]</span>, <span class="citation"
+data-cites="Dav">[<a href="#ref-Dav">Dav</a>, Ch. 14]</span>.</p>
+<p>The statement wanted, which we call <em>Estimate B</em>, is this: for
+every small <span class="math inline">\(\varepsilon &gt; 0\)</span> and
+every large <span class="math inline">\(Y\)</span> there are primes
+<span class="math inline">\(q \equiv 3 \pmod 8\)</span> and <span
+class="math inline">\(d \equiv 7 \pmod{16}\)</span> with <span
+class="math inline">\(q \mid d + 1\)</span> such that <span
+class="math inline">\(\lvert G_\chi(x) \rvert \le x^{1/2 +
+\varepsilon}\)</span> for <span class="math inline">\(\chi =
+\chi_q\)</span>, <span class="math inline">\(\chi_d\)</span>, <span
+class="math inline">\(\chi_q\chi_d\)</span> and all <span
+class="math inline">\(x \in [Y, Y^{3/2}]\)</span>. One chooses <span
+class="math inline">\(q\)</span> first and then <span
+class="math inline">\(d\)</span>, and the mean squares over <span
+class="math inline">\(d\)</span> involve the twists by <span
+class="math inline">\(\chi_q\)</span>. We do not carry out this
+combination here, and we do not know a published proof of Estimate B.
+Adriazola <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Thms. 5.10 and 5.12]</span>
+proves it, for most <span class="math inline">\(q\)</span> and then most
+<span class="math inline">\(d\)</span> in suitable ranges with <span
+class="math inline">\(\log q\)</span> of size <span
+class="math inline">\(Y^{\varepsilon/5}\)</span> and <span
+class="math inline">\(\log d\)</span> of size <span
+class="math inline">\(Y^{\varepsilon/5}\log^2 Y\)</span>, from the
+inputs named above; there <span class="math inline">\(d\)</span> is also
+taken <span class="math inline">\(\equiv -1\)</span> modulo every odd
+prime up to <span class="math inline">\(Y^{\varepsilon/5}\)</span>.
+There is no circularity: the route sketched above uses only mean squares
+and zero-free boxes near <span class="math inline">\(\operatorname{Re}s
+= 1\)</span> for most <span class="math inline">\(q\)</span>, and
+nothing about zeros near the critical line. For the function <span
+class="math inline">\(G^\psi\)</span> of Section <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#sec:dirichlet" data-reference-type="ref"
+data-reference="zr-sec:dirichlet">1.4</a>, Estimate B is
+needed for all the twists <span class="math inline">\(\xi \chi_q^i
+\chi_d^j\)</span> with <span class="math inline">\(\xi\)</span> a
+character modulo <span class="math inline">\(M\)</span> and <span
+class="math inline">\((i, j) \ne (0, 0)\)</span>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secinert">§<a href="#sec:inert"
+data-reference-type="ref" data-reference="sec:inert">2.1</a></h2>
+<dl>
+<dt><a href="#pr:kronecker" data-reference-type="ref"
+data-reference="pr:kronecker">2.1.1</a></dt>
+<dd>
+<p>For odd <span class="math inline">\(p \ne d\)</span> compare <span
+class="math inline">\(\bigl(\frac{-d}{p}\bigr)\)</span> with <span
+class="math inline">\(\bigl(\frac{p}{d}\bigr)\)</span> by reciprocity.
+For <span class="math inline">\(p = 2\)</span> use <span
+class="math inline">\(\mathcal{O}_K = \mathbb{Z}[(1 +
+\sqrt{-d})/2]\)</span>.</p>
+</dd>
+<dt><a href="#pr:Gchi-min" data-reference-type="ref"
+data-reference="pr:Gchi-min">2.1.2</a></dt>
+<dd>
+<p>Use <span class="math inline">\(\sum_n \Lambda(n)\chi(n)/n =
+-c_\chi\)</span>, convergent by the prime number theorem for <span
+class="math inline">\(\chi\)</span>.</p>
+</dd>
+<dt><a href="#pr:G-minus" data-reference-type="ref"
+data-reference="pr:G-minus">2.1.3</a></dt>
+<dd>
+<p>Write <span class="math inline">\(S_d\)</span> as the ramp sum with
+coefficient <span class="math inline">\(1\)</span> minus the one with
+coefficient <span class="math inline">\(\chi_d\)</span>, and use <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:G" data-reference-type="eqref"
+data-reference="zr-eq:G">(1)</a> and <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:Gchi"
+data-reference-type="eqref"
+data-reference="zr-eq:Gchi">(3)</a>.</p>
+</dd>
+<dt><a href="#pr:fixed-d" data-reference-type="ref"
+data-reference="pr:fixed-d">2.1.4</a></dt>
+<dd>
+<p>The Mellin transform of <span class="math inline">\(G -
+G_{\chi_d}\)</span> is <span class="math inline">\(F(s) +
+\frac{L&#39;}{L}(s, \chi_d)/(s(s-1)) - c_{\chi_d}/(s-1)\)</span>, with
+<span class="math inline">\(F\)</span> as in <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:F"
+data-reference-type="eqref" data-reference="zr-eq:F">(2)</a>.
+Follow Problem <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#pr:real-zero" data-reference-type="ref"
+data-reference="zr-pr:real-zero">1.2.4</a>: a real zero of
+<span class="math inline">\(\zeta\)</span> gives the residue sign of
+that problem, but a real zero of <span class="math inline">\(L(s,
+\chi_d)\)</span> gives the opposite sign.</p>
+</dd>
+<dt><a href="#pr:congruences" data-reference-type="ref"
+data-reference="pr:congruences">2.1.5</a></dt>
+<dd>
+<p><span class="math inline">\(d \equiv 7 \pmod 8\)</span> settles <span
+class="math inline">\(2\)</span>. For <span
+class="math inline">\(q\)</span> use reciprocity with <span
+class="math inline">\(q, d \equiv 3 \pmod 4\)</span> and <span
+class="math inline">\(d \equiv -1 \pmod q\)</span>.</p>
+</dd>
+<dt><a href="#pr:Rqd" data-reference-type="ref"
+data-reference="pr:Rqd">2.1.7</a></dt>
+<dd>
+<p>Expand <span class="math inline">\((1 + \chi_q)(1 - \chi_d)\)</span>;
+the character <span class="math inline">\(\eta\)</span> is primitive
+modulo <span class="math inline">\(qd\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secestb">§<a href="#sec:estB"
+data-reference-type="ref" data-reference="sec:estB">2.2</a></h2>
+<dl>
+<dt><a href="#pr:fixed-chi" data-reference-type="ref"
+data-reference="pr:fixed-chi">2.2.1</a></dt>
+<dd>
+<p>The bound gives absolute convergence of the Mellin transform of <span
+class="math inline">\(G_\chi\)</span> in <span
+class="math inline">\(\operatorname{Re}s &gt; \theta\)</span>. Compute
+that transform as in Problem <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#pr:F"
+data-reference-type="ref" data-reference="zr-pr:F">1.1.3</a>.</p>
+</dd>
+<dt><a href="#pr:diag" data-reference-type="ref"
+data-reference="pr:diag">2.2.2</a></dt>
+<dd>
+<p>Split at <span class="math inline">\(n = x\)</span> and use
+Chebyshev’s bound and partial summation on each part.</p>
+</dd>
+<dt><a href="#pr:all-chars" data-reference-type="ref"
+data-reference="pr:all-chars">2.2.3</a></dt>
+<dd>
+<p>Expand the square; since <span class="math inline">\(Q &gt;
+Z\)</span>, distinct <span class="math inline">\(n, n&#39; \le
+Z\)</span> are distinct modulo <span
+class="math inline">\(Q\)</span>.</p>
+</dd>
+<dt><a href="#pr:recip" data-reference-type="ref"
+data-reference="pr:recip">2.2.4</a></dt>
+<dd>
+<p>Write <span class="math inline">\(m = 2^e m&#39;\)</span> with <span
+class="math inline">\(m&#39;\)</span> odd and use the Jacobi symbol. For
+nontriviality, separate the cases where <span
+class="math inline">\(m&#39;\)</span> is a square and where it is
+not.</p>
+</dd>
+<dt><a href="#pr:quad-ms" data-reference-type="ref"
+data-reference="pr:quad-ms">2.2.5</a></dt>
+<dd>
+<p>Expand the square and apply Problem <a href="#pr:recip"
+data-reference-type="ref" data-reference="pr:recip">2.2.4</a> with <span
+class="math inline">\(m = n n&#39;\)</span> and the prime number theorem
+modulo <span class="math inline">\(4nn&#39;\)</span>. For the bound,
+<span class="math inline">\(n\)</span> and <span
+class="math inline">\(n&#39;\)</span> are prime powers; the pairs with
+<span class="math inline">\(n = n&#39;\)</span> are covered by
+Problem <a href="#pr:diag" data-reference-type="ref"
+data-reference="pr:diag">2.2.2</a>. Group the pairs by prime, and treat the
+even powers separately.</p>
+</dd>
+<dt><a href="#pr:block" data-reference-type="ref"
+data-reference="pr:block">2.2.7</a></dt>
+<dd>
+<p>Use Problem <a href="#pr:derivative" data-reference-type="ref"
+data-reference="pr:derivative">2.2.6</a>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Adr"><span class="bib-label">[Adr]</span> J. Adriazola, <em>The Alpöge proof of the Riemann hypothesis</em>, manuscript, revised 24 November 2026, <a href="https://github.com/jimjamzola/RH-Alpoge-Reconstruction" class="uri">https://github.com/jimjamzola/RH-Alpoge-Reconstruction</a>.</p>
+<p id="ref-Dav"><span class="bib-label">[Dav]</span> H. Davenport, <em>Multiplicative Number Theory</em>, 3rd ed., revised by H. L. Montgomery, Grad. Texts in Math. <strong>74</strong>, Springer, 2000.</p>
+<p id="ref-Gal"><span class="bib-label">[Gal]</span> P. X. Gallagher, <em>A large sieve density estimate near <span class="math inline">\(\sigma = 1\)</span></em>, Invent. Math. <strong>11</strong> (1970), 329–339.</p>
+<p id="ref-Mon"><span class="bib-label">[Mon]</span> H. L. Montgomery, <em>Topics in Multiplicative Number Theory</em>, Lecture Notes in Math. <strong>227</strong>, Springer, 1971.</p>
+<p id="ref-Ne"><span class="bib-label">[Ne]</span> J. Neukirch, <em>Algebraic Number Theory</em>, Grundlehren Math. Wiss. <strong>322</strong>, Springer, 1999.</p>
+<p id="ref-Pa"><span class="bib-label">[Pa]</span> A. Page, <em>On the number of primes in an arithmetic progression</em>, Proc. London Math. Soc. (2) <strong>39</strong> (1935), 116–141.</p>
+<p id="ref-SeA"><span class="bib-label">[SeA]</span> J.-P. Serre, <em>A Course in Arithmetic</em>, Grad. Texts in Math. <strong>7</strong>, Springer, 1973.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="robots" content="noindex">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-25" />
+  <title>Columns from a sphere</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","R":"\\mathbb{R}","C":"\\mathbb{C}","PP":"\\mathbb{P}","EE":"\\mathbb{E}","cell":"\\operatorname{cell}"}}};</script>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<!-- snapshot-banner --><div style="border:1px solid #c9a227;background:#fff8e1;color:#3d3d3d;padding:.6em .9em;margin:.5em 0 1em 0;font:15px/1.4 system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;border-radius:6px"><strong>Snapshot of 25 November 2026.</strong> This is the collection as it stood before it was reorganized around the rewritten Lean proof. It is not maintained. Current version: <a href="../">ultronozm.github.io/grh-workbook</a>.</div>
+
+    <div class="my-links-container">
+2026-11-25 22:40:21
+      <a href="https://github.com/ultronozm/grh-workbook/blob/original-route/20261125T005500--columns-from-a-sphere__workbook.tex" class="my-link">tex</a>
+      <a href="20261125T005500--columns-from-a-sphere__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/original-route/20261125T005500--columns-from-a-sphere__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Columns from a sphere <a class="stable-tag" href="tag/225R.html" title="Stable tag: cite as Tag 225R">Tag 225R</a></h1>
+<p class="date">November 25, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:two" id="toc-sec:two">§5.1. Two requirements</a></li>
+<li><a href="#sec:behrend" id="toc-sec:behrend">§5.2. Behrend’s construction</a></li>
+<li><a href="#sec:tops" id="toc-sec:tops">§5.3. The tops: a random choice</a>
+<ul>
+<li><a href="#exercises" id="toc-exercises">Exercises</a></li>
+</ul></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#sectwo" id="toc-sectwo">§5.1</a></li>
+<li><a href="#secbehrend" id="toc-secbehrend">§5.2</a></li>
+<li><a href="#sectops" id="toc-sectops">§5.3</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Linearity of expectation, the union bound and Chebyshev’s inequality
+for sums of independent Bernoulli variables. From Chapter <a
+href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap" data-reference-type="ref"
+data-reference="gf-chap">4</a>, <em>Fourier analysis on the
+Galois group</em>: the group <span class="math inline">\(H\)</span>, the
+cells <span class="math inline">\(\operatorname{cell}_t(r)\)</span> and
+Problem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#pr:outside" data-reference-type="ref"
+data-reference="gf-pr:outside">4.1.3</a> (Section <a
+href="20261125T005000--galois-fourier-and-averaging__workbook.html#sec:places" data-reference-type="ref"
+data-reference="gf-sec:places">4.1</a>), and the thick cells
+<span class="math inline">\(\Theta_u\)</span>, the density <span
+class="math inline">\(\delta = \lvert T_2\rvert/n\)</span> and
+Theorem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#thm:two-scales" data-reference-type="ref"
+data-reference="gf-thm:two-scales">4.4.1</a> (Section <a
+href="20261125T005000--galois-fourier-and-averaging__workbook.html#sec:thick" data-reference-type="ref"
+data-reference="gf-sec:thick">4.4</a>).</p>
+<p>In Chapter <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap" data-reference-type="ref"
+data-reference="gf-chap">4</a> a set <span
+class="math inline">\(T_2\)</span> of columns was fixed, and the cells
+of row <span class="math inline">\(1\)</span> in the columns <span
+class="math inline">\(uT_2\)</span> were given the weight <span
+class="math inline">\(b\)</span>, so that they test primes near <span
+class="math inline">\(x\)</span>. Nothing was asked of <span
+class="math inline">\(T_2\)</span> there except that it be large:
+Theorem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#thm:two-scales" data-reference-type="ref"
+data-reference="gf-thm:two-scales">4.4.1</a> divides by
+<span class="math inline">\(\delta\)</span>. How is <span
+class="math inline">\(T_2\)</span> chosen? The argument asks for a
+second property, that the cells of the odd powers of one prime rarely
+fall in <span class="math inline">\(uT_2\)</span>, and the two
+properties pull in opposite directions. Behrend’s construction <span
+class="citation" data-cites="Beh">[<a href="#ref-Beh">Beh</a>]</span>
+satisfies both: lattice points on a sphere, written as digits in a large
+base. We follow <span class="citation"
+data-cites="Rub">[<a href="#ref-Rub">Rub</a>]</span> and <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>.</p>
+<p>Throughout, <span class="math inline">\(x\)</span> is large, <span
+class="math inline">\(0 &lt; \varepsilon &lt; \frac1{52}\)</span>, and
+<span class="math inline">\(n\)</span> is a power of <span
+class="math inline">\(2\)</span> with <span
+class="math inline">\(x^{2+8\varepsilon} \le n \le
+2x^{2+8\varepsilon}\)</span>; the notation <span
+class="math inline">\(q, d, N = 4n, H, \Phi, v(r)\)</span> is that of
+Chapter <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap" data-reference-type="ref"
+data-reference="gf-chap">4</a>. The integer <span
+class="math inline">\(L \ge 2\)</span> is at most <span
+class="math inline">\(C_L \log x\)</span> for a constant <span
+class="math inline">\(C_L\)</span>; in the argument <span
+class="math inline">\(L\)</span> is of order <span
+class="math inline">\(\log x\)</span> <span class="citation"
+data-cites="Rub">[<a href="#ref-Rub">Rub</a>]</span>.</p>
+<h1 id="sec:two">§5.1. Two requirements <a class="stable-tag" href="tag/225S.html" title="Stable tag: cite as Tag 225S">Tag 225S</a></h1>
+<div id="pr:cyclic" class="problem"><a class="stable-tag" href="tag/225T.html" title="Stable tag: cite as Tag 225T">Tag 225T</a>
+<p><strong>Problem 5.1.1</strong>. The group <span class="math inline">\(H =
+(\mathbb{Z}/N\mathbb{Z})^\times/\{\pm1\}\)</span> is cyclic of order
+<span class="math inline">\(n\)</span>, generated by <span
+class="math inline">\([5]\)</span>. For <span class="math inline">\(N =
+16\)</span>, <span class="math inline">\([5]^0, [5]^1, [5]^2,
+[5]^3\)</span> are <span class="math inline">\([1], [5], [7],
+[3]\)</span>.</p>
+</div>
+<p>We write <span class="math inline">\(H\)</span> additively through
+<span class="math inline">\(\iota \colon H \to
+\mathbb{Z}/n\mathbb{Z}\)</span>, <span
+class="math inline">\(\iota([5]^i) = i\)</span>, and regard a set of
+integers <span class="math inline">\(T_2 \subset [0, n)\)</span> as the
+set of columns <span class="math inline">\(\{[5]^s : s \in
+T_2\}\)</span>. Then the thick cells for the translate <span
+class="math inline">\(u\)</span> are the cells in row <span
+class="math inline">\(1\)</span> whose column <span
+class="math inline">\(c\)</span> has <span
+class="math inline">\(\iota(c) \in \iota(u) + T_2\)</span>.</p>
+<div id="pr:frob-prog" class="problem"><a class="stable-tag" href="tag/225U.html" title="Stable tag: cite as Tag 225U">Tag 225U</a>
+<p><strong>Problem 5.1.2</strong>. Let <span
+class="math inline">\(p\)</span> be a prime inert in <span
+class="math inline">\(K = \mathbb{Q}(\sqrt{-d})\)</span>, <span
+class="math inline">\(p \nmid 2qd\)</span>, and <span
+class="math inline">\(\iota_p := \iota([p])\)</span>. For odd <span
+class="math inline">\(h \ge 1\)</span> and <span class="math inline">\(t
+\in H\)</span>, the cell <span
+class="math inline">\(\operatorname{cell}_t(p^h)\)</span> is in row
+<span class="math inline">\(v(p)\)</span> and its column has index <span
+class="math inline">\(\iota(t) + h\iota_p\)</span>. So the cells of
+<span class="math inline">\(p, p^3, p^5, \dots\)</span> run along the
+progression <span class="math inline">\(\iota(t) + \iota_p +
+2\iota_p\,\mathbb{Z}\)</span> in a single row.</p>
+</div>
+<p>We call these the <em>Frobenius progressions</em>. The first
+requirement on <span class="math inline">\(T_2\)</span> comes from
+averaging.</p>
+<div id="pr:avg-density" class="problem"><a class="stable-tag" href="tag/225V.html" title="Stable tag: cite as Tag 225V">Tag 225V</a>
+<p><strong>Problem 5.1.3</strong>. Let <span
+class="math inline">\(r\)</span> be a prime power with a cell, and <span
+class="math inline">\(t \in H\)</span>. The number of <span
+class="math inline">\(u \in H\)</span> for which <span
+class="math inline">\(\operatorname{cell}_t(r)\)</span> is thick for
+<span class="math inline">\(w_u\)</span> is <span
+class="math inline">\(\lvert T_2\rvert\)</span> if <span
+class="math inline">\(v(r) = 1\)</span>, and <span
+class="math inline">\(0\)</span> if <span class="math inline">\(v(r) =
+0\)</span>.</p>
+</div>
+<p>So the average over translates sees <span
+class="math inline">\(T_2\)</span> only through <span
+class="math inline">\(\delta\)</span>, and every prime power of
+row <span class="math inline">\(1\)</span> gets the weight <span
+class="math inline">\(\delta\)</span>; this is Problem <a
+href="20261125T005000--galois-fourier-and-averaging__workbook.html#pr:thick-avg" data-reference-type="ref"
+data-reference="gf-pr:thick-avg">4.4.3</a>. The gain of the
+argument is proportional to <span class="math inline">\(\delta\)</span>,
+while its errors are not, and in Theorem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#thm:two-scales"
+data-reference-type="ref"
+data-reference="gf-thm:two-scales">4.4.1</a> the mean
+excess is divided by <span class="math inline">\(\delta b\)</span>. The
+argument needs <span id="eq:density" class="math display">\[\begin{equation}
+\label{eq:density}\tag{1}
+  \delta \ge x^{-\varepsilon} ,
+\end{equation}\]</span> which is used in the chapter <em>Assembly at one
+scale</em>, where the other losses are also powers <span
+class="math inline">\(x^{O(\varepsilon)}\)</span>.</p>
+<p>The second requirement concerns a single translate. For all <span
+class="math inline">\(u, t \in H\)</span> and every prime as in
+Problem <a href="#pr:frob-prog" data-reference-type="ref"
+data-reference="pr:frob-prog">5.1.2</a>, at most two of the cells of <span
+class="math inline">\(L\)</span> consecutive odd powers <span
+class="math inline">\(p^h\)</span> may be thick, provided <span
+class="math inline">\(2\iota_p\)</span> has order greater than <span
+class="math inline">\(4L\)</span>. If the order is at most <span
+class="math inline">\(4L\)</span>, at most one cell of any odd power of
+<span class="math inline">\(p\)</span> may be thick. In <span
+class="citation" data-cites="Rub">[<a href="#ref-Rub">Rub</a>]</span> the
+sets of columns enter the main inequality through <a href="#eq:density"
+data-reference-type="eqref" data-reference="eq:density">(1)</a>
+and through a bound for the losses at inert primes, which is quoted
+there from the formal proof <span class="citation"
+data-cites="Rub">[<a href="#ref-Rub">Rub</a>]</span>. These are losses of the
+kind in Theorem <a href="20261124T214600--the-isotropic-plane__workbook.html#thm:main" data-reference-type="ref"
+data-reference="ip-thm:main">17.3.1</a> of Chapter <a
+href="20261124T214600--the-isotropic-plane__workbook.html#chap" data-reference-type="ref"
+data-reference="ip-chap">17</a>, the weight <span
+class="math inline">\(w\)</span> subtracted at each odd level, not the
+colength of Chapter <a href="20261125T013500--hecke-nondegeneracy-on-the-tree__workbook.html#chap" data-reference-type="ref"
+data-reference="hn-chap">19</a>: at the scale <span
+class="math inline">\(p^h\)</span> the loss is at most <span
+class="math inline">\(w\)</span>, where <span
+class="math inline">\(w\)</span> is the weight of the cell to which
+Frobenius links the chosen one <span class="citation"
+data-cites="Rub">[<a href="#ref-Rub">Rub</a>]</span>, and a thick cell
+carries the large weight <span class="math inline">\(b\)</span>. This
+second property is the form in which <span
+class="math inline">\(T_2\)</span> is recorded for that bound, which we
+do not treat here. The requirement is uniform: it must hold for every
+<span class="math inline">\(u\)</span>, <span
+class="math inline">\(t\)</span> and <span
+class="math inline">\(p\)</span>, with no exceptions.</p>
+<p>Why are these two requirements in tension? The obvious sets of
+integers without three-term progressions are thin.</p>
+<div id="pr:base3" class="problem"><a class="stable-tag" href="tag/225W.html" title="Stable tag: cite as Tag 225W">Tag 225W</a>
+<p><strong>Problem 5.1.4</strong>. Let <span
+class="math inline">\(A_k\)</span> be the set of integers in <span
+class="math inline">\([0, 3^k)\)</span> whose base-<span
+class="math inline">\(3\)</span> digits are <span
+class="math inline">\(0\)</span> or <span
+class="math inline">\(1\)</span>. (i) <span
+class="math inline">\(A_k\)</span> contains no three-term arithmetic
+progression, and <span class="math inline">\(\lvert A_k\rvert =
+(3^k)^{\log 2/\log 3}\)</span>. (ii) For <span class="math inline">\(k
+\ge 2\)</span>, <span class="math inline">\(A_k\)</span> contains <span
+class="math inline">\(0, 1, 3\)</span>, and <span
+class="math inline">\(3(1 - 0) = 1 \cdot (3 - 0)\)</span>.</p>
+</div>
+<p>As a set of columns with <span class="math inline">\(n \approx
+3^k\)</span>, <span class="math inline">\(A_k\)</span> has density <span
+class="math inline">\(n^{-0.369\ldots}\)</span>, far below <span
+class="math inline">\(x^{-\varepsilon}\)</span>. A random set has the
+right density but meets progressions too often.</p>
+<div id="pr:random-ap" class="problem"><a class="stable-tag" href="tag/225X.html" title="Stable tag: cite as Tag 225X">Tag 225X</a>
+<p><strong>Problem 5.1.5</strong>. Let <span class="math inline">\(R \subset
+\mathbb{Z}/n\mathbb{Z}\)</span> contain each element independently with
+probability <span class="math inline">\(\delta\)</span>. The expected
+number of pairs <span class="math inline">\((s, h)\)</span> with <span
+class="math inline">\(s, s + h, s + 2h \in R\)</span> and <span
+class="math inline">\(h\)</span> of order greater than <span
+class="math inline">\(4L\)</span> is at least <span
+class="math inline">\(n(n - 4L)\delta^3\)</span>. For <span
+class="math inline">\(\delta = x^{-\varepsilon}\)</span> this exceeds
+<span class="math inline">\(\delta n \cdot x^{2}\)</span> for large
+<span class="math inline">\(x\)</span>.</p>
+</div>
+<p>Each such pair gives three consecutive terms <span
+class="math inline">\(s, s+h, s+2h\)</span> of a progression in <span
+class="math inline">\(R\)</span>, against the second requirement for
+every <span class="math inline">\(L \ge 3\)</span>. In expectation there
+are far more bad pairs than points of <span
+class="math inline">\(R\)</span>, so counting one deleted point for each
+bad pair leaves no lower bound for what survives. The count alone does
+not show that no cleverer deletion succeeds, since one point can lie on
+many bad pairs; but it locates the density at which the naive deletion
+stops working.</p>
+<div id="pr:random-deletion" class="problem"><a class="stable-tag" href="tag/225Y.html" title="Stable tag: cite as Tag 225Y">Tag 225Y</a>
+<p><strong>Problem 5.1.6</strong>. Let <span
+class="math inline">\(R\)</span> be as in Problem <a
+href="#pr:random-ap" data-reference-type="ref"
+data-reference="pr:random-ap">5.1.5</a>, and let <span
+class="math inline">\(R&#39;\)</span> be obtained by deleting one point
+from each bad pair. Then <span class="math inline">\(R&#39;\)</span>
+contains no bad pair, and its expected size is at least <span
+class="math inline">\(\delta n - \delta^3 n^2\)</span>. For <span
+class="math inline">\(\delta \le (2n)^{-1/2}\)</span> this is at least
+<span class="math inline">\(\delta n/2\)</span>, and <span
+class="math inline">\((2n)^{-1/2} &lt; x^{-1-4\varepsilon}\)</span>.</p>
+</div>
+<p>So a random set with deletions reaches a density about <span
+class="math inline">\(n^{-1/2}\)</span>, and to raise it to <span
+class="math inline">\(x^{-\varepsilon}\)</span> the set must be built
+with structure.</p>
+<h1 id="sec:behrend">§5.2. Behrend’s construction <a class="stable-tag" href="tag/225Z.html" title="Stable tag: cite as Tag 225Z">Tag 225Z</a></h1>
+<p>Three points of a sphere are never collinear. Behrend’s idea is to
+transport this to the integers by writing vectors as digits. Let <span
+class="math inline">\(S, D \ge 2\)</span> be integers and <span
+class="math inline">\(\Sigma_k := \{v \in \{0, \dots, D-1\}^S : \lvert
+v\rvert^2 = k\}\)</span>.</p>
+<div id="pr:line-sphere" class="problem"><a class="stable-tag" href="tag/2262.html" title="Stable tag: cite as Tag 2262">Tag 2262</a>
+<p><strong>Problem 5.2.1</strong>. Let <span class="math inline">\(v_1, v_2,
+v_3\)</span> lie on one sphere <span class="math inline">\(\lvert
+v\rvert^2 = k\)</span> in <span
+class="math inline">\(\mathbb{R}^S\)</span>, and let <span
+class="math inline">\(i, j\)</span> be real with <span
+class="math inline">\(i, j \ne 0\)</span>, <span class="math inline">\(i
+\ne j\)</span> and <span class="math inline">\(j(v_2 - v_1) = i(v_3 -
+v_1)\)</span>. Then <span class="math inline">\(v_1 = v_2 =
+v_3\)</span>.</p>
+</div>
+<div id="pr:pigeonhole" class="problem"><a class="stable-tag" href="tag/2263.html" title="Stable tag: cite as Tag 2263">Tag 2263</a>
+<p><strong>Problem 5.2.2</strong>. Some <span
+class="math inline">\(k\)</span> has <span
+class="math inline">\(\lvert\Sigma_k\rvert \ge D^{S-2}/S\)</span>.</p>
+</div>
+<p>Fix such a <span class="math inline">\(k\)</span>. Let <span
+class="math inline">\(B := 4LD\)</span>, <span
+class="math inline">\(s(v) := \sum_{m=0}^{S-1} v_m B^m\)</span>, and
+<span class="math inline">\(T_2 := s(\Sigma_k)\)</span>.</p>
+<div id="pr:digits" class="problem"><a class="stable-tag" href="tag/2264.html" title="Stable tag: cite as Tag 2264">Tag 2264</a>
+<p><strong>Problem 5.2.3</strong>. If <span class="math inline">\(c_0,
+\dots, c_{S-1}\)</span> are integers with <span
+class="math inline">\(\lvert c_m\rvert &lt; B\)</span> and <span
+class="math inline">\(\sum_m c_m B^m = 0\)</span>, then every <span
+class="math inline">\(c_m = 0\)</span>. In particular <span
+class="math inline">\(s\)</span> is injective.</p>
+</div>
+<div id="pr:no-relation" class="problem"><a class="stable-tag" href="tag/2265.html" title="Stable tag: cite as Tag 2265">Tag 2265</a>
+<p><strong>Problem 5.2.4</strong>. There are no distinct <span
+class="math inline">\(s_1, s_2, s_3 \in T_2\)</span> and integers <span
+class="math inline">\(i \ne j\)</span> with <span
+class="math inline">\(0 &lt; \lvert i\rvert, \lvert j\rvert \le
+L\)</span> and <span class="math inline">\(j(s_2 - s_1) = i(s_3 -
+s_1)\)</span>.</p>
+</div>
+<p>For <span class="math inline">\(L = 2\)</span> this excludes
+three-term progressions (<span class="math inline">\(i = 1\)</span>,
+<span class="math inline">\(j = 2\)</span>). Problem <a href="#pr:base3"
+data-reference-type="ref" data-reference="pr:base3">5.1.4</a>(ii) shows that
+it says more.</p>
+<div id="pr:example" class="problem"><a class="stable-tag" href="tag/2266.html" title="Stable tag: cite as Tag 2266">Tag 2266</a>
+<p><strong>Problem 5.2.5</strong>. For <span class="math inline">\(S =
+3\)</span>, <span class="math inline">\(D = 3\)</span>, <span
+class="math inline">\(L = 2\)</span>, so <span class="math inline">\(B =
+24\)</span>, the sphere with the most points is <span
+class="math inline">\(k = 5\)</span>, with the six permutations of <span
+class="math inline">\((0, 1, 2)\)</span>, and <span
+class="math inline">\(T_2 = \{26, 49, 578, 624, 1153,
+1176\}\)</span>.</p>
+</div>
+<p>It remains to choose <span class="math inline">\(S\)</span> and <span
+class="math inline">\(D\)</span>. Behrend lets <span
+class="math inline">\(S\)</span> grow with <span
+class="math inline">\(n\)</span>. For the density <span
+class="math inline">\(x^{-\varepsilon}\)</span> a fixed dimension
+suffices: let <span class="math inline">\(S &gt; 12/\varepsilon\)</span>
+be a fixed integer and <span class="math inline">\(D := \lfloor
+(n/4L)^{1/S}/(4L) \rfloor\)</span>.</p>
+<div id="pr:size" class="problem"><a class="stable-tag" href="tag/2267.html" title="Stable tag: cite as Tag 2267">Tag 2267</a>
+<p><strong>Problem 5.2.6</strong>. (i) <span class="math inline">\(B^S \le
+n/(4L)\)</span>, so <span class="math inline">\(4Ls &lt; n\)</span> for
+every <span class="math inline">\(s \in T_2\)</span>. (ii) If <span
+class="math inline">\((n/4L)^{1/S} \ge 8L\)</span>, then <span
+class="math inline">\(\lvert T_2\rvert \ge n^{1 -
+2/S}(8L)^{-S}/S\)</span>.</p>
+</div>
+<p>Since <span class="math inline">\(n^{-2/S} \ge
+(2x^{2+8\varepsilon})^{-\varepsilon/6} \ge x^{-\varepsilon/2}\)</span>
+and <span class="math inline">\((8L)^{-S}/S \ge (8C_L\log x)^{-S}/S \ge
+x^{-\varepsilon/2}\)</span> for large <span
+class="math inline">\(x\)</span>, Problems <a href="#pr:pigeonhole"
+data-reference-type="ref" data-reference="pr:pigeonhole">5.2.2</a>–<a
+href="#pr:no-relation" data-reference-type="ref"
+data-reference="pr:no-relation">5.2.4</a> and <a href="#pr:size"
+data-reference-type="ref" data-reference="pr:size">5.2.6</a> prove the
+following.</p>
+<div id="thm:behrend" class="theorem"><a class="stable-tag" href="tag/2268.html" title="Stable tag: cite as Tag 2268">Tag 2268</a>
+<p><strong>Theorem 5.2.1</strong> (Behrend). <em>For <span
+class="math inline">\(x\)</span> large in terms of <span
+class="math inline">\(\varepsilon\)</span> and <span
+class="math inline">\(C_L\)</span> there is a set <span
+class="math inline">\(T_2\)</span> of nonnegative integers with <span
+class="math inline">\(4Ls &lt; n\)</span> for <span
+class="math inline">\(s \in T_2\)</span>, with <span
+class="math inline">\(\lvert T_2\rvert \ge x^{-\varepsilon}n\)</span>,
+and with the property of Problem <a href="#pr:no-relation"
+data-reference-type="ref"
+data-reference="pr:no-relation">5.2.4</a>.</em></p>
+</div>
+<p>Optimizing <span class="math inline">\(S\)</span> gives the density
+<span class="math inline">\(L^{-1}\exp(-C\sqrt{\log n \log L})\)</span>
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Prop. 5.17]</span>, which is Behrend’s bound for <span
+class="math inline">\(L = 2\)</span> <span class="citation"
+data-cites="Beh">[<a href="#ref-Beh">Beh</a>]</span>. No construction can
+give a density bounded below: by Roth’s theorem <span class="citation"
+data-cites="Ro">[<a href="#ref-Ro">Ro</a>]</span> a set of integers in <span
+class="math inline">\([0, n)\)</span> without three-term progressions
+has <span class="math inline">\(o(n)\)</span> elements.</p>
+<p>Now pass to <span
+class="math inline">\(\mathbb{Z}/n\mathbb{Z}\)</span>. The condition
+<span class="math inline">\(4Ls &lt; n\)</span> turns a congruence into
+an equation.</p>
+<div id="pr:long-order" class="problem"><a class="stable-tag" href="tag/2269.html" title="Stable tag: cite as Tag 2269">Tag 2269</a>
+<p><strong>Problem 5.2.7</strong>. Let <span class="math inline">\(u_0, t,
+h \in \mathbb{Z}/n\mathbb{Z}\)</span> with <span
+class="math inline">\(h\)</span> of order greater than <span
+class="math inline">\(4L\)</span>. Among any <span
+class="math inline">\(L\)</span> consecutive terms <span
+class="math inline">\(t + ih\)</span>, at most two lie in <span
+class="math inline">\(u_0 + T_2\)</span>.</p>
+</div>
+<div id="pr:short-order" class="problem"><a class="stable-tag" href="tag/226A.html" title="Stable tag: cite as Tag 226A">Tag 226A</a>
+<p><strong>Problem 5.2.8</strong>. If <span
+class="math inline">\(h\)</span> has order at most <span
+class="math inline">\(4L\)</span>, at most one element of <span
+class="math inline">\(t + \mathbb{Z}h\)</span> lies in <span
+class="math inline">\(u_0 + T_2\)</span>.</p>
+</div>
+<p>Problem <a href="#pr:long-order" data-reference-type="ref"
+data-reference="pr:long-order">5.2.7</a> uses only that <span
+class="math inline">\(h\)</span> has order at least <span
+class="math inline">\(L\)</span>; the threshold <span
+class="math inline">\(4L\)</span> is the one at which Problem <a
+href="#pr:short-order" data-reference-type="ref"
+data-reference="pr:short-order">5.2.8</a> takes over. Problems <a
+href="#pr:long-order" data-reference-type="ref"
+data-reference="pr:long-order">5.2.7</a> and <a href="#pr:short-order"
+data-reference-type="ref" data-reference="pr:short-order">5.2.8</a> prove
+the following.</p>
+<div id="thm:progressions" class="theorem"><a class="stable-tag" href="tag/226B.html" title="Stable tag: cite as Tag 226B">Tag 226B</a>
+<p><strong>Theorem 5.2.2</strong>. <em>Let <span
+class="math inline">\(T_2\)</span> be as in Theorem <a
+href="#thm:behrend" data-reference-type="ref"
+data-reference="thm:behrend">5.2.1</a>, and <span class="math inline">\(u_0,
+t, h \in \mathbb{Z}/n\mathbb{Z}\)</span>. If <span
+class="math inline">\(h\)</span> has order greater than <span
+class="math inline">\(4L\)</span>, at most two of any <span
+class="math inline">\(L\)</span> consecutive terms <span
+class="math inline">\(t + ih\)</span> lie in <span
+class="math inline">\(u_0 + T_2\)</span>. If <span
+class="math inline">\(h\)</span> has order at most <span
+class="math inline">\(4L\)</span>, at most one element of <span
+class="math inline">\(t + \mathbb{Z}h\)</span> does.</em></p>
+</div>
+<p>So <span class="math inline">\(T_2\)</span> satisfies <a
+href="#eq:density" data-reference-type="eqref"
+data-reference="eq:density">(1)</a> and the second requirement
+of Section <a href="#sec:two" data-reference-type="ref"
+data-reference="sec:two">5.1</a>; for the cells this reads as follows.</p>
+<div id="pr:frob-thick" class="problem"><a class="stable-tag" href="tag/226C.html" title="Stable tag: cite as Tag 226C">Tag 226C</a>
+<p><strong>Problem 5.2.9</strong>. Let <span
+class="math inline">\(p\)</span> be as in Problem <a
+href="#pr:frob-prog" data-reference-type="ref"
+data-reference="pr:frob-prog">5.1.2</a>, and <span class="math inline">\(u,
+t \in H\)</span>. If <span class="math inline">\(2\iota_p\)</span> has
+order greater than <span class="math inline">\(4L\)</span> in <span
+class="math inline">\(\mathbb{Z}/n\mathbb{Z}\)</span>, then at most two
+of <span class="math inline">\(\operatorname{cell}_t(p^{h_0}),
+\operatorname{cell}_t(p^{h_0 + 2}), \dots, \operatorname{cell}_t(p^{h_0
++ 2L - 2})\)</span> are thick for <span
+class="math inline">\(w_u\)</span>, for every odd <span
+class="math inline">\(h_0 \ge 1\)</span>.</p>
+</div>
+<p>Theorems <a href="#thm:behrend" data-reference-type="ref"
+data-reference="thm:behrend">5.2.1</a> and <a href="#thm:progressions"
+data-reference-type="ref" data-reference="thm:progressions">5.2.2</a> are
+<span class="citation" data-cites="Rub">[<a href="#ref-Rub">Rub</a>,
+Thm. III.3.1]</span>. For <span class="math inline">\(L(s,
+\psi)\)</span> with <span class="math inline">\(\psi\)</span> of order
+<span class="math inline">\(o\)</span>, Section <a
+href="20261125T005000--galois-fourier-and-averaging__workbook.html#sec:subgroup" data-reference-type="ref"
+data-reference="gf-sec:subgroup">4.5</a> requires <span
+class="math inline">\(T_2 \subset A_0\)</span>. One applies the
+construction with <span class="math inline">\(n/o\)</span> in place of
+<span class="math inline">\(n\)</span> and places <span
+class="math inline">\(s\)</span> at <span
+class="math inline">\(s\,a_0\)</span>, with <span
+class="math inline">\(a_0\)</span> a generator of the cyclic group <span
+class="math inline">\(A_0\)</span> <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>.</p>
+<h1 id="sec:tops">§5.3. The tops: a random choice <a class="stable-tag" href="tag/226D.html" title="Stable tag: cite as Tag 226D">Tag 226D</a></h1>
+<p>The set <span class="math inline">\(T\)</span> of shifts <span
+class="math inline">\(t\)</span> in Section <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#sec:subgroup"
+data-reference-type="ref"
+data-reference="gf-sec:subgroup">4.5</a>, the
+<em>tops</em>, has the opposite needs. Its density <span
+class="math inline">\(\delta_1 := x^{-\varepsilon/8}\)</span> is larger,
+and along a Frobenius orbit it may contain a bounded number <span
+class="math inline">\(k_T\)</span> of points in a window, not two.
+Exceptions are allowed if they are rare on average over primes. A random
+set does this, and this is where the argument uses randomness <span
+class="citation" data-cites="Rub">[<a href="#ref-Rub">Rub</a>]</span>, <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Prop. 5.20]</span>. Let <span class="math inline">\(T \subset
+\mathbb{Z}/n\mathbb{Z}\)</span> contain each element independently with
+probability <span class="math inline">\(\delta_1\)</span>.</p>
+<div id="pr:size-T" class="problem"><a class="stable-tag" href="tag/226E.html" title="Stable tag: cite as Tag 226E">Tag 226E</a>
+<p><strong>Problem 5.3.1</strong>. <span
+class="math inline">\(\mathbb{P}\bigl(\bigl\lvert\lvert T\rvert -
+\delta_1 n\bigr\rvert &gt; \frac12\delta_1 n\bigr) \le 4/(\delta_1
+n)\)</span>.</p>
+</div>
+<div id="pr:window" class="problem"><a class="stable-tag" href="tag/226F.html" title="Stable tag: cite as Tag 226F">Tag 226F</a>
+<p><strong>Problem 5.3.2</strong>. Let <span
+class="math inline">\(h\)</span> have order at least <span
+class="math inline">\(L_2\)</span>, and let <span
+class="math inline">\(W\)</span> be a set of <span
+class="math inline">\(L_2\)</span> consecutive terms of <span
+class="math inline">\(t + \mathbb{Z}h\)</span>. Then <span
+class="math inline">\(\mathbb{P}(\lvert W \cap T\rvert \ge k_T + 1) \le
+(L_2\delta_1)^{k_T+1}\)</span>.</p>
+</div>
+<div id="pr:union" class="problem"><a class="stable-tag" href="tag/226G.html" title="Stable tag: cite as Tag 226G">Tag 226G</a>
+<p><strong>Problem 5.3.3</strong>. Let <span class="math inline">\(k_T \ge
+8(4 + 8\varepsilon)/\varepsilon\)</span>. If <span
+class="math inline">\(h\)</span> has order at least <span
+class="math inline">\(L_2\)</span>, the expected number of windows of
+<span class="math inline">\(L_2\)</span> consecutive terms on the orbits
+of <span class="math inline">\(h\)</span> that contain more than <span
+class="math inline">\(k_T\)</span> points of <span
+class="math inline">\(T\)</span> is at most <span
+class="math inline">\(2L_2^{k_T+1}x^{-2-\varepsilon/8}\)</span>.</p>
+</div>
+<p>With <span class="math inline">\(L_2\)</span> bounded and <span
+class="math inline">\(k_T\)</span> as in Problem <a href="#pr:union"
+data-reference-type="ref" data-reference="pr:union">5.3.3</a>, a random
+<span class="math inline">\(T\)</span> is thus sparse along the orbits
+of one <span class="math inline">\(h\)</span> with probability close to
+<span class="math inline">\(1\)</span>. The argument asks for two more
+conditions of even spread along the orbits. It conditions on <span
+class="math inline">\(t \in T\)</span> and weights the primes by <span
+class="math inline">\(\log p/p\)</span>, and it takes different
+probabilities on the cosets of <span class="math inline">\(A_0\)</span>
+to obtain the shares of Problem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#pr:shares"
+data-reference-type="ref"
+data-reference="gf-pr:shares">4.5.3</a>. Then it chooses one
+<span class="math inline">\(T\)</span> by comparing expectations <span
+class="citation" data-cites="Rub">[<a href="#ref-Rub">Rub</a>,
+Thm. III.3.2]</span>, <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Prop. 5.20]</span>. Compare
+Problem <a href="#pr:random-ap" data-reference-type="ref"
+data-reference="pr:random-ap">5.1.5</a>: the same method fails for <span
+class="math inline">\(T_2\)</span>, where at most two points are allowed
+in a window and there may be no exceptions. For <span
+class="math inline">\(T_2\)</span> the sphere replaces chance. This ends
+the reduction: the Riemann hypothesis now asks for an upper bound for
+weighted prime sums at one scale, and the next part, from Chapter <a
+href="20261125T000000--slope-method__workbook.html#chap" data-reference-type="ref"
+data-reference="sm-chap">6</a> on, gives the method that bounds
+them by comparing divisibility with size.</p>
+<h2 class="unnumbered" id="exercises">Exercises</h2>
+<ol>
+<li><p>Let <span class="math inline">\(\log L \le c\log n\)</span> with
+<span class="math inline">\(c\)</span> small. With <span
+class="math inline">\(S \approx \sqrt{\log n/\log L}\)</span> and <span
+class="math inline">\(D := \lfloor (n/4L)^{1/S}/(4L) \rfloor\)</span>,
+the construction gives <span class="math inline">\(\lvert T_2\rvert \ge
+n\exp(-C\sqrt{\log n \log L})\)</span>, still with <span
+class="math inline">\(4Ls &lt; n\)</span>, for an absolute constant
+<span class="math inline">\(C\)</span>.</p></li>
+<li><p>Without the condition <span class="math inline">\(4Ls &lt;
+n\)</span>, Problem <a href="#pr:long-order" data-reference-type="ref"
+data-reference="pr:long-order">5.2.7</a> fails: for <span
+class="math inline">\(n = 64\)</span> and <span class="math inline">\(L
+= 3\)</span>, the set <span class="math inline">\(\{0, 2, 33\}\)</span>
+has the property of Problem <a href="#pr:no-relation"
+data-reference-type="ref" data-reference="pr:no-relation">5.2.4</a>, yet
+<span class="math inline">\(0, 33, 66 \equiv 2\)</span> are consecutive
+terms of <span class="math inline">\(33i\)</span>, of order <span
+class="math inline">\(64\)</span>.</p></li>
+<li><p>A set <span class="math inline">\(T_2 \subset [0, n)\)</span>
+with the property of Problem <a href="#pr:no-relation"
+data-reference-type="ref" data-reference="pr:no-relation">5.2.4</a> meets
+every arithmetic progression of <span class="math inline">\(L\)</span>
+terms in <span class="math inline">\(\mathbb{Z}\)</span> in at most two
+points.</p></li>
+</ol>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="sectwo">§<a href="#sec:two"
+data-reference-type="ref" data-reference="sec:two">5.1</a></h2>
+<dl>
+<dt><a href="#pr:cyclic" data-reference-type="ref"
+data-reference="pr:cyclic">5.1.1</a></dt>
+<dd>
+<p>By induction, <span class="math inline">\(5^{2^{e}} \equiv 1 +
+2^{e+2} \pmod{2^{e+3}}\)</span>; and <span
+class="math inline">\(-1\)</span> is not a power of <span
+class="math inline">\(5\)</span> modulo <span
+class="math inline">\(4\)</span>.</p>
+</dd>
+<dt><a href="#pr:frob-prog" data-reference-type="ref"
+data-reference="pr:frob-prog">5.1.2</a></dt>
+<dd>
+<p>Problem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#pr:outside" data-reference-type="ref"
+data-reference="gf-pr:outside">4.1.3</a>; <span
+class="math inline">\(\chi_q(p^h) = \chi_q(p)\)</span> for odd <span
+class="math inline">\(h\)</span>.</p>
+</dd>
+<dt><a href="#pr:avg-density" data-reference-type="ref"
+data-reference="pr:avg-density">5.1.3</a></dt>
+<dd>
+<p>Count the solutions <span class="math inline">\(u\)</span> of <span
+class="math inline">\(t[r] \in uT_2\)</span>.</p>
+</dd>
+<dt><a href="#pr:base3" data-reference-type="ref"
+data-reference="pr:base3">5.1.4</a></dt>
+<dd>
+<p>(i) Add <span class="math inline">\(a + c\)</span> digit by
+digit.</p>
+</dd>
+<dt><a href="#pr:random-ap" data-reference-type="ref"
+data-reference="pr:random-ap">5.1.5</a></dt>
+<dd>
+<p>The three points are distinct; count the <span
+class="math inline">\(h\)</span> of order at most <span
+class="math inline">\(4L\)</span> in a cyclic group.</p>
+</dd>
+<dt><a href="#pr:random-deletion" data-reference-type="ref"
+data-reference="pr:random-deletion">5.1.6</a></dt>
+<dd>
+<p>Linearity of expectation: <span class="math inline">\(\lvert
+R&#39;\rvert\)</span> is at least <span class="math inline">\(\lvert
+R\rvert\)</span> minus the number of bad pairs.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secbehrend">§<a href="#sec:behrend"
+data-reference-type="ref" data-reference="sec:behrend">5.2</a></h2>
+<dl>
+<dt><a href="#pr:line-sphere" data-reference-type="ref"
+data-reference="pr:line-sphere">5.2.1</a></dt>
+<dd>
+<p>Expand <span class="math inline">\(\lvert v_1 + b\rvert^2 = \lvert
+v_1\rvert^2\)</span> for <span class="math inline">\(b = v_2 -
+v_1\)</span> and for <span class="math inline">\(c = v_3 - v_1\)</span>,
+and eliminate <span class="math inline">\(v_1 \cdot c\)</span>.</p>
+</dd>
+<dt><a href="#pr:pigeonhole" data-reference-type="ref"
+data-reference="pr:pigeonhole">5.2.2</a></dt>
+<dd>
+<p>Count the possible values of <span class="math inline">\(\lvert
+v\rvert^2\)</span>.</p>
+</dd>
+<dt><a href="#pr:digits" data-reference-type="ref"
+data-reference="pr:digits">5.2.3</a></dt>
+<dd>
+<p>Look at the lowest nonzero <span class="math inline">\(c_m\)</span>
+modulo <span class="math inline">\(B\)</span>.</p>
+</dd>
+<dt><a href="#pr:no-relation" data-reference-type="ref"
+data-reference="pr:no-relation">5.2.4</a></dt>
+<dd>
+<p>Apply Problem <a href="#pr:digits" data-reference-type="ref"
+data-reference="pr:digits">5.2.3</a> to the digits of <span
+class="math inline">\(j(s_2 - s_1) - i(s_3 - s_1)\)</span>.</p>
+</dd>
+<dt><a href="#pr:size" data-reference-type="ref"
+data-reference="pr:size">5.2.6</a></dt>
+<dd>
+<p>(ii) <span class="math inline">\(\lfloor z\rfloor \ge z/2\)</span>
+for <span class="math inline">\(z \ge 1\)</span>, and Problem <a
+href="#pr:pigeonhole" data-reference-type="ref"
+data-reference="pr:pigeonhole">5.2.2</a>.</p>
+</dd>
+<dt><a href="#pr:long-order" data-reference-type="ref"
+data-reference="pr:long-order">5.2.7</a></dt>
+<dd>
+<p>Eliminate <span class="math inline">\(h\)</span> from three such
+terms, and bound the resulting integer.</p>
+</dd>
+<dt><a href="#pr:short-order" data-reference-type="ref"
+data-reference="pr:short-order">5.2.8</a></dt>
+<dd>
+<p>If <span class="math inline">\(m\)</span> is the order of <span
+class="math inline">\(h\)</span>, then <span class="math inline">\(m(s_1
+- s_2) \equiv 0\)</span>.</p>
+</dd>
+<dt><a href="#pr:frob-thick" data-reference-type="ref"
+data-reference="pr:frob-thick">5.2.9</a></dt>
+<dd>
+<p>Problems <a href="#pr:frob-prog" data-reference-type="ref"
+data-reference="pr:frob-prog">5.1.2</a> and <a href="#pr:long-order"
+data-reference-type="ref" data-reference="pr:long-order">5.2.7</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="sectops">§<a href="#sec:tops"
+data-reference-type="ref" data-reference="sec:tops">5.3</a></h2>
+<dl>
+<dt><a href="#pr:size-T" data-reference-type="ref"
+data-reference="pr:size-T">5.3.1</a></dt>
+<dd>
+<p>Chebyshev’s inequality.</p>
+</dd>
+<dt><a href="#pr:window" data-reference-type="ref"
+data-reference="pr:window">5.3.2</a></dt>
+<dd>
+<p>Union bound over subsets of <span class="math inline">\(W\)</span> of
+size <span class="math inline">\(k_T + 1\)</span>.</p>
+</dd>
+<dt><a href="#pr:union" data-reference-type="ref"
+data-reference="pr:union">5.3.3</a></dt>
+<dd>
+<p>There are <span class="math inline">\(n\)</span> windows.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Adr"><span class="bib-label">[Adr]</span> J. Adriazola, <em>The Alpöge proof of the Riemann hypothesis</em>, manuscript, revised 24 November 2026, <a href="https://github.com/jimjamzola/RH-Alpoge-Reconstruction" class="uri">https://github.com/jimjamzola/RH-Alpoge-Reconstruction</a>.</p>
+<p id="ref-Beh"><span class="bib-label">[Beh]</span> F. A. Behrend, <em>On sets of integers which contain no three terms in arithmetical progression</em>, Proc. Nat. Acad. Sci. U.S.A. <strong>32</strong> (1946), 331–332.</p>
+<p id="ref-Ro"><span class="bib-label">[Ro]</span> K. F. Roth, <em>On certain sets of integers</em>, J. London Math. Soc. <strong>28</strong> (1953), 104–109.</p>
+<p id="ref-Rub"><span class="bib-label">[Rub]</span> <em>The Alpöge–Claude proof of the Riemann hypothesis explained for the Riemann zeta function</em>, written by AI models at the behest of M. O. Rubinstein, working draft, 21 November 2026, <a href="https://www.math.uwaterloo.ca/~mrubinst/alpoge_claude_grh/zeta-paper.pdf" class="uri">https://www.math.uwaterloo.ca/~mrubinst/alpoge_claude_grh/zeta-paper.pdf</a>.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="robots" content="noindex">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-25" />
+  <title>Assembly at one scale</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","R":"\\mathbb{R}","C":"\\mathbb{C}","Oc":"\\mathcal{O}","Lc":"\\mathcal{L}","Bc":"\\mathcal{B}","Wc":"\\mathcal{W}","mumax":"\\mu_{\\max}","mumin":"\\mu_{\\min}","rd":"\\operatorname{rd}","ph":"\\varphi","Sha":"\\mathrm{Sha}","ii":"\\mathrm{i}","Gal":"\\operatorname{Gal}","Re":"\\operatorname{Re}"}}};</script>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<!-- snapshot-banner --><div style="border:1px solid #c9a227;background:#fff8e1;color:#3d3d3d;padding:.6em .9em;margin:.5em 0 1em 0;font:15px/1.4 system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;border-radius:6px"><strong>Snapshot of 25 November 2026.</strong> This is the collection as it stood before it was reorganized around the rewritten Lean proof. It is not maintained. Current version: <a href="../">ultronozm.github.io/grh-workbook</a>.</div>
+
+    <div class="my-links-container">
+2026-11-25 21:18:14
+      <a href="https://github.com/ultronozm/grh-workbook/blob/original-route/20261125T021500--assembly-at-one-scale__workbook.tex" class="my-link">tex</a>
+      <a href="20261125T021500--assembly-at-one-scale__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/original-route/20261125T021500--assembly-at-one-scale__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Assembly at one scale</h1>
+<p class="date">November 25, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:acct" id="toc-sec:acct">§58.1. The accounting</a></li>
+<li><a href="#sec:inputs" id="toc-sec:inputs">§58.2. The inputs and their errors</a></li>
+<li><a href="#sec:norm" id="toc-sec:norm">§58.3. Normalization</a></li>
+<li><a href="#sec:exponents" id="toc-sec:exponents">§58.4. The exponents</a></li>
+<li><a href="#sec:window" id="toc-sec:window">§58.5. The window, and the zeros</a></li>
+<li><a href="#sec:chi8" id="toc-sec:chi8">§58.6. The example \(\psi = \chi_8\)</a></li>
+<li><a href="#sec:map" id="toc-sec:map">§58.7. The status of the inputs</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secacct" id="toc-secacct">§58.1</a></li>
+<li><a href="#secinputs" id="toc-secinputs">§58.2</a></li>
+<li><a href="#secnorm" id="toc-secnorm">§58.3</a></li>
+<li><a href="#secexponents" id="toc-secexponents">§58.4</a></li>
+<li><a href="#secwindow" id="toc-secwindow">§58.5</a></li>
+<li><a href="#secchi8" id="toc-secchi8">§58.6</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>From Chapter <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#chap" data-reference-type="ref"
+data-reference="zr-chap">1</a>: the functions <span
+class="math inline">\(G\)</span> and <span
+class="math inline">\(G_\chi\)</span> of <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:G"
+data-reference-type="eqref" data-reference="zr-eq:G">(1)</a>
+and <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:Gchi" data-reference-type="eqref"
+data-reference="zr-eq:Gchi">(3)</a>, Theorem <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#thm:intervals" data-reference-type="ref"
+data-reference="zr-thm:intervals">1.2.3</a>, and
+Sections <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#sec:dirichlet" data-reference-type="ref"
+data-reference="zr-sec:dirichlet">1.4</a> and <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#sec:real-pole" data-reference-type="ref"
+data-reference="zr-sec:real-pole">1.5</a>. From
+Chapter <a href="20261125T001100--inert-primes-and-estimate-b__workbook.html#chap" data-reference-type="ref"
+data-reference="zi-chap">2</a>: Problem <a href="20261125T001100--inert-primes-and-estimate-b__workbook.html#pr:Rqd"
+data-reference-type="ref" data-reference="zi-pr:Rqd">2.1.7</a> and
+Estimate B (Section <a href="20261125T001100--inert-primes-and-estimate-b__workbook.html#sec:estB" data-reference-type="ref"
+data-reference="zi-sec:estB">2.2</a>). From Chapter <a
+href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap" data-reference-type="ref"
+data-reference="gf-chap">4</a>: the notation <span
+class="math inline">\(q, d, n, H, \Phi\)</span>, <span
+class="math inline">\(P_{t,w}(a)\)</span>, <span
+class="math inline">\(M_w(a)\)</span>, <span
+class="math inline">\(c_{\chi_d}\)</span>, <span
+class="math inline">\(\delta = \lvert T_2\rvert/n\)</span>, <span
+class="math inline">\(R_{q,d}\)</span>, Theorems <a
+href="20261125T005000--galois-fourier-and-averaging__workbook.html#thm:balance" data-reference-type="ref"
+data-reference="gf-thm:balance">4.2.1</a> and <a
+href="20261125T005000--galois-fourier-and-averaging__workbook.html#thm:two-scales" data-reference-type="ref"
+data-reference="gf-thm:two-scales">4.4.1</a>, and
+Section <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#sec:subgroup" data-reference-type="ref"
+data-reference="gf-sec:subgroup">4.5</a>. From Chapter <a
+href="20261125T005500--columns-from-a-sphere__workbook.html#chap" data-reference-type="ref"
+data-reference="cs-chap">5</a>: the bound <a
+href="20261125T005500--columns-from-a-sphere__workbook.html#eq:density" data-reference-type="eqref"
+data-reference="cs-eq:density">(1)</a>, Theorem <a
+href="20261125T005500--columns-from-a-sphere__workbook.html#thm:behrend" data-reference-type="ref"
+data-reference="cs-thm:behrend">5.2.1</a> and Problem <a
+href="20261125T005500--columns-from-a-sphere__workbook.html#pr:size-T" data-reference-type="ref"
+data-reference="cs-pr:size-T">5.3.1</a>. From Chapter <a
+href="20261125T003000--the-chain-and-the-square-root__workbook.html#chap" data-reference-type="ref"
+data-reference="ch-chap">8</a>: Theorem <a href="20261125T003000--the-chain-and-the-square-root__workbook.html#thm:chain"
+data-reference-type="ref"
+data-reference="ch-thm:chain">8.4.2</a> and Section <a
+href="20261125T003000--the-chain-and-the-square-root__workbook.html#sec:budget" data-reference-type="ref"
+data-reference="ch-sec:budget">8.5</a>. Mertens’ estimate
+<span class="math inline">\(\sum_{n \le x}\Lambda(n)/n = \log x +
+O(1)\)</span>. From Chapters <a href="20261125T020000--the-analytic-frame__workbook.html#chap"
+data-reference-type="ref" data-reference="af-chap">36</a>, <a
+href="20261125T020100--divisibility-at-inert-primes-in-general__workbook.html#chap" data-reference-type="ref"
+data-reference="di-chap">37</a>, <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#chap"
+data-reference-type="ref" data-reference="sb-chap">43</a>, <a
+href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="hp-chap">47</a> and <a href="20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.html#chap"
+data-reference-type="ref" data-reference="lt-chap">52</a>: the
+deliverable stated at the end of each, which Sections <a
+href="#sec:inputs" data-reference-type="ref"
+data-reference="sec:inputs">58.2</a> and <a href="#sec:window"
+data-reference-type="ref" data-reference="sec:window">58.5</a> match with
+the inputs, and the problems cited below.</p>
+<p>Chapter <a href="20261125T003000--the-chain-and-the-square-root__workbook.html#chap" data-reference-type="ref"
+data-reference="ch-chap">8</a> balanced an error <span
+class="math inline">\(x/m + m\)</span> for a model chain whose inputs
+were given. What are the inputs in Alpöge’s argument <span
+class="citation" data-cites="Alp">[<a href="#ref-Alp">Alp</a>]</span>, what
+error must each achieve, and which of them pays for each term of the
+final bound? We state what the Lean formalization <span class="citation"
+data-cites="Lean">[<a href="#ref-Lean">Lean</a>]</span> proves. The
+expositions of Adriazola <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>, Zhang <span
+class="citation" data-cites="Zh">[<a href="#ref-Zh">Zh</a> and 6]</span> and
+Rubinstein <span class="citation"
+data-cites="Rub">[<a href="#ref-Rub">Rub</a>]</span> are cited as pointers;
+they agree with it except where noted. Chapter <a href="20261125T021600--the-accounting-in-the-lean-formalization__workbook.html#chap"
+data-reference-type="ref" data-reference="lf-chap">59</a> records
+the formalization’s accounting in full. Throughout, <span
+class="math inline">\(0 &lt; \varepsilon &lt; \frac1{52}\)</span>, the
+range in which <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Thms. 5.10 and 5.12]</span>
+construct the auxiliary primes of Section <a href="#sec:window"
+data-reference-type="ref" data-reference="sec:window">58.5</a>; no problem
+uses this bound. Let <span class="math display">\[y := x^\varepsilon ,
+\qquad b := e^{y} , \qquad a := xb .\]</span> We treat <span
+class="math inline">\(\zeta\)</span>, so that the averaging of
+Chapter <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap" data-reference-type="ref"
+data-reference="gf-chap">4</a> is over all of <span
+class="math inline">\(H\)</span>; for <span
+class="math inline">\(L(s,\psi)\)</span> see Section <a
+href="20261125T005000--galois-fourier-and-averaging__workbook.html#sec:subgroup" data-reference-type="ref"
+data-reference="gf-sec:subgroup">4.5</a> there and <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>.</p>
+<h1 id="sec:acct">§58.1. The accounting</h1>
+<p>The data are: <span class="math inline">\(m\)</span> lifts; a set
+<span class="math inline">\(T \subset H\)</span> of <span
+class="math inline">\(N_T\)</span> tops with weights <span
+class="math inline">\(a_t &gt; 0\)</span>, and <span
+class="math inline">\(A := \sum_t a_t\)</span>; nodes <span
+class="math inline">\(w_j \colon \Phi \to (0,\infty)\)</span> for <span
+class="math inline">\(1 \le j \le m\)</span>; a finite set <span
+class="math inline">\(\mathcal{W}\)</span> of <em>words</em>, and for
+<span class="math inline">\(u \in \mathcal{W}\)</span> a source lattice
+<span class="math inline">\(N_u\)</span> of rank <span
+class="math inline">\(d_u\)</span>, a base lattice <span
+class="math inline">\(M_u\)</span>, an auxiliary prime <span
+class="math inline">\(T_u\)</span>, and a bound <span
+class="math inline">\(h_u\)</span> for the height of the period map
+<span class="math inline">\(B_u \colon N_u \to R^\vee\)</span>, where
+<span class="math inline">\(R^\vee\)</span> is the target. These objects
+are defined in Chapter <a href="20261126T000000--the-objects-of-the-construction__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">35</a>. All lattices are hermitian
+lattices over the ring of integers of a coefficient field <span
+class="math inline">\(L \supset E\)</span> (over <span
+class="math inline">\(\mathcal{O}_E\)</span> in <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Def. 18.9]</span>), with the
+normalized slopes of Chapter <a href="20261125T000000--slope-method__workbook.html#chap"
+data-reference-type="ref" data-reference="sm-chap">6</a>. Let
+<span class="math inline">\(S := \sum_{t,j} P_{t,w_j}(a_t)\)</span>, let
+<span class="math inline">\(\Gamma\)</span> be the total gain of the
+lifts at the inert primes, net of the colength of the Hecke image, <span
+class="math inline">\(\mathcal{L}\)</span> their common local terms and
+<span class="math inline">\(E_u\)</span> their local terms at the level
+and twisted places. Let <span class="math inline">\(\varphi(t) := t\log
+t - t\)</span>, <span class="math inline">\(v := \frac12
+\operatorname{rd}_E\)</span>, <span class="math inline">\(\log\Omega :=
+\gamma + \log(\pi/v) - c_{\chi_d}\)</span> (for <span
+class="math inline">\(E = \mathbb{Q}(\mathrm{i})\)</span>, with <span
+class="math inline">\(\chi_{-4}\)</span> in place of <span
+class="math inline">\(\chi_d\)</span>, <span class="math inline">\(v =
+1\)</span> and <span class="math inline">\(\Omega\)</span> is the <span
+class="math inline">\(\Omega\)</span> of Problem <a href="20261124T223000--elliptic-curves-for-the-proof__workbook.html#pr:Omega"
+data-reference-type="ref"
+data-reference="ec-pr:Omega">12.3.7</a>), let <span
+class="math inline">\(g := \log(g_0g_1)\)</span> for two level primes
+<span class="math inline">\(g_0, g_1\)</span>, and write <span
+class="math inline">\(\langle X \rangle := \sum_u d_uX_u / \sum_u
+d_u\)</span>. The inputs are seven inequalities, for every <span
+class="math inline">\(u \in \mathcal{W}\)</span>, with numbers <span
+class="math inline">\(e_1, \dots, e_7 \ge 0\)</span>: <span id="A2"></span><span id="A3"></span><span id="A4"></span><span id="A5"></span><span id="A6"></span><span id="A7"></span><span id="A1"
+class="math display">\[\begin{align}
+  S &amp;\le \Gamma + e_1 , \tag{A1}\label{A1}\\
+  \mu(M_u) + \Gamma + \mathcal{L}- E_u - e_2 &amp;\le \mu(N_u) ,
+\tag{A2}\label{A2}\\
+  \langle \mu(N) - h \rangle - e_3 &amp;\le \mu(R^\vee) ,
+\tag{A3}\label{A3}\\
+  \mu(R^\vee) + h_u - \mathcal{L}&amp;\le \textstyle\sum_{t} \bigl(
+m\varphi(a_t) - m a_t \log\Omega - a_t\log T_u \bigr) + e_4 ,
+\tag{A4}\label{A4}\\
+  E_u &amp;\le mAg + e_5 , \tag{A5}\label{A5}\\
+  \log T_u &amp;\ge \textstyle\sum_{j} \frac{1}{f}\sum_{\rho\in\Phi}
+\log\bigl(w_j(\rho)v/\pi\bigr) + mg - e_6 , \tag{A6}\label{A6}\\
+  \mu(M_u) &amp;\ge -e_7 , \tag{A7}\label{A7}
+\end{align}\]</span> where <span class="math inline">\(f :=
+\lvert\Phi\rvert = 2n\)</span>. In the formalization <span
+class="math inline">\(\Gamma\)</span> is a weighted sum, over the inert
+places, of the gains <span class="math inline">\(\sum_j
+\mathrm{gain}_j(p)\)</span> less the exponent <span
+class="math inline">\(\tau(p)\)</span> of the Hecke image (Theorem <a
+href="20261126T020150--gain-and-loss-at-an-inert-prime__workbook.html#thm:linkG" data-reference-type="ref"
+data-reference="gl-thm:linkG">42.4.1</a> and Chapter <a
+href="20261126T020140--the-colength-of-a-hecke-image__workbook.html#chap" data-reference-type="ref"
+data-reference="co-chap">41</a>). So <span
+class="math inline">\(\Gamma\)</span> already deducts a benchmark
+colength <span class="math inline">\(\tau(p)\)</span>, with the gain set
+to zero at the primes that are dropped. The actual colength is bounded
+in terms of <span class="math inline">\(\tau(p) +
+\mathrm{io}(p)\)</span> (Theorem <a href="20261126T020140--the-colength-of-a-hecke-image__workbook.html#thm:colength"
+data-reference-type="ref"
+data-reference="co-thm:colength">41.4.1</a>(b)); its excess
+over the benchmark is the number <span class="math inline">\(I\)</span>
+of Chapter <a href="20261125T021600--the-accounting-in-the-lean-formalization__workbook.html#chap" data-reference-type="ref"
+data-reference="lf-chap">59</a>, which the formalization bounds
+as it bounds <span class="math inline">\(e_1\)</span>, and which enters
+<span class="math inline">\(e_2\)</span>.</p>
+<div id="pr:A127" class="problem">
+<p><strong>Problem 58.1.1</strong>. <span class="math inline">\(\Gamma \le
+\mu(N_u) - \mathcal{L}+ E_u + e_2 + e_7\)</span> for every <span
+class="math inline">\(u\)</span>.</p>
+</div>
+<div id="pr:A3" class="problem">
+<p><strong>Problem 58.1.2</strong>. <span class="math inline">\(\Gamma \le
+\mu(R^\vee) - \mathcal{L}+ \langle h + E \rangle + e_2 + e_3 +
+e_7\)</span>.</p>
+</div>
+<div id="pr:heights" class="problem">
+<p><strong>Problem 58.1.3</strong>. Let <span
+class="math inline">\(\Sigma_u\)</span> be the right side of <a
+href="#A4" data-reference-type="eqref" data-reference="A4">(A4)</a>.
+Then <span class="math inline">\(\Gamma \le \langle \Sigma + E \rangle +
+e_2 + e_3 + e_7\)</span>: the heights cancel.</p>
+</div>
+<div id="pr:levels" class="problem">
+<p><strong>Problem 58.1.4</strong>. <span class="math display">\[\Sigma_u +
+E_u \le \sum_{j}\sum_t a_t\bigl(\log a_t - 1 - \gamma + c_{\chi_d} -
+\langle\log w_j\rangle_\Phi\bigr) + e_4 + e_5 + Ae_6 ,\]</span> where
+<span class="math inline">\(\langle\cdot\rangle_\Phi\)</span> is the
+mean over <span class="math inline">\(\Phi\)</span>: the level terms
+<span class="math inline">\(mAg\)</span> cancel, and so do <span
+class="math inline">\(\log v\)</span> and <span
+class="math inline">\(\log\pi\)</span>.</p>
+</div>
+<p>The sum in Problem <a href="#pr:levels" data-reference-type="ref"
+data-reference="pr:levels">58.1.4</a> is <span
+class="math inline">\(\sum_{t,j} M_{w_j}(a_t)\)</span>. Problems <a
+href="#pr:A127" data-reference-type="ref"
+data-reference="pr:A127">58.1.1</a>–<a href="#pr:levels"
+data-reference-type="ref" data-reference="pr:levels">58.1.4</a> and <a
+href="#A1" data-reference-type="eqref" data-reference="A1">(A1)</a>
+prove the following <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Prop. 3.1]</span>; with
+Theorem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#thm:balance" data-reference-type="ref"
+data-reference="gf-thm:balance">4.2.1</a> it bounds a sum of
+the functions <span class="math inline">\(G_\theta\)</span> of
+Chapter <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap" data-reference-type="ref"
+data-reference="gf-chap">4</a>.</p>
+<div id="thm:acct" class="theorem">
+<p><strong>Theorem 58.1.1</strong> (accounting). <em>Under <a href="#A1"
+data-reference-type="eqref" data-reference="A1">(A1)</a>–<a href="#A7"
+data-reference-type="eqref" data-reference="A7">(A7)</a>, <span
+class="math display">\[\sum_{t \in T}\sum_{j=1}^m \bigl( P_{t,w_j}(a_t)
+- M_{w_j}(a_t) \bigr) \le e := e_1 + e_2 + e_3 + e_4 + e_5 + Ae_6 + e_7
+.\]</span></em></p>
+</div>
+<p>Three cancellations occur, as in Stepanov’s count (Chapter <a
+href="20261125T003000--the-chain-and-the-square-root__workbook.html#chap" data-reference-type="ref"
+data-reference="ch-chap">8</a>): the heights between <a
+href="#A3" data-reference-type="eqref" data-reference="A3">(A3)</a>
+and <a href="#A4" data-reference-type="eqref"
+data-reference="A4">(A4)</a>, the level terms between <a href="#A5"
+data-reference-type="eqref" data-reference="A5">(A5)</a> and <a
+href="#A6" data-reference-type="eqref" data-reference="A6">(A6)</a>, and
+the linear terms. Euler’s constant and <span
+class="math inline">\(c_{\chi_d}\)</span> enter <span
+class="math inline">\(M_w\)</span> through the prime sum, and <span
+class="math inline">\(\log\Omega\)</span> through the period, by the
+Chowla–Selberg formula (Theorem <a href="20261125T009000--kronecker-limit-and-chowla-selberg__workbook.html#thm:cs"
+data-reference-type="ref" data-reference="kl-thm:cs">20.3.1</a>);
+Problem <a href="#pr:levels" data-reference-type="ref"
+data-reference="pr:levels">58.1.4</a> is where they meet.</p>
+<h1 id="sec:inputs">§58.2. The inputs and their errors</h1>
+<p>What must each <span class="math inline">\(e_i\)</span> be? Put <span
+class="math inline">\(N_2 := \lvert T_2\rvert = \delta n\)</span> and
+<span class="math display">\[B_0 := 2nmby , \qquad N_c :=
+\frac{N_2\,k\,b\,y^2}{n^2} ,\]</span> where <span
+class="math inline">\(k\)</span> is the dimension of the first hermitian
+space of the chain <span class="citation"
+data-cites="Zh">[<a href="#ref-Zh">Zh</a>]</span>. In the following, <span
+class="math inline">\(C \ge 1\)</span> and <span
+class="math inline">\(C_H \ge 0\)</span> depend on <span
+class="math inline">\(\varepsilon\)</span> but not on <span
+class="math inline">\(x\)</span>. The data satisfy <span
+class="math inline">\(N_T \ge 1\)</span>, <span class="math inline">\(1
+\le m \le k \le b\)</span>, <span class="math inline">\(mb \le
+a\)</span> and <span class="math inline">\(a \le a_t \le a + b\)</span>
+for <span class="math inline">\(t \in T\)</span> <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Def. 18.5, Lemma 18.15]</span>
+(the bound <span class="math inline">\(k \le b\)</span> holds once <span
+class="math inline">\(x\)</span> is large, since <span
+class="math inline">\(k\)</span> is at most a power of <span
+class="math inline">\(x\)</span> and <span class="math inline">\(b =
+e^y\)</span>), and <span class="math inline">\(1 \le
+\lvert\mathcal{W}\rvert \le 2^{k-3}\)</span> <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Def. 18.9(a)]</span>; so <span
+class="math inline">\(a_t \le 2a\)</span> and <span
+class="math inline">\(\lvert a_t/b - x\rvert \le 1\)</span>. Let <span
+class="math display">\[U := 8Cy\bigl(N_Ta(1 + m^2/k) + mB_0\bigr)
+;\]</span> Problem <a href="#pr:spread-size" data-reference-type="ref"
+data-reference="pr:spread-size">58.2.2</a> shows that it bounds the spread
+defined below. The errors are those of <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Def. 18.9 and
+Prop. 18.14]</span>, and the earlier chapters of this part deliver
+them:</p>
+<ul>
+<li><p><a href="#A1" data-reference-type="eqref"
+data-reference="A1">(A1)</a> and <a href="#A2"
+data-reference-type="eqref" data-reference="A2">(A2)</a>, with <span
+class="math inline">\(e_1 \le CN_Tmb\)</span> and <span
+class="math inline">\(e_2 \le Cy\bigl(N_Tmb + N_Ta\,m^2/k +
+a\bigr)\)</span>: Theorems <a href="20261125T020100--divisibility-at-inert-primes-in-general__workbook.html#thm:K1"
+data-reference-type="ref" data-reference="di-thm:K1">37.5.1</a>
+and <a href="20261125T020100--divisibility-at-inert-primes-in-general__workbook.html#thm:K2" data-reference-type="ref"
+data-reference="di-thm:K2">37.5.2</a>, with Problems <a
+href="20261125T020100--divisibility-at-inert-primes-in-general__workbook.html#pr:aux" data-reference-type="ref"
+data-reference="di-pr:aux">37.5.4</a> and <a href="20261125T020100--divisibility-at-inert-primes-in-general__workbook.html#pr:record"
+data-reference-type="ref"
+data-reference="di-pr:record">37.5.5</a>;</p></li>
+<li><p><a href="#A3" data-reference-type="eqref"
+data-reference="A3">(A3)</a>, with <span class="math inline">\(e_3 =
+\log\lvert\mathcal{W}\rvert + 8\log(1 + x^{C_H})(U + b) + 12b\)</span>:
+Theorem <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#thm:K3" data-reference-type="ref"
+data-reference="sb-thm:K3">43.5.1</a> and Problem <a
+href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#pr:A3" data-reference-type="ref"
+data-reference="sb-pr:A3">43.5.3</a>;</p></li>
+<li><p><a href="#A4" data-reference-type="eqref"
+data-reference="A4">(A4)</a>, with <span class="math inline">\(e_4 \le
+Cy^2\bigl(N_Ta + m(B_0 + N_c)\bigr)\)</span>: Theorem <a
+href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#in:A4" data-reference-type="ref"
+data-reference="hp-in:A4">47.2.2</a>, where the term <span
+class="math inline">\(mN_c\)</span> is the cost of the congruence
+defects, Theorem <a href="20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.html#thm:congruence" data-reference-type="ref"
+data-reference="lt-thm:congruence">52.4.5</a>;</p></li>
+<li><p><a href="#A5" data-reference-type="eqref"
+data-reference="A5">(A5)</a>, with <span class="math inline">\(e_5 \le
+CmB_0\)</span>: Theorem <a href="20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.html#thm:local"
+data-reference-type="ref"
+data-reference="lt-thm:local">52.1.1</a> and Problem <a
+href="20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.html#pr:A5" data-reference-type="ref"
+data-reference="lt-pr:A5">52.1.3</a>;</p></li>
+<li><p><a href="#A6" data-reference-type="eqref"
+data-reference="A6">(A6)</a>, with <span class="math inline">\(e_6 \le
+Cy(1 + m^2/k)\)</span>, and <a href="#A7" data-reference-type="eqref"
+data-reference="A7">(A7)</a>, with <span class="math inline">\(e_7 \le
+CyN_Ta(1 + m/k)\)</span>: Theorems <a href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#in:A6"
+data-reference-type="ref" data-reference="hp-in:A6">47.3.1</a>
+and <a href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#in:A7" data-reference-type="ref"
+data-reference="hp-in:A7">47.4.1</a>, with Problem <a
+href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#pr:record" data-reference-type="ref"
+data-reference="hp-pr:record">47.4.2</a>.</p></li>
+</ul>
+<p>Section <a href="#sec:map" data-reference-type="ref"
+data-reference="sec:map">58.7</a> records the status of each.</p>
+<p>The formalization assumes more than <a href="#A1"
+data-reference-type="eqref" data-reference="A1">(A1)</a>–<a href="#A7"
+data-reference-type="eqref" data-reference="A7">(A7)</a>. For all <span
+class="math inline">\(u, u&#39; \in \mathcal{W}\)</span> it also has
+<span id="A5m"></span><span id="A7p"></span><span id="H"></span><span id="A6v"></span><span id="A2p" class="math display">\[\begin{align}
+  \mu_{\max}(N_u) &amp;\le \mu_{\max}(M_u) + \Gamma + \mathcal{L}- E_u +
+e_2^+ , \tag{A2\(^+\)}\label{A2p}\\
+  E_u &amp;\ge mAg - e_5 , \tag{A5\(^-\)}\label{A5m}\\
+  \mu_{\max}(M_u) &amp;\le e_7^+ , \tag{A7\(^+\)}\label{A7p}\\
+  \bigl\lvert (h_u + A\log T_u) - (h_{u&#39;} + A\log T_{u&#39;})
+\bigr\rvert &amp;\le e_H , \tag{H}\label{H}\\
+  \lvert \log T_u - \log T_{u&#39;} \rvert &amp;\le e_T ,
+\tag{A6\(&#39;\)}\label{A6v}
+\end{align}\]</span> with <span class="math inline">\(e_2^+ \le
+CmB_0\)</span>, <span class="math inline">\(e_7^+ \le CyN_Ta\)</span>,
+<span class="math inline">\(e_H \le Cy(N_Ta + mB_0)\)</span> and <span
+class="math inline">\(e_T \le C\log k\)</span>, and an upper bound for
+<span class="math inline">\(\log T_u\)</span> (Chapter <a
+href="20261125T021600--the-accounting-in-the-lean-formalization__workbook.html#chap" data-reference-type="ref"
+data-reference="lf-chap">59</a>). These are further clauses of
+the statements that give <a href="#A2" data-reference-type="eqref"
+data-reference="A2">(A2)</a>, <a href="#A4" data-reference-type="eqref"
+data-reference="A4">(A4)</a>, <a href="#A5" data-reference-type="eqref"
+data-reference="A5">(A5)</a>, <a href="#A6" data-reference-type="eqref"
+data-reference="A6">(A6)</a> and <a href="#A7"
+data-reference-type="eqref" data-reference="A7">(A7)</a>; <a href="#A5m"
+data-reference-type="eqref" data-reference="A5m">(A5\(^-\))</a> is the other
+half of Theorem <a href="20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.html#thm:local" data-reference-type="ref"
+data-reference="lt-thm:local">52.1.1</a>. With them the spread
+<span class="math display">\[u_F := \max_u\bigl(\mu_{\max}(N_u) -
+h_u\bigr) - \langle\mu(N) - h\rangle ,\]</span> which enters <a
+href="#A3" data-reference-type="eqref" data-reference="A3">(A3)</a>
+through <span class="math inline">\(e_3\)</span>, is bounded by a proved
+lemma; <span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Lemma 18.13]</span> states the bound.</p>
+<div id="pr:spread" class="problem">
+<p><strong>Problem 58.2.1</strong>. Assume <a href="#A2"
+data-reference-type="eqref" data-reference="A2">(A2)</a>, <a href="#A5"
+data-reference-type="eqref" data-reference="A5">(A5)</a>, <a href="#A7"
+data-reference-type="eqref" data-reference="A7">(A7)</a> and <a
+href="#A2p" data-reference-type="eqref"
+data-reference="A2p">(A2\(^+\))</a>–<a href="#A6v"
+data-reference-type="eqref" data-reference="A6v">(A6\('\))</a>, and <span
+class="math inline">\(\mu(N_u) \le \mu_{\max}(N_u)\)</span> for every
+<span class="math inline">\(u\)</span>. Then <span
+class="math inline">\(0 \le u_F \le e_2 + e_2^+ + 2e_5 + e_7 + e_7^+ +
+e_H + Ae_T\)</span>.</p>
+</div>
+<div id="pr:spread-size" class="problem">
+<p><strong>Problem 58.2.2</strong>. With the errors of this section and <span
+class="math inline">\(y \ge 1\)</span>, <span class="math inline">\(u_F
+\le U\)</span>.</p>
+</div>
+<div id="pr:e3" class="problem">
+<p><strong>Problem 58.2.3</strong>. If <span
+class="math inline">\(\mathcal{W}\)</span> is nonempty, <span
+class="math inline">\(\lvert\mathcal{W}\rvert \le 2^{k-3}\)</span> and
+<span class="math inline">\(k \le b\)</span>, then <span
+class="math inline">\(e_3 \le 8(1 + C_H)\,y\,(U + b) + 13b\)</span> for
+large <span class="math inline">\(x\)</span>.</p>
+</div>
+<div id="pr:calB" class="problem">
+<p><strong>Problem 58.2.4</strong>. Let <span
+class="math inline">\(\mathcal{B}:= N_Ta(1 + m^2/k) + m(B_0 +
+N_c)\)</span>, and suppose that the data satisfy the conditions stated
+at the start of this section and that <span class="math inline">\(y \ge
+1\)</span>. Then <span class="math inline">\(e \le
+C_1y^2\mathcal{B}\)</span> for large <span
+class="math inline">\(x\)</span>, with <span
+class="math inline">\(C_1\)</span> depending on <span
+class="math inline">\(C\)</span> and <span
+class="math inline">\(C_H\)</span> only.</p>
+</div>
+<div id="thm:M" class="theorem">
+<p><strong>Theorem 58.2.1</strong>. <em>Under the conditions on the data and
+the inputs <a href="#A1" data-reference-type="eqref"
+data-reference="A1">(A1)</a>–<a href="#A7" data-reference-type="eqref"
+data-reference="A7">(A7)</a> and <a href="#A2p"
+data-reference-type="eqref" data-reference="A2p">(A2\(^+\))</a>–<a
+href="#A6v" data-reference-type="eqref" data-reference="A6v">(A6\('\))</a>
+with the errors of this section, for large <span
+class="math inline">\(x\)</span>, <span
+class="math inline">\(\sum_{t,j}\bigl(P_{t,w_j}(a_t) -
+M_{w_j}(a_t)\bigr) \le x^{(e_D + e_L +
+3)\varepsilon}\,\mathcal{B}\)</span>, where <span
+class="math inline">\(e_D := 2\)</span> and <span
+class="math inline">\(e_L := 0\)</span>.</em></p>
+</div>
+<p>This is the bound the formalization proves at each translate. The
+numbers <span class="math inline">\(e_D\)</span> and <span
+class="math inline">\(e_L\)</span> are the powers of <span
+class="math inline">\(y\)</span> in the errors of <a href="#A4"
+data-reference-type="eqref" data-reference="A4">(A4)</a>, on the term
+<span class="math inline">\(m(B_0 + N_c)\)</span>, and of <a href="#A1"
+data-reference-type="eqref" data-reference="A1">(A1)</a>; the
+formalization fixes them before <span
+class="math inline">\(\varepsilon\)</span> (Section <a
+href="#sec:window" data-reference-type="ref"
+data-reference="sec:window">58.5</a>). Problem <a href="#pr:calB"
+data-reference-type="ref" data-reference="pr:calB">58.2.4</a> gives more,
+<span class="math inline">\(x^{3\varepsilon}\mathcal{B}\)</span> for
+large <span class="math inline">\(x\)</span>; we keep the
+formalization’s exponent, so that the exponents below are the ones it
+proves. The bound is <span class="citation"
+data-cites="Zh">[<a href="#ref-Zh">Zh</a>]</span>, <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Thm. A]</span>, and <span
+class="citation" data-cites="Rub">[<a href="#ref-Rub">Rub</a>]</span> before
+normalization. Reading Problem <a href="#pr:calB"
+data-reference-type="ref" data-reference="pr:calB">58.2.4</a> backwards shows
+which input pays for which term of <span
+class="math inline">\(\mathcal{B}\)</span>. The term <span
+class="math inline">\(N_Ta\)</span> collects costs incurred once for
+each top, not once for each lift: the base lattice (<span
+class="math inline">\(e_7\)</span>), the precision <span
+class="math inline">\(\log(a\operatorname{rd}_E) \le 2y\)</span> of the
+linear term of the norms (<span class="math inline">\(e_4\)</span>), and
+the auxiliary prime (<span class="math inline">\(e_6\)</span>). The term
+<span class="math inline">\(N_Ta\,m^2/k\)</span> is the colength and
+size of the auxiliary prime (<span class="math inline">\(e_2\)</span>,
+<span class="math inline">\(e_6\)</span>). The term <span
+class="math inline">\(mB_0\)</span> collects the local losses of the
+<span class="math inline">\(m\)</span> lifts (<span
+class="math inline">\(e_5\)</span>, and <span
+class="math inline">\(e_4\)</span>); each is of size <span
+class="math inline">\(B_0\)</span>, which grows with <span
+class="math inline">\(m\)</span> because the nodes of the <span
+class="math inline">\(j\)</span>th lift grow with <span
+class="math inline">\(j\)</span>, as the cost of the <span
+class="math inline">\(k\)</span>th identity did in Chapter <a
+href="20261125T003000--the-chain-and-the-square-root__workbook.html#chap" data-reference-type="ref"
+data-reference="ch-chap">8</a>. The term <span
+class="math inline">\(mN_c\)</span> comes only from the congruence
+defects, through <span class="math inline">\(e_4\)</span>. The spread
+<span class="math inline">\(U\)</span> and hence <span
+class="math inline">\(e_3\)</span> contain all but the last.</p>
+<h1 id="sec:norm">§58.3. Normalization</h1>
+<p>The averaging of Chapter <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap" data-reference-type="ref"
+data-reference="gf-chap">4</a> is over translates. We write
+<span class="math inline">\(\tau \in H\)</span> for the translate index,
+called <span class="math inline">\(u\)</span> there, since <span
+class="math inline">\(u\)</span> indexes words here; so the nodes of the
+<span class="math inline">\(j\)</span>th lift at the translate <span
+class="math inline">\(\tau\)</span> are <span
+class="math inline">\(w_{\tau,j} \colon \Phi \to (0,\infty)\)</span>.
+Before averaging we need, for one <span
+class="math inline">\(x\)</span>:</p>
+<ol>
+<li><p>for every <span class="math inline">\(\tau \in H\)</span>, data
+as in Section <a href="#sec:inputs" data-reference-type="ref"
+data-reference="sec:inputs">58.2</a> with the nodes <span
+class="math inline">\(w_{\tau,1}, \dots, w_{\tau,m}\)</span>, and with
+the same <span class="math inline">\(m, k, n, T, T_2\)</span> and <span
+class="math inline">\(a_t\)</span> for all <span
+class="math inline">\(\tau\)</span>, satisfying the conditions stated
+there, <a href="#A1" data-reference-type="eqref"
+data-reference="A1">(A1)</a>–<a href="#A7" data-reference-type="eqref"
+data-reference="A7">(A7)</a> and <a href="#A2p"
+data-reference-type="eqref" data-reference="A2p">(A2\(^+\))</a>–<a
+href="#A6v" data-reference-type="eqref" data-reference="A6v">(A6\('\))</a>
+with the errors stated there, with the same <span
+class="math inline">\(C\)</span>, <span
+class="math inline">\(C_H\)</span> and threshold for “large <span
+class="math inline">\(x\)</span>”; the words <span
+class="math inline">\(\mathcal{W}\)</span> and the lattices may depend
+on <span class="math inline">\(\tau\)</span>;</p></li>
+<li><p>for every <span class="math inline">\(t \in T\)</span> and every
+<span class="math inline">\(j\)</span>, all hypotheses of Theorem <a
+href="20261125T005000--galois-fourier-and-averaging__workbook.html#thm:two-scales" data-reference-type="ref"
+data-reference="gf-thm:two-scales">4.4.1</a> for <span
+class="math inline">\(a = a_t\)</span> and the family <span
+class="math inline">\((w_{\tau,j})_{\tau \in H}\)</span>: <span
+class="math inline">\(\lvert a_t/b - x\rvert \le 1\)</span>, the thick
+and thin conditions <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#eq:thick-thin"
+data-reference-type="eqref"
+data-reference="gf-eq:thick-thin">(2)</a> with numbers
+<span class="math inline">\(\Delta\)</span> and <span
+class="math inline">\(X\)</span>, and the thin-scale bound <span
+class="math inline">\(\lvert G_\theta(y)\rvert \le \vartheta y\)</span>
+for all <span class="math inline">\(\theta\)</span> and <span
+class="math inline">\(y \ge X\)</span>;</p></li>
+<li><p><span class="math inline">\(2f(x+1)\vartheta \le 1/x\)</span> and
+<span class="math inline">\(6f(x+1)(\Delta + 1) \le
+b/x\)</span>.</p></li>
+</ol>
+<p>(V3) is the form of the cost conditions in the formalization. We use
+Chebyshev’s bound <span class="math inline">\(\sum_{r \le y}\Lambda(r)
+\le 3y\)</span> for <span class="math inline">\(y \ge 0\)</span> <span
+class="citation" data-cites="RS">[<a href="#ref-RS">RS</a>]</span>.</p>
+<div id="pr:V3" class="problem">
+<p><strong>Problem 58.3.1</strong>. Under (V3), the last two terms of
+Theorem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#thm:two-scales" data-reference-type="ref"
+data-reference="gf-thm:two-scales">4.4.1</a> add up to at
+most <span class="math inline">\(4/(\delta x)\)</span>.</p>
+</div>
+<p>Let <span class="math inline">\(Q := N_Tmb\)</span>: <span
+class="math inline">\(N_T\)</span> tops, <span
+class="math inline">\(m\)</span> lifts, weight <span
+class="math inline">\(b\)</span>.</p>
+<div id="pr:average" class="problem">
+<p><strong>Problem 58.3.2</strong>. Under (V1)–(V3), for large <span
+class="math inline">\(x\)</span>, <span
+class="math inline">\(Q\,\frac{\delta}{2}\bigl(R_{q,d}(x) -
+\mathcal{K}(x)\bigr) \le x^{(e_D+e_L+3)\varepsilon}\,\mathcal{B}+
+2Q/x\)</span>.</p>
+</div>
+<p>The factor <span class="math inline">\(Q\delta/2\)</span> counts the
+gain: <span class="math inline">\(N_T\)</span> tops, <span
+class="math inline">\(m\)</span> lifts, weight <span
+class="math inline">\(b\)</span>, at a proportion <span
+class="math inline">\(\delta/2\)</span> of the places. What remains is
+to divide <span class="math inline">\(\mathcal{B}\)</span> by it. The
+formalization does not form the quotient. It bounds the four terms of
+<span class="math inline">\(\mathcal{B}\)</span> one at a time by <span
+class="math inline">\(Q\)</span> times a power of <span
+class="math inline">\(x\)</span>, and uses only the inequalities <span id="eq:S"
+class="math display">\[\begin{equation}
+\label{eq:S}\tag{S}
+  \begin{gathered}
+  a \le 2xb, \quad N_T \ge \tfrac12 x^{-\varepsilon/8}n, \quad
+x^{-\varepsilon} \le \delta, \quad N_2 \le n, \\
+  x^{1/2-\varepsilon} \le m \le x^{1/2+\varepsilon/2}, \quad xm \le k
+\le n^2x^{1/2-\varepsilon} .
+  \end{gathered}
+\end{equation}\]</span> In Problems <a href="#pr:size-ends"
+data-reference-type="ref" data-reference="pr:size-ends">58.3.3</a>–<a
+href="#pr:size-defects" data-reference-type="ref"
+data-reference="pr:size-defects">58.3.5</a> assume <a href="#eq:S"
+data-reference-type="eqref" data-reference="eq:S">(S)</a>, <span
+class="math inline">\(x \ge 1\)</span>, <span
+class="math inline">\(\varepsilon &gt; 0\)</span>, and let <span
+class="math inline">\(Y := x^{1/2+13\varepsilon/8}\)</span>.</p>
+<div id="pr:size-ends" class="problem">
+<p><strong>Problem 58.3.3</strong>. <span class="math inline">\(N_Ta \le
+2YQ\)</span> and <span class="math inline">\(N_Ta\,m^2/k \le
+2Q\)</span>.</p>
+</div>
+<div id="pr:size-steps" class="problem">
+<p><strong>Problem 58.3.4</strong>. <span class="math inline">\(mB_0 \le
+4YQ\)</span>.</p>
+</div>
+<div id="pr:size-defects" class="problem">
+<p><strong>Problem 58.3.5</strong>. <span class="math inline">\(mN_c \le
+2YQ\)</span>. Hence <span class="math inline">\(\mathcal{B}\le
+10YQ\)</span>.</p>
+</div>
+<div id="thm:size" class="theorem">
+<p><strong>Theorem 58.3.1</strong> (normalization). <em>Let <span
+class="math inline">\(x \ge 3\)</span>, <span
+class="math inline">\(\varepsilon &gt; 0\)</span>, <span
+class="math inline">\(C \ge 0\)</span> and <span
+class="math inline">\(x^{3\varepsilon/8} \ge 26\)</span>. Let <span
+class="math inline">\(n, N_T, N_2, m\)</span> be positive integers and
+<span class="math inline">\(b &gt; 0\)</span>, and assume <a
+href="#eq:S" data-reference-type="eqref"
+data-reference="eq:S">(S)</a>. If a real number <span
+class="math inline">\(G\)</span> satisfies <span
+class="math inline">\(Q\,\frac{\delta}{2}\bigl(G -
+4x^{1/2+\varepsilon}\bigr) \le x^{C\varepsilon}\,\mathcal{B}+
+2Q/x\)</span>, then <span class="math inline">\(G \le
+x^{1/2+(C+3)\varepsilon}\)</span>.</em></p>
+</div>
+<div id="pr:size-divide" class="problem">
+<p><strong>Problem 58.3.6</strong>. Under the hypotheses of Theorem <a
+href="#thm:size" data-reference-type="ref"
+data-reference="thm:size">58.3.1</a>, <span class="math inline">\(\delta(G -
+4x^{1/2+\varepsilon}) \le 22x^{C\varepsilon}Y\)</span>, and <span
+class="math inline">\(G \le 26x^{1/2+(C+21/8)\varepsilon}\)</span>. This
+proves the theorem.</p>
+</div>
+<p>Theorem <a href="#thm:size" data-reference-type="ref"
+data-reference="thm:size">58.3.1</a> is <span class="citation"
+data-cites="Zh">[<a href="#ref-Zh">Zh</a>, Lemma 6.1]</span>, with the same
+constants, as the formalization proves it. Why the inequalities <a
+href="#eq:S" data-reference-type="eqref"
+data-reference="eq:S">(S)</a>? Dividing <span
+class="math inline">\(\mathcal{B}\)</span> by the gain shows which input
+pays for which term. This is how <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> and <span
+class="citation" data-cites="Rub">[<a href="#ref-Rub">Rub</a>, and §I.6,
+Thm. A]</span> state the normalization; the arithmetic is correct, but
+it is not how the formalization argues.</p>
+<div id="pr:divide" class="problem">
+<p><strong>Problem 58.3.7</strong>. <span
+class="math inline">\(\displaystyle \frac{\mathcal{B}}{N_Tmb\delta/2} =
+\frac{2x}{\delta}\Bigl(\frac1m + \frac mk\Bigr) + \frac{4nmy}{N_T\delta}
++ \frac{2ky^2}{nN_T}\)</span>.</p>
+</div>
+<div id="pr:four" class="problem">
+<p><strong>Problem 58.3.8</strong>. If <span class="math inline">\(\delta
+\ge x^{-\varepsilon}\)</span> and <span class="math inline">\(N_T \ge
+\frac12 x^{-\varepsilon/8}n\)</span>, the quotient of Problem <a
+href="#pr:divide" data-reference-type="ref"
+data-reference="pr:divide">58.3.7</a> is at most <span
+class="math inline">\(8x^{17\varepsilon/8}\bigl(x/m + xm/k + m +
+k/n^2\bigr)\)</span>.</p>
+</div>
+<p>So <span class="math inline">\(x/m\)</span> is paid at the ends,
+<span class="math inline">\(xm/k\)</span> at the auxiliary primes, <span
+class="math inline">\(m\)</span> by the local losses of the steps, and
+<span class="math inline">\(k/n^2\)</span> by the congruence defects:
+the four bounds of Problems <a href="#pr:size-ends"
+data-reference-type="ref" data-reference="pr:size-ends">58.3.3</a>–<a
+href="#pr:size-defects" data-reference-type="ref"
+data-reference="pr:size-defects">58.3.5</a>, in order. Adriazola writes the
+fourth term as <span
+class="math inline">\(kx^{c\varepsilon}/(nN_T)\)</span> <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>, the
+same up to <span class="math inline">\(n/N_T \le
+2x^{\varepsilon/8}\)</span>. Rubinstein <span class="citation"
+data-cites="Rub">[<a href="#ref-Rub">Rub</a>]</span> describes <span
+class="math inline">\(x/m\)</span> and <span
+class="math inline">\(m\)</span> in the same way, and calls <span
+class="math inline">\(xm/k\)</span> and <span
+class="math inline">\(k/n^2\)</span> the costs of the auxiliary
+parameters <span class="math inline">\(k\)</span> and <span
+class="math inline">\(n\)</span>; for the last term we follow <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>. The
+hypothesis <span class="math inline">\(\delta \ge
+x^{-\varepsilon}\)</span> is <a href="20261125T005500--columns-from-a-sphere__workbook.html#eq:density"
+data-reference-type="eqref"
+data-reference="cs-eq:density">(1)</a>, which Behrend’s set
+of columns satisfies (Theorem <a href="20261125T005500--columns-from-a-sphere__workbook.html#thm:behrend"
+data-reference-type="ref"
+data-reference="cs-thm:behrend">5.2.1</a>, and Problem <a
+href="20261125T020000--the-analytic-frame__workbook.html#pr:behrend" data-reference-type="ref"
+data-reference="af-pr:behrend">36.4.1</a> at the scale of the
+argument). The hypothesis <span class="math inline">\(N_T \ge \frac12
+x^{-\varepsilon/8}n\)</span> holds with high probability for the random
+tops of density <span class="math inline">\(\delta_1 =
+x^{-\varepsilon/8}\)</span> (Problem <a href="20261125T005500--columns-from-a-sphere__workbook.html#pr:size-T"
+data-reference-type="ref"
+data-reference="cs-pr:size-T">5.3.1</a>, and Theorem <a
+href="20261125T020000--the-analytic-frame__workbook.html#thm:sizes" data-reference-type="ref"
+data-reference="af-thm:sizes">36.4.2</a>(iv)).</p>
+<p>Why must the constants in <a href="#A4" data-reference-type="eqref"
+data-reference="A4">(A4)</a> be exact, when a long chain absorbs so much
+else? Change one input and follow it.</p>
+<div id="pr:eta-error" class="problem">
+<p><strong>Problem 58.3.9</strong>. Let every <span
+class="math inline">\(a_t = xb\)</span>, and keep all inputs as they are
+except that the right side of <a href="#A4" data-reference-type="eqref"
+data-reference="A4">(A4)</a> carries an additional <span
+class="math inline">\(\eta mA\)</span>, <span class="math inline">\(\eta
+&gt; 0\)</span>, as it would if <span
+class="math inline">\(\log\Omega\)</span> were known only to within
+<span class="math inline">\(\eta\)</span>. (i) The bound of Theorem <a
+href="#thm:acct" data-reference-type="ref"
+data-reference="thm:acct">58.1.1</a> increases by <span
+class="math inline">\(\eta mA\)</span>, and the bound for <span
+class="math inline">\(R_{q,d}(x) - \mathcal{K}(x)\)</span> given by
+Problem <a href="#pr:average" data-reference-type="ref"
+data-reference="pr:average">58.3.2</a> by <span class="math inline">\(2\eta
+x/\delta\)</span>, whatever <span class="math inline">\(m\)</span> is;
+this is at most <span class="math inline">\(C\sqrt x\)</span> exactly
+when <span class="math inline">\(\eta \le \frac12 C\delta
+x^{-1/2}\)</span>. (ii) If instead the additional term is <span
+class="math inline">\(\eta A\)</span>, a cost paid once for each top
+rather than once for each lift, that bound increases by <span
+class="math inline">\(2\eta x/(m\delta)\)</span>.</p>
+</div>
+<p>So a long chain divides a cost paid at its ends by <span
+class="math inline">\(m\)</span>, but an error in the linear term is
+paid by every lift, and dividing by the <span
+class="math inline">\(m\)</span> lifts that pay it gains nothing. Since
+<span class="math inline">\(x^{-\varepsilon} \le \delta \le 1\)</span>,
+an error <span class="math inline">\(\eta\)</span> in <span
+class="math inline">\(\log\Omega\)</span> is harmless if <span
+class="math inline">\(\eta \le \frac12 Cx^{-1/2-\varepsilon}\)</span>,
+and only if <span class="math inline">\(\eta \le \frac12
+Cx^{-1/2}\)</span>. This is why <span
+class="math inline">\(\log\Omega\)</span> must cancel exactly against
+<span class="math inline">\(\gamma\)</span> and <span
+class="math inline">\(c_{\chi_d}\)</span> in Problem <a
+href="#pr:levels" data-reference-type="ref"
+data-reference="pr:levels">58.1.4</a>, and why the Chowla–Selberg formula,
+not an estimate of the period, is used.</p>
+<h1 id="sec:exponents">§58.4. The exponents</h1>
+<p>The normalization needs of <span class="math inline">\(m\)</span>,
+<span class="math inline">\(k\)</span> and <span
+class="math inline">\(n\)</span> only the inequalities <a href="#eq:S"
+data-reference-type="eqref" data-reference="eq:S">(S)</a>. The
+formalization chooses them when it builds the family of data, as <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Prop. 5.15]</span> does. Why <span class="math inline">\(m \approx
+x^{1/2}\)</span>, <span class="math inline">\(k \approx x^{9/2}\)</span>
+and <span class="math inline">\(n \approx x^2\)</span>? The four terms
+of Problem <a href="#pr:four" data-reference-type="ref"
+data-reference="pr:four">58.3.8</a> explain it. Put <span
+class="math inline">\(\delta_1 := x^{-\varepsilon/8}\)</span>.</p>
+<div id="pr:m" class="problem">
+<p><strong>Problem 58.4.1</strong>. If <span
+class="math inline">\(\sqrt{x\delta_1} \le m \le
+2\sqrt{x\delta_1}\)</span>, then <span class="math inline">\(x/m \le
+x^{1/2 + \varepsilon/16}\)</span> and <span class="math inline">\(m \le
+2x^{1/2 - \varepsilon/16}\)</span>. If instead <span
+class="math inline">\(m = x^{1/2 + \kappa}\)</span>, then <span
+class="math inline">\(x/m + m \ge x^{1/2 +
+\lvert\kappa\rvert}\)</span>.</p>
+</div>
+<p>Thus <span class="math inline">\(m\)</span> balances <span
+class="math inline">\(x/m\)</span> against <span
+class="math inline">\(m\)</span>. The rank hypothesis behind <a
+href="#A3" data-reference-type="eqref" data-reference="A3">(A3)</a>
+makes <span class="math inline">\(k\)</span> at least about <span
+class="math inline">\(m^5n\)</span> (Problem <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#pr:words"
+data-reference-type="ref"
+data-reference="sb-pr:words">43.4.5</a>), and <span
+class="math inline">\(k/n^2 \le x^{1/2}\)</span> then makes <span
+class="math inline">\(n\)</span> about <span
+class="math inline">\(x^2\)</span>; Chapter <a href="20261125T021600--the-accounting-in-the-lean-formalization__workbook.html#chap"
+data-reference-type="ref" data-reference="lf-chap">59</a> works
+this out, and checks that the choices of <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Prop. 5.15]</span>, which the
+formalization makes, satisfy <a href="#eq:S" data-reference-type="eqref"
+data-reference="eq:S">(S)</a>. The terms <span
+class="math inline">\(xm/k\)</span> and <span
+class="math inline">\(k/n^2\)</span> never compete with the balance. It
+remains to bound the constant <span
+class="math inline">\(\mathcal{K}(x)\)</span> of Problem <a
+href="#pr:average" data-reference-type="ref"
+data-reference="pr:average">58.3.2</a>, which contains <span
+class="math inline">\(\lvert c_\chi\rvert\)</span> for <span
+class="math inline">\(\chi = \chi_q, \chi_d, \chi_q\chi_d\)</span>,
+uniformly in <span class="math inline">\(q\)</span> and <span
+class="math inline">\(d\)</span>.</p>
+<div id="pr:cchi" class="problem">
+<p><strong>Problem 58.4.2</strong>. Let <span
+class="math inline">\(\chi\)</span> be a primitive nonprincipal
+character with <span class="math inline">\(\lvert G_\chi(x)\rvert \le
+x\)</span>. Then <span class="math inline">\(\lvert c_\chi\rvert \le 1 +
+\sum_{n \le x}\Lambda(n)/n\)</span>. Hence, if Estimate B ((W1) below)
+holds at <span class="math inline">\(x\)</span>, then <span
+class="math inline">\(\mathcal{K}(x) \le C&#39;&#39;\log x\)</span> for
+<span class="math inline">\(x \ge 3\)</span>, with <span
+class="math inline">\(C&#39;&#39;\)</span> absolute.</p>
+</div>
+<p>In the formalization the bound <span class="math inline">\(\lvert
+L&#39;/L(1,\chi)\rvert \le C_L\log x\)</span> is one of the conditions
+on the data at <span class="math inline">\(x\)</span>, not derived from
+Estimate B as here. By Problems <a href="20261125T001100--inert-primes-and-estimate-b__workbook.html#pr:Rqd"
+data-reference-type="ref" data-reference="zi-pr:Rqd">2.1.7</a>, <a
+href="#pr:average" data-reference-type="ref"
+data-reference="pr:average">58.3.2</a> and <a href="#pr:cchi"
+data-reference-type="ref" data-reference="pr:cchi">58.4.2</a>, and
+Theorem <a href="#thm:size" data-reference-type="ref"
+data-reference="thm:size">58.3.1</a> with <span class="math inline">\(C = e_D
++ e_L + 3\)</span>:</p>
+<div id="thm:A" class="theorem">
+<p><strong>Theorem 58.4.1</strong> (Estimate A). <em>Assume (V1)–(V3), <a
+href="#eq:S" data-reference-type="eqref"
+data-reference="eq:S">(S)</a>, and (W1) of Section <a
+href="#sec:window" data-reference-type="ref"
+data-reference="sec:window">58.5</a>. For large <span
+class="math inline">\(x\)</span>, <span class="math inline">\(G(x) \le
+x^{1/2 + (e_D + e_L + 6)\varepsilon}\)</span>.</em></p>
+</div>
+<p>The formalization proves the bound <span
+class="math inline">\(x^{1/2+(e_D+e_L+7)\varepsilon} =
+x^{1/2+9\varepsilon}\)</span> for the positive combination of <span
+class="math inline">\(G\)</span> and the <span
+class="math inline">\(G_{\psi&#39;}\)</span> attached to a character
+<span class="math inline">\(\psi\)</span> of order <span
+class="math inline">\(o\)</span> (Section <a href="#sec:window"
+data-reference-type="ref" data-reference="sec:window">58.5</a>), one <span
+class="math inline">\(\varepsilon\)</span> more. After averaging over
+the subgroup <span class="math inline">\(A_0\)</span>, the characters
+not trivial on <span class="math inline">\(A_0\)</span> contribute zero,
+by orthogonality, and <span class="math inline">\(4o\)</span> characters
+remain. Those that induce the level give the positive combination;
+Estimate B bounds the others by <span
+class="math inline">\(4o\,x^{1/2+\varepsilon}\)</span> in total, and
+this is what the last <span class="math inline">\(\varepsilon\)</span>
+pays for (Chapter <a href="20261125T021600--the-accounting-in-the-lean-formalization__workbook.html#chap" data-reference-type="ref"
+data-reference="lf-chap">59</a>).</p>
+<p>If the local loss of the <span class="math inline">\(j\)</span>th
+lift grew like <span class="math inline">\(j^2\)</span> instead of <span
+class="math inline">\(j\)</span>, the term <span
+class="math inline">\(m\)</span> would become <span
+class="math inline">\(m^2\)</span>, and the balance <span
+class="math inline">\(x/m + m^2\)</span> would give only the exponent
+<span class="math inline">\(\frac23\)</span> (Problem <a
+href="20261125T003000--the-chain-and-the-square-root__workbook.html#pr:two-thirds" data-reference-type="ref"
+data-reference="ch-pr:two-thirds">8.5.4</a>; <span
+class="citation" data-cites="Alp">[<a href="#ref-Alp">Alp</a>,
+step 14]</span>).</p>
+<h1 id="sec:window">§58.5. The window, and the zeros</h1>
+<p>Theorem <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#thm:intervals" data-reference-type="ref"
+data-reference="zr-thm:intervals">1.2.3</a> needs <span
+class="math inline">\(G(x) \le x^\theta\)</span> at every point of <span
+class="math inline">\([Y, Y^{3/2}]\)</span>, for arbitrarily large <span
+class="math inline">\(Y\)</span>. What must hold uniformly as <span
+class="math inline">\(x\)</span> runs through such a window? The form of
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>
+is this. For every small <span
+class="math inline">\(\varepsilon\)</span> there is <span
+class="math inline">\(J = J(\varepsilon) \ge 2\)</span> such that for
+arbitrarily large <span class="math inline">\(Y\)</span> there are <span
+class="math inline">\(Y_0 \le Y\)</span> with <span
+class="math inline">\(Y^2 \le Y_0^J\)</span>, and primes <span
+class="math inline">\(q \equiv 3 \pmod 8\)</span>, <span
+class="math inline">\(d \equiv 7 \pmod{16}\)</span>, <span
+class="math inline">\(q \mid d + 1\)</span>, chosen at the scale <span
+class="math inline">\(Y_0\)</span> with <span class="math inline">\(\log
+q \le Y_0^{\varepsilon/5}\)</span> and <span class="math inline">\(\log
+d \le Y_0^{\varepsilon/5}\log^2Y_0\)</span>, such that at every <span
+class="math inline">\(x \in [Y, Y^{3/2}]\)</span>:</p>
+<ol>
+<li><p>Estimate B: <span class="math inline">\(\lvert G_\chi(x)\rvert
+\le x^{1/2+\varepsilon}\)</span> for <span class="math inline">\(\chi =
+\chi_q, \chi_d, \chi_q\chi_d\)</span>;</p></li>
+<li><p>the thin-scale bound <span class="math inline">\(\lvert
+G_\theta(y&#39;)\rvert \le y&#39;\exp(-c_6x^{\varepsilon/8})\)</span>,
+with <span class="math inline">\(c_6 &gt; 0\)</span> independent of
+<span class="math inline">\(x\)</span>, for the <span
+class="math inline">\(4n\)</span> characters <span
+class="math inline">\(\theta\)</span> of Chapter <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap"
+data-reference-type="ref" data-reference="gf-chap">4</a> and all
+<span class="math inline">\(y&#39; \ge
+\frac13\exp(x^{\varepsilon/3})\)</span>;</p></li>
+<li><p><span class="math inline">\(\sum_{1 \le i &lt; \lfloor
+x^{400}\rfloor} \sum_\ell h_{\ell,i}(E)\log\ell \le
+\exp(\frac12x^\varepsilon)\)</span> for the field <span
+class="math inline">\(E\)</span> of Chapter <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap"
+data-reference-type="ref" data-reference="gf-chap">4</a> at
+<span class="math inline">\(x\)</span>, where <span
+class="math inline">\(h_{\ell,i}(E)\)</span> is the length of <span
+class="math inline">\(\mathrm{Sha}_\ell(E,i)\)</span> as in Chapter <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#chap" data-reference-type="ref"
+data-reference="ts-chap">30</a> (there the twist is called <span
+class="math inline">\(e\)</span>; here <span
+class="math inline">\(e\)</span> is the error of Theorem <a
+href="#thm:acct" data-reference-type="ref"
+data-reference="thm:acct">58.1.1</a>);</p></li>
+<li><p>data <span class="math inline">\(n, m, k, T, T_2\)</span>,
+weights, nodes and lattices satisfying (V1)–(V3) of Section <a
+href="#sec:norm" data-reference-type="ref"
+data-reference="sec:norm">58.3</a>, with <span class="math inline">\(X =
+\frac13\exp(x^{\varepsilon/3})\)</span> and <span
+class="math inline">\(\vartheta = \exp(-c_6x^{\varepsilon/8})\)</span>
+as in (W2), and with <a href="#eq:S" data-reference-type="eqref"
+data-reference="eq:S">(S)</a>; the constants <span
+class="math inline">\(C\)</span>, <span
+class="math inline">\(C_H\)</span> and the threshold for “large <span
+class="math inline">\(x\)</span>” do not depend on <span
+class="math inline">\(x\)</span>, <span
+class="math inline">\(Y\)</span>, <span
+class="math inline">\(Y_0\)</span>, <span
+class="math inline">\(q\)</span> or <span
+class="math inline">\(d\)</span>.</p></li>
+</ol>
+<p>The data of (W4) depend on <span class="math inline">\(x\)</span>;
+the pair <span class="math inline">\(q, d\)</span> depends only on <span
+class="math inline">\(Y_0\)</span>. Chapter <a href="20261125T020000--the-analytic-frame__workbook.html#chap"
+data-reference-type="ref" data-reference="af-chap">36</a>
+delivers (W1) (Problems <a href="20261125T020000--the-analytic-frame__workbook.html#pr:estB-base"
+data-reference-type="ref"
+data-reference="af-pr:estB-base">36.3.1</a> and <a
+href="20261125T020000--the-analytic-frame__workbook.html#pr:twists" data-reference-type="ref"
+data-reference="af-pr:twists">36.3.2</a>) and (W2) (Problem <a
+href="20261125T020000--the-analytic-frame__workbook.html#pr:thin" data-reference-type="ref"
+data-reference="af-pr:thin">36.3.3</a>). (W3) is Theorem <a
+href="20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.html#thm:W3" data-reference-type="ref"
+data-reference="lt-thm:W3">52.4.3</a>, and it is what fixes the
+position of the window. (W4) is the deliverables of Chapters <a
+href="20261125T020100--divisibility-at-inert-primes-in-general__workbook.html#chap" data-reference-type="ref"
+data-reference="di-chap">37</a>–<a href="20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.html#chap"
+data-reference-type="ref" data-reference="lt-chap">52</a> at
+every <span class="math inline">\(x\)</span> of the window, with the
+data of Theorem <a href="20261125T020000--the-analytic-frame__workbook.html#thm:sizes" data-reference-type="ref"
+data-reference="af-thm:sizes">36.4.2</a>.</p>
+<div id="pr:window" class="problem">
+<p><strong>Problem 58.5.1</strong>. If <span class="math inline">\(Y_0 \le
+Y\)</span> and <span class="math inline">\(Y^2 \le Y_0^J\)</span>, then
+<span class="math inline">\([Y, Y^{3/2}] \subset [Y_0, Y_0^J]\)</span>.
+For <span class="math inline">\(x\)</span> in this window and <span
+class="math inline">\(n \le 2x^{2+8\varepsilon}\)</span>, <span
+class="math inline">\(\log(4nqd) \le 3x^{\varepsilon/5}\log^2x\)</span>
+once <span class="math inline">\(x\)</span> is large, while the thin
+scale <span
+class="math inline">\(\frac13\exp(x^{\varepsilon/3})\)</span> has
+logarithm <span class="math inline">\(x^{\varepsilon/3} - \log
+3\)</span>.</p>
+</div>
+<div id="pr:G" class="problem">
+<p><strong>Problem 58.5.2</strong>. Under (W1)–(W4), <span
+class="math inline">\(G(x) \le x^{1/2+(e_D+e_L+6)\varepsilon}\)</span>
+for every <span class="math inline">\(x\)</span> in the window, once
+<span class="math inline">\(Y\)</span> is large.</p>
+</div>
+<div id="pr:close" class="problem">
+<p><strong>Problem 58.5.3</strong>. Let <span class="math inline">\(0 &lt;
+c(\varepsilon) &lt; \frac12\)</span> for small <span
+class="math inline">\(\varepsilon &gt; 0\)</span>, and suppose that for
+every small <span class="math inline">\(\varepsilon\)</span> there are
+arbitrarily large <span class="math inline">\(Y\)</span> with <span
+class="math inline">\(G(x) \le x^{1/2+c(\varepsilon)}\)</span> for all
+<span class="math inline">\(x \in [Y, Y^{3/2}]\)</span>. Then <span
+class="math inline">\(\zeta(s) \ne 0\)</span> for <span
+class="math inline">\(\operatorname{Re}s &gt; \frac12 +
+\liminf_{\varepsilon\to0} c(\varepsilon)\)</span>.</p>
+</div>
+<p>By Problem <a href="#pr:G" data-reference-type="ref"
+data-reference="pr:G">58.5.2</a>, <span class="math inline">\(c(\varepsilon)
+= (e_D + e_L + 6)\varepsilon\)</span> for large <span
+class="math inline">\(Y\)</span>; the formalization’s statement has
+<span class="math inline">\(c(\varepsilon) = (e_D + e_L + 7)\varepsilon
+= 9\varepsilon\)</span>. Problem <a href="#pr:close"
+data-reference-type="ref" data-reference="pr:close">58.5.3</a> then gives
+the Riemann hypothesis. This is why <span
+class="math inline">\(e_D\)</span> and <span
+class="math inline">\(e_L\)</span> must not depend on <span
+class="math inline">\(\varepsilon\)</span>, while <span
+class="math inline">\(J\)</span>, <span
+class="math inline">\(C\)</span>, <span
+class="math inline">\(C_H\)</span> and the threshold for <span
+class="math inline">\(x\)</span> may. The formalization chooses in this
+order: first <span class="math inline">\(e_D = 2\)</span>, <span
+class="math inline">\(e_L = 0\)</span> and a bound <span
+class="math inline">\(\varepsilon_1\)</span>; then, for each <span
+class="math inline">\(\varepsilon &lt; \varepsilon_1\)</span>, a single
+family of data; then the constants of the record and a threshold <span
+class="math inline">\(x_0\)</span>. In the proof a design threshold is
+fixed before the family, which is chosen large relative to it; the
+scalar constants of the record are found after the family. At every
+<span class="math inline">\(x \ge x_0\)</span> in the set of scales of
+that family it proves (W4). That set contains <span
+class="math inline">\([Y, Y^{3/2}]\)</span> for arbitrarily large <span
+class="math inline">\(Y\)</span>. Given <span
+class="math inline">\(s\)</span> with <span
+class="math inline">\(\operatorname{Re}s &gt; \frac12\)</span>, it takes
+<span class="math inline">\(\varepsilon\)</span> with <span
+class="math inline">\((e_D + e_L + 7)\varepsilon \le
+\frac12\min(\operatorname{Re}s - \frac12, \frac12)\)</span>.</p>
+<div id="thm:RH" class="theorem">
+<p><strong>Theorem 58.5.1</strong>. <em>Assume (W1)–(W4). Then <span
+class="math inline">\(\zeta(s) \ne 0\)</span> for <span
+class="math inline">\(\operatorname{Re}s &gt; \frac12\)</span>.</em></p>
+</div>
+<p>For <span class="math inline">\(L(s, \psi)\)</span> one averages over
+<span class="math inline">\(A_0 = \ker\psi\)</span> (Section <a
+href="20261125T005000--galois-fourier-and-averaging__workbook.html#sec:subgroup" data-reference-type="ref"
+data-reference="gf-sec:subgroup">4.5</a>) and bounds the
+positive combination <span class="math inline">\(G^\psi\)</span> of
+Section <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#sec:dirichlet" data-reference-type="ref"
+data-reference="zr-sec:dirichlet">1.4</a> on windows. The
+interval version is Theorem <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#thm:dirichlet-intervals"
+data-reference-type="ref"
+data-reference="zr-thm:dirichlet-intervals">1.5.1</a>:
+a bound for <span class="math inline">\(G^\psi\)</span> on windows
+excludes the zeros of <span class="math inline">\(\zeta\)</span> and of
+every <span class="math inline">\(L(s,\psi_j)\)</span>, real or not; a
+real zero is excluded by Problem <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#pr:real-excluded"
+data-reference-type="ref"
+data-reference="zr-pr:real-excluded">1.5.6</a>.
+Chapter <a href="20261125T020000--the-analytic-frame__workbook.html#chap" data-reference-type="ref"
+data-reference="af-chap">36</a> works out the averaging for <span
+class="math inline">\(\psi = \chi_8\)</span>, and Section <a
+href="#sec:chi8" data-reference-type="ref"
+data-reference="sec:chi8">58.6</a> closes the example. Everything in this
+chapter, from (W1)–(W4) to Theorem <a href="#thm:RH"
+data-reference-type="ref" data-reference="thm:RH">58.5.1</a>, is
+bookkeeping.</p>
+<h1 id="sec:chi8">§58.6. The example <span class="math inline">\(\psi =
+\chi_8\)</span></h1>
+<p>Take the example <span class="math inline">\(\psi = \chi_8\)</span>
+at the end of Chapter <a href="20261125T020000--the-analytic-frame__workbook.html#chap" data-reference-type="ref"
+data-reference="af-chap">36</a>, with <span
+class="math inline">\(R^\psi\)</span> and <span
+class="math inline">\(G^\psi = G + \frac17G_{\chi_8}\)</span> as in
+Problem <a href="20261125T020000--the-analytic-frame__workbook.html#pr:chi8-shares" data-reference-type="ref"
+data-reference="af-pr:chi8-shares">36.5.2</a>. This is the
+formalization’s combination for a character of order <span
+class="math inline">\(o = 2\)</span>, whose weights are <span
+class="math inline">\(1/(3o+1)\)</span>. How does the argument exclude a
+zero of <span class="math inline">\(L(s, \chi_8)\)</span>?</p>
+<div id="pr:chi8-zero" class="problem">
+<p><strong>Problem 58.6.1</strong>. Suppose that for every small <span
+class="math inline">\(\varepsilon &gt; 0\)</span> there are arbitrarily
+large <span class="math inline">\(Y\)</span> such that, at every <span
+class="math inline">\(x \in [Y, Y^{3/2}]\)</span>, <span
+class="math inline">\(R^\psi(x) \le x^{1/2+c\varepsilon}\)</span>, with
+<span class="math inline">\(c\)</span> independent of <span
+class="math inline">\(\varepsilon\)</span>, and the six characters of
+Problem <a href="20261125T020000--the-analytic-frame__workbook.html#pr:chi8-twists" data-reference-type="ref"
+data-reference="af-pr:chi8-twists">36.5.3</a> satisfy
+Estimate B. (i) Then <span class="math inline">\(\zeta(s) \ne 0\)</span>
+and <span class="math inline">\(L(s, \chi_8) \ne 0\)</span> for <span
+class="math inline">\(\operatorname{Re}s &gt; \frac12\)</span>. (ii) If
+<span class="math inline">\(\zeta(s)^7 L(s, \chi_8)\)</span> had a real
+zero <span class="math inline">\(\beta &gt; \frac12\)</span> of
+multiplicity <span class="math inline">\(\mu\)</span>, and no zero of
+larger real part, the transform of <span
+class="math inline">\(G^\psi\)</span> would have residue <span
+class="math inline">\(\mu/(7\beta(1 - \beta)) &gt; 0\)</span> at <span
+class="math inline">\(\beta\)</span>. The argument of Problem <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#pr:real-excluded" data-reference-type="ref"
+data-reference="zr-pr:real-excluded">1.5.6</a>, with
+this residue, then excludes <span
+class="math inline">\(\beta\)</span>.</p>
+</div>
+<h1 id="sec:map">§58.7. The status of the inputs</h1>
+<p>The Lean formalization <span class="citation"
+data-cites="Lean">[<a href="#ref-Lean">Lean</a>]</span> proves the final
+theorem. Its intermediate statements are organized differently from
+those of <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>, and we have not checked
+that they are the hypotheses of <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> named below; where a
+difference is known, from a comparison of the statements, the ledger
+records it. Each input is <em>classical</em>, with a reference;
+<em>proved in <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span></em>; or <em>a
+hypothesis of <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span></em>: the formalization
+proves the final theorem, and the corresponding step in <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> is the
+hypothesis named, assumed there, with no published human-readable proof.
+Where a chapter of this part develops the proof that the formalization
+gives for an input, the ledger names it and the gaps it records; these
+accounts follow the formalization, and <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> is cited for comparison.
+The accounting, the normalization, the exponents and the window are
+proved in this chapter, on the models of Chapters <a href="20261125T000000--slope-method__workbook.html#chap"
+data-reference-type="ref" data-reference="sm-chap">6</a>, <a
+href="20261125T003000--the-chain-and-the-square-root__workbook.html#chap" data-reference-type="ref"
+data-reference="ch-chap">8</a>, <a href="20261125T007000--stepanov-without-multiplicity__workbook.html#chap"
+data-reference-type="ref" data-reference="sp-chap">9</a> and <a
+href="20261125T008000--one-cm-determinant__workbook.html#chap" data-reference-type="ref"
+data-reference="od-chap">15</a>. Of these, the normalization
+(Theorem <a href="#thm:size" data-reference-type="ref"
+data-reference="thm:size">58.3.1</a>), the per-translate bound (Theorem <a
+href="#thm:M" data-reference-type="ref" data-reference="thm:M">58.2.1</a>)
+and the order of choices are as the formalization proves them. The
+accounting from <a href="#A1" data-reference-type="eqref"
+data-reference="A1">(A1)</a>–<a href="#A7" data-reference-type="eqref"
+data-reference="A7">(A7)</a>, with the seven errors of <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>, is
+expository: the formalization assumes the eleven inequalities of its
+record (Chapter <a href="20261125T021600--the-accounting-in-the-lean-formalization__workbook.html#chap" data-reference-type="ref"
+data-reference="lf-chap">59</a>). The bound <span
+class="math inline">\(8\varepsilon\)</span> for <span
+class="math inline">\(\zeta\)</span> is our deduction; the
+formalization’s statement is <span
+class="math inline">\(9\varepsilon\)</span> for the positive
+combination. For each input we name the deliverable that supplies
+it.</p>
+<dl>
+<dt><a href="#A1" data-reference-type="eqref"
+data-reference="A1">(A1)</a>, <a href="#A2" data-reference-type="eqref"
+data-reference="A2">(A2)</a></dt>
+<dd>
+<p>Theorems <a href="20261125T020100--divisibility-at-inert-primes-in-general__workbook.html#thm:K1" data-reference-type="ref"
+data-reference="di-thm:K1">37.5.1</a> and <a href="20261125T020100--divisibility-at-inert-primes-in-general__workbook.html#thm:K2"
+data-reference-type="ref" data-reference="di-thm:K2">37.5.2</a>,
+for the lifts of Theorem <a href="20261125T020100--divisibility-at-inert-primes-in-general__workbook.html#thm:true-lifts"
+data-reference-type="ref"
+data-reference="di-thm:true-lifts">37.3.3</a>. The
+formalization proves the final theorem by a different arrangement at
+this step (Chapter <a href="20261126T020150--gain-and-loss-at-an-inert-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="gl-chap">42</a>). Its counterpart of <a
+href="#A1" data-reference-type="eqref" data-reference="A1">(A1)</a> is
+an inequality between explicit numbers at each inert prime, Theorem <a
+href="20261126T020150--gain-and-loss-at-an-inert-prime__workbook.html#thm:linkG" data-reference-type="ref"
+data-reference="gl-thm:linkG">42.4.1</a>, proved with the chain
+of lifts replaced by the zero chain. The divisibility of the lifts on
+the Hecke image is Theorem <a href="20261126T020150--gain-and-loss-at-an-inert-prime__workbook.html#thm:gain"
+data-reference-type="ref"
+data-reference="gl-thm:gain">42.2.1</a>, proved on a separate
+branch from an input on the lifts, and the two meet only in the source
+lattices <span class="math inline">\(N_u\)</span>, whose slopes give <a
+href="#A2" data-reference-type="eqref" data-reference="A2">(A2)</a>. On
+the divisibility branch the formalization proves conditions (a)–(c) of
+Theorem <a href="20261125T020100--divisibility-at-inert-primes-in-general__workbook.html#thm:true-lifts" data-reference-type="ref"
+data-reference="di-thm:true-lifts">37.3.3</a>: the
+normalized kernel law, for kernels built from one theta function of the
+CM curve normalized to take the value <span
+class="math inline">\(1\)</span> at the origin (Chapter <a
+href="20261126T020110--the-normalized-kernel-law__workbook.html#chap" data-reference-type="ref"
+data-reference="nk-chap">38</a>), and the unit scalars and the
+dual frames at the odd positions (Chapter <a href="20261126T020120--frames-at-odd-positions-and-unit-scalars__workbook.html#chap"
+data-reference-type="ref" data-reference="fo-chap">39</a>). The
+Hecke image is controlled by a nondegeneracy condition at one edge
+(Chapter <a href="20261126T020130--nondegeneracy-at-an-edge__workbook.html#chap" data-reference-type="ref"
+data-reference="ea-chap">40</a>) and its colength bound
+(Chapter <a href="20261126T020140--the-colength-of-a-hecke-image__workbook.html#chap" data-reference-type="ref"
+data-reference="co-chap">41</a>). These chapters give a
+human-readable account, with these gaps: the proofs of the nondegeneracy
+theorems for small primes and for primes of class I are large and not
+developed (Chapter <a href="20261126T020130--nondegeneracy-at-an-edge__workbook.html#chap" data-reference-type="ref"
+data-reference="ea-chap">40</a>); we have not followed the
+covering lemma behind the colength bound (Chapter <a href="20261126T020140--the-colength-of-a-hecke-image__workbook.html#chap"
+data-reference-type="ref" data-reference="co-chap">41</a>), the
+proof of the input on the lifts, part (ii) of Theorem <a
+href="20261126T020150--gain-and-loss-at-an-inert-prime__workbook.html#thm:linkG" data-reference-type="ref"
+data-reference="gl-thm:linkG">42.4.1</a>, or how the size
+conditions give the bound for the rejected primes (Chapter <a
+href="20261126T020150--gain-and-loss-at-an-inert-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="gl-chap">42</a>); nor the proof that the values
+at the origin entering the one-copy step are <span
+class="math inline">\(p\)</span>-integral, the computation with coset
+averages for lattices standard at <span
+class="math inline">\(p\)</span>, or the passage to the torus-averaged
+exponent (Chapter <a href="20261126T020110--the-normalized-kernel-law__workbook.html#chap" data-reference-type="ref"
+data-reference="nk-chap">38</a>); and we have not matched the
+formalization’s description of the lattices at the odd positions with
+the dual model weights of <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>, nor compared its
+scalars with those of <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Def. 11.23]</span> (Chapter <a
+href="20261126T020120--frames-at-odd-positions-and-unit-scalars__workbook.html#chap" data-reference-type="ref"
+data-reference="fo-chap">39</a>). <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Thms. 12.27 and 12.21]</span>
+derive <a href="#A1" data-reference-type="eqref"
+data-reference="A1">(A1)</a> and <a href="#A2"
+data-reference-type="eqref" data-reference="A2">(A2)</a> from <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Hyps. 11.22,
+11.38, 11.42 and 12.12]</span>, assumed there; <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Prop. 11.27]</span> proves
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Hyp. 11.22]</span> for its own step normalization. The three engines of
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Hyp. 12.12]</span> are not separate statements in the formalization. In
+the formalization <span class="math inline">\(\Gamma\)</span> is net of
+the colength of the Hecke image, and <a href="#A2"
+data-reference-type="eqref" data-reference="A2">(A2)</a> and <a
+href="#A2p" data-reference-type="eqref" data-reference="A2p">(A2\(^+\))</a>
+come from the source lattices by an exact computation (Chapter <a
+href="20261125T021600--the-accounting-in-the-lean-formalization__workbook.html#chap" data-reference-type="ref"
+data-reference="lf-chap">59</a>). The sublattice of <span
+class="math inline">\(M_u\)</span> at level <span
+class="math inline">\(T_u\)</span> has slope <span
+class="math inline">\(\mu(M_u) - f\log(T_u - 1)/(T_u - 2)\)</span> and
+rank <span class="math inline">\((1 - 1/(T_u - 1))^f\)</span> times that
+of <span class="math inline">\(M_u\)</span>. The slope of <span
+class="math inline">\(N_u\)</span> differs from that of the Hecke image
+twisted by the gains by at most a multiple of <span
+class="math inline">\(X&#39;&#39;\)</span>; the formalization proves
+this from the divisibility branch.</p>
+</dd>
+<dt><a href="#A3" data-reference-type="eqref"
+data-reference="A3">(A3)</a></dt>
+<dd>
+<p>Theorem <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#thm:K3" data-reference-type="ref"
+data-reference="sb-thm:K3">43.5.1</a>. The bound for the spread is
+Problem <a href="#pr:spread" data-reference-type="ref"
+data-reference="pr:spread">58.2.1</a>, from the further inputs, as in the
+formalization; <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Lemma 18.13]</span> states it.
+The frame theorem and its application to the period maps are proved in
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Thms. 13.8 and 13.15]</span>. The Gram conditions, <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Thms. 14.1–14.3]</span>, are derived there from hypotheses of <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>,
+assumed there. The formalization does not state <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Hyp. 14.10]</span>, a period
+map with a seesaw relation; it states and proves the Bessel identity for
+the period maps directly (Theorem <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#thm:bessel"
+data-reference-type="ref"
+data-reference="sb-thm:bessel">43.4.3</a>). Chapters <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">44</a>, <a href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#chap"
+data-reference-type="ref" data-reference="sx-chap">45</a> and <a
+href="20261126T020230--the-bessel-identity__workbook.html#chap" data-reference-type="ref"
+data-reference="bi-chap">46</a> give a human-readable account:
+Bessel–Poincaré series and their Gram operators, the seesaw as a
+transport of linear relations, and the identity. The gaps they record:
+we have not followed the proofs of the decay statement and of the four
+bounds behind the off-diagonal estimate, which use the Siegel–Weil
+formula in its convergent range, nor checked that the terms of the
+expansion of the Gram operator are the double cosets of the model
+(Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">44</a>); we have not traced how the
+constructed family is shown to satisfy the laws of the seesaw package
+(Chapter <a href="20261126T020220--the-seesaw-as-transport-of-relations__workbook.html#chap" data-reference-type="ref"
+data-reference="sx-chap">45</a>); and we have not traced how the
+classification of discrete series used for the multiplicity statement is
+supplied, nor read the proof of the unfolding step (Chapter <a
+href="20261126T020230--the-bessel-identity__workbook.html#chap" data-reference-type="ref"
+data-reference="bi-chap">46</a>).</p>
+</dd>
+<dt><a href="#A4" data-reference-type="eqref"
+data-reference="A4">(A4)</a>, <a href="#A6" data-reference-type="eqref"
+data-reference="A6">(A6)</a>, <a href="#A7" data-reference-type="eqref"
+data-reference="A7">(A7)</a></dt>
+<dd>
+<p>Theorems <a href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#in:A4" data-reference-type="ref"
+data-reference="hp-in:A4">47.2.2</a>, <a href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#in:A6"
+data-reference-type="ref" data-reference="hp-in:A6">47.3.1</a>
+and <a href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#in:A7" data-reference-type="ref"
+data-reference="hp-in:A7">47.4.1</a>. The CM period is classical
+<span class="citation" data-cites="CS">[<a href="#ref-CS">CS</a>]</span>
+(Theorem <a href="20261125T009000--kronecker-limit-and-chowla-selberg__workbook.html#thm:cs" data-reference-type="ref"
+data-reference="kl-thm:cs">20.3.1</a>), with a correction proved in
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Props. 15.3 and 15.6]</span>; the mass formula is classical <span
+class="citation" data-cites="GHY">[<a href="#ref-GHY">GHY</a>]</span>; <a
+href="#A7" data-reference-type="eqref" data-reference="A7">(A7)</a> is
+proved in <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Thm. 15.33]</span>. For the
+height and target bounds of <a href="#A4" data-reference-type="eqref"
+data-reference="A4">(A4)</a>, the corresponding steps in <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> are
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Hyps. 15.10–15.12, 15.16 and 15.18]</span>, assumed there. The
+formalization proves the covolume estimate of Theorem <a
+href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#in:A4" data-reference-type="ref"
+data-reference="hp-in:A4">47.2.2</a> for the lattices of forms of
+the lifts, and Chapters <a href="20261126T020320--slopes-of-lattices-of-forms__workbook.html#chap" data-reference-type="ref"
+data-reference="sg-chap">49</a>, <a href="20261126T020330--the-cm-period-and-the-flat-line__workbook.html#chap"
+data-reference-type="ref" data-reference="fl-chap">50</a> and <a
+href="20261126T020340--lower-slope-bounds-on-covers__workbook.html#chap" data-reference-type="ref"
+data-reference="lc-chap">51</a> give a human-readable account:
+reduction to a lower slope bound for holomorphic forms by linear algebra
+and descent, the period through the flat line, and the slope bound on
+covers by an effective arithmetic Hilbert–Samuel inequality. The gaps
+they record: we have not traced how the lattices of forms correspond to
+the spaces of the theta correspondence (Chapter <a href="20261126T020320--slopes-of-lattices-of-forms__workbook.html#chap"
+data-reference-type="ref" data-reference="sg-chap">49</a>), nor
+the anchor bound for the flat line (Chapter <a href="20261126T020330--the-cm-period-and-the-flat-line__workbook.html#chap"
+data-reference-type="ref" data-reference="fl-chap">50</a>); we
+have not read the proof for the last lift, the tower-and-volume
+argument, or below resolution of singularities and the Poincaré–Lelong
+formula, and we have not checked the normalization of the height
+(Chapter <a href="20261126T020340--lower-slope-bounds-on-covers__workbook.html#chap" data-reference-type="ref"
+data-reference="lc-chap">51</a>); and of the step that turns the
+bounds for the lattices of the lifts into the bound for the target we
+have read the statements only. For <a href="#A6"
+data-reference-type="eqref" data-reference="A6">(A6)</a>, Theorem <a
+href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#in:A6" data-reference-type="ref"
+data-reference="hp-in:A6">47.3.1</a> states the input in the form
+the formalization proves: the rank of the source and the dimension
+budget are given exactly by the mass formula, and the auxiliary prime is
+bounded below through critical levels. Chapter <a href="20261126T020310--counting-forms-and-the-critical-level__workbook.html#chap"
+data-reference-type="ref" data-reference="cl-chap">48</a> gives a
+human-readable account, with these gaps: we have read the statements of
+the mass ratio and of the two counts in the formalization but not their
+proofs, we have not checked the Vandermonde count at a top by hand, and
+the formalization uses the lower bound for <span
+class="math inline">\(\log T_u\)</span> in the accounting, as in
+Problem <a href="#pr:levels" data-reference-type="ref"
+data-reference="pr:levels">58.1.4</a>; we have not traced how it constructs a
+prime in its window. The corresponding step in <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> is the inequality <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Hyp. 15.23]</span>, assumed there. See also the remark below.</p>
+</dd>
+<dt><a href="#A5" data-reference-type="eqref"
+data-reference="A5">(A5)</a>, and <span
+class="math inline">\(mN_c\)</span> in <a href="#A4"
+data-reference-type="eqref" data-reference="A4">(A4)</a></dt>
+<dd>
+<p>Theorems <a href="20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.html#thm:local" data-reference-type="ref"
+data-reference="lt-thm:local">52.1.1</a> and <a
+href="20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.html#thm:congruence" data-reference-type="ref"
+data-reference="lt-thm:congruence">52.4.5</a>. Theorem <a
+href="20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.html#thm:local" data-reference-type="ref"
+data-reference="lt-thm:local">52.1.1</a> states <a href="#A5"
+data-reference-type="eqref" data-reference="A5">(A5)</a> and <a
+href="#A5m" data-reference-type="eqref" data-reference="A5m">(A5\(^-\))</a>
+in the form the formalization proves, with the local exponents given by
+formulas. Chapter <a href="20261126T020410--local-exponents-of-the-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="lx-chap">53</a> gives a human-readable account,
+with these gaps: we have not traced how the family the formalization
+constructs is shown to satisfy the size conditions, we have not
+re-derived the row exponents and the Fock degree, we have not followed
+the congruence behind the bound for the primes of class I whose
+Frobenius label <span class="math inline">\(h_p \ne 0\)</span> has odd
+order, and we have not traced how the orbit losses enter the gain
+inequality at the inert primes. The corresponding steps in <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> are
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Hyps. 16.13 and 16.14]</span>, assumed there, from which <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Thm. 16.6]</span> derives <a href="#A5" data-reference-type="eqref"
+data-reference="A5">(A5)</a>. The congruence defects, Theorem <a
+href="20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.html#thm:congruence" data-reference-type="ref"
+data-reference="lt-thm:congruence">52.4.5</a>, are derived
+in <span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Thm. 17.37]</span> from <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Hyps. 17.24 and 17.36]</span>
+and (W3), assumed there.</p>
+</dd>
+<dt>(V1)–(V3), (W1), (W2)</dt>
+<dd>
+<p>Chapter <a href="20261125T020000--the-analytic-frame__workbook.html#chap" data-reference-type="ref"
+data-reference="af-chap">36</a>. (V1) is the inputs of Section <a
+href="#sec:inputs" data-reference-type="ref"
+data-reference="sec:inputs">58.2</a> for every translate; the rest is
+proved in <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> from classical theorems
+<span class="citation" data-cites="Gal">[<a href="#ref-Gal">Gal</a>]</span>,
+<span class="citation" data-cites="Pa">[<a href="#ref-Pa">Pa</a>]</span>,
+<span class="citation" data-cites="Dav">[<a href="#ref-Dav">Dav</a>,
+Ch. 14]</span>. (V3) is the formalization’s form of the cost conditions,
+and the normalization is Theorem <a href="#thm:size"
+data-reference-type="ref" data-reference="thm:size">58.3.1</a>, <span
+class="citation" data-cites="Zh">[<a href="#ref-Zh">Zh</a>,
+Lemma 6.1]</span> as the formalization proves it.</p>
+</dd>
+<dt>(W3)</dt>
+<dd>
+<p>Theorem <a href="20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.html#thm:W3" data-reference-type="ref"
+data-reference="lt-thm:W3">52.4.3</a>, from the Selmer bound on
+windows, Theorem <a href="20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.html#hyp:window" data-reference-type="ref"
+data-reference="lt-hyp:window">52.4.1</a>. Over <span
+class="math inline">\(\mathbb{Q}\)</span> the odd twists are classical
+<span class="citation" data-cites="MW">[<a href="#ref-MW">MW</a>]</span>;
+the bound for the even twists is not known even over <span
+class="math inline">\(\mathbb{Q}\)</span> (Section <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#sec:split" data-reference-type="ref"
+data-reference="ts-sec:split">30.2</a>). The Galois
+representations are classical <span class="citation"
+data-cites="HT">[<a href="#ref-HT">HT</a>]</span>, <span class="citation"
+data-cites="Shi">[<a href="#ref-Shi">Shi</a>]</span>, <span class="citation"
+data-cites="CH">[<a href="#ref-CH">CH</a>]</span>, <span class="citation"
+data-cites="Car1">[<a href="#ref-Car1">Car1</a>]</span>. Over <span
+class="math inline">\(E\)</span>, the corresponding step in <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> is
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Hyp. 17.11]</span>, assumed there; as <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> notes, it implies more
+towards Vandiver’s conjecture than any published result. The
+formalization proves the Selmer bound on windows, and Chapter <a
+href="20261126T020450--windows-of-scales__workbook.html#chap" data-reference-type="ref"
+data-reference="ws-chap">57</a> outlines the proof (Theorem <a
+href="20261126T020450--windows-of-scales__workbook.html#thm:vwin" data-reference-type="ref"
+data-reference="ws-thm:vwin">57.1.1</a>): the minus part is
+bounded at every scale by a one-sided Euler-system argument with Gauss
+sums, without the main conjecture (Chapter <a href="20261126T020430--the-minus-part-by-gauss-sums__workbook.html#chap"
+data-reference-type="ref" data-reference="mi-chap">55</a>); the
+plus part by congruences, case by case, given a bound on fixed layers at
+finitely many bad primes (Chapter <a href="20261126T020440--the-plus-part-by-congruences__workbook.html#chap"
+data-reference-type="ref" data-reference="pl-chap">56</a>); and a
+window of scales is chosen on which those layers and the prime <span
+class="math inline">\(2\)</span> contribute little, by Iwasawa theory
+along cyclotomic towers (Chapter <a href="20261126T020420--exceptional-twists-in-cyclotomic-towers__workbook.html#chap"
+data-reference-type="ref" data-reference="tw-chap">54</a>). The
+gaps they record: we have not read the proofs of the bound for <span
+class="math inline">\(H^2\)</span> and of the Ferrero–Washington step,
+nor identified the Iwasawa module behind the exceptional twists
+(Chapter <a href="20261126T020420--exceptional-twists-in-cyclotomic-towers__workbook.html#chap" data-reference-type="ref"
+data-reference="tw-chap">54</a>); we have not transcribed the
+condition at <span class="math inline">\(\ell\)</span> in the
+Stickelberger bound or read its proof (Chapter <a href="20261126T020430--the-minus-part-by-gauss-sums__workbook.html#chap"
+data-reference-type="ref" data-reference="mi-chap">55</a>); we
+have not read the treatment of the bad primes, the cases that use forms
+on <span class="math inline">\(\mathrm{GSp}_4\)</span>, or how Kato’s
+bound is established (Chapter <a href="20261126T020440--the-plus-part-by-congruences__workbook.html#chap"
+data-reference-type="ref" data-reference="pl-chap">56</a>); and
+we have not followed how the constants are made independent of <span
+class="math inline">\(q\)</span> and <span
+class="math inline">\(d\)</span>, nor the passage to ranges of scales
+with exponent <span class="math inline">\(3/2\)</span> (Chapter <a
+href="20261126T020450--windows-of-scales__workbook.html#chap" data-reference-type="ref"
+data-reference="ws-chap">57</a>).</p>
+</dd>
+<dt>(W4)</dt>
+<dd>
+<p>The deliverables of Chapters <a href="20261125T020100--divisibility-at-inert-primes-in-general__workbook.html#chap"
+data-reference-type="ref" data-reference="di-chap">37</a>–<a
+href="20261125T020400--local-terms-congruence-defects-and-selmer-windows__workbook.html#chap" data-reference-type="ref"
+data-reference="lt-chap">52</a> at every <span
+class="math inline">\(x\)</span> of the window, with constants
+independent of <span class="math inline">\(x\)</span>, <span
+class="math inline">\(Y\)</span>, <span
+class="math inline">\(Y_0\)</span>, <span
+class="math inline">\(q\)</span>, <span
+class="math inline">\(d\)</span>. The corresponding step in <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> is
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Hyp. 18.10]</span>, assumed there for every admissible datum; even given
+the hypotheses of <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>, <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span> does not derive it. The
+formalization proves a weaker statement, which is what the window
+argument of this chapter uses (Section <a href="20261126T020150--gain-and-loss-at-an-inert-prime__workbook.html#sec:scale"
+data-reference-type="ref"
+data-reference="gl-sec:scale">42.5</a> of Chapter <a
+href="20261126T020150--gain-and-loss-at-an-inert-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="gl-chap">42</a>): for each primitive character
+and every small <span class="math inline">\(\varepsilon\)</span> there
+is one family of data, and <span class="math inline">\(x_0\)</span>,
+such that at every <span class="math inline">\(x \ge x_0\)</span> in its
+window set a chain record exists; the record at <span
+class="math inline">\(x\)</span> ties together one member of the family
+for each translate, sharing the frame, <span
+class="math inline">\(m\)</span>, <span
+class="math inline">\(f\)</span>, <span
+class="math inline">\(q\)</span>, <span class="math inline">\(d\)</span>
+and the top weights, with <span class="math inline">\(e_D = 2\)</span>
+and <span class="math inline">\(e_L = 0\)</span> fixed before <span
+class="math inline">\(\varepsilon\)</span>, a design threshold fixed
+before the family, and the scalar constants of the record found after it
+(Section <a href="#sec:window" data-reference-type="ref"
+data-reference="sec:window">58.5</a>).</p>
+</dd>
+</dl>
+<p>The public sources and the formalization differ on where the
+arithmetic geometry enters; see the remark at the end of Chapter <a
+href="20261125T020300--heights-periods-and-the-auxiliary-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="hp-chap">47</a>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secacct">§<a href="#sec:acct"
+data-reference-type="ref" data-reference="sec:acct">58.1</a></h2>
+<dl>
+<dt><a href="#pr:A127" data-reference-type="ref"
+data-reference="pr:A127">58.1.1</a></dt>
+<dd>
+<p>Use <a href="#A7" data-reference-type="eqref"
+data-reference="A7">(A7)</a> in <a href="#A2"
+data-reference-type="eqref" data-reference="A2">(A2)</a>.</p>
+</dd>
+<dt><a href="#pr:A3" data-reference-type="ref"
+data-reference="pr:A3">58.1.2</a></dt>
+<dd>
+<p>Take the weighted mean of Problem <a href="#pr:A127"
+data-reference-type="ref" data-reference="pr:A127">58.1.1</a> over <span
+class="math inline">\(u\)</span>, and write <span
+class="math inline">\(\mu(N_u) = (\mu(N_u) - h_u) + h_u\)</span>.</p>
+</dd>
+<dt><a href="#pr:heights" data-reference-type="ref"
+data-reference="pr:heights">58.1.3</a></dt>
+<dd>
+<p>The weighted mean of <a href="#A4" data-reference-type="eqref"
+data-reference="A4">(A4)</a>.</p>
+</dd>
+<dt><a href="#pr:levels" data-reference-type="ref"
+data-reference="pr:levels">58.1.4</a></dt>
+<dd>
+<p>Use <a href="#A5" data-reference-type="eqref"
+data-reference="A5">(A5)</a>, and <a href="#A6"
+data-reference-type="eqref" data-reference="A6">(A6)</a> multiplied by
+<span class="math inline">\(A \ge 0\)</span>. Then use the definition of
+<span class="math inline">\(\log\Omega\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secinputs">§<a href="#sec:inputs"
+data-reference-type="ref" data-reference="sec:inputs">58.2</a></h2>
+<dl>
+<dt><a href="#pr:spread" data-reference-type="ref"
+data-reference="pr:spread">58.2.1</a></dt>
+<dd>
+<p>For the upper bound compare a word <span
+class="math inline">\(u\)</span> with each word <span
+class="math inline">\(u&#39;\)</span>, using <a href="#A2p"
+data-reference-type="eqref" data-reference="A2p">(A2\(^+\))</a> and <a
+href="#A7p" data-reference-type="eqref" data-reference="A7p">(A7\(^+\))</a>
+for <span class="math inline">\(u\)</span> and <a href="#A2"
+data-reference-type="eqref" data-reference="A2">(A2)</a> and <a
+href="#A7" data-reference-type="eqref" data-reference="A7">(A7)</a> for
+<span class="math inline">\(u&#39;\)</span>; then take the weighted mean
+over <span class="math inline">\(u&#39;\)</span>.</p>
+</dd>
+<dt><a href="#pr:spread-size" data-reference-type="ref"
+data-reference="pr:spread-size">58.2.2</a></dt>
+<dd>
+<p><span class="math inline">\(N_Tmb \le N_Ta\)</span>, <span
+class="math inline">\(a \le N_Ta\)</span>, <span class="math inline">\(m
+\le k \le b\)</span>, <span class="math inline">\(A \le 2N_Ta\)</span>
+and <span class="math inline">\(\log k \le y\)</span>.</p>
+</dd>
+<dt><a href="#pr:e3" data-reference-type="ref"
+data-reference="pr:e3">58.2.3</a></dt>
+<dd>
+<p>Problem <a href="20261125T020200--slopes-frames-and-bessel-poincare-series__workbook.html#pr:logW" data-reference-type="ref"
+data-reference="sb-pr:logW">43.5.1</a> and <span
+class="math inline">\(k \le b\)</span>; and <span
+class="math inline">\(\log(1 + x^{C_H}) \le (1 + C_H)\log x \le (1 +
+C_H)y\)</span>.</p>
+</dd>
+<dt><a href="#pr:calB" data-reference-type="ref"
+data-reference="pr:calB">58.2.4</a></dt>
+<dd>
+<p>Bound each <span class="math inline">\(e_i\)</span> separately, using
+<span class="math inline">\(b \le a \le N_Ta\)</span>, <span
+class="math inline">\(A \le 2N_Ta\)</span> and Problem <a href="#pr:e3"
+data-reference-type="ref" data-reference="pr:e3">58.2.3</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secnorm">§<a href="#sec:norm"
+data-reference-type="ref" data-reference="sec:norm">58.3</a></h2>
+<dl>
+<dt><a href="#pr:V3" data-reference-type="ref"
+data-reference="pr:V3">58.3.1</a></dt>
+<dd>
+<p><span class="math inline">\(8n = 4f\)</span>, and <span
+class="math inline">\(f \ge 2\)</span>.</p>
+</dd>
+<dt><a href="#pr:average" data-reference-type="ref"
+data-reference="pr:average">58.3.2</a></dt>
+<dd>
+<p>Theorem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#thm:two-scales" data-reference-type="ref"
+data-reference="gf-thm:two-scales">4.4.1</a> for each pair
+<span class="math inline">\((t,j)\)</span>, Theorem <a href="#thm:M"
+data-reference-type="ref" data-reference="thm:M">58.2.1</a> for each <span
+class="math inline">\(\tau\)</span>, and Problem <a href="#pr:V3"
+data-reference-type="ref" data-reference="pr:V3">58.3.1</a>; average over the
+<span class="math inline">\(N_Tm\)</span> pairs.</p>
+</dd>
+<dt><a href="#pr:size-ends" data-reference-type="ref"
+data-reference="pr:size-ends">58.3.3</a></dt>
+<dd>
+<p><span class="math inline">\(x \le x^{1/2+\varepsilon}m\)</span>, and
+<span class="math inline">\(m^2/k \le m/x\)</span>.</p>
+</dd>
+<dt><a href="#pr:size-steps" data-reference-type="ref"
+data-reference="pr:size-steps">58.3.4</a></dt>
+<dd>
+<p><span class="math inline">\(n \le 2x^{\varepsilon/8}N_T\)</span>.</p>
+</dd>
+<dt><a href="#pr:size-defects" data-reference-type="ref"
+data-reference="pr:size-defects">58.3.5</a></dt>
+<dd>
+<p><span class="math inline">\(N_2 \le n\)</span> and <span
+class="math inline">\(k \le n^2x^{1/2-\varepsilon}\)</span>.</p>
+</dd>
+<dt><a href="#pr:size-divide" data-reference-type="ref"
+data-reference="pr:size-divide">58.3.6</a></dt>
+<dd>
+<p>Problem <a href="#pr:size-defects" data-reference-type="ref"
+data-reference="pr:size-defects">58.3.5</a>, <span class="math inline">\(4/x
+\le 2\)</span> and <span class="math inline">\(1/\delta \le
+x^\varepsilon\)</span>.</p>
+</dd>
+<dt><a href="#pr:divide" data-reference-type="ref"
+data-reference="pr:divide">58.3.7</a></dt>
+<dd>
+<p><span class="math inline">\(N_2 = \delta n\)</span> and <span
+class="math inline">\(a = xb\)</span>.</p>
+</dd>
+<dt><a href="#pr:four" data-reference-type="ref"
+data-reference="pr:four">58.3.8</a></dt>
+<dd>
+<p><span class="math inline">\(n/N_T \le 2x^{\varepsilon/8}\)</span> and
+<span class="math inline">\(1/\delta \le x^\varepsilon\)</span>.</p>
+</dd>
+<dt><a href="#pr:eta-error" data-reference-type="ref"
+data-reference="pr:eta-error">58.3.9</a></dt>
+<dd>
+<p>Follow the extra term through Problem <a href="#pr:heights"
+data-reference-type="ref" data-reference="pr:heights">58.1.3</a> and
+Theorem <a href="#thm:acct" data-reference-type="ref"
+data-reference="thm:acct">58.1.1</a>, then divide by <span
+class="math inline">\(Q\delta/2\)</span> as in Problem <a
+href="#pr:average" data-reference-type="ref"
+data-reference="pr:average">58.3.2</a>; here <span class="math inline">\(A =
+N_Txb\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secexponents">§<a href="#sec:exponents"
+data-reference-type="ref" data-reference="sec:exponents">58.4</a></h2>
+<dl>
+<dt><a href="#pr:m" data-reference-type="ref"
+data-reference="pr:m">58.4.1</a></dt>
+<dd>
+<p>Compare each of <span class="math inline">\(x/m\)</span> and <span
+class="math inline">\(m\)</span> with <span
+class="math inline">\(x^{1/2}\)</span>.</p>
+</dd>
+<dt><a href="#pr:cchi" data-reference-type="ref"
+data-reference="pr:cchi">58.4.2</a></dt>
+<dd>
+<p>Solve <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:Gchi" data-reference-type="eqref"
+data-reference="zr-eq:Gchi">(3)</a> for <span
+class="math inline">\(c_\chi\)</span>. For <span
+class="math inline">\(\mathcal{K}(x)\)</span> use Mertens’ estimate.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secwindow">§<a href="#sec:window"
+data-reference-type="ref" data-reference="sec:window">58.5</a></h2>
+<dl>
+<dt><a href="#pr:window" data-reference-type="ref"
+data-reference="pr:window">58.5.1</a></dt>
+<dd>
+<p><span class="math inline">\(Y^{3/2} \le Y^2\)</span> and <span
+class="math inline">\(Y_0 \le x\)</span>.</p>
+</dd>
+<dt><a href="#pr:G" data-reference-type="ref"
+data-reference="pr:G">58.5.2</a></dt>
+<dd>
+<p>Theorem <a href="#thm:A" data-reference-type="ref"
+data-reference="thm:A">58.4.1</a> at each <span
+class="math inline">\(x\)</span>; by (W4) its threshold does not depend
+on <span class="math inline">\(x\)</span>.</p>
+</dd>
+<dt><a href="#pr:close" data-reference-type="ref"
+data-reference="pr:close">58.5.3</a></dt>
+<dd>
+<p>Theorem <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#thm:intervals" data-reference-type="ref"
+data-reference="zr-thm:intervals">1.2.3</a> for each <span
+class="math inline">\(\varepsilon\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secchi8">§<a href="#sec:chi8"
+data-reference-type="ref" data-reference="sec:chi8">58.6</a></h2>
+<dl>
+<dt><a href="#pr:chi8-zero" data-reference-type="ref"
+data-reference="pr:chi8-zero">58.6.1</a></dt>
+<dd>
+<p>Problem <a href="20261125T020000--the-analytic-frame__workbook.html#pr:chi8-twists" data-reference-type="ref"
+data-reference="af-pr:chi8-twists">36.5.3</a> and
+Theorem <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#thm:dirichlet-intervals" data-reference-type="ref"
+data-reference="zr-thm:dirichlet-intervals">1.5.1</a>,
+as in Problem <a href="#pr:close" data-reference-type="ref"
+data-reference="pr:close">58.5.3</a>; for (ii), compute the residue as in
+Problem <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#pr:nearest" data-reference-type="ref"
+data-reference="zr-pr:nearest">1.5.2</a>, and note that
+Problem <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#pr:positive" data-reference-type="ref"
+data-reference="zr-pr:positive">1.5.3</a> uses only its
+sign.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Adr"><span class="bib-label">[Adr]</span> J. Adriazola, <em>The Alpöge proof of the Riemann hypothesis</em>, manuscript, revised 24 November 2026, <a href="https://github.com/jimjamzola/RH-Alpoge-Reconstruction" class="uri">https://github.com/jimjamzola/RH-Alpoge-Reconstruction</a>.</p>
+<p id="ref-Alp"><span class="bib-label">[Alp]</span> L. Alpöge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, <a href="https://alpo.ge/remark.pdf" class="uri">https://alpo.ge/remark.pdf</a>.</p>
+<p id="ref-Car1"><span class="bib-label">[Car1]</span> A. Caraiani, <em>Local–global compatibility and the action of monodromy on nearby cycles</em>, Duke Math. J. <strong>161</strong> (2012), 2311–2413.</p>
+<p id="ref-CH"><span class="bib-label">[CH]</span> G. Chenevier and M. Harris, <em>Construction of automorphic Galois representations, II</em>, Camb. J. Math. <strong>1</strong> (2013), 53–73.</p>
+<p id="ref-CS"><span class="bib-label">[CS]</span> S. Chowla and A. Selberg, <em>On Epstein’s zeta-function</em>, J. reine angew. Math. <strong>227</strong> (1967), 86–110.</p>
+<p id="ref-Dav"><span class="bib-label">[Dav]</span> H. Davenport, <em>Multiplicative Number Theory</em>, 3rd ed., Grad. Texts in Math. 74, Springer, 2000.</p>
+<p id="ref-Gal"><span class="bib-label">[Gal]</span> P. X. Gallagher, <em>A large sieve density estimate near <span class="math inline">\(\sigma = 1\)</span></em>, Invent. Math. <strong>11</strong> (1970), 329–339.</p>
+<p id="ref-GHY"><span class="bib-label">[GHY]</span> W. T. Gan, J. P. Hanke and J.-K. Yu, <em>On an exact mass formula of Shimura</em>, Duke Math. J. <strong>107</strong> (2001), 103–133.</p>
+<p id="ref-HT"><span class="bib-label">[HT]</span> M. Harris and R. Taylor, <em>The Geometry and Cohomology of Some Simple Shimura Varieties</em>, Ann. of Math. Stud. 151, Princeton Univ. Press, 2001.</p>
+<p id="ref-Lean"><span class="bib-label">[Lean]</span> The Lean community, <em>riemann-hypothesis</em>, a Lean formalization of Alpöge’s argument, <a href="https://github.com/leanprover-community/riemann-hypothesis" class="uri">https://github.com/leanprover-community/riemann-hypothesis</a>.</p>
+<p id="ref-MW"><span class="bib-label">[MW]</span> B. Mazur and A. Wiles, <em>Class fields of abelian extensions of <span class="math inline">\(\mathbf{Q}\)</span></em>, Invent. Math. <strong>76</strong> (1984), 179–330.</p>
+<p id="ref-Pa"><span class="bib-label">[Pa]</span> A. Page, <em>On the number of primes in an arithmetic progression</em>, Proc. London Math. Soc. (2) <strong>39</strong> (1935), 116–141.</p>
+<p id="ref-RS"><span class="bib-label">[RS]</span> J. B. Rosser and L. Schoenfeld, <em>Approximate formulas for some functions of prime numbers</em>, Illinois J. Math. <strong>6</strong> (1962), 64–94.</p>
+<p id="ref-Rub"><span class="bib-label">[Rub]</span> <em>The Alpöge–Claude proof of the Riemann hypothesis explained for the Riemann zeta function</em>, written by AI models at the behest of M. O. Rubinstein, working draft, 21 November 2026, <a href="https://www.math.uwaterloo.ca/~mrubinst/alpoge_claude_grh/zeta-paper.pdf" class="uri">https://www.math.uwaterloo.ca/~mrubinst/alpoge_claude_grh/zeta-paper.pdf</a>.</p>
+<p id="ref-Shi"><span class="bib-label">[Shi]</span> S. W. Shin, <em>Galois representations arising from some compact Shimura varieties</em>, Ann. of Math. (2) <strong>173</strong> (2011), 1645–1741.</p>
+<p id="ref-Zh"><span class="bib-label">[Zh]</span> R. Zhang, <em>A preliminary note on Alpöge’s proposed proof of the generalized Riemann hypothesis</em>, preprint, 2026, hexagon:2611.00809.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+</body>
+</html>

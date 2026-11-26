@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="robots" content="noindex">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-25" />
+  <title>From zeros to a one-sided ramp sum</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","R":"\\mathbb{R}","Re":"\\operatorname{Re}","Im":"\\operatorname{Im}","one":"\\mathbf{1}"}}};</script>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<!-- snapshot-banner --><div style="border:1px solid #c9a227;background:#fff8e1;color:#3d3d3d;padding:.6em .9em;margin:.5em 0 1em 0;font:15px/1.4 system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;border-radius:6px"><strong>Snapshot of 25 November 2026.</strong> This is the collection as it stood before it was reorganized around the rewritten Lean proof. It is not maintained. Current version: <a href="../">ultronozm.github.io/grh-workbook</a>.</div>
+
+    <div class="my-links-container">
+2026-11-25 22:40:17
+      <a href="https://github.com/ultronozm/grh-workbook/blob/original-route/20261125T001000--zeros-to-ramp-sums__workbook.tex" class="my-link">tex</a>
+      <a href="20261125T001000--zeros-to-ramp-sums__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/original-route/20261125T001000--zeros-to-ramp-sums__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">From zeros to a one-sided ramp sum <a class="stable-tag" href="tag/2222.html" title="Stable tag: cite as Tag 2222">Tag 2222</a></h1>
+<p class="date">November 25, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:ramp" id="toc-sec:ramp">§1.1. The ramp sum</a></li>
+<li><a href="#sec:landau" id="toc-sec:landau">§1.2. One side suffices</a></li>
+<li><a href="#sec:smoothing" id="toc-sec:smoothing">§1.3. Smoothing, and the triangle weight</a></li>
+<li><a href="#sec:dirichlet" id="toc-sec:dirichlet">§1.4. Dirichlet \(L\)-functions</a></li>
+<li><a href="#sec:real-pole" id="toc-sec:real-pole">§1.5. A real zero on windows</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secramp" id="toc-secramp">§1.1</a></li>
+<li><a href="#seclandau" id="toc-seclandau">§1.2</a></li>
+<li><a href="#secsmoothing" id="toc-secsmoothing">§1.3</a></li>
+<li><a href="#secdirichlet" id="toc-secdirichlet">§1.4</a></li>
+<li><a href="#secreal-pole" id="toc-secreal-pole">§1.5</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>The zeta function and Dirichlet <span
+class="math inline">\(L\)</span>-functions as in <span class="citation"
+data-cites="Dav">[<a href="#ref-Dav">Dav</a>]</span>: the Hadamard product
+and the constant <span class="math inline">\(B\)</span> (Ch. 12), the
+explicit formula for Chebyshev’s function <span
+class="math inline">\(\psi(x)\)</span> and its contour shift (Ch. 17),
+and their analogues for <span class="math inline">\(L(s, \chi)\)</span>
+(Ch. 12 and 19), with <span class="math inline">\(L(1, \chi) \ne
+0\)</span> (Ch. 4). Chebyshev’s bound <span
+class="math inline">\(\psi(x) \ll x\)</span> <span class="citation"
+data-cites="MV">[<a href="#ref-MV">MV</a>]</span>. Mellin transforms. The
+theorems of Landau and of Kaczorowski–Pintz are stated in §<a
+href="#sec:landau" data-reference-type="ref"
+data-reference="sec:landau">1.2</a>. Chapter <a href="20261124T214600--the-isotropic-plane__workbook.html#chap"
+data-reference-type="ref" data-reference="ip-chap">17</a> is used
+only for motivation, in §<a href="#sec:smoothing"
+data-reference-type="ref" data-reference="sec:smoothing">1.3</a>.</p>
+<p>A comparison of divisibility with size, as in Chebyshev’s method,
+gives upper bounds for weighted sums over primes, and nothing else. Can
+an upper bound for a sum over primes prove the Riemann hypothesis? This
+chapter shows that it can, for a suitable weight, following the
+reduction used in Alpöge’s argument <span class="citation"
+data-cites="Alp">[<a href="#ref-Alp">Alp</a>]</span>. The upper bound itself
+is not treated here.</p>
+<h1 id="sec:ramp">§1.1. The ramp sum <a class="stable-tag" href="tag/2223.html" title="Stable tag: cite as Tag 2223">Tag 2223</a></h1>
+<p>Write <span class="math inline">\(v_+ := \max(v, 0)\)</span> for real
+<span class="math inline">\(v\)</span>, and let <span
+class="math inline">\(\Lambda\)</span> be the von Mangoldt function. The
+<em>ramp</em> at <span class="math inline">\(x\)</span> is the function
+<span class="math inline">\(n \mapsto (x/n - 1)_+\)</span>: it is large
+for small <span class="math inline">\(n\)</span>, decreases, and
+vanishes for <span class="math inline">\(n \ge x\)</span>. Let <span id="eq:G"
+class="math display">\[\begin{equation}
+\label{eq:G}\tag{1}
+  S(x) := \sum_{n} \Lambda(n) \Bigl(\frac{x}{n} - 1\Bigr)_+ ,
+  \qquad
+  G(x) := S(x) - x \log x + (1 + \gamma) x ,
+\end{equation}\]</span> where <span
+class="math inline">\(\gamma\)</span> is Euler’s constant, and let <span
+class="math inline">\(\psi(x) := \sum_{n \le x} \Lambda(n)\)</span>. The
+two subtracted terms are the main term of <span
+class="math inline">\(S\)</span>, as the problems show.</p>
+<div id="pr:ramp-mellin" class="problem"><a class="stable-tag" href="tag/2224.html" title="Stable tag: cite as Tag 2224">Tag 2224</a>
+<p><strong>Problem 1.1.1</strong>. For <span class="math inline">\(n \ge
+1\)</span> and <span class="math inline">\(\operatorname{Re}s &gt;
+1\)</span>, <span class="math inline">\(\int_1^\infty (x/n - 1)_+ \,
+x^{-s-1} \, d x = n^{-s}/\bigl(s(s-1)\bigr)\)</span>.</p>
+</div>
+<div id="pr:S-integral" class="problem"><a class="stable-tag" href="tag/2225.html" title="Stable tag: cite as Tag 2225">Tag 2225</a>
+<p><strong>Problem 1.1.2</strong>. <span class="math inline">\(S(x) = x
+\int_1^x \psi(t) \, t^{-2} \, d t\)</span>. Hence <span
+class="math inline">\(G(x) \ll x \log x\)</span> for <span
+class="math inline">\(x \ge 2\)</span>.</p>
+</div>
+<div id="pr:F" class="problem"><a class="stable-tag" href="tag/2226.html" title="Stable tag: cite as Tag 2226">Tag 2226</a>
+<p><strong>Problem 1.1.3</strong>. For <span
+class="math inline">\(\operatorname{Re}s &gt; 1\)</span>, <span id="eq:F"
+class="math display">\[\begin{equation}
+\label{eq:F}\tag{2}
+  F(s) := \int_1^\infty G(x)\, x^{-s-1} \, d x
+  = -\frac{\zeta&#39;}{\zeta}(s) \, \frac{1}{s(s-1)} - \frac{1}{(s-1)^2}
++ \frac{1 + \gamma}{s - 1} .
+\end{equation}\]</span></p>
+</div>
+<div id="pr:F-poles" class="problem"><a class="stable-tag" href="tag/2227.html" title="Stable tag: cite as Tag 2227">Tag 2227</a>
+<p><strong>Problem 1.1.4</strong>. <span class="math inline">\(F\)</span> is
+meromorphic in <span class="math inline">\(\mathbb{C}\)</span> and
+regular at <span class="math inline">\(s = 1\)</span>. Its poles in
+<span class="math inline">\(\operatorname{Re}s &gt; 0\)</span> are the
+zeros <span class="math inline">\(\rho\)</span> of <span
+class="math inline">\(\zeta\)</span> in the critical strip <span
+class="math inline">\(0 \le \operatorname{Re}s \le 1\)</span>, and a
+zero of multiplicity <span class="math inline">\(m\)</span> gives
+residue <span class="math inline">\(-m/\bigl(\rho(\rho -
+1)\bigr)\)</span>.</p>
+</div>
+<div id="pr:residue-zero" class="problem"><a class="stable-tag" href="tag/2228.html" title="Stable tag: cite as Tag 2228">Tag 2228</a>
+<p><strong>Problem 1.1.5</strong>. The residue of <span
+class="math inline">\(F(s) x^s\)</span> at <span class="math inline">\(s
+= 0\)</span> is <span class="math inline">\(\log 2\pi\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:F" data-reference-type="ref"
+data-reference="pr:F">1.1.3</a>–<a href="#pr:residue-zero"
+data-reference-type="ref" data-reference="pr:residue-zero">1.1.5</a> and a
+contour shift as in <span class="citation"
+data-cites="Dav">[<a href="#ref-Dav">Dav</a>, Ch. 17]</span>, applied to
+<span class="math inline">\(-\frac{\zeta&#39;}{\zeta}(s)\,
+x^s/(s(s-1))\)</span>, the part of <span class="math inline">\(F(s)
+x^s\)</span> that comes from <span class="math inline">\(S\)</span>,
+where now every integral converges absolutely because of the factor
+<span class="math inline">\(1/(s(s-1))\)</span>, give the following.</p>
+<div id="thm:explicit" class="theorem"><a class="stable-tag" href="tag/2229.html" title="Stable tag: cite as Tag 2229">Tag 2229</a>
+<p><strong>Theorem 1.1.1</strong>. <em>For <span class="math inline">\(x
+&gt; 1\)</span>, <span class="math display">\[G(x) = \log 2\pi -
+\sum_\rho \frac{x^\rho}{\rho(\rho - 1)} + O(x^{-2}) ,\]</span> where
+<span class="math inline">\(\rho\)</span> runs over the zeros of <span
+class="math inline">\(\zeta\)</span> in the critical strip with
+multiplicity, and the sum converges absolutely.</em></p>
+</div>
+<div id="pr:sum-rho" class="problem"><a class="stable-tag" href="tag/222A.html" title="Stable tag: cite as Tag 222A">Tag 222A</a>
+<p><strong>Problem 1.1.6</strong>. <span class="math inline">\(\sum_\rho
+1/\bigl(\rho(1 - \rho)\bigr) = 2 + \gamma - \log 4\pi =
+0.0461\ldots\)</span>, with multiplicity.</p>
+</div>
+<div id="pr:rh-bound" class="problem"><a class="stable-tag" href="tag/222B.html" title="Stable tag: cite as Tag 222B">Tag 222B</a>
+<p><strong>Problem 1.1.7</strong>. If the Riemann hypothesis holds, then
+<span class="math inline">\(\lvert G(x) - \log 2\pi \rvert \le (2 +
+\gamma - \log 4\pi)\sqrt{x} + O(x^{-2})\)</span>.</p>
+</div>
+<p>For instance <span class="math inline">\(G(10^4) = 1.749\)</span>,
+<span class="math inline">\(G(10^5) = 3.671\)</span>, <span
+class="math inline">\(G(10^6) = 11.040\)</span> and <span
+class="math inline">\(G(2 \cdot 10^6) = -12.268\)</span>, to be compared
+with <span class="math inline">\(\log 2\pi = 1.838\)</span> and <span
+class="math inline">\(0.0462 \sqrt{10^6} = 46.2\)</span>.</p>
+<div id="pr:one-pair" class="problem"><a class="stable-tag" href="tag/222C.html" title="Stable tag: cite as Tag 222C">Tag 222C</a>
+<p><strong>Problem 1.1.8</strong>. Let <span class="math inline">\(\rho =
+\beta + i\gamma_0\)</span> with <span class="math inline">\(\gamma_0 \ne
+0\)</span>, and let <span class="math inline">\(c :=
+-1/\bigl(\rho(\rho-1)\bigr)\)</span>. The joint term <span
+class="math inline">\(c x^\rho + \bar c x^{\bar\rho}\)</span> of <span
+class="math inline">\(\rho\)</span> and <span
+class="math inline">\(\bar\rho\)</span> in Theorem <a
+href="#thm:explicit" data-reference-type="ref"
+data-reference="thm:explicit">1.1.1</a> exceeds <span
+class="math inline">\(\lvert c \rvert x^\beta\)</span> for all <span
+class="math inline">\(x\)</span> in a set whose image under <span
+class="math inline">\(\log\)</span> has density <span
+class="math inline">\(1/3\)</span> in <span class="math inline">\([0,
+\infty)\)</span>, and it is less than <span
+class="math inline">\(-\lvert c \rvert x^\beta\)</span> on another such
+set.</p>
+</div>
+<p>A zero with <span class="math inline">\(\beta &gt; \frac12\)</span>
+thus contributes to <span class="math inline">\(G\)</span> terms of both
+signs, larger than <span class="math inline">\(\sqrt x\)</span>. A
+comparison of divisibility with size sees only one sign. The next
+section shows that one is enough.</p>
+<h1 id="sec:landau">§1.2. One side suffices <a class="stable-tag" href="tag/222D.html" title="Stable tag: cite as Tag 222D">Tag 222D</a></h1>
+<p>The following theorem is due to Landau <span class="citation"
+data-cites="Lan">[<a href="#ref-Lan">Lan</a>]</span>; see <span
+class="citation" data-cites="MV">[<a href="#ref-MV">MV</a>,
+Lemma 15.1]</span>. Let <span class="math inline">\(A \colon [1, \infty)
+\to \mathbb{R}\)</span> be measurable and bounded on compact sets, with
+<span class="math inline">\(A(x) \ge 0\)</span> for <span
+class="math inline">\(x \ge X_0\)</span>. Let <span
+class="math inline">\(\sigma_c\)</span> be the infimum of the real <span
+class="math inline">\(\sigma\)</span> with <span
+class="math inline">\(\int_1^\infty \lvert A(x) \rvert x^{-\sigma-1} \,
+d x &lt; \infty\)</span>, and suppose that <span
+class="math inline">\(-\infty &lt; \sigma_c &lt; \infty\)</span>. Then
+<span class="math inline">\(H(s) := \int_1^\infty A(x) x^{-s-1} \, d
+x\)</span> is holomorphic in <span
+class="math inline">\(\operatorname{Re}s &gt; \sigma_c\)</span>, and it
+has no holomorphic continuation to a neighborhood of <span
+class="math inline">\(\sigma_c\)</span>.</p>
+<div id="pr:below" class="problem"><a class="stable-tag" href="tag/222E.html" title="Stable tag: cite as Tag 222E">Tag 222E</a>
+<p><strong>Problem 1.2.1</strong>. In this situation <span
+class="math inline">\(H(\sigma)\)</span> is bounded below for real <span
+class="math inline">\(\sigma \in (\sigma_c, \sigma_c + 1]\)</span>.</p>
+</div>
+<p>Fix <span class="math inline">\(0 &lt; \theta &lt; 1\)</span>,
+suppose that <span class="math inline">\(G(x) \le x^\theta\)</span> for
+all large <span class="math inline">\(x\)</span>, and let <span
+class="math inline">\(A(x) := x^\theta - G(x)\)</span>.</p>
+<div id="pr:H" class="problem"><a class="stable-tag" href="tag/222F.html" title="Stable tag: cite as Tag 222F">Tag 222F</a>
+<p><strong>Problem 1.2.2</strong>. <span class="math inline">\(-\infty &lt;
+\sigma_c \le 1\)</span>, and <span class="math inline">\(H(s) = 1/(s -
+\theta) - F(s)\)</span> for <span
+class="math inline">\(\operatorname{Re}s &gt; 1\)</span>.</p>
+</div>
+<div id="pr:zeta-negative" class="problem"><a class="stable-tag" href="tag/222G.html" title="Stable tag: cite as Tag 222G">Tag 222G</a>
+<p><strong>Problem 1.2.3</strong>. <span
+class="math inline">\(\zeta(\sigma) &lt; 0\)</span> for <span
+class="math inline">\(0 &lt; \sigma &lt; 1\)</span>.</p>
+</div>
+<div id="pr:real-zero" class="problem"><a class="stable-tag" href="tag/222H.html" title="Stable tag: cite as Tag 222H">Tag 222H</a>
+<p><strong>Problem 1.2.4</strong>. If <span class="math inline">\(\sigma_c
+&gt; \theta\)</span>, then <span class="math inline">\(\sigma_c\)</span>
+is a real zero of <span class="math inline">\(\zeta\)</span>, and <span
+class="math inline">\(H(\sigma) \to -\infty\)</span> as <span
+class="math inline">\(\sigma \downarrow \sigma_c\)</span>. Hence <span
+class="math inline">\(\sigma_c \le \theta\)</span>.</p>
+</div>
+<p>By Problem <a href="#pr:zeta-negative" data-reference-type="ref"
+data-reference="pr:zeta-negative">1.2.3</a> the real zeros do not exist,
+but Problem <a href="#pr:real-zero" data-reference-type="ref"
+data-reference="pr:real-zero">1.2.4</a> does not use this, and in §<a
+href="#sec:dirichlet" data-reference-type="ref"
+data-reference="sec:dirichlet">1.4</a> the same argument will be applied
+where real zeros cannot be excluded in advance. By Problem <a
+href="#pr:real-zero" data-reference-type="ref"
+data-reference="pr:real-zero">1.2.4</a>, <span class="math inline">\(F =
+1/(s-\theta) - H\)</span> is holomorphic in <span
+class="math inline">\(\operatorname{Re}s &gt; \theta\)</span>, and by
+Problem <a href="#pr:F-poles" data-reference-type="ref"
+data-reference="pr:F-poles">1.1.4</a> this excludes zeros there.</p>
+<div id="thm:one-sided" class="theorem"><a class="stable-tag" href="tag/222J.html" title="Stable tag: cite as Tag 222J">Tag 222J</a>
+<p><strong>Theorem 1.2.1</strong>. <em>Let <span class="math inline">\(0
+&lt; \theta &lt; 1\)</span>. If <span class="math inline">\(G(x) \le
+x^\theta\)</span> for all large <span class="math inline">\(x\)</span>,
+then <span class="math inline">\(\zeta(s) \ne 0\)</span> for <span
+class="math inline">\(\operatorname{Re}s &gt; \theta\)</span>.</em></p>
+</div>
+<p>An upper bound obtained arithmetically will hold only for <span
+class="math inline">\(x\)</span> in certain long intervals. The
+following theorem of Kaczorowski and Pintz <span class="citation"
+data-cites="KP">[<a href="#ref-KP">KP</a>, Theorem 1 and
+Corollary 1]</span>, a quantitative form of Landau’s theorem, handles
+this.</p>
+<div id="thm:kp" class="theorem"><a class="stable-tag" href="tag/222K.html" title="Stable tag: cite as Tag 222K">Tag 222K</a>
+<p><strong>Theorem 1.2.2</strong>. <em>Let <span class="math inline">\(f
+\colon (0, \infty) \to \mathbb{R}\)</span> be locally integrable, and
+suppose that <span class="math inline">\(\Phi(s) := \int_0^\infty f(x)
+x^{-s-1} \, d x\)</span> converges absolutely for <span
+class="math inline">\(\operatorname{Re}s\)</span> large. Suppose that
+<span class="math inline">\(\Phi\)</span> is regular in <span
+class="math inline">\(\operatorname{Re}s &gt; \Theta\)</span> but in no
+half-plane <span class="math inline">\(\operatorname{Re}s &gt; \Theta -
+\eta\)</span> with <span class="math inline">\(\eta &gt; 0\)</span>,
+that <span class="math inline">\(\Phi\)</span> is meromorphic in <span
+class="math inline">\(\operatorname{Re}s \ge \Theta - c_0\)</span> for
+some <span class="math inline">\(c_0 &gt; 0\)</span>, and that <span
+class="math inline">\(\Phi\)</span> is regular at the real point <span
+class="math inline">\(\Theta\)</span>. Then for every <span
+class="math inline">\(\alpha &gt; 0\)</span> and every <span
+class="math inline">\(T \ge T_0(f, \alpha)\)</span> there are points of
+<span class="math inline">\([T^{1-\alpha}, T]\)</span> at which <span
+class="math inline">\(f\)</span> is nonzero and of opposite
+signs.</em></p>
+</div>
+<p>The last hypothesis is needed: <span class="math inline">\(f(x) =
+x^\Theta\)</span> for <span class="math inline">\(x \ge 1\)</span> and
+<span class="math inline">\(f(x) = 0\)</span> for <span
+class="math inline">\(x &lt; 1\)</span> satisfy the others, with <span
+class="math inline">\(\Phi(s) = 1/(s - \Theta)\)</span>.</p>
+<div id="pr:kp-apply" class="problem"><a class="stable-tag" href="tag/222L.html" title="Stable tag: cite as Tag 222L">Tag 222L</a>
+<p><strong>Problem 1.2.5</strong>. Let <span class="math inline">\(0 &lt;
+\theta &lt; 1\)</span> and suppose that <span
+class="math inline">\(\zeta\)</span> has a zero with real part greater
+than <span class="math inline">\(\theta\)</span>. Let <span
+class="math inline">\(\Theta\)</span> be the supremum of the real parts
+of the zeros of <span class="math inline">\(\zeta\)</span>. Let <span
+class="math inline">\(f(x) := G(x) - 2x^\theta\)</span> for <span
+class="math inline">\(x \ge 1\)</span> and <span
+class="math inline">\(f(x) := 0\)</span> for <span
+class="math inline">\(x &lt; 1\)</span>. Then <span
+class="math inline">\(f\)</span> and <span
+class="math inline">\(\Theta\)</span> satisfy the hypotheses of
+Theorem <a href="#thm:kp" data-reference-type="ref"
+data-reference="thm:kp">1.2.2</a>.</p>
+</div>
+<p>If moreover <span class="math inline">\(G(x) \le x^\theta\)</span> on
+<span class="math inline">\([Y, Y^{3/2}]\)</span>, then <span
+class="math inline">\(f(x) \le -x^\theta &lt; 0\)</span> there.
+Theorem <a href="#thm:kp" data-reference-type="ref"
+data-reference="thm:kp">1.2.2</a> with <span class="math inline">\(\alpha =
+1/4\)</span> and <span class="math inline">\(T = Y^{3/2}\)</span> finds
+a positive value of <span class="math inline">\(f\)</span> in <span
+class="math inline">\([Y^{9/8}, Y^{3/2}]\)</span> once <span
+class="math inline">\(Y\)</span> is large. This proves the following;
+the exponent <span class="math inline">\(3/2\)</span> may be replaced by
+any number greater than <span class="math inline">\(1\)</span>.</p>
+<div id="thm:intervals" class="theorem"><a class="stable-tag" href="tag/222M.html" title="Stable tag: cite as Tag 222M">Tag 222M</a>
+<p><strong>Theorem 1.2.3</strong>. <em>Let <span class="math inline">\(0
+&lt; \theta &lt; 1\)</span>. If there are arbitrarily large <span
+class="math inline">\(Y\)</span> such that <span
+class="math inline">\(G(x) \le x^\theta\)</span> for all <span
+class="math inline">\(x \in [Y, Y^{3/2}]\)</span>, then <span
+class="math inline">\(\zeta(s) \ne 0\)</span> for <span
+class="math inline">\(\operatorname{Re}s &gt; \theta\)</span>.</em></p>
+</div>
+<div id="pr:rh-from" class="problem"><a class="stable-tag" href="tag/222N.html" title="Stable tag: cite as Tag 222N">Tag 222N</a>
+<p><strong>Problem 1.2.6</strong>. If for every <span
+class="math inline">\(\varepsilon &gt; 0\)</span> there are arbitrarily
+large <span class="math inline">\(Y\)</span> with <span
+class="math inline">\(G(x) \le x^{1/2 + \varepsilon}\)</span> for all
+<span class="math inline">\(x \in [Y, Y^{3/2}]\)</span>, then the
+Riemann hypothesis holds.</p>
+</div>
+<h1 id="sec:smoothing">§1.3. Smoothing, and the triangle weight <a class="stable-tag" href="tag/222P.html" title="Stable tag: cite as Tag 222P">Tag 222P</a></h1>
+<p>Why the ramp, and not another weight? Let <span
+class="math inline">\(\phi \colon (0, \infty) \to \mathbb{R}\)</span> be
+measurable, vanish on <span class="math inline">\((1, \infty)\)</span>,
+be bounded on compact subsets of <span class="math inline">\((0,
+1]\)</span>, and satisfy <span class="math inline">\(\phi(t) =
+O(1/t)\)</span> as <span class="math inline">\(t \to 0\)</span>. Let
+<span class="math display">\[\psi_\phi(x) := \sum_n \Lambda(n) \phi(n/x)
+,
+  \qquad
+  \tilde\phi(s) := \int_0^\infty \phi(t) t^{s-1} \, d t \quad
+(\operatorname{Re}s &gt; 1) .\]</span> We write <span
+class="math inline">\(\tilde\phi(s)\)</span> wherever the integral
+converges absolutely. The sharp cutoff <span class="math inline">\(\phi
+= \mathbf{1}_{(0,1]}\)</span> gives <span
+class="math inline">\(\psi_\phi = \psi\)</span> and <span
+class="math inline">\(\tilde\phi(s) = 1/s\)</span>. The ramp is <span
+class="math inline">\(\phi(t) = (1/t - 1)_+\)</span>, with <span
+class="math inline">\(\tilde\phi(s) = 1/(s(s-1))\)</span> by Problem <a
+href="#pr:ramp-mellin" data-reference-type="ref"
+data-reference="pr:ramp-mellin">1.1.1</a>. The <em>triangle weight</em> is
+<span class="math inline">\(\phi(t) = (1 - t)_+\)</span>, with <span
+class="math inline">\(\psi_\phi(x) = x^{-1}\int_0^x \psi(t) \, d
+t\)</span>.</p>
+<div id="pr:smooth-mellin" class="problem"><a class="stable-tag" href="tag/222Q.html" title="Stable tag: cite as Tag 222Q">Tag 222Q</a>
+<p><strong>Problem 1.3.1</strong>. For <span
+class="math inline">\(\operatorname{Re}s &gt; 1\)</span>, <span
+class="math inline">\(\int_0^\infty \psi_\phi(x) x^{-s-1} \, d x =
+-\frac{\zeta&#39;}{\zeta}(s) \, \tilde\phi(s)\)</span>.</p>
+</div>
+<div id="pr:triangle-mellin" class="problem"><a class="stable-tag" href="tag/222R.html" title="Stable tag: cite as Tag 222R">Tag 222R</a>
+<p><strong>Problem 1.3.2</strong>. For the triangle weight <span
+class="math inline">\(\tilde\phi(s) = 1/(s(s+1))\)</span>. If <span
+class="math inline">\(\phi_1(t) := \phi(t)/t\)</span>, then <span
+class="math inline">\(\tilde\phi_1(s) = \tilde\phi(s - 1)\)</span>; the
+ramp is the triangle weight divided by <span
+class="math inline">\(t\)</span>.</p>
+</div>
+<p>The following theorem is proved as Theorem <a href="#thm:explicit"
+data-reference-type="ref" data-reference="thm:explicit">1.1.1</a>: by
+Problem <a href="#pr:smooth-mellin" data-reference-type="ref"
+data-reference="pr:smooth-mellin">1.3.1</a> with <span
+class="math inline">\(\tilde\phi(s) = 1/(s(s+1))\)</span>, shift the
+line of integration to <span class="math inline">\(\operatorname{Re}s =
+-3/2\)</span> as in <span class="citation"
+data-cites="Dav">[<a href="#ref-Dav">Dav</a>, Ch. 17]</span>, along
+horizontal segments at heights <span class="math inline">\(T\)</span>
+where <span class="math inline">\(\zeta&#39;/\zeta \ll \log^2
+T\)</span>. The factor <span class="math inline">\(1/(s(s+1))\)</span>
+makes every integral converge absolutely, and the poles of <span
+class="math inline">\(-\frac{\zeta&#39;}{\zeta}(s)\,
+x^s/(s(s+1))\)</span> to the right of <span
+class="math inline">\(-3/2\)</span> are at <span
+class="math inline">\(1\)</span>, <span
+class="math inline">\(0\)</span>, <span
+class="math inline">\(-1\)</span> and the zeros <span
+class="math inline">\(\rho\)</span>.</p>
+<div id="thm:triangle" class="theorem"><a class="stable-tag" href="tag/222S.html" title="Stable tag: cite as Tag 222S">Tag 222S</a>
+<p><strong>Theorem 1.3.1</strong>. <em>For <span class="math inline">\(x
+&gt; 1\)</span>, <span class="math display">\[\sum_{n \le x} \Lambda(n)
+\Bigl(1 - \frac{n}{x}\Bigr) = \frac{x}{2} - \log 2\pi - \sum_\rho
+\frac{x^\rho}{\rho(\rho + 1)} + O\Bigl(\frac1x\Bigr) .\]</span></em></p>
+</div>
+<p>As a check, the left side minus <span class="math inline">\(x/2 -
+\log 2\pi\)</span> is <span class="math inline">\(0.106\)</span>, <span
+class="math inline">\(7.975\)</span> and <span
+class="math inline">\(-12.115\)</span> at <span class="math inline">\(x
+= 10^4\)</span>, <span class="math inline">\(10^6\)</span> and <span
+class="math inline">\(2 \cdot 10^6\)</span>. For the ramp and the
+triangle weight <span class="math inline">\(\lvert \tilde\phi(\rho)
+\rvert \ll \lvert \rho \rvert^{-2}\)</span>, so the sums over zeros
+converge absolutely. For the sharp cutoff they do not, since <span
+class="math inline">\(\sum_\rho 1/\lvert \rho \rvert\)</span>
+diverges.</p>
+<div id="pr:triangle-one-sided" class="problem"><a class="stable-tag" href="tag/222T.html" title="Stable tag: cite as Tag 222T">Tag 222T</a>
+<p><strong>Problem 1.3.3</strong>. Let <span class="math inline">\(0 &lt;
+\theta &lt; 1\)</span>. If <span class="math inline">\(\sum_{n \le x}
+\Lambda(n)(1 - n/x) \le x/2 + x^\theta\)</span> for all large <span
+class="math inline">\(x\)</span>, then <span
+class="math inline">\(\zeta(s) \ne 0\)</span> for <span
+class="math inline">\(\operatorname{Re}s &gt; \theta\)</span>.</p>
+</div>
+<p>The two smooth weights differ in one respect. A real zero <span
+class="math inline">\(\beta \in (0,1)\)</span> contributes <span
+class="math inline">\(-x^\beta/(\beta(\beta - 1)) &gt; 0\)</span> to
+<span class="math inline">\(G(x)\)</span>, but <span
+class="math inline">\(-x^\beta/(\beta(\beta+1)) &lt; 0\)</span> to the
+sum of Theorem <a href="#thm:triangle" data-reference-type="ref"
+data-reference="thm:triangle">1.3.1</a>, so an upper bound for the latter
+does not see it. For <span class="math inline">\(\zeta\)</span> this is
+harmless by Problem <a href="#pr:zeta-negative"
+data-reference-type="ref" data-reference="pr:zeta-negative">1.2.3</a>; for
+Dirichlet <span class="math inline">\(L\)</span>-functions it is not
+(§<a href="#sec:dirichlet" data-reference-type="ref"
+data-reference="sec:dirichlet">1.4</a>).</p>
+<p>The ramp itself is forced by the arithmetic. Theorem <a
+href="20261124T214600--the-isotropic-plane__workbook.html#thm:main" data-reference-type="ref"
+data-reference="ip-thm:main">17.3.1</a> gives, at primes <span
+class="math inline">\(p \equiv 3 \pmod 8\)</span>, lower bounds for
+<span class="math inline">\(p\)</span>-adic valuations of the form <span
+class="math inline">\(\sum_{i \text{ odd}} (\lfloor a/p^i \rfloor -
+w)_+\)</span>. Up to an error of <span class="math inline">\(1\)</span>
+for each odd <span class="math inline">\(i\)</span> with <span
+class="math inline">\(p^i \le a\)</span>, and with <span
+class="math inline">\(a = wx\)</span>, the summand is <span
+class="math inline">\((a/p^i - w)_+ = w(x/p^i - 1)_+\)</span>, which is
+<span class="math inline">\(w\)</span> times the ramp at <span
+class="math inline">\(x\)</span>. Bounds of this form at every inert
+prime, summed with weights <span class="math inline">\(\log p\)</span>,
+give the ramp sum over odd powers of primes inert in an imaginary
+quadratic field; this is the subject of the sequel, <em>Inert primes and
+Estimate B</em>.</p>
+<h1 id="sec:dirichlet">§1.4. Dirichlet <span
+class="math inline">\(L\)</span>-functions <a class="stable-tag" href="tag/222U.html" title="Stable tag: cite as Tag 222U">Tag 222U</a></h1>
+<p>What replaces <span class="math inline">\(G\)</span> for a Dirichlet
+<span class="math inline">\(L\)</span>-function? For a primitive
+nonprincipal Dirichlet character <span
+class="math inline">\(\chi\)</span> let <span
+class="math inline">\(c_\chi := \frac{L&#39;}{L}(1, \chi)\)</span> and
+<span id="eq:Gchi" class="math display">\[\begin{equation}
+\label{eq:Gchi}\tag{3}
+  G_\chi(x) := \sum_{n \le x} \Lambda(n) \chi(n) \Bigl(\frac{x}{n} -
+1\Bigr) + c_\chi x .
+\end{equation}\]</span> Let <span class="math inline">\(\psi\)</span> be
+a primitive Dirichlet character of conductor <span
+class="math inline">\(M\)</span> and order <span
+class="math inline">\(o\)</span>; from here on <span
+class="math inline">\(\psi\)</span> is this character, not Chebyshev’s
+function. For <span class="math inline">\(1 \le j &lt; o\)</span> let
+<span class="math inline">\(\psi_j\)</span> be the primitive character
+inducing <span class="math inline">\(\psi^j\)</span>. Let <span
+class="math display">\[G^\psi(y) := G(y) + \frac{1}{3o + 1}
+\sum_{j=1}^{o-1} \operatorname{Re}G_{\psi_j}(y) .\]</span> The weight
+<span class="math inline">\(1/(3o+1)\)</span> is the one that arises
+from averaging over a subgroup in <em>Fourier analysis on the Galois
+group</em> (Problem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#pr:coef-shares"
+data-reference-type="ref"
+data-reference="gf-pr:coef-shares">4.5.4</a>); the
+positivity of the coefficients in Problems <a href="#pr:coef"
+data-reference-type="ref" data-reference="pr:coef">1.4.1</a> and <a
+href="#pr:coef-bad" data-reference-type="ref"
+data-reference="pr:coef-bad">1.4.2</a> only uses that it lies between <span
+class="math inline">\(0\)</span> and <span
+class="math inline">\(1\)</span>.</p>
+<div id="pr:coef" class="problem"><a class="stable-tag" href="tag/222V.html" title="Stable tag: cite as Tag 222V">Tag 222V</a>
+<p><strong>Problem 1.4.1</strong>. For <span
+class="math inline">\(n\)</span> prime to <span
+class="math inline">\(M\)</span>, the coefficient of <span
+class="math inline">\(\Lambda(n)(y/n - 1)_+\)</span> in <span
+class="math inline">\(G^\psi(y)\)</span> is <span
+class="math inline">\(4o/(3o + 1)\)</span> if <span
+class="math inline">\(\psi(n) = 1\)</span>, and <span
+class="math inline">\(3o/(3o + 1)\)</span> otherwise. For a character of
+order <span class="math inline">\(4\)</span> modulo <span
+class="math inline">\(5\)</span> these are <span
+class="math inline">\(16/13\)</span> and <span
+class="math inline">\(12/13\)</span>.</p>
+</div>
+<div id="pr:coef-bad" class="problem"><a class="stable-tag" href="tag/222W.html" title="Stable tag: cite as Tag 222W">Tag 222W</a>
+<p><strong>Problem 1.4.2</strong>. For <span class="math inline">\(n =
+p^h\)</span> with <span class="math inline">\(p \mid M\)</span> the
+coefficient is at least <span class="math inline">\(3o/(3o +
+1)\)</span>. In particular every coefficient is positive.</p>
+</div>
+<div id="pr:product" class="problem"><a class="stable-tag" href="tag/222X.html" title="Stable tag: cite as Tag 222X">Tag 222X</a>
+<p><strong>Problem 1.4.3</strong>. <span
+class="math inline">\((3o+1)\)</span> times the Mellin transform of
+<span class="math inline">\(G^\psi\)</span> has, in <span
+class="math inline">\(\operatorname{Re}s &gt; 0\)</span>, simple poles
+only, at the zeros of <span class="math inline">\(E(s) :=
+\zeta(s)^{3o+1} \prod_{j=1}^{o-1} L(s, \psi_j)\)</span> in the critical
+strip. At a zero <span class="math inline">\(\rho\)</span> of <span
+class="math inline">\(E\)</span> of multiplicity <span
+class="math inline">\(m\)</span> the residue is <span
+class="math inline">\(-m/\bigl(\rho(\rho - 1)\bigr)\)</span>.</p>
+</div>
+<p>The multiplicities of the factors of <span
+class="math inline">\(E\)</span> add, so no zero of <span
+class="math inline">\(\zeta\)</span> or of an <span
+class="math inline">\(L(s, \psi_j)\)</span> is cancelled. A real zero
+<span class="math inline">\(\beta \in (0, 1)\)</span> of some <span
+class="math inline">\(L(s, \psi_j)\)</span> cannot be excluded in
+advance, but its residue <span
+class="math inline">\(m/(\beta(1-\beta))\)</span> is positive, and
+Problem <a href="#pr:real-zero" data-reference-type="ref"
+data-reference="pr:real-zero">1.2.4</a> applies to it unchanged. As in
+Problem <a href="#pr:H" data-reference-type="ref"
+data-reference="pr:H">1.2.2</a>, <span class="math inline">\(\sigma_c &gt;
+-\infty\)</span> because the nonreal zeros of <span
+class="math inline">\(\zeta\)</span> are poles. The argument of §<a
+href="#sec:landau" data-reference-type="ref"
+data-reference="sec:landau">1.2</a> therefore gives:</p>
+<div id="thm:dirichlet" class="theorem"><a class="stable-tag" href="tag/222Y.html" title="Stable tag: cite as Tag 222Y">Tag 222Y</a>
+<p><strong>Theorem 1.4.1</strong>. <em>Let <span class="math inline">\(0
+&lt; \theta &lt; 1\)</span>. If <span class="math inline">\(G^\psi(y)
+\le y^\theta\)</span> for all large <span
+class="math inline">\(y\)</span>, then <span
+class="math inline">\(\zeta(s)\)</span> and every <span
+class="math inline">\(L(s, \psi_j)\)</span>, <span
+class="math inline">\(1 \le j &lt; o\)</span>, are nonzero for <span
+class="math inline">\(\operatorname{Re}s &gt; \theta\)</span>.</em></p>
+</div>
+<p>For <span class="math inline">\(o = 1\)</span> this is Theorem <a
+href="#thm:one-sided" data-reference-type="ref"
+data-reference="thm:one-sided">1.2.1</a>. The version on intervals follows
+from Theorem <a href="#thm:kp" data-reference-type="ref"
+data-reference="thm:kp">1.2.2</a> as before, unless the supremum <span
+class="math inline">\(\Theta\)</span> of the real parts of the zeros of
+<span class="math inline">\(E\)</span> is itself a real zero in <span
+class="math inline">\((\theta, 1)\)</span>; then the last hypothesis of
+Theorem <a href="#thm:kp" data-reference-type="ref"
+data-reference="thm:kp">1.2.2</a> fails. The next section treats that
+case.</p>
+<h1 id="sec:real-pole">§1.5. A real zero on windows <a class="stable-tag" href="tag/222Z.html" title="Stable tag: cite as Tag 222Z">Tag 222Z</a></h1>
+<p>Suppose that <span class="math inline">\(G^\psi(y) \le
+y^\theta\)</span> for all <span class="math inline">\(y \in [Y,
+Y^{3/2}]\)</span>, for arbitrarily large <span
+class="math inline">\(Y\)</span>, and that <span
+class="math inline">\(\Theta = \beta \in (\theta, 1)\)</span> is a real
+zero of <span class="math inline">\(E\)</span>, of multiplicity <span
+class="math inline">\(m\)</span>. Let <span
+class="math inline">\(\mathcal{A}(s) := \int_1^\infty G^\psi(y) y^{-s-1}
+\, d y\)</span>, and for <span class="math inline">\(\sigma_1 &gt;
+2\)</span> and integers <span class="math inline">\(k \ge 0\)</span> let
+<span class="math display">\[T_k := \frac{(-1)^k}{k!}
+\mathcal{A}^{(k)}(\sigma_1) , \qquad r := \sigma_1 - \beta , \qquad a :=
+\sigma_1 - 2 .\]</span> We follow <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Thm. 2.4 and Cor. 2.5]</span>,
+where the nearest pole may also be a pair of complex zeros, and <span
+class="citation" data-cites="Rub">[<a href="#ref-Rub">Rub</a> and Part II,
+§1]</span>.</p>
+<div id="pr:taylor" class="problem"><a class="stable-tag" href="tag/2232.html" title="Stable tag: cite as Tag 2232">Tag 2232</a>
+<p><strong>Problem 1.5.1</strong>. (i) <span class="math inline">\(\lvert
+G^\psi(y) \rvert \le B y^2\)</span> for <span class="math inline">\(y
+\ge 1\)</span>, with <span class="math inline">\(B\)</span> a constant.
+(ii) <span class="math inline">\(T_k = \int_0^\infty G^\psi(e^u) \,
+e^{-\sigma_1 u} u^k/k! \, d u\)</span>. (iii) For <span
+class="math inline">\(p \ne \sigma_1\)</span>, the signed Taylor
+coefficient <span class="math inline">\(\frac{(-1)^k}{k!} \frac{d^k}{d
+s^k} (s - p)^{-1}\)</span> at <span class="math inline">\(s =
+\sigma_1\)</span> is <span class="math inline">\((\sigma_1 -
+p)^{-k-1}\)</span>.</p>
+</div>
+<div id="pr:nearest" class="problem"><a class="stable-tag" href="tag/2233.html" title="Stable tag: cite as Tag 2233">Tag 2233</a>
+<p><strong>Problem 1.5.2</strong>. For every real <span
+class="math inline">\(\sigma_1 &gt; 1\)</span>, <span
+class="math inline">\(\beta\)</span> is the only zero of <span
+class="math inline">\(E\)</span> in the closed disc <span
+class="math inline">\(\lvert s - \sigma_1 \rvert \le \sigma_1 -
+\beta\)</span>. The residue of <span
+class="math inline">\(\mathcal{A}\)</span> at <span
+class="math inline">\(\beta\)</span> is <span class="math inline">\(R :=
+m/\bigl((3o+1)\beta(1 - \beta)\bigr) &gt; 0\)</span>.</p>
+</div>
+<div id="pr:positive" class="problem"><a class="stable-tag" href="tag/2234.html" title="Stable tag: cite as Tag 2234">Tag 2234</a>
+<p><strong>Problem 1.5.3</strong>. There are <span
+class="math inline">\(r&#39;&#39; &gt; r\)</span> and <span
+class="math inline">\(C\)</span> with <span class="math inline">\(\lvert
+T_k - R r^{-k-1} \rvert \le C r&#39;&#39;^{-k}\)</span> for all <span
+class="math inline">\(k\)</span>. Hence <span class="math inline">\(T_k
+\ge \frac12 R r^{-k-1}\)</span> for all large <span
+class="math inline">\(k\)</span>.</p>
+</div>
+<p>So the nearest real pole contributes a positive term to
+<em>every</em> signed Taylor coefficient. A conjugate pair <span
+class="math inline">\(p, \bar p\)</span> would contribute <span
+class="math inline">\(2 \lvert c \rvert r^{-k-1} \cos(\alpha +
+(k+1)\varphi)\)</span>, of both signs, where <span
+class="math inline">\(c = \lvert c \rvert e^{i\alpha}\)</span> is the
+residue and <span class="math inline">\(\sigma_1 - p = r
+e^{-i\varphi}\)</span>; compare Problem <a href="#pr:one-pair"
+data-reference-type="ref" data-reference="pr:one-pair">1.1.8</a>. An upper
+bound for <span class="math inline">\(G^\psi\)</span> bounds every <span
+class="math inline">\(T_k\)</span> from above, because the kernel <span
+class="math inline">\(e^{-\sigma_1 u}u^k/k!\)</span> is positive. Only
+the window <span class="math inline">\([L, \frac32 L]\)</span>, <span
+class="math inline">\(L := \log Y\)</span>, is controlled; but for <span
+class="math inline">\(k\)</span> near <span
+class="math inline">\(\frac65 a L\)</span> the kernel <span
+class="math inline">\(e^{-au} u^k/k!\)</span> is concentrated near <span
+class="math inline">\(u = k/a\)</span>, inside the window.</p>
+<div id="pr:tails" class="problem"><a class="stable-tag" href="tag/2235.html" title="Stable tag: cite as Tag 2235">Tag 2235</a>
+<p><strong>Problem 1.5.4</strong>. Let <span class="math inline">\(U \ge
+0\)</span> and <span class="math inline">\(a &gt; 0\)</span>. If <span
+class="math inline">\(b &gt; a\)</span>, then <span
+class="math inline">\(\int_0^U e^{-au} u^k/k! \, d u \le e^{(b - a)U}
+b^{-k-1}\)</span>. If <span class="math inline">\(0 &lt; b &lt;
+a\)</span>, then <span class="math inline">\(\int_U^\infty e^{-au}
+u^k/k! \, d u \le e^{-(a - b)U} b^{-k-1}\)</span>.</p>
+</div>
+<div id="pr:window-taylor" class="problem"><a class="stable-tag" href="tag/2236.html" title="Stable tag: cite as Tag 2236">Tag 2236</a>
+<p><strong>Problem 1.5.5</strong>. Let <span class="math inline">\(\sigma_1
+\ge 302\)</span>, let <span class="math inline">\(L = \log Y \ge
+1\)</span> for one of the <span class="math inline">\(Y\)</span> above,
+and let <span class="math inline">\(k + 1 := \lceil \frac65 a L
+\rceil\)</span>. Then <span class="math display">\[T_k \le (\sigma_1 -
+\theta)^{-k-1} + 2 B e^{-L} r^{-k-1} .\]</span></p>
+</div>
+<div id="pr:real-excluded" class="problem"><a class="stable-tag" href="tag/2237.html" title="Stable tag: cite as Tag 2237">Tag 2237</a>
+<p><strong>Problem 1.5.6</strong>. Problems <a href="#pr:positive"
+data-reference-type="ref" data-reference="pr:positive">1.5.3</a> and <a
+href="#pr:window-taylor" data-reference-type="ref"
+data-reference="pr:window-taylor">1.5.5</a> contradict each other as <span
+class="math inline">\(Y \to \infty\)</span>. So the window bound
+excludes a real zero <span class="math inline">\(\beta = \Theta\)</span>
+in <span class="math inline">\((\theta, 1)\)</span>.</p>
+</div>
+<p>With Theorem <a href="#thm:kp" data-reference-type="ref"
+data-reference="thm:kp">1.2.2</a> for the other case, this proves the
+version on intervals of Theorem <a href="#thm:dirichlet"
+data-reference-type="ref" data-reference="thm:dirichlet">1.4.1</a>.</p>
+<div id="thm:dirichlet-intervals" class="theorem"><a class="stable-tag" href="tag/2238.html" title="Stable tag: cite as Tag 2238">Tag 2238</a>
+<p><strong>Theorem 1.5.1</strong>. <em>Let <span class="math inline">\(0
+&lt; \theta &lt; 1\)</span>. If there are arbitrarily large <span
+class="math inline">\(Y\)</span> such that <span
+class="math inline">\(G^\psi(y) \le y^\theta\)</span> for all <span
+class="math inline">\(y \in [Y, Y^{3/2}]\)</span>, then <span
+class="math inline">\(\zeta(s)\)</span> and every <span
+class="math inline">\(L(s, \psi_j)\)</span>, <span
+class="math inline">\(1 \le j &lt; o\)</span>, are nonzero for <span
+class="math inline">\(\operatorname{Re}s &gt; \theta\)</span>.</em></p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secramp">§<a href="#sec:ramp"
+data-reference-type="ref" data-reference="sec:ramp">1.1</a></h2>
+<dl>
+<dt><a href="#pr:S-integral" data-reference-type="ref"
+data-reference="pr:S-integral">1.1.2</a></dt>
+<dd>
+<p>Integrate each step of <span class="math inline">\(\psi\)</span>. For
+the bound use Chebyshev’s estimate.</p>
+</dd>
+<dt><a href="#pr:F" data-reference-type="ref"
+data-reference="pr:F">1.1.3</a></dt>
+<dd>
+<p>Use Problem <a href="#pr:ramp-mellin" data-reference-type="ref"
+data-reference="pr:ramp-mellin">1.1.1</a> termwise, and compute the
+transforms of <span class="math inline">\(x \log x\)</span> and <span
+class="math inline">\(x\)</span>.</p>
+</dd>
+<dt><a href="#pr:F-poles" data-reference-type="ref"
+data-reference="pr:F-poles">1.1.4</a></dt>
+<dd>
+<p>Use <span class="math inline">\(-\zeta&#39;/\zeta(s) = 1/(s-1) -
+\gamma + O(s - 1)\)</span> and expand <span
+class="math inline">\(1/(s(s-1))\)</span> at <span
+class="math inline">\(s = 1\)</span>.</p>
+</dd>
+<dt><a href="#pr:residue-zero" data-reference-type="ref"
+data-reference="pr:residue-zero">1.1.5</a></dt>
+<dd>
+<p>The functional equation gives <span
+class="math inline">\(\zeta&#39;/\zeta(0) = \log 2\pi\)</span>.</p>
+</dd>
+<dt><a href="#pr:sum-rho" data-reference-type="ref"
+data-reference="pr:sum-rho">1.1.6</a></dt>
+<dd>
+<p>Write <span class="math inline">\(1/(\rho(1-\rho)) = 1/\rho + 1/(1 -
+\rho)\)</span> and use the value of <span
+class="math inline">\(B\)</span> in <span class="citation"
+data-cites="Dav">[<a href="#ref-Dav">Dav</a>, Ch. 12]</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="seclandau">§<a href="#sec:landau"
+data-reference-type="ref" data-reference="sec:landau">1.2</a></h2>
+<dl>
+<dt><a href="#pr:below" data-reference-type="ref"
+data-reference="pr:below">1.2.1</a></dt>
+<dd>
+<p>Split the integral at <span class="math inline">\(X_0\)</span>.</p>
+</dd>
+<dt><a href="#pr:H" data-reference-type="ref"
+data-reference="pr:H">1.2.2</a></dt>
+<dd>
+<p>Use Problem <a href="#pr:S-integral" data-reference-type="ref"
+data-reference="pr:S-integral">1.1.2</a> for <span
+class="math inline">\(\sigma_c \le 1\)</span> and Problem <a
+href="#pr:F" data-reference-type="ref" data-reference="pr:F">1.1.3</a> for
+the formula for <span class="math inline">\(H\)</span>. For <span
+class="math inline">\(\sigma_c &gt; -\infty\)</span> use Problem <a
+href="#pr:F-poles" data-reference-type="ref"
+data-reference="pr:F-poles">1.1.4</a>: <span
+class="math inline">\(\zeta\)</span> has infinitely many zeros in the
+critical strip <span class="citation"
+data-cites="Dav">[<a href="#ref-Dav">Dav</a>, Ch. 12]</span>, so it has
+nonreal ones.</p>
+</dd>
+<dt><a href="#pr:zeta-negative" data-reference-type="ref"
+data-reference="pr:zeta-negative">1.2.3</a></dt>
+<dd>
+<p>Consider <span class="math inline">\((1 - 2^{1-\sigma})\zeta(\sigma)
+= \sum_{n \ge 1} (-1)^{n-1} n^{-\sigma}\)</span>.</p>
+</dd>
+<dt><a href="#pr:real-zero" data-reference-type="ref"
+data-reference="pr:real-zero">1.2.4</a></dt>
+<dd>
+<p>By Landau’s theorem <span class="math inline">\(\sigma_c\)</span> is
+a singularity of <span class="math inline">\(H\)</span>. Of the real
+points in <span class="math inline">\((\theta, 1]\)</span>, only real
+zeros of <span class="math inline">\(\zeta\)</span> can be singular
+(Problem <a href="#pr:F-poles" data-reference-type="ref"
+data-reference="pr:F-poles">1.1.4</a>). Find the sign of the residue of
+<span class="math inline">\(F\)</span> at a real zero <span
+class="math inline">\(\beta \in (0,1)\)</span>, and compare with
+Problem <a href="#pr:below" data-reference-type="ref"
+data-reference="pr:below">1.2.1</a>.</p>
+</dd>
+<dt><a href="#pr:kp-apply" data-reference-type="ref"
+data-reference="pr:kp-apply">1.2.5</a></dt>
+<dd>
+<p><span class="math inline">\(\Phi(s) = F(s) - 2/(s - \theta)\)</span>.
+For regularity at <span class="math inline">\(\Theta\)</span> use
+Problem <a href="#pr:zeta-negative" data-reference-type="ref"
+data-reference="pr:zeta-negative">1.2.3</a>, and remember <span
+class="math inline">\(s = 1\)</span>.</p>
+</dd>
+<dt><a href="#pr:rh-from" data-reference-type="ref"
+data-reference="pr:rh-from">1.2.6</a></dt>
+<dd>
+<p>Use Theorem <a href="#thm:intervals" data-reference-type="ref"
+data-reference="thm:intervals">1.2.3</a> and the symmetry <span
+class="math inline">\(\rho \mapsto 1 - \rho\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secsmoothing">§<a href="#sec:smoothing"
+data-reference-type="ref" data-reference="sec:smoothing">1.3</a></h2>
+<dl>
+<dt><a href="#pr:smooth-mellin" data-reference-type="ref"
+data-reference="pr:smooth-mellin">1.3.1</a></dt>
+<dd>
+<p>Substitute <span class="math inline">\(x = n/t\)</span> in each
+term.</p>
+</dd>
+<dt><a href="#pr:triangle-one-sided" data-reference-type="ref"
+data-reference="pr:triangle-one-sided">1.3.3</a></dt>
+<dd>
+<p>Repeat §<a href="#sec:landau" data-reference-type="ref"
+data-reference="sec:landau">1.2</a> with <span
+class="math inline">\(\tilde\phi(s) = 1/(s(s+1))\)</span>, including the
+argument for <span class="math inline">\(\sigma_c &gt; -\infty\)</span>
+in Problem <a href="#pr:H" data-reference-type="ref"
+data-reference="pr:H">1.2.2</a>, and compare the sign of the residue at a
+real zero with that in Problem <a href="#pr:real-zero"
+data-reference-type="ref" data-reference="pr:real-zero">1.2.4</a>; conclude
+with Problem <a href="#pr:zeta-negative" data-reference-type="ref"
+data-reference="pr:zeta-negative">1.2.3</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secdirichlet">§<a href="#sec:dirichlet"
+data-reference-type="ref" data-reference="sec:dirichlet">1.4</a></h2>
+<dl>
+<dt><a href="#pr:coef" data-reference-type="ref"
+data-reference="pr:coef">1.4.1</a></dt>
+<dd>
+<p><span class="math inline">\(\sum_{j=0}^{o-1} \psi(n)^j\)</span> is
+<span class="math inline">\(o\)</span> or <span
+class="math inline">\(0\)</span>.</p>
+</dd>
+<dt><a href="#pr:coef-bad" data-reference-type="ref"
+data-reference="pr:coef-bad">1.4.2</a></dt>
+<dd>
+<p>Factor <span class="math inline">\(\psi\)</span> into its <span
+class="math inline">\(p\)</span>-component and the rest, and decide for
+which <span class="math inline">\(j\)</span> the value <span
+class="math inline">\(\psi_j(p)\)</span> is nonzero.</p>
+</dd>
+<dt><a href="#pr:product" data-reference-type="ref"
+data-reference="pr:product">1.4.3</a></dt>
+<dd>
+<p>Since <span class="math inline">\(\psi_{o-j} =
+\overline{\psi_j}\)</span>, the real parts may be dropped. Then the
+coefficient of <span class="math inline">\(\Lambda(n)(y/n -
+1)_+\)</span> in <span class="math inline">\((3o+1)G^\psi\)</span> is
+that of <span class="math inline">\(\Lambda(n) n^{-s}\)</span> in <span
+class="math inline">\(-E&#39;/E\)</span>; handle the pole at <span
+class="math inline">\(s = 1\)</span> as in Problem <a href="#pr:F-poles"
+data-reference-type="ref" data-reference="pr:F-poles">1.1.4</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secreal-pole">§<a href="#sec:real-pole"
+data-reference-type="ref" data-reference="sec:real-pole">1.5</a></h2>
+<dl>
+<dt><a href="#pr:taylor" data-reference-type="ref"
+data-reference="pr:taylor">1.5.1</a></dt>
+<dd>
+<p>(i) Problem <a href="#pr:S-integral" data-reference-type="ref"
+data-reference="pr:S-integral">1.1.2</a> and Chebyshev’s bound. (ii)
+Substitute <span class="math inline">\(y = e^u\)</span> and
+differentiate under the integral.</p>
+</dd>
+<dt><a href="#pr:nearest" data-reference-type="ref"
+data-reference="pr:nearest">1.5.2</a></dt>
+<dd>
+<p>Compare <span class="math inline">\(\lvert \sigma_1 - \rho
+\rvert^2\)</span> with <span class="math inline">\((\sigma_1 -
+\beta)^2\)</span> for <span class="math inline">\(\operatorname{Re}\rho
+\le \beta\)</span>; then Problem <a href="#pr:product"
+data-reference-type="ref" data-reference="pr:product">1.4.3</a>.</p>
+</dd>
+<dt><a href="#pr:positive" data-reference-type="ref"
+data-reference="pr:positive">1.5.3</a></dt>
+<dd>
+<p>Subtract the principal part at <span
+class="math inline">\(\beta\)</span> and use Cauchy’s estimate on a
+slightly larger disc; Problem <a href="#pr:taylor"
+data-reference-type="ref" data-reference="pr:taylor">1.5.1</a>(iii).</p>
+</dd>
+<dt><a href="#pr:tails" data-reference-type="ref"
+data-reference="pr:tails">1.5.4</a></dt>
+<dd>
+<p>Compare <span class="math inline">\(e^{-au}\)</span> with <span
+class="math inline">\(e^{-bu}\)</span> on the range, and use <span
+class="math inline">\(\int_0^\infty e^{-bu} u^k/k! \, d u =
+b^{-k-1}\)</span>.</p>
+</dd>
+<dt><a href="#pr:window-taylor" data-reference-type="ref"
+data-reference="pr:window-taylor">1.5.5</a></dt>
+<dd>
+<p>Split at <span class="math inline">\(L\)</span> and <span
+class="math inline">\(\frac32 L\)</span>. On the outer ranges use
+Problem <a href="#pr:taylor" data-reference-type="ref"
+data-reference="pr:taylor">1.5.1</a>(i) and Problem <a href="#pr:tails"
+data-reference-type="ref" data-reference="pr:tails">1.5.4</a> with <span
+class="math inline">\(b = \frac54 r\)</span> and <span
+class="math inline">\(b = \frac34 a\)</span>, and <span
+class="math inline">\(a &lt; r &lt; a + 2\)</span>.</p>
+</dd>
+<dt><a href="#pr:real-excluded" data-reference-type="ref"
+data-reference="pr:real-excluded">1.5.6</a></dt>
+<dd>
+<p><span class="math inline">\(\theta &lt; \beta\)</span>, and <span
+class="math inline">\(k \to \infty\)</span> with <span
+class="math inline">\(L\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Adr"><span class="bib-label">[Adr]</span> J. Adriazola, <em>The Alpöge proof of the Riemann hypothesis</em>, manuscript, revised 24 November 2026, <a href="https://github.com/jimjamzola/RH-Alpoge-Reconstruction" class="uri">https://github.com/jimjamzola/RH-Alpoge-Reconstruction</a>.</p>
+<p id="ref-Alp"><span class="bib-label">[Alp]</span> L. Alpöge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, <a href="https://alpo.ge/remark.pdf" class="uri">https://alpo.ge/remark.pdf</a>.</p>
+<p id="ref-Dav"><span class="bib-label">[Dav]</span> H. Davenport, <em>Multiplicative Number Theory</em>, 3rd ed., revised by H. L. Montgomery, Grad. Texts in Math. <strong>74</strong>, Springer, 2000.</p>
+<p id="ref-KP"><span class="bib-label">[KP]</span> J. Kaczorowski and J. Pintz, <em>Oscillatory properties of arithmetical functions. I</em>, Acta Math. Hungar. <strong>48</strong> (1986), 173–185.</p>
+<p id="ref-Lan"><span class="bib-label">[Lan]</span> E. Landau, <em>Über einen Satz von Tschebyschef</em>, Math. Ann. <strong>61</strong> (1905), 527–550.</p>
+<p id="ref-MV"><span class="bib-label">[MV]</span> H. L. Montgomery and R. C. Vaughan, <em>Multiplicative Number Theory I. Classical Theory</em>, Cambridge Stud. Adv. Math. <strong>97</strong>, Cambridge University Press, 2007.</p>
+<p id="ref-Rub"><span class="bib-label">[Rub]</span> <em>The Alpöge–Claude proof of the Riemann hypothesis explained for the Riemann zeta function</em>, written by AI models at the behest of M. O. Rubinstein, working draft, 21 November 2026, <a href="https://www.math.uwaterloo.ca/~mrubinst/alpoge_claude_grh/zeta-paper.pdf" class="uri">https://www.math.uwaterloo.ca/~mrubinst/alpoge_claude_grh/zeta-paper.pdf</a>.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="robots" content="noindex">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Frames at odd positions and the unit scalars</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb Z","Q":"\\mathbb Q","Oc":"\\mathcal O","Kc":"\\mathcal K","len":"\\operatorname{len}","ord":"\\operatorname{ord}","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<!-- snapshot-banner --><div style="border:1px solid #c9a227;background:#fff8e1;color:#3d3d3d;padding:.6em .9em;margin:.5em 0 1em 0;font:15px/1.4 system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;border-radius:6px"><strong>Snapshot of 25 November 2026.</strong> This is the collection as it stood before it was reorganized around the rewritten Lean proof. It is not maintained. Current version: <a href="../">ultronozm.github.io/grh-workbook</a>.</div>
+
+    <div class="my-links-container">
+2026-11-25 17:31:58
+      <a href="https://github.com/ultronozm/grh-workbook/blob/original-route/20261126T020120--frames-at-odd-positions-and-unit-scalars__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T020120--frames-at-odd-positions-and-unit-scalars__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/original-route/20261126T020120--frames-at-odd-positions-and-unit-scalars__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Frames at odd positions and the unit scalars</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:positions" id="toc-sec:positions">§39.1. Positions and Frobenius</a></li>
+<li><a href="#sec:frames" id="toc-sec:frames">§39.2. Dual frames</a></li>
+<li><a href="#sec:N2" id="toc-sec:N2">§39.3. The odd positions, (N2)</a></li>
+<li><a href="#sec:N1" id="toc-sec:N1">§39.4. The unit scalars, (N1)</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Chapter <a href="20261125T020100--divisibility-at-inert-primes-in-general__workbook.html#chap" data-reference-type="ref"
+data-reference="di-chap">37</a>, Section <a href="20261125T020100--divisibility-at-inert-primes-in-general__workbook.html#sec:chain"
+data-reference-type="ref"
+data-reference="di-sec:chain">37.3</a>, with conditions
+(a)–(c) of Theorem <a href="20261125T020100--divisibility-at-inert-primes-in-general__workbook.html#thm:true-lifts"
+data-reference-type="ref"
+data-reference="di-thm:true-lifts">37.3.3</a>, which are
+Adriazola’s hypotheses (N3), (N1) and (N2) <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Hyps. 11.42, 11.22
+and 11.38]</span>, and Chapter <a href="20261126T020110--the-normalized-kernel-law__workbook.html#chap"
+data-reference-type="ref" data-reference="nk-chap">38</a>, which
+proves (a) for the kernels of the Lean formalization. We use the data at
+an inert prime of <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>: the CM field <span
+class="math inline">\(E\supset K\)</span> with CM type <span
+class="math inline">\(\Phi\)</span>, a prime <span
+class="math inline">\(p\ge5\)</span> inert in <span
+class="math inline">\(K\)</span> and unramified in <span
+class="math inline">\(E\)</span>, <span
+class="math inline">\(W\)</span>, <span
+class="math inline">\(\sigma\)</span>, <span
+class="math inline">\(\mathcal K_0\)</span> and <span
+class="math inline">\(\iota\)</span> as in Chapter <a href="20261126T020110--the-normalized-kernel-law__workbook.html#chap"
+data-reference-type="ref" data-reference="nk-chap">38</a>, and
+<span class="math inline">\(\operatorname{ord}_p\)</span> with <span
+class="math inline">\(\operatorname{ord}_p(p)=1\)</span>. Linear algebra
+over a discrete valuation ring is all that is needed.</p>
+<p>Hypothesis (N2), condition (c) of Theorem <a
+href="20261125T020100--divisibility-at-inert-primes-in-general__workbook.html#thm:true-lifts" data-reference-type="ref"
+data-reference="di-thm:true-lifts">37.3.3</a>, asks that at
+the odd positions of an orbit the passage from bounds on kernel entries
+to inclusions of lattices works as it does at the even positions, with a
+determinant factor of the opposite sign. Hypothesis (N1), condition (b),
+asks that the scalar normalizing each step kernel change only by units
+when the lattice at one orbit changes. Why are these not automatic, and
+why does the Lean formalization <span class="citation"
+data-cites="Lean">[<a href="#ref-Lean">Lean</a>]</span> not state (N2) at all?
+The answer to the second question is a choice of bases: at an odd
+position the Lean uses the dual of the basis at the preceding even
+position.</p>
+<h1 id="sec:positions">§39.1. Positions and Frobenius</h1>
+<p>An <em>orbit</em> is a place <span class="math inline">\(v\)</span>
+of the maximal real subfield <span class="math inline">\(E^+\)</span>
+above <span class="math inline">\(p\)</span> that splits in <span
+class="math inline">\(E\)</span>. Fix <span class="math inline">\(w\mid
+v\)</span> as in <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>, put <span
+class="math inline">\(Q_v=E_w\)</span>, which is unramified of degree
+<span class="math inline">\(2\nu\)</span> over <span
+class="math inline">\(\mathbb Q_p\)</span>, let <span
+class="math inline">\(W_v\)</span> be its ring of integers, and fix an
+embedding <span class="math inline">\(\rho_v\colon Q_v\to\mathcal
+K_0\)</span> extending <span class="math inline">\(\iota|_K\)</span>.
+The <em>positions</em> of <span class="math inline">\(v\)</span> are
+<span class="math inline">\(s\in\mathbb Z/2\nu\)</span>, and to each
+corresponds <span class="math inline">\(\tau_{v,s}\in\Phi\)</span> with
+<span class="math display">\[\iota\tau_{v,s}(x)=\sigma^s\rho_v(x)\ \ (s\
+\text{even}),\qquad
+\iota\tau_{v,s}(x)=\sigma^s\rho_v(\bar x)\ \ (s\ \text{odd})\]</span>
+for <span class="math inline">\(x\in E\)</span>. Even positions see the
+completion at <span class="math inline">\(w\)</span>, odd positions the
+completion at <span class="math inline">\(\bar w\)</span>.</p>
+<div id="pr:frob" class="problem">
+<p><strong>Problem 39.1.1</strong>. For every <span
+class="math inline">\(s\in\mathbb Z/2\nu\)</span> and <span
+class="math inline">\(x\in E\)</span>, <span
+class="math inline">\(\sigma\big(\iota\tau_{v,s}(x)\big)=\iota\tau_{v,s+1}(\bar
+x)\)</span>. In particular <span
+class="math inline">\(\sigma^2\circ\iota\tau_{v,s}=\iota\tau_{v,s+2}\)</span>.</p>
+</div>
+<p>So Frobenius composed with complex conjugation moves each position to
+the next. The number of positions is even because <span
+class="math inline">\(Q_v\)</span> contains the completion <span
+class="math inline">\(\mathbb Q_{p^2}\)</span> of <span
+class="math inline">\(K\)</span>.</p>
+<h1 id="sec:frames">§39.2. Dual frames</h1>
+<p>For a <span class="math inline">\(W_v\)</span>-lattice <span
+class="math inline">\(\Lambda\subset Q_v^N\)</span> with basis matrix
+<span class="math inline">\(g\in\mathrm{GL}_N(Q_v)\)</span> put <span
+class="math inline">\(\operatorname{len}\Lambda=-\operatorname{ord}_p\det
+g\)</span>, and let <span class="math inline">\(\Lambda^*=\{y\in Q_v^N:\
+y^{\mathsf T}x\in W_v\text{ for all }x\in\Lambda\}\)</span>.</p>
+<div id="pr:dual-lattice" class="problem">
+<p><strong>Problem 39.2.1</strong>. <span class="math inline">\(g^{-\mathsf
+T}\)</span> is a basis matrix of <span
+class="math inline">\(\Lambda^*\)</span>. Hence <span
+class="math inline">\(\Lambda^{**}=\Lambda\)</span> and <span
+class="math inline">\(\operatorname{len}\Lambda^*=-\operatorname{len}\Lambda\)</span>.</p>
+</div>
+<p>Let <span class="math inline">\(N\subset E^n\)</span> be an <span
+class="math inline">\(\mathcal O_E\)</span>-lattice that is self-dual
+for <span class="math inline">\(h_n(x,y)=\sum_ix_i\bar y_i\)</span>. At
+the orbit, <span class="math inline">\(N\otimes\mathbb Z_p\)</span> has
+the two components <span class="math inline">\(N_w\subset Q_v^n\)</span>
+and <span class="math inline">\(N_{\bar w}\)</span>, and self-duality
+says that <span class="math inline">\(N_{\bar w}\)</span> is the image
+of <span class="math inline">\(N_w^*\)</span> under complex conjugation.
+By the formula for <span class="math inline">\(\iota\tau_{v,s}\)</span>,
+a basis matrix <span class="math inline">\(g\)</span> of <span
+class="math inline">\(N_w\)</span> therefore gives the frame <span
+class="math display">\[g_s=\sigma^s\rho_v(g)\ \ (s\ \text{even}),\qquad
+g_s=\sigma^s\rho_v\big(g^{-\mathsf T}\big)\ \ (s\ \text{odd})\]</span>
+of <span class="math inline">\(N\)</span> at the position <span
+class="math inline">\(s\)</span>.</p>
+<div id="pr:frames" class="problem">
+<p><strong>Problem 39.2.2</strong>. <span
+class="math inline">\(\sigma(g_s)=g_{s+1}^{-\mathsf T}\)</span> and
+<span class="math inline">\(\sigma^2(g_s)=g_{s+2}\)</span> for every
+<span class="math inline">\(s\in\mathbb Z/2\nu\)</span>. Moreover <span
+class="math inline">\(\operatorname{ord}_p\det
+g_s=-\operatorname{len}N_w\)</span> for even <span
+class="math inline">\(s\)</span> and <span
+class="math inline">\(\operatorname{ord}_p\det
+g_s=\operatorname{len}N_w\)</span> for odd <span
+class="math inline">\(s\)</span>.</p>
+</div>
+<p>The Lean states the same relation globally. It chooses, for each
+<span class="math inline">\(\tau\in\Phi\)</span>, a matrix <span
+class="math inline">\(P_\tau\in\mathrm{GL}_n(E)\)</span> whose columns
+form a basis of <span class="math inline">\(N\)</span> at the place
+induced by <span class="math inline">\(\tau\)</span>, subject to <span
+class="math display">\[\overline{P_{\tau_{v,s+1}}}^{\,\mathsf
+T}\,P_{\tau_{v,s}}=1\qquad\text{for all orbits \(v\) and positions
+\(s\)}.\]</span></p>
+<div id="pr:dual-basis" class="problem">
+<p><strong>Problem 39.2.3</strong>. Let <span
+class="math inline">\(F\)</span> be a field with an involution <span
+class="math inline">\(x\mapsto\bar x\)</span>, and <span
+class="math inline">\(h(x,y)=x^{\mathsf T}\bar y\)</span> on <span
+class="math inline">\(F^n\)</span>. For <span
+class="math inline">\(P,Q\in\mathrm{GL}_n(F)\)</span>, <span
+class="math inline">\(\bar Q^{\mathsf T}P=1\)</span> if and only if
+<span class="math inline">\(h(Pe_i,Qe_j)=[i=j]\)</span> for all <span
+class="math inline">\(i,j\)</span>, that is, the columns of <span
+class="math inline">\(Q\)</span> are the <span
+class="math inline">\(h\)</span>-dual basis of the columns of <span
+class="math inline">\(P\)</span>. For <span
+class="math inline">\(F=E\)</span> with complex conjugation, if <span
+class="math inline">\(\bar Q^{\mathsf T}P=1\)</span>, then <span
+class="math inline">\(g_s=\iota\tau_{v,s}(P)\)</span> and <span
+class="math inline">\(g_{s+1}=\iota\tau_{v,s+1}(Q)\)</span> satisfy
+<span class="math inline">\(\sigma(g_s)=g_{s+1}^{-\mathsf
+T}\)</span>.</p>
+</div>
+<div id="pr:unitary-dual" class="problem">
+<p><strong>Problem 39.2.4</strong>. If <span
+class="math inline">\(\gamma\in\mathrm{GL}_n(E)\)</span> is unitary,
+<span class="math inline">\(\bar\gamma^{\mathsf T}\gamma=1\)</span>,
+then <span class="math inline">\(\bar\gamma^{-\mathsf
+T}=\gamma\)</span>. Hence <span
+class="math inline">\((P_\tau)\mapsto(\gamma P_\tau)\)</span> preserves
+the relation displayed above.</p>
+</div>
+<p>Problem <a href="#pr:unitary-dual" data-reference-type="ref"
+data-reference="pr:unitary-dual">39.2.4</a> is why the unitary group acts on
+the frames at all positions by the same matrix, as in the covariance of
+the lifts <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Lemma 11.11]</span>: at an odd
+position the contragredient action <span class="math inline">\(g\mapsto
+g^{-\mathsf T}\)</span> of the model is the ordinary action on the dual
+frame.</p>
+<h1 id="sec:N2">§39.3. The odd positions, (N2)</h1>
+<p>Recall from <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Def. 11.3, Lemma 11.4]</span>
+that the integral structure <span
+class="math inline">\(H_s(\Lambda)\)</span> at a position is the image
+of the minimal lattice under the frame, twisted by a power of its
+determinant, and that an edge <span
+class="math inline">\((\Lambda&#39;&#39;,\Lambda)\)</span> of type <span
+class="math inline">\(i\)</span>, meaning <span
+class="math inline">\(p\Lambda\subset\Lambda&#39;&#39;\subset\Lambda\)</span>
+with <span class="math inline">\(\Lambda/\Lambda&#39;&#39;\)</span> of
+dimension <span class="math inline">\(i\)</span>, has a basis <span
+class="math inline">\(g\)</span> of <span
+class="math inline">\(\Lambda\)</span> with <span
+class="math inline">\(gd\)</span> a basis of <span
+class="math inline">\(\Lambda&#39;&#39;\)</span>, where <span
+class="math inline">\(d=\operatorname{diag}(p,\dots,p,1,\dots,1)\)</span>
+has <span class="math inline">\(i\)</span> entries <span
+class="math inline">\(p\)</span>.</p>
+<div id="pr:edge-dual" class="problem">
+<p><strong>Problem 39.3.1</strong>. In this situation <span
+class="math inline">\(\Lambda&#39;&#39;^*\)</span> has basis matrix
+<span class="math inline">\(g^{-\mathsf T}d^{-1}\)</span>, and <span
+class="math inline">\(p\Lambda&#39;&#39;^*\subset\Lambda^*\subset\Lambda&#39;&#39;^*\)</span>
+with <span class="math inline">\(\Lambda&#39;&#39;^*/\Lambda^*\)</span>
+of dimension <span class="math inline">\(i\)</span>.</p>
+</div>
+<p>A <em>canonical bideterminant</em> in an <span
+class="math inline">\(n\times n\)</span> matrix <span
+class="math inline">\(X\)</span> of indeterminates is a product <span
+class="math inline">\(B=\prod_c\Delta_{S_c}\)</span>, where <span
+class="math inline">\(\Delta_S\)</span> is the minor on the rows <span
+class="math inline">\(S\)</span> and the first <span
+class="math inline">\(\#S\)</span> columns <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Def. 11.1]</span>.</p>
+<div id="pr:bidet" class="problem">
+<p><strong>Problem 39.3.2</strong>. For <span
+class="math inline">\(D=\operatorname{diag}(p^{a_1},\dots,p^{a_n})\)</span>,
+<span class="math inline">\(B(DX)=p^{\sum_c\sum_{r\in
+S_c}a_r}B(X)\)</span>. In particular <span
+class="math inline">\(B(d^{\pm1}X)=p^{\pm\sum_c\#(S_c\cap\{1,\dots,i\})}B(X)\)</span>,
+and <span
+class="math inline">\(0\le\#(S_c\cap\{1,\dots,i\})\le\min(\#S_c,i)\)</span>.</p>
+</div>
+<p>At an even position the frame of the edge lattice is <span
+class="math inline">\(\sigma^s\rho_v(gd)\)</span>. The change of frame
+divides the bideterminants by <span
+class="math inline">\(p^{\sum_c\#(S_c\cap\{1,\dots,i_0\})}\)</span>, and
+the normalizing power <span class="math inline">\(p^{\sum_{a\le
+i_0}\lambda(a)}\)</span> of the Hecke operator leaves the exponent <span
+class="math inline">\(\sum_c\big(\min(h&#39;_c,i_0)-\#(S_c\cap\{1,\dots,i_0\})\big)\ge0\)</span>
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Lemma 11.4, Thm. 11.35]</span>. At an odd position the frame of the edge
+lattice is <span class="math inline">\(\sigma^s\rho_v(g^{-\mathsf
+T}d^{-1})\)</span> by Problem <a href="#pr:edge-dual"
+data-reference-type="ref" data-reference="pr:edge-dual">39.3.1</a>. The
+diagonal matrix enters with the opposite exponent, and by Problem <a
+href="#pr:bidet" data-reference-type="ref"
+data-reference="pr:bidet">39.3.2</a> the bideterminants are multiplied by
+<span
+class="math inline">\(p^{\sum_c\#(S_c\cap\{1,\dots,i_0\})}\)</span>
+instead. This is the exponent <span
+class="math inline">\(\#(S_c\cap\{1,\dots,i_0\})\)</span> in part (a) of
+(N2) <span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Hyp. 11.38]</span>. Part (b) concerns the determinant twists.</p>
+<div id="pr:twist" class="problem">
+<p><strong>Problem 39.3.3</strong>. Let <span
+class="math inline">\(N_w\)</span> and <span
+class="math inline">\(N&#39;_w\)</span> have lengths <span
+class="math inline">\(\ell\)</span> and <span
+class="math inline">\(\ell&#39;\)</span>, with frames <span
+class="math inline">\(g_s,g&#39;_s\)</span> as in Problem <a
+href="#pr:frames" data-reference-type="ref"
+data-reference="pr:frames">39.2.2</a>, and let <span
+class="math inline">\(w_s\)</span> be integers. Then <span
+class="math display">\[\operatorname{ord}_p\prod_s\Big(\frac{\det
+g_s}{\det g&#39;_s}\Big)^{w_s}=\mu\,(\ell&#39;-\ell),\qquad \mu=\sum_{s\
+\mathrm{even}}w_s-\sum_{s\ \mathrm{odd}}w_s .\]</span> At an odd
+position <span class="math inline">\(\big(\det g_s/\det
+g&#39;_s\big)^{w_s}=\sigma^s\rho_v\big((\det g/\det
+g&#39;)^{-w_s}\big)\)</span>.</p>
+</div>
+<p>With <span class="math inline">\(w_s=w_{j+1}(v,s)\)</span>, the
+number <span class="math inline">\(\mu\)</span> is <span
+class="math inline">\(\mu_v(j+1)\)</span>, and the product cancels the
+factor <span
+class="math inline">\(p^{\mu_v(j+1)(\operatorname{len}L_v-\operatorname{len}L&#39;_v)}\)</span>
+in the step map <span class="math inline">\(\kappa_j\)</span> <span
+class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Def. 11.9]</span>. The last assertion of Problem <a href="#pr:twist"
+data-reference-type="ref" data-reference="pr:twist">39.3.3</a> is part (b) of
+(N2).</p>
+<p><em>Status</em>: Adriazola states (N2) as a hypothesis and says that
+the bookkeeping of the determinant powers at the odd positions remains
+to be written <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Hyp. 11.38,
+Remark 11.39]</span>. Problems <a href="#pr:edge-dual"
+data-reference-type="ref" data-reference="pr:edge-dual">39.3.1</a>–<a
+href="#pr:twist" data-reference-type="ref"
+data-reference="pr:twist">39.3.3</a> are that bookkeeping for the frames and
+the edges. The Lean formalization has no separate statement. Its frames
+at odd positions are the dual frames of Section <a href="#sec:frames"
+data-reference-type="ref" data-reference="sec:frames">39.2</a>, and the
+lattices of the chain are described at every position, even or odd, by
+the integrality of the pairings of the coordinates with one family of
+products of minors, so both parities are handled by one argument. We
+have not checked in detail how this description at the odd positions
+matches the dual model weights of <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>]</span>.</p>
+<h1 id="sec:N1">§39.4. The unit scalars, (N1)</h1>
+<p>Each step kernel carries a scalar <span
+class="math inline">\(s_j(c,L;c&#39;,L&#39;)\)</span>, built from a step
+character <span class="math inline">\(\mu_{j+1}\)</span> of the norm-one
+ideles, a frame factor and powers of a Hecke character <span
+class="math inline">\(\chi\)</span> of <span
+class="math inline">\(E\)</span> <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Def. 11.23]</span>. (N1) asks
+that when the lattice changes at one orbit <span
+class="math inline">\(v\)</span>, the scalar change by <span
+class="math inline">\(a_v^{\Delta\operatorname{len}}a_v&#39;^{\Delta\operatorname{len}&#39;}\)</span>
+with units <span class="math inline">\(a_v,a&#39;_v\)</span>. Let <span
+class="math inline">\(\mathfrak P_w,\mathfrak P_{\bar w}\)</span> be the
+primes of <span class="math inline">\(\mathcal O_E\)</span> at <span
+class="math inline">\(w,\bar w\)</span>. The elements <span
+class="math inline">\(\tau\in\Phi\)</span> that induce <span
+class="math inline">\(w\)</span> or <span class="math inline">\(\bar
+w\)</span> are exactly the <span
+class="math inline">\(\tau_{v,s}\)</span>; every other <span
+class="math inline">\(\tau\in\Phi\)</span> induces a place above <span
+class="math inline">\(p\)</span> other than <span
+class="math inline">\(w,\bar w\)</span> <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, proof of
+Lemma 11.25]</span>.</p>
+<div id="pr:pi-v" class="problem">
+<p><strong>Problem 39.4.1</strong>. The idele <span
+class="math inline">\(\pi_v\)</span> with component <span
+class="math inline">\(p\)</span> at <span
+class="math inline">\(w\)</span>, <span
+class="math inline">\(p^{-1}\)</span> at <span
+class="math inline">\(\bar w\)</span> and <span
+class="math inline">\(1\)</span> elsewhere satisfies <span
+class="math inline">\(\pi_v\bar\pi_v=1\)</span>, and its ideal is <span
+class="math inline">\(\mathfrak P_w\mathfrak P_{\bar
+w}^{-1}\)</span>.</p>
+</div>
+<div id="pr:chi-count" class="problem">
+<p><strong>Problem 39.4.2</strong>. Let <span
+class="math inline">\(k\ge1\)</span> and <span
+class="math inline">\(\beta\in E\)</span> with <span
+class="math inline">\(\beta\bar\beta=1\)</span> and <span
+class="math inline">\(\beta\mathcal O_E=(\mathfrak P_{\bar w}\mathfrak
+P_w^{-1})^k\)</span>. Then <span
+class="math inline">\(\operatorname{ord}_p\iota\tau_{v,s}(\beta)\)</span>
+is <span class="math inline">\(-k\)</span> for even <span
+class="math inline">\(s\)</span> and <span
+class="math inline">\(k\)</span> for odd <span
+class="math inline">\(s\)</span>, and <span
+class="math inline">\(\sum_{\tau\in\Phi}\operatorname{ord}_p\iota\tau(\beta)=0\)</span>.</p>
+</div>
+<p>Such <span class="math inline">\(\beta\)</span> exist for <span
+class="math inline">\(k\)</span> twice the class number of <span
+class="math inline">\(E\)</span>, and for them <span
+class="math inline">\(\chi(\mathfrak P_{\bar w}\mathfrak
+P_w^{-1})^k=\prod_{\tau\in\Phi}\tau(\beta)^{-1}\)</span>; so Problem <a
+href="#pr:chi-count" data-reference-type="ref"
+data-reference="pr:chi-count">39.4.2</a> shows that <span
+class="math inline">\(\iota\chi(\mathfrak P_{\bar w}\mathfrak
+P_w^{-1})\)</span> is a unit <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Lemma 11.30]</span>.</p>
+<div id="pr:mu-val" class="problem">
+<p><strong>Problem 39.4.3</strong>. Let <span
+class="math inline">\(k\ge1\)</span> and <span
+class="math inline">\(z\in E\)</span> with <span
+class="math inline">\(z\bar z=1\)</span> and <span
+class="math inline">\(z\mathcal O_E=(\mathfrak P_w\mathfrak P_{\bar
+w}^{-1})^{k}\)</span>, let <span
+class="math inline">\(\varepsilon_\tau\)</span> <span
+class="math inline">\((\tau\in\Phi)\)</span> and <span
+class="math inline">\(c\)</span> be integers, and put <span
+class="math inline">\(w_s=\varepsilon_{\tau_{v,s}}-c\)</span>. Then
+<span
+class="math inline">\(\sum_{\tau\in\Phi}\varepsilon_\tau\operatorname{ord}_p\iota\tau(z)=k\big(\sum_{s\
+\mathrm{even}}w_s-\sum_{s\ \mathrm{odd}}w_s\big)\)</span>.</p>
+</div>
+<p>If <span
+class="math inline">\(\mu_{j+1}(z)=\prod_\tau\tau(z)^{\varepsilon_\tau}\)</span>
+on norm-one elements and <span class="math inline">\(\mu_{j+1}\)</span>
+is trivial on the local units at <span class="math inline">\(v\)</span>,
+then <span class="math inline">\(\mu_{j+1}(\pi_v^{k}z^{-1})\)</span> is
+a root of unity, and Problem <a href="#pr:mu-val"
+data-reference-type="ref" data-reference="pr:mu-val">39.4.3</a> gives <span
+class="math inline">\(\operatorname{ord}_p\iota\mu_{j+1}(\pi_v)=\mu_v(j+1)\)</span>
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Lemma 11.25]</span>. With the effect of changing a lattice on the
+determinant idele <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Lemma 11.26]</span>, this
+proves (N1) for Adriazola’s normalization, with <span
+class="math inline">\(a_v=p^{-\mu_v(j+1)}\iota\mu_{j+1}(\pi_v)\,\iota\chi((\pi_v))^{a_j}\)</span>
+and <span
+class="math inline">\(a&#39;_v=p^{\mu_v(j+1)}\iota\mu_{j+1}(\pi_v)^{-1}\iota\chi((\pi_v))^{-a_{j+1}}\)</span>
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Prop. 11.27]</span>.</p>
+<p><em>Status</em>: (N1) for the normalization of <span class="citation"
+data-cites="Adr">[<a href="#ref-Adr">Adr</a>, Def. 11.23]</span> is proved in
+<span class="citation" data-cites="Adr">[<a href="#ref-Adr">Adr</a>,
+Prop. 11.27]</span>. The Lean formalization writes each step map in
+local coordinates as a scalar times the pairing of the source
+coordinates with the kernel series in adapted frames, and proves that
+the scalar is a <span class="math inline">\(p\)</span>-adic unit. We
+have not followed that proof, and we have not compared the Lean’s scalar
+with <span class="math inline">\(s_j\)</span> term by term.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. The dual frames are
+<code>GlobalTheory.KerStd.StdBases</code>, whose second clause is the
+relation <span
+class="math inline">\(\overline{P_{\tau_{v,s+1}}}^{\mathsf
+T}P_{\tau_{v,s}}=1\)</span>. Problem <a href="#pr:frob"
+data-reference-type="ref" data-reference="pr:frob">39.1.1</a> is
+<code>exists_frob_step</code>, and Problems <a href="#pr:frames"
+data-reference-type="ref" data-reference="pr:frames">39.2.2</a> and <a
+href="#pr:dual-basis" data-reference-type="ref"
+data-reference="pr:dual-basis">39.2.3</a> are <code>frob_moves_coords</code>.
+The description of the lattices by pairings, at all positions, is in the
+fields <code>lat_S</code> and <code>levelFree_lattice_condition</code>
+of the structure <code>KerEnt</code>; its field <code>kform</code>
+writes the step map as <code>un</code> times the pairing with the
+kernel. The unit property of <code>un</code> is
+<code>KerEnt.UnUnit</code>, proved by
+<code>GlobalTheory.T.kernelPairScalars_isUnit_trueColumns</code>. The
+theorem <code>GlobalTheory.PdvClose.at_of_true_columns</code> combines
+it with the kernel law of Chapter <a href="20261126T020110--the-normalized-kernel-law__workbook.html#chap"
+data-reference-type="ref" data-reference="nk-chap">38</a> <span
+class="citation" data-cites="Lean">[<a href="#ref-Lean">Lean</a>]</span>.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<p><em>Section <a href="#sec:positions" data-reference-type="ref"
+data-reference="sec:positions">39.1</a>.</em> <a href="#pr:frob"
+data-reference-type="ref" data-reference="pr:frob">39.1.1</a>. Treat even and
+odd <span class="math inline">\(s\)</span> separately; <span
+class="math inline">\(\sigma^{2\nu}\)</span> fixes <span
+class="math inline">\(\rho_v(Q_v)\)</span>.</p>
+<p><em>Section <a href="#sec:frames" data-reference-type="ref"
+data-reference="sec:frames">39.2</a>.</em> <a href="#pr:dual-lattice"
+data-reference-type="ref" data-reference="pr:dual-lattice">39.2.1</a>. <span
+class="math inline">\(y\in\Lambda^*\)</span> if and only if <span
+class="math inline">\(g^{\mathsf T}y\in W_v^N\)</span>. <a
+href="#pr:frames" data-reference-type="ref"
+data-reference="pr:frames">39.2.2</a>. The definition of <span
+class="math inline">\(g_s\)</span>, and <span
+class="math inline">\(\sigma^{2\nu}\rho_v=\rho_v\)</span> as in
+Problem <a href="#pr:frob" data-reference-type="ref"
+data-reference="pr:frob">39.1.1</a>. <a href="#pr:dual-basis"
+data-reference-type="ref" data-reference="pr:dual-basis">39.2.3</a>.
+Transpose; then Problem <a href="#pr:frob" data-reference-type="ref"
+data-reference="pr:frob">39.1.1</a>.</p>
+<p><em>Section <a href="#sec:N2" data-reference-type="ref"
+data-reference="sec:N2">39.3</a>.</em> <a href="#pr:edge-dual"
+data-reference-type="ref" data-reference="pr:edge-dual">39.3.1</a>.
+Problem <a href="#pr:dual-lattice" data-reference-type="ref"
+data-reference="pr:dual-lattice">39.2.1</a> for <span
+class="math inline">\(\Lambda&#39;&#39;\)</span>. <a href="#pr:bidet"
+data-reference-type="ref" data-reference="pr:bidet">39.3.2</a>. Multiplying a
+row by <span class="math inline">\(p^{a}\)</span> multiplies every minor
+containing it by <span class="math inline">\(p^{a}\)</span>. <a
+href="#pr:twist" data-reference-type="ref"
+data-reference="pr:twist">39.3.3</a>. Problem <a href="#pr:frames"
+data-reference-type="ref" data-reference="pr:frames">39.2.2</a>.</p>
+<p><em>Section <a href="#sec:N1" data-reference-type="ref"
+data-reference="sec:N1">39.4</a>.</em> <a href="#pr:chi-count"
+data-reference-type="ref" data-reference="pr:chi-count">39.4.2</a>. The
+formula for <span class="math inline">\(\iota\tau_{v,s}\)</span>, and
+<span
+class="math inline">\(\operatorname{ord}_w(\bar\beta)=\operatorname{ord}_{\bar
+w}(\beta)\)</span>; there are <span class="math inline">\(\nu\)</span>
+positions of each parity. <a href="#pr:mu-val" data-reference-type="ref"
+data-reference="pr:mu-val">39.4.3</a>. As in Problem <a href="#pr:chi-count"
+data-reference-type="ref" data-reference="pr:chi-count">39.4.2</a>.</p>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Adr"><span class="bib-label">[Adr]</span> J. Adriazola, <em>The Alpöge proof of the Riemann hypothesis</em>, manuscript, revised 24 November 2026, <a href="https://github.com/jimjamzola/RH-Alpoge-Reconstruction" class="uri">https://github.com/jimjamzola/RH-Alpoge-Reconstruction</a>.</p>
+<p id="ref-Lean"><span class="bib-label">[Lean]</span> The Lean community, <em>riemann-hypothesis</em>, a Lean formalization of Alpöge’s argument, <a href="https://github.com/leanprover-community/riemann-hypothesis" class="uri">https://github.com/leanprover-community/riemann-hypothesis</a>.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+</body>
+</html>
