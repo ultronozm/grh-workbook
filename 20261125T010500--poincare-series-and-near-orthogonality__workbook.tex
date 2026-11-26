@@ -173,10 +173,10 @@ Here \(e = 2.718\ldots\) is Euler's number, and \(4\pi e = 34.15\ldots\).  The t
 \[
   \lvert J_\nu(\nu x)\rvert \le \Bigl(\frac{x\, e^{\sqrt{1 - x^2}}}{1 + \sqrt{1 - x^2}}\Bigr)^{\nu}
 \]
-\cite[(10.14.5)]{DLMF}.  The base is increasing in \(x\) and equals \(1\) at \(x = 1\).
+\cite[(10.14.5)]{DLMF}.
 
 \begin{problem}\label{pr:siegel}
-Let \(0 < \theta < 1/(4\pi)\).  There are \(\varrho < 1\) and \(C\), depending only on \(\theta\), such that \(\lVert G_M - 1\rVert \le C k\varrho^k\) whenever \(1 \le M \le \theta(k-1)\).
+Let \(0 < \theta < 1/(4\pi)\).  There are constants \(0 < \varrho < 1\) and \(C > 0\), depending only on \(\theta\), such that \(\lVert G_M - 1\rVert \le C k\varrho^k\) for every even \(k \ge 4\) and every integer \(M\) with \(1 \le M \le \theta(k-1)\).
 \end{problem}
 
 So for large \(k\) the \(\Pt_m\) with \(m \le \theta(k-1)\), for a fixed \(\theta < 1/(4\pi)\), are almost orthonormal.  For \(m\) near \((k-1)/(4\pi)\) the argument \(4\pi m\) of the term \(c = 1\) of \(T_k(m,m)\) reaches the transition region \(x \approx \nu\) of \(J_\nu\), where \(J_\nu(x)\) is no longer exponentially small but of size up to about \(\nu^{-1/3}\), and the diagonal entry is in general no longer exponentially close to \(1\).  For \(k = 100\), where \((k-1)/(4\pi) = 7.87\ldots\) and \(\dim S_{100} = 8\), a computation of the Kloosterman terms gives the following.  The eigenvalues of \(G_7\) lie in \([0.99999, 1.0094]\).  Those of \(G_8\) lie in \([0.982, 1.808]\), so \(P_1,\dots,P_8\) form a basis of \(S_{100}\), and the Gram matrix of the normalized basis \(\Pt_1,\dots,\Pt_8\) has an eigenvalue near \(1.808\).  \(G_9\) is singular, as it must be.
@@ -225,11 +225,24 @@ Since \(\dim S_k = \int_{\Gamma\backslash\HH} B(z,z)\,y^k\,d\nu(z)\), the term \
 
 Theorem~\ref{thm:near} says that the map \(\C^M \to S_k\), \(e_m \mapsto \Pt_m\), is almost an isometry when \(M\) is at most a fixed proportion of \(\dim S_k\).  Its image therefore occupies only part of \(S_k\).  Problem~\ref{pr:siegel} extends near orthonormality to a longer initial segment, and Problem~\ref{pr:span} shows that the full family spans \(S_k\).  In the setting of Chapter~\ref{rl-chap}, a finite group acts on the ambient space.  A near-isometry estimate for the projected map and a second-moment bound for the Gram operators of the unprojected map and its translates give a lower bound for the dimension spanned by a few projected translates in the target (Theorems~\ref{rl-thm:spread} and~\ref{rl-thm:few}).
 
-\paragraph{The analogue in the proof.}
-This chapter is the classical model for the near-isometry step of Alp\"oge's proof \cite{Alp}, carried out in Chapter~\ref{bp-chap}.  There \(\mathrm{SL}_2(\Z)\) is replaced by the unitary group of a hermitian space \(Y_0\) over the CM field \(E\), Fourier coefficients by Bessel periods \cite{GGP}, the Poincar\'e series by Bessel--Poincar\'e series indexed by a basis of the source forms \(S\), and \(S_k\) by the target forms \(T\), of dimension \(d_T\).  The analogue of Theorem~\ref{thm:near} is a near-isometry estimate for the Poincar\'e map followed by the projector \(e_0\) onto \(T\), and the analogue of Section~\ref{sec:dim} is an upper bound for \(d_T\) by the order of the finite group \(\bar G\) times a product of formal degrees times a mass.
+\paragraph{The analogue in the rewritten Lean proof.}
+This chapter gives a classical model for the estimates in Chapter~\ref{bp-chap}.  In the rewritten Lean proof \cite{GL}, the principal-level forms on the unitary group of a hermitian space \(Y_0\) over a CM field \(E\) play the role of \(S_k\).  Bessel periods play the role of Fourier coefficient extraction and are represented by a Poincar\'e map.  Its values on the source coordinate basis are Bessel--Poincar\'e series.  The two estimates below concern the map followed by the projector onto the good forms and the dimension of those forms.  For the definition of Bessel periods see \cite[\S\S12, 23]{GGP}.
 
 \paragraph{In the Lean formalization.}
-In the rewritten Lean proof \cite{GL}, for admissible data \(D\), let \(P\) be \texttt{Data.scaledPoincare}, a positive multiple of the Poincar\'e map, defined on the Euclidean space of source coordinates (of dimension \(D_X\)) with values in the forms of principal level on \(Y_0\), and let \(e_0\) be the projector onto the good forms.  \texttt{Data.isNearIsometry\_e\(_0\)\_comp\_scaledPoincare} states that \(\lVert e_0P\,\mathrm{pr}_U\rVert_{\mathrm{HS}}^2\ge \dim U-5b^{-4}D_X\) for every complex subspace \(U\) of the source, where \(\mathrm{pr}_U\) is the orthogonal projection onto \(U\) and \(\lVert\cdot\rVert_{\mathrm{HS}}\) the Hilbert--Schmidt norm.  \texttt{Data.targetDim\_le\_card\_mul\_besselDegree\_mul\_mass} states that \(d_T\le \#\bar G\cdot\deg\cdot\mathrm{mass}(E,r)\), where \(\deg\) is the product over the infinite places of the degrees of the local Bessel systems and \(\mathrm{mass}(E,r)\) is the mass of the genus of the standard hermitian lattice \(\mathcal O_E^r\).  Both are in \texttt{grh/src/New/Spanning/SecondMoment/SpanningTheorem.lean}.
+Fix admissible data \(D\) of the rewritten Lean proof \cite{GL}.  Write \(E\) for \texttt{Data.E}, \(Y_0\) for \texttt{D.spaceY 0}, and \(r\) for the rank of \(Y_0\) over \(E\).  Write \(S\) for the source forms \texttt{Data.SourceForm}, with coordinates \texttt{Data.sourceFormCoords}, and \(D_X\) for their complex dimension.  The Poincar\'e map \texttt{Data.poincare} represents the Bessel periods at the chosen point and linear form by \texttt{Data.inner\_poincareAt}.  By \texttt{Data.poincare\_eq\_poincareMap\_comp} and \texttt{Filling.Fits.coe\_poincareMap}, it takes the coordinate basis to the corresponding Bessel--Poincar\'e series.
+
+Let \(P\) be \texttt{Data.scaledPoincare}, the Poincar\'e map in these Euclidean coordinates multiplied by the positive factor \texttt{Data.poincareScale}.  Its codomain is the space \texttt{Data.principalForms} on \(Y_0\), of the specified discrete-series type at infinity and principal level at the finite places.  Let \(e_0\) denote the action of \texttt{D.e\(_0\)} on this space.  It projects onto the space \(T\) of good forms (\texttt{Data.targetForms}), of complex dimension \(d_T\).  Let \(b\) be the weight \texttt{D.b} at the designated infinite places.  For every complex subspace \(U\) of the source coordinate space, \texttt{Data.isNearIsometry\_e\(_0\)\_comp\_scaledPoincare} gives
+\[
+  \lVert e_0 P\,\mathrm{pr}_U\rVert_{\mathrm{HS}}^2
+  \ge \dim U - 5b^{-4}D_X ,
+\]
+where \(\mathrm{pr}_U\) is the orthogonal projection and \(\lVert\cdot\rVert_{\mathrm{HS}}\) is the Hilbert--Schmidt norm.
+
+By \texttt{Data.targetDim\_le\_card\_mul\_besselDegree\_mul\_mass},
+\[
+  d_T \le \#\bar G \cdot \deg \cdot \mathrm{mass}(E,r) .
+\]
+Here \(\bar G\) is \texttt{Data.chosenGL}, the product of the residue general linear groups at the chosen places above the two level primes, \(\deg\) is the product over all infinite places of the degrees of the local Bessel systems, and \(\mathrm{mass}(E,r)\) is the mass of the genus of the standard hermitian lattice \(\mathcal O_E^r\).  Both inequalities are in \texttt{grh/src/New/Spanning/SecondMoment/SpanningTheorem.lean}.
 
 \section*{Hints}
 
@@ -255,7 +268,7 @@ In the rewritten Lean proof \cite{GL}, for admissible data \(D\), let \(P\) be \
 \item[\ref{pr:J-bound}] Bound \(\lvert\cos(xt)\rvert\) by \(1\) and evaluate the Beta integral.
 \item[\ref{pr:T-bound}] \(\lvert S(m,n;c)\rvert \le c\).
 \item[\ref{pr:gershgorin}] \((k-1)! \ge ((k-1)/e)^{k-1}\).  Then Gershgorin's theorem.
-\item[\ref{pr:siegel}] Treat the term \(c = 1\) with Siegel's inequality and the terms \(c \ge 2\) with Problem~\ref{pr:J-bound}.
+\item[\ref{pr:siegel}] Treat the term \(c = 1\) with Siegel's inequality.  The base on its right is increasing in \(x\) and equals \(1\) at \(x = 1\).  For the terms \(c \ge 2\), use Problem~\ref{pr:J-bound}.
 \end{description}
 
 \subsection*{\S\ref{sec:dim}}
