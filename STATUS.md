@@ -1,10 +1,23 @@
 # Status of the workbook
 
-**Status, 26 November 2026.**  The collection is being extended to cover the complete proof and is updated continuously.  Parts I–V and the side series are stable apart from small corrections.  Part VI states every step of the proof, deduces Theorems A, B and C from their inputs and the main inequality from them; the proofs of the deeper inputs (the second moment, the seesaw identity, the divisibility of the composite lift, the determinant of a chain, the cost of one lift, the congruences) are stated from the Lean code and are being developed into further sheets.
+**Status, 26 November 2026.**  The collection is being extended to cover the complete proof and is updated continuously.  Parts I–V and the side series are stable apart from small corrections.  The proof itself now occupies four Parts.  Part VI fixes the data and all the objects, and deduces the theorem from Theorems A, B and C.  Parts VII, VIII and IX state Theorems B, A and C, deduce each from its inputs, and state those inputs from the Lean code; the proofs of the inputs are being developed into further sheets, which will appear in batches after the chapter that states the result.
 
 The site is <https://ultronozm.github.io/grh-workbook/>.  Each update appends an entry below, newest first.
 
 ## What changed
+
+### 26 November 2026, later: the frame (batch 0)
+
+- **Four Parts for the proof.**  The former Part VI is now four Parts:
+  - VI *The frame*: *The data*, *Spaces, forms and twists*, *The main inequality*;
+  - VII *Theorem B: enough forms*;
+  - VIII *Theorem A: short forms*, with *The seesaw identity* and *Divisibility of the composite lift*;
+  - IX *Theorem C: the lower bound*, with the determinant of a chain, the cost of one lift, the denominators and the twisting theorem.
+- **New chapters, made by splitting present ones.**
+  - *Spaces, forms and twists* is the last section of *The data*, now the one home of every object the proof attaches to the data.  It gains definitions of the valuation, the diagram of weights, critical pairs and the target lattice.
+  - *Theorem C* is the first half of the former *Theorem C and the main inequality*; the rest is *The main inequality*.
+  - *Roots of unity for many polynomials* is the first two sections of *Twists with few congruences*, with three new check problems.
+- **Flowchart.**  One column per Part; the Parts of the proof are shaded.
 
 ### 26 November 2026
 
