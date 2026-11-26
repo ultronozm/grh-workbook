@@ -1,0 +1,288 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[m3-]{20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook}
+
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T080400\endcsname
+  \chapnumber{20261126T080400}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\Jc}{\mathcal{J}}
+\newcommand{\hh}{\mathfrak{h}}
+\newcommand{\ff}{\mathfrak{f}}
+\newcommand{\Ec}{\mathcal{E}}
+\newcommand{\Zc}{\mathcal{Z}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Oh}{\hat{\mathcal O}_E}
+\newcommand{\Pf}{\mathsf{P}}
+\newcommand{\OP}{\mathcal{O}_{\mathsf P}}
+\newcommand{\EP}{E_{\mathsf P}}
+\newcommand{\wt}{\mathrm{wt}}
+\newcommand{\dec}{\mathrm{dec}}
+\newcommand{\ent}{\mathrm{ent}}
+\newcommand{\cbot}{c_{\mathrm{bot}}}
+\newcommand{\cm}{c_{\mathrm{mass}}}
+\newcommand{\Cs}{\mathsf{C}}
+\newcommand{\Us}{\mathsf{U}}
+\newcommand{\inv}{\mathrm{inv}}
+\newcommand{\ee}{\mathfrak{e}}
+\newcommand{\Nm}{\mathrm{N}}
+\newcommand{\vol}{\operatorname{vol}}
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\tl}[1]{\texttt{#1}}
+\newcommand{\gk}[3]{\href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/#1.lean\#L#2}{#3}}
+\newcommand{\gl}[1]{\gk{New/Spanning/#1}}
+\newcommand{\gs}{\gl{MainTerm/GlobalSieve}}
+
+\setlength{\emergencystretch}{3em}
+
+\title{The sieve over the entries}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Chapter~\ref{m3-chap}: heads (Definition~\ref{m3-def:head}), the additive character \(\psi_f\) of the finite adeles and \(\vol(\Oh)=2^f\lvert d_E\rvert^{-1/2}\) (Section~\ref{m3-sec:siegel}), Theorems~\ref{m3-thm:poisson} and~\ref{m3-thm:sieve}, Problem~\ref{m3-pr:schur}, and \(\e(\cdot)=e^{2\pi\ii\,\cdot}\).  Fourier analysis on finite abelian groups; Lebesgue integration; the product formula and the Euler product of the Dedekind zeta function \cite{Ne}.  The level \(M\), the prime \(N\) and the numbers \(\varrho\), \(k\), \(b\), \(f\), \(d_\tau\) are those of the data, as in Chapter~\ref{m3-chap}.  In the finite models \(q\ge1\) is an integer and \(j,l\) are residues or integers; in this sheet \(w\), \(\ff\) are functions, \(y\), \(z\) numbers, and \(\Nm\mathfrak b\) is the norm of an ideal.
+
+\medskip
+Theorem~\ref{m3-thm:sieve} bounds the sums \(\Sigma_i\) of densities of pairs of heads by a recurrence, \(\Sigma_{i+1}\le c_i(\Sigma_i+2c_{\mathrm{fr}}\lambda_i^2)\).  This sheet proves the recurrence from six properties of the forms (Definition~\ref{def:sieve-system}) and Poisson summation, and proves the bound on the sum over the frequencies that its error term needs (Theorem~\ref{thm:frequencies}).  The proof is cited as \cite{GL}.  Where does the factor \(2\) come from when one entry is summed out?
+
+\section{One step on \texorpdfstring{\(\Z/25\)}{Z/25}}\label{sec:model}
+
+For \(\ff\colon\Z/q\to\C\) put \(\hat\ff(l):=\sum_{j\in\Z/q}\ff(j)\,\e(-lj/q)\) (counting measure; Chapter~\ref{m3-chap} uses the mean).  For a subgroup \(H\subseteq\Z/q\) let \(H^\perp:=\{l:\e(lh/q)=1\text{ for all }h\in H\}\).
+
+\begin{problem}\label{pr:finite-poisson}
+\(\sum_{h\in H}\ff(h)=\frac{\#H}{q}\sum_{l\in H^\perp}\hat\ff(l)\).  For \(H=5\Z/25\subseteq\Z/25\) one has \(H^\perp=5\Z/25\) and \(\#H/q=1/5\).
+\end{problem}
+
+In this sheet \(w(j):=1+\cos(2\pi j/25)\) on \(\Z/25\), and \(H:=5\Z/25\).
+
+\begin{problem}\label{pr:weight-transform}
+\(\hat w(0)=25\), \(\hat w(\pm1)=25/2\), and \(\hat w(l)=0\) for \(l\ne0,\pm1\).  Hence \(\sum_{h\in H}w(h)=5\), all of it from \(l=0\).
+\end{problem}
+
+\begin{problem}\label{pr:one-sided}
+If \(\ff\ge0\) and \(\Zc\subseteq H\), then \(\sum_{j\in\Zc}\ff(j)\le\frac{\#H}{q}\bigl(\hat\ff(0)+\sum_{l\in H^\perp,\,l\ne0}\lvert\hat\ff(l)\rvert\bigr)\).
+\end{problem}
+
+In the model a head is a residue \(a\in\Z/25\), and a head followed by an entry \(j\) is the pair \((a,j)\).  Put
+\[
+ \Jc_2\bigl((a,j),(a',j)\bigr):=w(j)\,\e\bigl((a-a')j/25\bigr),\qquad \Jc_1(a,a'):=\sum_{j\in\Z/25}\Jc_2\bigl((a,j),(a',j)\bigr).
+\]
+For a set \(\Ec\subseteq\Z/25\) of heads write
+\[
+ \Sigma_1:=\sum_{a\in\Ec}\Jc_1(a,a),\qquad
+ \Sigma_2:=\sum_{j\in H}\sum_{a,a'\in\Ec}\Jc_2((a,j),(a',j)).
+\]
+
+\begin{problem}\label{pr:model-forms}
+\(\Jc_1(a,a')=\hat w(a'-a)\), and \(\sum_j\e(-lj/25)\,\Jc_2((a,j),(a',j))=\hat w(a'-a+l)\).  For each \(j\) the matrix \(\bigl(\Jc_2((a,j),(a',j))\bigr)_{a,a'\in\Z/25}\) is positive semidefinite of rank one.
+\end{problem}
+
+\begin{problem}\label{pr:model-step}
+For \(\Ec=\{0,1,7\}\): \(\Sigma_1=75\) and \(\Sigma_2=25\).  In Problem~\ref{pr:finite-poisson} for \(j\mapsto\sum_{a,a'\in\Ec}\Jc_2((a,j),(a',j))\), the frequency \(l=0\) gives \(75\) from equal heads and \(25\) from the pairs \((0,1)\), \((1,0)\); \(l=\pm5\) give \(12.5\) each, from \((7,1)\) and \((1,7)\); \(l=\pm10\) give \(0\).  Thus \(25=(75+25+25)/5\).
+\end{problem}
+
+\begin{problem}\label{pr:model-congruent}
+For \(\Ec=\{0,7,14\}\), \(\Sigma_2=20=(75+0+25)/5\).  For \(\Ec=\{0,1,\dots,6\}\), \(\Sigma_2=105=(175+150+200)/5\): together the two errors are twice the main term.
+\end{problem}
+
+\begin{problem}\label{pr:model-bound}
+Let \(\Ec\ne\varnothing\), \(\varepsilon\ge\lvert\Jc_1(a,a')\rvert\) for all \(a\ne a'\) in \(\Ec\), and \(\varepsilon\ge\sum_{l\in H^\perp,\,l\ne0}\max_{a,a'\in\Ec}\lvert\hat w(a'-a+l)\rvert\).  Then \(\Sigma_2\le\frac15\bigl(\Sigma_1+2\varepsilon(\#\Ec)^2\bigr)\).  For \(\Ec=\{0,1,7\}\) the least such \(\varepsilon\) is \(25\), and the bound is \(105\).
+\end{problem}
+
+Heads in the proof carry weights.
+
+\begin{problem}\label{pr:model-weights}
+On \(\Z/6\) let \(w'(j):=2+\cos(2\pi j/3)\), and give two heads \(\hh_1,\hh_2\) the weights \(1\) and \(1/2\) and the form \(\wt(\hh)\wt(\hh')w'(j)\) at a common entry \(j\).  Then \(\hat w'=12,3,3\) at \(l=0,2,4\) and \(\hat w'(l)=0\) otherwise.  The sum over \(j\in\{0,3\}\) and all pairs of heads is \(13.5=5+4+4.5\): equal heads at \(l=0\), unequal heads at \(l=0\), and \(l=2,4\).
+\end{problem}
+
+\section{Sieve systems and the recurrence}\label{sec:recurrence}
+
+In the proof the heads are sequences of local units, the sums run over scaled images of elements of \(E^\times\), and integrating over a common entry gives the preceding form.
+
+\begin{definition}\label{def:sieve-system}
+Let \(\Cs\) be a commutative ring with a measure, \(\psi\colon\Cs\to\C\) a function, \(\Us\) a topological space whose points are called \emph{entries}, and \(u\mapsto u^\times\), \(\Cs\to\Us\), and \(\inv\colon\Us\to\Cs\) maps.  A \emph{head} is a sequence \(\hh=(\hh_0,\hh_1,\dots)\) of entries; \(\hh[i{:}u]\) is \(\hh\) with its entry at position \(i\) replaced by \(u^\times\).  A \emph{sieve system} of length \(n\) is a family \((\Jc_i)_{i\ge0}\) of complex functions on pairs of heads, of which the axioms use \(\Jc_0,\dots,\Jc_{n+1}\), with \emph{weights} \(\wt_i(\hh)\in\R\), a \emph{decay} \(\dec\colon\Cs\to\R\) and a real number \(\cm\), such that:
+\begin{enumerate}
+\item[(i)] \(\psi(0)=1\);
+\item[(ii)] for \(i\le n\), heads \(\hh,\hh'\) and \(l\in\Cs\), the function \(u\mapsto\psi(lu)\,\Jc_{i+1}(\hh[i{:}u],\hh'[i{:}u])\) is integrable; its integral is \(\Jc_i(\hh,\hh')\) if \(l=0\), and has modulus at most \(\dec(l)\wt_i(\hh)\wt_i(\hh')\) if \(l\) is a unit;
+\item[(iii)] for every finite family of heads with a common entry at position \(n\), the matrix of the values of \(\Jc_{n+1}\) on its pairs is positive semidefinite;
+\item[(iv)] \(\Jc_{n+1}\) is continuous on pairs of heads (product topology);
+\item[(v)] \(\lvert\Jc_0(\hh,\hh')\rvert\le\cm\);
+\item[(vi)] for \(i<n\), if \(l:=\inv(\hh_i)-\inv(\hh'_i)\) is a unit, then \(\lvert\Jc_{i+1}(\hh,\hh')\rvert\le\dec(l)\wt_{i+1}(\hh)\wt_{i+1}(\hh')\).
+\end{enumerate}
+\end{definition}
+
+In the model, (ii) at \(l=0\) defines \(\Jc_1\), Problem~\ref{pr:model-forms} gives (iii), and Problem~\ref{pr:model-bound} models the bounds of (ii) and (vi); its nonzero frequencies \(\pm5,\pm10\) are not units of \(\Z/25\), so the bound of (ii) at units does not apply to them.
+
+\emph{The sieve system over the data.}  We use the admissible filling of the data over the CM field \(E\), with one chosen embedding \(\tau\) at each infinite place, as in Chapter~\ref{m3-chap}.  Let \(\Pf\) be a finite set of finite places of \(E\), \(\EP:=\prod_{v\in\Pf}E_v\) with integers \(\OP\), and \(\Cs:=\prod_\tau\C\times\EP\), with Lebesgue measure on each \(\C\) and the Haar measure of \(\EP\) for which \(\OP\) has measure one.  Let \(\delta_E\) be the generator of the different of \(E\) fixed in the proof, with \(\bar\delta_E=-\delta_E\), and \(\psi(u):=\prod_\tau e^{u_\tau-\bar u_\tau}\cdot\psi_f(-u_\Pf/\delta_E)\), where \(u_\Pf\) is read as a finite adele with components \(0\) outside \(\Pf\).  The entries are the units of \(\Cs\); \(u^\times\) replaces each zero component of \(u\) at an infinite place by \(1\), and its component at \(\Pf\) by \(1\) if that is not a unit; and \(\inv(u):=\bigl((u_\tau^{-1})_\tau,\,M^{-1}u_\Pf^{-1}\bigr)\).  In this sheet the \emph{scales} are \(R_{\tau i}:=\lvert M\tau(\delta_E)/(2\pi)\rvert^{2(\varrho-i)}/N\) for \(i\le\varrho\) (exponent \(0\) for \(i>\varrho\)); in the proof \(\lvert M\tau(\delta_E)/(2\pi)\rvert\ge1\) at every \(\tau\).  For \(\ee\in E^\times\) let \(\ent_a(\ee):=\bigl((R_{\tau a}\tau(\ee))_\tau,\,\ee\bigr)\in\Cs\), a unit.
+
+\begin{definition}\label{def:density-sums}
+Let \(\Ec\subset E^\times\) be finite.  A tuple \(\hh=(\ee_0,\dots,\ee_{i-1})\in\Ec^i\) is read as the head with entries \(\ent_a(\ee_a)\) for \(a<i\) and \(\ent_a(1)\) for \(a\ge i\); \((\hh,\ee)\in\Ec^{i+1}\) is \(\hh\) followed by \(\ee\).  For a sieve system \((\Jc_i)\) over \(\Cs\) put \(\Sigma_0:=\operatorname{Re}\Jc_0(\varnothing,\varnothing)\),
+\[
+ \Sigma_{i+1}:=\sum_{\ee\in\Ec}\operatorname{Re}\sum_{\hh,\hh'\in\Ec^i}\Jc_{i+1}\bigl((\hh,\ee),(\hh',\ee)\bigr),\qquad \lambda_i:=\sum_{\hh\in\Ec^i}\wt_i(\hh),\qquad c_i:=\frac{\vol(\Oh)}{\prod_\tau R_{\tau i}^2}.
+\]
+\end{definition}
+
+For \(l\in\Cs\) and an integrable \(\ff\colon\Cs\to\C\) write \(\hat\ff(l):=\int_{\Cs}\psi(lu)\ff(u)\,du\).  Theorem~\ref{m3-thm:poisson} is used on \(\Cs\) in the following form.  Let \(i\ge0\), let \(\Zc\subset E^\times\) be finite with elements integral outside \(\Pf\), let \(\ff\colon\Cs\to\R\) be nonnegative and integrable and lower semicontinuous at the points \(\ent_i(\ee)\), \(\ee\in\Zc\), and let \(c_\ff\ge0\) with \(\lvert\hat\ff(l)\rvert\le\dec(l)c_\ff\) for every unit \(l\).  If \(\varepsilon\) bounds \(\sum_{y\in\Zc'}\dec\bigl(((2\pi\ii\,\tau(y)/(\tau(\delta_E)R_{\tau i}))_\tau,y)\bigr)\) for every finite set \(\Zc'\) of nonzero elements of \(E\) integral outside \(\Pf\), then
+\[
+ \sum_{\ee\in\Zc}\ff\bigl(\ent_i(\ee)\bigr)\le c_i\Bigl(\varepsilon c_\ff+\int_{\Cs}\ff\Bigr).
+\]
+\emph{Status}: read from the proof; it is Theorem~\ref{m3-thm:poisson} for the function on the adeles that is \(\ff\) after the dilation by \(R_{\tau i}\) at the infinite places on the adeles integral outside \(\Pf\), and zero elsewhere; the factor \(c_i\) is the change of measure.
+
+For the recurrence fix a sieve system \((\Jc_i)\) of length \(\varrho\) over \(\Cs\) with weights \(\wt_i\ge0\), a finite \(\Ec\subset E^\times\) with \(\ee\) and \(\ee^{-1}\) integral outside \(\Pf\) for \(\ee\in\Ec\), assume \(M^{-1}\) integral outside \(\Pf\) and \(\lvert M\tau(\delta_E)/(2\pi)\rvert\ge1\) at every \(\tau\), and let \(\varepsilon\ge0\) satisfy
+\begin{equation}\label{eq:eps}
+ \sum_{y\in\Zc'}\dec\Bigl(\bigl((c_\tau\tau(y)/R_{\tau a})_\tau,\,y\bigr)\Bigr)\le\varepsilon
+\end{equation}
+for every \(a\ge0\), every \(\mathbf c=(c_\tau)\in\prod_\tau\C\) with \(c_\tau=0\) or \(\lvert c_\tau\rvert\ge2\pi/\lvert\tau(\delta_E)\rvert\) at each \(\tau\), and every finite set \(\Zc'\) of nonzero elements of \(E\) integral outside \(\Pf\).  For \(i\le\varrho\) and \(u\in\Cs\) put \(\ff_i(u):=\sum_{\hh,\hh'\in\Ec^i}\Jc_{i+1}(\hh[i{:}u],\hh'[i{:}u])\), so that \(\Sigma_{i+1}=\sum_{\ee\in\Ec}\operatorname{Re}\ff_i(\ent_i(\ee))\).  By Fatou's lemma and downward induction on \(i\), \(\operatorname{Re}\ff_i\) is lower semicontinuous at \(\ent_i(\ee)\) for every \(\ee\in E^\times\) (read from the proof).
+
+\begin{problem}\label{pr:nonneg}
+In a sieve system of length \(n\), for \(i\le n\) and finitely many heads with a common entry at position \(i\), the sum of \(\Jc_{i+1}\) over all their pairs is real and nonnegative.  In particular \(\ff_i\ge0\).
+\end{problem}
+
+\begin{problem}\label{pr:zero-frequency}
+For \(0\le i\le\varrho\), \(\int_{\Cs}\ff_i=\sum_{\hh,\hh'\in\Ec^i}\Jc_i(\hh,\hh')\).  For \(1\le i\le\varrho\), if \(\hh,\hh'\in\Ec^i\) have distinct last entries \(\ee,\ee'\), then \(y:=(\ee^{-1}-\ee'^{-1})/M\) is nonzero and integral outside \(\Pf\), the \(\inv\)-images of the entries at position \(i-1\) differ by \(\bigl((M\tau(y)/R_{\tau,i-1})_\tau,y\bigr)\), and \(\lvert\Jc_i(\hh,\hh')\rvert\le\varepsilon\wt_i(\hh)\wt_i(\hh')\).  For \(0\le i\le\varrho\), \(\operatorname{Re}\int_{\Cs}\ff_i\le\Sigma_i+\varepsilon\lambda_i^2\).
+\end{problem}
+
+\begin{problem}\label{pr:nonzero-frequencies}
+\(\lvert\hat\ff_i(l)\rvert\le\dec(l)\lambda_i^2\) for every unit \(l\) of \(\Cs\).
+\end{problem}
+
+The change of measure with \(\ff=\operatorname{Re}\ff_i\), \(\Zc=\Ec\) and \(c_\ff=\lambda_i^2\) (the frequencies are~\eqref{eq:eps} with \(c_\tau=2\pi\ii/\tau(\delta_E)\)), together with Problems~\ref{pr:nonneg}--\ref{pr:nonzero-frequencies}, proves the following.
+
+\begin{theorem}\label{thm:recurrence}
+Under these hypotheses, for the data, \(\Sigma_{i+1}\le c_i\bigl(\Sigma_i+2\varepsilon\lambda_i^2\bigr)\) for \(0\le i\le\varrho\).
+\end{theorem}
+
+\begin{problem}\label{pr:gaussian}
+In the lattice example \(E=\Q(\ii)\), \(\vol(\Oh)=1\), and \(\delta_E=2\ii\) generates the different.  With \(\Pf=\varnothing\), the scale \(2\) and \(\ff(z)=e^{-\lvert z\rvert^2}\), the change-of-measure factor is \(1/4\), and Poisson summation on the lattice gives \(\sum_{\nu\in\Z[\ii]}e^{-4\lvert\nu\rvert^2}=1.0746048\ldots=\frac\pi4\sum_{l\in\Z[\ii]}e^{-\pi^2\lvert l\rvert^2/4}\).  The term \(l=0\) is \(\pi/4=\frac14\int_\C e^{-\lvert z\rvert^2}dz\).
+\end{problem}
+
+\section{The sum over the frequencies}\label{sec:frequencies}
+
+Condition~\eqref{eq:eps} asks for a uniform bound over all finite sets of nonzero numbers integral outside \(\Pf\).  For \(\nu\in E\) let \(\mathfrak b_\nu:=\{a\in\Oc_E:a\nu\in\Oc_E\}\), the \emph{denominator ideal}.  For a unit \(z\) of \(\EP\), \([\OP:z\OP]:=\prod_{v\in\Pf}\lvert z\rvert_v^{-1}\) (normalized absolute values) is the index when \(z\in\OP\).  In the proof, at a unit \(l\) of \(\Cs\),
+\[
+ \dec(l)=c'\prod_\tau\lvert l_\tau\rvert^{-k_1}\min\bigl(1,\lvert l_\tau\rvert^{-1}\bigr)^6\cdot\frac{[\OP:l_\Pf\OP]^{k_1/2}}{[\OP:\OP\cap l_\Pf^{-1}\OP]^3},\qquad k_1:=k-(\varrho+1)^7\ge0,
+\]
+with \(c'=(c_{\mathrm{vol}}b^{2000(\varrho+1)^9})^fb^{(\varrho+1)^9f}\), where \(c_{\mathrm{vol}}>0\) is the volume ratio of the shape, and \(\dec(l)=0\) if some \(l_\tau=0\) (read from the proof).
+
+\begin{problem}\label{pr:product-formula}
+For \(y\in E^\times\) integral outside \(\Pf\): \([\OP:y\OP]\le\prod_\tau\lvert\tau(y)\rvert^2\) and \(\Nm\mathfrak b_y\le[\OP:\OP\cap y^{-1}\OP]\).
+\end{problem}
+
+\begin{problem}\label{pr:inert}
+In \(\Q(\ii)\) with \(\Pf=\{3\}\) and \(y=3^j\) for \(j\in\Z\): \([\OP:y\OP]=9^j\) and \([\OP:\OP\cap y^{-1}\OP]=9^{\max(0,-j)}\).  With the model exponent \(k_1=2\), the quotient of the two index powers in \(\dec\) is \(9^{-8},9^{-4},1,9\) at \(j=-2,-1,0,1\), while \([\OP:y\OP]\cdot\lvert y\rvert^{-2}=1\) for all \(j\).
+\end{problem}
+
+\begin{problem}\label{pr:one-place}
+If \(c,y\in\C^\times\) and \(k_1\ge0\), then
+\[
+ \lvert cy\rvert^{-k_1}\min\bigl(1,\lvert cy\rvert^{-1}\bigr)^6\lvert y\rvert^{k_1}\le\lvert c\rvert^{-k_1}\max\bigl(1,\lvert c\rvert^{-1}\bigr)^6\max\bigl(1,\lvert y\rvert\bigr)^{-6}.
+\]
+\end{problem}
+
+So for \(y\ne0\) integral outside \(\Pf\) and \(c_\tau\in\C^\times\), the decay at \(((c_\tau\tau(y))_\tau,y)\) is at most \(c'\prod_\tau\lvert c_\tau\rvert^{-k_1}\max(1,\lvert c_\tau\rvert^{-1})^6\) times \(\prod_\tau\max(1,\lvert\tau(y)\rvert)^{-6}\cdot\Nm\mathfrak b_y^{-3}\).
+
+\begin{problem}\label{pr:cosets}
+For a nonzero ideal \(\mathfrak b\), the \(\nu\in E\) with \(\mathfrak b\subseteq\mathfrak b_\nu\) lie in at most \(\Nm\mathfrak b\) classes modulo \(\Oc_E\).  Two distinct elements \(\nu,\nu'\) of one class do not have \(\tau(\nu)\) and \(\tau(\nu')\) in the same square \([j/2,(j+1)/2)\times[j'/2,(j'+1)/2)\) for every \(\tau\).
+\end{problem}
+
+\begin{problem}\label{pr:corner-weight}
+If \(\lvert z-z_0\rvert<1\), then \(\max(1,\lvert z\rvert)^{-6}\le64\max(1,\lvert z_0\rvert)^{-6}\).
+\end{problem}
+
+\begin{problem}\label{pr:corner-sum}
+By machine, \(\sum_{z\in\frac12\Z[\ii]}\max(1,\lvert z\rvert)^{-6}=19.1704\ldots\).  A disc of radius at least \(1\) contains at most \(25\) times its squared radius points of \(\frac12\Z[\ii]\), and, without the machine value, the sum over every finite subset of \(\frac12\Z[\ii]\) is at most \(38\).
+\end{problem}
+
+At \(s=2\) the Euler factor of the Dedekind zeta function \(\zeta_E\) at a prime \(p\) is at most \((1-p^{-2})^{-[E:\Q]}\), so the sum over the nonzero integral ideals is \(\sum_{\mathfrak b}\Nm\mathfrak b^{-2}=\zeta_E(2)\le\zeta(2)^{2f}\le e^{4f}\).  \emph{Status}: classical \cite{Ne}.  Problems~\ref{pr:cosets}--\ref{pr:corner-sum} and this bound prove the following.
+
+\begin{theorem}\label{thm:frequencies}
+Let \(E\) be a totally complex number field with \(f\) infinite places and a chosen embedding \(\tau\) at each, and \(\Zc\subset E\) finite.  Then
+\[
+ \sum_{\nu\in\Zc}\prod_\tau\max\bigl(1,\lvert\tau(\nu)\rvert\bigr)^{-6}\cdot\Nm\mathfrak b_\nu^{-3}\le(64\cdot38\cdot e^4)^f .
+\]
+\end{theorem}
+
+\begin{problem}\label{pr:frequencies-qi}
+By machine, for \(\Q(\ii)\): \(\sum_{\nu\in\Z[\ii]}\max(1,\lvert\nu\rvert)^{-6}=5.6589\ldots\), and the \(\nu\) with \(\Nm\mathfrak b_\nu\le40\) and \(\lvert\nu\rvert\le12\) contribute \(6.966\ldots\) to the sum of Theorem~\ref{thm:frequencies} (the bound is \(1.3278\ldots\cdot10^5\)).
+\end{problem}
+
+If some \(c_\tau=0\) in~\eqref{eq:eps}, every summand is \(0\).  Otherwise \(\lvert c_\tau/R_{\tau a}\rvert^{-1}\le\lvert M\tau(\delta_E)/(2\pi)\rvert^{2\varrho+1}/(MN)\le b^{23(2\varrho+1)}\) in the proof, and Problems~\ref{pr:product-formula} and~\ref{pr:one-place} and Theorem~\ref{thm:frequencies} bound the sum by
+\[
+ c'(64\cdot38\cdot e^4)^fb^{138(2\varrho+1)f}\prod_\tau(\lvert M\tau(\delta_E)/(2\pi)\rvert^{2\varrho+1}/(MN))^{k_1}.
+\]
+With \(64\cdot38\cdot e^4\le b^3\) and similar size bounds the proof enlarges this to \(\varepsilon=c_{\mathrm{fr}}\) of Theorem~\ref{m3-thm:sieve}.
+
+\section{Heads, weights and the sieve}\label{sec:heads}
+
+In the proof the weight of \(\hh\in\Ec^i\) is a product over its prefix products \(\delta_a:=\ee_0\cdots\ee_a\), \(a<i\).  At \(\tau\) the factor is \(\max(1,\lvert z\rvert^{-1})^{k_2}\) if \(\lvert z\rvert\le b^{60(\varrho+1)^2}\) and \(0\) otherwise, where \(z\) is the product of the first \(a+1\) entries of the head at \(\tau\); at \(\Pf\) it is \([\OP:\delta_a\OP]^{k_2/2}\) if \(\delta_a\in\OP\) and \(0\) otherwise; here \(k_2:=(\varrho+1)^6\).  A head is determined by its prefix products.
+
+\begin{problem}\label{pr:prefix}
+Take \(\Ec=\{1,2,1/2\}\subset\Q(\ii)\), \(\Pf\) the prime above \(2\), all scales \(1\), the cutoff \(2\) in place of \(b^{60(\varrho+1)^2}\) and the exponent \(2\) in place of \(k_2\).  The heads of length two with nonzero weight are \((1,1),(1,2),(2,1),(2,1/2)\), with weights \(1,4,16,4\); so \(\lambda_2=25\).
+\end{problem}
+
+In the proof, for \(0\le i\le\varrho\) and \(\Ec\) with elements integral outside \(\Pf\), the prefix products of a head of nonzero weight are algebraic integers of modulus at most \(b^{120(\varrho+1)^2}\) at every \(\tau\), and packing them, bounding each weight and bounding \(\prod_{a<i}c_a\) below gives \(\lambda_i^2\le c_{\mathrm{wt}}\prod_{a<i}c_a\), with \(c_{\mathrm{wt}}=b^{400(\varrho+1)^9f}\) (\emph{Status}: read from the proof; not proved here).  For the application the proof uses the Weil data and the places \(\mathcal D\) and frame vectors of Theorem~\ref{m3-thm:sieve}, and chooses \(\Pf\) stable under conjugation with \(M^{-1}\) integral outside \(\Pf\) and every element of \(\Ec\) a unit outside \(\Pf\).  At each \(\tau\) the band limits of the Bessel system give a sieve system of length \(\varrho\) over \(\C\) with character \(e^{z-\bar z}\) and \(\cm=(1+b^{-10})/d_\tau\).  Over \(\EP\) the proof chooses an intermediate subgroup.  For \(j\le\varrho\) it uses the subgroup's floor form at \(j\), and for \(j>\varrho\) it uses the last-entry density at the \(\Pf\)-component of the chosen idele above \(N\).  Dividing each form by the subgroup's mass ratio gives a sieve system of length \(\varrho\) with \(\cm=(1+b^{-6})b^{-6k\#\mathcal D}\).  \emph{Status}: the local systems are read from the proof.  Their product is a sieve system over \(\Cs\), by Fubini's theorem and Problem~\ref{m3-pr:schur}, with the prefix weights above, the decay of Section~\ref{sec:frequencies} and \(\cm=\cbot\).  Then \(\Sigma_0\le\cbot\) by (v), Theorem~\ref{thm:recurrence} with \(\varepsilon=c_{\mathrm{fr}}\) gives the recurrence, and the real part of the top sum of Theorem~\ref{m3-thm:sieve}, whose last entries run over a subset of \(\Ec\), is at most \(\Sigma_{\varrho+1}\) by Problem~\ref{pr:nonneg}.  This gives Theorem~\ref{m3-thm:sieve}.
+
+\paragraph{What has been proved.}  The six axioms and Poisson summation give Theorem~\ref{thm:recurrence}.  Packing in cosets and \(\zeta_E(2)\) give Theorem~\ref{thm:frequencies}.  Taken as given: Theorem~\ref{m3-thm:poisson} and its form on \(\Cs\), the lower semicontinuity of \(\operatorname{Re}\ff_i\), the bound for \(\zeta_E(2)\), the form of the decay, the bound for \(\lambda_i^2\) in terms of the Poisson constants, and the local bounds for pairs of frames.
+
+\begin{leanremark}
+{\raggedright Definition~\ref{def:sieve-system} is \tl{New.SieveSystem}, and the system over the data is \tl{New.Filling.IsGlobalSieveSystem}; \(\Sigma_i\) is \tl{densitySum}.  Theorem~\ref{thm:recurrence} is the case \(n=\varrho\) of \tl{New.Filling.densitySum\_succ\_le\_mul\_densitySum\_add}, the change of measure is the case \(r_\tau=R_{\tau i}\) of \tl{sum\_ratPoint\_le\_mul\_add\_integral\_of\_fourier\_le}, and the lower semicontinuity is \tl{lowerSemicontinuousAt\_entryDensity}.  Theorem~\ref{thm:frequencies} is \tl{New.sum\_height\_inv\_cube\_le}; the decay of the proof satisfies~\eqref{eq:eps} with the bound in \tl{boundsDecay\_prod}, the bound for \(\lambda_i^2\) is \tl{sq\_sum\_globalWeight\_le}, and \tl{New.Filling.sieve} combines these estimates, in the Lean proof \cite{GL}.  For the remaining statements see \cite{GL}: \gs{93}{the character}, \gl{Unfolding/Setup}{250}{the scales} and \gl{Unfolding/Setup}{509}{their bounds}, \gs{521}{scaled entries and heads}, \gs{514}{the condition on \(\varepsilon\)}, \gs{102}{the decay at \(\Pf\)}, \gs{927}{the weights}, \gs{974}{size} and \gs{877}{injectivity} of prefix products, \gs{693}{the two} \gs{620}{errors}, \gs{653}{unequal last entries}, \gl{Unfolding/Setup}{109}{the different}, \gk{Lib/Adelic/Adeles/SemilocalProducts}{255}{the measure on \(\EP\)}, \gl{MainTerm/Frequencies}{28}{\(\mathfrak b_\nu\)}, \gl{MainTerm/EnergyEstimate}{641}{the choice of places}, \gl{Bessel/Basic}{849}{the volume ratio}, \gs{531}{\(c_i\)}, \gs{540}{\(\ff_i\)}, \gk{Lib/Adelic/Adeles/SemilocalProducts}{329}{the index}, \gl{MainTerm/SieveSystem}{147}{products of systems}, \gl{Frames/RealBandLimits}{696}{the systems at \(\tau\)} and \gl{MainTerm/FiniteSieveSystem}{280}{at \(\Pf\)}.\par}
+\end{leanremark}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:model}}
+\begin{description}
+\item[\ref{pr:finite-poisson}] Sum \(\e(-lj/q)\) over \(l\in H^\perp\) first.
+\item[\ref{pr:one-sided}] Enlarge \(\Zc\) to \(H\).
+\item[\ref{pr:model-step}] Problem~\ref{pr:model-forms}: list \(a'-a\) modulo \(25\) for \(a,a'\in\Ec\).
+\item[\ref{pr:model-bound}] Split the term \(l=0\) into equal and unequal heads.
+\end{description}
+
+\subsection*{\S\ref{sec:recurrence}}
+\begin{description}
+\item[\ref{pr:nonneg}] Induct downwards using (iii) and (ii) at \(l=0\).
+\item[\ref{pr:zero-frequency}] Which pairs already occur in \(\Sigma_i\)?
+\item[\ref{pr:gaussian}] Take the Gaussian transform in each real coordinate.
+\end{description}
+
+\subsection*{\S\ref{sec:frequencies}}
+\begin{description}
+\item[\ref{pr:product-formula}] Use the product formula and reduce \(\Oc_E\) modulo \(\OP\cap y^{-1}\OP\).
+\item[\ref{pr:one-place}] Separate \(\lvert y\rvert\ge1\) and \(\lvert y\rvert\le1\).
+\item[\ref{pr:cosets}] \(\mathfrak b^{-1}/\Oc_E\); a nonzero algebraic integer has norm at least \(1\).
+\item[\ref{pr:corner-weight}] Use the triangle inequality.
+\item[\ref{pr:corner-sum}] Use Python's \texttt{math.hypot} for the sum.  For the bound integrate the disc count against \(6s^{-7}\,ds\).
+\item[\ref{pr:frequencies-qi}] Use Python's \texttt{sum} on reduced Gaussian fractions, with one denominator per unit orbit.
+\end{description}
+
+\begin{thebibliography}{GL}
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[Ne]{Ne} J.~Neukirch, \emph{Algebraic Number Theory}, Springer, 1999.
+\end{thebibliography}
+
+\end{document}
