@@ -6,105 +6,105 @@
 
 We present the arguments of Alpöge's [[https://alpo.ge/remark.pdf][proof]] of the generalized Riemann hypothesis for Dirichlet $L$-functions as a series of exercise sheets, each introducing one ingredient in its simplest setting.  The sheets follow the proof in the form of the [[https://github.com/lsernau/grh-lean][rewritten Lean proof]] of L. Sernau, which is shorter than the [[https://github.com/leanprover-community/riemann-hypothesis][Lean code]] first released and proves many steps by other arguments.  The presentation is inspired by the problem sequences of Onishchik and Vinberg, /Lie Groups and Algebraic Groups/ (Springer, 1990).  The sheets are drafts written and refereed by AI agents (Claude and Codex).
 
-*How the sheets fit together.*  The proof bounds one sum over primes from above.  For a prime $d$ and a modulus $q_0$ let $R(y)$ be the sum of $\Lambda(n)(1 - \chi_d(n))(1/n - 1/y)$ over $n \le y$, $n \equiv 1 \pmod{q_0}$, less its main term.  If $R(y) \le y^{-1/2 + \varepsilon}$ for large $y$, then no $L(s, \psi)$ with $\psi$ modulo $q_0$ vanishes in $\Re s > 1/2$ (Part I).  The bound comes from one determinant, whose size is compared with its divisibility (Part II).  The determinant is the Gram determinant of a family of automorphic forms under a chain of $m \approx \sqrt{x}$ theta lifts.  /Theorem A/: there are forms whose lifts are short, because derivatives of theta functions with complex multiplication are highly divisible at primes that do not split (Parts III and IV).  /Theorem B/: few translates of these forms span almost everything (Part II, [[file:20261125T010000--rank-lemma-and-zero-estimate__workbook.html][/Few translates span/]] and [[file:20261125T010500--poincare-series-and-near-orthogonality__workbook.html][/Poincaré series and near orthogonality/]]).  /Theorem C/: a family that spans almost everything cannot be shorter than a certain amount, because the cost of each lift is a product of values of Hecke $L$-functions (Parts IV and V).  The amounts in A and C agree up to the remainder of the prime sum, divided by $m$.  Parts I–V treat each ingredient in its simplest setting.  Part VI states each in the generality of the proof, as a declaration of the rewritten Lean proof named in a remark, and deduces the theorem.
+*How the sheets fit together.*  The proof bounds one sum over primes from above.  For a modulus $q_0$ and a prime $d$ let $R_{d,q_0}(y)$ be the sum of $\Lambda(n)(1 - \chi_d(n))(1/n - 1/y)$ over $n \le y$, $n \equiv 1 \pmod{q_0}$, less its main term.  If for every $\varepsilon > 0$ and every prime $d$ of a suitable progression $R_{d,q_0}(y) \le y^{-1/2 + \varepsilon}$ for all large $y$, then no $L(s, \psi)$ with $\psi$ modulo $q_0$ vanishes in $\Re s > 1/2$ (Part I).  The bound comes from one determinant, whose size is compared with its divisibility (Part II): the Gram determinant of a family of automorphic forms under a chain of $m \approx \sqrt{x}$ theta lifts.  /Theorem A/: integral forms whose lifts are short span the source, because derivatives of theta functions with complex multiplication are highly divisible at primes that do not split (Parts III and IV), and families of their translates have bounded index.  /Theorem B/: a few translates of these forms span almost all of the target (Part II, [[file:20261125T010000--rank-lemma-and-zero-estimate__workbook.html][/Few translates span/]] and [[file:20261125T010500--poincare-series-and-near-orthogonality__workbook.html][/Poincaré series and near orthogonality/]]).  /Theorem C/: a family that spans almost all of the target cannot have small covolume and index together, because the cost of each lift is controlled by values of Hecke $L$-functions and their denominators (Parts IV and V).  Comparing the bounds gives an upper bound for $m$ times the remainder of the prime sum.  Parts I–V treat each ingredient in its simplest setting.  Part VI states each in the generality of the proof, as a declaration of the rewritten Lean proof named in a remark, and deduces the theorem.
 A [[file:flowchart.html][flowchart]] shows how the chapters depend on each other, with sample seminar plans.
 
-*Notation.*  Each sheet defines what it uses.  A few letters recur throughout: $p$ is a prime, usually not split in $K = \mathbb{Q}(\sqrt{-d})$ (or $K = \mathbb{Q}(i)$ in the simplest cases), and $d$ is the one auxiliary prime; $\psi$ is the character whose $L$-function is treated; $R_q(y) = \sum_{n \le y,\, n \equiv 1 \bmod q} \Lambda(n)(1 - \chi_K(n))(1/n - 1/y) - \log y/\varphi(q) - c_q$ is the remainder of the prime sum modulo $q$.  In the later chapters $E \supset K$ is a cyclotomic CM field, while in the chapters on elliptic curves $E$ is an elliptic curve; $x < x_1 < b$ and $a = xb$ are the scales; $m$ is the number of lifts and $r$, $k$, $t$ are ranks; $\iota$ is an isomorphism $\mathbb{C} \simeq \bar{\mathbb{Q}}_\ell$.  The ramp sum $G(x) = \sum_n \Lambda(n)(x/n - 1)_+ - x\log x + (1 + \gamma)x$ occurs only in [[file:20261125T001000--zeros-to-ramp-sums__workbook.html][/From zeros to a one-sided bound/]].
+*Notation.*  Each sheet defines what it uses.  A few letters recur throughout: $p$ is a prime, usually not split in $K = \mathbb{Q}(\sqrt{-d})$ (or $K = \mathbb{Q}(i)$ in the simplest cases), and $d$ is an auxiliary prime, fixed in each datum; $\psi$ is the character whose $L$-function is treated; $R_{d,q}(y) = \sum_{n \le y,\, n \equiv 1 \bmod q} \Lambda(n)(1 - \chi_d(n))(1/n - 1/y) - \log y/\varphi(q) - c_{d,q}$ is the remainder of the prime sum modulo $q$, written $R_q$ when $d$ is fixed.  In the later chapters $E = K(\zeta_{q_1})$ is a CM field, while in the chapters on elliptic curves $E$ is an elliptic curve; $x < x_1 < b$ and $a = xb$ are the scales; $m$ is the number of lifts, $r$ and $k$ are ranks and $t = 5r$ is the step between ranks; $\iota$ is an isomorphism between $\mathbb{C}$ and $\bar{\mathbb{Q}}_\ell$.  The ramp sum $G(x) = \sum_n \Lambda(n)(x/n - 1)_+ - x\log x + (1 + \gamma)x$ occurs only in Part I and in [[file:20261125T003000--the-chain-and-the-square-root__workbook.html][/The chain and the square root/]].
 
 * Part I. The target
 - [[file:20261125T001000--zeros-to-ramp-sums__workbook.html][1. From zeros to a one-sided bound]] \\
-  A one-sided bound for a sum over primes in a progression, with weight $1 - \chi_K$, gives a zero-free half-plane.
+  An upper bound for a sum over primes excludes zeros: for $\zeta$, and for Dirichlet $L$-functions through one-sided bounds for a sum over primes in a progression with weight $1 - \chi_d$, for every prime $d$ of a class.
 - [[file:20261125T001100--inert-primes-and-estimate-b__workbook.html][2. Inert primes and the choice of $d$]] \\
-  What the weight counts, and a prime $d$ whose quadratic twists have no zero in a box.
+  What the weight $1 - \chi_d$ counts, and a prime $d$ for which the twists by $\chi_d$ of all characters of a given modulus have no zero in a given box.
 - [[file:20261125T005000--galois-fourier-and-averaging__workbook.html][3. The places, the weights and the remainder]] \\
-  Prime sums over the places of $E$; the total remainder is an exact combination of $R_{q_0}(x)$, $R_{q_0}(x_1)$, $R_1(x_1)$.
+  Prime sums over the places of $E$ with two weights; the total remainder is an exact combination of $R_{q_0}(x)$, $R_{q_0}(x_1)$ and $R_1(x_1)$.
 - [[file:20261125T005500--columns-from-a-sphere__workbook.html][4. Places from a sphere]] \\
-  The $b$-places: dense and sparse, after Behrend.
+  The places of weight $b$: dense, and sparse along multiplication by small primes, after Behrend.
 
 * Part II. The method
 - [[file:20261125T000000--slope-method__workbook.html][5. Size against divisibility]] \\
-  One determinant, from Chebyshev to the product formula for a family.
+  One determinant, from Chebyshev to heights of families, index and covolume.
 - [[file:20261126T030100--a-twist-for-each-prime__workbook.html][6. A twist for each prime]] \\
-  Sizes read at the trivial twist, valuations at a twist that depends on the prime.
+  Sizes read at the trivial twist, valuations at a twist chosen for each prime and each isomorphism above it.
 - [[file:20261125T003000--the-chain-and-the-square-root__workbook.html][7. The chain and the square root]] \\
   Stepanov's method, a chain of $m$ maps in place of an order of vanishing, and why $m \approx \sqrt{x}$.
 - [[file:20261125T010000--rank-lemma-and-zero-estimate__workbook.html][8. Few translates span]] \\
-  A second moment over a finite group gives the rank of a few translates.
+  A second moment over a finite group bounds how many translates of one map are needed to span almost all of the target.
 - [[file:20261125T010500--poincare-series-and-near-orthogonality__workbook.html][9. Poincaré series and near orthogonality]] \\
-  Theorem B in its simplest case: near orthogonality of Poincaré series from the Petersson formula and the decay of Bessel functions.
+  A model for one input of Theorem B: Poincaré series of small index are nearly orthogonal, by Petersson's formula and a bound for Bessel functions.
 
 * Part III. Divisibility at inert primes
 - [[file:20261124T223000--elliptic-curves-for-the-proof__workbook.html][10. Complex tori, theta functions and periods]] \\
   Weierstrass and theta functions on the lemniscatic curve, and its period.
 - [[file:20261125T009500--fock-model-and-theta-intertwiners__workbook.html][11. The Fock model and theta intertwiners]] \\
-  Theta functions of a lattice form a line; intertwiners between lattices compose up to a Gauss sum.
+  Theta functions of a lattice form a line; intertwiners between neighbouring lattices compose up to a Gauss sum.
 - [[file:20261124T223100--complex-multiplication-and-inert-reduction__workbook.html][12. Complex multiplication and reduction at an inert prime]] \\
   Formal groups with complex multiplication and the derivation $D^p$ at a supersingular prime.
 - [[file:20261125T008000--one-cm-determinant__workbook.html][13. One CM determinant: Mertens modulo 4]] \\
-  How much of $\log r!$ one determinant of CM values recovers from each prime.
+  Mertens' theorem modulo 4 from determinants: a Gaussian Vandermonde for the split primes, a determinant of CM derivatives for the inert primes.
 - [[file:20261124T214500--supersingular-theta-divisibility__workbook.html][14. The invariant derivation at a supersingular prime]] \\
-  How divisible the derivatives of a lemniscatic theta function are at an inert prime, in one variable.
+  How divisible the invariant derivatives of integral series on the lemniscate are at an inert prime, in one variable, and why a theta function needs more.
 - [[file:20261124T214600--the-isotropic-plane__workbook.html][15. The isotropic plane]] \\
   A second variable, along the isotropic eigenlines, gives a gain at every prime $p \equiv 3 \pmod 8$.
 - [[file:20261125T013700--pairings-on-a-formal-group-of-height-two__workbook.html][16. Pairings on a formal group of height two]] \\
-  Why the gain at an inert prime is $\alpha p/(p^2-1)$: Frobenius-semilinear pairings on the Lubin–Tate group and their normal form.
+  Frobenius-semilinear pairings on a formal group of height two, their normal form, and the general count of divisibility at a non-split prime.
 - [[file:20261125T013500--hecke-nondegeneracy-on-the-tree__workbook.html][17. Hecke nondegeneracy on the tree]] \\
-  The loss that balances the gain: elementary divisors of a Hecke operator on symmetric powers, by Kummer's theorem.
+  Elementary divisors of a Hecke operator on the tree by Kummer's theorem, the colength of its image, and the exceptional primes where the proof needs it.
 - [[file:20261126T030200--the-bound-is-attained__workbook.html][18. The bound is attained]] \\
-  On one CM curve the divisibility of derivatives cannot be improved.
+  The least valuation of derivatives on the lemniscate and its exact rate; for curves with complex multiplication and many places the divisibility bound is attained.
 
 * Part IV. Sizes, periods and counts
 - [[file:20261125T009000--kronecker-limit-and-chowla-selberg__workbook.html][19. The Kronecker limit formula and Chowla–Selberg]] \\
-  Kronecker's limit formula and Lerch's formula compute $L'(1,\chi)/L(1,\chi)$ in two ways, and $e^{\gamma - L'(1,\chi)/L(1,\chi)}$ is, up to an algebraic factor, the square of a CM period divided by $2\pi i$.
+  Kronecker's limit formula and Lerch's formula compute $L'(1,\chi)/L(1,\chi)$ in two ways, and $e^{\gamma - L'(1,\chi)/L(1,\chi)}$ is, up to an algebraic factor, the square of a CM period divided by $\pi^2$.
 - [[file:20261125T002000--definite-theta-lifts__workbook.html][20. Masses and the count of forms]] \\
-  The number of forms on a definite unitary group, as a mass times a Weyl dimension.
+  The number of forms on a definite unitary group as an average over stabilizers, whose main term is a mass times a Weyl dimension.
 - [[file:20261125T015500--siegel-weil-in-the-smallest-case__workbook.html][21. The Siegel–Weil formula in the smallest case]] \\
   The mass-weighted average of theta series over a genus is an Eisenstein series, for $E_8$, rank 16 and the class set of [[file:20261125T002000--definite-theta-lifts__workbook.html][/Masses and the count of forms/]].
 - [[file:20261125T002100--definite-theta-lifts-and-norms__workbook.html][22. Definite theta lifts and their norms]] \\
-  The entries and sizes of theta lifts between definite unitary groups in the smallest cases.
+  Theta lifts between definite unitary groups in the smallest cases: their entries and norms, the seesaw, and chains.
 - [[file:20261125T016500--hecke-operators-and-theta-lifts__workbook.html][23. Hecke operators and theta lifts]] \\
   Eichler's commutation relation, $p$-neighbours and Brandt matrices.
 - [[file:20261125T016700--divisibility-along-the-chain__workbook.html][24. Divisibility along the chain]] \\
-  Carrying gains along a chain of lifts by inverting the one-step Hecke relation, and what it costs.
+  Carrying a gain along a chain of lifts by moving a Hecke operator through it, and the step of the proof that does this.
 
 * Part V. Denominators and congruences
 - [[file:20261125T004000--denominators-and-sha__workbook.html][25. Denominators and the Stickelberger element]] \\
-  The cost of a map that does not respect integral structures, measured by an eigenspace of a class group.
+  The index cost of a map that does not respect integral structures, and the Stickelberger element acting on class groups.
 - [[file:20261125T004100--tate-twists-and-sha__workbook.html][26. Odd Tate twists]] \\
-  Odd cocycles unramified away from $\ell$ with values in a Tate twist; for the trivial twist they give the class group.
+  Galois cohomology classes with values in a Tate twist, with prescribed ramification and, for positive exponent, odd; at exponent zero, homomorphisms from the class group.
 - [[file:20261126T020430--the-minus-part-by-gauss-sums__workbook.html][27. Odd classes by Gauss sums]] \\
-  One integer bounds the odd classes at every $\ell$.
+  One integer, from Stickelberger elements and Gauss sums, bounds the odd classes at every $\ell$.
 - [[file:20261125T014100--congruence-modules__workbook.html][28. Congruence modules]] \\
   The denominator at the twisted places: the congruence module of $\Delta$ is $\mathbb{Z}/691$.
 - [[file:20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html][29. Eisenstein congruences and Selmer classes]] \\
   Ribet's argument: a congruence with an Eisenstein series produces an unramified class.
 - [[file:20261125T014700--pseudocharacters-and-the-length-bound__workbook.html][30. Pseudocharacters and the length bound]] \\
-  The converse direction, bounding a Selmer group by the length of a Hecke algebra modulo its Eisenstein ideal.
+  Traces as pseudocharacters: a congruence gives a Selmer class, so Selmer lengths bound congruences; cocycles that obey the relations of a representation.
 - [[file:20261125T011000--galois-representations-black-box__workbook.html][31. Black box: Galois representations of eigenforms]] \\
-  For most Frobenius elements the Hecke polynomial kills Frobenius.
+  The Galois representations attached to eigenforms on definite unitary groups, and the Hecke polynomial annihilating Frobenius at spherical places.
 
 * Part VI. The proof
-Each chapter of this part states its results in the form of the Lean proof, at the commit named under [[*Sources][Sources]], and says which statements were read from the code and which are derived here.
+Each chapter of this part states its results in the form of the Lean proof, at the commit named under [[*Sources][Sources]], and says which statements were read from the code and which are derived here; the chapters [[file:20261125T001100--inert-primes-and-estimate-b__workbook.html][/Inert primes and the choice of $d$/]], [[file:20261126T030100--a-twist-for-each-prime__workbook.html][/A twist for each prime/]], [[file:20261125T003000--the-chain-and-the-square-root__workbook.html][/The chain and the square root/]], [[file:20261125T013700--pairings-on-a-formal-group-of-height-two__workbook.html][/Pairings on a formal group of height two/]], [[file:20261126T030200--the-bound-is-attained__workbook.html][/The bound is attained/]], [[file:20261125T016700--divisibility-along-the-chain__workbook.html][/Divisibility along the chain/]], [[file:20261125T014700--pseudocharacters-and-the-length-bound__workbook.html][/Pseudocharacters and the length bound/]], [[file:20261126T030400--the-seesaw-identity__workbook.html][/The seesaw identity/]], [[file:20261126T030500--divisibility-of-the-composite-lift__workbook.html][/Divisibility of the composite lift/]], [[file:20261126T030700--the-determinant-of-a-chain__workbook.html][/The determinant of a chain/]], [[file:20261126T030800--the-cost-of-one-lift__workbook.html][/The cost of one lift/]], [[file:20261126T030900--denominators-of-projections-to-lifts__workbook.html][/Denominators of projections to lifts/]], [[file:20261126T031000--twists-with-few-congruences__workbook.html][/Twists with few congruences/]] and [[file:20261126T031100--theorem-c-and-the-main-inequality__workbook.html][/Theorem C and the main inequality/]] are not yet checked line by line against the Lean code.
 - [[file:20261126T030300--the-data__workbook.html][32. The data]] \\
   The field, the places, the scales, the ranks and the level primes; their sizes, and that they exist for every large $x$.
 - [[file:20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html][33. Theorem B: enough forms]] \\
-  Bessel–Poincaré series, their translates and the second moment: few translates of the source forms span almost all target forms.
+  Bessel–Poincaré series and their translates; a second moment shows that a few translates span almost all of the good target forms.
 - [[file:20261126T030400--the-seesaw-identity__workbook.html][34. The seesaw identity]] \\
-  The composite lift against a Bessel–Poincaré series is one constant times a Bessel period, the same constant for all twists.
+  For each twist, the lift along the indefinite chain of a Poincaré image is one nonzero constant, the same for all twists, times a lift along a definite chain.
 - [[file:20261126T030500--divisibility-of-the-composite-lift__workbook.html][35. Divisibility of the composite lift]] \\
-  On a submodule of small colength the composite lift is divisible at each prime by the predicted gain, up to a small total error.
+  At each prime, on a submodule of small colength, the composite lift is divisible by the predicted gain up to an error; the errors are small in total.
 - [[file:20261126T030600--theorem-a-short-forms__workbook.html][36. Theorem A: short forms]] \\
-  Short integral source forms span the source, and their images have small index.
+  Integral forms whose translated images have short lifts at the trivial twist span the ramified source, and families of their translates have bounded index.
 - [[file:20261126T030700--the-determinant-of-a-chain__workbook.html][37. The determinant of a chain]] \\
   The Gram determinant of a chain of lifts factors into determinants of single lifts and ratios of Hecke values.
 - [[file:20261126T030800--the-cost-of-one-lift__workbook.html][38. The cost of one lift]] \\
-  The ratio of the determinants of one lift at the trivial twist and at a twist has bounded height.
+  The height of the ratio of the determinants of one lift at the trivial twist and at a twist chosen for each prime.
 - [[file:20261126T030900--denominators-of-projections-to-lifts__workbook.html][39. Denominators of projections to lifts]] \\
-  The denominator of the projection to the lifts is a congruence module, bounded through Selmer groups.
+  Denominators of projections of integral forms to lifts, bounded by local losses, Selmer lengths, odd classes and congruences between characters.
 - [[file:20261126T031000--twists-with-few-congruences__workbook.html][40. Twists with few congruences]] \\
   At each prime a twist with small ratios of $L$-values and denominators within the budget.
 - [[file:20261126T031100--theorem-c-and-the-main-inequality__workbook.html][41. Theorem C and the main inequality]] \\
-  A family that spans almost everything cannot be short; with Theorems A and B this bounds the prime sum and proves the theorem.
+  Theorem C: a family spanning almost all target forms cannot have small covolume and index together; with Theorems A and B this bounds the prime sum and proves the theorem.
 
 * Sources
 The proof.
@@ -112,7 +112,7 @@ The proof.
 - The Lean archive released with it: [[https://alpo.ge/lean.tar.gz.part01]], …, =part14=; the version being cleaned up by the Lean community: [[https://github.com/leanprover-community/riemann-hypothesis]], with the community's statement at [[https://leanprover-community.github.io/blog/posts/riemann-hypothesis/]].
 - L. Sernau, /GRH for Dirichlet L-functions, in Lean 4/, a shorter rewriting of the Lean proof, text by Claude: [[https://github.com/lsernau/grh-lean]], commit =72fead1= (Apache-2.0, © 2026 Anthropic, PBC).  Part VI follows its readable edition.
 
-Expositions of the Lean proof as first released.  They describe a longer route (a slope inequality in the mean, covolumes by an arithmetic Hilbert–Samuel theorem, a Selmer bound on windows of scales); the sheets cite them where a step is common to both.
+Expositions of the Lean proof as first released.  They describe a longer route (a slope inequality in the mean, covolumes by an arithmetic Hilbert–Samuel theorem, a Selmer bound on windows of scales); the sheets cite only Adriazola's manuscript, for steps common to both routes.
 - /The Alpöge–Claude proof of the Riemann hypothesis explained for the Riemann zeta function/, written by AI models at the behest of M. O. Rubinstein, working draft, 21 November 2026: [[https://www.math.uwaterloo.ca/~mrubinst/alpoge_claude_grh/zeta-paper.pdf]].
 - /Notes on Alpöge's proof of the Riemann hypothesis/, printed by T. Dupuy, AI generated, 21 November 2026: [[https://tdupu.github.io/riemann-public/riemann-book.pdf]].
 - J. Adriazola, /The Alpöge proof of the Riemann hypothesis/, manuscript, revised 24 November 2026: [[https://github.com/jimjamzola/RH-Alpoge-Reconstruction]].
