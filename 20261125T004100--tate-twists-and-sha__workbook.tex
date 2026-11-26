@@ -6,6 +6,7 @@
 \externaldocument[ds-]{20261125T004000--denominators-and-sha__workbook}
 \externaldocument[mi-]{20261126T020430--the-minus-part-by-gauss-sums__workbook}
 \externaldocument[da-]{20261126T030300--the-data__workbook}
+\externaldocument[dl-]{20261126T030900--denominators-of-projections-to-lifts__workbook}
 
 % Chapter number; \ref{chap} gives it.
 \newcounter{chap}
@@ -171,7 +172,7 @@ For integers \(e, n \ge 0\), \(\Shao_\ell(E, \Oc; e, n)\) is the \(\Oc\)-module 
 \end{enumerate}
 \end{definition}
 
-These are cocycles, not classes: nothing is divided out.  In (c) the kernel is that of the \(\ell\)-adic character, not of its reduction modulo \(\ell^n\).  For \(e > 0\), the rewritten Lean proof \cite{GL} describes this module as a model for the odd part of \(\Sha^1(E,\Oc_n(-e))\) and records that the comparison with \(\Sha^1\) is not proved there.  Problems~\ref{pr:cob-odd} and~\ref{pr:c-action} explain the shape of the definition.
+These are cocycles, not classes: nothing is divided out.  In (c) the kernel is that of the \(\ell\)-adic character, not of its reduction modulo \(\ell^n\).  For \(e > 0\) this module is modelled on the odd part of \(\Sha^1(E,\Oc_n(-e))\); the rewritten Lean proof \cite{GL} does not compare the two.  Problems~\ref{pr:cob-odd} and~\ref{pr:c-action} explain the shape of the definition.
 
 \begin{problem}\label{pr:cob-odd}
 Let \(\ell\) be odd and \(e > 0\).  For \(b \in \Oc_n\), the coboundary \(z_b(g) := (\chi(g)^{-e} - 1) b\) satisfies (a)--(c), and it satisfies (d) only if \(z_b = 0\).
@@ -231,7 +232,7 @@ By Problem~\ref{pr:parity}, this is also the \(\ell\)-rank of the minus part of 
 For a CM field in \(\Q(\zeta_N)\), the following theorem gives one integer for every prime \(\ell\), every coefficient ring specified below, every \(0 \le e < t\), and every \(n \ge 0\).
 
 \begin{theorem}\label{thm:oddsha}
-Let \(N \ge 1\) and \(t \ge 0\) be integers, let \(d_N\) be the exponent of the group \((\Z/N\Z)^\times\), and let \(E \subset \overline{\Q}\) be a CM field contained in \(\Q(\zeta_N)\).  There is an integer \(X\) with
+Let \(N \ge 1\) and \(t \ge 0\) be integers (in the application, \(t = 5r\)), let \(d_N\) be the exponent of the group \((\Z/N\Z)^\times\), and let \(E \subset \overline{\Q}\) be a CM field contained in \(\Q(\zeta_N)\).  There is an integer \(X\) with
 \[
   1 \le X \le 2^{4(N + t + 3)^{27}} h_E
 \]
@@ -241,10 +242,10 @@ such that for every prime \(\ell\) (including \(\ell = 2\)), every ring of integ
 \]
 \end{theorem}
 
-In particular these lengths are finite.  For \(e = 0\) the proof first applies Theorem~\ref{thm:e0} with right-hand side \(v_\Oc(h_E)\); when \(t = 1\) its chosen integer is \(X = h_E\).  For \(0 < e < t\) the rewriting first constructs an integer \(1 \le X_e \le 2^{(N+e+3)^6}\) satisfying a divisibility condition at every prime and a congruence for twisted Stickelberger sums.  Its proof of the bound then uses Jacobi-type quotients of Gauss sums and Kolyvagin's derivative cocycles, and treats \(\ell \le (N+t+3)^2\) and \(\ell > (N+t+3)^2\) separately.  Chapter~\ref{mi-chap} illustrates the Gauss-sum method.  The rewritten Lean proof describes the result as a finite-level upper bound of explicit size, and proves no equality of characteristic ideals.  For the field \(E\) of the data of Chapter~\ref{da-chap} it chooses a witness with \(t = 5r\), and the first term of its denominator error at \(\ell\) is \(t\, v_\ell(X)\).
+In particular these lengths are finite.  Here \(N\) is a cyclotomic modulus, not the level of Chapter~\ref{da-chap}.  For \(e = 0\) the bound follows from Theorem~\ref{thm:e0}, and for \(t = 1\) one may take \(X = h_E\).  For \(0 < e < t\) the rewritten Lean proof argues through twisted Stickelberger sums, Jacobi-type quotients of Gauss sums and Kolyvagin's derivative cocycles; Chapter~\ref{mi-chap} illustrates the Gauss-sum method.  It proves no equality of characteristic ideals, only this upper bound at finite level.
 
 \begin{leanremark}
-\raggedright In the rewritten Lean proof \cite{GL}, Theorem~\ref{thm:oddsha} is \tl{New.exists\_length\_shaOdd\_le} and Theorem~\ref{thm:e0} is \tl{New.length\_shaOdd\_zero\_le\_addVal\_classNumber}, both in \tl{grh/src/Lib/Cyclotomic/OddSha.lean}, Definition~\ref{def:shaodd} is the case \(\Lambda = \Oc\) of \tl{New.Selmer.shaOdd} in \tl{grh/src/Lib/GaloisRep/Main/SelmerModules.lean}, and the application to the data uses \tl{New.Selmer.oddClassBound} and \tl{New.Selmer.denominatorError} in \tl{grh/src/New/Congruences/FirstOrder/TraceRelations.lean} and \tl{New.Selmer.isNegligible\_padicValNat\_oddClassBound} in \tl{grh/src/New/Congruences/FitTwistsExist.lean}.  The proof chooses \(X_e\) using \tl{New.OddPart.exists\_isStickelbergerBound}.  The proof of \tl{New.OddPart.exists\_isJacobiFamily} constructs the Jacobi-type quotients of Gauss sums, and the proof of \tl{New.OddPart.exists\_isKolyvaginSystem} constructs the derivative cocycles.  The introduction to \tl{OddSha.lean} gives the status of the comparison with \(\Sha^1\) and of the finite-level bound.
+\raggedright In the rewritten Lean proof \cite{GL}, Theorem~\ref{thm:oddsha} is \tl{New.exists\_length\_shaOdd\_le} and Theorem~\ref{thm:e0} is \tl{New.length\_shaOdd\_zero\_le\_addVal\_classNumber}, both in \tl{grh/src/Lib/Cyclotomic/OddSha.lean}, and Definition~\ref{def:shaodd} is the case \(\Lambda = \Oc\) of \tl{New.Selmer.shaOdd} in \tl{grh/src/Lib/GaloisRep/Main/SelmerModules.lean}.
 \end{leanremark}
 
 \begin{problem}\label{pr:37}
@@ -258,7 +259,7 @@ Let \(N\), \(t\), \(d_N\), \(E\), \(X\) be as in Theorem~\ref{thm:oddsha}, and f
 \]
 \end{problem}
 
-This is the analogue of Problem~\ref{pr:one-number}.  In the application to Chapter~\ref{da-chap}, the rewritten Lean proof sums \(v_\ell(X)\log\ell\) over a finite set of primes and uses the size bound for \(X\) in Theorem~\ref{thm:oddsha}.
+This is the analogue of Problem~\ref{pr:one-number}.  Chapter~\ref{dl-chap} applies Theorem~\ref{thm:oddsha} to the field \(E\) of Chapter~\ref{da-chap}, with \(t = 5r\).  In the rewritten Lean proof \cite{GL}, the resulting term in the denominator error at \(\ell\) is \(t\,v_\ell(X)\).  For every finite set \(T\) of primes its contribution to the weighted sum is \(t\sum_{\ell\in T} v_\ell(X)\log\ell \le t\log X\).
 
 \section*{Hints}
 
