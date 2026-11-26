@@ -146,6 +146,14 @@ else
   FAILED="$FAILED withdrawn-pages"; echo "FAILED: withdrawn pages"
 fi
 
+# The whole collection as one PDF (scripts/make-book.py), in index order,
+# and the sentence of the index that links it (book-link.org).
+if python3 scripts/make-book.py --site .; then
+  echo "OK: grh-via-exercises.pdf"
+else
+  FAILED="$FAILED grh-via-exercises.pdf"; echo "FAILED: grh-via-exercises.pdf"
+fi
+
 # Check TeX links (warning-only); the report stays outside the site.
 emacs --batch -l ./tex2html.el --eval '(tex2html-check-links "link-check-report.md")' >/dev/null 2>&1 || true
 mv link-check-report.md "$root/link-check-report.md"
