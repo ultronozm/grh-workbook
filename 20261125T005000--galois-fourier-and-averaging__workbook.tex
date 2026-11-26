@@ -38,64 +38,64 @@
 \refstepcounter{chap}\label{chap}
 
 \paragraph{Prerequisites.}
-From Chapter~\ref{zr-chap}, \emph{From zeros to a one-sided bound}: the weight \(\lambda\), the constant \(c_{d,q}\) and the remainder \(R_{d,q}\) of equation~\eqref{zr-eq:R}, recalled below, and Problem~\ref{zr-pr:R-limit}.  From Chapter~\ref{zi-chap}, \emph{Inert primes and the choice of \(d\)}: Section~\ref{zi-sec:inert}, on the values of \(1 - \chi_d\).  Cyclotomic fields and their Galois groups \cite[Ch.~2]{Wa}; infinite places of a number field as conjugate pairs of complex embeddings \cite[Ch.~II, \S8]{Ne}; quadratic reciprocity \cite[Ch.~I, \S3]{SeA}.
+From Chapter~\ref{zr-chap}, \emph{From zeros to a one-sided bound}: the weight \(\lambda\), the constant \(c_{d,q}\) and the remainder \(R_{d,q}\) of equation~\eqref{zr-eq:R}, recalled below, and Problem~\ref{zr-pr:R-limit}.  From Chapter~\ref{zi-chap}, \emph{Inert primes and the choice of \(d\)}: Section~\ref{zi-sec:inert}, on the values of \(1 - \chi_K\).  Cyclotomic fields and their Galois groups \cite[Ch.~2]{Wa}; infinite places of a number field as conjugate pairs of complex embeddings \cite[Ch.~II, \S8]{Ne}; quadratic reciprocity \cite[Ch.~I, \S3]{SeA}.
 
 \medskip
-The rewritten Lean proof \cite{GL} of Alpöge's theorem \cite{Alp} bounds from above a centered sum over the infinite places of the CM field obtained by adjoining a root of unity to \(K = \Q(\sqrt{-d})\) (\texttt{New.star\_inequality}).  Chapter~\ref{zr-chap} needs an upper bound for the remainder of a weighted sum over the prime powers \(n \equiv 1 \pmod{q_0}\) up to \(x\).  How does the sum over places give such a bound?  An exact finite-sum identity gives the answer.  In the summand indexed by \(n\), the weight at the translated place sets the cutoff.  For an admissible datum the centered total over places of class \(1\) modulo \(q_0\) equals a positive multiple of \(R_{q_0}(x)\) plus two terms at \(x_1\) (Theorem~\ref{thm:remainder}).
+Alpöge's proof \cite{Alp}, in the form of the rewritten Lean proof \cite{GL}, bounds from above a centered sum over the infinite places of the CM field obtained by adjoining a root of unity to \(K = \Q(\sqrt{-d})\).  Chapter~\ref{zr-chap} needs an upper bound for the remainder of a weighted sum over the prime powers \(n \equiv 1 \pmod{q_0}\) up to \(x\).  How does the sum over places give such a bound?  An exact finite-sum identity gives the answer.  In the summand indexed by \(n\), the weight at the translated place sets the cutoff.  For an admissible datum the centered total over places of class \(1\) modulo \(q_0\) equals a positive multiple of \(R_{q_0}(x)\) plus two terms at \(x_1\) (Theorem~\ref{thm:remainder}).
 
-Throughout, \(d \equiv 3 \pmod 4\) is a prime, \(K := \Q(\sqrt{-d})\), and \(\chi_d(n) := \bigl(\frac nd\bigr)\) is the Legendre symbol, so \(\chi_d(d) = 0\).  For an integer \(q \ge 1\) prime to \(d\) we write, as in Chapter~\ref{zr-chap},
+Throughout, \(d \equiv 3 \pmod 4\) is a prime, \(K := \Q(\sqrt{-d})\), and \(\chi_K(n) := \bigl(\frac nd\bigr)\) is the Legendre symbol (the \(\chi_d\) of Chapter~\ref{zr-chap}), so \(\chi_K(d) = 0\).  For an integer \(q \ge 1\) prime to \(d\) we write, as in Chapter~\ref{zr-chap},
 \[
-  \lambda_q(n) := \begin{cases} \Lambda(n)\bigl(1 - \chi_d(n)\bigr), & n \equiv 1 \pmod q, \\ 0, & \text{otherwise}, \end{cases}
+  \lambda_q(n) := \begin{cases} \Lambda(n)\bigl(1 - \chi_K(n)\bigr), & n \equiv 1 \pmod q, \\ 0, & \text{otherwise}, \end{cases}
   \qquad
   R_q(z) := \sum_{1 \le n \le z} \lambda_q(n) \Bigl(\frac1n - \frac1z\Bigr) - \frac{\log z}{\varphi(q)} - c_q
 \]
-for real \(z > 0\), where \(c_q := c_{d,q}\) and \(R_q := R_{d,q}\) are the constant and the remainder of equation~\eqref{zr-eq:R}, and \(\lambda_q\) is the weight \(\lambda\) there for the modulus \(q\); we drop \(d\), which is fixed.  The value of \(c_q\) plays no role in the identities of this chapter.  We write \(t_+ := \max(t, 0)\).
+for real \(z > 0\), where \(c_q := c_{d,q}\) and \(R_q := R_{d,q}\) are the constant and the remainder of equation~\eqref{zr-eq:R}, and \(\lambda_q\) is the weight \(\lambda\) there for the modulus \(q\); we drop \(d\), which is fixed.  The value of \(c_q\) plays no role in the identities of this chapter.  We write \(u_+ := \max(u, 0)\) for real \(u\).
 
 \section{The host field and its places}\label{sec:places}
 
-Let \(q_0 \ge 3\) and let \(q_1\) be a multiple of \(q_0\) such that every prime factor of \(q_1\) divides \(q_0\), and \(d \nmid q_1\).  Let \(E := K(\zeta)\) with \(\zeta\) a primitive \(q_1\)-th root of unity, fix an embedding \(\iota \colon E \to \C\), and let \(U_m := (\Z/m\Z)^\times\).  For \(g \in \Gal(E/K)\) let \(e(g) \in U_{q_1}\) be the class with \(g(\zeta) = \zeta^{e(g)}\).
+Let \(q_0 \ge 3\) and let \(q_1\) be a multiple of \(q_0\) such that every prime factor of \(q_1\) divides \(q_0\), and \(d \nmid q_1\).  Let \(E := K(\zeta)\) with \(\zeta\) a primitive \(q_1\)-th root of unity, regarded as a subfield of \(\C\).  For \(g \in \Gal(E/K)\) let \(e(g) \in (\Z/q_1\Z)^\times\) be the class with \(g(\zeta) = \zeta^{e(g)}\).
 
 \begin{problem}\label{pr:galois}
-The map \(e \colon \Gal(E/K) \to U_{q_1}\) is an isomorphism, and \([E : \Q] = 2\varphi(q_1)\).
+The map \(e \colon \Gal(E/K) \to (\Z/q_1\Z)^\times\) is an isomorphism, and \([E : \Q] = 2\varphi(q_1)\).
 \end{problem}
 
-Let \(\Phi\) be the set of infinite places of \(E\) and \(f := \lvert \Phi \rvert\).  For \(g \in \Gal(E/K)\) let \([g] \in \Phi\) be the place of the embedding \(\iota \circ g\).
+Let \(\Phi\) be the set of infinite places of \(E\) and \(f := \lvert \Phi \rvert\).  For \(g \in \Gal(E/K)\) let \(\langle g \rangle \in \Phi\) be the place of the embedding \(g \colon E \to \C\).
 
 \begin{problem}\label{pr:cm-type}
-Every infinite place of \(E\) is complex, and \(g \mapsto [g]\) is a bijection \(\Gal(E/K) \to \Phi\).  Hence \(f = \varphi(q_1)\).
+Every infinite place of \(E\) is complex, and \(g \mapsto \langle g \rangle\) is a bijection \(\Gal(E/K) \to \Phi\).  Hence \(f = \varphi(q_1)\).
 \end{problem}
 
-We make \(\Phi\) a group through \(g \mapsto [g]\), and identify it with \(U_{q_1}\) through \(e\): the place \(\sigma \in \Phi\) has \emph{label} \(v \in U_{q_1}\) if \(\sigma = [g]\) with \(e(g) = v\).  The place with label \(1\) is the identity.  For \(v \in \Z\) let \(u(v) \in \Phi\) be the place with label \(v \bmod q_1\) if \(\gcd(v, q_1) = 1\), and the identity place otherwise.  Let \(\pi \colon \Phi \to U_{q_0}\) be the label reduced modulo \(q_0\), and let
+We make \(\Phi\) a group through \(g \mapsto \langle g \rangle\), and identify it with \((\Z/q_1\Z)^\times\) through \(e\): the place \(\sigma \in \Phi\) has \emph{label} \(v \in (\Z/q_1\Z)^\times\) if \(\sigma = \langle g \rangle\) with \(e(g) = v\).  The place with label \(1\) is the identity.  For \(\nu \in \Z\) let \([\nu] \in \Phi\) be the place with label \(\nu \bmod q_1\) if \(\gcd(\nu, q_1) = 1\), and the identity place otherwise.  Let \(\mathrm{cl} \colon \Phi \to (\Z/q_0\Z)^\times\) be the label reduced modulo \(q_0\), and let
 \[
-  A := \pi^{-1}(1), \qquad h := \lvert A \rvert ,
+  \Phi_a := \mathrm{cl}^{-1}(1) ,
 \]
-the \emph{\(a\)-places}.  Fix a set \(B \subseteq \pi^{-1}(-1)\) of \emph{\(b\)-places}, and let \(j := \lvert B \rvert\).
+the \emph{\(a\)-places}.  Fix a set \(\Phi_b \subseteq \mathrm{cl}^{-1}(-1)\) of \emph{\(b\)-places}.  We write \(\#\) for the number of elements.
 
 \begin{problem}\label{pr:fibres}
-\(h = q_1/q_0\) and \(f = h\, \varphi(q_0)\).
+\(\#\Phi_a = q_1/q_0\) and \(f = \#\Phi_a\, \varphi(q_0)\).
 \end{problem}
 
-The place attached to an integer \(n \ge 1\) and an \(a\)-place \(\tau\) is \(u(-n)\tau\): for \(n\) prime to \(q_1\), its label is \(-n\) times the label of \(\tau\).
+The place attached to an integer \(n \ge 1\) and an \(a\)-place \(\tau\) is \([-n]\tau\): for \(n\) prime to \(q_1\), its label is \(-n\) times the label of \(\tau\).
 
 \begin{problem}\label{pr:outside}
-For \(\tau \in A\) and every integer \(n \ge 1\), \(\pi\bigl(u(-n)\tau\bigr) = -1\) if and only if \(n \equiv 1 \pmod{q_0}\).
+For \(\tau \in \Phi_a\) and every integer \(n \ge 1\), \(\mathrm{cl}\bigl([-n]\tau\bigr) = -1\) if and only if \(n \equiv 1 \pmod{q_0}\).
 \end{problem}
 
 \begin{problem}\label{pr:count}
-For every integer \(n \ge 1\), the number of \(\tau \in A\) with \(u(-n)\tau \in B\) is \(j\) if \(n \equiv 1 \pmod{q_0}\), and \(0\) otherwise.
+For every integer \(n \ge 1\), the number of \(\tau \in \Phi_a\) with \([-n]\tau \in \Phi_b\) is \(\#\Phi_b\) if \(n \equiv 1 \pmod{q_0}\), and \(0\) otherwise.
 \end{problem}
 
-When \(\gcd(n, q_1) > 1\), our convention gives \(u(-n)\tau = \tau\).  Under the hypotheses of the next problem such \(n\) have coefficient \(\lambda_1(n) = 0\) in the prime sums below, so the convention does not affect them.
+When \(\gcd(n, q_1) > 1\), our convention gives \([-n]\tau = \tau\).  Under the hypotheses of the next problem such \(n\) have coefficient \(\lambda_1(n) = 0\) in the prime sums below, so the convention does not affect them.
 
 \begin{problem}\label{pr:coef}
-(i) If \(16 \mid q_0\), \(q_0 \mid 2(d + 1)\) and \(q_0 \nmid d + 1\), then \(d \equiv 7 \pmod 8\) and \(\chi_d(p) = 1\) for every prime \(p \mid q_0\).
+(i) If \(16 \mid q_0\), \(q_0 \mid 2(d + 1)\) and \(q_0 \nmid d + 1\), then \(d \equiv 7 \pmod 8\) and \(\chi_K(p) = 1\) for every prime \(p \mid q_0\).
 (ii) In that case \(\lambda_1(n) = 0\) for every \(n \ge 1\) with \(\gcd(n, q_1) > 1\).
 \end{problem}
 
-The \emph{toy example} is \(q_0 = 4\), \(q_1 = 16\), \(d = 7\), so that \(f = 8\), \(A\) consists of the places with labels \(1, 5, 9, 13\), and \(B\) consists of the place with label \(15\), so \(h = 4\) and \(j = 1\).  It does not satisfy the hypotheses of Problem~\ref{pr:coef}(i), but \(\chi_7(2) = 1\), and the conclusion of Problem~\ref{pr:coef}(ii) holds.
+The \emph{toy example} is \(q_0 = 4\), \(q_1 = 16\), \(d = 7\), so that \(f = 8\), \(\Phi_a\) consists of the places with labels \(1, 5, 9, 13\), and \(\Phi_b\) consists of the place with label \(15\), so \(\#\Phi_a = 4\) and \(\#\Phi_b = 1\).  It does not satisfy the hypotheses of Problem~\ref{pr:coef}(i), but \(\chi_K(2) = (2/7) = 1\), and the conclusion of Problem~\ref{pr:coef}(ii) holds.
 
 \begin{problem}\label{pr:table}
-In the toy example, the primes \(p \le 61\) with \(\lambda_1(p) \ne 0\) are \(7\) and the primes inert in \(K\), and the label of \(u(-p)\) is as follows.
+In the toy example, the primes \(p \le 61\) with \(\lambda_1(p) \ne 0\) are \(7\) and the primes inert in \(K\), and the label of \([-p]\) is as follows.
 \[
   \begin{array}{c|cccccccc}
     \text{label} & 1 & 3 & 5 & 7 & 9 & 11 & 13 & 15 \\ \hline
@@ -109,22 +109,22 @@ The other \(n \le 61\) with \(\lambda_1(n) \ne 0\) are \(27\) and \(49\), with \
 
 Let \(x < x_1\) and \(b\) be positive integers with \(x_1 \mid b\), and let \(a := xb\).  The \emph{weight} of a place is
 \[
-  \kappa(\sigma) := \begin{cases} a/x = b, & \sigma \in B, \\ a/x_1, & \sigma \notin B, \end{cases}
+  \kappa(\sigma) := \begin{cases} a/x = b, & \sigma \in \Phi_b, \\ a/x_1, & \sigma \notin \Phi_b, \end{cases}
 \]
 an integer; the \(b\)-places carry the larger weight.  The \emph{prime sum} at a place \(\sigma\) is, for real \(y\),
 \[
-  S(y, \sigma) := \sum_{n = 1}^{a} \lambda_1(n) \Bigl( \frac yn - \kappa\bigl(u(-n)\sigma\bigr) \Bigr)_+ .
+  s_{\mathrm{fin}}(y, \sigma) := \sum_{n = 1}^{a} \lambda_1(n) \Bigl( \frac yn - \kappa\bigl([-n]\sigma\bigr) \Bigr)_+ .
 \]
 For real \(z > 0\) and \(n \ge 1\) let \(H_z(n) := (a/n - a/z)_+\).
 
 \begin{problem}\label{pr:ramp}
-\(H_z(n) = a(1/n - 1/z)\) for \(n < z\), and \(H_z(n) = 0\) for \(n \ge z\).  Hence for \(1 \le n \le a\) the \(n\)-th term of \(S(a, \sigma)\) is \(\lambda_1(n) H_x(n)\) if \(u(-n)\sigma \in B\), and \(\lambda_1(n) H_{x_1}(n)\) otherwise.
+\(H_z(n) = a(1/n - 1/z)\) for \(n < z\), and \(H_z(n) = 0\) for \(n \ge z\).  Hence for \(1 \le n \le a\) the \(n\)-th term of \(s_{\mathrm{fin}}(a, \sigma)\) is \(\lambda_1(n) H_x(n)\) if \([-n]\sigma \in \Phi_b\), and \(\lambda_1(n) H_{x_1}(n)\) otherwise.
 \end{problem}
 
 \begin{problem}\label{pr:thin}
 Let \(\sigma \in \Phi\).
-(i) For \(0 \le y \le a\) and \(x_1 \le n \le a\), the \(n\)-th term of \(S(y, \sigma)\) is \(0\).
-(ii) For \(x \le n < x_1\), the \(n\)-th term of \(S(a, \sigma)\) is \(0\) if \(u(-n)\sigma \in B\), and \(\lambda_1(n)\, a (1/n - 1/x_1)\) otherwise, which is positive unless \(\lambda_1(n) = 0\).
+(i) For \(0 \le y \le a\) and \(x_1 \le n \le a\), the \(n\)-th term of \(s_{\mathrm{fin}}(y, \sigma)\) is \(0\).
+(ii) For \(x \le n < x_1\), the \(n\)-th term of \(s_{\mathrm{fin}}(a, \sigma)\) is \(0\) if \([-n]\sigma \in \Phi_b\), and \(\lambda_1(n)\, a (1/n - 1/x_1)\) otherwise, which is positive unless \(\lambda_1(n) = 0\).
 \end{problem}
 
 The first step towards the total over the \(a\)-places is a ramp sum in a progression.
@@ -140,21 +140,21 @@ For \(d = 7\), \(q = 4\), \(A_0 = 60\), \(z = 20\), both sides equal \(18 \log 5
 \begin{problem}\label{pr:thick-avg}
 For every integer \(n \ge 1\),
 \[
-  \sum_{\tau \in A} \lambda_1(n) \Bigl( \frac an - \kappa\bigl(u(-n)\tau\bigr) \Bigr)_+
-  = h\, \lambda_1(n) H_{x_1}(n) + j\, \lambda_{q_0}(n) \bigl( H_x(n) - H_{x_1}(n) \bigr) .
+  \sum_{\tau \in \Phi_a} \lambda_1(n) \Bigl( \frac an - \kappa\bigl([-n]\tau\bigr) \Bigr)_+
+  = \#\Phi_a\, \lambda_1(n) H_{x_1}(n) + \#\Phi_b\, \lambda_{q_0}(n) \bigl( H_x(n) - H_{x_1}(n) \bigr) .
 \]
 \end{problem}
 
 \begin{problem}\label{pr:sum-A}
 \[
-  \sum_{\tau \in A} S(a, \tau)
-  = a \Bigl[ j \bigl( R_{q_0}(x) - R_{q_0}(x_1) \bigr) + h R_1(x_1) \Bigr]
-  + a \Bigl[ h (\log x_1 + c_1) + j\, \frac{\log (x/x_1)}{\varphi(q_0)} \Bigr] .
+  \sum_{\tau \in \Phi_a} s_{\mathrm{fin}}(a, \tau)
+  = a \Bigl[ \#\Phi_b \bigl( R_{q_0}(x) - R_{q_0}(x_1) \bigr) + \#\Phi_a R_1(x_1) \Bigr]
+  + a \Bigl[ \#\Phi_a (\log x_1 + c_1) + \#\Phi_b\, \frac{\log (x/x_1)}{\varphi(q_0)} \Bigr] .
 \]
 \end{problem}
 
 \begin{problem}\label{pr:toy-sum}
-In the toy example with \(x = 20\), \(x_1 = 60\), \(b = 960\), so that \(a = 19200\) and the weights are \(960\) and \(320\), the four prime sums \(S(a, \tau)\) at the places \(\tau\) with labels \(1, 5, 9, 13\) rounded to the nearest hundredth, are \(45108.01\), \(45591.18\), \(47772.92\), \(46814.23\).  Their total and the right side of Problem~\ref{pr:sum-A} both round to \(185286.35\).
+In the toy example with \(x = 20\), \(x_1 = 60\), \(b = 960\), so that \(a = 19200\) and the weights are \(960\) and \(320\), the four prime sums \(s_{\mathrm{fin}}(a, \tau)\) at the places \(\tau\) with labels \(1, 5, 9, 13\) rounded to the nearest hundredth, are \(45108.01\), \(45591.18\), \(47772.92\), \(46814.23\).  Their total and the right side of Problem~\ref{pr:sum-A} both round to \(185286.35\).
 \end{problem}
 
 The expected value uses the mean of the logarithms of the weights over all places.  We define the \emph{expected value}
@@ -163,90 +163,75 @@ The expected value uses the mean of the logarithms of the weights over all place
 \]
 
 \begin{problem}\label{pr:log-mean}
-\(\sum_{\sigma \in \Phi} \log \kappa(\sigma) = f \log (a/x_1) - j \log (x/x_1)\).  In the toy example both sides equal \(47.24518\ldots\).
+\(\sum_{\sigma \in \Phi} \log \kappa(\sigma) = f \log (a/x_1) - \#\Phi_b \log (x/x_1)\).  In the toy example both sides equal \(47.24518\ldots\).
 \end{problem}
 
 \begin{problem}\label{pr:main}
-\(h\, \smain = a \bigl[ h (\log x_1 + c_1) + j \log(x/x_1)/\varphi(q_0) \bigr]\).
+\(\#\Phi_a\, \smain = a \bigl[ \#\Phi_a (\log x_1 + c_1) + \#\Phi_b \log(x/x_1)/\varphi(q_0) \bigr]\).
 \end{problem}
 
-The \emph{total remainder} is \(\rem := \sum_{\tau \in A} \bigl( S(a, \tau) - \smain \bigr)\), so that the mean of \(S(a, \tau)\) over \(A\) is \(\smain + \rem/h\).  The total remainder satisfies
+The \emph{total remainder} is \(\rem := \sum_{\tau \in \Phi_a} \bigl( s_{\mathrm{fin}}(a, \tau) - \smain \bigr)\), so that the mean of \(s_{\mathrm{fin}}(a, \tau)\) over \(\Phi_a\) is \(\smain + \rem/\#\Phi_a\).  The total remainder satisfies
 \begin{equation}\label{eq:rem}
-  \rem = a \Bigl[ j \bigl( R_{q_0}(x) - R_{q_0}(x_1) \bigr) + h R_1(x_1) \Bigr]
+  \rem = a \Bigl[ \#\Phi_b \bigl( R_{q_0}(x) - R_{q_0}(x_1) \bigr) + \#\Phi_a R_1(x_1) \Bigr]
 \end{equation}
 in the setting of this chapter.  In the toy example, \(\rem + 76800\, c_1 = -118612.63\ldots\).
 
-In the rewritten Lean proof the \emph{parameters} \((q_0, d)\) are a positive multiple \(q_0\) of \(18480\) and a prime \(d\) with \(q_0 \mid 2(d + 1)\) and \(q_0 \nmid d + 1\) (\texttt{New.Parameters}).  An \emph{admissible datum} for them is a datum satisfying all the conditions of \texttt{New.Data} in \texttt{New/Reduction/Data/AdmissibleData.lean} \cite{GL}; Chapter~\ref{dt-chap} treats them.  We record the components used here.  The scales \(x\), \(x_1\), \(b\) are positive integers.  The number \(m\) of theta lifts in each chain satisfies \(\sqrt x \le m \le 2\sqrt x\), and \(m = 2^\nu\), \(s = 22\nu\) for some integer \(\nu \ge 1\).  With \(e := \lfloor \log_3 s \rfloor\), let \(q_1 := q_0\,3^{e+5}2^s\).  For these parameters and \(s\), the field \(E\), the fixed \(K\)-embedding into \(\C\), the chosen primitive root \(\zeta\) and the labels of the places are as in \S\ref{sec:places} (see \texttt{New.towerDeg}, \texttt{New.Parameters.E} and \texttt{New.Parameters.placeMulEquiv} in \texttt{New/Reduction/Data/FieldsAndPlaces.lean}).  We have \(q_1 x_1 \mid b\).  The datum supplies \(B \subseteq \pi^{-1}(-1)\) with \(q_1/q_0 \le j \log b\), and the weight \(\kappa\) above.
+In the rewritten Lean proof the \emph{parameters} \((q_0, d)\) are a positive multiple \(q_0\) of \(18480\) and a prime \(d\) with \(q_0 \mid 2(d + 1)\) and \(q_0 \nmid d + 1\) (Definition~\ref{dt-def:parameters} of Chapter~\ref{dt-chap}).  An \emph{admissible datum} for them is a datum satisfying all the conditions of Definition~\ref{dt-def:data} there.  We record the components used here.  The scales \(x\), \(x_1\), \(b\) are positive integers.  The number \(m\) of theta lifts in each chain is a power of \(2\) with \(\sqrt x \le m \le 2\sqrt x\), and the tower exponent is \(s = 22 \log_2 m\).  With \(e_s := \lfloor \log_3 s \rfloor\), let \(q_1 := q_0\,3^{e_s+5}2^s\); the field \(E\), its embedding into \(\C\), the primitive root \(\zeta\) and the labels of the places are as in \S\ref{sec:places}.  We have \(q_1 x_1 \mid b\).  The datum supplies \(\Phi_b \subseteq \mathrm{cl}^{-1}(-1)\) with \(q_1/q_0 \le \#\Phi_b \log b\), and the weight \(\kappa\) above.
 
 \begin{theorem}\label{thm:remainder}
-For all parameters \((q_0, d)\) and every admissible datum for them, \eqref{eq:rem} holds, where \(a = xb\), \(h = \lvert A \rvert\), \(j = \lvert B \rvert\), and \(R_q\) and \(c_1\) are those of Chapter~\ref{zr-chap} for the prime \(d\).
+For all parameters \((q_0, d)\) and every admissible datum for them, \eqref{eq:rem} holds, where \(a = xb\) and \(R_q\) and \(c_1\) are those of Chapter~\ref{zr-chap} for the prime \(d\).
 \end{theorem}
 
 For these data \(q_0\) and \(q_1\) have the same prime factors, \(d \nmid q_1\), and \(d \equiv 7 \pmod 8\).  The scale conditions give \(0 < \log x\) and \(10^6 \log x \le \log x_1\), so \(x < x_1\).
 
-\paragraph{In the Lean formalization.}
-Theorem~\ref{thm:remainder} is \texttt{New.Data.totalRemainder\_eq} in the file \texttt{New/Reduction/PrimeSums.lean} of the rewritten Lean proof \cite{GL}; the lemma \texttt{New.Data.sum\_aPlaces\_primeSum} there gives Problem~\ref{pr:sum-A} for an admissible datum.
-
 \section{The remainder at the first scale}\label{sec:two-scales}
 
-Chapter~\ref{zr-chap} needs an upper bound for \(R_{q_0}(x)\).  When \(B\) is nonempty, equation~\eqref{eq:rem} isolates \(R_{q_0}(x)\) at the price of two terms at \(x_1\).
+Chapter~\ref{zr-chap} needs an upper bound for \(R_{q_0}(x)\).  When \(\Phi_b\) is nonempty, equation~\eqref{eq:rem} isolates \(R_{q_0}(x)\) at the price of two terms at \(x_1\).
 
 \begin{problem}\label{pr:solve}
-If \(j > 0\), then \(R_{q_0}(x) = \dfrac{\rem}{aj} + R_{q_0}(x_1) - \dfrac hj R_1(x_1)\).
+If \(\#\Phi_b > 0\), then \(R_{q_0}(x) = \dfrac{\rem}{a\,\#\Phi_b} + R_{q_0}(x_1) - \dfrac{\#\Phi_a}{\#\Phi_b} R_1(x_1)\).
 \end{problem}
 
-For \(j>0\), the coefficient of \(R_1(x_1)\) has magnitude \(h/j\), the reciprocal of the proportion of the \(-1\) fibre occupied by \(B\); this is why \(B\) must be dense.
+For \(\#\Phi_b>0\), the coefficient of \(R_1(x_1)\) has magnitude \(\#\Phi_a/\#\Phi_b\), the reciprocal of the proportion of the \(-1\) fibre occupied by \(\Phi_b\); this is why \(\Phi_b\) must be dense.
 
 \begin{problem}\label{pr:dense}
-If \(b > 1\) and \(h \le j \log b\), then \(j > 0\) and
+If \(b > 1\) and \(\#\Phi_a \le \#\Phi_b \log b\), then \(\#\Phi_b > 0\) and
 \[
-  R_{q_0}(x) \le \frac{\rem}{aj} + \lvert R_{q_0}(x_1) \rvert + \log b \, \lvert R_1(x_1) \rvert .
+  R_{q_0}(x) \le \frac{\rem}{a\,\#\Phi_b} + \lvert R_{q_0}(x_1) \rvert + \log b \, \lvert R_1(x_1) \rvert .
 \]
-In the toy example \(h/j = 4 \le \log 960 = 6.8669\ldots\).
+In the toy example \(\#\Phi_a/\#\Phi_b = 4 \le \log 960 = 6.8669\ldots\).
 \end{problem}
-
-The proof bounds \(\rem\) from above by the \emph{main inequality}
-\[
-  m \cdot \rem \le f a (\log b)^5 ,
-\]
-which holds for every admissible datum; it is the subject of Chapter~\ref{tc-chap}.
 
 \begin{problem}\label{pr:with-main}
-Suppose \(b > 1\), \(h \le j \log b\), and \(m\) is a positive integer.  If \(m \cdot \rem \le f a (\log b)^5\), then
+Suppose \(b > 1\), \(\#\Phi_a \le \#\Phi_b \log b\), and \(m\) is a positive integer.  If \(m \cdot \rem \le f a (\log b)^5\), then
 \[
   R_{q_0}(x) \le \frac{\varphi(q_0) (\log b)^6}{m} + \lvert R_{q_0}(x_1) \rvert + \log b \, \lvert R_1(x_1) \rvert .
 \]
 \end{problem}
 
-The bound of Problem~\ref{pr:with-main} holds for every admissible datum.
+The hypothesis \(m \cdot \rem \le f a (\log b)^5\) is the \emph{main inequality}.  Chapter~\ref{tc-chap} proves it for every admissible datum (Theorem~\ref{tc-thm:main}) and carries out the deduction (Theorem~\ref{tc-thm:one-sided}); Chapter~\ref{cs-chap} constructs a set \(\Phi_b\) dense enough for Problem~\ref{pr:dense}.
 
-\begin{theorem}\label{thm:two-scales}
-For all parameters \((q_0, d)\) and every admissible datum for them,
-\[
-  R_{q_0}(x) \le \frac{\varphi(q_0) (\log b)^6}{m} + \lvert R_{q_0}(x_1) \rvert + \log b \, \lvert R_1(x_1) \rvert .
-\]
-\end{theorem}
-
-In the rewritten Lean proof, Theorem~\ref{thm:two-scales} is \texttt{New.Data.primeRemainder\_le} in \texttt{New/Reduction/OneSidedBound.lean}, and the main inequality is \texttt{New.star\_inequality}.  Since \(m \ge \sqrt{x}\), the first term is at most \(\varphi(q_0)(\log b)^6 x^{-1/2}\).  For fixed \(q_0, d\), both \(R_{q_0}(x_1)\) and \(R_1(x_1)\) tend to zero by Problem~\ref{zr-pr:R-limit}.  To control \((\log b)\lvert R_1(x_1)\rvert\), the rewritten proof also uses the sizes of the chosen scales.  For fixed parameters and \(0 < \varepsilon < 1/100\), every sufficiently large integer \(x\) admits data with \(\log b \le 2x^\varepsilon\) and \(\log x_1 \ge x^{\varepsilon/12}\) (\texttt{New.eventually\_exists\_data\_scales}), and for such scales both remainders at \(x_1\) have absolute value at most \(x^{-2}\) once \(x\) is large (\texttt{New.eventually\_abs\_primeRemainder\_exp\_le}, in \texttt{New/Reduction/OneSidedBound.lean}).  The factor \(\log b\) in front of \(R_1(x_1)\) is the price of the density of \(B\).  Chapter~\ref{cs-chap} constructs such a set \(B\).
+\paragraph{In the Lean formalization.}
+In the rewritten Lean proof \cite{GL}, the parameters and the admissible data are \texttt{New.Parameters} and \texttt{New.Data}; Theorem~\ref{thm:remainder} is \texttt{New.Data.totalRemainder\_eq}, in \texttt{New/Reduction/PrimeSums.lean}; and the conclusion of Problem~\ref{pr:with-main} for every admissible datum, without further hypotheses, is \texttt{New.Data.primeRemainder\_le}, in \texttt{New/Reduction/OneSidedBound.lean}.
 
 \section*{Hints}
 
 \subsection*{\S\ref{sec:places}}
 \begin{description}
 \item[\ref{pr:galois}] \(d\) ramifies in \(K\) and not in \(\Q(\zeta)\), so \(K \cap \Q(\zeta) = \Q\) \cite[Ch.~2]{Wa}.
-\item[\ref{pr:cm-type}] Complex conjugation, transported by \(\iota\), restricts to the nontrivial automorphism of \(K\).
-\item[\ref{pr:fibres}] \(\pi\) is a surjective homomorphism, and \(\varphi(q_1)/\varphi(q_0) = q_1/q_0\) when \(q_0\) and \(q_1\) have the same prime factors.
-\item[\ref{pr:outside}] \(\pi\) is a homomorphism; if \(\gcd(n, q_1) > 1\), then \(n \not\equiv 1 \pmod{q_0}\).
-\item[\ref{pr:count}] Multiplication by \(u(-n)\) is a bijection of \(\Phi\); Problem~\ref{pr:outside}.
+\item[\ref{pr:cm-type}] Complex conjugation restricts to the nontrivial automorphism of \(K\).
+\item[\ref{pr:fibres}] \(\mathrm{cl}\) is a surjective homomorphism, and \(\varphi(q_1)/\varphi(q_0) = q_1/q_0\) when \(q_0\) and \(q_1\) have the same prime factors.
+\item[\ref{pr:outside}] \(\mathrm{cl}\) is a homomorphism; if \(\gcd(n, q_1) > 1\), then \(n \not\equiv 1 \pmod{q_0}\).
+\item[\ref{pr:count}] Multiplication by \([-n]\) is a bijection of \(\Phi\); Problem~\ref{pr:outside}.
 \item[\ref{pr:coef}] (i) \(d + 1 \equiv q_0/2 \pmod{q_0}\); for each odd prime \(p \mid q_0\), \(d \equiv -1 \pmod p\), and reciprocity.  (ii) Section~\ref{zi-sec:inert}.
 \item[\ref{pr:table}] \(p\) is inert in \(\Q(\sqrt{-7})\) exactly when \(p \equiv 3, 5, 6 \pmod 7\).
 \end{description}
 
 \subsection*{\S\ref{sec:thick}}
 \begin{description}
-\item[\ref{pr:thin}] (i) Compare \(y/n\) and \(\kappa(u(-n)\sigma)\) with \(a/x_1\).  (ii) Use the two possible weights at \(u(-n)\sigma\).
+\item[\ref{pr:thin}] (i) Compare \(y/n\) and \(\kappa([-n]\sigma)\) with \(a/x_1\).  (ii) Use the two possible weights at \([-n]\sigma\).
 \item[\ref{pr:ramp-sum}] Problem~\ref{pr:ramp} with \(A_0\) in place of \(a\), and the definition of \(R_q\).
-\item[\ref{pr:thick-avg}] Write \((a/n - \kappa(\sigma))_+\) as \(H_{x_1}(n)\) plus a correction supported on \(B\); Problem~\ref{pr:count}, and \(\lambda_{q_0}(n) = \lambda_1(n)\) for \(n \equiv 1 \pmod{q_0}\).
+\item[\ref{pr:thick-avg}] Write \((a/n - \kappa(\sigma))_+\) as \(H_{x_1}(n)\) plus a correction supported on \(\Phi_b\); Problem~\ref{pr:count}, and \(\lambda_{q_0}(n) = \lambda_1(n)\) for \(n \equiv 1 \pmod{q_0}\).
 \item[\ref{pr:sum-A}] Exchange the sums over \(\tau\) and \(n\); Problem~\ref{pr:ramp-sum} three times, with \((q, z) = (1, x_1), (q_0, x), (q_0, x_1)\).
 \item[\ref{pr:toy-sum}] Only the \(n < 60\) with \(\lambda_1(n) \ne 0\) contribute (Problems~\ref{pr:table} and~\ref{pr:thin}).
 \item[\ref{pr:main}] Problems~\ref{pr:fibres} and~\ref{pr:log-mean}.
@@ -255,14 +240,13 @@ In the rewritten Lean proof, Theorem~\ref{thm:two-scales} is \texttt{New.Data.pr
 \subsection*{\S\ref{sec:two-scales}}
 \begin{description}
 \item[\ref{pr:solve}] Equation~\eqref{eq:rem}.
-\item[\ref{pr:dense}] \(h > 0\).
-\item[\ref{pr:with-main}] Problem~\ref{pr:fibres}: \(f/j = \varphi(q_0)\, h/j\).
+\item[\ref{pr:dense}] \(\#\Phi_a > 0\).
+\item[\ref{pr:with-main}] Problem~\ref{pr:fibres}: \(f/\#\Phi_b = \varphi(q_0)\, \#\Phi_a/\#\Phi_b\).
 \end{description}
 
 \subsection*{Theorems}
 \begin{description}
 \item[\ref{thm:remainder}] Compare Problems~\ref{pr:sum-A} and~\ref{pr:main}.
-\item[\ref{thm:two-scales}] Apply Problem~\ref{pr:with-main} to an admissible datum, using the main inequality.
 \end{description}
 
 \begin{thebibliography}{SeA}
