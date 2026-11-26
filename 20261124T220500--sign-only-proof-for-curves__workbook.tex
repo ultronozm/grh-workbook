@@ -1,0 +1,315 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[hidelinks]{hyperref}
+
+% Chapter number; \ref{chap} gives it.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261124T220500}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\A}{\mathbb{A}}
+\newcommand{\Fb}{\overline{\F}_q}
+\newcommand{\Ql}{\overline{\Q}_\ell}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cG}{\mathcal{G}}
+\newcommand{\Fr}{\mathrm{Fr}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\e}{e}
+
+\setlength{\emergencystretch}{2em}
+
+\title{The sign-only proof of the Riemann hypothesis for curves}
+\author{}
+\date{November 24, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+\paragraph{Prerequisites.}
+Finite fields and their additive characters.  The formalism of \(\ell\)-adic cohomology with compact supports for schemes of finite type over a finite field, as summarized in \cite[Rapport]{SGA45}: the Grothendieck--Lefschetz trace formula \cite[Rapport, Th\'eor\`eme~3.2]{SGA45}, the K\"unneth formula, Poincar\'e duality, Tate twists, Artin's vanishing theorem, and the long exact sequence of an open subscheme and its closed complement; see also \cite{Mil}.  Noether normalization.  The Artin--Schreier sheaf, whose trace function is the additive character \(\e\) of \S\ref{sec:identity} \cite[Sommes trig.]{SGA45}.  One theorem of weak Lefschetz type, stated in \S\ref{sec:curves}.  No earlier chapter is used.  The sequel, \emph{Deligne's bound by the sign-only method}, extends the argument to all dimensions.
+
+\section{The identity \texorpdfstring{\(qN = M^k + R\)}{qN = M\^{}k + R}}\label{sec:identity}
+
+How large is a weighted count of the zeros of a quadratic form, and which part of it has square-root size?  Alpöge's note sketches a ``\(qN = M^k + R\) sign-only proof of Weil and Deligne'' using the form \(x_1x_2 + \dots + x_{k-1}x_k\) \cite[p.~2 and footnote~3]{Alp}, without defining \(t\), \(M\), \(N\) or \(R\).  We follow the reading of \cite[\S\S 2.8--2.9]{Dup} and the proof written out in \cite{Ald}.  That text reports that its proof was produced by an AI model from Alpöge's sketch and checked by two others, and that no human has checked it.  D.~Zhang has since written out the same proof for lisse sheaves on the affine line \cite{Zh}.  His note is the primary source for \S\ref{sec:curves} wherever it applies, and the text says where \cite{Ald} goes further.
+
+Let \(q = p^f\), and let \(\e(y) := \exp\bigl(2\pi i \Tr_{\F_q/\F_p}(y)/p\bigr)\) for \(y \in \F_q\).  For \(h \in \F_q\) let \(K_h\) be the \(q \times q\) matrix with entries \(K_h(x,y) := \e(hxy)\).
+
+\begin{problem}\label{pr:orth}
+Every additive character of \(\F_q\) is \(y \mapsto \e(ay)\) for a unique \(a \in \F_q\), and \(\sum_{h \in \F_q} \e(hy)\) equals \(q\) if \(y = 0\) and \(0\) otherwise.
+\end{problem}
+
+\begin{problem}\label{pr:unitary}
+If \(h \ne 0\), then \(K_h K_h^* = q\).  So \(K_h\) has operator norm \(\sqrt q\).
+\end{problem}
+
+\begin{problem}\label{pr:as-hat}
+Let \(t(x) := \e(x)\) for \(x \ne 0\) and \(t(0) := 0\).  Then \(\sum_x t(x) = -1\) and \(\sum_x t(x)\, \e(x\xi) = q\,\delta_{\xi,-1} - 1\).
+\end{problem}
+
+Let \(k \ge 2\), let \(Q(x) := x_1x_2 + x_2x_3 + \dots + x_{k-1}x_k\) be the quadratic form of the path with vertices \(1, \dots, k\), and let \(Z \subset \A^k\) be the quadric \(Q = 0\).  For \(t \colon \F_q \to \C\) let
+\[
+  N := \sum_{x \in Z(\F_q)} t(x_1) \cdots t(x_k), \qquad
+  M := \sum_{x \in \F_q} t(x),
+\]
+\[
+  R := \sum_{h \ne 0} \sum_{x \in \F_q^k} t(x_1) \cdots t(x_k)\, \e\bigl(hQ(x)\bigr).
+\]
+
+\begin{problem}\label{pr:identity}
+\(qN = M^k + R\).
+\end{problem}
+
+The identity holds for every \(t\).  Its content is that \(R\) is controlled by Fourier analysis, and \(N\) and \(M^k\) by cohomology.  Let \(D_t\) be the diagonal matrix with entries \(t(x)\), and regard \(t\) as a column vector.
+
+\begin{problem}\label{pr:matrix}
+For every \(h\),
+\[
+  \sum_{x \in \F_q^k} t(x_1) \cdots t(x_k)\, \e(hQ(x)) = t^{\mathsf T} K_h D_t K_h D_t \cdots D_t K_h\, t,
+\]
+with \(k-1\) factors \(K_h\) and \(k-2\) factors \(D_t\).
+\end{problem}
+
+\begin{problem}\label{pr:parseval-k}
+If \(\lvert t \rvert \le T\) and \(h \ne 0\), the sum in Problem~\ref{pr:matrix} has absolute value at most \(T^k q^{(k+1)/2}\).  Hence \(\lvert R \rvert \le T^k q^{(k+3)/2}\).
+\end{problem}
+
+The trivial bound is \(\lvert R \rvert \le T^kq^{k+1}\).  If \(M\) has the hoped-for size \(\sqrt q\), then \(M^k\) has size \(q^{k/2}\), and Problem~\ref{pr:parseval-k} exceeds it by \(q^{3/2}\) for every \(k\).  After a \(k\)-th root the loss \(q^{3/(2k)}\) tends to \(1\).  In \S\ref{sec:curves} the weights vary with the variable and the field.
+
+\begin{problem}\label{pr:vector}
+Let \(E\) be a finite field with \(r\) elements, \(\psi\) a nontrivial additive character of \(E\), and \(t_1, \dots, t_k \colon E \to \C\) functions bounded by \(T\).  For \(h \in E^\times\) and \(c \in E\),
+\(\bigl\lvert \sum_{x \in E^k} t_1(x_1) \cdots t_k(x_k)\, \psi\bigl(hQ(x) + hc\bigr) \bigr\rvert \le T^k r^{(k+1)/2}\).
+\end{problem}
+
+This is \cite[Lemma~2.6]{Zh} and \cite[Lemma~3]{Ald}.  For \(k = 2\) it is a finite-field form of Vinogradov's bilinear bound \cite[Remark~2.7]{Zh}.  The path is what matters.  For odd \(q\) and \(t(x) := \e(-x^2/2)\), completing the square gives \(\lvert \sum_{x,y} t(x)t(y)\,\e(xy) \rvert = q^{3/2}\).  So with \(k\) even and the disjoint pairs \(x_1x_2 + x_3x_4 + \dots + x_{k-1}x_k\) in place of \(Q\), the sum can reach \(q^{3k/4}\), and the loss after a \(k\)-th root does not tend to \(1\) \cite[Remark~2.7]{Zh}.
+
+\begin{problem}\label{pr:as-small}
+Let \(t\) be as in Problem~\ref{pr:as-hat}.  Then \(N = 1 - q\) for \(k = 3\), and \(N = q - 2\) for \(k = 4\).
+\end{problem}
+
+\section{The sign under a vanishing hypothesis}\label{sec:cohomology}
+
+Problem~\ref{pr:parseval-k} bounds \(R\), but \(qN\) and \(M^k\) may each be much larger than \(R\).  Why can they not cancel?  The note's answer is that their Frobenius eigenvalues sit in adjacent cohomological degrees, ``one off'' \cite[footnote~3]{Alp}.
+
+Let \(U \subset \A^1_{\F_q}\) be a nonempty open subset with \(0 \notin U\), and \(\cF\) a lisse \(\Ql\)-sheaf on \(U\) of rank \(\rho\), pointwise pure of weight \(0\) for a fixed embedding \(\iota \colon \Ql \to \C\).  Let \(t(x)\) be the trace of Frobenius on the stalk at \(x \in U(\F_q)\), and \(t(x) := 0\) for \(x \notin U\); then \(\lvert t \rvert \le \rho\).  Over \(\F_{q^n}\) write \(M_n\), \(N_n\), \(R_n\) for the sums of \S\ref{sec:identity}.  Cohomology is taken over \(\Fb\), and \(\Fr\) is the geometric Frobenius.  Let \(\cF_k := \cF^{\boxtimes k}\) on \(U^k\) and \(Z_k := Z \cap U^k\).  By the trace formula \(M_n = \sum_i (-1)^i \Tr(\Fr^n \mid H^i_c(U, \cF))\) and \(N_n = \sum_i (-1)^i \Tr(\Fr^n \mid H^i_c(Z_k, \cF_k))\).  Following \cite[\S 2.10]{Dup}, assume:
+\begin{itemize}
+\item[(H1)] \(H^i_c(U, \cF) = 0\) for \(i \ne 1\);
+\item[(H2)] for infinitely many \(k\), \(H^i_c(Z_k, \cF_k) = 0\) for \(i \ne k - 1\).
+\end{itemize}
+Let \(\alpha_1, \dots, \alpha_d\) be the eigenvalues of \(\Fr\) on \(H^1_c(U, \cF)\), and \(\alpha_I := \alpha_{i_1} \cdots \alpha_{i_k}\) for \(I = (i_1, \dots, i_k)\).  Under (H1), \(M_n = -\sum_j \alpha_j^n\).
+
+\begin{problem}\label{pr:H1}
+If \(\cF\) has rank one and is geometrically nonconstant, then (H1) holds.
+\end{problem}
+
+\begin{problem}\label{pr:kunneth}
+\(H^i_c(U^k, \cF_k) = 0\) for \(i < k\), and \(H^k_c(U^k, \cF_k) = H^1_c(U, \cF)^{\otimes k}\).  Under (H1) it vanishes also for \(i > k\), and \(M_n^k = (-1)^k \sum_I \alpha_I^n\).
+\end{problem}
+
+\begin{problem}\label{pr:lower-half}
+\(Z_k\) is smooth, of pure dimension \(k-1\) or empty.  Hence \(H^i_c(Z_k, \cF_k) = 0\) for \(i < k - 1\).
+\end{problem}
+
+Let \(\beta_1, \dots, \beta_e\) be the eigenvalues of \(\Fr\) on \(H^{k-1}_c(Z_k, \cF_k)\).
+
+\begin{problem}\label{pr:sign}
+Under (H1), and (H2) for the given \(k\),
+\(R_n = (-1)^{k-1}\bigl(\sum_j (q\beta_j)^n + \sum_I \alpha_I^n\bigr)\) for all \(n \ge 1\).
+\end{problem}
+
+Every eigenvalue enters \(R_n\) with the same sign: \(M^k\) comes from degree \(k\), and \(qN\) from degree \(k - 1\).
+
+\begin{problem}\label{pr:power}
+Let \(\gamma_1, \dots, \gamma_s \in \C\) be distinct and nonzero, and \(m_1, \dots, m_s \in \C\) nonzero.  If \(\lvert \sum_i m_i \gamma_i^n \rvert \le A\, C^n\) for all \(n \ge 1\), then \(\lvert \gamma_i \rvert \le C\) for all \(i\).
+\end{problem}
+
+In Problem~\ref{pr:sign} the coefficients are positive integers after equal eigenvalues are collected, so no \(\alpha_I\) is cancelled by a \(q\beta_j\).  Problems~\ref{pr:parseval-k}, \ref{pr:sign} and~\ref{pr:power} with \(I = (j, \dots, j)\) give \(\lvert \alpha_j \rvert^k \le q^{(k+3)/2}\), and letting \(k \to \infty\) proves:
+
+\begin{theorem}[{\cite[Theorem~2.10.2]{Dup}}]\label{th:conditional}
+Under (H1) and (H2), every eigenvalue \(\alpha\) of \(\Fr\) on \(H^1_c(U, \cF)\) satisfies \(\lvert \alpha \rvert \le \sqrt q\), and \(\lvert \sum_{x \in \F_q} t(x) \rvert \le d \sqrt q\).
+\end{theorem}
+
+Hypothesis (H1) is harmless: as in Problem~\ref{pr:H1}, it holds whenever \(\cF\) has no nonzero geometrically constant quotient.  Hypothesis (H2) is not, and \cite{Dup} does not prove it.
+
+\begin{problem}\label{pr:fail}
+Let \(U = \A^1 \smallsetminus \{0\}\) and \(\cF\) the Artin--Schreier sheaf, with trace function \(t\) as in Problem~\ref{pr:as-hat}.  Then \(\cF\) is geometrically nonconstant, (H1) holds with \(d = 1\) and \(\alpha_1 = 1\), and the vanishing in (H2) fails for \(k = 3\) and for \(k = 4\).
+\end{problem}
+
+Replacing \(Q\) by \(\sum_i a_ix_ix_{i+1}\) with \(a_i \ne 0\) dilates the weight in each variable, by different factors.  For a given sheaf this can matter: in Problem~\ref{pr:fail} with \(k = 3\), the cohomology of \(a_1x_1x_2 + a_2x_2x_3 = 0\) in \(U^3\) is concentrated in degree \(2\) when \(a_1 \ne a_2\).  But (H2) asks for infinitely many \(k\), and the proof below does not rest on a choice of coefficients.  What is wanted is a hypersurface in \(U^k\) whose cohomology above the middle degree is forced to match that of \(U^k\).  This is a weak Lefschetz property, and it holds for a generic hyperplane section, which has linear terms as well as quadratic ones.
+
+\section{Weak Lefschetz in place of (H2)}\label{sec:curves}
+
+The argument of \cite{Ald} and \cite{Zh} keeps the identity and the estimate, and replaces (H2) by a weak Lefschetz theorem.  The higher cohomology of the hypersurface cancels against that of \(U^k\), and what survives is the trace on an actual vector space.
+
+\paragraph{Duality and the Gysin map.}
+Let \(X\) be smooth of pure dimension \(D\) over a finite field \(\F_r\), and \(\cG\) lisse on \(X\).  Poincar\'e duality pairs \(H^i_c(X, \cG)\) perfectly with \(H^{2D-i}(X, \cG^\vee)(D)\), compatibly with Frobenius, and the twist \((-1)\) multiplies Frobenius eigenvalues by \(r\).  If \(X\) is affine, Artin's theorem and duality give \(H^i_c(X, \cG) = 0\) for \(i < D\).  Let \(Y \subset X\) be smooth and closed of pure dimension \(D - 1\), or empty.  The transpose of restriction \(H^a(X, \cG^\vee) \to H^a(Y, \cG^\vee)\) is the Gysin map \(H^j_c(Y, \cG)(-1) \to H^{j+2}_c(X, \cG)\), \(j = 2D - 2 - a\).  We say that \(Y\) has property (WL) for \(\cG\) if this restriction is bijective for \(a < D - 1\) and injective for \(a = D - 1\).
+
+\begin{problem}\label{pr:gysin}
+If \(Y\) has property (WL) for \(\cG\), the Gysin map \(H^j_c(Y, \cG)(-1) \to H^{j+2}_c(X, \cG)\) is bijective for \(j > D - 1\) and surjective for \(j = D - 1\).
+\end{problem}
+
+Now let \(U\) be a smooth affine curve over \(\F_r\), \(\cF\) lisse on \(U\), \(X := U^k\), \(D = k\), and \(\cF_k := \cF^{\boxtimes k}\).  Let \(Y \subset X\) be as above, with property (WL) for \(\cF_k\).  Let \(M_n\) and \(N_n\) be the sums of the traces of Frobenius on the stalks of \(\cF\) over \(U(\F_{r^n})\) and of \(\cF_k\) over \(Y(\F_{r^n})\), let \(R_n := r^nN_n - M_n^k\), and let \(K\) be the kernel of the Gysin map \(H^{k-1}_c(Y, \cF_k)(-1) \to H^{k+1}_c(X, \cF_k)\).
+
+\begin{problem}\label{pr:prop4}
+For all \(n \ge 1\),
+\(
+  (-1)^{k-1} R_n = \Tr\bigl(\Fr^n \mid H^1_c(U, \cF)^{\otimes k}\bigr) + \Tr\bigl(\Fr^n \mid K\bigr).
+\)
+\end{problem}
+
+This is \cite[Proposition~4]{Ald}.  In \cite[Lemma~2.2 and Definition~2.3]{Zh} the right side is the trace on the single group \(H^k_c(X, Rj_*j^*\cF_k)\), where \(j\) is the inclusion of \(X \smallsetminus Y\).  That group is an extension of \(K\) by \(H^k_c(X, \cF_k)\), and property (WL) says that it is the only nonzero one.  Up to one global sign, \(R_n\) is the trace of Frobenius on an actual vector space, so Problem~\ref{pr:power} applies with positive integer coefficients.  Nothing is assumed about the higher cohomology of \(U\) or of \(Y\).
+
+\begin{problem}\label{pr:conic}
+Let \(U = \A^1\), \(\cF = \Ql\), \(k = 2\), and \(Y\) the conic \(xy + ax + by + c = 0\) with \(ab \ne c\).  Then \(N_n = r^n - 1\) and \(-R_n = r^n\); here \(H^1_c(\A^1, \Ql) = 0\), and \(K\) has dimension one and eigenvalue \(r\).
+\end{problem}
+
+The following theorem supplies hypersurfaces with property (WL).
+
+\begin{theorem}[{Deligne; \cite[Appendix, Corollary~A.5]{Kat93}}]\label{th:wl}
+Let \(V\) be smooth of pure dimension \(D\) over \(\Fb\), let \(f \colon V \to \mathbb{P}^m\) be quasi-finite, and let \(\cG\) be lisse on \(V\).  For \(H\) in a dense open subset of the space of hyperplanes of \(\mathbb{P}^m\), restriction \(H^a(V, \cG) \to H^a(f^{-1}H, \cG)\) is bijective for \(a < D - 1\) and injective for \(a = D - 1\).
+\end{theorem}
+
+Katz states this for a perverse sheaf \(\mathcal{K}\), in degrees \(a < -1\) and \(a = -1\).  The case above is \(\mathcal{K} = \cG[D]\), which is perverse because \(V\) is smooth of pure dimension \(D\) \cite[proof of Corollary~3.4.1]{Kat93}.  The proof uses generic base change, duality and Artin's theorem, and no weights.
+
+\begin{problem}\label{pr:wl-affine}
+Let \(V\) be smooth and affine of pure dimension \(D\) over \(\F_q\), let \(\Gamma = (y_1, \dots, y_m) \colon V \to \A^m\) be a closed immersion, and let \(\cG\) be lisse on \(V\).  For \((\lambda, \mu)\) in a dense open subset of the affine space over \(\Fb\) of parameters with \(\lambda_m = 1\), let \(Y := \{\sum_i \lambda_i y_i + \mu = 0\}\).
+(a) Restriction \(H^a(V, \cG) \to H^a(Y, \cG)\) is bijective for \(a < D - 1\) and injective for \(a = D - 1\).
+(b) \(Y\) is smooth, of pure dimension \(D - 1\) or empty.
+\end{problem}
+
+This is the form used below.  It is \cite[Lemma~8]{Ald}, and for \(V = \A^n\) it is \cite[Theorem~2.4 and Construction~2.5]{Zh}.
+
+Let \(U\) be a smooth affine curve over \(\F_q\), and \(\cF\) lisse on \(U\) with \(\lvert \iota \Tr(\Fr_u \mid \cF_{\bar u}) \rvert \le C\) for all \(n\) and \(u \in U(\F_{q^n})\).  Choose a finite morphism \(\pi \colon U \to \A^1\) of degree \(B\), and generators \(z_1, \dots, z_s\) of the \(\F_q\)-algebra \(\mathcal{O}(U)\).  For \(a = (a_{ij}) \in \A^{ks}\) and \(c \in \A^1\) let \(Y_{a,c} \subset U^k\) be the zero set of
+\[
+  P_{a,c}(u_1, \dots, u_k) := \sum_{i=1}^{k-1} \pi(u_i)\,\pi(u_{i+1}) + \sum_{i=1}^{k} \sum_{j=1}^{s} a_{ij}\, z_j(u_i) + c .
+\]
+
+\begin{problem}\label{pr:Gamma}
+The map \(u \mapsto \bigl(z(u_1), \dots, z(u_k), \sum_i \pi(u_i)\pi(u_{i+1})\bigr)\) is a closed immersion \(U^k \to \A^{ks+1}\), and the \(Y_{a,c}\) are its hyperplane sections with last coefficient \(1\).
+\end{problem}
+
+By Problem~\ref{pr:wl-affine} with \(\cG = \cF_k^\vee\), there are \(e \ge 1\) and \((a, c)\) with coordinates in \(\F_r\), \(r := q^e\), for which \(Y := Y_{a,c}\) has property (WL) for \(\cF_k\).  Over the field \(E\) with \(r^n\) elements, let \(\psi\) be a nontrivial additive character and \(\tau(u)\) the trace of Frobenius at \(u \in U(E)\), and for \(h, x \in E\) let
+\[
+  t_{i,h}(x) := \sum_{u \in U(E),\ \pi(u) = x} \tau(u)\, \psi\Bigl(h \sum_j a_{ij} z_j(u)\Bigr).
+\]
+
+\begin{problem}\label{pr:char-sum}
+\(r^n N_n = \sum_{h \in E} \psi(hc) \sum_{x \in E^k} t_{1,h}(x_1) \cdots t_{k,h}(x_k)\, \psi\bigl(hQ(x)\bigr)\), and the term \(h = 0\) is \(M_n^k\).
+\end{problem}
+
+\begin{problem}\label{pr:R-curve}
+\(\lvert t_{i,h} \rvert \le BC\), and \(\lvert R_n \rvert \le (BC)^k\, r^{n(k+3)/2}\).
+\end{problem}
+
+So the weights of \S\ref{sec:identity} reappear, twisted by additive characters that depend on \(h\).  It remains to let \(k\) and the field vary.
+
+\begin{problem}\label{pr:lemma2}
+Let \(L\) be a finite-dimensional \(\Ql\)-vector space with an automorphism \(\Phi\), and \(a\) real.  Suppose that for infinitely many \(k\) there are \(e_k \ge 1\), a finite-dimensional space \(K_k\) with an automorphism \(\Phi_k\), a sign \(\varepsilon_k\), and constants \(C_k > 0\), \(c_k \ge 0\) with \(c_k/k \to 0\), such that for all \(n \ge 1\)
+\[
+  \varepsilon_k R_{k,n} = \iota\Tr\bigl(\Phi^{e_kn} \mid L^{\otimes k}\bigr) + \iota\Tr\bigl(\Phi_k^n \mid K_k\bigr), \qquad \lvert R_{k,n} \rvert \le C_k\, q^{e_kn(ka + c_k)} .
+\]
+Then every eigenvalue \(\alpha\) of \(\Phi\) satisfies \(\lvert \iota\alpha \rvert \le q^a\).
+\end{problem}
+
+This is \cite[Lemma~2]{Ald}.  Problems~\ref{pr:prop4}, \ref{pr:Gamma}, \ref{pr:char-sum}, \ref{pr:R-curve} and~\ref{pr:lemma2}, with \(a = 1/2\) and \(c_k = 3/2\), together with Problem~\ref{pr:wl-affine}, prove:
+
+\begin{theorem}[{\cite[Theorem~9]{Ald}, \(d = 1\); for \(U\) open in \(\A^1\), \cite[Theorem~1.1 and Remark~1.2]{Zh}}]\label{th:curve-lowest}
+Let \(U\) be a smooth affine curve over \(\F_q\), and \(\cF\) a lisse sheaf on \(U\) with bounded traces as above.  Then every eigenvalue \(\alpha\) of \(\Fr\) on \(H^1_c(U, \cF)\) satisfies \(\lvert \iota\alpha \rvert \le \sqrt q\).
+\end{theorem}
+
+\cite{Zh} treats a lisse sheaf on an open subset of \(\A^1\), with weights at most \(w\) in place of bounded traces.  That case is enough for curves.  Let \(C\) be a smooth projective geometrically connected curve of genus \(g\) over \(\F_q\).  Choose \(x \in \F_q(C)\) such that \(\F_q(C)\) is finite and separable over \(\F_q(x)\), let \(V \subset \A^1\) be a nonempty open subset over which \(x\) is finite and étale, and let \(U := x^{-1}(V) \subset C\).
+
+\begin{problem}\label{pr:quotient}
+\(H^1(C, \Ql)\) is a quotient of \(H^1_c(U, \Ql)\), compatibly with \(\Fr\).  Moreover \(H^1_c(U, \Ql) = H^1_c(V, x_*\Ql)\), and \(x_*\Ql\) is lisse on \(V\) with traces of Frobenius between \(0\) and the degree of \(x\).
+\end{problem}
+
+\begin{problem}\label{pr:lower}
+If \(\alpha\) is an eigenvalue of \(\Fr\) on \(H^1(C, \Ql)\), so is \(q/\alpha\).
+\end{problem}
+
+Theorem~\ref{th:curve-lowest} for \(x_*\Ql\) on \(V\), and Problems~\ref{pr:quotient} and~\ref{pr:lower}, give the Riemann hypothesis for \(C\): every eigenvalue of \(\Fr\) on \(H^1(C, \Ql)\) has absolute value \(\sqrt q\).  This is Weil's theorem \cite{Wei48}.  The route is that of \cite{Ald}, after \cite{Alp}, and it uses Theorem~\ref{th:curve-lowest} only in the case of \cite[Theorem~1.1 and Remark~1.2]{Zh}.
+
+\begin{problem}\label{pr:count}
+\(\lvert \#C(\F_{q^n}) - q^n - 1 \rvert \le 2g\, q^{n/2}\).
+\end{problem}
+
+Nothing in this section used \(\dim U = 1\) except the degrees of the cohomology groups, the finite map \(\pi\) to \(\A^1\) and the shape of the coupling \(\pi(u_i)\pi(u_{i+1})\).  Replacing it by a nondegenerate bilinear form on \(\A^d\) is the note's ``vectorize to go up dimensions'', and leads to Deligne's bound.  We do not know for which sheaves and which \(k\) hypothesis (H2) holds for the plain quadric \(Q = 0\) \cite[Question~2.10.10]{Dup}; it is no longer needed.
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:identity}}
+\begin{description}
+\item[\ref{pr:orth}] For \(y \ne 0\), \(h \mapsto \e(hy)\) is a nontrivial character, because the trace is onto \(\F_p\).  Count the characters.
+\item[\ref{pr:unitary}] The \((x,x')\) entry of \(K_hK_h^*\) is a sum over \(y\) of a character of \(y\).
+\item[\ref{pr:as-hat}] Problem~\ref{pr:orth}, applied to \(\sum_{x \in \F_q} \e(x(1 + \xi))\).
+\item[\ref{pr:identity}] Sum over \(h\) first, using Problem~\ref{pr:orth}.  Then split off \(h = 0\).
+\item[\ref{pr:matrix}] Sum over \(x_1\), then \(x_2\), and so on.
+\item[\ref{pr:parseval-k}] The operator norm of \(K_h\) is \(\sqrt q\), that of \(D_t\) at most \(T\), and \(\lVert t \rVert \le T\sqrt q\).
+\item[\ref{pr:vector}] As in Problem~\ref{pr:parseval-k}, with the matrices \(\psi(hxy)\) and the diagonal matrices of the \(t_i\).
+\item[\ref{pr:as-small}] For \(k = 4\), sum over \(x_1\) and \(x_4\) first, and use Problem~\ref{pr:as-hat}.
+\end{description}
+
+\subsection*{\S\ref{sec:cohomology}}
+\begin{description}
+\item[\ref{pr:H1}] \(U\) is geometrically connected.  On an affine curve \(H^0_c\) of a lisse sheaf vanishes; \(H^2_c(U, \cF)\) is the space of coinvariants of the geometric monodromy, twisted by \((-1)\).
+\item[\ref{pr:kunneth}] Apply the K\"unneth formula.
+\item[\ref{pr:lower-half}] The gradient of \(Q\) has first coordinate \(x_2\).  For the vanishing, combine Poincar\'e duality with Artin's theorem on the affine scheme \(Z_k\).
+\item[\ref{pr:sign}] Write \(q^nN_n\) and \(M_n^k\) by the trace formula and Problems~\ref{pr:kunneth} and~\ref{pr:lower-half}.
+\item[\ref{pr:power}] Compare \(\sum_n (\sum_i m_i \gamma_i^n) z^n\) with \(\sum_i m_i\gamma_i z/(1 - \gamma_i z)\) in \(\lvert z \rvert < 1/C\).
+\item[\ref{pr:fail}] Problems~\ref{pr:H1} and~\ref{pr:as-small} over \(\F_{q^n}\).  Compare with the form that (H2) prescribes; by Problem~\ref{pr:power}, applied to the difference of two power sums, the coefficients of a power sum are unique.
+\end{description}
+
+\subsection*{\S\ref{sec:curves}}
+\begin{description}
+\item[\ref{pr:gysin}] Dualize the hypothesis on restriction, using Poincar\'e duality on \(X\) and on \(Y\).
+\item[\ref{pr:prop4}] Write \(r^nN_n\) and \(M_n^k\) by the trace formula on \(Y\) and \(X\).  The first statement of Problem~\ref{pr:kunneth} holds for every smooth affine curve.  Then use Problem~\ref{pr:gysin}.
+\item[\ref{pr:conic}] Translate \(x\) and \(y\) to factor the equation of \(Y\).
+\item[\ref{pr:wl-affine}] (a) Theorem~\ref{th:wl} for \(V \to \A^m \subset \mathbb{P}^m\); the hyperplanes with \(\lambda_m \ne 0\) can be scaled to \(\lambda_m = 1\).  (b) Bound the dimension of the set of pairs \((v, H)\) with \(H\) containing the tangent space of \(\Gamma(V)\) at \(\Gamma(v)\).
+\item[\ref{pr:Gamma}] The first \(ks\) coordinates already give a closed immersion.
+\item[\ref{pr:char-sum}] Problem~\ref{pr:orth}, then group the \(u_i\) by \(x_i = \pi(u_i)\).
+\item[\ref{pr:R-curve}] A fibre of \(\pi\) over a point of \(E\) is the spectrum of an algebra of dimension at most \(B\).  Then apply Problem~\ref{pr:vector}.
+\item[\ref{pr:lemma2}] Problem~\ref{pr:power}.
+\item[\ref{pr:quotient}] Use the exact sequence of the open subscheme \(U\) and its finite complement.  For the rest, \(x\) is finite, and the stalk of \(x_*\Ql\) at a geometric point is the sum over its fibre.
+\item[\ref{pr:lower}] Use Poincar\'e duality on \(C\).
+\item[\ref{pr:count}] The trace formula on \(C\), and \(\dim H^1(C, \Ql) = 2g\).
+\end{description}
+
+\begin{thebibliography}{SGA4\(\frac12\)}
+
+\bibitem[Ald]{Ald}
+\emph{A short proof of Deligne's bound for Frobenius eigenvalues, after Alpöge}, contributed by F.~Alderliefste, deposit hexagon:2611.00789v1, 21 November 2026, \url{https://hexagonmath.org/2611.00789v1}.
+
+\bibitem[Alp]{Alp}
+L.~Alp\"oge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, \url{https://alpo.ge/remark.pdf}.
+
+\bibitem[Dup]{Dup}
+\emph{Notes on Alpöge's proof of the Riemann hypothesis}, printed by T.~Dupuy, AI generated, 21 November 2026, \url{https://tdupu.github.io/riemann-public/riemann-book.pdf}.
+
+\bibitem[Kat93]{Kat93}
+N.~M.~Katz, \emph{Affine cohomological transforms, perversity, and monodromy}, J. Amer. Math. Soc. \textbf{6} (1993), 149--222.
+
+\bibitem[Mil]{Mil}
+J.~S.~Milne, \emph{\'Etale Cohomology}, Princeton, 1980.
+
+\bibitem[SGA4\(\frac12\)]{SGA45}
+P.~Deligne, \emph{Cohomologie \'etale} (SGA~4\(\frac12\)), Lecture Notes in Math. \textbf{569}, Springer, 1977.
+
+\bibitem[Wei48]{Wei48}
+A.~Weil, \emph{Sur les courbes alg\'ebriques et les vari\'et\'es qui s'en d\'eduisent}, Hermann, 1948.
+
+\bibitem[Zh]{Zh}
+D.~Zhang, \emph{On an elementary proof of Weil~II}, arXiv:2611.30749, 23 November 2026 (listed as \emph{Notes on an elementary proof of Weil~II from Hexagon}), \url{https://arxiv.org/abs/2611.30749}.
+
+\end{thebibliography}
+
+\end{document}

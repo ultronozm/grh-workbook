@@ -20,6 +20,7 @@ Each sheet treats one ingredient of the argument, in its simplest setting, in th
 **Sources.**
 - Prefer published sources.  The expositions listed in the index's *Sources* section may also be cited.
 - Every citation is checked to exist, and every numerical claim is checked by computation.
+- Alpöge is credited once, on the first page of the index.  In the running text of a sheet and in the body of the index, the proof is "the proof" or "the argument" (not "the rewritten Lean proof", "the rewriting", "Alpöge's proof" or "Alpöge's argument").  Each sheet has one remark "In the Lean formalization" that names the declarations and cites the repository as `[GL]`; only there may the text say "the Lean proof".  A contrast with the Lean code as first released or with an older exposition is kept only with a citation of a public source, and then says "the Lean code as first released".
 - The rewritten Lean proof is cited as `[GL]`, with the same `\bibitem` text in every sheet (repository, commit `72fead1`, readable edition `grh/`); a statement read from it goes in a remark "In the Lean formalization" that names the declaration.
 
 **Acceptance.**
@@ -40,5 +41,6 @@ Numbers change when chapters or problems are inserted; tags do not.  As in the S
 - After adding an item to a settled part, run `scripts/make-tags.py`, which appends tags for the untagged items, and commit `tags.tsv` with the sheet.  Never edit, reorder or delete a line of `tags.tsv`, and never reuse a tag.
 - A tagged label must stay.  If its item must go, or changes beyond recognition, mark its line retired by adding a fourth column: `retired`, or `retired -> 2C3D` if the item `2C3D` replaces it, optionally followed by `; reason`.  A retired label may then be reused for a new item, which gets a new tag.
 - When Part VI settles, add it to the stable list and run `scripts/make-tags.py`.
+- A tag retired by mistake may be made live again only for a whole sheet listed, with its reason, in `UNRETIRED` in `scripts/make-tags.py`; `--check --since` then accepts it.  This was used once, for the three sheets withdrawn and restored on 26 November 2026 (Stepanov without multiplicity, S1, S2).
 - A withdrawn sheet: retire all its tags, add a line for it to `scripts/withdrawn.tsv` (the site keeps a short page at its old URL), and remove it from the index.
 - `scripts/make-tags.py --check`, run by `./preview-site.sh` and CI, fails if a tagged label has disappeared without being retired, if a tag or an item is listed twice, or if a committed line was changed or deleted; it warns about untagged items.  A line not yet committed may still be dropped.

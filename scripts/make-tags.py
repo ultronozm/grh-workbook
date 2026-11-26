@@ -55,7 +55,17 @@ CHAPTERS = "chapters.tex"
 # in the index heading "* Part I. ...") and the side-series sheets (by
 # their names, "S1. ...").  Extend this when a Part settles.
 STABLE_PARTS = ["I", "II", "III", "IV", "V"]
-STABLE_SIDE = []
+STABLE_SIDE = ["S1", "S2"]
+
+# Sheets whose tags were retired by mistake and are live again: a tag of
+# one of these sheets may go from retired to live.  Each entry needs a
+# reason; see CONTRIBUTING.md.  (Never use this for an item that was
+# really removed: retire it and give the new item a new tag.)
+UNRETIRED = {
+    # Withdrawn on 26 Nov 2026 and restored the same day, unchanged,
+    # by the owner's decision (Stepanov; side series S1, S2).
+    "20261125T007000", "20261124T220500", "20261124T221500",
+}
 
 # Environments whose labelled instances are tagged.
 TAGGED_ENVS = ["problem", "theorem", "proposition", "lemma", "definition"]
@@ -332,7 +342,7 @@ def check_since(entries, errors, rev):
         elif (e.sheet, e.label) != (o.sheet, o.label):
             errors.append(f"tag {o.tag} was moved from {o.sheet} {o.label} to "
                           f"{e.sheet} {e.label}; retire it instead")
-        elif o.retired and not e.retired:
+        elif o.retired and not e.retired and o.sheet not in UNRETIRED:
             errors.append(f"tag {o.tag} was retired at {rev} and is live again")
 
 
