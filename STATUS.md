@@ -1,10 +1,18 @@
 # Status of the workbook
 
-**Status, 26 November 2026.**  The collection is being extended to cover the complete proof and is updated continuously.  Parts I–V and the side series are stable apart from small corrections.  The proof itself now occupies four Parts.  Part VI fixes the data and all the objects, and deduces the theorem from Theorems A, B and C.  Parts VII, VIII and IX state Theorems B, A and C, deduce each from its inputs, and state those inputs from the Lean code; the proofs of the inputs are being developed into further sheets, which will appear in batches after the chapter that states the result.  Developed so far: in Part VIII, the seesaw identity (four sheets), the divisibility of one lift at a small non-split prime and the size of the composite lift; in Part IX, the determinant of a chain of lifts (four sheets: the norm of one lift, equal multiplicities, the exchange identity, the factorization) and the cost of one lift (four sheets), up to one operator identity stated from the Lean code.
+**Status, 26 November 2026.**  The collection is being extended to cover the complete proof and is updated continuously.  Parts I–V and the side series are stable apart from small corrections.  The proof itself now occupies four Parts.  Part VI fixes the data and all the objects, and deduces the theorem from Theorems A, B and C.  Part VIII now proves Theorem A from its inputs, each developed in a sheet, except two bounds (the projection to good forms; the dimension of the ramified forms) and the theorem on elementary divisors used at exceptional primes, which are stated from the Lean code.  Part IX develops the determinant of a chain and the cost of one lift, up to the auxiliary forms and one operator identity stated from the Lean code; its last two inputs, the denominators of projections and the twisting theorem, are stated with all their definitions and not proved here, apart from the local loss and a lemma on roots of unity.  The second moment behind Theorem B (Part VII) is stated from the Lean code and is being developed.
 
 The site is <https://ultronozm.github.io/grh-workbook/>.  Each update appends an entry below, newest first.
 
 ## What changed
+
+### 26 November 2026: batch 5, Theorem A closed; the statement-level steps; the flowchart
+
+- **Three new sheets.**  In Part VIII: *The level prime and the ramified forms* and *Exceptional primes: a full mark*.  In Part IX: *The local loss and the sparse places*.
+- **Part VIII.**  *Theorem A* now deduces its statement from inputs that are references to sheets, except two bounds stated from the Lean code.  *Divisibility of the composite lift* takes over the theorem on elementary divisors from *Hecke nondegeneracy on the tree*.  *Divisibility along the chain* passes its general theorem to the new sheet on exceptional primes.
+- **Part IX, statement-level chapters.**  *Denominators of projections to lifts* and *Twists with few congruences* now state every definition their theorems use.  The odd-class integer is written X_odd throughout.
+- **Flowchart.**  The proof (Parts VI–IX) is again a separate section above Parts I–V: one tree per Part, all feeding *The main inequality*.
+- **Checks:** each new sheet passed a fidelity audit and a solver test; the batch was read as a whole.  The two repaired chapters were audited again after the repair.
 
 ### 26 November 2026: batch 4, the seesaw
 
