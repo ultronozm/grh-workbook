@@ -1,10 +1,17 @@
 # Status of the workbook
 
-**Status, 26 November 2026.**  The collection is being extended to cover the complete proof and is updated continuously.  Parts I–V and the side series are stable apart from small corrections.  The proof itself now occupies four Parts.  Part VI fixes the data and all the objects, and deduces the theorem from Theorems A, B and C.  Part VIII now proves Theorem A from its inputs, each developed in a sheet, except two bounds (the projection to good forms; the dimension of the ramified forms) and the theorem on elementary divisors used at exceptional primes, which are stated from the Lean code.  Part IX develops the determinant of a chain and the cost of one lift, up to the auxiliary forms and one operator identity stated from the Lean code; its last two inputs, the denominators of projections and the twisting theorem, are stated with all their definitions and not proved here, apart from the local loss and a lemma on roots of unity.  In Part VII the first half of the second moment is developed (three sheets: unfolding, the terms that survive, good forms and the count); the main term is being developed.
+**Status, 26 November 2026.**  The collection is being extended to cover the complete proof and is updated continuously.  Parts I–V and the side series are stable apart from small corrections.  Parts VI–IX present the whole proof.  Part VI fixes the data and all the objects, and deduces the theorem from Theorems A, B and C.  Each of Parts VII–IX states its theorem in a chapter that deduces it from its inputs, and the inputs are developed in sheets, each in a simplest instance and then in general.  Stated and not proved here: the results listed as background in each sheet (classical, with references); the denominators of projections and the twisting theorem (Part IX), stated with all their definitions, of which the local loss and a lemma on roots of unity are developed; and statements read from the Lean code, named where they are used.  These are, in Part VII, the block identity, the archimedean Bessel functions and the estimates for the terms that survive and for the open cell, each modelled in a sheet; in Part VIII, two bounds (the projection to good forms; the dimension of the ramified forms) and the theorem on elementary divisors used at exceptional primes; in Part IX, the auxiliary forms and one operator identity.
 
 The site is <https://ultronozm.github.io/grh-workbook/>.  Each update appends an entry below, newest first.
 
 ## What changed
+
+### 26 November 2026: batch 7, the second moment (second half); the whole proof
+
+- **Two new sheets in Part VII:** *The open cell: Siegel's formula and Poisson summation* and *Positive type and the bootstrap: the second moment*.
+- ***Theorem B: enough forms*** now takes its second moment from the second of these; the theorem *the second moment* leaves the chapter.  *Which terms survive* and *Good forms and the count of the target* point to the new statement.
+- **Status.**  Parts VI–IX now present the whole proof.  The paragraph above lists what is stated and not proved here.
+- **Checks:** each new sheet passed a fidelity audit and a solver test; the batch was read as a whole, with an extra fidelity pass.
 
 ### 26 November 2026: batch 6, the second moment (first half); the whole collection as one PDF
 
