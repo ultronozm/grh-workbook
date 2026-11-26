@@ -42,7 +42,7 @@ Ideal class groups \cite[Ch.~I, \S\S3, 6]{Ne} and the norm of ideals in an exten
 
 \section{Denominators of linear maps}\label{sec:denominators}
 
-A linear map between \(\Q\)-vector spaces with integral structures need not respect them.  What does that cost when size is compared with divisibility, and how can it be reduced?  The simplest example is differentiation.  Let \(\mathrm{Int}\) be the set of polynomials \(f \in \Q[x]\) with \(f(\Z) \subseteq \Z\), and let \(\mathrm{Int}_n\) be its elements of degree at most \(n\).
+A linear map between \(\Q\)-vector spaces with integral structures need not respect them.  What does that cost when size is compared with divisibility, and how can it be reduced?  The simplest example is differentiation.  Let \(\mathrm{Int}\) be the set of polynomials \(f \in \Q[x]\) with \(f(\Z) \subseteq \Z\), and for an integer \(n\ge0\) let \(\mathrm{Int}_n\) be its elements of degree at most \(n\).
 
 \begin{problem}\label{pr:intval}
 The binomial polynomials \(\binom{x}{k}\), \(0 \le k \le n\), form a \(\Z\)-basis of \(\mathrm{Int}_n\).
@@ -53,10 +53,10 @@ Let \(D = d/dx\).  Then
 \[
   D \binom{x}{n} = \sum_{k=1}^{n} \frac{(-1)^{k-1}}{k} \binom{x}{n-k} .
 \]
-Hence the least positive integer \(c\) with \(c \, D(\mathrm{Int}_n) \subseteq \mathrm{Int}\) is \(\lcm(1, 2, \dots, n)\).
+Hence the least positive integer \(c\) with \(c \, D(\mathrm{Int}_n) \subseteq \mathrm{Int}\) is \(\lcm(1, 2, \dots, n)\), with the empty least common multiple equal to \(1\).
 \end{problem}
 
-The logarithm of this denominator is \(\sum_{p^a \le n} \log p\), of the size of \(n\).  Alpöge's note records a ``need for division'' \cite[item~14]{Alp}.  Chapter~\ref{cg-chap}, \emph{Congruence modules}, models the denominator of a projection of a whole lattice by a congruence module.  For the orthogonal projection onto a space of lifts, the rewritten Lean proof requires an operator of controlled determinant on that space which makes the projections of suitable integral forms integral.
+The logarithm of this denominator is \(\sum_{p^a \le n} \log p\), of the size of \(n\).  Alpöge's note records a ``need for division'' \cite[item~14]{Alp}.  Chapter~\ref{cg-chap}, \emph{Congruence modules}, models the denominator of a projection of a whole lattice by a congruence module.  The rewritten Lean proof needs a bound for the denominator of the orthogonal projection onto a space of lifts; the corresponding condition is named in the remark at the end of this section.
 
 An integral structure can be built one prime at a time.  For a lattice \(L \subset \Q^r\) and a prime \(p\), write \(L_p := L \otimes \Z_p \subset \Q_p^r\).
 
@@ -90,10 +90,10 @@ Let \(M_j := M + T_j(L)\), and let \(M^*\) be the lattice with \(M^*_p = (M_j)_p
 If \(M = \Z\) and \(M_j = D_j^{-1}\Z\) with positive integers \(D_j\), then \([M^* : M] = \gcd(D_1, \dots, D_k)\).  For \(D_j = 6, 10, 15\) each map alone costs at least \(\log 6\), and together they cost nothing.
 \end{problem}
 
-Alpöge's note describes gluing an integral structure across Hecke characters to obtain a gcd \cite[item~15]{Alp}; Problem~\ref{pr:gcd} gives a lattice model for this.  The note also mentions Galois cohomology classes ``that we couldn't kill by twisting'' \cite[item~17]{Alp}.  This chapter serves the denominator step of the rewritten Lean proof: there real numbers \(\gamma(\ell)\), one for each prime \(\ell\), bound the logarithms of the denominators at \(\ell\), and their sum over any finite set of primes is at most a fixed budget.  The error term at \(\ell\) contains \(t\) times the \(\ell\)-adic valuation of one integer, whose valuation bounds the lengths of the modules of Definition~\ref{tt-def:shaodd} at every prime (Chapter~\ref{oc-chap}, \emph{Odd classes by Gauss sums}).  In the cyclotomic example below, integral twists of the Stickelberger element annihilate the class group, and their eigenvalues on the odd characters illustrate the connection with class groups.
+Alpöge's note describes gluing an integral structure across Hecke characters to obtain a gcd \cite[item~15]{Alp}; Problem~\ref{pr:gcd} gives a lattice model for this.  The note also mentions Galois cohomology classes ``that we couldn't kill by twisting'' \cite[item~17]{Alp}.  This chapter serves the denominator step of the rewritten Lean proof, in which the denominators at all primes together must fit within a fixed budget.  The odd classes enter through one integer \(X\), chosen once for all primes from the length bound for the modules of Definition~\ref{tt-def:shaodd} (Chapter~\ref{oc-chap}, \emph{Odd classes by Gauss sums}); the error term at \(\ell\) contains \(t\,v_\ell(X)\).  In the cyclotomic example below, integral twists of the Stickelberger element annihilate the class group, and their eigenvalues on the odd characters illustrate the connection with class groups.
 
 \paragraph{In the Lean formalization.}
-Paths are relative to \texttt{grh/src/} of the rewritten Lean proof \cite{GL}.  The corresponding statement for the operator clearing the projection is \texttt{New.Data.ClearsProjection}, and for the budget it is \texttt{New.Data.IsDenominatorBound}, both in \texttt{New/Determinant/Twist/FitTwists.lean}.  The corresponding statement for the bound on lengths of the modules of Definition~\ref{tt-def:shaodd} is \texttt{New.exists\_length\_shaOdd\_le}, in \texttt{Lib/Cyclotomic/OddSha.lean}; the integer and the error term are \texttt{New.Selmer.oddClassBound} and \texttt{New.Selmer.denominatorError}, in \texttt{New/Congruences/FirstOrder/TraceRelations.lean}.
+Paths are relative to \texttt{grh/src/} of the rewritten Lean proof \cite{GL}.  The predicates \texttt{New.Data.ClearsProjection}, \texttt{New.Data.HasDenominatorsLe} and \texttt{New.Data.IsDenominatorBound} are in \texttt{New/Determinant/Twist/FitTwists.lean}.  The length bound \texttt{New.exists\_length\_shaOdd\_le} is in \texttt{Lib/Cyclotomic/OddSha.lean}.  The module of Definition~\ref{tt-def:shaodd} is a special case of \texttt{New.Selmer.shaOdd} in \texttt{Lib/GaloisRep/Main/SelmerModules.lean}.  The chosen integer \(X\), \texttt{New.Selmer.oddClassBound}, and the error term \texttt{New.Selmer.denominatorError} are in \texttt{New/Congruences/FirstOrder/TraceRelations.lean}.
 
 \section{The Stickelberger element}\label{sec:stickelberger}
 
@@ -163,7 +163,7 @@ Let \(i\) be odd with \(3 \le i \le p-2\).  Then \(A^{(i)} \ne 0\) if and only i
 For \(p < 100\), the pairs \((p, k)\) with \(k\) even, \(2 \le k \le p-3\) and \(p \mid B_k\) are \((37, 32)\), \((59, 44)\) and \((67, 58)\).  Hence for \(p < 100\) the group \(A^-\) is nonzero only for \(p = 37, 59, 67\), and then exactly one odd eigenspace is nonzero, \(A^{(5)}\), \(A^{(15)}\) and \(A^{(9)}\) respectively.
 \end{problem}
 
-The plus part \(A^+\) is not seen by \(\theta\) (Problem~\ref{pr:eigen-theta}).  Its order is the \(p\)-part of an index of cyclotomic units in the units of \(F^+\) \cite[Thm.~8.2]{Wa}.  Vandiver's conjecture, that \(A^+ = 0\) for every \(p\), has not been proved; it has been verified for \(p < 2^{31}\) \cite{HHO}.  The next chapter meets the same division between minus and plus parts in Galois cohomology; for \(e>0\) the rewritten Lean proof uses the condition \(z(cgc)=-z(g)\) of Definition~\ref{tt-def:shaodd}, where \(c\) is complex conjugation.
+The plus part \(A^+\) is not seen by \(\theta\) (Problem~\ref{pr:eigen-theta}).  Its order is the \(p\)-part of an index of cyclotomic units in the units of \(F^+\) \cite[Thm.~8.2]{Wa}.  Vandiver's conjecture, that \(A^+ = 0\) for every \(p\), has not been proved; it has been verified for \(p < 2^{31}\) \cite{HHO}.  The next chapter meets the same division between minus and plus parts in Galois cohomology; for \(e>0\) the modules of Definition~\ref{tt-def:shaodd} carry the oddness condition \(z(cgc)=-z(g)\), where \(c\) is complex conjugation.
 
 \section*{Hints}
 
