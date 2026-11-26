@@ -13,7 +13,7 @@ The site is <https://ultronozm.github.io/grh-workbook/>.  Each update appends an
 - **Denominators of projections to lifts, split.**  Its first three sections are now the model sheet *Clearing a projection: two classes*.  The statement chapter defines its local terms and the Hecke polynomial operator, and gains a running instance in rank one.
 - ***Two lifts at a time*** is rewritten around the last pair, worked out first in a lattice model.
 - **Sources.**  A new group, expositions of the proof in its rewritten form, with M. Bolan's manuscript.
-- **Checks:** each new sheet passed fidelity audits against the code and a solver test; the batch was read as a whole.
+- **Checks:** each new sheet went through fidelity audits against the code and solver tests; the batch was read as a whole.
 
 ### 26 November 2026: second coherence pass over Parts VI–IX
 
