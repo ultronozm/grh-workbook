@@ -215,6 +215,14 @@
         // Leave the source visible if a formula cannot be rendered.
       }
     }
+    // Characters not yet used on the page (e.g. an upright Delta or a
+    // blackboard E) need their font rules added to the shared stylesheet.
+    try {
+      const sheet = main.outputJax.styleSheet(mathDocument);
+      if (sheet && !sheet.isConnected) document.head.append(sheet);
+    } catch {
+      // The formulas stay in place even if the stylesheet cannot be refreshed.
+    }
   }
 
   const solutionEditors = [];
