@@ -1,0 +1,298 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage[textwidth=6in,textheight=9.25in,centering]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[gr-]{20261125T011000--galois-representations-black-box__workbook}
+\externaldocument[bk-]{20261126T080800--black-box-crystalline-lattices-and-the-condition-above-l__workbook}
+\externaldocument[dp-]{20261126T030900--denominators-of-projections-to-lifts__workbook}
+\externaldocument[n2-]{20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook}
+
+\newcounter{chap}
+\input{chapters}\chapnumber{20261126T080900}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\setlength{\emergencystretch}{2em}
+
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\F}{\mathbb F}
+\newcommand{\C}{\mathbb C}
+\newcommand{\Qlbar}{\overline{\Q}_\ell}
+\newcommand{\GL}{\mathrm{GL}}
+\newcommand{\Fr}{\mathrm{Fr}}
+\newcommand{\HT}{\mathrm{HT}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\val}{\operatorname{val}}
+\newcommand{\rec}{\operatorname{Art}}
+\newcommand{\Gal}{\operatorname{Gal}}
+\newcommand{\ii}{\mathrm i}
+\newcommand{\leansrc}[3]{\href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/#1\#L#2}{#3}}
+
+\title{Black box: Galois representations of eigenforms, II}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+To study denominators of projections in Chapter~\ref{dp-chap}, we need local conditions on the Galois representations of definite eigenforms.  Chapter~\ref{gr-chap} gives attachment and the spherical comparison away from \(\ell\).  Here we give the comparison above \(\ell\), tame conditions and auxiliary-level inputs.  The literature gives analogous local comparisons for automorphic representations of \(\GL_n\).  For definite eigenforms the statements below use polynomials that kill Frobenius.
+
+\paragraph{Prerequisites.}
+Section~\ref{gr-sec:spherical} for weights and Hecke polynomials, and Sections~\ref{gr-sec:cm} and~\ref{gr-sec:es} for the Gaussian CM character and \(X_0(11)\).  Use Definitions~\ref{bk-def:crystalline} and~\ref{bk-def:jump} for periods and jumps.  A uniformizer gives the geometric Frobenius class under local reciprocity into the topological abelianization.
+
+\section{Spherical places above \texorpdfstring{\(\ell\)}{ell}}\label{sec:local}
+
+What do crystalline periods recover from the weight and Hecke polynomial?
+
+Keep the notation of Section~\ref{gr-sec:spherical}.  Thus \(F\) is CM, \(\Phi\) is its CM type, \(n\) is the rank, \(\kappa=(c,e)\) is the weight of a form, and \(\iota:\C\simeq\Qlbar\) for the prime \(\ell\).  The cyclotomic character has jump \(-1\) in the convention of Definition~\ref{bk-def:jump}.
+
+\begin{definition}\label{def:jumps-of-weight}
+For \(\sigma:F\hookrightarrow\C\) inducing the infinite place \(v\), set
+\[
+ \lambda_j=e_v+\sum_{j\le h<n}c_v(h)\qquad(1\le j\le n).
+\]
+The jumps of the weight are
+\[
+ \HT_\sigma(\kappa)=
+ \begin{cases}
+ \{j-1-\lambda_j:1\le j\le n\},&\sigma=\Phi_v,\\
+ \{\lambda_j+n-j:1\le j\le n\},&\sigma\ne\Phi_v .
+ \end{cases}
+\]
+Braces in the jump formula denote multisets.
+\end{definition}
+
+The Gaussian CM character tests the two signs in rank one.
+
+\begin{problem}\label{pr:rank-one}
+For \(n=1\) the weight has jump \(-e_v\) at \(\Phi_v\) and \(+e_v\) at its conjugate.
+\end{problem}
+
+\begin{problem}\label{pr:cm-sign}
+Use \(F=\Q(\ii)\), \(\ell=\lambda\bar\lambda\) split, and the character \(\psi_\lambda\) of Problem~\ref{gr-pr:HT}.  Write \(\psi_\lambda^c\) for the character obtained by conjugating the argument by the nontrivial automorphism of \(F/\Q\).  The ratio \(\psi_\lambda/\psi_\lambda^c\) has jumps \(-1\) at \(\lambda\) and \(+1\) at \(\bar\lambda\).  With \(\Phi_v\) chosen so \(\iota\Phi_v\) induces \(\lambda\), the jumps agree with \(e_v=1\).  The ratio of the corresponding complex Hecke characters descends to \(U(1)\).
+\end{problem}
+
+In this section \(\Delta=q\prod_{j\ge1}(1-q^j)^{24}=\sum_{j\ge1}\tau(j)q^j\) denotes Ramanujan’s level-one weight-twelve cusp form.  In the cohomological normalization, the local representation at \(\ell\) is crystalline with jumps \(0,11\) and crystalline Frobenius polynomial \(X^2-\tau(\ell)X+\ell^{11}\).  Use Scholl's good-reduction model and Frobenius comparison \cite{Sch}, with Tsuji's crystalline comparison \cite{Ts}.
+
+The next problems compare root valuations with jumps.
+
+\begin{problem}\label{pr:tau}
+The coefficients at \(2\), \(3\), \(5\), \(7\) and \(11\) are \(-24\), \(252\), \(4830\), \(-16744\) and \(534612\), respectively.
+\end{problem}
+
+\begin{problem}\label{pr:slopes}
+Normalize the valuation by \(\val(\ell)=1\).  The pairs of root valuations of \(X^2-\tau(\ell)X+\ell^{11}\), for \(\ell=2,3,5,7,11\) respectively, are \((3,8),(2,9),(1,10),(1,10),(0,11)\).
+\end{problem}
+
+\begin{problem}\label{pr:polygon}
+For each prime \(\ell\), the polygon starting at the origin with the root valuations as slopes in increasing order and both segments of horizontal length one lies on or above the polygon with slopes \(0,11\).  The polygons coincide exactly when \(\ell\nmid\tau(\ell)\).
+\end{problem}
+
+\begin{problem}\label{pr:691}
+By machine, \(\tau(691)\equiv1\pmod{691}\).
+\end{problem}
+
+For the general comparison, let \(A\) be a valuation ring of \(\overline{\Q}\) over a place \(w\mid\ell\).  Write \(G_F=\Gal(\overline{\Q}/F)\) and let \(D_A\) be the stabilizer of \(A\) in \(G_F\).  A local datum consists of an embedding \(\varepsilon:\overline{\Q}\to\Qlbar\) pulling the valuation ring back to \(A\), and a topological isomorphism \(j_A\) from \(D_A\) onto the subgroup of \(\Gal(\Qlbar/\Q_\ell)\) fixing \(\varepsilon(F)\).  The maps satisfy \(j_A(s)(\varepsilon(x))=\varepsilon(sx)\) for \(s\in D_A\) and \(x\in\overline{\Q}\).  An automorphism \(g\in\Gal(\Qlbar/\Q_\ell)\) gives a coefficient embedding by composition with \(\Qlbar\hookrightarrow\C_\ell\), where \(\C_\ell\) is the completion.  Write \(\sigma=\iota^{-1}g^{-1}\varepsilon|_F\).
+
+For a representation \(r\) on \(V_r=\Qlbar^n\), let \(\gamma:\Qlbar\to\C_\ell\) be the coefficient embedding given by \(g\).  The multiplicity of a jump \(u\in\Z\) at \(\gamma\) is the dimension over \(\Qlbar\) of the space of \(\gamma\)-semilinear maps \(a:V_r\to\C_\ell\) such that for each \(v\in V_r\) and all \(h\in D_A\) sufficiently close to the identity for that vector,
+\[
+ a(r(h)v)=\chi_{\mathrm{cyc}}(j_A(h))^{-u}\,j_A(h)(a(v)).
+\]
+Here \(\chi_{\mathrm{cyc}}\) is cyclotomic and \(j_A(h)\) acts by continuity on \(\C_\ell\).  Infinite dimension counts as zero.
+
+For \(s\in D_A\) and a nonnegative integer \(k\), \((j_A(s),k)\) is a \emph{Weil pair} if \(j_A(s)^{-1}\) acts on the residue field of \(\Qlbar\) by the \(\ell^k\)-power map.  Use \(B_{\max}\) as in Definition~\ref{bk-def:crystalline}.  The restriction is crystalline along the datum if the periods fixed by all \(j_A(h)\otimes r(h)\), \(h\in D_A\), span \(B_{\max}\otimes_{\Z_\ell}V_r\) over \(B_{\max}\).  Potential crystallinity uses periods fixed for \(h\) in a neighborhood of the identity which may depend on the period.
+
+For a Weil pair and a potentially crystalline restriction, \(\Fr^{\mathrm{cris}}_{s,k}\) is the unique \(B_{\max}\)-linear endomorphism extending \((\varphi^k j_A(s))\otimes r(s)\) on those potentially crystalline periods.  Here \(\varphi\) is the Frobenius of the period ring, and coefficients over \(\Qlbar\) act on the factor \(V_r\).
+
+\begin{theorem}[Comparison above \(\ell\)]\label{thm:at-ell}
+Let \(F\) have Weil data, let \(n\ge1\), let \(f\) be an eigenform of weight \(\kappa\) for \(P\) on the standard definite group, and let \(r\) be attached to \(P\), as in Theorem~\ref{gr-thm:spherical}.  If \(f\) is fixed by \(\mathcal K_w\) at \(w\mid\ell\), then at every \(A\) over \(w\) and for every local datum:
+\begin{enumerate}
+\item[(a)] \(r|_{D_A}\) is crystalline.
+\item[(b)] For each \(g\) the jumps at the coefficient embedding given by \(g\) are \(\HT_\sigma(\kappa)\), with \(\sigma=\iota^{-1}g^{-1}\varepsilon|_F\).
+\item[(c)] If \(w\) is split, each Hecke polynomial \(Q\) of \(f\) at \(w\) gives \((\iota Q)(\Fr^{\mathrm{cris}}_{s,k})=0\) for every \(s\in D_A\) whose inverse induces the \(q_w\)-power map and every \(k\) giving a Weil pair.  Here \(q_w\) is the residue-field size.
+\end{enumerate}
+\end{theorem}
+The comparison is read from the rewritten Lean proof \cite{GL}.  For regular algebraic polarized cuspidal representations of \(\GL_n\), see \cite[Theorem~2.1.1]{BLGGT} and \cite{BLGGT2}.  Zhang gives the literature statement in these Frobenius and jump conventions \cite[Theorem~4.1]{Zh}.
+
+The rewritten Lean proof uses Hecke eigensystems in Shimura variety cohomology, the congruence relation and crystalline comparison \cite{GL}.  In odd rank it glues restricted representations from quadratic weak base changes.  To treat general rank, two theta lifts to rank \(2n+1\) then give representations whose twists have disjoint lists of \(n+1\) extra characters to cancel.  At split places the extra factors are coprime \cite{GL}.
+
+Let \(E_{11}=X_0(11)\) with equation \(y^2+y=x^3-x^2-10x-20\), as in Section~\ref{gr-sec:es}.  For \(p\notin\{11,\ell\}\), write \(a_p=p+1-\#E_{11}(\F_p)\).  The next model restricts the Tate-module representation to \(\Q(\ii)\) and compares split and inert primes.  Use arithmetic Frobenius on the Tate module, or geometric Frobenius on its dual as in Problem~\ref{gr-pr:geometric}.
+
+\begin{problem}\label{pr:split-base}
+At either place above a split \(p\notin\{11,\ell\}\), the characteristic polynomial stays \(X^2-a_pX+p\).  For \(p=5,13\) with \(\ell\ne p\), the respective traces are \(1\) and \(4\).
+\end{problem}
+
+\begin{problem}\label{pr:square-frob}
+At a place above an inert \(p\notin\{11,\ell\}\), the characteristic polynomial on the restricted representation is \(X^2-(a_p^2-2p)X+p^2\).
+\end{problem}
+
+\begin{problem}\label{pr:inert-base}
+For \(p=3,7\) with \(\ell\ne p\), the respective polynomials are \(X^2+5X+9\) and \(X^2+10X+49\).  The point counts are \(\#E_{11}(\F_9)=15\) and \(\#E_{11}(\F_{49})=60\).
+\end{problem}
+
+\section{Tame level}\label{sec:tame}
+
+At smaller level we use the inertia action and its annihilating polynomials.
+
+At a split place \(w\), the local group is \(\GL_n(F_w)\), acting by translation \(\rho\).  The pro-Iwahori subgroup \(I_1\) is the preimage of the upper unitriangular subgroup in \(\GL_n(k_w)\) under reduction of \(\GL_n(\mathcal O_w)\), where \(k_w\) is the residue field.  Write \(M_{I_1}\) for averaging with probability Haar measure over \(I_1\).  A diagonal tuple \(t\) is dominant if the additive valuations of its entries are nonincreasing.  For characters \(\xi_i:F_w^\times\to\C^\times\) the corresponding torus character is
+\[
+ \xi(t)=\prod_{i=1}^n\xi_i(t_i)|t_i|_w^{n-i},
+ \qquad |x|_w=q_w^{-\ord_w(x)} .
+\]
+Use \(D_A\) for the stabilizer of \(A\) at any finite place \(w\), and \(\rec_w:F_w^\times\to D_A^{\mathrm{ab}}\) for the local Artin map.  A representation is of \emph{finite type} at \(A\) if inertia acts trivially in some neighborhood of the identity when \(w\nmid\ell\), or if the restriction is potentially crystalline along every local datum when \(w\mid\ell\).  For a continuous representation the inertia condition means finite inertia image.  For \(s\in G_F\), a polynomial \(Q'\in\Qlbar[X]\) kills \(s\) at \(A\) if it satisfies the following tests.  Away from \(\ell\), \(Q'(r(s))=0\).  Above \(\ell\), if \(s\in D_A\), then for each local datum and each Weil pair \((j_A(s),k)\) the restriction \(r|_{D_A}\) is potentially crystalline along the datum and \(Q'(\Fr^{\mathrm{cris}}_{s,k})=0\).
+
+Two inertia tests distinguish finite tame image from unipotent inertia.
+
+\begin{problem}\label{pr:tate}
+For \(\ell\ne11\), the Tate-module representation of \(E_{11}\) is not of finite type at \(11\).  No positive power of an inertia element acting by a nonidentity unipotent matrix acts trivially.
+\end{problem}
+
+\begin{problem}\label{pr:tame-line}
+At a place \(w\mid 5\) of \(F=\Q(\ii)\), take a local character of \(F_w^\times\) trivial on a uniformizer and induced on units by the residue character sending \(2\) to \(\ii\).  The rank-one character given by reciprocity, transported by \(\iota\) for \(\ell\ne5\), has inertia image of order four.  Every inertia matrix is killed by \(X^4-1\), and a residue unit \(u\) with character value \(d\) gives the linear polynomial \(X-\iota(d)\) at the Artin class of any local unit lifting \(u\).
+\end{problem}
+
+\begin{theorem}[Tame comparison]\label{thm:tame}
+Let \(F\) have Weil data and let \(n\ge1\).
+Let \(f\) be a weight-\(\kappa\) eigenform for \(P\) on the standard
+definite group, and let \(r\) be attached to \(P\).  Let \(w\) be split and \(A\) lie above \(w\).  Assume \(I_1\) fixes \(f\) and \(M_{I_1}\rho(\operatorname{diag}t) f=\xi(t)f\) for dominant \(t\), with \(|\xi_i(\varpi_w)|\) nonincreasing in \(i\) for the chosen uniformizer \(\varpi_w\).  Let \(s\in D_A\), \(k\in\Z_{\ge0}\) and \(x\in F_w^\times\) satisfy \(s^{-1}\) inducing the \(q_w^k\)-power map on the residue field of \(A\), \(\ord_w(x)=k\) and \(\rec_w(x)=[s]\) in the topological abelianization of \(D_A\).  Then \(r\) is of finite type at \(A\) and \(\prod_i(X-\iota\xi_i(x))\) kills \(s\) at \(A\).  Above \(\ell\), the jumps at each coefficient embedding along every local datum are \(\HT_\sigma(\kappa)\).
+
+For the parahoric version, let \(w\nmid\ell\) be split, let \(A\) lie
+over \(w\), and let \(f\ne0\) belong to a Hecke isotypic space of
+weight-\(\kappa\) forms on the standard definite group.  Use the representation \(r\) chosen for the Hecke polynomials of that space.  Assign nonnegative integer labels \(b_i\) to the slots.  The parahoric is the subgroup of \(\GL_n(\mathcal O_w)\) whose reduction has zero \(ij\)-entry when \(b_i>b_j\).  Suppose \(I_1\) fixes \(f\) and the parahoric acts on \(f\) by scalars.  For a local unit \(u\), let \(d_i\) be the scalar of the diagonal with \(u\) in slot \(i\) and ones elsewhere.  Assume \(d_i=d_j\) implies \(b_i=b_j\).
+
+Let \(\varpi\) be a uniformizer.  Let \(s,s'\in D_A\) be a geometric Frobenius and an inertia element, respectively, with \(\rec_w(\varpi)=[s]\) and \(\rec_w(u)=[s']\).  Then \(r(s)\) and \(r(s')\) commute and every polynomial over \(\Qlbar\) vanishing at all \(\iota(d_i)\) kills \(r(s')\).  There are characters \(\theta_i:F_w^\times\to\C^\times\) and a complex linear functional \(L\) on the space of weight-\(\kappa\) forms, with \(L(f)\ne0\), such that
+\[
+  L(\rho(\operatorname{diag}t)M_{I_1}z)=\xi_\theta(t)L(z)
+\]
+for all dominant \(t\) and all forms \(z\) of that weight.  Here \(\xi_\theta\) is the torus character obtained using the \(\theta_i\).  For every integer \(b\ge0\),
+\[
+ \prod_i\bigl(X-\iota(\theta_i(\varpi)d_i^b)\bigr)
+ \quad\text{kills}\quad r(s)r(s')^b.
+\]
+\end{theorem}
+Both comparisons are read from the rewritten Lean proof \cite{GL}.  For the corresponding local--global results for \(\GL_n\), see \cite{HT,TY,Car,BLGGT2}.
+
+\section{Auxiliary places and root chains}\label{sec:auxiliary}
+
+First we state the integral operator whose conjugates sum to a scalar. Then we give the bound for chains of roots of a spherical Hecke polynomial.
+
+\begin{theorem}[Integral operator]\label{thm:higman}
+Take Taylor--Wiles places \(w_j\) of level \(\ell^\nu\) as in Definition~\ref{n2-def:tw} over \(F\).  Fix a definite hermitian space of rank \(n\) over \(F\) with an adelic basis in which the Gram matrix is the identity at every place.  Use the basis for maximal level, reduction and coordinates of forms.  Fix a weight \(\kappa\) and a subspace of its forms with local type supported at a finite set of places.  Assume a subgroup containing a neighborhood of the adelic identity acts on the subspace by a character through the components at the support and its conjugate.  Every complex linear operator on the full space commuting with the maximal level through those components must preserve the subspace.  The base-level forms are the vectors in the subspace fixed by maximal level outside the support and its conjugate.
+
+Take \(w_j\nmid\ell\) with \(w_j,\bar w_j\) outside the support.  In each Hecke isotypic space meeting the base level nontrivially, assume all base-level forms are spherical at each \(w_j\) with the eigenvalues chosen for that isotypic space.  Within the same subspace, principal level replaces the maximal level at each \(w_j\) by the kernel of reduction.  A form is integral if its coordinates under \(\iota\) are integral at every adelic point whose components above \(\ell\) are in the maximal level.  Let \(n_{\mathrm{st}}\) be a nonnegative integer multiple of the orders of the stabilizers of maximal-level cosets under the group of rational points.
+
+For any finite group \(H\) embedded in \(\prod_j\GL_n(k_{w_j})\), there is a complex linear endomorphism \(\Psi\) of the principal-level space preserving its integral forms such that
+\[
+ \sum_{h\in H}h^{-1}\Psi h=n_{\mathrm{st}}\operatorname{id}.
+\]
+The residue group acts by right translation through the lift components off the support and its conjugate.
+\end{theorem}
+The operator is read from the rewritten Lean proof \cite{GL}.  For group-ring freeness in patching, see \cite{TW,CHT}.
+
+A two-point orbit models the conjugate sum.
+
+\begin{problem}\label{pr:orbit}
+Let \(\Z/4\Z\) act on \(\Z/2\Z\) by translation through reduction modulo \(2\), hence on functions by inverse translation of the argument.  On integer-valued functions, multiplication by the indicator of \(0\) has sum of conjugates \(2\operatorname{id}\).
+\end{problem}
+
+\begin{theorem}[Chains of Hecke roots]\label{thm:chain}
+Let \(n\ge1\) and let \(x\ne0\) be fixed by \(\GL_n(\mathcal O_w)\)
+in a smooth unitary complex representation of \(\GL_n(F_w)\).  For each nonnegative integer \(j\), assume the \(j\)-th spherical Hecke operator acts on \(x\) by \(t_j\), and write \(P=H(q_w,n,t)\) as in Section~\ref{gr-sec:spherical}.
+\begin{enumerate}
+\item[(a)] If \(P(c)=0\) and \(P(q_wc)\ne0\), then \(|c|^2\ge q_w^n/q_w^2\).
+\item[(b)] If \(P(c)=0\) and \(|c|^2q_w^k=q_w^n\) for an integer \(k\ge0\), then \(P(cq_w^i)=0\) for each integer \(0\le i<k\).
+\end{enumerate}
+\end{theorem}
+The chain bounds are read from the rewritten Lean proof \cite{GL}.  For the classification of the unitary representations underlying the bounds, see \cite{Tad}.
+
+The constant spherical vector gives a chain with two distinct roots.
+
+\begin{problem}\label{pr:chain}
+For the trivial representation of \(\GL_2(F_w)\) with \(q_w=3\), the middle Hecke eigenvalue is \(4\) and \(P=(X-1)(X-3)\).  The root \(1\) starts a chain of length two, and the terminal root satisfies the lower bound of Theorem~\ref{thm:chain}(a).
+\end{problem}
+
+\section{Avatars of Hecke characters}\label{sec:avatars}
+
+The avatar formula gives the value at an Artin class.
+
+\begin{theorem}[Avatar]\label{thm:avatar}
+Let \(F\subset\overline{\Q}\) be a totally complex number field and \(\chi\) an algebraic Hecke character with finite part \(\chi_f\) and infinite part \(\prod_\sigma\sigma^{a_\sigma}\), with integer exponents indexed by all embeddings \(F\hookrightarrow\C\).  The kernel of \(\chi_f\) contains a neighborhood of the identity.  On principal finite ideles \(x\in F^\times\), the finite part is \(\chi_f(x)=\prod_\sigma\sigma(x)^{-a_\sigma}\).  Its continuous \(\ell\)-adic avatar \(\chi_\ell:G_F\to\Qlbar^\times\) satisfies
+\[
+ \chi_\ell(s)=\iota(\chi_f(x))\prod_\sigma(\iota\sigma)(x)^{a_\sigma}
+ \qquad\text{if }[s]=\rec_F(x).
+\]
+Here \(x\) is a finite idele, \(s\in G_F\), and \(\rec_F\) is geometric reciprocity into the topological abelianization.  The expression \((\iota\sigma)(x)\) evaluates the component at the place induced by \(\iota\sigma\) using the extended local embedding.  At \(w\nmid\ell\) where \(\chi_f\) is unramified, the avatar takes the value \(\iota(\chi_f(\varpi_w))\) on each geometric Frobenius at every \(A\) over \(w\), with \(\varpi_w\) viewed as an idele supported at \(w\).
+\end{theorem}
+The formula follows from class field theory \cite{Ser}.  Above \(\ell\), the restriction of the avatar to \(G_{F_w}\) is potentially crystalline.  It is crystalline if \(\chi_f\) is trivial on the units at \(w\).  The classical rank-one criterion is \cite[Proposition~B.4]{Con}, in arithmetic reciprocity.
+
+\paragraph{In the Lean formalization.}
+In \cite{GL}, omitting the outer namespace \nolinkurl{New}, Theorem~\ref{thm:at-ell} is the above-\(\ell\) clause of \nolinkurl{GaloisRep.sphericalCompat_std}, with jump formula \nolinkurl{jumps} and period operator \nolinkurl{Period.linearFrob}.
+The tame inputs are \nolinkurl{GaloisRep.Attached.local_global_of_eigencharacter} and
+\nolinkurl{Patching.isParahoricCompatible_galRep}.  The auxiliary operator is
+\nolinkurl{Patching.BaseLevel.exists_higman_operator}.  The chain bounds are
+\nolinkurl{Patching.le_norm_sq_of_isRoot_of_not_isRoot_mul} and
+\nolinkurl{Patching.isRoot_chain_of_norm}.  The avatar formula is
+\nolinkurl{AlgHeckeChar.avatar_apply_of_artinMap_eq}.
+For spherical and product-label conditions on representations in the
+denominator argument, see the
+\leansrc{New/Congruences/GaloisRepresentations/AttachedRepresentations.lean}{641}{representation type of a product-labelled eigenform}.
+
+See the definitions of
+\leansrc{Lib/GaloisRep/Main/LocalConditions.lean}{63}{local datum},
+\leansrc{Lib/PadicHodge/Crystalline/Basic.lean}{196}{jump multiplicity},
+\leansrc{Lib/PadicHodge/Crystalline/Basic.lean}{134}{Weil pair},
+\leansrc{Lib/GaloisRep/Main/LocalConditions.lean}{96}{finite type and polynomial test},
+\leansrc{Lib/LocalGL/Iwahori/ParahoricStructure.lean}{135}{Iwahori conventions},
+\leansrc{Lib/ClassField/GaloisCohomology/ContinuousCocycles.lean}{435}{local Artin map},
+\leansrc{Lib/Adelic/Unitary/Defs.lean}{498}{adelic basis},
+\leansrc{Lib/GaloisRep/TaylorWiles.lean}{167}{base level},
+\leansrc{Lib/GaloisRep/TaylorWiles.lean}{534}{residue action},
+and \leansrc{Lib/PadicHodge/Characters.lean}{90}{avatar construction} and
+\leansrc{Lib/PadicHodge/Characters.lean}{1029}{its Frobenius value}.
+For the construction of the comparison see the
+\leansrc{Lib/Shimura/Eigenspace.lean}{689}{cohomological representation},
+\leansrc{Lib/GaloisRep/Main/OddRank.lean}{418}{odd-rank gluing},
+\leansrc{Lib/GaloisRep/Main/SplitCase.lean}{567}{trace limit} and
+\leansrc{Lib/GaloisRep/BaseChange/PrimeDegreeTransfer.lean}{60}{weak base-change clauses}.
+
+The exercises compare polygons, restrict Frobenius and test inertia and the auxiliary-place identities.  We took as given the local comparisons for definite eigenforms, the conjugate sum, the chain bounds, the avatar formula, the rank-one crystalline criterion and the modular crystalline comparison.
+
+\section*{Hints}
+
+\begin{description}
+\item[\ref{pr:cm-sign}] Conjugation interchanges the two inertia groups.  For descent use Problem~\ref{gr-pr:U1-descent}.
+\item[\ref{pr:tau}] Truncate the product to degree \(11\).
+\item[\ref{pr:slopes}] Use the lower hull of the coefficient points in descending degree.
+\item[\ref{pr:691}] Truncate the product over \(\F_{691}\) with SageMath's \texttt{PowerSeriesRing}.
+\item[\ref{pr:split-base}] Count points over the prime fields.
+\item[\ref{pr:square-frob}] Use the residue degree.
+\item[\ref{pr:inert-base}] Count points over the quadratic residue fields.
+\item[\ref{pr:tate}] Use the Tate parameter of \(E_{11}\).
+\item[\ref{pr:orbit}] Compare Problem~\ref{n2-pr:transversal}.
+\item[\ref{pr:chain}] Count right cosets of the middle Hecke operator.
+\end{description}
+
+\begin{thebibliography}{BLGGT2}
+\bibitem[BLGGT]{BLGGT} T.~Barnet-Lamb, T.~Gee, D.~Geraghty and R.~Taylor, \emph{Potential automorphy and change of weight}, 2014.
+\bibitem[BLGGT2]{BLGGT2} T.~Barnet-Lamb, T.~Gee, D.~Geraghty and R.~Taylor, \emph{Local--global compatibility for \(l=p\), II}, 2014.
+\bibitem[Car]{Car} A.~Caraiani, \emph{Local--global compatibility and the action of monodromy on nearby cycles}, 2012.
+\bibitem[CHT]{CHT} L.~Clozel, M.~Harris and R.~Taylor, \emph{Automorphy for some \(l\)-adic lifts of automorphic mod \(l\) Galois representations}, 2008.
+\bibitem[Con]{Con} B.~Conrad, \emph{Lifting global representations with local properties}, \url{https://math.stanford.edu/~conrad/papers/locchar.pdf}.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[HT]{HT} M.~Harris and R.~Taylor, \emph{The Geometry and Cohomology of Some Simple Shimura Varieties}, 2001.
+\bibitem[Sch]{Sch} A.~J.~Scholl, \emph{Motives for modular forms}, 1990.
+\bibitem[Ser]{Ser} J.-P.~Serre, \emph{Abelian \(\ell\)-adic Representations and Elliptic Curves}, 1968.
+\bibitem[Tad]{Tad} M.~Tadi\'c, \emph{Classification of unitary representations in irreducible representations of general linear group (non-Archimedean case)}, 1986.
+\bibitem[Ts]{Ts} T.~Tsuji, \emph{\(p\)-adic \'etale cohomology and crystalline cohomology in the semi-stable reduction case}, 1999.
+\bibitem[TW]{TW} R.~Taylor and A.~Wiles, \emph{Ring-theoretic properties of certain Hecke algebras}, 1995.
+\bibitem[TY]{TY} R.~Taylor and T.~Yoshida, \emph{Compatibility of local and global Langlands correspondences}, 2007.
+\bibitem[Zh]{Zh} R.~Zhang, \emph{A preliminary note on Alp\"oge's proposed proof of the generalized Riemann hypothesis}, Hexagon v1, \url{https://hexagonmath.org/pdf/2611.00809v1}.
+\end{thebibliography}
+
+\end{document}

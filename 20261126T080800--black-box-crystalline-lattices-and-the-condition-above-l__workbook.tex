@@ -1,0 +1,428 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[gr-]{20261125T011000--galois-representations-black-box__workbook}
+\externaldocument[bg-]{20261126T080700--black-box-galois-cohomology-of-number-fields__workbook}
+\newcounter{chap}
+\input{chapters}\chapnumber{20261126T080800}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{problem}{Problem}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\C}{\mathbb C}
+\newcommand{\Bmax}{B_{\max}}
+\newcommand{\Bdr}{B_{\mathrm{dR}}}
+\newcommand{\Bcris}{B_{\mathrm{cris}}}
+\newcommand{\Ainf}{A_{\mathrm{inf}}}
+\newcommand{\rk}{\operatorname{rk}}
+\newcommand{\val}{\operatorname{val}}
+\newcommand{\Eis}{\mathrm{Eis}}
+\setlength{\emergencystretch}{2em}
+\addtolength{\textheight}{3\baselineskip}
+
+\title{Black box: crystalline lattices and the condition above \texorpdfstring{\(\ell\)}{ell}}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+Chapter~\ref{gr-chap}, \emph{Black box: Galois representations of eigenforms},
+introduces the representations attached to eigenforms. Here we consider
+crystalline cocycles of lattices at places above \(\ell\). This chapter gives the rank of the cocycle module and a bound on the
+index of its image after reduction. Tate twists illustrate both facts.
+
+\paragraph{Prerequisites.}
+Local fields, the cyclotomic character and continuous Galois cohomology,
+including cup products and Kummer theory. Use the finite local duality
+and Euler characteristic of Chapter~\ref{bg-chap},
+Theorem~\ref{bg-thm:local-duality}. The module construction uses Witt vectors.
+
+\section{Crystalline cocycles}\label{sec:cocycles}
+
+We define the Hodge--Tate jumps and the crystalline cocycles of a lattice, then use the jumps to state the rank of the cocycle module.
+
+Fix a prime \(\ell\) and a completion \(F_v\) of a number field \(F\) at \(v\mid\ell\), embedded
+in \(\overline{\Q}_\ell\). Write \(G_{F_v}=\mathrm{Gal}(\overline{\Q}_\ell/F_v)\)
+and \(\C_\ell=\widehat{\overline{\Q}_\ell}\).
+A lattice \(L\) is finite free over \(\Z_\ell\) with continuous
+\(G_{F_v}\)-action. Put \(V=L\otimes_{\Z_\ell}\Q_\ell\).
+For \(e\in\Z\), write \(\Z_\ell(e)\) for the rank-one lattice with action through
+\(\chi_{\mathrm{cyc}}^e\), where \(\chi_{\mathrm{cyc}}\) is the cyclotomic
+character. Write \(L^*(1)=\operatorname{Hom}_{\Z_\ell}(L,\Z_\ell(1))\)
+with the induced action. Tensors with period rings are over \(\Z_\ell\)
+and carry the diagonal Galois action.
+
+\begin{definition}\label{def:crystalline}
+A lattice \(L\) is \emph{crystalline} if the fixed vectors of
+\(G_{F_v}\) in \(\Bmax\otimes_{\Z_\ell}L\) span over \(\Bmax\).
+It is \emph{potentially crystalline} if the restriction to the Galois
+group of a finite extension of \(F_v\) is crystalline. Here \(\Bmax\)
+is Colmez's crystalline period ring. Fontaine's ring \(\Bcris\) gives
+the same conditions, using \(\varphi(\Bmax)\subseteq\Bcris\subseteq\Bmax\)
+for the Galois-equivariant Frobenius \(\varphi\) \cite{Fo,Co}.
+\end{definition}
+
+\begin{definition}\label{def:jump}
+A lattice is \emph{Hodge--Tate} if \(\C_\ell\otimes_{\Z_\ell} L\) is a
+direct sum of twists \(\C_\ell(e)=\C_\ell\otimes_{\Z_\ell}\Z_\ell(e)\)
+as a semilinear representation. A summand \(\C_\ell(e)\) contributes
+one \emph{jump} \(u=-e\). In particular \(\Z_\ell(e)\) has jump \(-e\).
+\end{definition}
+
+Potentially crystalline lattices are Hodge--Tate and remain potentially
+crystalline under Tate duality. The Tate twists are crystalline. A crystalline
+lattice with all jumps zero is unramified, so inertia acts trivially
+\cite{Fo}.
+
+For a \(G_{F_v}\)-module write \(Z^1\) for the continuous cocycles and
+\(B^1\) for the coboundaries \(g\mapsto gy-y\).
+Write \(\mathrm{red}_n\) for pointwise reduction modulo \(\ell^n\).
+
+\begin{definition}\label{def:Zf}
+The module \(Z_f(L)\) consists of maps \(c\colon G_{F_v}\to L\) for which
+there is a \(y\in\Bmax\otimes_{\Z_\ell}L\) with
+\(1\otimes c(g)=gy-y\) for every \(g\in G_{F_v}\).
+\end{definition}
+
+\begin{theorem}[Rank of crystalline cocycles]\label{thm:rank}
+Suppose \(L\) is potentially crystalline. Then \(Z_f(L)\) is a
+saturated submodule of \(Z^1(F_v,L)\) and is finite free over \(\Z_\ell\).
+If \(n^-\) is the number of negative jumps, counted with multiplicity, then
+\[
+  \rk_{\Z_\ell} Z_f(L)=\rk_{\Z_\ell} L+[F_v:\Q_\ell]n^- .
+\]
+\end{theorem}
+
+Rank and finite generation are read from the proof \cite{GL}.
+Write \(H^1_f(F_v,L)=Z_f(L)/B^1(F_v,L)\). The classical rational local
+condition \(H^1_f(F_v,V)\) is the kernel of extension of scalars to
+\(\Bcris\) on \(H^1(F_v,V)\). The map from \(H^1(F_v,L)\) to \(H^1(F_v,V)\)
+pulls back the rational local condition to \(H^1_f(F_v,L)\) and induces
+\(H^1_f(F_v,L)\otimes_{\Z_\ell}\Q_\ell\cong H^1_f(F_v,V)\).
+Bloch and Kato give the rational condition and its inverse image
+\cite[\S3]{BK}. The comparison of period rings in
+Definition~\ref{def:crystalline} also gives the same kernel on cohomology
+\cite{Co}. For the trivial representation the
+rational condition consists of unramified homomorphisms, which factor
+through \(G_{F_v}\) modulo inertia. For \(\Q_\ell(1)\) the rational
+condition is the image under the Kummer map of the units of \(F_v\)
+after \(\ell\)-adic completion and tensoring with \(\Q_\ell\)
+\cite[Example~3.9]{BK}. Over \(\Q_\ell\), the completed unit group has
+no \(\ell\)-torsion when \(\ell\) is odd.
+
+The first problems compare the cocycles of the Tate twists with their coboundaries.
+
+\begin{problem}\label{pr:tate-ranks}
+For \(L=\Z_\ell(e)\) the ranks of \(Z_f(L)\), for \(e<0\), \(e=0\) and
+\(e>0\), are \(1,1,1+[F_v:\Q_\ell]\), respectively. The corresponding
+dimensions of \(H^1_f(F_v,\Q_\ell(e))\) are \(0,1,[F_v:\Q_\ell]\).
+\end{problem}
+
+\begin{problem}\label{pr:unramified}
+The group \(Z_f(\Z_\ell)\) consists of the unramified homomorphisms,
+with one free parameter given by the value on arithmetic Frobenius.
+\end{problem}
+
+\begin{problem}\label{pr:negative}
+Take \(F_v=\Q_\ell\), \(\ell\) odd and \(e<0\). Put \(n_0=0\) if
+\((\ell-1)\nmid e\) and \(n_0=1+\val_\ell(e)\) otherwise, with
+\(\val_\ell(\ell)=1\). In a basis of \(\Z_\ell(e)\) the function
+\[
+  g\longmapsto \frac{\chi_{\mathrm{cyc}}(g)^e-1}{\ell^{n_0}}
+\]
+generates \(Z_f(\Z_\ell(e))\). The coboundaries have index \(\ell^{n_0}\).
+For \((\ell,e)=(5,-4)\) and \((5,-20)\) the indices are \(5\) and \(25\).
+\end{problem}
+
+Reduction modulo \(\ell^n\) lets us count the two crystalline subgroups for a
+lattice and its Tate dual.
+
+\begin{problem}\label{pr:reduction}
+For potentially crystalline \(L\) and \(n\ge 1\), the kernel of
+\(\mathrm{red}_n\) on \(Z_f(L)\) is \(\ell^n Z_f(L)\).
+Consequently \(\#\mathrm{red}_n Z_f(L)=\ell^{n\rk_{\Z_\ell} Z_f(L)}\).
+\end{problem}
+
+\begin{problem}\label{pr:dual-jump}
+Let \(L\) be potentially crystalline and \(n\ge 1\). A jump \(u\) of
+\(L\) corresponds to a jump \(-u-1\) of its Tate dual, with the same
+multiplicity. Exactly one of the two integers is negative, and
+\[
+  \#\mathrm{red}_n Z_f(L)\,\#\mathrm{red}_n Z_f(L^*(1))
+  =\lvert L/\ell^nL\rvert^{\,2+[F_v:\Q_\ell]} .
+\]
+For a Tate twist over \(\Q_\ell\) the product is \(\ell^{3n}\) for every \(e\).
+\end{problem}
+
+\section{Orthogonality}\label{sec:duality}
+
+Local duality converts a restriction on cup products into a bound on an index
+of crystalline cocycles.
+
+\begin{theorem}[Crystalline local duality]\label{thm:duality}
+Let \(L\) be potentially crystalline, let \(L'=L^*(1)\), and put
+\(V'=L'\otimes_{\Z_\ell}\Q_\ell\).
+In the local Tate pairing of \(H^1(F_v,L)\) with \(H^1(F_v,V'/L')\),
+the subgroup \(H^1_f(F_v,L)\) and the image of \(H^1_f(F_v,V')\) are
+exact annihilators.
+\end{theorem}
+
+The annihilator statement is the lattice form of the classical rational
+duality of Bloch and Kato \cite[Proposition~3.8]{BK}.
+
+For the index form keep \(L\) and \(L'\) as in Theorem~\ref{thm:duality}
+and let \(n\ge 0\) be an integer. Let \(\mathcal Q\) be an additive
+subgroup of maps \(G_{F_v}\to L'\), and \(\mathcal S\) an additive subgroup
+of \(Z^1(F_v,L/\ell^n L)\). Suppose the cup product of every
+\(s\in\mathcal S\cup\mathrm{red}_n Z_f(L)\) with \(\mathrm{red}_n c\) for
+every \(c\in\mathcal Q\), evaluated in the group \(\mu_{\ell^n}\) of
+\(\ell^n\)-th roots of unity, is the coboundary of a continuous \(1\)-cochain
+in the discrete \(G_{F_v}\)-module \(\overline{\Q}_\ell^\times\). Then
+\[
+  [\mathcal S:\mathcal S\cap \mathrm{red}_n Z_f(L)]
+  \ \mid\ [Z_f(L'):Z_f(L')\cap\mathcal Q] .
+\]
+An index of an infinite quotient is recorded as zero.
+The index form is read from the proof \cite{GL}.
+
+For the finite example take \(F_v=\Q_\ell\) and \(\ell\) odd. The two
+modules are \(M=\Z/\ell\) with trivial action, and its dual \(\mu_\ell\).
+
+\begin{problem}\label{pr:finite-counts}
+Both first cohomology groups have order \(\ell^2\). The cocycle groups
+of \(M\) and \(\mu_\ell\) have orders \(\ell^2\) and \(\ell^3\),
+respectively. For \(\ell=5\) the cocycle orders are \(25\) and \(125\).
+\end{problem}
+
+\begin{problem}\label{pr:finite-annihilators}
+The reductions modulo \(\ell\) of \(Z_f(\Z_\ell)\) and \(Z_f(\Z_\ell(1))\)
+are exact annihilators for the pairing of \(Z^1(\Q_\ell,M)\) and
+\(Z^1(\Q_\ell,\mu_\ell)\) induced by cup product and the local invariant.
+Their orders are \(\ell\) and \(\ell^2\), respectively, and their images in
+cohomology are the unramified classes and the Kummer classes of units.
+For \(\ell=5\) the two orders are \(5\) and \(25\).
+\end{problem}
+
+\section{Modules over the Kisin ring}\label{sec:kisin}
+
+The classical module has a Frobenius isomorphism after localization.
+The chart frame gives an integral inclusion after multiplication by a
+power of an Eisenstein element.
+
+Write \(\C_\ell^\flat\) for the tilt, whose ring of integers is
+\(\mathcal O_{\C_\ell^\flat}=\varprojlim_{y\mapsto y^\ell}
+\mathcal O_{\C_\ell}/\ell\), and put \(\Ainf=W(\mathcal O_{\C_\ell^\flat})\).
+Brackets denote Teichm\"uller lifts.
+
+\begin{theorem}[Breuil--Kisin modules]\label{thm:kisin}
+Choose a uniformizer \(\varpi_v\) of \(F_v\) with compatible \(\ell\)-power
+roots. Put \(\mathfrak S=W(k)[[z]]\) for the residue field \(k\) of \(F_v\),
+let \(\Eis\) be the Eisenstein polynomial of \(\varpi_v\), and let
+\(\varphi\) be Witt-vector Frobenius extended by \(\varphi(z)=z^\ell\).
+There is a fully faithful tensor functor from crystalline lattices \(L\)
+to finite free \(\mathfrak S\)-modules \(\mathfrak M(L)\) with a
+Frobenius isomorphism \(\varphi^*\mathfrak M(L)[1/\Eis]\cong
+\mathfrak M(L)[1/\Eis]\). Extend scalars via the map sending \(z\) to the
+Teichm\"uller lift of the chosen system of roots and then applying Witt
+Frobenius to the resulting scalar map. Over \(W(\C_\ell^\flat)\)
+the module is identified with \(L\otimes W(\C_\ell^\flat)\) compatibly
+with Frobenius and the Galois group fixing the chosen roots.
+\end{theorem}
+
+The functor is classical \cite{Ki}\cite[Theorem~4.4]{BMS}. Its value on
+\(\Z_\ell(1)\) is \(\mathfrak S\{1\}\), free of rank one with Frobenius
+given in coordinates by a unit multiple of
+\(y\mapsto \varphi(y)/\Eis\) \cite[Example~4.2 and Corollary~4.33]{BMS}.
+
+For the chart form, choose a compatible sequence of primitive
+\(\ell^j\)-th roots of unity and write
+\(\epsilon=(1,\zeta_\ell,\zeta_{\ell^2},\ldots)\) in the tilt.
+Put \(\tau=[\epsilon^{1/\ell}]-1\). Fontaine's map
+\(\theta\colon\Ainf\to\mathcal O_{\C_\ell}\) sends \([\epsilon]\) to \(1\)
+and \([\epsilon^{1/\ell}]\) to \(\zeta_\ell\). Its kernel is generated by
+\(\sum_{i=0}^{\ell-1}[\epsilon^{1/\ell}]^i\) \cite[Example~3.16]{BMS}.
+In the classical description, \(\Bdr^+\) is the completion of
+\(\Ainf[1/\ell]\) at the kernel of the extension of \(\theta\), and
+\(\Bdr\) is its fraction field \cite{Co}.
+
+A Kummer chart has a ring \(\mathfrak S=W(k)[[z]]\subset\Ainf\), with
+\(k\) a finite field of characteristic \(\ell\) and \(z\) a nonunit
+Teichm\"uller lift. Its Eisenstein element \(\Eis\) is \(z^d\) times a
+unit plus \(\ell\), with \(d\ge 1\), and generates \(\ker\theta\).
+The subgroup \(\Gamma'\) of \(G_{\Q_\ell}\) fixing \(W(k)\) pointwise and
+fixing \(\theta(z)\) lies in \(G_{F_v}\), has finite index prime to \(\ell\)
+there, and contains a neighborhood of the identity in \(G_{F_v}\).
+For every integer \(m\ge 0\) some \(g\in\Gamma'\) has
+\(g(z)=[\epsilon]^m z\). Take \(L\) crystalline on \(\Gamma'\) and let
+\(h\) be the least nonnegative bound for the absolute values of its
+jumps on \(\Gamma'\). Write \(N_A\) for the submodule of \(\Ainf[1/\tau]\otimes L\)
+consisting of vectors \(y\) with \(f(\varphi^j y)\in \Bdr^+\) for every
+\(j\ge 1\) and every \(\Ainf\)-linear functional
+\(f\colon W(\C_\ell^\flat)\otimes L\to\Bdr\) whose restriction to
+\(1\otimes L\) is \(\Gamma'\)-equivariant. Frobenius acts on the Witt
+vectors and fixes the lattice factor.
+
+A consequence of the chart frame theorem \cite{GL} is the existence of a
+free \(\mathfrak S\)-module \(N\) with a basis of \(\rk_{\Z_\ell}L\) vectors
+that also freely generate \(N_A\) over \(\Ainf\).
+In \(W(\C_\ell^\flat)\otimes L\) the inclusions are
+\[
+ \tau^h N_A\subseteq \Ainf\otimes L,\qquad
+ \tau^h(\Ainf\otimes L)\subseteq N_A,\qquad
+ \Eis^h\varphi N\subseteq N .
+\]
+The chart description and the frame consequence are taken as given.
+
+\section{Limits with bounded jumps}\label{sec:limits}
+
+The next two statements give conditions under which a limit is crystalline.
+
+\begin{theorem}[Crystallinity from finite quotients]\label{thm:limit}
+Let \(r\) be a positive integer. A lattice \(L\) is crystalline with jumps in \([-r,0]\)
+if, for every \(n\ge 1\), \(L/\ell^n L\) is isomorphic as a \(G_{F_v}\)-module
+to a quotient of two stable lattices in a crystalline representation
+with jumps in \([-r,0]\).
+\end{theorem}
+
+The lattice theorem is Liu's \cite{Liu}, with the unramified base case due
+to Berger \cite{Be}. The jumps use the sign of Definition~\ref{def:jump}.
+
+For the trace form, fix a valuation ring \(A\) above \(\ell\) on the
+algebraic closure \(\overline F\), with stabilizer \(D_A\) in
+\(G_F=\operatorname{Gal}(\overline F/F)\). Fix
+\(\iota_\ell\colon\C\simeq\overline{\Q}_\ell\).
+A local datum is a field embedding \(j\colon\overline F\hookrightarrow
+\overline{\Q}_\ell\) pulling back the valuation ring of
+\(\overline{\Q}_\ell\) to \(A\), and a homomorphism
+\(j_A\colon D_A\to G_{\Q_\ell}\) giving a topological isomorphism onto
+the pointwise fixer of \(j(F)\), with \(j_A(s)(j(y))=j(sy)\) for \(s\in D_A\)
+and \(y\in\overline F\).
+
+Let \(r\) and \(\rho_{\eta i}\) be continuous finite-dimensional
+representations of \(G_F\) over \(\overline{\Q}_\ell\). Here \(I\) is an
+index set and \(i\) ranges over a finite set \(I_\eta\) for each
+\(\eta\in I\). Fix
+\(a_{\eta i}\in\overline{\Q}_\ell\). Suppose
+\(\sum_{i\in I_\eta}a_{\eta i}\operatorname{tr}\rho_{\eta i}\)
+converges uniformly on \(G_F\) to \(\operatorname{tr}r\) along a
+nontrivial filter on \(I\), and \((y,y')\mapsto\operatorname{tr}(yy')\)
+is nondegenerate on the \(\overline{\Q}_\ell\)-span of the matrices of \(r\).
+For a local representation of \(D_A\) on a space \(V_{\mathrm{loc}}\) over
+\(\overline{\Q}_\ell\), use Definition~\ref{def:crystalline} with \(V_{\mathrm{loc}}\)
+in place of \(L\) and \(D_A\) acting on \(\Bmax\) through \(j_A\).
+Assume each \(\rho_{\eta i}|_{D_A}\) is crystalline for every local datum.
+
+For \(g\in G_{\Q_\ell}\), let \(\gamma\) be \(g\) followed by inclusion
+into \(\C_\ell\). The multiplicity of \(u\in\Z\) at \(\gamma\) is the
+dimension over \(\overline{\Q}_\ell\) of the space of \(\gamma\)-semilinear
+maps \(f\colon V_{\mathrm{loc}}\to\C_\ell\) satisfying
+\[
+ f(sy)=\chi_{\mathrm{cyc}}(j_A(s))^{-u}j_A(s)(f(y))
+\]
+for each \(y\in V_{\mathrm{loc}}\) and all \(s\) sufficiently near the identity for that \(y\).
+The multiplicity is recorded as zero if the dimension is infinite.
+
+Assume either that \(I\) is finite or that there is one family of finite
+multisets \(\mathcal J_\sigma\), indexed by embeddings \(\sigma\colon F\hookrightarrow\C\),
+with the following property. For every \(\eta\in I\), \(i\in I_\eta\),
+local datum with embedding \(j\), and \(g\in G_{\Q_\ell}\), the jump
+multiplicities of \(\rho_{\eta i}|_{D_A}\) at \(\gamma\) are those of
+\(\mathcal J_{\iota_\ell^{-1}\circ g^{-1}\circ j|_F}\).
+Then \(r|_{D_A}\) is crystalline for every local datum. The trace
+criterion is read from the proof \cite{GL}.
+
+A sequence of Tate twists shows the need for control of jumps. For odd \(\ell\), the units of \(\Z_\ell\) are the product
+\(\mu_{\ell-1}\times(1+\ell\Z_\ell)\), with \(\mu_{\ell-1}\) the
+\((\ell-1)\)-st roots of unity. A continuous
+character factoring through \(\chi_{\mathrm{cyc}}\) whose principal-unit
+part is \(y\mapsto y^s=\exp(s\log y)\), for \(s\in\Z_\ell\), can be
+Hodge--Tate only if \(s\in\Z\), by the rank-one Sen weight criterion \cite{Sen}.
+
+\begin{problem}\label{pr:limit-exponent}
+For \(n\ge 0\) put \(k_n=(\ell-1)(1+\ell^2+\cdots+\ell^{2n})\).
+Then \(k_n\to -1/(\ell+1)\) in \(\Z_\ell\), and the jumps of
+\(\Z_\ell(k_n)\) leave every bounded interval.
+\end{problem}
+
+\begin{problem}\label{pr:limit-character}
+Take \(\ell\) odd and \(k_n\) as in Problem~\ref{pr:limit-exponent}.
+The characters \(\chi_{\mathrm{cyc}}^{k_n}\) over \(\Q_\ell\) converge
+uniformly to the character trivial on the torsion part of \(\Z_\ell^\times\)
+and given by \(y\mapsto y^{-1/(\ell+1)}\) on the principal units.
+The limit is not Hodge--Tate. At \(\ell=5\) its principal-unit exponent is
+\(-1/6\).
+\end{problem}
+
+\section{A chart for a Tate twist}\label{sec:tate-chart}
+
+The rank-one calculation compares the chart module with \(\Ainf\otimes L\).
+In \(\Bdr^+\) the classical cyclotomic period \(t_{\mathrm{cyc}}=\log[\epsilon]\)
+is a uniformizer with \(g(t_{\mathrm{cyc}})=\chi_{\mathrm{cyc}}(g)t_{\mathrm{cyc}}\), and
+\((\Bdr)^{G_{F_v}}=F_v\) \cite{Fo,Co}.
+
+\begin{problem}\label{pr:chart-period}
+For \(j\ge 1\), \(\varphi^j\tau\) has order one in the discrete
+valuation ring \(\Bdr^+\).
+\end{problem}
+
+\begin{problem}\label{pr:chart-tate}
+On a chart over \(\Q_\ell\), take \(L=\Z_\ell(e)\) with \(e\ge 0\).
+Then \(N_A=\tau^{-e}(\Ainf\otimes L)\).
+\end{problem}
+
+\begin{problem}\label{pr:chart-frob}
+For the Tate twist of Problem~\ref{pr:chart-tate},
+\(\Eis^e\varphi(N_A)\subseteq N_A\).
+For \(e=1\) and a basis vector \(y\) of \(L\),
+\(\Eis\varphi(\tau^{-1}y)\) is an \(\Ainf^\times\)-multiple of \(\tau^{-1}y\).
+\end{problem}
+
+\begin{leanremark}
+For the crystalline conditions and the equation defining \(Z_f(L)\),
+see \cite{GL}. The rank formula is
+\path{crysCocycles.finrank_eq} in \path{BlochKato.lean}.
+For the index see \path{relIndex_dvd_of_orthogonal} in
+\path{CrystallineDuality.lean}.
+\end{leanremark}
+
+\paragraph{What was taken as given.}
+The inputs are the classical crystalline period and jump facts, the
+Bloch--Kato local conditions, the integral rank and index statements,
+the Breuil--Kisin module and the chart frame, and the two limit statements.
+
+{\small
+\begin{thebibliography}{BMS}
+\bibitem[Be]{Be} L.~Berger, \emph{Limites de repr\'esentations cristallines}, Compos.\ Math.\ \textbf{140} (2004), 1473--1498.
+\bibitem[BMS]{BMS} B.~Bhatt, M.~Morrow and P.~Scholze, \emph{Integral \(p\)-adic Hodge theory}, Publ.\ Math.\ IH\'ES \textbf{128} (2018), 219--397.
+\bibitem[BK]{BK} S.~Bloch and K.~Kato, \emph{\(L\)-functions and Tamagawa numbers of motives}, The Grothendieck Festschrift I, Progr.\ Math.\ 86, Birkh\"auser, 1990, 333--400.
+\bibitem[Co]{Co} P.~Colmez, \emph{Th\'eorie d'Iwasawa des repr\'esentations de de Rham d'un corps local}, Ann.\ of Math.\ \textbf{148} (1998), 485--571.
+\bibitem[Fo]{Fo} J.-M.~Fontaine, \emph{Repr\'esentations \(p\)-adiques semi-stables}, Ast\'erisque \textbf{223} (1994), 113--184.
+\bibitem[Ki]{Ki} M.~Kisin, \emph{Crystalline representations and \(F\)-crystals}, Algebraic Geometry and Number Theory, Progr.\ Math.\ 253, Birkh\"auser, 2006, 459--496.
+\bibitem[Liu]{Liu} T.~Liu, \emph{Torsion \(p\)-adic Galois representations and a conjecture of Fontaine}, Ann.\ Sci.\ \'Ec.\ Norm.\ Sup\'er.\ \textbf{40} (2007), 633--674.
+\bibitem[Sen]{Sen} S.~Sen, \emph{Continuous cohomology and \(p\)-adic Galois representations}, Invent.\ Math.\ \textbf{62} (1980), 89--116.
+\bibitem[GL]{GL} L.~Sernau, \emph{The Generalized Riemann Hypothesis for Dirichlet \(L\)-functions, in Lean~4}, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\end{thebibliography}
+}
+
+\section*{Hints}
+
+\begin{description}
+\item[\ref{pr:negative}] Use \(\Z_\ell^\times=\mu_{\ell-1}\times(1+\ell\Z_\ell)\) to find the least valuation of
+\(\chi_{\mathrm{cyc}}(g)^e-1\).
+\item[\ref{pr:chart-period}] Start with \(j=1\).
+\item[\ref{pr:chart-tate}] Evaluate a chart functional on a basis of \(L\).
+\end{description}
+
+\end{document}

@@ -3,6 +3,7 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{xr-hyper}
 \usepackage[hidelinks]{hyperref}
+\externaldocument[bh-]{20261126T080900--black-box-galois-representations-of-eigenforms-ii__workbook}
 \externaldocument[da-]{20261126T030300--the-data__workbook}
 \externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
 \externaldocument[cg-]{20261125T014100--congruence-modules__workbook}
@@ -71,7 +72,7 @@ The pairs \((\tr U_1(g), \tr U_2(g))\) are \((2,2)\), \((2,-1)\), \((0,0)\) for 
 \end{problem}
 
 \begin{problem}\label{pr:model-congruence}
-The elements of \(\Tb\) that vanish at \(U_2\) are the \((3u, 0)\), \(u \in \Z_3\); so the congruence between \(U_1\) and \(U_2\) has exponent \(1\) (compare Problem~\ref{cg-pr:toy} with \(N = 3\)).  The representation \(U_2 \otimes \Q_3\) is irreducible, and the reduction of \(U_2\) modulo \(3\) has semisimplification \(1 \oplus \mathrm{sgn}\).
+The elements of \(\Tb\) that vanish at \(U_2\) are the \((3u, 0)\), \(u \in \Z_3\); so the congruence between \(U_1\) and \(U_2\) has exponent \(1\).  The representation \(U_2 \otimes \Q_3\) is irreducible, and the reduction of \(U_2\) modulo \(3\) has semisimplification \(1 \oplus \mathrm{sgn}\).
 \end{problem}
 
 \section{Ribet cocycles}\label{sec:ribet}
@@ -167,7 +168,7 @@ Use: \(p_0 \ne p_1\); \(t = 5r\) with \(r \ge 2\) and \(t \le \half^2\); \(E \su
 For the values \(1, 4, 16\) at \(\ell = 3\), the products of differences are \(45, -36, 180\), each of \(3\)-adic order \(2\), and \(9\) times each Lagrange interpolation polynomial has \(3\)-integral coefficients.  In general, with \(g_{\mathrm{cyc}}\) as in Problem~\ref{pr:generator-sep}, \(u := \cyc(g_{\mathrm{cyc}})\), \(r \ge 2\) and \(t' \le t\), every product \(\prod_{i < t',\, i \ne e}(u^e - u^i)\), \(e < t'\), divides \(\sep\).
 \end{problem}
 
-Tame ramification costs too.  A relation \((U_i(\delta) - 1)\,o(U_i(\delta)) = 0\) constrains the value at \(\delta\) of a Ribet cocycle for a character trivial at \(\delta\).
+Theorem~\ref{bh-thm:tame} states the tame condition on attached Galois representations.  The next problem shows how a polynomial relation at an inertia element bounds the contribution from tame ramification.  A relation \((U_i(\delta) - 1)\,o(U_i(\delta)) = 0\) constrains the value at \(\delta\) of a Ribet cocycle for a character trivial at \(\delta\).
 
 \begin{problem}\label{pr:tame}
 \begin{enumerate}
@@ -213,7 +214,7 @@ What remains is the first-order element itself.  The construction ties the rows 
 
 \paragraph{In the Lean formalization.}
 {\raggedright
-In the Lean proof \cite{GL} (\texttt{grh/src/}; \texttt{FO} is \texttt{New/Congruences/FirstOrder}; names without a namespace are in \texttt{New.Selmer}), Theorem~\ref{thm:eigenvalues} is \texttt{exists\_operator\_ellVal\_le\_liftValuationBound} (\texttt{FO/DenominatorBound.lean}), with (a) the predicate \texttt{PreservesHeckeEigenspaces}.  The conclusion of Problem~\ref{pr:deduce} is \texttt{denominatorLe\_clearingBound}, through \texttt{exists\_operator\_det\_clearingBound}; its three facts are \texttt{IsLiftGenerator.exists\_type} with the bounds of \texttt{IsLiftSetting}, \texttt{New.Data.card\_classAut\_dvd\_chosenGroupOrder} and \texttt{New.gramForm\_mem\_embValRing}.  Definition~\ref{def:ribet} is \texttt{ribetCocyclesIn} (\texttt{New/Congruences/LocalLoss/Basic.lean}), and the normalized ones are \texttt{ribetCocyclesVanishingOn} with empty vanishing set; Definition~\ref{def:weak} is the condition of \texttt{IsWeakLift}.  The exponent of Definition~\ref{def:sep} is the choice made in the proof of \texttt{exists\_cyclotomicChar\_pow\_sub\_one\_dvd}, which gives Problem~\ref{pr:generator-sep}; the general product bound of Problem~\ref{pr:separate} follows from \texttt{mul\_prod\_pow\_sub\_pow\_dvd} with multiplier \(1\), \(t'\) characters and \(y = \Delta/2\).  The relative form of Problem~\ref{pr:fitting-step} is \texttt{fittingIdeal.exists\_addVal\_le\_relLength} (\texttt{Lib/General/Algebra/FittingIdealsAndLengths.lean}); the block statement is \texttt{exists\_block\_rows}, applied through \texttt{exists\_tiedRows\_addVal\_det\_le}.  The first-order lemma is \texttt{exists\_isCommonRibetElement\_addVal\_le} (\texttt{FO/RibetLemma.lean}); the proof assembles its inputs in \texttt{ribet\_columns}, with \(b_{\mathrm{main}}\) from \texttt{exists\_length\_le\_loss\_add\_crystallineSelmerLength} and the costs \(b_e\) from \texttt{hasTriangleCost\_of\_isCharacterCocycle}, and obtains the diagonal scalars and their integrality estimate in \texttt{exists\_ellVal\_le\_and\_diagOp\_mem\_ellIntegralForms}; the map for one nonzero generator is constructed in \texttt{exists\_linearMap\_eq\_smul\_mem\_integralForms}.  The cost in Problem~\ref{pr:tame}(c) is the valuation estimate in the proof of \texttt{exists\_tame\_relations}, which also constructs the tame family and proves the annihilation under its hypotheses.  Problem~\ref{pr:arith} is \texttt{mul\_padicValNat\_add\_le\_add\_denominatorError} (\texttt{FO/TraceRelations.lean}).  The construction of the element is \texttt{exists\_traceIdeal\_multiplier\_eq\_sum\_det}, with \texttt{exists\_adjugate\_polynomial} for the adjugate.  The predicates \texttt{IsTraceIdeal}, \texttt{IsCharacterCocycle}, \texttt{HasTriangleCost} and \texttt{IsDetectedBy} occur in the hypotheses of the general lemma; its conclusion gives \(c \in \Oc\) satisfying the displayed valuation bound such that \texttt{IsCommonRibetElement} holds with distinguished coefficient the image of \(c\) in \(L\).  The diagonal scalars are \texttt{New.Patching.BaseLevel.exists\_diagOp\_mem\_ellIntegralForms}, with \texttt{New.Patching.BaseLevel.exists\_indicator\_isCongruent}.  The lift trace is \texttt{HasLiftTrace}; the passage to a lattice in block form uses \texttt{exists\_blockDiagonal\_lattice} and \texttt{New.IsTraceNondeg.exists\_conj\_of\_trace\_eq}; the auxiliary places are chosen by \texttt{exists\_taylorWilesPlaces\_hasRootChain}.
+In the Lean proof \cite{GL} (names relative to \texttt{New.Selmer}), Theorem~\ref{thm:eigenvalues} is \texttt{exists\_operator\_ellVal\_le\_liftValuationBound}, and the conclusion of Problem~\ref{pr:deduce} is \texttt{denominatorLe\_clearingBound}.  Definition~\ref{def:ribet} uses \texttt{ribetCocyclesIn} and, for normalization, \texttt{ribetCocyclesVanishingOn} with empty vanishing set.  Definition~\ref{def:weak} gives the condition in \texttt{IsWeakLift}, and Definition~\ref{def:sep} uses the witness in the proof of \texttt{exists\_cyclotomicChar\_pow\_sub\_one\_dvd}.  The relative Fitting and block bounds are \texttt{fittingIdeal.exists\_addVal\_le\_relLength} and \texttt{exists\_block\_rows}.  The general first-order lemma is \texttt{exists\_isCommonRibetElement\_addVal\_le}, and the tame cost comes from \texttt{exists\_tame\_relations}.
 \par}
 
 \section*{Hints}
@@ -221,7 +222,7 @@ In the Lean proof \cite{GL} (\texttt{grh/src/}; \texttt{FO} is \texttt{New/Congr
 \subsection*{\S\ref{sec:model}}
 \begin{description}
 \item[\ref{pr:model-traces}] Compute trace and determinant for one element of each conjugacy class, and compare the coefficient pairs with the pairs congruent modulo \(3\).
-\item[\ref{pr:model-congruence}] For the reduction, \(U_2\) modulo \(3\) fixes a nonzero vector.
+\item[\ref{pr:model-congruence}] Compare Problem~\ref{cg-pr:toy} with \(N = 3\).  For the reduction, \(U_2\) modulo \(3\) fixes a nonzero vector.
 \end{description}
 
 \subsection*{\S\ref{sec:ribet}}

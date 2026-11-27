@@ -1,0 +1,369 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[gr-]{20261125T011000--galois-representations-black-box__workbook}
+\externaldocument[w3-]{20261126T060700--tied-primes__workbook}
+
+% Chapter number.
+\newcounter{chap}
+\input{chapters}\chapnumber{20261126T080700}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Lc}{\mathcal L}
+\newcommand{\Fr}{\mathrm{Fr}}
+\newcommand{\Rel}{\mathrm{Rel}}
+\newcommand{\inv}{\operatorname{inv}}
+\newcommand{\rec}{\operatorname{rec}}
+\newcommand{\ur}{\mathrm{ur}}
+
+\title{Black box: Galois cohomology of number fields}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+Chapter~\ref{gr-chap} states an attachment theorem for eigenforms on
+definite unitary groups.  Chapter~\ref{w3-chap}, \emph{Tied primes},
+uses a bound for a group of cocycles in terms of relations among
+their values at auxiliary primes.  How does a formula for the orders of two cohomology groups give
+such a bound?  We check the formula for cubic characters over \(\Q\), then
+relate dual cohomology classes to values of cocycles at auxiliary primes.
+
+\paragraph{Prerequisites.}
+Continuous Galois cohomology through degree two, cup products, Kummer
+theory and local and global class field theory \cite{NSW,CFT}.
+Section~\ref{gr-sec:spherical} supplies the definition of most Frobenius
+data.  For the final section use the setting of
+Definition~\ref{w3-def:relations} in Chapter~\ref{w3-chap}.
+
+\section{Local conditions}\label{sec:local}
+
+Local duality gives the complementary conditions needed to apply the
+counting formula.  Let \(F\) be a number field, \(G_F\) its absolute
+Galois group and \(F_v\) the completion at a place \(v\).  In this
+chapter \(M\) denotes a finite discrete \(G_F\)-module.  Write \(M^*=\operatorname{Hom}(M,\mu)\), with
+\(\mu\) the roots of unity in an algebraic closure and with the action
+on both source and target.  Cohomology is continuous.  Restriction
+uses a choice of place above \(v\), so that \(G_{F_v}\) is the
+decomposition group.  At finite \(v\), write \(I_v\) for inertia, the
+kernel of the action on the residue field.  The unramified subgroup
+\(H^1_{\ur}(F_v,M)\) is the kernel of restriction to \(I_v\).
+
+\begin{theorem}[Local Tate duality and Euler characteristic]\label{thm:local-duality}
+At a finite place \(v\), the cup product followed by evaluation
+\(M\otimes M^*\to\mu\) and the local invariant \(\inv_v\) gives a perfect
+pairing
+\[
+  H^1(F_v,M)\times H^1(F_v,M^*)\longrightarrow \Q/\Z .
+\]
+The orders of the local groups satisfy
+\[
+  \begin{aligned}
+  \# H^1(F_v,M)&=\# H^0(F_v,M)\,\# H^2(F_v,M)\,|\#M|_v^{-1},\\
+  \# H^2(F_v,M)&=\# H^0(F_v,M^*).
+  \end{aligned}
+\]
+The absolute value \(|\cdot|_v\) gives a uniformizer absolute value
+\((\#k_v)^{-1}\), where \(k_v\) is the residue field.
+\end{theorem}
+
+\emph{Status.} Classical \cite[(7.2.6), (7.3.1)]{NSW}.  At a real place use
+the same degree-one pairing with the real invariant taking values in
+\(\tfrac12\Z/\Z\).  At a complex place both degree-one groups are zero
+\cite{NSW}.
+
+\begin{theorem}[Unramified classes]\label{thm:unramified}
+At a finite place,
+\[
+  \#H^1_{\ur}(F_v,M)=\#H^0(F_v,M).
+\]
+If inertia acts trivially on \(M\) and the residue characteristic
+is prime to \(\#M\), then \(H^1_{\ur}(F_v,M)\) and
+\(H^1_{\ur}(F_v,M^*)\) are exact annihilators.
+\end{theorem}
+
+\emph{Status.} Classical \cite[(1.7.7)(i), (7.2.14), (7.2.15)]{NSW}.
+
+\begin{definition}\label{def:local-conditions}
+A family of local conditions \(\Lc\) consists of subgroups
+\(\Lc_v\subseteq H^1(F_v,M)\), equal to \(H^1_{\ur}(F_v,M)\) at all but
+finitely many finite places.  Write \(\Lc_v^\perp\) for the annihilator
+under the local pairing.  The Selmer group \(H^1_{\Lc}(F,M)\) is the
+group of classes whose restriction at each \(v\) lies in \(\Lc_v\).
+Use the same definition for \(H^1_{\Lc^\perp}(F,M^*)\).
+\end{definition}
+
+\begin{theorem}[Greenberg--Wiles]\label{thm:gw}
+For local conditions \(\Lc\) as above, the two Selmer groups are finite and
+\[
+  \frac{\#H^1_{\Lc}(F,M)}{\#H^1_{\Lc^\perp}(F,M^*)}
+  = \frac{\#H^0(F,M)}{\#H^0(F,M^*)}
+    \prod_v \frac{\#\Lc_v}{\#H^0(F_v,M)} .
+\]
+Here \(H^0\) means ordinary invariants, including at infinite places.
+\end{theorem}
+
+\emph{Status.} Classical \cite[Thm.~2.19]{DDT}, \cite[(8.7.9)]{NSW}.
+
+\begin{theorem}[Reciprocity]\label{thm:reciprocity}
+For a class in \(H^2(F,\mu)\), the sum of the local invariants is zero.
+Let \(n\ge 1\) and write \(\mu_n\) for the \(n\)-th roots of unity.
+At a finite place \(v\), let \(\chi\) be a continuous character of
+\(G_{F_v}\) into \(\tfrac1n\Z/\Z\) and \([a]\) the Kummer class of
+\(a\in F_v^\times\) in \(H^1(F_v,\mu_n)\).  Then
+\[
+  \inv_v(\chi\cup[a])=\chi(\rec_v(a)).
+\]
+The coefficient pairing sends \((j/n,\xi)\) to \(\xi^j\) for \(\xi\in\mu_n\).
+The local Artin map \(\rec_v\) sends a uniformizer to arithmetic
+Frobenius modulo inertia.  In particular, if \(\chi\)
+is unramified, the invariant is
+\(\operatorname{ord}_v(a)\chi(\Fr_v)\), where \(\operatorname{ord}_v\)
+gives a uniformizer value \(1\).
+\end{theorem}
+
+\emph{Status.} Classical \cite[Ch.~VIII, Thm.~4.2]{CFT},
+\cite[(7.2.13)]{NSW}.
+
+\section{Cubic characters over \texorpdfstring{\(\Q\)}{Q}}\label{sec:cubic}
+
+The following problems compare the two sides of the counting formula
+independently.  Take \(F=\Q\), \(M=\Z/3\) with trivial action, and
+\(q\in\{5,7,13,19\}\).  Use the full local group at \(q\), the
+unramified subgroup at every other finite place, and zero at the real
+place.  Thus \(M^*=\mu_3\).
+
+\begin{problem}\label{pr:cubic-invariants}
+The group of cube roots of unity in \(\Q_q\) has order \(1\) at \(q=5\)
+and \(3\) at \(q=7,13,19\).
+\end{problem}
+
+\begin{problem}\label{pr:cubic-local}
+The order of \(H^1(\Q_q,\Z/3)\) is \(3\) at \(q=5\) and \(9\) at
+\(q=7,13,19\).
+\end{problem}
+
+\begin{problem}\label{pr:cubic-unramified}
+For any finite place \(v\) of \(\Q\), the annihilator of the
+unramified subgroup of \(H^1(\Q_v,\Z/3)\) consists of Kummer
+classes represented by elements of valuation divisible by \(3\).
+\end{problem}
+
+\begin{problem}\label{pr:cubic-dual}
+The dual Selmer group is trivial.
+\end{problem}
+
+\begin{problem}\label{pr:cubic-conductor}
+Inflation identifies
+\(\operatorname{Hom}(\operatorname{Gal}(\Q(\mu_q)/\Q),\Z/3)\)
+with the Selmer group.
+\end{problem}
+
+\begin{problem}\label{pr:cubic-global}
+The Selmer group has order \(1\) at \(q=5\) and \(3\) at \(q=7,13,19\).
+For each of the latter primes the nonzero characters cut out the unique
+cubic subfield of \(\Q(\mu_q)\).
+\end{problem}
+
+\begin{problem}\label{pr:cubic-ratio}
+Both sides of Theorem~\ref{thm:gw} are \(1,3,3,3\) in the order
+\(q=5,7,13,19\).  The real place contributes a factor of \(1/3\) to the
+product.
+\end{problem}
+
+\section{Choosing primes and bounding ramification}\label{sec:primes}
+
+Chebotarev supplies primes with prescribed Frobenius behavior.
+A cocycle has bounded ramification here if it vanishes on inertia outside a fixed finite set of places.
+
+\begin{theorem}[Chebotarev, existence form]\label{thm:chebotarev}
+Let a nonempty subset of \(G_F\) be a neighborhood of each of its
+points, and prescribe a finite set of finite places of \(F\) to avoid.
+There is a finite place \(v\) outside the prescribed set with prime
+residue-field order, and a place above \(v\) of the algebraic closure.
+There is an arithmetic Frobenius element at the chosen place in the
+given subset, and every arithmetic Frobenius element at the chosen
+place lies in the subset.  An arithmetic Frobenius element is a lift
+to the decomposition group of the map \(x\mapsto x^{\#k_v}\) on the
+residue field of the chosen place.
+\end{theorem}
+
+\emph{Status.} The existence statement follows from the classical density
+theorem \cite[Ch.~V, Thm.~3.23]{CFT}.
+
+The density problem uses the Frobenius data of Section~\ref{gr-sec:spherical}.
+
+\begin{problem}\label{pr:most}
+Let \(F\) be a CM field.  If a property of \(s\in G_F\) holds for
+most Frobenius data \((v,A,s)\) in the sense of
+Section~\ref{gr-sec:spherical}, then the set of elements satisfying
+the property is dense in \(G_F\).
+\end{problem}
+
+\begin{theorem}[Finiteness with bounded ramification]\label{thm:finiteness}
+For a finite set of finite places of \(F\), there are only finitely
+many continuous \(1\)-cocycles with values in \(M\) that vanish on
+every inertia group above places outside the set.
+\end{theorem}
+
+\emph{Status.} Classical.  For the finiteness of classes with restricted
+ramification, see \cite[Ch.~I, Cor.~4.15]{ADT}.
+
+\section{The relation count}\label{sec:count}
+
+The count uses the totally complex setting of
+Section~\ref{w3-sec:count} and Definition~\ref{w3-def:relations}.  Use
+\(E\) for the field of the data as in that chapter.  Retain \(V\),
+\(A_v\), \(Z(R)\), \(G'\), \(\Sigma'\) and \(f_E\) from the setting of
+the definition.  Assume \(\sigma\in G_E\) fixes the \(\ell\)-power
+roots of unity, is central modulo \(G'\) and fixes only \(0\) in
+\(V\).  Put \(\Sigma''=\Sigma'\cup\{v:v\mid\ell\}\).
+Use \(M=V\) in Definition~\ref{def:local-conditions}, with
+\(\Lc_v\) the image of \(A_v\) at places in \(\Sigma'\), and with
+the unramified condition at the other finite places.  At complex
+places take zero.  Write \(D=H^1_{\Lc^\perp}(E,M^*)\) in this section.
+Let \(\zeta\) be the fixed primitive root of order \(\ell^{h_1}\) in
+Definition~\ref{w3-def:relations}.  Sending \(\zeta^k\) to
+\(k/\ell^{h_1}+\Z\) identifies \(M^*\) as an abelian group with the
+character group of that definition.  The Galois action on a character
+is precomposition by the inverse action on \(V\), followed by
+multiplication by the cyclotomic character modulo \(\ell^{h_1}\).
+
+The first two problems change a count of cohomology classes to a
+count of cocycles.
+
+\begin{problem}\label{pr:quotient}
+The natural map induces an isomorphism
+\(Z(\varnothing)/B^1(E,V)\cong H^1_{\Lc}(E,V)\),
+where \(B^1(E,V)\) is the group of global coboundaries.
+For \(v\in\Sigma'\), the order of the local image \(\Lc_v\) is
+\(\#A_v\cdot \#H^0(E_v,V)/\#V\).
+\end{problem}
+
+\begin{problem}\label{pr:count-classes}
+The orders satisfy
+\[
+  \#Z(\varnothing)\,(\#V)^{\#\Sigma'+f_E} =
+  \frac{\#D}{\#H^0(E,M^*)}\,\#V\prod_{v\in\Sigma'}\#A_v .
+\]
+\end{problem}
+
+The next two problems relate dual classes to homomorphisms on \(G'\).
+
+\begin{problem}[Sah's lemma]\label{pr:sah}
+Let \(w\) be a \(1\)-cocycle on \(G_E/G'\) with values in \(M^*\),
+and use \(\sigma\) also for its image in the quotient.  Then
+\((\sigma-1)w(g)=(g-1)w(\sigma)\) for each \(g\in G_E/G'\).
+The map \(\sigma-1\) is invertible on \(M^*\), the cocycle \(w\) is a
+coboundary, and \(H^0(E,M^*)=0\).
+\end{problem}
+
+\begin{problem}\label{pr:restrict}
+Restriction gives an injection from \(D\) to the group of continuous
+homomorphisms from \(G'\) to \(M^*\).  For \(b\in D\), let \(y\) be
+the restricted homomorphism extended by zero on \(G_E\setminus G'\)
+and viewed in the character group of Definition~\ref{w3-def:relations}.
+Then \(y\) is locally constant, satisfies the conjugation rule in that
+definition and vanishes on inertia outside \(\Sigma''\).
+\end{problem}
+
+It remains to check the reciprocity condition for the relation.
+
+\begin{problem}\label{pr:local-sum}
+Fix \(b\in D\) with associated \(y\) from Problem~\ref{pr:restrict}.
+Take any family \((v_j,\Fr_j,s_j)_j\) with the choices of
+Definition~\ref{w3-def:relations} outside \(\Sigma''\), and let
+\(z\in Z(\{v_j\})\) with class \([z]\).  The local invariant of
+\(b\cup[z]\), using evaluation on \(M^*\otimes M\), is
+\(y(\Fr_j)(z(s_j))\) at \(v_j\) and zero at every other place.
+\end{problem}
+
+\begin{problem}\label{pr:count}
+The group \(\Rel(\Sigma'')\) is finite.  For every \(b\in D\), let
+\(y\) be the function from Problem~\ref{pr:restrict}.  For every
+test family of Definition~\ref{w3-def:relations} outside \(\Sigma''\)
+and every \(z\in Z(\{v_j\})\), the sum of \(y(\Fr_j)(z(s_j))\) is
+zero.  The map \(b\mapsto y\) is an injection into \(\Rel(\Sigma'')\) and
+gives
+\[
+  \#Z(\varnothing)\,(\#V)^{\#\Sigma'+f_E}
+  \le \#\Rel(\Sigma'')\,\#V\prod_{v\in\Sigma'}\#A_v .
+\]
+If a positive integer \(p\) is prime to \(\ell\) and no place of
+\(\Sigma'\) lies above a prime dividing \(p\), then no place of
+\(\Sigma''\) lies above a prime dividing \(p\).
+\end{problem}
+
+\paragraph{In the Lean formalization.}
+\begin{sloppypar}
+In the Lean proof \cite{GL}, the existence statement is
+\nolinkurl{New.chebotarev}.  The finiteness statement is
+\nolinkurl{New.selmerZ1.finite_unramified_cocycles}, the absolute
+Galois group case of \nolinkurl{New.finite_cocycles_unramified_outside}.
+Problem~\ref{pr:most} is the CM case of \nolinkurl{New.dense_of_mostFrobenii}.
+
+The Lean form of the count uses the avoidance hypotheses of
+Section~\ref{w3-sec:count}.  Let \(p\) be a positive integer prime to
+\(\ell\), with no place of \(\Sigma'\) above a prime dividing \(p\)
+and with every inertia group above primes dividing \(p\) contained
+in \(G'\).
+\nolinkurl{New.RelationSetting.exists_card_cocycles_le} gives a
+finite set \(\widetilde\Sigma\supseteq\Sigma'\) with no place above a prime dividing
+\(p\) such that the inequality of Problem~\ref{pr:count} holds with
+\(\Rel(\widetilde\Sigma)\) on the right.
+\end{sloppypar}
+
+Under the avoidance hypotheses of Section~\ref{w3-sec:count},
+Problem~\ref{pr:count} gives the count used there with
+\(\Sigma''=\Sigma'\cup\{v:v\mid\ell\}\).  The deductions take as given
+local Tate duality and the local Euler characteristic, the
+unramified annihilator and cardinality statements, the Greenberg--Wiles
+formula, reciprocity, Chebotarev and finiteness with bounded ramification.
+
+\newpage
+\section*{Hints}
+The hints give starting points for the cubic computation and the relation count.
+
+\begin{description}
+\item[\ref{pr:cubic-conductor}] Use Kronecker--Weber and the
+prime-power factors of a cyclotomic conductor.
+\item[\ref{pr:most}] Keep track of which Frobenius convention is used.
+\item[\ref{pr:count-classes}] Use Theorem~\ref{thm:gw}.
+\item[\ref{pr:sah}] See Baker and Ribet \cite[Lemma~A.2]{BR}.
+\item[\ref{pr:restrict}] Both modules are trivial on \(G'\).
+\item[\ref{pr:local-sum}] Decompose \(V\) into cyclic groups.
+\end{description}
+
+{\small
+\begin{thebibliography}{NSW}
+\bibitem[ADT]{ADT} J.~S.~Milne, \emph{Arithmetic Duality Theorems},
+2nd ed., BookSurge, 2006.
+\bibitem[BR]{BR} M.~Baker and K.~Ribet,
+\emph{Galois theory and torsion points on curves},
+Journal de Th\'eorie des Nombres de Bordeaux, 2003.
+\bibitem[CFT]{CFT} J.~S.~Milne, \emph{Class Field Theory}, version 4.03,
+\href{https://www.jmilne.org/math/CourseNotes/cft.html}{online notes}.
+\bibitem[DDT]{DDT} H.~Darmon, F.~Diamond and R.~Taylor,
+\emph{Fermat's Last Theorem}, Current Developments in Mathematics 1995,
+\href{https://www.math.mcgill.ca/darmon/pub/Articles/Expository/05.DDT/paper.pdf}{authors' version of September 9, 2007}.
+\bibitem[GL]{GL} \emph{The Generalized Riemann Hypothesis for
+Dirichlet \(L\)-functions, in Lean~4}, readable edition \texttt{grh/},
+commit \texttt{72fead1},
+\url{https://github.com/lsernau/grh-lean/tree/72fead1/grh}.
+\bibitem[NSW]{NSW} J.~Neukirch, A.~Schmidt and K.~Wingberg,
+\emph{Cohomology of Number Fields}, 2nd ed., Springer, 2008.
+\end{thebibliography}
+}
+
+\end{document}
