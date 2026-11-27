@@ -442,6 +442,7 @@ export function startFeedback({
     if (version !== revision) return;
     batchControls.hidden = !count && !batchStatus.textContent;
     batchButton.hidden = !count;
+    batchControls.toggleAttribute("data-active", Boolean(batch));
     batchButton.disabled = Boolean(batch || individualRequests);
     cancel.hidden = !batch;
     batchButton.textContent = batch ? `Getting feedback · ${count} left`
