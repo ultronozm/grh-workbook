@@ -43,7 +43,7 @@
   const prefix = "grh-workbook:done:";
   const solutionPrefix = "grh-workbook:solution:";
   const requireSolutionKey = "grh-workbook:require-solution";
-  const SYNC_ENDPOINT = "";
+  const SYNC_ENDPOINT = "https://grh-progress-sync.ultrono.workers.dev";
   const stampPrefix = "grh-workbook:sync-timestamp:";
   let scheduleSync;
   let storage;
