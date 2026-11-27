@@ -1,0 +1,213 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[da-]{20261126T030300--the-data__workbook}
+\externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
+\externaldocument[pf-]{20261125T013700--pairings-on-a-formal-group-of-height-two__workbook}
+\externaldocument[d1-]{20261126T050100--the-count-congruences-directions-and-factorials__workbook}
+\externaldocument[d2-]{20261126T050200--one-lift-at-a-small-non-split-prime__workbook}
+\externaldocument[nf-]{20261126T070800--the-normal-form-of-theta-derivatives-at-a-non-split-prime__workbook}
+
+\newcounter{chap}
+\input{chapters}\chapnumber{20261126T080600}
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\C}{\mathbb C}
+\newcommand{\Oc}{\mathcal O}
+\newcommand{\Op}{\mathcal O_{\C_p}}
+\newcommand{\val}{\operatorname{val}}
+\newcommand{\ii}{\mathrm i}
+\newcommand{\tth}{\mathrm{th}}
+\newcommand{\cjet}{c_{\mathrm{jet}}}
+\newcommand{\cper}{c_{\mathrm{per}}}
+\newcommand{\Thm}{\mathrm{Th}}
+\setlength{\emergencystretch}{3em}
+
+\title{Frames and couplings: the normal form at all places}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+Chapter~\ref{d2-chap} bounds the derivatives of a theta function by using a normal form for its Taylor series.  Chapter~\ref{nf-chap} starts with the theta function of one curve.  Here we show how a product of copies of that function produces the normal form over all infinite places.  The main calculation turns powers of linear forms into the couplings used to count divisibility.
+
+\paragraph{Prerequisites.}
+Chapter~\ref{nf-chap}, Sections~\ref{nf-sec:curve} and~\ref{nf-sec:general}: the CM theta function \(\tth\), its negative logarithm \(g\), the parameter \(y\), the one-curve expansion and the ring closed under differentiation.  Chapter~\ref{pf-chap}, Section~\ref{pf-sec:count} and Problem~\ref{pf-pr:exp-integral}: normal form, couplings and integral exponentials.  Chapter~\ref{da-chap}, Section~\ref{da-sec:field}: \(E=K(\zeta_{q_1})\) and its infinite places \(\Phi\).  Chapter~\ref{d1-chap}, Problem~\ref{d1-pr:gamma-sum}: the credit \(\gamma_p\) and the scaling valuation.  Chapter~\ref{ob-chap}: the ring map \(\eta\colon\C\to\C_p\), the normalized valuation \(\val\), the ring \(\Oc_\eta\) and the integral vacuum.  Chapter~\ref{d2-chap}, Section~\ref{d2-sec:kernel}: standard data, jet series and the jet scale.  For cyclotomic fields see \cite{Wa}.  A series is integral if its coefficients belong to \(\Op\), the ring of integers of \(\C_p\).
+
+\section{A frame for two places}\label{sec:model}
+
+How can the same pair of linear forms give different couplings at different primes? We start with the matrix identity that fixes the pair.
+
+\begin{definition}\label{def:resolution}
+Use the resolution of the identity of Definition~\ref{nf-def:resolution}, with vectors \(w_i\in E^n\) and multiplicities \(c_i\in\Z_{\ge0}\) indexed by a finite set.  In this notation the weighted identity and the associated linear forms are
+\[
+ \sum_i c_i\,\tau(w_{i,a})\,\overline{\sigma(w_{i,b})}
+   =[\tau=\sigma][a=b],\qquad
+ \mu_i(z)=\sum_{\tau,a}\eta\bigl(\overline{\tau(w_{i,a})}\bigr)z_{\tau,a}.
+\]
+The coordinate indices \(a,b\) run from \(1\) to \(n\), and \(\tau,\sigma\) run over \(\Phi\), viewed as embeddings over \(K\).  A resolution is integral above \(p\) if every coordinate of every \(w_i\) is integral at all places above \(p\).
+\end{definition}
+
+For the model take \(E_0=\Q(\sqrt{-7},\ii)\), with embeddings over \(\Q(\sqrt{-7})\) sending \(\ii\) to \(\ii\) and \(-\ii\), in that order.  Take \(n=1\), \(w_1=1/2\), \(w_2=\ii/2\), \(c_1=c_2=2\) and variables \(z_1,z_2\).  Write \(\ii\) also for its image through \(\eta\).  We use \(E_0\) only for the model.
+
+\begin{problem}\label{pr:frame}
+The matrix \(A=\frac12\left(\begin{smallmatrix}1&\ii\\1&-\ii\end{smallmatrix}\right)\) satisfies \(2AA^*=I_2\).  The vectors \(w_1,w_2\) with multiplicities \(c_1,c_2\) give a resolution integral above every odd prime, with forms \(\mu_1=(z_1+z_2)/2\) and \(\mu_2=\ii(z_2-z_1)/2\).
+\end{problem}
+
+\begin{problem}\label{pr:five}
+The sum \(2(\mu_1^6+\mu_2^6)=\frac38(z_1^5z_2+z_1z_2^5)+\frac54 z_1^3z_2^3\) reduces to \(z_1^5z_2+z_1z_2^5\) modulo \(5\).
+\end{problem}
+
+\begin{problem}\label{pr:three-seven}
+At \(3\), the sum \(2(\mu_1^4+\mu_2^4)=(z_1^4+6z_1^2z_2^2+z_2^4)/4\) reduces to \(z_1^4+z_2^4\).  At \(7\), the sum \(2(\mu_1^8+\mu_2^8)\) reduces to \(z_1^8+z_2^8\).  In degree two the exact sum is \(2(\mu_1^2+\mu_2^2)=2z_1z_2\).
+\end{problem}
+
+\section{From powers to couplings}\label{sec:couplings}
+
+The next problems relate powers of the linear forms to the couplings by a congruence.  Use \(E,\Phi,q_1,d\) of Chapter~\ref{da-chap}, and take \(p\) non-split in \(K\).  By Problem~\ref{da-pr:split}, \(p\) is odd and \(p\nmid q_1\).  For \(e\in I_p^\circ\) of Section~\ref{pf-sec:count}, the partner of \(\tau\) is \(\tau_e=[-p^e]\tau\) and the coupling is \(\Gamma_e=\sum_{\tau,a}z_{\tau,a}^{p^e} z_{\tau_e,a}\).  Use the modulus \(\pi_p\) of Chapter~\ref{d1-chap} and take congruences coefficientwise.  For resolutions integral above \(p\), the weighted power sums of degree \(p^e+1\) are independent of the resolution modulo \(\pi_p\).
+
+\emph{Ring of integers.} For the field \(E\) above, \(\Oc_E=\Oc_K[\zeta_{q_1}]\).  \emph{Status.} Read from the proof as part of the computation of the relative different \cite{GL}.  For the cyclotomic background see \cite{Wa}.
+
+\begin{problem}\label{pr:frobenius}
+For \(x\in E\) integral above \(p\), \(\eta(\overline{\tau(x)})^{p^e}\equiv\eta(\tau_e(x))\pmod{\pi_p}\).
+In the model, for odd \(e\) the partner exchanges the places at \(5\) and fixes both at \(3\).  At \(7\) it exchanges the places for even \(e\ge0\) and fixes both for odd \(e\).  The degree-\(p+1\) sums in Problems~\ref{pr:five} and~\ref{pr:three-seven} are congruent to \(\Gamma_1\) modulo \(\pi_p\) for \(p=3,5,7\).  In degree two at \(7\) the sum is congruent to \(\Gamma_0\) modulo \(\pi_7\).
+\end{problem}
+
+For the frame of roots of unity, use the finite idele \(\alpha_0\) of the Weil data from Section~\ref{nf-sec:general}.  At the places dividing \((1+\sqrt{-d})/2\) its inverse is the derivative of the \(q_1\)-th cyclotomic polynomial evaluated at \(\zeta_{q_1}\).  At all other finite places its inverse is \(1\).  \emph{Status.} The formula for the idele is read from the proof \cite{GL}.
+
+\begin{problem}\label{pr:roots}
+Every prime dividing \(q_1\) splits in \(K\).  The \(q_1\) powers \(\zeta_{q_1}^k\), \(0\le k<q_1\), each taken once, form a tight frame of bound \(q_1\).  That is, their weighted matrix in the resolution identity for one coordinate is \(q_1\) times the identity and every finite image \(\alpha_0^{-1}\zeta_{q_1}^k\) is integral at every finite place.
+\end{problem}
+
+\begin{problem}\label{pr:coupling-congruence}
+For a resolution integral above \(p\),
+\[
+ \sum_i c_i\,\eta(\tau_e(w_{i,a}))\,\mu_i(z)=z_{\tau_e,a}.
+\]
+Deduce \(\sum_i c_i\mu_i^{p^e+1}\equiv\Gamma_e\pmod{\pi_p}\), and \(\sum_i c_i(\mu_i^{p^e+1})^{p^j}\equiv\Gamma_e^{p^j}\pmod{\pi_p}\) for every \(j\ge0\).
+\end{problem}
+
+The next two problems use the one-curve expansion of Section~\ref{nf-sec:curve}.  Use its \(\varpi\), \(c_\varpi=\varpi^{p+1}/p\), and integral series \(\mathcal E\) with zero constant term in the exponent \(c_\varpi\mathcal E\).  Write \(\mathfrak l_{e,j}\) for the coefficients \(\lambda_{ej}\) in the one-curve congruence for \(\mathcal E\) modulo \(\pi_p\).  Let \(\tth,g,y\) belong to the curve of lattice \(\Omega_0\Oc_K\) in Definition~\ref{d2-def:jet-series}, read through \(\eta\).  As in Definition~\ref{nf-def:resolution}, \(\Op[[y(\mu_i(z)) : i]]\) denotes the substitutions of the series \(y(\mu_i(z))\) into integral series.
+
+\begin{problem}\label{pr:exponent}
+For a resolution integral above \(p\),
+\[
+ \sum_i c_i\mathcal E(\mu_i(z))\equiv
+    \sum_{e\in I_p^\circ}\sum_{j\ge0}\mathfrak l_{e,j}\Gamma_e^{p^j}\pmod{\pi_p}.
+\]
+\end{problem}
+
+\begin{problem}\label{pr:products}
+For any integral series \(G\) in finitely many variables with \(G(0)=0\), the series \(\exp(c_\varpi\pi_p G)\) is integral.  With \(\varpi\) and \(\mathfrak l\) fixed by the one-curve expansion, for every \(n\ge0\), every resolution on \(E^n\) integral above \(p\), and every \(H\in\Op[[y(\mu_i(z)):i]]\), the product \(\bigl(\prod_i\tth(\mu_i(z))^{c_i}\bigr)H\) has the normal form for \((I_p^\circ,([-p^e]\cdot)_e,\varpi,\mathfrak l)\).  If \(p\) is inert, then \(\mathfrak l_{e,0}\) is a unit for every odd \(e\).
+\end{problem}
+
+\section{Checking the exponential on two variables}\label{sec:check}
+
+We return to the model to check how adding a multiple of the first coupling to the exponent changes the coefficient valuations.  Use the curve of conductor \(49\) and the point \(t=(2,-1)\) of Chapter~\ref{nf-chap}.  In the unscaled coordinate \(u\) of Problem~\ref{nf-pr:curve}, let \(\wp_0(u)=\wp(u+t)-\wp(t)\).  Use a formal negative logarithm \(g_0\) with \(g_0(0)=g_0'(0)=0\), \(g_0''=2+\wp_0\), choosing \(2\) for the constant of integration in \(g_0''\).  The equation of Problem~\ref{nf-pr:g-coeff} in the unscaled coordinate is \(\wp_0''=6\wp_0^2+21\wp_0+14\), with \(\wp_0(0)=\wp_0'(0)=0\).  Let \(\tth_0=\exp(-g_0)\) and \(\Thm(z_1,z_2)=\tth_0(\mu_1(z))^2\tth_0(\mu_2(z))^2\).
+
+\begin{problem}\label{pr:jets}
+Through total degree six, the product \(\Thm\) is
+\[
+ 1-2z_1z_2+\tfrac98 z_1^2z_2^2-\tfrac7{48}(z_1^4+z_2^4)
+   -\tfrac3{32}z_1^3z_2^3+\tfrac{133}{960}(z_1^5z_2+z_1z_2^5).
+\]
+By machine, the jets \(\partial_1^5\partial_2\Thm(0)\), \(\partial_1^6\Thm(0)\) and \(\partial_1^8\Thm(0)\) are \(133/8\), \(0\) and \(7105/32\).  At \(5\) the first is a unit and the last has valuation \(1\).
+\end{problem}
+
+At an inert prime \(p\), the valuation of a coefficient of degree \(a+b\) after rescaling is its original valuation plus \((a+b)/(p^2-1)\), by the inert scale of Section~\ref{pf-sec:count}.
+
+\begin{problem}\label{pr:remove-five}
+At \(5\) the only non-integral coefficients of \(\Thm\) through degree eight are those of \(z_1^5z_2,z_1z_2^5,z_1^6z_2^2,z_1^2z_2^6\), each of valuation \(-1\).
+By machine, for \(W=\Thm\exp\bigl(\frac{49}{120}(z_1^5z_2+z_1z_2^5)\bigr)\),
+\[
+ \val[z_1^a z_2^b]W+\frac{a+b}{24}\ge0\qquad(a+b\le29).
+\]
+For \(\Thm\) the same expression has minimum \(-3\) in that range.
+\end{problem}
+
+\begin{problem}\label{pr:remove-three}
+At \(3\) the only non-integral coefficients of \(\Thm\) through degree four are those of \(z_1^4,z_2^4\), and \(\partial_1^4\Thm(0)=-7/2\) is a unit.  By machine, \(W=\Thm\exp(\frac7{12}(z_1^4+z_2^4))\) satisfies \(\val[z_1^a z_2^b]W+(a+b)/8\ge0\) for \(a+b\le11\).
+\end{problem}
+
+\section{The jet series of a standard datum}\label{sec:standard}
+
+A product formula transfers the calculation from the curve to the jet series used in Chapter~\ref{d2-chap}.  Use the standard data and scales of Definitions~\ref{d2-def:standard} and~\ref{d2-def:jet-series} on a standard positive definite space \(V\) over \(E\) with \(n\) coordinates, all signs \(+1\) and the identity matrix as adelic point (Section~\ref{ob-sec:spaces}).
+
+\emph{The theta product of a standard datum.}
+Fix a prime \(p\), a ring homomorphism \(\eta\colon\C\to\C_p\), a nonzero denominator \(\delta\in\Oc_K\) and a standard datum \(\varphi\) of denominator \(\delta\) on \(V\).  There is a resolution \((w_i,c_i)\) on \(E^n\) whose finite adelic vectors \(\alpha_0^{-1}w_i\) are integral above \(p\), where \(\alpha_0\) is the finite idele of the Weil data.  The norm \(\delta\bar\delta\) is a positive integer.  The jet series of \(\varphi\) at scale \(\bar\delta\sqrt{2\pi/\sqrt d}/\Omega_0\), read through \(\eta\), is
+\[
+ \left(\prod_i \tth(\mu_i(z))^{c_i}\right)^{\delta\bar\delta} H,
+ \qquad H\in\Op[[y(\mu_i(z)):i]].
+\]
+For \(p\nmid q_1\) the vectors \(w_i\) are integral above \(p\) and \(\lvert\eta(\cper)\rvert=1\).
+\emph{Status.} Read from the proof \cite{GL}.  For background on the theta group see Mumford \cite{Mu}, and for related integrality results on CM theta functions see Finis \cite{Fi}.
+
+The next problems give the two conclusions on standard data.
+
+\begin{problem}\label{pr:rescale}
+If \(F\) has the normal form with \(\varpi,\mathfrak l\), and \(c'\in\Op\), then \(F(c'z)\) has the normal form for the same partners, exponents and \(\varpi\), with coefficients \((c')^{(p^e+1)p^j}\mathfrak l_{e,j}\).  For \(c'=0\) the resulting series is integral and constant.
+\end{problem}
+
+\begin{problem}\label{pr:datum}
+For \(p\) non-split and \(c\in\Oc_\eta\), the jet series at scale \(c\cjet\) of a standard datum of denominator \(1\) has the normal form asserted in Theorem~\ref{thm:normal-form}.
+\end{problem}
+
+\begin{problem}\label{pr:jet-ring}
+Let \((\nu_i)_i\) be a finite family of linear forms in the variables \(z\), with coefficients in \(\Op\).  The ring generated by \(\Op[[y(d\nu_i(z)):i]]\) and by the series \(\tth(d\nu_i(z))\) and \(g'(d\nu_i(z))\) is closed under partial differentiation and has integral constant terms.  Deduce Theorem~\ref{thm:integral} for \(p\nmid q_1\).
+\end{problem}
+
+Problem~\ref{pr:datum} gives the normal form used in Chapter~\ref{d2-chap}.  Problem~\ref{pr:jet-ring} gives jet integrality for \(p\nmid q_1\).
+\nopagebreak
+\begin{theorem}[Normal form]\label{thm:normal-form}
+Let \(\chi_K(p) \ne 1\), \(\varphi\) a standard datum of denominator \(1\) and \(c \in \C\) with \(\lvert \eta c \rvert \le 1\).  Then the jet series of \(\varphi\) at scale \(c\cjet\), read in \(\C_p\) through \(\eta\), has the normal form of Section~\ref{pf-sec:count} for the exponents \(I_p^\circ\), the partner rule \(([-p^e]\cdot)_e\), some \(\varpi\) with \(\val \varpi = 1/(p-1) - \gamma_p\), and some integral family of coefficients.
+\end{theorem}
+
+\begin{theorem}[Integrality]\label{thm:integral}
+If \(\delta \ne 0\) and \(\varphi\) is standard of denominator \(\delta\), then every jet of its jet series at scale \(\bar\delta d \cjet\), along a polynomial with coefficients in \(\Oc_\eta\), is integral at \(\eta\).
+\end{theorem}
+
+\emph{Status.} The case \(p\mid q_1\) of integrality is read from the proof.
+
+\paragraph{Inputs used.}
+From Section~\ref{nf-sec:curve} we used the one-curve expansion, integrality of the scaled parameter, and closure of \(\Op[[y]]\) under differentiation.  We took as given the ring-of-integers and idele formulas, and the theta product of a standard datum with its integrality and unit conditions away from \(q_1\).  Chapter~\ref{d2-chap} uses the resulting normal form to bound jets along products of minors.
+
+\begin{leanremark}
+\begin{sloppypar}
+In the Lean proof \cite{GL} (namespace \path{New.} omitted), the resolution and forms are \path{IsResolution} and \path{daggerForms}.  The integer ring comes from \path{Parameters.differentIdeal_eq_span_and_adjoin_eq_top}.  Problem~\ref{pr:products} gives \path{Parameters.exists_hasNormalForm}.  The idele formula is \path{Parameters.inv_alpha_apply}.  The product formula is \path{Parameters.exists_jetSeries_map_eq_thetaProd_pow_mul}.  The two assertions away from \(q_1\) are \path{Parameters.isIntegralAbove_of_finiteImage_mem} and \path{Parameters.norm_iota_periodFactor_eq_one}.  The two theorems are \path{Parameters.exists_hasNormalForm_jetSeries} and \path{Parameters.norm_jet_jetSeries_le_one}.
+\end{sloppypar}
+\end{leanremark}
+
+\clearpage
+\section*{Hints}
+
+\begin{description}
+\item[\ref{pr:frame}--\ref{pr:three-seven}] Use the column embeddings and the binomial theorem.
+\item[\ref{pr:frobenius}] Compare the two maps on integral generators after clearing denominators prime to \(p\).  In the model reduce \(-p^e\) modulo \(4\).
+\item[\ref{pr:roots}] Use a geometric sum for two distinct embeddings.
+\item[\ref{pr:coupling-congruence}] Raise a linear form to the \(p^e\)-th power in the quotient where \(p=0\).
+\item[\ref{pr:products}] Problem~\ref{d1-pr:gamma-sum} and the scaled-parameter clause of the one-curve statement.
+\item[\ref{pr:jets}--\ref{pr:remove-three}] In SageMath use `\texttt{PowerSeriesRing}' with total-degree precision and \texttt{exp}.  Start with the differential equation for \(\wp_0\).  For the jets multiply the coefficients by the corresponding factorials.
+\item[\ref{pr:datum}] Compare the two scales using Definition~\ref{d2-def:jet-series}.
+\item[\ref{pr:jet-ring}] Apply the chain rule using Problem~\ref{nf-pr:jet-ring}.  For the jets use the product formula and Problem~\ref{nf-pr:derivatives}.
+\end{description}
+
+\begin{thebibliography}{GL}
+\bibitem[Fi]{Fi} T.~Finis, \emph{Divisibility of anticyclotomic \(L\)-functions and theta functions with complex multiplication}, Ann. of Math.  \textbf{163} (2006), 767--807.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[Mu]{Mu} D.~Mumford, \emph{On the equations defining abelian varieties.  I}, Invent.  Math.  \textbf{1} (1966), 287--354.
+\bibitem[Wa]{Wa} L.~C.~Washington, \emph{Introduction to Cyclotomic Fields}, 2nd ed., Springer, 1997.
+\end{thebibliography}
+\end{document}
