@@ -10,6 +10,10 @@ Proved here in general are the deductions: the theorem from A, B and C; Theorem 
 
 ## What changed
 
+### 27 November 2026. The main inequality in mean form
+
+Two new problems: the remainder as a tail integral (Chapter 1) and the mean form of the main inequality, which shows the saving $1/m$ and the origin of the sixth logarithm (Chapter 3).  The existence theorem of *The data* now states only the three bounds used later, and its scale problem gives the number of decimal digits of $x$.  *The main inequality* compares the inequality with the one in the Lean code as first released, citing H. Nashida's note, and no longer repeats a deduction of Chapter 3.  Chapters 69 and 71 each gain a short explanation suggested by K. Jin's translation.  The Overview states Theorem C for all conjugates and explains the role of the term $H$.
+
 ### 27 November 2026. Overview
 
 The optional Overview precedes Part I on the site and in the collected PDF.  It gives a short account of the proof, a table of the Parts, the statements taken on trust, and the notation shared by the sheets.
