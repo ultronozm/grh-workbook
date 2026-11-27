@@ -228,7 +228,21 @@ export function startFeedback({
   batchStatus.setAttribute("role", "status");
   batchControls.append(batchButton, cancel, batchStatus);
   batchControls.hidden = true;
-  header.append(batchControls);
+  // The sheet-wide request sits at the end: before the hints on the full page,
+  // on the last card when the sheet is read one problem at a time.
+  function placeBatch() {
+    const cards = document.querySelectorAll(".reading-card-content");
+    if (document.body.hasAttribute("data-reading-cards") && cards.length) {
+      cards[cards.length - 1].append(batchControls);
+      return;
+    }
+    let anchor = document.querySelector("#hints");
+    if (!anchor) for (anchor = header.nextElementSibling; anchor && !anchor.matches("script"); anchor = anchor.nextElementSibling);
+    if (anchor) anchor.before(batchControls);
+    else header.parentNode.append(batchControls);
+  }
+  placeBatch();
+  new MutationObserver(placeBatch).observe(document.body, {attributes: true, attributeFilter: ["data-reading-cards"]});
   let batch;
   let individualRequests = 0;
 
@@ -442,7 +456,6 @@ export function startFeedback({
     if (version !== revision) return;
     batchControls.hidden = !count && !batchStatus.textContent;
     batchButton.hidden = !count;
-    batchControls.toggleAttribute("data-active", Boolean(batch));
     batchButton.disabled = Boolean(batch || individualRequests);
     cancel.hidden = !batch;
     batchButton.textContent = batch ? `Getting feedback · ${count} left`

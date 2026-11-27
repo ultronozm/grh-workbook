@@ -1307,6 +1307,7 @@
     let group = [], inHints = false;
     // Keep the original sibling order, including whitespace, for the full page.
     for (let node = header.nextSibling; node && !node.matches?.("script"); node = node.nextSibling) {
+      if (node.classList?.contains("feedback-batch")) continue;
       nodes.push(node);
       if (node.id === "hints") inHints = true;
       else if (node.matches?.("h1, .footnotes, [role='doc-endnotes']")) inHints = false;
