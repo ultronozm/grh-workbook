@@ -228,10 +228,13 @@
   const solutionEditors = [];
   function addSolutionEditor(problem, ids, label) {
     const area = make("div", "problem-solution");
+    const view = solutionLink("View solution");
     const toggle = solutionLink("Write solution");
-    area.append(toggle);
+    const viewer = make("div", "solution-preview solution-viewer mathjax_ignore");
+    viewer.hidden = true;
+    area.append(view, toggle, viewer);
     problem.append(area);
-    let editor, input, note, preview, status, timer, revision = 0;
+    let editor, input, note, preview, status, timer, revision = 0, viewRevision = 0;
     let saved = "";
     let dirty = false;
 
@@ -239,6 +242,24 @@
       saved = readSolution(ids);
       toggle.textContent = saved ? "Edit solution" : "Write solution";
       toggle.classList.toggle("solution-written", Boolean(saved));
+      view.hidden = !saved || (editor && !editor.hidden);
+      if (!saved) hideViewer();
+    }
+
+    function hideViewer() {
+      viewRevision++;
+      viewer.hidden = true;
+      viewer.replaceChildren();
+      view.textContent = "View solution";
+    }
+
+    function showViewer() {
+      const version = ++viewRevision;
+      const {fragment, math} = renderMarkdown(saved);
+      viewer.replaceChildren(fragment);
+      viewer.hidden = false;
+      view.textContent = "Hide solution";
+      if (math.length) typesetSolution(math, () => viewRevision === version).catch(() => {});
     }
 
     function grow() {
@@ -288,6 +309,7 @@
       editor.hidden = true;
       preview.replaceChildren();
       toggle.hidden = false;
+      refreshLink();
       toggle.focus();
     }
 
@@ -326,8 +348,10 @@
         refreshLink();
         input.value = saved;
         status.textContent = saved ? "Saved" : "";
+        hideViewer();
         editor.hidden = false;
         toggle.hidden = true;
+        view.hidden = true;
         grow();
         updatePreview();
       }
@@ -336,6 +360,7 @@
     }
 
     toggle.addEventListener("click", () => open());
+    view.addEventListener("click", () => (viewer.hidden ? showViewer() : hideViewer()));
     refreshLink();
     solutionEditors.push(() => {
       const previous = saved;
