@@ -1,3 +1,42 @@
+// Fold the Lean remarks: most readers do not need them, and a closed
+// disclosure keeps them one click away.  Opened for printing and when a
+// link points inside one.
+(() => {
+  "use strict";
+  const folded = [];
+  for (const remark of document.querySelectorAll("div.leanremark")) {
+    const details = document.createElement("details");
+    details.className = "leanremark";
+    const summary = document.createElement("summary");
+    summary.textContent = "In the Lean formalization";
+    details.append(summary);
+    const first = remark.querySelector(":scope > p:first-child > em:first-child");
+    if (first && /^In the Lean formalization/.test(first.textContent)) {
+      const rest = first.nextSibling;
+      first.remove();
+      if (rest && rest.nodeType === Node.TEXT_NODE) rest.textContent = rest.textContent.replace(/^\.\s*/, "");
+    }
+    while (remark.firstChild) details.append(remark.firstChild);
+    remark.replaceWith(details);
+    folded.push(details);
+  }
+  const openFor = () => {
+    const target = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    const details = target?.closest?.("details.leanremark");
+    if (details) details.open = true;
+  };
+  openFor();
+  window.addEventListener("hashchange", openFor);
+  let printState = [];
+  window.addEventListener("beforeprint", () => {
+    printState = folded.map(d => d.open);
+    folded.forEach(d => { d.open = true; });
+  });
+  window.addEventListener("afterprint", () => {
+    folded.forEach((d, i) => { d.open = printState[i] ?? false; });
+  });
+})();
+
 (() => {
   "use strict";
 
