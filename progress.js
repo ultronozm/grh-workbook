@@ -42,6 +42,8 @@
 
   const prefix = "grh-workbook:done:";
   const solutionPrefix = "grh-workbook:solution:";
+  const feedbackPrefix = "grh-workbook:feedback:";
+  let refreshFeedback;
   const requireSolutionKey = "grh-workbook:require-solution";
   const SYNC_ENDPOINT = "https://grh-progress-sync.ultrono.workers.dev";
   const stampPrefix = "grh-workbook:sync-timestamp:";
@@ -54,7 +56,8 @@
   }
 
   function isProgressKey(key) {
-    return key === requireSolutionKey || key.startsWith(prefix) || key.startsWith(solutionPrefix);
+    return key === requireSolutionKey || key.startsWith(prefix) || key.startsWith(solutionPrefix) ||
+      key.startsWith(feedbackPrefix);
   }
 
   function writeProgress(key, value) {
@@ -110,6 +113,45 @@
     }
   }
 
+  function validFeedback(record) {
+    return record && typeof record.text === "string" && record.text.trim() &&
+      typeof record.hash === "string" && /^[0-9a-f]{64}$/.test(record.hash) &&
+      typeof record.model === "string" && record.model.trim() &&
+      typeof record.date === "string" && Number.isFinite(Date.parse(record.date));
+  }
+
+  function readFeedback(ids) {
+    for (const id of ids) {
+      try {
+        const record = JSON.parse(storage.getItem(feedbackPrefix + id));
+        if (validFeedback(record)) return record;
+      } catch {
+        // An invalid record does not hide feedback under an older ID.
+      }
+    }
+    return null;
+  }
+
+  function saveFeedback([id, ...aliases], {text, hash, model, date}) {
+    writeProgress(feedbackPrefix + id, JSON.stringify({text, hash, model, date}));
+    for (const alias of aliases) {
+      const key = feedbackPrefix + alias;
+      if (storage.getItem(key) !== null) writeProgress(key, null);
+    }
+  }
+
+  function readAllFeedback() {
+    const feedback = new Map();
+    for (let i = 0; i < storage.length; i++) {
+      const key = storage.key(i);
+      if (!key?.startsWith(feedbackPrefix)) continue;
+      const id = key.slice(feedbackPrefix.length);
+      const record = readFeedback([id]);
+      if (record) feedback.set(id, record);
+    }
+    return feedback;
+  }
+
   function make(tag, className, text = "") {
     const node = document.createElement(tag);
     node.className = className;
@@ -125,6 +167,7 @@
 
   function inlineMarkdown(parent, source, math) {
     const literals = [];
+    // Reader and model text only enter the DOM as text nodes.
     // Protect math and code before interpreting Markdown punctuation.
     const text = source.replace(/\0/g, "�").replace(
       /`([^`\n]+)`|(\\\(([\s\S]+?)\\\)|\$((?:\\.|[^$\\\n])+)\$)|(\\\$)/g,
@@ -252,6 +295,7 @@
   }
 
   const solutionEditors = [];
+  const feedbackProblems = [];
   function addSolutionEditor(problem, ids, label) {
     const area = make("div", "problem-solution");
     const view = solutionLink("View solution");
@@ -319,6 +363,7 @@
         status.textContent = input.value.trim() ? "Saved" : "";
         if (input.value.trim()) showNote(false);
         refreshLink();
+        refreshFeedback?.();
       } catch {
         dirty = true;
         status.textContent = "Could not save in this browser.";
@@ -398,6 +443,12 @@
         grow();
         updatePreview();
       }
+    });
+    feedbackProblems.push({
+      problem, ids, area, viewer,
+      revealSolution() {
+        if (saved && viewer.hidden && (!editor || editor.hidden)) showViewer();
+      },
     });
     return open;
   }
@@ -582,19 +633,26 @@
         done: [...readDone()].sort(),
         solutions: Object.fromEntries([...readSolutions()].sort(([a], [b]) => a.localeCompare(b))),
       };
+      const feedback = readAllFeedback();
+      if (feedback.size) backup.feedback = Object.fromEntries(feedback);
       download("grh-workbook-progress.json", "application/json", JSON.stringify(backup, null, 2));
     });
+
+    function exportedFeedback(ids) {
+      const record = readFeedback(ids);
+      return record ? `\n\n**Feedback from ${record.model}, ${record.date.slice(0, 10)}**\n\n${record.text}` : "";
+    }
 
     panel.querySelector("[data-export-solutions]").addEventListener("click", () => {
       const sections = [];
       for (const {ids, heading, url} of destinations) {
         const text = readSolution(ids);
-        if (text) sections.push(`## [${heading}](<${url}>)\n\n${text}`);
+        if (text) sections.push(`## [${heading}](<${url}>)\n\n${text}` + exportedFeedback(ids));
       }
       const other = [...readSolutions()].filter(([id]) => !knownIds.has(id));
       if (other.length) {
         sections.push("## Other saved solutions",
-          ...other.map(([id, text]) => `### ${id}\n\n${text}`));
+          ...other.map(([id, text]) => `### ${id}\n\n${text}` + exportedFeedback([id])));
       }
       if (sections.length) {
         status.textContent = "";
@@ -613,11 +671,15 @@
       try {
         backup = JSON.parse(await selected.text());
         const solutions = backup?.solutions;
+        const feedback = backup?.feedback;
         if (backup?.version !== 1 || !Array.isArray(backup.done) ||
             !backup.done.every(id => typeof id === "string" && id.length > 0) ||
             (solutions !== undefined && (!solutions || typeof solutions !== "object" ||
               Array.isArray(solutions) || !Object.entries(solutions).every(([id, text]) =>
-                id && typeof text === "string" && text.trim())))) {
+                id && typeof text === "string" && text.trim()))) ||
+            (feedback !== undefined && (!feedback || typeof feedback !== "object" ||
+              Array.isArray(feedback) || !Object.entries(feedback).every(([id, record]) =>
+                id && validFeedback(record))))) {
           throw new Error("Invalid progress backup");
         }
       } catch {
@@ -634,6 +696,14 @@
         for (const [id, text] of solutions) {
           if (!knownIds.has(id)) saveSolution([id], text);
         }
+        const feedback = new Map(Object.entries(backup.feedback ?? {}));
+        for (const {ids} of destinations) {
+          const id = ids.find(id => feedback.has(id));
+          if (id) saveFeedback(ids, feedback.get(id));
+        }
+        for (const [id, record] of feedback) {
+          if (!knownIds.has(id)) saveFeedback([id], record);
+        }
         status.textContent = "Progress imported.";
       } catch {
         status.textContent = "Browser storage is full. Some progress or solutions may not have been imported.";
@@ -644,10 +714,12 @@
     panel.querySelector("[data-clear]").addEventListener("click", () => {
       if (!window.confirm("Clear all saved progress for GRH via exercises?")) return;
       const solutions = readSolutions();
-      const clearSolutions = solutions.size && window.confirm("Also clear all saved solutions?");
+      const feedback = readAllFeedback();
+      const clearSolutions = (solutions.size || feedback.size) && window.confirm("Also clear all saved solutions and feedback?");
       readDone().forEach(id => writeProgress(prefix + id, null));
       if (clearSolutions) {
         for (const id of solutions.keys()) writeProgress(solutionPrefix + id, null);
+        for (const id of feedback.keys()) writeProgress(feedbackPrefix + id, null);
       }
       status.textContent = clearSolutions ? "Progress and solutions cleared." : "Progress cleared.";
       render();
@@ -658,19 +730,33 @@
     if (event.storageArea !== storage) return;
     if (!event.key || event.key.startsWith(prefix)) render();
     if (!event.key || event.key.startsWith(solutionPrefix)) solutionEditors.forEach(update => update());
+    refreshFeedback?.();
   });
   window.addEventListener("pageshow", render);
-  window.addEventListener("pageshow", () => solutionEditors.forEach(update => update()));
+  window.addEventListener("pageshow", () => {
+    solutionEditors.forEach(update => update());
+    refreshFeedback?.();
+  });
   render();
+
+  if (panel || (feedbackProblems.length && document.querySelector('link[rel="alternate"][type="text/plain"]'))) {
+    import("./feedback.js").then(({startFeedback}) => {
+      refreshFeedback = startFeedback({
+        panel, problems: feedbackProblems, make, solutionLink, renderMarkdown, typesetSolution,
+        readSolution, readFeedback, saveFeedback,
+      });
+    }).catch(() => {});
+  }
 
   if (SYNC_ENDPOINT && globalThis.crypto?.subtle) {
     import("./progress-sync.js").then(({startSync}) => {
       scheduleSync = startSync({
-        endpoint: SYNC_ENDPOINT, storage, isProgressKey, stampPrefix, panel,
+        endpoint: SYNC_ENDPOINT, storage, isProgressKey, stampPrefix, feedbackPrefix, panel,
         refresh() {
           render();
           updateSetting();
           solutionEditors.forEach(update => update());
+          refreshFeedback?.();
         },
       });
     }).catch(() => {});

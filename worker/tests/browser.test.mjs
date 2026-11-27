@@ -148,8 +148,10 @@ test("two Chrome profiles sync marks, solutions and settings through the Worker"
     res.writeHead(result.status, Object.fromEntries(result.headers));
     res.end(Buffer.from(await result.arrayBuffer()));
   });
-  const script = await readFile("progress.js", "utf8");
-  assert.match(script, /const SYNC_ENDPOINT = "";/);
+  const source = await readFile("progress.js", "utf8");
+  const endpointAssignment = /const SYNC_ENDPOINT = "([^"]*)";/;
+  const deployedEndpoint = source.match(endpointAssignment)[1];
+  const script = source.replace(endpointAssignment, 'const SYNC_ENDPOINT = "";');
   const endpoint = `http://127.0.0.1:${port}`;
   const enabled = script.replace('const SYNC_ENDPOINT = "";', `const SYNC_ENDPOINT = "${endpoint}";`);
   const assetTypes = {".html": "text/html", ".css": "text/css", ".js": "text/javascript", ".txt": "text/plain"};
@@ -157,8 +159,11 @@ test("two Chrome profiles sync marks, solutions and settings through the Worker"
   await listen(t, async (req, res) => {
     try {
       const path = new URL(req.url, site).pathname.slice(1);
-      const contents = path === "progress.js" ? (configured ? enabled : script)
+      let contents = path === "progress.js" ? (configured ? enabled : script)
         : await readFile(join(siteDirectory, path));
+      if (extname(path) === ".html" && deployedEndpoint) {
+        contents = contents.toString().replaceAll(deployedEndpoint, endpoint);
+      }
       res.writeHead(200, {"Content-Type": assetTypes[extname(path)] || "application/octet-stream",
         "Cache-Control": "no-store"});
       res.end(contents);
@@ -186,7 +191,7 @@ test("two Chrome profiles sync marks, solutions and settings through the Worker"
   const mark = ".progress-toggle";
   const solution = "A writes a private solution.";
   const solutionInput = ".problem-solution textarea";
-  const solutionLink = ".problem-solution > .solution-link";
+  const solutionLink = ".problem-solution > button:nth-of-type(2)";
   const valueOfMark = browser => browser.evaluate('document.querySelector(".progress-toggle").getAttribute("aria-pressed")');
   const waitForMark = (browser, value) => until(async () => await valueOfMark(browser) === value,
     "Mark did not sync: " + value);
@@ -202,6 +207,14 @@ test("two Chrome profiles sync marks, solutions and settings through the Worker"
   assert.equal(await a.stored("grh-workbook:reading-mode"), "cards");
   const doneKey = "grh-workbook:done:" + problem;
   const solutionKey = "grh-workbook:solution:" + problem;
+  const feedbackKey = "grh-workbook:feedback:" + problem;
+  const feedback = JSON.stringify({
+    text: "Correct and complete.",
+    hash: Buffer.from(await crypto.subtle.digest("SHA-256", Buffer.from(solution))).toString("hex"),
+    model: "test-model",
+    date: "2026-11-27T00:00:00.000Z",
+  });
+  await a.evaluate(`localStorage.setItem(${JSON.stringify(feedbackKey)}, ${JSON.stringify(feedback)})`);
 
   configured = true;
   await a.go(index, panel);
@@ -225,14 +238,16 @@ test("two Chrome profiles sync marks, solutions and settings through the Worker"
   const key = await crypto.subtle.deriveKey({
     name: "PBKDF2", salt: Buffer.from("grh-sync-key"), iterations: 200000, hash: "SHA-256",
   }, password, {name: "AES-GCM", length: 256}, false, ["decrypt"]);
-  async function cloudEntries() {
+  async function cloudSnapshot() {
     const ciphertext = Buffer.from(records.get(id), "base64");
     assert.equal(ciphertext.includes(solution), false);
     const plaintext = await crypto.subtle.decrypt({
       name: "AES-GCM", iv: ciphertext.subarray(0, 12),
     }, key, ciphertext.subarray(12));
-    return JSON.parse(Buffer.from(plaintext)).entries;
+    return JSON.parse(Buffer.from(plaintext));
   }
+  const cloudEntries = async () => (await cloudSnapshot()).entries;
+  assert.deepEqual((await cloudSnapshot()).feedback, {[feedbackKey]: [0, feedback]});
   assert.deepEqual((await cloudEntries())[solutionKey], [0, solution]);
   assert.deepEqual(Object.keys(await cloudEntries()).sort(), [doneKey, solutionKey].sort());
 
@@ -253,6 +268,7 @@ test("two Chrome profiles sync marks, solutions and settings through the Worker"
   await until(async () => /Synced/.test(await b.text(status)), "Device B failed to join");
   await b.capture("mobile-synced");
   assert.equal(await b.stored(solutionKey), solution);
+  assert.equal(await b.stored(feedbackKey), feedback);
   assert.equal(await b.stored("grh-workbook:last-visit"), null);
   assert.equal(await b.stored("grh-workbook:reading-mode"), null);
   assert.equal(await b.stored(doneKey), "1");

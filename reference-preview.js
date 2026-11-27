@@ -12,9 +12,9 @@
   let closeTimer;
   let rendering = Promise.resolve();
 
-  function destination(link) {
+  function destination(link, chapterLinks = false) {
     if (!link || link.closest(".reference-preview") ||
-        (!link.hash && !link.closest(".used-in")) ||
+        (!link.hash && !chapterLinks && !link.closest(".used-in")) ||
         link.origin !== location.origin || link.hasAttribute("download")) return null;
     const page = new URL(link.href);
     const local = page.pathname === location.pathname && page.search === location.search;
@@ -52,7 +52,11 @@
         return new DOMParser().parseFromString(html, "text/html");
       })().catch(() => null));
     }
-    return pages.get(url);
+    const pending = pages.get(url);
+    pending.then(result => {
+      if (!result && pages.get(url) === pending) pages.delete(url);
+    });
+    return pending;
   }
 
   function makeCard() {
@@ -183,6 +187,24 @@
     }
     return (await previews.get(key))?.cloneNode(true);
   }
+
+  // Read the same targets as hover previews before MathJax replaces their TeX.
+  window.workbookReferenceText = async links => {
+    const references = new Map();
+    for (const link of links) {
+      const ref = destination(link, true);
+      if (ref) references.set(ref.page + "#" + ref.id, [ref, link.textContent.trim()]);
+    }
+    const statements = await Promise.all([...references.values()].map(async ([ref, label]) => {
+      const source = await fetchPage(ref.page);
+      if (!source) throw new Error("Could not load a linked statement.");
+      const content = copyTarget(source, ref);
+      if (!content) return null;
+      const text = [...content.children].map(node => node.textContent.trim()).filter(Boolean).join("\n");
+      return `${label || ref.id} [${ref.id || source.title}]\n${text}`;
+    }));
+    return statements.filter(Boolean);
+  };
 
   function queueTypeset(content, source) {
     const next = rendering.then(() => typeset(content, source));

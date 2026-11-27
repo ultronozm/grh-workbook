@@ -27,9 +27,17 @@ async function derive(code) {
   return {key, id: Array.from(new Uint8Array(id), n => n.toString(16).padStart(2, "0")).join("")};
 }
 
-async function seal(key, entries) {
+async function seal(key, records, feedbackPrefix) {
   const iv = crypto.getRandomValues(new Uint8Array(12));
-  const plaintext = encoder.encode(JSON.stringify({version: 1, entries: Object.fromEntries(entries)}));
+  const entries = Object.create(null);
+  const feedback = Object.create(null);
+  for (const [name, entry] of records) {
+    (name.startsWith(feedbackPrefix) ? feedback : entries)[name] = entry;
+  }
+  // Keep the original entries readable by clients that predate feedback.
+  const backup = {version: 1, entries};
+  if (Object.keys(feedback).length) backup.feedback = feedback;
+  const plaintext = encoder.encode(JSON.stringify(backup));
   const data = new Uint8Array(await crypto.subtle.encrypt({name: "AES-GCM", iv}, key, plaintext));
   let binary = String.fromCharCode(...iv);
   for (let i = 0; i < data.length; i += 8192) {
@@ -38,12 +46,15 @@ async function seal(key, entries) {
   return btoa(binary);
 }
 
-async function unseal(key, ciphertext, isProgressKey) {
+async function unseal(key, ciphertext, isProgressKey, feedbackPrefix) {
   const data = Uint8Array.from(atob(ciphertext), character => character.charCodeAt(0));
   const plaintext = await crypto.subtle.decrypt({name: "AES-GCM", iv: data.subarray(0, 12)}, key, data.subarray(12));
-  const {version, entries} = JSON.parse(new TextDecoder().decode(plaintext));
-  if (version !== 1 || !entries || typeof entries !== "object" || Array.isArray(entries)) throw new Error();
-  const records = Object.entries(entries);
+  const {version, entries, feedback} = JSON.parse(new TextDecoder().decode(plaintext));
+  const isRecord = value => value && typeof value === "object" && !Array.isArray(value);
+  if (version !== 1 || !isRecord(entries) || (feedback !== undefined && !isRecord(feedback))) throw new Error();
+  const feedbackRecords = Object.entries(feedback ?? {});
+  if (feedbackRecords.some(([name]) => !name.startsWith(feedbackPrefix))) throw new Error();
+  const records = [...Object.entries(entries), ...feedbackRecords];
   for (const [name, entry] of records) {
     if (!isProgressKey(name) || !Array.isArray(entry) || entry.length !== 2 ||
         !Number.isSafeInteger(entry[0]) || entry[0] < 0 ||
@@ -69,7 +80,7 @@ function savedAgo(time) {
   return `${days} ${days === 1 ? "day" : "days"} ago`;
 }
 
-export function startSync({endpoint, storage, isProgressKey, stampPrefix, refresh, panel}) {
+export function startSync({endpoint, storage, isProgressKey, stampPrefix, feedbackPrefix, refresh, panel}) {
   const getCode = () => storage.getItem(codeKey);
   const request = (id, options) => fetch(endpoint.replace(/\/$/, "") + "/v1/" + id, {
     cache: "no-store", credentials: "omit", redirect: "error", referrerPolicy: "no-referrer",
@@ -111,7 +122,7 @@ export function startSync({endpoint, storage, isProgressKey, stampPrefix, refres
   }
 
   async function put(id, key, entries, headers) {
-    const body = await seal(key, entries);
+    const body = await seal(key, entries, feedbackPrefix);
     if (body.length > maxBytes) throw new SyncError("Synced progress exceeds 256 KB.");
     return request(id, {method: "PUT", body, headers});
   }
@@ -134,7 +145,7 @@ export function startSync({endpoint, storage, isProgressKey, stampPrefix, refres
     if (!etag) throw new Error();
     try {
       const {ciphertext} = await response.json();
-      return {etag, entries: await unseal(key, ciphertext, isProgressKey)};
+      return {etag, entries: await unseal(key, ciphertext, isProgressKey, feedbackPrefix)};
     } catch {
       throw new SyncError("Could not read the synced data.");
     }

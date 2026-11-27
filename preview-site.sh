@@ -163,6 +163,8 @@ mv link-check-report.md "$root/link-check-report.md"
 # make-index.yml
 emacs --batch -l ./tex2html.el --eval "(tex2html-make-index)" >/dev/null 2>&1
 
+python3 scripts/prepare-site-html.py
+
 # Keep the LaTeX logs outside the site, and fail on unresolved references.
 logs="$root/_site-logs"
 rm -rf -- "$logs"; mkdir -p "$logs"
@@ -184,7 +186,7 @@ git ls-files --others -z | while IFS= read -r -d '' f; do
   case "$f" in
     tag/*.html) continue ;;
     */*) ;;
-    *.pdf|*.html|*.aux|listing.json|workbook-search.json) continue ;;
+    *.pdf|*.html|*.aux|*__workbook.txt|listing.json|workbook-search.json) continue ;;
   esac
   rm -f -- "$f"
 done
