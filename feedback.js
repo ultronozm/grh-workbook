@@ -7,8 +7,8 @@ const providers = {
 const preamble = "GRH via exercises teaches the proof of the generalized Riemann hypothesis for Dirichlet L-functions following a Lean formalization. The reader is working through the exercises.";
 const inlineMath = " Delimit it with $...$.";
 const chatMath = " Use the delimiters that this chat renders, such as \\( ... \\) and \\[ ... \\].";
-const chatRecall = " The pasted text does not render in this chat, so begin with two short typeset sections, without comment: the statement of the exercise, then the reader's solution as written. Then give the review.";
-const instruction = "Act as a careful referee for this solution. First say in one line whether the argument is correct and complete, correct with gaps, or wrong. Then identify the first real gap or error, quoting the step and saying exactly what is missing, and, if it helps, a hint toward fixing it, but do not write a full proof. Then list any minor points briefly. Do not restate the solution, do not praise, do not pad. If the solution is correct and complete, say so and stop. Write mathematics in standard LaTeX, expanding the sheet's own macros (for example \\mathbb{Q} for \\Q)." + inlineMath;
+const chatRecall = " The pasted text does not render in this chat, so begin with two short typeset sections, without comment: the statement of the exercise, then the reader's solution as written. Then give the review; the word limit applies to the review only.";
+const instruction = "Act as a referee for this solution, reading as a research mathematician reads a colleague's proof. Standard facts, and results that the reader cites by name or by formula, may be used without proof; do not ask for routine details that a competent reader supplies at once. First say in one line whether the argument is correct, correct with a gap, or wrong. If there is a genuine error, or a gap that is not routine to fill, identify the first one: quote the step, say what is missing, and, if it helps, give a one-line hint. Do not write out the proof or the computation. Mention minor points only if they are actual mistakes, at most two, one line each. Do not restate the solution, do not praise, do not pad; the review is at most about 120 words. If the solution is correct, say so in one line and stop. Write mathematics in standard LaTeX, expanding the sheet's own macros (for example \\mathbb{Q} for \\Q)." + inlineMath;
 const settingsAnchor = "ai-feedback";
 
 function settings() {
@@ -102,7 +102,7 @@ async function solutionHash(text) {
 }
 
 let sheetSource;
-async function makePrompt(id, links, solution) {
+function loadSheetSource() {
   const alternate = document.querySelector('link[rel="alternate"][type="text/plain"]');
   sheetSource ??= fetch(alternate.href, {mode: "same-origin"}).then(async response => {
     if (!response.ok) throw new Error();
@@ -111,6 +111,14 @@ async function makePrompt(id, links, solution) {
     sheetSource = null;
     throw new Error("Could not load the sheet source.");
   });
+  return sheetSource;
+}
+// The sheet's own \newcommand lines, so that feedback using them still renders.
+const sheetMacros = () => loadSheetSource()
+  .then(source => (source.match(/^\\(?:re)?newcommand\*?\{?\\[A-Za-z]+\}?(?:\[\d\])?\{.*\}\s*$/gm) ?? []).join("\n"))
+  .catch(() => "");
+async function makePrompt(id, links, solution) {
+  loadSheetSource();
   const source = await sheetSource;
   const marker = `\n% End problem: ${id}\n`;
   const end = source.indexOf(marker);
@@ -318,7 +326,7 @@ export function startFeedback({
       rendering = renderedKey;
       const {fragment, math} = renderMarkdown(record.text);
       content.replaceChildren(fragment);
-      if (math.length) typesetSolution(math, () => rendering === renderedKey).catch(() => {});
+      if (math.length) sheetMacros().then(macros => typesetSolution(math, () => rendering === renderedKey, macros)).catch(() => {});
     }
 
     async function run(config, signal) {

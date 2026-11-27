@@ -242,9 +242,13 @@
     // Reader and model text only enter the DOM as text nodes.
     // Protect math and code before interpreting Markdown punctuation.
     const text = source.replace(/\0/g, "�").replace(
-      /`([^`\n]+)`|(\\\(([\s\S]+?)\\\)|\$((?:\\.|[^$\\\n])+)\$)|(\\\$)/g,
-      (_, code, formula, parens, dollars) => {
-        if (formula) {
+      /`([^`\n]+)`|(\$\$([\s\S]+?)\$\$|\\\[([\s\S]+?)\\\])|(\\\(([\s\S]+?)\\\)|\$((?:\\.|[^$\\\n])+)\$)|(\\\$)/g,
+      (_, code, display, doubled, brackets, formula, parens, dollars) => {
+        if (display) {
+          const span = make("span", "solution-math solution-display", display);
+          math.push([span, doubled ?? brackets, true]);
+          literals.push(span);
+        } else if (formula) {
           const span = make("span", "solution-math", formula);
           math.push([span, parens ?? dollars]);
           literals.push(span);
@@ -329,7 +333,8 @@
   }
 
   let mathDocument;
-  async function typesetSolution(math, current) {
+  const loadedMacros = new Set();
+  async function typesetSolution(math, current, macros = "") {
     const mj = window.MathJax;
     await mj?.startup?.promise;
     if (!mj?.startup?.document || !current()) return;
@@ -344,6 +349,14 @@
       }),
       OutputJax: main.outputJax,
     });
+    if (macros && !loadedMacros.has(macros)) {
+      loadedMacros.add(macros);
+      try {
+        await engine.handleRetriesFor(() => mathDocument.convert(macros, {display: false}));
+      } catch {
+        // Formulas that use an undefined macro keep their source visible.
+      }
+    }
     for (const [span, tex, display = false] of math) {
       if (!current()) return;
       try {
