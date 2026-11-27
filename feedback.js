@@ -5,7 +5,9 @@ const providers = {
   openai: {model: "gpt-6.2-sol", url: "https://api.openai.com/v1/chat/completions"},
 };
 const preamble = "GRH via exercises teaches the proof of the generalized Riemann hypothesis for Dirichlet L-functions following a Lean formalization. The reader is working through the exercises.";
-const instruction = "Act as a careful referee for this solution. First say in one line whether the argument is correct and complete, correct with gaps, or wrong. Then identify the first real gap or error, quoting the step and saying exactly what is missing, and, if it helps, a hint toward fixing it, but do not write a full proof. Then list any minor points briefly. Do not restate the solution, do not praise, do not pad. If the solution is correct and complete, say so and stop. Use LaTeX with $...$ for mathematics.";
+const inlineMath = " Delimit it with $...$.";
+const chatMath = " Use the delimiters that this chat renders, such as \\( ... \\) and \\[ ... \\].";
+const instruction = "Act as a careful referee for this solution. First say in one line whether the argument is correct and complete, correct with gaps, or wrong. Then identify the first real gap or error, quoting the step and saying exactly what is missing, and, if it helps, a hint toward fixing it, but do not write a full proof. Then list any minor points briefly. Do not restate the solution, do not praise, do not pad. If the solution is correct and complete, say so and stop. Write mathematics in standard LaTeX, expanding the sheet's own macros (for example \\mathbb{Q} for \\Q)." + inlineMath;
 const settingsAnchor = "ai-feedback";
 
 function settings() {
@@ -120,6 +122,9 @@ async function makePrompt(id, links, solution) {
   const suffix = `\n\n${cited}Reader's solution\n\n${solution}\n\n${instruction}`;
   return {prefix, suffix};
 }
+
+// A pasted prompt is read by a chat interface with its own math delimiters.
+const forChat = text => text.endsWith(inlineMath) ? text.slice(0, -inlineMath.length) + chatMath : text;
 
 class FeedbackError extends Error {}
 
@@ -393,11 +398,11 @@ export function startFeedback({
       const prompt = makePrompt(ids[0], links, solution);
       try {
         if (globalThis.ClipboardItem && navigator.clipboard?.write) {
-          const text = prompt.then(({prefix, suffix}) => new Blob([prefix.join("") + suffix], {type: "text/plain"}));
+          const text = prompt.then(({prefix, suffix}) => new Blob([forChat(prefix.join("") + suffix)], {type: "text/plain"}));
           await navigator.clipboard.write([new ClipboardItem({"text/plain": text})]);
         } else {
           const {prefix, suffix} = await prompt;
-          await navigator.clipboard.writeText(prefix.join("") + suffix);
+          await navigator.clipboard.writeText(forChat(prefix.join("") + suffix));
         }
         status.textContent = "Copied";
         setTimeout(() => {
