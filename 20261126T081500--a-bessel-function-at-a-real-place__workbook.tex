@@ -1,0 +1,257 @@
+\documentclass[reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xr-hyper}
+\usepackage[hidelinks]{hyperref}
+\externaldocument[ps-]{20261125T010500--poincare-series-and-near-orthogonality__workbook}
+\externaldocument[da-]{20261126T030300--the-data__workbook}
+\externaldocument[ob-]{20261126T040100--spaces-forms-and-twists__workbook}
+\externaldocument[bp-]{20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook}
+\externaldocument[m1-]{20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook}
+\externaldocument[bd-]{20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook}
+
+\newcounter{chap}
+\input{chapters}
+\ifcsname chapters@20261126T081500\endcsname
+  \chapnumber{20261126T081500}
+\else
+  \renewcommand{\thechap}{?}
+\fi
+\renewcommand{\thesection}{\thechap.\arabic{section}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}[section]
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{remark}
+\newtheorem*{leanremark}{In the Lean formalization}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\ii}{\mathrm i}
+\newcommand{\Uc}{\mathcal U}
+\newcommand{\cf}{\mathsf c}
+\newcommand{\Per}{\mathrm{Per}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\vol}{\operatorname{vol}}
+\newcommand{\tl}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\title{A Bessel function at a real place}
+\author{}
+\date{November 26, 2026}
+
+\begin{document}
+\maketitle
+\refstepcounter{chap}\label{chap}
+
+The real Bessel functions in Theorem~\ref{m1-thm:bessel-system} supply the local factors in the Gram operators for Theorem~\ref{bp-thm:B}.  The proof averages a matrix coefficient over the Bessel subgroup, using a position at which the average is large enough to normalize.  The half-plane and two unitary groups give models for choosing the position.  The period determines the squared norm and the correlation of the average.
+
+\paragraph{Prerequisites.}
+Use Chapter~\ref{ps-chap} for the half-plane and Chapters~\ref{da-chap}, \ref{ob-chap} and~\ref{bp-chap} for the data, weights and Bessel subgroup.  Assume the discrete-series facts of Chapter~\ref{bd-chap} and Schur's lemma \cite{Se}.  Inner products are linear in the first variable, as in Chapter~\ref{m1-chap}.
+
+\section{The half-plane}\label{sec:half-plane}
+
+The first model recovers the seed of a holomorphic Poincar\'e series from a matrix coefficient.  Use integers \(k\ge2\) and \(m\ge1\) for the weight and index in this section.  On the upper half-plane let \(e(z)=\exp(2\pi\ii z)\) and \(j(g,z)=g_{21}z+g_{22}\) for \(g\in\mathrm{SL}_2(\R)\) acting by fractional linear transformations.  Write
+\[
+ n(w)=\begin{pmatrix}1&w\\0&1\end{pmatrix},\qquad
+ a(y)=\diag(\sqrt y,1/\sqrt y),\qquad
+ N_{\R}=\{n(w):w\in\R\}.
+\]
+The representation \((\pi_k(g)f)(z)=j(g^{-1},z)^{-k}f(g^{-1}z)\) and its unit kernel vector \(v_{\ii}\) are as in Chapter~\ref{ps-chap}, with the slash action on \(\mathrm{SL}_2(\R)\).  Use the conjugate coefficient \(\cf(g)=\langle v_{\ii},\pi_k(g)v_{\ii}\rangle\) and formal degree \(d=(k-1)/(4\pi)\) for \(dw\,dy/y^2\) times stabilizer probability (Problem~\ref{ps-pr:formal-degree}).
+
+\begin{problem}\label{pr:half-coeff}
+For \(w\in\R\) and \(y>0\),
+\[
+ \cf(n(w)a(y))=y^{k/2}\bigl((1+y-\ii w)/2\bigr)^{-k}.
+\]
+Also \(\cf(1)=1\) and \(\cf(g^{-1})=\overline{\cf(g)}\).
+\end{problem}
+
+Fix \(y_0>0\) and use \(y_*=a(y_0)\) as the position.  Average against the inverse of the character \(n(w)\mapsto e(mw)\) of \(N_{\R}\), writing \(n(-w)\) as the integration variable.
+\[
+ W_{y_*}(g)=\int_{\R}\cf(y_*^{-1}n(-w)g)e(mw)\,dw .
+\]
+
+\begin{problem}\label{pr:half-integral}
+At \(g=a(y)\) the average is
+\[
+ \frac{(4\pi)^k(yy_0)^{k/2}m^{k-1}}{(k-1)!}
+       e^{-2\pi m(y+y_0)} .
+\]
+Check by machine that at \((k,m,y_0,y)=(4,1,0.3,0.5)\) the value is \(0.613576\) to six decimal places.
+\end{problem}
+
+\begin{problem}\label{pr:seed}
+For arbitrary \(g\), the average is \(e(m\,g\ii)j(g,\ii)^{-k}\) times \((4\pi)^k y_0^{k/2}m^{k-1}e^{-2\pi my_0}/(k-1)!\).
+\end{problem}
+
+Write \(P(s)=W_{y_*}(y_*)/y_0\), where \(s=4\pi my_0\).  The next problem relates the period to the squared norm on \(N_{\R}\backslash\mathrm{SL}_2(\R)\).
+
+\begin{problem}\label{pr:half-norm}
+One has \(d\int_0^\infty |W_{y_*}(a(y))|^2\,dy/y^2=W_{y_*}(y_*)\), with common value about \(0.776107\) when \((k,m,y_0)=(4,1,0.3)\).  The set \(\{w: |w|/y_0\le1\}\) has volume \(2y_0\), and
+\[
+ P(s)=\frac{4\pi s^{k-1}e^{-s}}{(k-1)!}>0.
+\]
+At \(s=1\) check \(P(1)\approx1.16\cdot10^{-7}\) for \(k=12\) and \(4.95\cdot10^{-156}\) for \(k=100\).
+\end{problem}
+
+The next problems estimate the period at a position where the phase is stationary.
+
+\begin{problem}\label{pr:stationary}
+At \(g=y_*\), the integrand in the coordinate \(u=w/(2y_0)\) is \(Z(u)=(1+\ii u)^{-k}e^{\ii s u}\).  Its continuous argument vanishing at \(u=0\) has derivative zero there exactly when \(s=k\).  At that position,
+\[
+ |Z(u)|=(1+u^2)^{-k/2},\qquad |\arg Z(u)|\le k|u|^3/3 .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:stirling}
+At \(s=k\) one has \(P(k)=4\pi k^k e^{-k}/k!\) and \(2y_0\le\sqrt{k}\,W_{y_*}(y_*)\).  Check that \(P(k)/\sqrt{8\pi/k}\) is approximately \(0.9595,0.9794,0.99308,0.999167\) for \(k=2,4,12,100\), respectively.
+\end{problem}
+
+\begin{problem}\label{pr:cone}
+At \(s=k\), write \(d_k=k^{-1/3}\).  On \(|u|\le d_k\) one has \(|Z(u)|\le2\operatorname{Re}Z(u)\), and \(Z(-u)=\overline{Z(u)}\).  Deduce
+\[
+ \int_{\R} Z(u)\,du\ \ge\
+ \tfrac12\int_{|u|\le d_k}|Z(u)|\,du-\int_{|u|>d_k}|Z(u)|\,du .
+\]
+Check both sides by machine.  For \(k=12\) they are about \(0.71859\) and \(0.18324\), and for \(k=100\) they are \(0.25045\) and \(0.11321\).  For \(k=4\) the right side is about \(-0.0511\).
+\end{problem}
+
+\begin{problem}\label{pr:tail}
+The coefficient has \(|\cf(a(e^{2t}))|=\cosh(t)^{-k}\), about \(0.60703\) at \(k=100,t=0.1\), while \(e^{-kt^2/2}\approx0.60653\).  The measure \(|W_{y_*}(a(y))|^2\,dy/y^2\) has density proportional to \(y^{k-2}e^{-4\pi my}\).  At \(s=k\) and \(k=12\), the shares of its mass on \(y>4y_0\) and \(y<y_0/4\) are about \(3.2\cdot10^{-11}\) and \(2.9\cdot10^{-4}\).
+\end{problem}
+
+\section{A circle and a flag}\label{sec:positions}
+
+On the half-plane changing a height matches the phase derivatives at the identity.  For \(G=U(1,1)\) preserving \(J=\diag(1,-1)\), the change is a conjugation of the circle \(R=\{\diag(w,1):|w|=1\}\).  Use probability measure \(dw\) on the circle.  In this model \(\mathsf a\ge1\) and \(\mathsf N\ge2\) are integers, and the coefficient formula of Theorem~\ref{bd-thm:fj} gives \(\cf(g)=\det(g)^{-\mathsf a}g_{22}^{-\mathsf N}\) for lowest \(K\)-type \((-\mathsf a,-\mathsf a-\mathsf N)\).  Pair the coefficient against \(w^{t_0}\) with \(t_0\) a nonnegative integer.  For columns write \(I^\dagger=I^*J\).
+
+\begin{problem}\label{pr:circle-period}
+The period at the identity vanishes.  For a real \(\mathsf b\ge0\), let \(I_0=(\sqrt{1+\mathsf b},\sqrt{\mathsf b})^T\) and use the inverse of the real boost with first column \(I_0\) as the position.  The conjugated circle is \(g(w)=1+(w-1)I_0I_0^\dagger\), with \(\det g(w)=w\) and \(g(w)_{22}=1+\mathsf b-\mathsf b w\).  For \(j=\mathsf a+t_0\),
+\[
+ \int_{|w|=1}\cf(g(w))w^{-t_0}\,dw
+ =\binom{\mathsf N+j-1}{j}\frac{\mathsf b^j}{(1+\mathsf b)^{\mathsf N+j}} .
+\]
+For \((\mathsf a,\mathsf N,t_0)=(2,3,0)\) the periods at \(\mathsf b=1/3,2/3,1\) are \(81/512,648/3125,3/16\); for \((2,3,1)\) the last two are \(432/3125,5/32\).
+\end{problem}
+
+\begin{problem}\label{pr:circle}
+The period is largest at \(\mathsf b=j/\mathsf N\), equivalently when
+\(I_0^\dagger D I_0=t_0\) for \(D=\diag(-\mathsf a,-\mathsf a-\mathsf N)\).  The same equation says that the argument of \(\cf(g(e^{\ii\theta}))e^{-\ii t_0\theta}\) is stationary at \(\theta=0\).  As \(j,\mathsf N\) tend to infinity in fixed ratio the maximum is asymptotic to \((2\pi j(j+\mathsf N)/\mathsf N)^{-1/2}\).  For \((j,\mathsf N)=(2,3),(20,30),(200,300)\) the ratios to the asymptotic value are \(0.94897,0.99474,0.99947\) to five decimal places.
+\end{problem}
+
+The compression \(I_0^\dagger D I_0\) is the weight seen on the embedded line.  For the role of such weight restrictions in the orbit method, see Nelson and Venkatesh \cite{NV}.
+
+In \(U(2,2)\) the position also involves an isotropic line.  Use \(J=\diag(1,-1,1,-1)\) and the same adjoint notation.  In this model let \((\mu_i)=(-1,-2,-3,-4)\), \(p(z)=\prod_i(z-\mu_i)\), \(q(z)=z\) (the smaller weight is \(0\)), and \(D=\diag(\mu_i)\).  For a polynomial \(F\) write \([F]_i=F(\mu_i)|p'(\mu_i)q(\mu_i)|^{-1/2}\).
+
+\begin{problem}\label{pr:flag}
+One has \((p'(\mu_i))=(6,-2,2,-6)\).  For \(v_0=[z]\), \(v_1=[z^2]\) and \(I_0=\sqrt{24}[1]\), the matrix of pairings in that order is \(\diag(0,-1,1)\), and
+\[
+ Dv_0=v_1,\qquad DI_0=\sqrt{24}v_0,\qquad I_0^\dagger DI_0=0 .
+\]
+\end{problem}
+
+\begin{problem}\label{pr:flag-phase}
+Let \(Y=-\ii(v_0v_1^\dagger+v_1v_0^\dagger)\).  Then \(Y^3=0\) and \(g(t)=1+tY+t^2Y^2/2\), \(t\in\R\), is a one-parameter subgroup of \(U(2,2)\) fixing \(v_0\) and \(I_0\).  It has \(g(t)v_1=v_1+\ii t v_0\), \(\tr(g(t)-1)=0\), and \(\tr(D(g(t)-1))=2\ii t\), giving \(0.2\ii\) at \(t=0.1\).
+\end{problem}
+
+\section{The period bound for the data}\label{sec:period}
+
+The general period bound gives a position at a real place of the data.  The model calculations illustrate phase cancellation at small weights.  The bound for the data uses much larger gaps.
+
+Fix a place \(\tau\).  Write \(G=G_\tau=U(Y_0)_\tau\), \(H=U(X_0)_\tau\), and \(R=\Uc_\tau\rtimes H\) as in Section~\ref{bp-sec:subgroup}.  The \emph{sign basis} is obtained from the rescaled basis by a Euclidean-unitary change that diagonalizes the form in the order of the signs for the parameter \(2\varsigma_\tau\).  Use \(ds=du\,dh\) with \(dh\) Haar probability.  In the rescaled basis, \(du\) is Lebesgue measure on the entries in row \(v_a\) and columns \(v_b,v'_b\) for \(b>a\), and on the entries in that row in the \(X_0\) columns and column \(z\), together with the imaginary part of the entry in column \(v'_a\).  The measure \(du\) is used in the covolume of Definition~\ref{bp-def:scaled}.  Use \(dg\) as in Theorem~\ref{bd-thm:degree} and \(dy\) on \(\Uc_\tau\backslash G\) determined by \(du,dg\).
+
+The character from Section~\ref{bp-sec:poincare} is \(\exp(\sigma_R-\overline{\sigma_R})\) at \(\tau\), where \(\sigma_R\) is the sum of the entries just above the diagonal on the rescaled frame \(v_1,\dots,v_\varrho,z\).  With the chosen complex embedding at \(\tau\), the \(j\)-th frame vector is multiplied by \(\bigl(M\tau(\delta_E)/(2\pi\ii)\bigr)^{\varrho+1-j}/\sqrt N\).  The character therefore uses \(\sigma_R=2\pi\ii\lambda(u)/(M\tau(\delta_E))\), with \(\lambda(u)\) the lattice-basis sum of Section~\ref{bp-sec:subgroup} evaluated at the real place.
+
+Let \(\pi_l\) have doubled Harish-Chandra parameter \(l=2\varsigma_\tau\) in the sign basis.  For a unit highest-weight vector \(u_\tau\) in the lowest \(K\)-type, take \(\cf_\tau(y)=\langle\pi_l(y)u_\tau,u_\tau\rangle\) in that basis, with formal degree \(d_\tau\) (Theorems~\ref{bd-thm:ds} and~\ref{bd-thm:degree}).  Take the irreducible unitary representation \(\sigma_\tau\) of \(H\) on \(\C^{I_\tau}\) with the source highest weight given by the diagram of Definition~\ref{ob-def:diagram}, and let \(v\) be a unit highest-weight vector.  Write \(\pi(uh)=\psi_{\Uc}(u)\sigma_\tau(h)\).
+
+\begin{definition}\label{def:average}
+For a position \(y_*\in G\), the \emph{Bessel average} at \(v\) is
+\[
+ W_{y_*,v}(y)=\int_R\cf_\tau(y_*^{-1}sy)\,\pi(s)^{-1}v\,ds .
+\]
+The integral converges absolutely for the data, uniformly in the sense that the integral of the norm is bounded as \(y\) varies.  This convergence estimate is read from the proof.
+\end{definition}
+
+\begin{definition}\label{def:period}
+The period at \(y_*\) is \(\Per(y_*)=\langle W_{y_*,v}(y_*),v\rangle\), the integral of \(\cf_\tau(y_*^{-1}sy_*)\overline{\langle\pi(s)v,v\rangle}\) over \(R\).  Write
+\[
+ V_1(y_*)=\vol_R\{s:\|y_*^{-1}sy_*-1\|\le1\},
+\]
+using the operator norm in the sign basis.  The \emph{Bessel length} of \(y\) is \(\inf_{s\in R}(\|sy\|+1)\), with the operator norm in the rescaled basis.
+\end{definition}
+
+\begin{theorem}[Lower bound for the period]\label{thm:period}
+For the data, at each \(\tau\) there is \(y_*\in G_\tau\) of Bessel length at most \(b^{5n}\), \(n=\varrho+1\), with \(V_1(y_*)\le b^{60(r+k)^2}|\Per(y_*)|\).  Here \(r,k\) are the ranks of \(Y_0,X_0\).
+\end{theorem}
+
+\noindent\emph{Status}.  Read from the proof; not proved here.  At the position used in the proof, \(g=y_*^{-1}sy_*\), for \(s\in R\), sends each vector of the frame \(y_*^{-1}v_1,\dots,y_*^{-1}v_\varrho,y_*^{-1}z\) to itself plus a combination of earlier vectors.  Let \(h\) be the compact projection of \(s\).  Let \(D_l\) be the diagonal matrix of the highest weight of the lowest \(K\)-type of \(\pi_l\) in the sign basis, and \(D_u\) that of the highest weight of \(\sigma_\tau\) in the standard basis of \(X_0\).  In these coordinates,
+\(\tr(D_l(g-1))-\tr(D_u(h-1))=\sigma_R-\overline{\sigma_R}\), where the frame sum \(\sigma_R\) is additive under multiplication in \(R\).  Write \(F(s)\) for the period integrand of Definition~\ref{def:period}.  The counterpart of Problem~\ref{pr:cone} is
+\[
+ |F(s)|\le2\operatorname{Re}F(s)+
+  6b^{-150(r+k)^2}(2/\|g\oplus h\|)^{9(r+k)^2},
+\]
+with the last power integrable on \(R\).  The norm of \(g\oplus h\) is the operator norm on the direct sum.
+
+\section{Norm and correlation}\label{sec:norm}
+
+The following calculations relate the period to the norm and correlation.  Take a locally compact unimodular group \(G\) and a closed unimodular subgroup \(R=\Uc\rtimes H\), with \(\Uc\) closed and unimodular and \(H\) compact.  Use Haar measures \(du,dg\), \(ds=du\,dh\) with \(dh\) of mass one, and the quotient measure \(dy\) on \(\Uc\backslash G\) determined by \(du,dg\).  In the average use a continuous unitary representation \(\pi\) of \(R\) on a finite-dimensional space \(V\), with \(\Uc\) acting by scalars, and a unit vector \(v\in V\).  Replace \(\cf_\tau\) by a normalized unit-vector coefficient \(\cf\) in \(L^1(G)\) of a square-integrable irreducible representation of formal degree \(d_\tau\).  Schur orthogonality, as in Theorem~\ref{bd-thm:schur} for the real unitary case, gives
+\[
+ d_\tau\int_G \cf(g_0 a g)\overline{\cf(a)}\,da=\cf(g_0)\cf(g).
+\]
+Assume \(\sup_y\int_R|\cf(y_*^{-1}sy)|\,ds<\infty\).  For the data the proof supplies this bound and \(\cf_\tau\in L^1(G)\), using the coefficient decay of Theorem~\ref{bd-thm:decay}.  Write \(W=W_{y_*,v}\), with norms on \(\Uc\backslash G\).
+
+\begin{problem}\label{pr:equivariance}
+For \(s\in R\), \(W(sy)=\pi(s)W(y)\).  Also \(W\) is bounded and in \(L^1\cap L^2\) on the quotient, in the sense that its norm is bounded and belongs to both spaces.
+\end{problem}
+
+\begin{problem}\label{pr:reproduce}
+One has \(d_\tau\int_G\cf(a^{-1})W(ya)\,da=W(y)\), and \(W\) is continuous.
+\end{problem}
+
+\begin{problem}\label{pr:norm-identity}
+One has \(d_\tau\|W\|_2^2=\Per(y_*)\).  In particular the period is real and nonnegative, and \(W\ne0\) at the position of Theorem~\ref{thm:period}.
+\end{problem}
+
+\begin{problem}\label{pr:coefficient}
+The correlation \(g\mapsto\int_{\Uc\backslash G}\langle W(y),W(yg)\rangle\,dy\) equals \(\overline{\cf(g)}\|W\|_2^2\), and its squared \(L^2(G)\) norm is \(\|W\|_2^4/d_\tau\).  If \(H\) acts irreducibly on \(V\), the coordinate products in an orthonormal basis satisfy \(\int_{\Uc\backslash G}W_i\overline{W_j}\,dy=\delta_{ij}\|W\|_2^2/\dim V\).  Check that the half-plane correlation for \(\|W\|_2=1,\ k=4,\ m=1,\ g=a(2)\) has modulus \(64/81\).
+\end{problem}
+
+Scale the average to \(\|W_\tau\|_2^2=\#I_\tau\).  The problems give the transformation law, orthonormality and squared correlation of Theorem~\ref{m1-thm:bessel-system}(a)--(c) for \(W_\tau\).  The cut \(W_\tau^\flat\) multiplies \(W_\tau\) by the cutoff in Bessel length which is \(1\) up to half the radius \(b^{6n+2}\), decreases linearly to \(0\) at the radius and is \(0\) thereafter.  The length is left \(R\)-invariant.
+
+We used the discrete-series facts of Chapter~\ref{bd-chap}, absolute convergence, the period bound and the phase and cone estimates.  The cut and its tail bound in Theorem~\ref{m1-thm:bessel-system}(d) and the common decay majorant for the Gram-operator estimates are read from the proof.
+
+\begin{leanremark}
+\raggedright The period bound in \cite{GL} is \tl{IsSteep.exists\_stationary\_point}
+as used in \tl{Data.exists\_besselSystem}.  The cone bound uses \tl{IsLaplaceDatum.laplace\_method}.
+For the data, the average, convergence and reproduction are \tl{DiscreteSeries.besselAverage},
+\tl{integrable\_besselIntegrand} and \tl{convolve\_besselAverage}.
+The data's norm identity is \tl{formalDegree\_mul\_integral\_norm\_sq\_besselAverage}
+with inner-product slots reversed.  The data's squared correlation and normalized coordinate
+pairings are \tl{IsBesselFunction.lintegral\_enorm\_sq\_integral\_inner\_translate}
+and \tl{BesselSystem.orthonormal}.
+\end{leanremark}
+
+\section*{Hints}
+
+\begin{description}
+\item[\ref{pr:half-coeff}, \ref{pr:seed}] Kernel covariance and evaluation at \(\ii\).
+\item[\ref{pr:half-integral}] Conjugate Problem~\ref{ps-pr:lipschitz}.  Use SageMath quadrature.
+\item[\ref{pr:half-norm}, \ref{pr:tail}] The gamma integral, with scale \(4\pi m\).
+\item[\ref{pr:stirling}] Stirling's upper bound with remainder.
+\item[\ref{pr:cone}] Use SageMath quadrature of \(|Z|\) and the formula for \(P(k)\).
+\item[\ref{pr:circle-period}, \ref{pr:circle}] The binomial series and Stirling's formula.
+\item[\ref{pr:flag}] Use partial fractions or Lagrange interpolation at the nodes of \(pq\).
+\item[\ref{pr:flag-phase}] Use \(Y^\dagger=-Y\) and the pairings in Problem~\ref{pr:flag}.
+\item[\ref{pr:equivariance}, \ref{pr:reproduce}] Haar invariance, unfolding and continuity of \(L^1\) translations.
+\item[\ref{pr:norm-identity}, \ref{pr:coefficient}] Use unfolding and the Schur identities.
+\end{description}
+
+\begin{thebibliography}{NV}
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[NV]{NV} P.~D.~Nelson and A.~Venkatesh, \emph{The orbit method and analysis of automorphic forms}, Acta Math.\ \textbf{226} (2021), 1--209.
+\bibitem[Se]{Se} J.-P.~Serre, \emph{Linear Representations of Finite Groups}, Springer, 1977.
+\end{thebibliography}
+\end{document}
