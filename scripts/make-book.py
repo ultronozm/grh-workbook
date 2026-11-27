@@ -6,17 +6,17 @@ Usage:  python3 scripts/make-book.py --site DIR
 Run after the sheets are built: DIR holds the per-sheet PDFs (in CI and
 in preview-site.sh it is the build directory itself).  The script
 
-  - reads the index (the guide) for the title, the opening and status
-    paragraphs and the order of the Parts and of their sheets;
-  - writes a master LaTeX file that has a title page (title, the two
-    paragraphs, date, commit), a table of contents by Part, and then
+  - reads the index (the guide) for the title, the opening paragraph and
+    the order of the Overview, the Parts and their sheets;
+  - writes a master LaTeX file that has a title page (title, the opening
+    paragraph, date, commit), a table of contents by Part, and then
     every listed sheet's PDF, included page by page with pdfpages; each
     sheet gets a table-of-contents line and a PDF bookmark under its
-    Part, and the pages are numbered continuously (the numbers of the
+    Part where applicable, and the pages are numbered continuously (the numbers of the
     contents and the PDF page labels);
   - compiles it with pdflatex and puts it at DIR/grh-via-exercises.pdf;
-  - writes DIR/book-link.org, the sentence of the index that links the
-    file and gives its number of pages (empty if the build failed).
+  - writes DIR/book-link.org, the index macros for the source commit date and
+    the link to the PDF (with its page count when the build succeeds).
 
 Only the sheets listed in the index are included: not the snapshot
 under original-route/, not the pages of withdrawn sheets, not the
@@ -34,7 +34,8 @@ import subprocess
 import sys
 import tempfile
 
-GUIDE = "20261125T012000--grh-workbook__guide.org"
+from workbook_index import GUIDE, overview_sheet
+
 BOOK = "grh-via-exercises.pdf"
 LINK = "book-link.org"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -65,24 +66,22 @@ def escape_title(title):
 def read_guide(path):
     lines = open(path, encoding="utf-8").read().split("\n")
     title = "GRH via exercises"
-    paragraphs = []  # the opening and the status paragraphs
+    opening = ""
     parts = []       # [(part title, [(id stem, label, title)])]
-    i = 0
     for line in lines:
         m = re.match(r"#\+TITLE:\s*(.*)", line)
         if m:
             title = m.group(1).strip()
-    # The opening paragraph is the first paragraph after the keywords;
-    # the status paragraph begins with *Status.
+    # The opening paragraph is the first paragraph after the keywords.
     body = [l for l in lines if not l.startswith("#")]
     text = "\n".join(body)
     head = text.split("\n* ", 1)[0]
     paras = [p.strip() for p in re.split(r"\n\s*\n", head) if p.strip()]
     if paras:
-        paragraphs.append(paras[0])
-    for p in paras:
-        if p.startswith("*Status"):
-            paragraphs.append(p)
+        opening = paras[0]
+    if overview := overview_sheet(text):
+        ident, slug = overview
+        parts.append(("", [(f"{ident}--{slug}__workbook", "", "Overview")]))
     current = None
     for line in lines:
         h = re.match(r"\* (.*)", line)
@@ -100,7 +99,7 @@ def read_guide(path):
             num, _, name = label.partition(". ")
             current[1].append((stem, num, name))
     parts = [p for p in parts if p[1]]
-    return title, paragraphs, parts
+    return title, opening, parts
 
 
 def commit_id():
@@ -115,7 +114,7 @@ def commit_id():
         return "unknown"
 
 
-def master_tex(title, paragraphs, parts, site, date, commit):
+def master_tex(title, opening, parts, site, date, commit):
     out = [r"""\documentclass[11pt]{report}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb}
@@ -139,8 +138,7 @@ def master_tex(title, paragraphs, parts, site, date, commit):
 \begin{minipage}{0.86\textwidth}
 \setlength{\parskip}{0.8em}\small
 """ % {"title": title}]
-    for p in paragraphs:
-        out.append(org_to_latex(p) + "\n\n")
+    out.append(org_to_latex(opening) + "\n\n")
     out.append(r"""\end{minipage}
 \vfill
 {\small Built %(date)s from commit \texttt{%(commit)s} of \url{https://github.com/ultronozm/grh-workbook}.\\
@@ -154,7 +152,7 @@ The sheets, one file each, and this file: \url{https://ultronozm.github.io/grh-w
 """ % {"date": date, "commit": commit})
     n = 0
     for part, sheets in parts:
-        first = True
+        first = bool(part)
         for stem, num, name in sheets:
             pdf = os.path.join(site, stem + ".pdf")
             if not os.path.exists(pdf):
@@ -164,8 +162,10 @@ The sheets, one file each, and this file: \url{https://ultronozm.github.io/grh-w
             if first:
                 entries.append("1,part,-1,{%s},part%d" % (escape_title(part), n))
                 first = False
-            entries.append("1,chapter,0,{\\protect\\numberline{%s}%s},sheet%d"
-                           % (escape_title(num), escape_title(name), n))
+            heading = escape_title(name)
+            if num:
+                heading = r"\protect\numberline{%s}%s" % (escape_title(num), heading)
+            entries.append("1,chapter,0,{%s},sheet%d" % (heading, n))
             out.append("\\includepdf[pages=-,addtotoc={%s}]{%s}\n"
                        % (",".join(entries), pdf))
     out.append("\\end{document}\n")
@@ -173,12 +173,18 @@ The sheets, one file each, and this file: \url{https://ultronozm.github.io/grh-w
 
 
 def write_link(site, pages):
+    revision = os.environ.get("GITHUB_SHA") or "HEAD"
+    stamp = subprocess.check_output(
+        ["git", "show", "-s", "--format=%cs", revision], cwd=ROOT, text=True).strip()
+    date = datetime.date.fromisoformat(stamp)
     with open(os.path.join(site, LINK), "w", encoding="utf-8") as f:
-        f.write("# Written by scripts/make-book.py: the link to the whole "
-                "collection as one PDF.\n")
+        f.write("# Written by scripts/make-book.py for the index.\n")
+        f.write(f"#+MACRO: updated {date.day} {date:%B %Y}\n")
         if pages:
-            f.write("The whole collection as one PDF: [[file:%s][download]] "
-                    "(%d pages).\n" % (BOOK, pages))
+            f.write(f"#+MACRO: book-link @@html: · @@[[file:{BOOK}]"
+                    f"[the whole collection as one PDF]] ({pages} pages)\n")
+        else:
+            f.write("#+MACRO: book-link @@html:@@\n")
 
 
 def main():
@@ -189,12 +195,12 @@ def main():
     guide = os.path.join(site, GUIDE)
     if not os.path.exists(guide):
         guide = os.path.join(ROOT, GUIDE)
-    title, paragraphs, parts = read_guide(guide)
+    title, opening, parts = read_guide(guide)
     date = datetime.datetime.now(datetime.timezone.utc)
     date = "%d %s" % (date.day, date.strftime("%B %Y"))
     tmp = tempfile.mkdtemp(prefix="make-book-")
     try:
-        tex, n = master_tex(title, paragraphs, parts, site, date, commit_id())
+        tex, n = master_tex(title, opening, parts, site, date, commit_id())
         with open(os.path.join(tmp, "book.tex"), "w", encoding="utf-8") as f:
             f.write(tex)
         for _ in range(3):

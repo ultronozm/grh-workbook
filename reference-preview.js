@@ -71,7 +71,7 @@
   }
 
   function copyTarget(source, ref) {
-    const chapterLink = !ref.id && source.querySelector('meta[name="workbook-chapter"]');
+    const chapterLink = (!ref.id || ref.id === "chap") && source.querySelector('meta[name="workbook-chapter"]');
     let target = chapterLink ? source.querySelector("#title-block-header") : source.getElementById(ref.id);
     const entry = target?.closest(entries + ", " + footnotes);
     if (entry) target = entry;
@@ -120,7 +120,8 @@
       const chapter = source.querySelector('meta[name="workbook-chapter"]')?.content;
       const context = document.createElement("div");
       context.className = "reference-preview-context";
-      context.textContent = chapter ? `Chapter ${chapter}, ${source.title}` : source.title;
+      context.textContent = chapter && chapter !== source.title
+        ? `Chapter ${chapter}, ${source.title}` : source.title;
       content.prepend(context);
     }
     return content;

@@ -47,7 +47,8 @@ import re
 import sys
 import unicodedata
 
-GUIDE = "20261125T012000--grh-workbook__guide.org"
+from workbook_index import GUIDE, overview_sheet
+
 TAGS = "tags.tsv"
 CHAPTERS = "chapters.tex"
 
@@ -156,6 +157,8 @@ def read_index():
     with open(GUIDE, encoding="utf-8") as f:
         guide = f.read()
     out, part = [], None
+    if overview := overview_sheet(guide):
+        out.append((*overview, "Overview", "Overview"))
     for line in guide.split("\n"):
         if line.startswith("* "):
             heading = line[2:].strip()
@@ -173,7 +176,7 @@ def read_index():
 
 def stable_sheets():
     return [(i, s) for i, s, num, part in read_index()
-            if (part in STABLE_PARTS
+            if (part == "Overview" or part in STABLE_PARTS
                 or (part == "side" and num in STABLE_SIDE))]
 
 
@@ -396,7 +399,10 @@ def chapter_numbers(directory):
     path = os.path.join(directory, CHAPTERS)
     if not os.path.exists(path):
         path = CHAPTERS
-    return dict(re.findall(r"\\chapters@set\{([^}]*)\}\{([^}]*)\}", read(path)))
+    numbers = dict(re.findall(r"\\chapters@set\{([^}]*)\}\{([^}]*)\}", read(path)))
+    if overview := overview_sheet(read(os.path.join(directory, GUIDE)) or read(GUIDE)):
+        numbers[overview[0]] = "Overview"
+    return numbers
 
 
 def sheet_title(tex):
@@ -513,6 +519,8 @@ def site(directory):
 
     def describe(e):
         page, anchor, chap, kind, number, title = info(e)
+        if chap == "Overview":
+            return "the Overview" if kind == "Chapter" else f"{kind} {number} of the Overview"
         what = (f"Chapter {chap}" if kind == "Chapter"
                 else f"{kind} {number} of Chapter {chap}")
         return what + (f", <em>{title}</em>" if title else "")
@@ -551,6 +559,8 @@ def site(directory):
                     "</body>\n</html>\n")
 
     def chap_key(c):
+        if c == "Overview":
+            return (-1, 0, c)
         return (0, int(c), "") if c.isdigit() else (1, 0, c)
 
     previews = ('<link rel="stylesheet" href="reference-preview.css">\n'
@@ -576,10 +586,11 @@ def site(directory):
         page, anchor, chap, kind, number, title = info(e)
         url = html.escape(page + ("#" + anchor if anchor else ""))
         item = "" if kind == "Chapter" else f"{kind} {number}"
+        chapter_label = chap if chap == "Overview" else f"Chapter {chap}"
         cls = ' class="chapter"' if kind == "Chapter" else ""
         out.append(f'<tr id="{e.tag}"{cls}><td><a href="tag/{e.tag}.html">'
                    f'{e.tag}</a></td><td>{chap}</td>'
-                   f'<td><a href="{url}">{item or "Chapter " + chap}</a></td>'
+                   f'<td><a href="{url}">{item or chapter_label}</a></td>'
                    f"<td>{title}</td></tr>\n")
     out.append("</tbody>\n</table>\n")
     if retired:

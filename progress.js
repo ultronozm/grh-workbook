@@ -594,11 +594,13 @@
     const destinations = [];
     for (const sheet of document.querySelectorAll("a[data-sheet-problems]")) {
       const ids = JSON.parse(sheet.dataset.sheetProgress);
-      const chapter = sheet.textContent.trim().match(/^S?\d+/)?.[0];
+      const title = sheet.textContent.trim();
+      const number = title.match(/^S?\d+/)?.[0];
+      const chapter = number ? 'Chapter ' + number : title;
       JSON.parse(sheet.dataset.sheetProblems).forEach(([anchor, label], i) => {
         const url = new URL(sheet.href);
         url.hash = encodeURIComponent(anchor);
-        destinations.push({ids: ids[i], heading: `Chapter ${chapter}, ${label}`, url: url.href});
+        destinations.push({ids: ids[i], heading: `${chapter}, ${label}`, url: url.href});
       });
     }
     const knownIds = new Set(destinations.flatMap(({ids}) => ids));

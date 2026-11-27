@@ -130,7 +130,8 @@
       const link = document.createElement("a");
       const excerpt = document.createElement("span");
       link.href = row.url;
-      link.textContent = `Chapter ${row.chapter} · ${row.label}`;
+      const chapter = /^S?\d+$/.test(row.chapter) ? 'Chapter ' + row.chapter : row.chapter;
+      link.textContent = row.label === chapter ? chapter : `${chapter} · ${row.label}`;
       excerpt.textContent = snippet(row, tokens);
       item.append(link, excerpt);
       if (/\\[([]/.test(item.textContent)) {

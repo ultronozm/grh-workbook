@@ -147,7 +147,7 @@ else
 fi
 
 # The whole collection as one PDF (scripts/make-book.py), in index order,
-# and the sentence of the index that links it (book-link.org).
+# and the source date and PDF link for the index (book-link.org).
 if python3 scripts/make-book.py --site .; then
   echo "OK: grh-via-exercises.pdf"
 else

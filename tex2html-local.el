@@ -330,15 +330,16 @@ labels with retired tags do not get an alias."
             "<script src=\"reference-preview.js\" defer></script>\n")))
 
 (defun tex2html-local-index-progress (item _backend _info)
-  "Attach the built sheet's problem IDs and destinations to Org list ITEM."
+  "Attach the built sheet's problem IDs and destinations to the first sheet link in Org ITEM."
   (when (string-match
-         (concat "\\`<li>[[:space:]]*\\(?:<p>[[:space:]]*\\)?"
+         (concat "\\`\\(?:<li>[[:space:]]*\\)?\\(?:<p>[[:space:]]*\\)?"
                  "<a href=\"\\([0-9]\\{8\\}T[0-9]\\{6\\}--[^/\"<>]+__workbook\\.html\\)\"")
          item)
     (let ((page (match-string 1 item))
           (link-end (match-end 0))
           ids destinations)
-      (when (file-readable-p page)
+      (when (and (not (string-prefix-p " data-sheet-progress=" (substring item link-end)))
+                 (file-readable-p page))
         (with-temp-buffer
           (insert-file-contents page)
           (goto-char (point-min))
@@ -363,6 +364,9 @@ labels with retired tags do not get an alias."
 
 (setq tex2html-index-export-options
       (plist-put tex2html-index-export-options :filter-item
+                 '(tex2html-local-index-progress)))
+(setq tex2html-index-export-options
+      (plist-put tex2html-index-export-options :filter-paragraph
                  '(tex2html-local-index-progress)))
 
 (add-hook 'tex2html-postprocess-html-functions #'tex2html-local-fix-theorem-numbers)
