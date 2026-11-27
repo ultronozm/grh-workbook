@@ -187,7 +187,8 @@ test("two Chrome profiles sync marks, solutions and settings through the Worker"
   await a.go(index, panel);
   assert.equal(await a.evaluate(`document.querySelector('${syncPanel}').hidden`), true);
   assert.deepEqual(traffic, []);
-  const sheet = await a.evaluate("document.querySelector('a[data-sheet-progress]').pathname");
+  const sheet = await a.evaluate(`[...document.querySelectorAll("a[data-sheet-progress]")]
+    .find(link => /^\\d+\\./.test(link.textContent.trim())).pathname`);
   const mark = ".progress-toggle";
   const solution = "A writes a private solution.";
   const solutionInput = ".problem-solution textarea";
@@ -207,6 +208,9 @@ test("two Chrome profiles sync marks, solutions and settings through the Worker"
   assert.equal(await a.stored("grh-workbook:reading-mode"), "cards");
   const doneKey = "grh-workbook:done:" + problem;
   const solutionKey = "grh-workbook:solution:" + problem;
+  const snapshotKey = "grh-workbook:statement:" + problem;
+  const snapshot = await a.stored(snapshotKey);
+  assert.equal(JSON.parse(snapshot).tag, problem);
   const feedbackKey = "grh-workbook:feedback:" + problem;
   const feedback = JSON.stringify({
     text: "Correct and complete.",
@@ -248,6 +252,7 @@ test("two Chrome profiles sync marks, solutions and settings through the Worker"
   }
   const cloudEntries = async () => (await cloudSnapshot()).entries;
   assert.deepEqual((await cloudSnapshot()).feedback, {[feedbackKey]: [0, feedback]});
+  assert.deepEqual((await cloudSnapshot()).snapshots, {[snapshotKey]: [0, snapshot]});
   assert.deepEqual((await cloudEntries())[solutionKey], [0, solution]);
   assert.deepEqual(Object.keys(await cloudEntries()).sort(), [doneKey, solutionKey].sort());
 
@@ -268,6 +273,7 @@ test("two Chrome profiles sync marks, solutions and settings through the Worker"
   await until(async () => /Synced/.test(await b.text(status)), "Device B failed to join");
   await b.capture("mobile-synced");
   assert.equal(await b.stored(solutionKey), solution);
+  assert.equal(await b.stored(snapshotKey), snapshot);
   assert.equal(await b.stored(feedbackKey), feedback);
   assert.equal(await b.stored("grh-workbook:last-visit"), null);
   assert.equal(await b.stored("grh-workbook:reading-mode"), null);
@@ -299,6 +305,7 @@ test("two Chrome profiles sync marks, solutions and settings through the Worker"
   await until(() => lastPut() > priorPuts, "A's solution deletion and re-mark did not upload");
   assert.ok(traffic.findLast(([method, status]) => method === "PUT" && status === 200)[2] - editedAt >= 3000);
   assert.equal((await cloudEntries())[solutionKey][1], null);
+  assert.equal((await cloudSnapshot()).snapshots[snapshotKey][1], null);
   await b.visible();
   await waitForMark(b, "true");
   await until(async () => await b.evaluate('document.querySelector(".problem-solution textarea").value') === "",

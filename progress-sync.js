@@ -27,16 +27,20 @@ async function derive(code) {
   return {key, id: Array.from(new Uint8Array(id), n => n.toString(16).padStart(2, "0")).join("")};
 }
 
-async function seal(key, records, feedbackPrefix) {
+async function seal(key, records, optionalPrefixes) {
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const entries = Object.create(null);
-  const feedback = Object.create(null);
+  const optional = Object.entries(optionalPrefixes).map(([field, prefix]) =>
+    ({field, prefix, entries: Object.create(null)}));
   for (const [name, entry] of records) {
-    (name.startsWith(feedbackPrefix) ? feedback : entries)[name] = entry;
+    const group = optional.find(({prefix}) => name.startsWith(prefix));
+    (group?.entries ?? entries)[name] = entry;
   }
-  // Keep the original entries readable by clients that predate feedback.
+  // Older clients validate the original entry map and ignore extra fields.
   const backup = {version: 1, entries};
-  if (Object.keys(feedback).length) backup.feedback = feedback;
+  for (const group of optional) {
+    if (Object.keys(group.entries).length) backup[group.field] = group.entries;
+  }
   const plaintext = encoder.encode(JSON.stringify(backup));
   const data = new Uint8Array(await crypto.subtle.encrypt({name: "AES-GCM", iv}, key, plaintext));
   let binary = String.fromCharCode(...iv);
@@ -46,15 +50,23 @@ async function seal(key, records, feedbackPrefix) {
   return btoa(binary);
 }
 
-async function unseal(key, ciphertext, isProgressKey, feedbackPrefix) {
+async function unseal(key, ciphertext, isProgressKey, optionalPrefixes) {
   const data = Uint8Array.from(atob(ciphertext), character => character.charCodeAt(0));
   const plaintext = await crypto.subtle.decrypt({name: "AES-GCM", iv: data.subarray(0, 12)}, key, data.subarray(12));
-  const {version, entries, feedback} = JSON.parse(new TextDecoder().decode(plaintext));
+  const backup = JSON.parse(new TextDecoder().decode(plaintext));
+  const {version, entries} = backup;
   const isRecord = value => value && typeof value === "object" && !Array.isArray(value);
-  if (version !== 1 || !isRecord(entries) || (feedback !== undefined && !isRecord(feedback))) throw new Error();
-  const feedbackRecords = Object.entries(feedback ?? {});
-  if (feedbackRecords.some(([name]) => !name.startsWith(feedbackPrefix))) throw new Error();
-  const records = [...Object.entries(entries), ...feedbackRecords];
+  if (version !== 1 || !isRecord(entries)) throw new Error();
+  const records = Object.entries(entries);
+  for (const [field, prefix] of Object.entries(optionalPrefixes)) {
+    const group = backup[field];
+    if (group === undefined) continue;
+    if (!isRecord(group)) throw new Error();
+    for (const [name, entry] of Object.entries(group)) {
+      if (!name.startsWith(prefix)) throw new Error();
+      records.push([name, entry]);
+    }
+  }
   for (const [name, entry] of records) {
     if (!isProgressKey(name) || !Array.isArray(entry) || entry.length !== 2 ||
         !Number.isSafeInteger(entry[0]) || entry[0] < 0 ||
@@ -80,7 +92,7 @@ function savedAgo(time) {
   return `${days} ${days === 1 ? "day" : "days"} ago`;
 }
 
-export function startSync({endpoint, storage, isProgressKey, stampPrefix, feedbackPrefix, refresh, panel}) {
+export function startSync({endpoint, storage, isProgressKey, stampPrefix, optionalPrefixes, refresh, panel}) {
   const getCode = () => storage.getItem(codeKey);
   const request = (id, options) => fetch(endpoint.replace(/\/$/, "") + "/v1/" + id, {
     cache: "no-store", credentials: "omit", redirect: "error", referrerPolicy: "no-referrer",
@@ -122,7 +134,7 @@ export function startSync({endpoint, storage, isProgressKey, stampPrefix, feedba
   }
 
   async function put(id, key, entries, headers) {
-    const body = await seal(key, entries, feedbackPrefix);
+    const body = await seal(key, entries, optionalPrefixes);
     if (body.length > maxBytes) throw new SyncError("Synced progress exceeds 256 KB.");
     return request(id, {method: "PUT", body, headers});
   }
@@ -145,7 +157,7 @@ export function startSync({endpoint, storage, isProgressKey, stampPrefix, feedba
     if (!etag) throw new Error();
     try {
       const {ciphertext} = await response.json();
-      return {etag, entries: await unseal(key, ciphertext, isProgressKey, feedbackPrefix)};
+      return {etag, entries: await unseal(key, ciphertext, isProgressKey, optionalPrefixes)};
     } catch {
       throw new SyncError("Could not read the synced data.");
     }

@@ -42,6 +42,7 @@
 
   const prefix = "grh-workbook:done:";
   const solutionPrefix = "grh-workbook:solution:";
+  const snapshotPrefix = "grh-workbook:statement:";
   const feedbackPrefix = "grh-workbook:feedback:";
   let refreshFeedback;
   const requireSolutionKey = "grh-workbook:require-solution";
@@ -57,7 +58,7 @@
 
   function isProgressKey(key) {
     return key === requireSolutionKey || key.startsWith(prefix) || key.startsWith(solutionPrefix) ||
-      key.startsWith(feedbackPrefix);
+      key.startsWith(snapshotPrefix) || key.startsWith(feedbackPrefix);
   }
 
   function writeProgress(key, value) {
@@ -96,20 +97,56 @@
     return solutions;
   }
 
-  function readSolution(ids) {
+  function solutionId(ids) {
     for (const id of ids) {
-      const text = storage.getItem(solutionPrefix + id);
-      if (text?.trim()) return text;
+      if (storage.getItem(solutionPrefix + id)?.trim()) return id;
     }
-    return "";
   }
 
-  function saveSolution([id, ...aliases], text) {
+  function readSolution(ids) {
+    const id = solutionId(ids);
+    return id === undefined ? "" : storage.getItem(solutionPrefix + id);
+  }
+
+  const statementLimit = 4096;
+  const encoder = new TextEncoder();
+  const normalizeStatement = text => text.replace(/\s+/g, " ").trim();
+
+  function statementHash(text) {
+    // Compare the entire statement even when only its beginning is saved.
+    let hash = 2166136261;
+    for (let i = 0; i < text.length; i++) {
+      hash = Math.imul(hash ^ text.charCodeAt(i), 16777619);
+    }
+    return hash >>> 0;
+  }
+
+  function validSnapshot(record) {
+    return record && typeof record.title === "string" && typeof record.number === "string" &&
+      typeof record.tag === "string" && typeof record.statement === "string" &&
+      encoder.encode(record.statement).length <= statementLimit &&
+      (record.overflowHash === undefined || record.overflowHash === (record.overflowHash >>> 0));
+  }
+
+  function readSnapshot(id) {
+    try {
+      const record = JSON.parse(storage.getItem(snapshotPrefix + id));
+      if (validSnapshot(record)) return record;
+    } catch {
+      // A malformed snapshot does not hide its solution.
+    }
+    return null;
+  }
+
+  function saveSolution([id, ...aliases], text, snapshot) {
     const value = text.trim() ? text : null;
     writeProgress(solutionPrefix + id, value);
+    if (value !== null && snapshot) writeProgress(snapshotPrefix + id, JSON.stringify(snapshot));
+    else if (storage.getItem(snapshotPrefix + id) !== null) writeProgress(snapshotPrefix + id, null);
     for (const alias of aliases) {
       const key = solutionPrefix + alias;
       if (value === null || storage.getItem(key) !== null) writeProgress(key, null);
+      if (storage.getItem(snapshotPrefix + alias) !== null) writeProgress(snapshotPrefix + alias, null);
     }
   }
 
@@ -163,6 +200,41 @@
     const button = make("button", "solution-link", text);
     button.type = "button";
     return button;
+  }
+
+  let mathSources;
+  function sourceText(node, heading) {
+    if (node.nodeType === Node.TEXT_NODE) return node.textContent.replace(/\s+/g, " ");
+    if (node.nodeType !== Node.ELEMENT_NODE || node === heading ||
+        node.matches(".stable-tag, .used-in, .leanremark, .problem-solution, .reading-toggle, .reading-position, .progress-count")) return "";
+    if (node.matches("mjx-container")) {
+      if (!mathSources) {
+        mathSources = new WeakMap();
+        for (const item of window.MathJax?.startup?.document?.math ?? []) {
+          if (item.typesetRoot) mathSources.set(item.typesetRoot, item);
+        }
+      }
+      const item = mathSources.get(node);
+      if (item) return item.display ? `\\[${item.math}\\]` : `\\(${item.math}\\)`;
+    }
+    if (node.matches(".math") && !node.firstElementChild) return node.textContent;
+    if (node.matches("br")) return "\n";
+    const text = Array.from(node.childNodes, child => sourceText(child, heading)).join("");
+    return node.matches("p, li, blockquote, div") ? text + "\n\n" : text;
+  }
+
+  function showStatement(container, {statement, overflowHash}) {
+    const math = [];
+    let end = 0;
+    for (const match of statement.matchAll(/\\\(([\s\S]*?)\\\)|\\\[([\s\S]*?)\\\]/g)) {
+      container.append(statement.slice(end, match.index));
+      const formula = make("span", "solution-math", match[0]);
+      math.push([formula, match[1] ?? match[2], match[2] !== undefined]);
+      container.append(formula);
+      end = match.index + match[0].length;
+    }
+    container.append(statement.slice(end) + (overflowHash === undefined ? "" : "\n…"));
+    if (math.length) typesetSolution(math, () => container.isConnected).catch(() => {});
   }
 
   function inlineMarkdown(parent, source, math) {
@@ -267,15 +339,15 @@
     // math packages without the HTML and dynamic package-loading commands.
     mathDocument ??= engine.document(document, {
       InputJax: new main.inputJax[0].constructor({
-        macros: mj.config.tex?.macros,
+        macros: mj.config.tex?.macros ?? {},
         packages: ["base", "ams", "newcommand", "configmacros", "noundefined"],
       }),
       OutputJax: main.outputJax,
     });
-    for (const [span, tex] of math) {
+    for (const [span, tex, display = false] of math) {
       if (!current()) return;
       try {
-        const result = await engine.handleRetriesFor(() => mathDocument.convert(tex, {display: false}));
+        const result = await engine.handleRetriesFor(() => mathDocument.convert(tex, {display}));
         if (!current()) return;
         result.removeAttribute("id");
         result.querySelectorAll("[id]").forEach(node => node.removeAttribute("id"));
@@ -296,7 +368,28 @@
 
   const solutionEditors = [];
   const feedbackProblems = [];
-  function addSolutionEditor(problem, ids, label) {
+  function addSolutionEditor(problem, ids, heading) {
+    const label = heading.textContent.trim();
+    const tag = problem.querySelector(":scope > .stable-tag") ? ids[0] : "";
+    const sheetTitle = document.querySelector("h1.title");
+    const statement = () => sourceText(problem, heading).replace(/^\s*\.\s*/, "").trim();
+    function captureStatement() {
+      const text = statement();
+      const bytes = encoder.encode(text);
+      const snapshot = {
+        title: sheetTitle ? sourceText(sheetTitle).trim() : document.title,
+        number: label.replace(/^Problem\s+/, ""),
+        tag,
+        statement: text,
+      };
+      if (bytes.length > statementLimit) {
+        // Ignore an incomplete UTF-8 character at the end of the slice.
+        snapshot.statement = new TextDecoder().decode(bytes.subarray(0, statementLimit), {stream: true}).trimEnd();
+        snapshot.overflowHash = statementHash(normalizeStatement(text));
+      }
+      return snapshot;
+    }
+
     const area = make("div", "problem-solution");
     const view = solutionLink("View solution");
     const toggle = solutionLink("Write solution");
@@ -307,6 +400,36 @@
     let editor, input, note, preview, status, timer, revision = 0, viewRevision = 0;
     let saved = "";
     let dirty = false;
+    const change = make("div", "solution-statement-change");
+    change.hidden = true;
+    const earlier = make("details", "");
+    const earlierText = make("div", "solution-statement mathjax_ignore");
+    earlier.append(make("summary", "", "Show earlier statement"), earlierText);
+    change.append(make("span", "", "The problem has changed since you wrote this."), earlier);
+    let shownSnapshot;
+
+    function updateStatementNotice(container) {
+      const id = solutionId(ids);
+      const snapshot = id === undefined ? null : readSnapshot(id);
+      const current = snapshot && normalizeStatement(statement());
+      const changed = snapshot && (snapshot.overflowHash === undefined
+        ? current !== normalizeStatement(snapshot.statement)
+        : statementHash(current) !== snapshot.overflowHash);
+      change.hidden = !changed;
+      if (!changed) {
+        earlier.open = false;
+        return;
+      }
+      if (shownSnapshot?.statement !== snapshot.statement || shownSnapshot?.overflowHash !== snapshot.overflowHash) {
+        earlierText.replaceChildren();
+        shownSnapshot = snapshot;
+      }
+      container.after(change);
+      if (earlier.open && !earlierText.hasChildNodes()) showStatement(earlierText, snapshot);
+    }
+    earlier.addEventListener("toggle", () => {
+      if (earlier.open && !earlierText.hasChildNodes()) showStatement(earlierText, shownSnapshot);
+    });
 
     function refreshLink() {
       saved = readSolution(ids);
@@ -320,6 +443,7 @@
       viewRevision++;
       viewer.hidden = true;
       viewer.replaceChildren();
+      change.hidden = true;
       view.textContent = "View solution";
     }
 
@@ -329,6 +453,7 @@
       viewer.replaceChildren(fragment);
       viewer.hidden = false;
       view.textContent = "Hide solution";
+      updateStatementNotice(viewer);
       if (math.length) typesetSolution(math, () => viewRevision === version).catch(() => {});
     }
 
@@ -358,11 +483,12 @@
 
     function save() {
       try {
-        saveSolution(ids, input.value);
+        saveSolution(ids, input.value, input.value.trim() ? captureStatement() : null);
         dirty = false;
         status.textContent = input.value.trim() ? "Saved" : "";
         if (input.value.trim()) showNote(false);
         refreshLink();
+        updateStatementNotice(preview);
         refreshFeedback?.();
       } catch {
         dirty = true;
@@ -379,6 +505,7 @@
       revision++;
       editor.hidden = true;
       preview.replaceChildren();
+      change.hidden = true;
       toggle.hidden = false;
       refreshLink();
       toggle.focus();
@@ -425,6 +552,7 @@
         view.hidden = true;
         grow();
         updatePreview();
+        updateStatementNotice(preview);
       }
       showNote(required);
       input.focus();
@@ -436,6 +564,10 @@
     solutionEditors.push(() => {
       const previous = saved;
       refreshLink();
+      if (!viewer.hidden) {
+        if (previous !== saved) showViewer();
+        else updateStatementNotice(viewer);
+      }
       if (!dirty && editor && !editor.hidden && previous !== saved) {
         input.value = saved;
         status.textContent = saved ? "Saved" : "";
@@ -443,6 +575,7 @@
         grow();
         updatePreview();
       }
+      if (editor && !editor.hidden) updateStatementNotice(preview);
     });
     feedbackProblems.push({
       problem, ids, area, viewer,
@@ -482,7 +615,7 @@
     const heading = problem.querySelector(":scope > p:first-of-type > strong:first-child");
     if (!heading) continue;
     problems.push(ids);
-    const editSolution = addSolutionEditor(problem, ids, heading.textContent.trim());
+    const editSolution = addSolutionEditor(problem, ids, heading);
 
     const button = document.createElement("button");
     button.type = "button";
@@ -630,11 +763,14 @@
     });
 
     panel.querySelector("[data-export]").addEventListener("click", () => {
+      const solutions = [...readSolutions()].sort(([a], [b]) => a.localeCompare(b));
       const backup = {
         version: 1,
         done: [...readDone()].sort(),
-        solutions: Object.fromEntries([...readSolutions()].sort(([a], [b]) => a.localeCompare(b))),
+        solutions: Object.fromEntries(solutions),
       };
+      const snapshots = solutions.map(([id]) => [id, readSnapshot(id)]).filter(([, record]) => record);
+      if (snapshots.length) backup.snapshots = Object.fromEntries(snapshots);
       const feedback = readAllFeedback();
       if (feedback.size) backup.feedback = Object.fromEntries(feedback);
       download("grh-workbook-progress.json", "application/json", JSON.stringify(backup, null, 2));
@@ -645,16 +781,88 @@
       return record ? `\n\n**Feedback from ${record.model}, ${record.date.slice(0, 10)}**\n\n${record.text}` : "";
     }
 
+    function exportedSolution(id, text, snapshot, feedbackIds = [id]) {
+      const statement = snapshot && snapshot.statement + (snapshot.overflowHash === undefined ? "" : "\n…");
+      const quote = statement ? statement.split("\n").map(line => "> " + line).join("\n") + "\n\n" : "";
+      return quote + text + exportedFeedback(feedbackIds);
+    }
+
+    function savedHeading(id, snapshot) {
+      if (!snapshot) return id;
+      return [snapshot.title, snapshot.number && "Problem " + snapshot.number,
+        snapshot.tag && "Tag " + snapshot.tag].filter(Boolean).join(" · ") || id;
+    }
+
+    const orphans = make("details", "progress-orphans");
+    const orphanSummary = make("summary", "");
+    const orphanList = make("div", "");
+    orphans.hidden = true;
+    orphans.append(orphanSummary, orphanList);
+    status.before(orphans);
+
+    function renderOrphans() {
+      const other = [...readSolutions()].filter(([id]) => !knownIds.has(id));
+      orphans.hidden = !other.length;
+      if (!other.length) orphans.open = false;
+      orphanSummary.textContent = other.length === 1
+        ? "1 solution for a problem no longer in the collection"
+        : `${other.length} solutions for problems no longer in the collection`;
+      orphanList.replaceChildren();
+      if (!orphans.open) return;
+      for (const [id, text] of other) {
+        const snapshot = readSnapshot(id);
+        const heading = savedHeading(id, snapshot);
+        const item = make("article", "progress-orphan");
+        item.append(make("h3", "", heading));
+        if (snapshot?.statement) {
+          const statement = make("div", "solution-statement mathjax_ignore");
+          item.append(statement);
+          showStatement(statement, snapshot);
+        }
+        const solution = make("div", "solution-preview mathjax_ignore");
+        const {fragment, math} = renderMarkdown(text);
+        solution.append(fragment);
+        item.append(solution);
+        if (math.length) typesetSolution(math, () => solution.isConnected).catch(() => {});
+        const actions = make("div", "");
+        const exportButton = solutionLink("Export");
+        exportButton.addEventListener("click", () => {
+          const body = exportedSolution(id, text, snapshot);
+          download("grh-workbook-solution.md", "text/markdown", `## ${heading}\n\n${body}`);
+        });
+        const deleteButton = solutionLink("Delete");
+        deleteButton.addEventListener("click", () => {
+          if (!window.confirm("Delete this saved solution and its statement snapshot and feedback?")) return;
+          saveSolution([id], "");
+          if (storage.getItem(feedbackPrefix + id) !== null) writeProgress(feedbackPrefix + id, null);
+          renderOrphans();
+          (orphans.hidden ? panel.querySelector("summary") : orphanSummary).focus();
+        });
+        actions.append(exportButton, deleteButton);
+        item.append(actions);
+        orphanList.append(item);
+      }
+    }
+    orphans.addEventListener("toggle", renderOrphans);
+    renderers.push(renderOrphans);
+
     panel.querySelector("[data-export-solutions]").addEventListener("click", () => {
       const sections = [];
       for (const {ids, heading, url} of destinations) {
-        const text = readSolution(ids);
-        if (text) sections.push(`## [${heading}](<${url}>)\n\n${text}` + exportedFeedback(ids));
+        const id = solutionId(ids);
+        if (id === undefined) continue;
+        const snapshot = readSnapshot(id);
+        const context = snapshot ? savedHeading(id, snapshot) + "\n\n" : "";
+        const body = exportedSolution(id, readSolution([id]), snapshot, ids);
+        sections.push(`## [${heading}](<${url}>)\n\n${context}${body}`);
       }
       const other = [...readSolutions()].filter(([id]) => !knownIds.has(id));
       if (other.length) {
         sections.push("## Other saved solutions",
-          ...other.map(([id, text]) => `### ${id}\n\n${text}` + exportedFeedback([id])));
+          ...other.map(([id, text]) => {
+            const snapshot = readSnapshot(id);
+            return `### ${savedHeading(id, snapshot)}\n\n${exportedSolution(id, text, snapshot)}`;
+          }));
       }
       if (sections.length) {
         status.textContent = "";
@@ -673,12 +881,16 @@
       try {
         backup = JSON.parse(await selected.text());
         const solutions = backup?.solutions;
+        const snapshots = backup?.snapshots;
         const feedback = backup?.feedback;
         if (backup?.version !== 1 || !Array.isArray(backup.done) ||
             !backup.done.every(id => typeof id === "string" && id.length > 0) ||
             (solutions !== undefined && (!solutions || typeof solutions !== "object" ||
               Array.isArray(solutions) || !Object.entries(solutions).every(([id, text]) =>
                 id && typeof text === "string" && text.trim()))) ||
+            (snapshots !== undefined && (!snapshots || typeof snapshots !== "object" ||
+              Array.isArray(snapshots) || !Object.entries(snapshots).every(([id, snapshot]) =>
+                id && validSnapshot(snapshot)))) ||
             (feedback !== undefined && (!feedback || typeof feedback !== "object" ||
               Array.isArray(feedback) || !Object.entries(feedback).every(([id, record]) =>
                 id && validFeedback(record))))) {
@@ -691,12 +903,13 @@
       try {
         backup.done.forEach(id => writeProgress(prefix + id, "1"));
         const solutions = new Map(Object.entries(backup.solutions ?? {}));
+        const snapshots = new Map(Object.entries(backup.snapshots ?? {}));
         for (const {ids} of destinations) {
           const id = ids.find(id => solutions.has(id));
-          if (id) saveSolution(ids, solutions.get(id));
+          if (id) saveSolution(ids, solutions.get(id), snapshots.get(id));
         }
         for (const [id, text] of solutions) {
-          if (!knownIds.has(id)) saveSolution([id], text);
+          if (!knownIds.has(id)) saveSolution([id], text, snapshots.get(id));
         }
         const feedback = new Map(Object.entries(backup.feedback ?? {}));
         for (const {ids} of destinations) {
@@ -720,7 +933,7 @@
       const clearSolutions = (solutions.size || feedback.size) && window.confirm("Also clear all saved solutions and feedback?");
       readDone().forEach(id => writeProgress(prefix + id, null));
       if (clearSolutions) {
-        for (const id of solutions.keys()) writeProgress(solutionPrefix + id, null);
+        for (const id of solutions.keys()) saveSolution([id], "");
         for (const id of feedback.keys()) writeProgress(feedbackPrefix + id, null);
       }
       status.textContent = clearSolutions ? "Progress and solutions cleared." : "Progress cleared.";
@@ -730,8 +943,9 @@
 
   window.addEventListener("storage", event => {
     if (event.storageArea !== storage) return;
-    if (!event.key || event.key.startsWith(prefix)) render();
-    if (!event.key || event.key.startsWith(solutionPrefix)) solutionEditors.forEach(update => update());
+    const solutionChanged = !event.key || event.key.startsWith(solutionPrefix) || event.key.startsWith(snapshotPrefix);
+    if (solutionChanged || event.key.startsWith(prefix)) render();
+    if (solutionChanged) solutionEditors.forEach(update => update());
     refreshFeedback?.();
   });
   window.addEventListener("pageshow", render);
@@ -753,7 +967,8 @@
   if (SYNC_ENDPOINT && globalThis.crypto?.subtle) {
     import("./progress-sync.js").then(({startSync}) => {
       scheduleSync = startSync({
-        endpoint: SYNC_ENDPOINT, storage, isProgressKey, stampPrefix, feedbackPrefix, panel,
+        endpoint: SYNC_ENDPOINT, storage, isProgressKey, stampPrefix,
+        optionalPrefixes: {feedback: feedbackPrefix, snapshots: snapshotPrefix}, panel,
         refresh() {
           render();
           updateSetting();
