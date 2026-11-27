@@ -7,6 +7,7 @@ const providers = {
 const preamble = "GRH via exercises teaches the proof of the generalized Riemann hypothesis for Dirichlet L-functions following a Lean formalization. The reader is working through the exercises.";
 const inlineMath = " Delimit it with $...$.";
 const chatMath = " Use the delimiters that this chat renders, such as \\( ... \\) and \\[ ... \\].";
+const chatRecall = " The pasted text does not render in this chat, so begin with two short typeset sections, without comment: the statement of the exercise, then the reader's solution as written. Then give the review.";
 const instruction = "Act as a careful referee for this solution. First say in one line whether the argument is correct and complete, correct with gaps, or wrong. Then identify the first real gap or error, quoting the step and saying exactly what is missing, and, if it helps, a hint toward fixing it, but do not write a full proof. Then list any minor points briefly. Do not restate the solution, do not praise, do not pad. If the solution is correct and complete, say so and stop. Write mathematics in standard LaTeX, expanding the sheet's own macros (for example \\mathbb{Q} for \\Q)." + inlineMath;
 const settingsAnchor = "ai-feedback";
 
@@ -124,7 +125,8 @@ async function makePrompt(id, links, solution) {
 }
 
 // A pasted prompt is read by a chat interface with its own math delimiters.
-const forChat = text => text.endsWith(inlineMath) ? text.slice(0, -inlineMath.length) + chatMath : text;
+const forChat = text => !text.endsWith(inlineMath) ? text
+  : text.slice(0, -inlineMath.length).replace("Do not restate the solution, do not praise", "Do not praise") + chatMath + chatRecall;
 
 class FeedbackError extends Error {}
 
