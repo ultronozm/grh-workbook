@@ -947,7 +947,8 @@ def render_page(sheets, parts, svg, g):
            "",
            "*Legend.*  Every arrow comes from the /Prerequisites/ paragraph of"
            " the chapter it points to.",
-           "- Red arrow: into the main inequality, from the frame and from the"
+           "- Red arrow: into the main inequality, from the other chapters of"
+           " Part VI (/Data, spaces and the main inequality/) and from the"
            " chapters stating Theorems A, B and C.",
            "- Amber line: within a Part of the proof, a sheet hangs under the"
            " chapter that names it (a sheet that no chapter of its Part names"
