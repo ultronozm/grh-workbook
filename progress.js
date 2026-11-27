@@ -43,11 +43,34 @@
   const prefix = "grh-workbook:done:";
   const solutionPrefix = "grh-workbook:solution:";
   const requireSolutionKey = "grh-workbook:require-solution";
+  const SYNC_ENDPOINT = "";
+  const stampPrefix = "grh-workbook:sync-timestamp:";
+  let scheduleSync;
   let storage;
   try {
     storage = window.localStorage;
   } catch {
     return;
+  }
+
+  function isProgressKey(key) {
+    return key === requireSolutionKey || key.startsWith(prefix) || key.startsWith(solutionPrefix);
+  }
+
+  function writeProgress(key, value) {
+    if (value !== null && storage.getItem(key) === value) return;
+    if (value === null) storage.removeItem(key);
+    else storage.setItem(key, value);
+
+    if (!SYNC_ENDPOINT || !globalThis.crypto?.subtle) return;
+    try {
+      const stampKey = stampPrefix + key;
+      const stamp = Math.max(Date.now(), Number(storage.getItem(stampKey)) + 1);
+      storage.setItem(stampKey, String(stamp));
+    } catch {
+      // Keep the local change even if there is no space for its timestamp.
+    }
+    scheduleSync?.();
   }
 
   function readDone() {
@@ -79,9 +102,12 @@
   }
 
   function saveSolution([id, ...aliases], text) {
-    if (text.trim()) storage.setItem(solutionPrefix + id, text);
-    else storage.removeItem(solutionPrefix + id);
-    aliases.forEach(alias => storage.removeItem(solutionPrefix + alias));
+    const value = text.trim() ? text : null;
+    writeProgress(solutionPrefix + id, value);
+    for (const alias of aliases) {
+      const key = solutionPrefix + alias;
+      if (value === null || storage.getItem(key) !== null) writeProgress(key, null);
+    }
   }
 
   function make(tag, className, text = "") {
@@ -432,13 +458,13 @@
     button.addEventListener("click", () => {
       try {
         if (ids.some(id => storage.getItem(prefix + id) !== null)) {
-          ids.forEach(id => storage.removeItem(prefix + id));
+          ids.forEach(id => writeProgress(prefix + id, null));
         } else {
           if (storage.getItem(requireSolutionKey) === "1" && !readSolution(ids)) {
             editSolution(true);
             return;
           }
-          storage.setItem(prefix + ids[0], "1");
+          writeProgress(prefix + ids[0], "1");
         }
       } catch {
         // Leave the button showing the saved state if storage is full.
@@ -503,11 +529,15 @@
       if (event.storageArea === storage && (!event.key || event.key === lastVisitKey)) update();
     });
   }
-  if (template) {
-    const panel = template.content.firstElementChild.cloneNode(true);
+  const panel = template?.content.firstElementChild.cloneNode(true);
+  const required = panel?.querySelector("[data-require-solution]");
+  function updateSetting() {
+    if (required) required.checked = storage.getItem(requireSolutionKey) === "1";
+  }
+
+  if (panel) {
     const file = panel.querySelector('input[type="file"]');
     const status = panel.querySelector('[role="status"]');
-    const required = panel.querySelector("[data-require-solution]");
     document.body.append(panel);
 
     const destinations = [];
@@ -531,9 +561,6 @@
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
-    function updateSetting() {
-      required.checked = storage.getItem(requireSolutionKey) === "1";
-    }
     updateSetting();
     window.addEventListener("pageshow", updateSetting);
     window.addEventListener("storage", event => {
@@ -541,8 +568,7 @@
     });
     required.addEventListener("change", () => {
       try {
-        if (required.checked) storage.setItem(requireSolutionKey, "1");
-        else storage.removeItem(requireSolutionKey);
+        writeProgress(requireSolutionKey, required.checked ? "1" : null);
         status.textContent = "";
       } catch {
         updateSetting();
@@ -599,7 +625,7 @@
         return;
       }
       try {
-        backup.done.forEach(id => storage.setItem(prefix + id, "1"));
+        backup.done.forEach(id => writeProgress(prefix + id, "1"));
         const solutions = new Map(Object.entries(backup.solutions ?? {}));
         for (const {ids} of destinations) {
           const id = ids.find(id => solutions.has(id));
@@ -619,9 +645,9 @@
       if (!window.confirm("Clear all saved progress for GRH via exercises?")) return;
       const solutions = readSolutions();
       const clearSolutions = solutions.size && window.confirm("Also clear all saved solutions?");
-      readDone().forEach(id => storage.removeItem(prefix + id));
+      readDone().forEach(id => writeProgress(prefix + id, null));
       if (clearSolutions) {
-        for (const id of solutions.keys()) storage.removeItem(solutionPrefix + id);
+        for (const id of solutions.keys()) writeProgress(solutionPrefix + id, null);
       }
       status.textContent = clearSolutions ? "Progress and solutions cleared." : "Progress cleared.";
       render();
@@ -636,6 +662,19 @@
   window.addEventListener("pageshow", render);
   window.addEventListener("pageshow", () => solutionEditors.forEach(update => update()));
   render();
+
+  if (SYNC_ENDPOINT && globalThis.crypto?.subtle) {
+    import("./progress-sync.js").then(({startSync}) => {
+      scheduleSync = startSync({
+        endpoint: SYNC_ENDPOINT, storage, isProgressKey, stampPrefix, panel,
+        refresh() {
+          render();
+          updateSetting();
+          solutionEditors.forEach(update => update());
+        },
+      });
+    }).catch(() => {});
+  }
 })();
 
 // The converter emits problems and section headings as siblings of the title.
