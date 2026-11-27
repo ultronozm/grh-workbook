@@ -770,7 +770,8 @@
   "use strict";
 
   const header = document.querySelector("#title-block-header");
-  if (!header || !document.querySelector('meta[name="workbook-chapter"]')) return;
+  const chapter = document.querySelector('meta[name="workbook-chapter"]');
+  if (!header || !chapter) return;
 
   const modeKey = "grh-workbook:reading-mode";
   const cardKey = "grh-workbook:reading-card:" + location.pathname;
@@ -795,6 +796,17 @@
     save("grh-workbook:last-visit", JSON.stringify({
       path: location.pathname, id: problem?.id, label: heading?.textContent,
     }));
+  }
+
+  // Keep the Overview's comparison and consecutive problems together.
+  if (chapter.content === "Overview") {
+    const recordOverviewVisit = () => {
+      recordVisit(targetFor(location.hash)?.closest("div.problem"));
+    };
+    recordOverviewVisit();
+    window.addEventListener("pageshow", recordOverviewVisit);
+    window.addEventListener("hashchange", recordOverviewVisit);
+    return;
   }
 
   if (!document.querySelector("body > div.problem")) {
