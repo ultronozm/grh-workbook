@@ -10,6 +10,10 @@ Proved here in general are the deductions: the theorem from A, B and C; Theorem 
 
 ## What changed
 
+### 28 November 2026. Partners defined visibly
+
+Chapter 3 (*The places, the weights and the remainder*) now states the partner notation \([-n]\tau\) as a marked definition, with the label rule displayed; *The data* repeats it, and later sheets point back to it at first use.
+
 ### 28 November 2026. The opening and the Lean sources
 
 The opening of the index is shorter and links the Lean code maintained by the Lean community, whose `main` branch has been based since 25 November on the rewriting that the sheets follow.  The Sources list says so, and describes that rewriting as its repository does.
