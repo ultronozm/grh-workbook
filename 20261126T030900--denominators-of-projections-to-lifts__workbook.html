@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-q6gdyaLVnaGegDrmSu1q6STstyjYQa7IZBJrRjrSYTU=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Denominators of projections to lifts</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","F":"\\mathbb{F}","Oc":"\\mathcal{O}","Cg":"\\mathrm{C}","pr":"\\mathrm{pr}","len":"\\operatorname{len}","GL":"\\mathrm{GL}","Frob":"\\mathrm{Fr}","cyc":"\\chi_{\\mathrm{cyc}}","DP":"\\mathfrak{O}","val":"\\operatorname{val}","ord":"\\operatorname{ord}","cl":"\\mathrm{cl}","loc":"\\mathrm{loc}","HT":"\\mathrm{HT}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="80">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T030900--denominators-of-projections-to-lifts__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-27 17:44:27
+      <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T030900--denominators-of-projections-to-lifts__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Denominators of projections to lifts</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:statement" id="toc-sec:statement">§80.1. The statement</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secstatement" id="toc-secstatement">§80.1</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>The data of Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>; the chosen places, labels,
+weights, twists and single lifts of Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap"
+data-reference-type="ref" data-reference="ob-chap">37</a>;
+Definitions <a href="20261126T050800--compressions-and-false-lifts__workbook.html#def:false" data-reference-type="ref"
+data-reference="l1-def:false">75.3.2</a> and <a
+href="20261126T050800--compressions-and-false-lifts__workbook.html#def:clears" data-reference-type="ref"
+data-reference="l1-def:clears">75.3.4</a> and Theorem <a
+href="20261126T050800--compressions-and-false-lifts__workbook.html#thm:compression" data-reference-type="ref"
+data-reference="l1-thm:compression">75.3.1</a>; the gauge
+of Definition <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#def:gauge" data-reference-type="ref"
+data-reference="dl-def:gauge">57.3.1</a>; the Hecke operators
+<span class="math inline">\(T_{w,i}\)</span>, the eigenforms and the
+attached representations of Section <a href="20261125T011000--galois-representations-black-box__workbook.html#sec:spherical"
+data-reference-type="ref"
+data-reference="gr-sec:spherical">32.4</a>; Theorem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#thm:oddsha" data-reference-type="ref"
+data-reference="tt-thm:oddsha">27.3.2</a>. Chapter <a
+href="20261126T080800--black-box-crystalline-lattices-and-the-condition-above-l__workbook.html#chap" data-reference-type="ref"
+data-reference="bk-chap">34</a> defines crystalline
+representations and their Hodge–Tate jumps. Chapter <a href="20261126T080900--black-box-galois-representations-of-eigenforms-ii__workbook.html#chap"
+data-reference-type="ref" data-reference="bh-chap">35</a> gives
+the local comparison for the attached representations above <span
+class="math inline">\(\ell\)</span> and at tame level. The companion
+sheet <em>Clearing a projection: two classes</em> computes a clearing
+operator on a class set with two elements. Its preceding two-dimensional
+example shows why the orthogonality condition on test forms is needed.
+Chapter <a href="20261126T051800--the-local-loss-and-the-sparse-places__workbook.html#chap" data-reference-type="ref"
+data-reference="n3-chap">82</a> bounds the sum of the local
+losses over the primes, and Chapter <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html#chap"
+data-reference-type="ref" data-reference="n1-chap">83</a>,
+<em>Congruences bounded by lengths</em>, deduces Theorem <a
+href="#thm:denominators" data-reference-type="ref"
+data-reference="thm:denominators">80.1.1</a> from a bound for the eigenvalues
+of one clearing operator. Chapter <a href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.html#chap"
+data-reference-type="ref" data-reference="n2-chap">84</a>,
+<em>Auxiliary primes: even classes at no cost</em>, explains how the
+proof tests even classes at auxiliary places.</p>
+<p>To compare lifts at the trivial twist with lifts at a twist chosen
+for each <span class="math inline">\(\iota \mid \ell\)</span>, one needs
+to control the denominators of the orthogonal projections of integral
+test forms onto spaces of lifts. We measure a denominator by the
+determinant of an operator that clears it, as in <em>Clearing a
+projection: two classes</em>. This chapter gives the definitions, a
+running instance of rank one, the statement, and the arithmetic of its
+bound. Theorem <a href="#thm:denominators" data-reference-type="ref"
+data-reference="thm:denominators">80.1.1</a> is deduced in Chapter <a
+href="20261126T060400--congruences-bounded-by-lengths__workbook.html#chap" data-reference-type="ref"
+data-reference="n1-chap">83</a> from Theorem <a
+href="20261126T060400--congruences-bounded-by-lengths__workbook.html#thm:eigenvalues" data-reference-type="ref"
+data-reference="n1-thm:eigenvalues">83.4.1</a>, a bound
+for the eigenvalues of one clearing operator, which is read from the
+proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span> and not proved here; of
+the bound, the sum of the local losses over the primes is bounded in
+Chapter <a href="20261126T051800--the-local-loss-and-the-sparse-places__workbook.html#chap" data-reference-type="ref"
+data-reference="n3-chap">82</a>.</p>
+<h1 id="sec:statement">§80.1. The statement</h1>
+<p>We use the data of Chapter <a href="20261126T030300--the-data__workbook.html#chap"
+data-reference-type="ref" data-reference="da-chap">36</a>: the CM
+field <span class="math inline">\(E\)</span> with <span
+class="math inline">\(f\)</span> infinite places, the rank <span
+class="math inline">\(r\)</span>, <span class="math inline">\(t =
+5r\)</span>, the numbers <span class="math inline">\(m\)</span> and
+<span class="math inline">\(k\)</span>, the level primes <span
+class="math inline">\(p_0, p_1\)</span> with <span
+class="math inline">\(M = p_0p_1\)</span>, the level <span
+class="math inline">\(N\)</span>, the moduli <span
+class="math inline">\(q_1\)</span> and <span
+class="math inline">\(d\)</span>, and the budget <span
+class="math inline">\(B\)</span> of Definition <a href="20261126T030300--the-data__workbook.html#def:budget"
+data-reference-type="ref"
+data-reference="da-def:budget">36.4.1</a>. From Chapter <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a> we use the chosen places <span
+class="math inline">\(\mathcal M\)</span>, labels, the good idempotent
+<span class="math inline">\(e_0\)</span> and the integer <span
+class="math inline">\(\mathcal N\)</span> (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chosen" data-reference-type="ref"
+data-reference="ob-sec:chosen">37.1</a>), the gap <span
+class="math inline">\(\Delta = 2r^8\)</span> and the weights <span
+class="math inline">\(\kappa_j\)</span> of the lifts (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:weights" data-reference-type="ref"
+data-reference="ob-sec:weights">37.2</a>), tame characters
+<span class="math inline">\(\xi\)</span> and twists <span
+class="math inline">\(\vartheta\)</span> with their sets <span
+class="math inline">\(Q_\xi\)</span>, <span
+class="math inline">\(Q_\vartheta\)</span> (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:twists" data-reference-type="ref"
+data-reference="ob-sec:twists">37.6</a>), and the single
+lifts <span class="math inline">\(u_{\vartheta,j}\)</span> on good forms
+(Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chain" data-reference-type="ref"
+data-reference="ob-sec:chain">37.9</a>).</p>
+<p>Fix a prime <span class="math inline">\(\ell\)</span> and a ring
+isomorphism <span class="math inline">\(\iota \colon \mathbb{C}\simeq
+\bar{\mathbb{Q}}_\ell\)</span>. As in Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap"
+data-reference-type="ref" data-reference="ob-chap">37</a>, <span
+class="math inline">\(\operatorname{val}\)</span> is the valuation of
+<span class="math inline">\(\bar{\mathbb{Q}}_\ell\)</span> with <span
+class="math inline">\(\operatorname{val}(\ell) = 1\)</span> and <span
+class="math inline">\(\operatorname{val}(0) = \infty\)</span>, read
+through <span class="math inline">\(\iota\)</span> on complex numbers,
+and <span class="math inline">\(\operatorname{val}_+ :=
+\max(\operatorname{val}, 0)\)</span>. A form on a definite space is
+<em>integral at <span class="math inline">\(\iota\)</span></em> if its
+gauge (Definition <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#def:gauge" data-reference-type="ref"
+data-reference="dl-def:gauge">57.3.1</a>), for <span
+class="math inline">\(\iota\)</span> followed by <span
+class="math inline">\(\bar{\mathbb{Q}}_\ell \subset
+\mathbb{C}_\ell\)</span>, is at most <span
+class="math inline">\(1\)</span> at every finite adelic point. We use
+the choices of complex conjugation, tame generators and local embeddings
+fixed in the proof; they are called <em>of the proof</em> below. The
+field <span class="math inline">\(E\)</span> is embedded in <span
+class="math inline">\(\bar{\mathbb{Q}}\)</span>, and <span
+class="math inline">\(G_E := \mathrm{Gal}(\bar{\mathbb{Q}}/E)\)</span>;
+with <span class="math inline">\(c\)</span> the complex conjugation of
+<span class="math inline">\(\bar{\mathbb{Q}}\)</span> fixed in the
+proof, <span class="math inline">\(g^c := cgc\)</span> for <span
+class="math inline">\(g \in G_E\)</span>; and <span
+class="math inline">\(\chi_{\mathrm{cyc}}\)</span> is the <span
+class="math inline">\(\ell\)</span>-adic cyclotomic character. For a
+place of <span class="math inline">\(\bar{\mathbb{Q}}\)</span> above a
+finite place <span class="math inline">\(w\)</span> of <span
+class="math inline">\(E\)</span> not dividing <span
+class="math inline">\(\ell\)</span>, <span
+class="math inline">\(s_w\)</span> denotes its distinguished generator
+of tame inertia; it depends on the place of <span
+class="math inline">\(\bar{\mathbb{Q}}\)</span>.</p>
+<p>A <em>coefficient ring</em> <span
+class="math inline">\(\mathcal{O}\)</span> is the ring of integers of a
+finite Galois extension of <span
+class="math inline">\(\mathbb{Q}_\ell\)</span> in <span
+class="math inline">\(\bar{\mathbb{Q}}_\ell\)</span>, and a statement
+holds <em>for all large <span
+class="math inline">\(\mathcal{O}\)</span></em> if it holds for all
+coefficient rings containing a fixed one. The <em>normalized length</em>
+of an <span class="math inline">\(\mathcal{O}\)</span>-module of finite
+length is its length divided by the ramification index <span
+class="math inline">\(e_{\mathcal{O}}\)</span> of <span
+class="math inline">\(\mathcal{O}\)</span> over <span
+class="math inline">\(\mathbb{Z}_\ell\)</span>; so <span
+class="math inline">\(\mathcal{O}/\ell\)</span> has normalized length
+<span class="math inline">\(1\)</span>, and the normalized length does
+not change when <span class="math inline">\(\mathcal{O}\)</span> is
+enlarged and the module extended. An <span
+class="math inline">\(\mathcal{O}\)</span>-module of infinite length has
+normalized length <span class="math inline">\(+\infty\)</span>.</p>
+<div id="def:clearing-bound" class="definition">
+<p><strong>Definition 80.1.1</strong>. Let <span
+class="math inline">\(X_{\mathrm{odd}}\)</span> be the positive integer
+of Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:oddsha" data-reference-type="ref"
+data-reference="tt-thm:oddsha">27.3.2</a> for <span
+class="math inline">\(N = q_1d\)</span>, with <span
+class="math inline">\(X_{\mathrm{odd}} \le 2^{4(q_1d + t + 3)^{27}}
+h_E\)</span> and <span class="math inline">\(h_E\)</span> the class
+number of <span class="math inline">\(E\)</span>, and put <span
+class="math inline">\(n_\ell := \operatorname{val}_\ell(\mathcal
+N)\)</span>. Let <span class="math inline">\(\mathrm{Int}_b\)</span> be
+the product of the integers <span class="math inline">\(i\)</span> with
+<span class="math inline">\(\max(0, b - 30(\Delta/2)^3) &lt; i \le b +
+30(\Delta/2)^3\)</span>, for the weight scale <span
+class="math inline">\(b\)</span>, and put <span
+class="math display">\[\mathrm{crys}_\ell :=
+\operatorname{val}_\ell\bigl((2b)!\,\mathrm{Int}_b^{(\Delta/2)^3}\bigr),
+\qquad \mathrm{defect}_\ell := 10^6\,\frac
+mk\,\bigl(b\,\operatorname{val}_\ell(M) + \mathrm{crys}_\ell\bigr),
+\qquad \mathrm{loc}_\ell := 4f\,\mathrm{defect}_\ell ,\]</span> <span
+class="math display">\[\mathrm{tw}_\ell := (4f + 3)\,r\,n_\ell +
+2^{-\ell}, \qquad \varepsilon_\ell :=
+t\,\operatorname{val}_\ell(X_{\mathrm{odd}}) + 8ft\,n_\ell + 2n_\ell +
+\bigl((4t + 1)(\Delta/2)^{22} + \Delta/2\bigr)n_\ell .\]</span> Define
+the <em>clearing bound</em> by <span
+class="math inline">\(\mathrm{cl}_\ell := \mathrm{loc}_\ell + (1 +
+2t)\,\mathrm{tw}_\ell + \varepsilon_\ell + n_\ell\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051800--the-local-loss-and-the-sparse-places__workbook.html">Chapter 82</a>; <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html">Chapter 83</a>; <a href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.html">Chapter 84</a>; <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a>; <a href="20261126T081200--a-measure-for-hecke-values__workbook.html">Chapter 89</a>; <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html">Chapter 90</a></div><!-- used-in:end -->
+</div>
+<p>The terms of <span class="math inline">\(\mathrm{cl}_\ell\)</span>
+pay for the following. <span
+class="math inline">\(\mathrm{loc}_\ell\)</span>: the crystalline
+condition above <span class="math inline">\(\ell\)</span> (Chapter <a
+href="20261126T051800--the-local-loss-and-the-sparse-places__workbook.html#chap" data-reference-type="ref"
+data-reference="n3-chap">82</a>). <span
+class="math inline">\(\mathrm{tw}_\ell\)</span>: the Selmer length of
+the twisted main summand and, with the factor <span
+class="math inline">\(2t\)</span>, the ramification of the twist
+(Problem <a href="#pr:budget" data-reference-type="ref"
+data-reference="pr:budget">80.1.3</a>). The four terms of <span
+class="math inline">\(\varepsilon_\ell\)</span>, in order: the odd
+classes and the class group (the section on lifts and the classes they
+produce in <em>Clearing a projection: two classes</em>); the places
+above <span class="math inline">\(M\)</span> (Problem <a
+href="20261126T060400--congruences-bounded-by-lengths__workbook.html#pr:tame" data-reference-type="ref"
+data-reference="n1-pr:tame">83.4.3</a>); the idempotent and the
+stabilizers; and the congruences between the characters <span
+class="math inline">\(\chi_{\mathrm{cyc}}^{-e}\)</span>, <span
+class="math inline">\(0 \le e &lt; t\)</span> (the exercises on
+generators and general linear group orders in <em>Clearing a projection:
+two classes</em>; Definition <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html#def:sep"
+data-reference-type="ref" data-reference="n1-def:sep">83.4.1</a>).
+Problem <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html#pr:arith" data-reference-type="ref"
+data-reference="n1-pr:arith">83.4.4</a> adds the four terms up.
+The last <span class="math inline">\(n_\ell\)</span> is the cost of
+multiplying the clearing operator by <span
+class="math inline">\(\mathcal N\)</span> to make its pairings integral.
+The character-separation term includes the cost of the tests for even
+classes at auxiliary places (Chapter <a href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.html#chap"
+data-reference-type="ref" data-reference="n2-chap">84</a>).</p>
+<div id="def:descent-pair" class="definition">
+<p><strong>Definition 80.1.2</strong>. A <em>descent pair</em> <span
+class="math inline">\(\mathfrak{O}\)</span> has two finitely indexed
+families of finite places of <span class="math inline">\(E\)</span>,
+chosen places and twist places; all their entries are distinct, and none
+is the conjugate of any entry. It has a hermitian space <span
+class="math inline">\(W\)</span> of rank <span
+class="math inline">\(r&#39;\)</span> with signs on its basis indices
+and a specified adelic frame (Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces"
+data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a>) in which its Gram
+matrix is the diagonal matrix of the signs at every infinite place and
+the identity at every finite place, a function from the basis indices of
+<span class="math inline">\(W\)</span> to the natural numbers, an
+injection of those indices into the basis indices of the standard
+definite space <span class="math inline">\(V = I_{n&#39;}\)</span> with
+<span class="math inline">\(r&#39; &lt; n&#39;\)</span> (its image is
+the set of <em>selected</em> indices), column multiplicities <span
+class="math inline">\(\beta^\pm(\tau,i)\)</span> at each infinite place
+<span class="math inline">\(\tau\)</span> and height <span
+class="math inline">\(i \ge 0\)</span> (the diagrams of the weight, as
+in Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:diagram" data-reference-type="ref"
+data-reference="ob-def:diagram">37.2.1</a>), and a continuous
+unitary character <span class="math inline">\(\mu\)</span> of <span
+class="math inline">\(U(1)(\mathbb A)\)</span>, trivial on rational
+points, with specified integral weight at each infinite place and
+specified tame part, a character <span
+class="math inline">\(\psi_w\)</span> of <span
+class="math inline">\(k_w^\times\)</span> at each finite place <span
+class="math inline">\(w\)</span>, trivial off the two families. Write
+<span class="math inline">\(K_0\)</span> for the stabilizer of the
+standard integral lattice of <span class="math inline">\(V\)</span> in
+the finite adelic group. The <em>level</em> of <span
+class="math inline">\(\mathfrak{O}\)</span> consists of the elements of
+<span class="math inline">\(K_0\)</span> whose reductions fix the
+selected basis vectors at the chosen places and preserve the span of the
+other basis vectors at the twist places. Its <em>level character</em> is
+the product over the twist places <span class="math inline">\(w\)</span>
+of <span class="math inline">\(\psi_w^{-1}\)</span> applied to the
+determinant of the block on the selected indices. Its forms <span
+class="math inline">\(\mathcal A(\mathfrak{O})\)</span> are the
+algebraic forms on <span class="math inline">\(V\)</span> on which the
+level acts through the level character, of the weight with column
+multiplicities <span
+class="math inline">\(\beta^+(\tau,i)+\beta^-(\tau,n&#39;-i)\)</span> at
+<span class="math inline">\(\tau\)</span> and each height <span
+class="math inline">\(0\le i&lt;n&#39;\)</span>, and with determinant
+exponent <span class="math inline">\(-\sum_{1\le i&lt;n&#39;}
+\beta^-(\tau,i)\)</span> at <span class="math inline">\(\tau\)</span>.
+We write <span class="math inline">\(t&#39; := n&#39; - r&#39;\)</span>
+for its rank difference.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060300--the-comparison-operator__workbook.html">Chapter 76</a></div><!-- used-in:end -->
+</div>
+<div id="def:false-lift" class="definition">
+<p><strong>Definition 80.1.3</strong>. Let <span
+class="math inline">\(e_1\)</span> be an element of the complex group
+algebra of <span class="math inline">\(\prod_w
+\mathrm{GL}_{r&#39;}(k_w)\)</span> over the chosen places of <span
+class="math inline">\(\mathfrak{O}\)</span>, and <span
+class="math inline">\(A \subseteq \mathcal A(\mathfrak{O})\)</span> a
+subspace. A tuple <span class="math inline">\(g = (g_w)_w\)</span> of
+this group acts on <span class="math inline">\(\mathcal
+A(\mathfrak{O})\)</span> by right translation by an element of <span
+class="math inline">\(K_0\)</span> that reduces to <span
+class="math inline">\(\operatorname{diag}(g_w,1)\)</span>, in the order
+selected indices then complementary indices, at each chosen place <span
+class="math inline">\(w\)</span>, and to the identity at the twist
+places, multiplied by <span class="math inline">\(\prod_w \psi_w(\det
+g_w)\)</span>; write <span
+class="math inline">\(\mathrm{im}(e_1)\)</span> for the image of the
+operator by which <span class="math inline">\(e_1\)</span> then acts. In
+this sheet <span class="math inline">\(\upsilon_E\)</span> is the
+splitting character of the Weil data on the ideles of <span
+class="math inline">\(E\)</span> (Section <a href="20261125T011000--galois-representations-black-box__workbook.html#sec:spherical"
+data-reference-type="ref"
+data-reference="gr-sec:spherical">32.4</a>), and <span
+class="math inline">\(\upsilon\)</span> is its restriction to the
+norm-one ideles, as in Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:characters"
+data-reference-type="ref"
+data-reference="ob-sec:characters">37.7</a>. For a
+continuous unitary character <span class="math inline">\(a\)</span> of
+the norm-one ideles of <span class="math inline">\(E\)</span> that is
+trivial on the rational points of <span
+class="math inline">\(U(1)\)</span>, and a natural number <span
+class="math inline">\(N_0\ge 0\)</span>, the <em>Frobenius value</em> of
+<span class="math inline">\(a\)</span> in rank <span
+class="math inline">\(N_0\)</span> at a finite place <span
+class="math inline">\(w\)</span> is <span
+class="math inline">\(q_w^{N_0/2}\)</span> times the value, at the
+finite idele with the chosen uniformizer at <span
+class="math inline">\(w\)</span> and <span
+class="math inline">\(1\)</span> elsewhere, of the Hecke character <span
+class="math inline">\(x \mapsto a(x/\bar
+x)\,\upsilon_E(x)^{-N_0}\)</span>; here <span class="math inline">\(q_w
+= \#k_w\)</span>. For a split place <span
+class="math inline">\(w\)</span> such that neither <span
+class="math inline">\(w\)</span> nor <span class="math inline">\(\bar
+w\)</span> is a place of <span
+class="math inline">\(\mathfrak{O}\)</span>, with the Hecke operators
+<span class="math inline">\(T_{w,i}\)</span>, <span
+class="math inline">\(0 \le i \le n&#39;\)</span>, of Section <a
+href="20261125T011000--galois-representations-black-box__workbook.html#sec:spherical" data-reference-type="ref"
+data-reference="gr-sec:spherical">32.4</a> acting on <span
+class="math inline">\(\mathcal A(\mathfrak{O})\)</span>, the <em>Hecke
+polynomial operator at <span class="math inline">\(w\)</span> at the
+value <span class="math inline">\(T \in \mathbb{C}\)</span></em> is
+<span class="math inline">\(\sum_{i=0}^{n&#39;} (-T)^i q_w^{i(i-1)/2}\,
+T_{w,i}\)</span>. The <em>false lifts</em> at <span
+class="math inline">\(w\)</span> are the forms in <span
+class="math inline">\(\mathrm{im}(e_1) \cap A\)</span> killed by the
+Hecke polynomial operator of <span
+class="math inline">\(\mathfrak{O}\)</span> at <span
+class="math inline">\(w\)</span> at the value <span
+class="math inline">\(\bigl(\nu_w
+q_w^{n&#39;-r&#39;-1}\bigr)^{-1}\)</span> expected of a lift, where
+<span class="math inline">\(\nu_w\)</span> is the Frobenius value at
+<span class="math inline">\(w\)</span> of <span
+class="math inline">\(\upsilon^{r_-}\)</span> in rank <span
+class="math inline">\(r&#39;\)</span>, with <span
+class="math inline">\(r_-\)</span> the number of negative signs of <span
+class="math inline">\(W\)</span>. A form is <em>orthogonal to the false
+lifts</em> for <span class="math inline">\((\mathfrak{O}, e_1,
+A)\)</span> if it is orthogonal to the false lifts at every such <span
+class="math inline">\(w\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#def:denominator">Definition 80.1.4</a>, <a href="#def:main-summand">Definition 80.1.8</a>, <a href="#def:lift-generator">Definition 80.1.11</a>; <a href="20261126T050800--compressions-and-false-lifts__workbook.html">Chapter 75</a></div><!-- used-in:end -->
+</div>
+<div id="def:denominator" class="definition">
+<p><strong>Definition 80.1.4</strong>. Let <span
+class="math inline">\(e_1\)</span> be as in Definition <a
+href="#def:false-lift" data-reference-type="ref"
+data-reference="def:false-lift">80.1.3</a>, <span
+class="math inline">\(\mathcal F \subseteq \mathcal
+A(\mathfrak{O})\)</span> a subspace, with orthogonal projection <span
+class="math inline">\(\mathrm{pr}\)</span>, and <span
+class="math inline">\(\mathrm{den} \in \mathbb R\)</span>. The
+projection onto <span class="math inline">\(\mathcal F\)</span> has
+<em>denominator at most <span
+class="math inline">\(\mathrm{den}\)</span></em> at <span
+class="math inline">\(\iota\)</span> if some operator <span
+class="math inline">\(C_\ell\)</span> on <span
+class="math inline">\(\mathcal F\)</span> has <span
+class="math inline">\(\lvert \iota(\det C_\ell) \rvert_\ell \ge
+\exp(-\dim \mathcal F \cdot r&#39; \cdot \mathrm{den})\)</span> and, for
+every form <span class="math inline">\(y\)</span> integral at <span
+class="math inline">\(\iota\)</span> and orthogonal to the false lifts
+for <span class="math inline">\((\mathfrak{O}, e_1, \mathcal
+F^\perp)\)</span>, <span
+class="math inline">\(C_\ell(\mathrm{pr}(y))\)</span> is integral at
+<span class="math inline">\(\iota\)</span> and <span
+class="math inline">\(\lvert \iota\langle C_\ell(\mathrm{pr}(y)), y&#39;
+\rangle \rvert_\ell \le 1\)</span> for every form <span
+class="math inline">\(y&#39;\)</span> integral at every ring map <span
+class="math inline">\(\mathbb{C}\to \mathbb{C}_\ell\)</span>. Here <span
+class="math inline">\(\langle\,,\rangle\)</span> is the class sum of the
+pointwise Gram inner products, linear in the first variable; each term
+is weighted by the reciprocal of the order of the stabilizer of its
+double-coset representative.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#thm:denominators">Theorem 80.1.1</a>; Chapter 83: <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html#pr:deduce">Problem 83.4.5</a></div><!-- used-in:end -->
+</div>
+<p>For a twist <span class="math inline">\(\vartheta\)</span> and <span
+class="math inline">\(1 \le j \le m\)</span>, take the <span
+class="math inline">\(j\)</span>-th descent pair of <span
+class="math inline">\(\vartheta\)</span>, <span
+class="math inline">\(e_1 = e_0\)</span> and <span
+class="math inline">\(\mathcal F\)</span> the image of <span
+class="math inline">\(u_{\vartheta,j}\)</span>. Then the false lifts are
+those of Definition <a href="20261126T050800--compressions-and-false-lifts__workbook.html#def:false" data-reference-type="ref"
+data-reference="l1-def:false">75.3.2</a>, and the condition of
+Definition <a href="#def:denominator" data-reference-type="ref"
+data-reference="def:denominator">80.1.4</a>, without the bound on the
+pairings <span class="math inline">\(\langle C_\ell(\mathrm{pr}(y)),
+y&#39;\rangle\)</span>, says that <span
+class="math inline">\(\mathrm{den}\)</span> clears the projection at
+<span class="math inline">\((\iota, \vartheta, j)\)</span> in the sense
+of Definition <a href="20261126T050800--compressions-and-false-lifts__workbook.html#def:clears" data-reference-type="ref"
+data-reference="l1-def:clears">75.3.4</a>.</p>
+<div id="def:aux-twist" class="definition">
+<p><strong>Definition 80.1.5</strong>. The <em>inverse avatar</em> of a tame
+character <span class="math inline">\(\xi\)</span> is the <span
+class="math inline">\(\ell\)</span>-adic avatar <span
+class="math inline">\(\hat\xi \colon G_E \to
+\bar{\mathbb{Q}}_\ell^\times\)</span>, through <span
+class="math inline">\(\iota\)</span>, of the base change of <span
+class="math inline">\(\xi^{-1}\)</span> to <span
+class="math inline">\(E\)</span>: the continuous character with <span
+class="math inline">\(\hat\xi(\mathrm{Art}\,x) = \iota\bigl(\xi(x/\bar
+x)\bigr)^{-1}\)</span> for every finite idele <span
+class="math inline">\(x\)</span> of <span
+class="math inline">\(E\)</span>, where <span
+class="math inline">\(\mathrm{Art}\)</span> is the Artin map. We use the
+Artin map of the proof, with values in the topological abelianization
+<span class="math inline">\(G_E^{\mathrm{ab}}\)</span> and with a local
+uniformizer mapping to geometric Frobenius modulo inertia. A character
+of <span class="math inline">\(G_E\)</span> is evaluated there through
+the induced character. Let <span class="math inline">\(\mathrm{ram} \in
+[0, \infty]\)</span>. A twist <span
+class="math inline">\(\vartheta\)</span> is <em>auxiliary with
+ramification at most <span
+class="math inline">\(\mathrm{ram}\)</span></em> (at <span
+class="math inline">\(\iota\)</span>) if:</p>
+<ol>
+<li><p>every place of <span class="math inline">\(Q_\vartheta\)</span>
+has prime norm, and neither it nor its conjugate divides <span
+class="math inline">\(\ell MN\)</span> (its conjugate is not in <span
+class="math inline">\(Q_\vartheta\)</span>, as for every tame
+character);</p></li>
+<li><p><span class="math inline">\(\hat\vartheta\)</span> is locally
+constant, and there is a character <span
+class="math inline">\(\chi_0\)</span> of the finite ideles of <span
+class="math inline">\(E\)</span>, with values in <span
+class="math inline">\(\bar{\mathbb{Q}}_\ell^\times\)</span>, such that
+<span class="math inline">\(\hat\vartheta(\mathrm{Art}\,x) =
+\chi_0(x/\bar x)\)</span> for every finite idele <span
+class="math inline">\(x\)</span>, and <span
+class="math inline">\(\chi_0\)</span> is trivial on <span
+class="math inline">\(E^\times\)</span> and on every idele that is a
+unit at the places not above <span class="math inline">\(\ell\)</span>
+and is congruent to <span class="math inline">\(1\)</span> at the places
+of <span class="math inline">\(Q_\vartheta\)</span>;</p></li>
+<li><p>for some choice of a place of <span
+class="math inline">\(\bar{\mathbb{Q}}\)</span> above each <span
+class="math inline">\(w \in Q_\vartheta\)</span>, with tame generators
+<span class="math inline">\(s_w\)</span>, <span
+class="math inline">\(\sum_{w \in Q_\vartheta}
+\operatorname{val}_+\bigl(\hat\vartheta(s_w) - 1\bigr) \le
+\mathrm{ram}\)</span>.</p></li>
+</ol>
+<!-- used-in:start --><div class="used-in">Used in: Chapter 83: <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html#pr:tame">Problem 83.4.3</a>; <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a>: <a href="20261126T031000--twists-with-few-congruences__workbook.html#thm:twisting">Theorem 85.1.2</a>; <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html">Chapter 87</a>: <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:chi">Definition 87.2.1</a>; <a href="20261126T060700--tied-primes__workbook.html">Chapter 88</a> <details><summary>and 2 more</summary><div><a href="20261126T081200--a-measure-for-hecke-values__workbook.html">Chapter 89</a>; <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html">Chapter 90</a></div></details></div><!-- used-in:end -->
+</div>
+<p>For the rank-one case <span class="math inline">\(r&#39;=1\)</span>,
+the main summand <span class="math inline">\(R\)</span> is a character.
+This case occurs for the lines of the lifts from <span
+class="math inline">\(U(1)\)</span> attached to main pairs in Chapter <a
+href="20261126T031000--twists-with-few-congruences__workbook.html#chap" data-reference-type="ref"
+data-reference="tw-chap">85</a>. The line of constant functions
+in <em>Clearing a projection: two classes</em> models the projection
+onto such a line.</p>
+<div id="pr:trivial-aux" class="problem" data-progress-ids="[&quot;20261126T030900--denominators-of-projections-to-lifts__workbook.tex#pr:trivial-aux&quot;]">
+<p><strong>Problem 80.1.1</strong>. The trivial twist, with <span
+class="math inline">\(Q_\vartheta = \emptyset\)</span>, is auxiliary
+with ramification at most <span class="math inline">\(0\)</span>.</p>
+</div>
+<div id="def:jumps" class="definition">
+<p><strong>Definition 80.1.6</strong>. Let <span
+class="math inline">\(r&#39;\)</span> and <span
+class="math inline">\(t&#39;\)</span> be natural numbers. A family <span
+class="math inline">\(\mathrm{HT}= (\mathrm{HT}_\sigma)\)</span> of
+finite multisets of integers, one for each embedding <span
+class="math inline">\(\sigma \colon E \to \mathbb{C}\)</span>, is
+<em>admissible for <span class="math inline">\((r&#39;,
+t&#39;)\)</span></em> if:</p>
+<ol>
+<li><p><span class="math inline">\(1 \le r&#39; \le r\)</span> and <span
+class="math inline">\(t&#39; \le t\)</span>;</p></li>
+<li><p>there is one <span class="math inline">\(0 \le j \le m\)</span>
+such that, for every <span class="math inline">\(\sigma\)</span>, every
+<span class="math inline">\(u \in \mathrm{HT}_\sigma\)</span> satisfies
+<span class="math inline">\(\Delta/4 \le \lvert u\rvert \le
+2m\Delta\)</span> or <span class="math inline">\(\lvert s_\sigma u +
+\kappa_j([\sigma])\rvert \le t\)</span>; here <span
+class="math inline">\([\sigma]\)</span> is the infinite place of <span
+class="math inline">\(\sigma\)</span>, and <span
+class="math inline">\(s_\sigma = \pm 1\)</span> is the sign of <span
+class="math inline">\(\sigma\)</span> for the CM type, that is, <span
+class="math inline">\(\sigma(\sqrt{-d}) =
+s_\sigma\sqrt{-d}\)</span>;</p></li>
+<li><p><span class="math inline">\(k \cdot \#\{u \in \mathrm{HT}_\sigma
+: \lvert u\rvert \le 2(\Delta/2)^2\} \le r&#39;m\)</span> for every
+<span class="math inline">\(\sigma\)</span>, the members counted with
+multiplicity;</p></li>
+<li><p><span class="math inline">\(\mathrm{HT}_\sigma\)</span> and <span
+class="math inline">\(\mathrm{HT}_{\bar\sigma}\)</span> together have at
+most <span class="math inline">\(r&#39;\)</span> negative members, for
+every <span class="math inline">\(\sigma\)</span>.</p></li>
+</ol>
+<p>The members of <span
+class="math inline">\(\mathrm{HT}_\sigma\)</span> are called
+<em>jumps</em>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#def:main-summand-like">Definition 80.1.7</a>; <a href="20261126T051800--the-local-loss-and-the-sparse-places__workbook.html">Chapter 82</a></div><!-- used-in:end -->
+</div>
+<div id="def:main-summand-like" class="definition">
+<p><strong>Definition 80.1.7</strong>. Let <span class="math inline">\(t&#39;
+\ge 0\)</span> be an integer, <span
+class="math inline">\(\mathrm{HT}\)</span> a family as in Definition <a
+href="#def:jumps" data-reference-type="ref"
+data-reference="def:jumps">80.1.6</a>, and <span class="math inline">\(R
+\colon G_E \to \mathrm{GL}_{r&#39;}(\bar{\mathbb{Q}}_\ell)\)</span> a
+homomorphism. A <em>lattice of <span class="math inline">\(R\)</span>
+over <span class="math inline">\(\mathcal{O}\)</span></em> is a
+homomorphism <span class="math inline">\(G_E \to
+\mathrm{GL}_{r&#39;}(\mathcal{O})\)</span> conjugate to <span
+class="math inline">\(R\)</span> by an element of <span
+class="math inline">\(\mathrm{GL}_{r&#39;}(\bar{\mathbb{Q}}_\ell)\)</span>.
+The representation <span class="math inline">\(R\)</span> is
+<em>main-summand-like for <span class="math inline">\((t&#39;,
+\mathrm{HT})\)</span></em> if:</p>
+<ol>
+<li><p><span class="math inline">\(R\)</span> is continuous, the trace
+pairing on the span of its image is nondegenerate, and <span
+class="math inline">\(\mathrm{tr}\,R(g^c) =
+\chi_{\mathrm{cyc}}(g)^{-\max(t&#39;-1,0)}\,\mathrm{tr}\,R(g^{-1})\)</span>
+for every <span class="math inline">\(g \in G_E\)</span>;</p></li>
+<li><p>at every place <span class="math inline">\(A\)</span> of <span
+class="math inline">\(\bar{\mathbb{Q}}\)</span> above every finite place
+<span class="math inline">\(w\)</span> of <span
+class="math inline">\(E\)</span>: if <span class="math inline">\(w \nmid
+\ell\)</span>, <span class="math inline">\(R\)</span> is trivial on the
+elements of the inertia group in a neighbourhood of <span
+class="math inline">\(1\)</span>; if <span class="math inline">\(w \mid
+\ell\)</span>, the restriction of <span class="math inline">\(R\)</span>
+to the decomposition group is potentially crystalline for every local
+datum at <span class="math inline">\(A\)</span>, that is, every
+embedding <span class="math inline">\(e\)</span> of <span
+class="math inline">\(\bar{\mathbb{Q}}\)</span> in <span
+class="math inline">\(\bar{\mathbb{Q}}_\ell\)</span> inducing <span
+class="math inline">\(A\)</span>, with the induced embedding of its
+decomposition group into <span
+class="math inline">\(\mathrm{Gal}(\bar{\mathbb{Q}}_\ell/\mathbb{Q}_\ell)\)</span>,
+and for every such datum and every <span class="math inline">\(g \in
+\mathrm{Gal}(\bar{\mathbb{Q}}_\ell/\mathbb{Q}_\ell)\)</span> its
+Hodge–Tate jumps at the coefficient embedding induced by <span
+class="math inline">\(g\)</span> are, with multiplicity, the multiset
+<span class="math inline">\(\mathrm{HT}_\sigma\)</span> for <span
+class="math inline">\(\sigma = \iota^{-1}\circ g^{-1}\circ
+e|_E\)</span>; and if <span class="math inline">\(w \nmid M\)</span>,
+<span class="math inline">\(R\)</span> is unramified (<span
+class="math inline">\(w \nmid \ell\)</span>), respectively crystalline
+for every local datum (<span class="math inline">\(w \mid
+\ell\)</span>);</p></li>
+<li><p><span class="math inline">\(\mathrm{HT}\)</span> is admissible
+for <span class="math inline">\((r&#39;, t&#39;)\)</span>;</p></li>
+<li><p>at every place of <span
+class="math inline">\(\bar{\mathbb{Q}}\)</span> above every <span
+class="math inline">\(w \mid M\)</span> with <span
+class="math inline">\(w \nmid \ell\)</span> there are an element <span
+class="math inline">\(\delta\)</span> of the inertia group and a natural
+number <span class="math inline">\(n_w\)</span> prime to the residue
+characteristic such that <span class="math inline">\(R(s^{n_w}) =
+1\)</span> for every inertia element <span
+class="math inline">\(s\)</span> there, <span
+class="math inline">\(\delta\)</span> is the tame generator <span
+class="math inline">\(s_w\)</span> if <span class="math inline">\(w \in
+\mathcal M\)</span>, and <span
+class="math inline">\(\operatorname{val}_+\det(R(\delta) - 1) \le
+r&#39;n_\ell\)</span>, <span
+class="math inline">\(\operatorname{val}_+\det\bigl(R((\delta^c)^{-1}) -
+1\bigr) \le r&#39;n_\ell\)</span>;</p></li>
+<li><p>for all large <span class="math inline">\(\mathcal{O}\)</span>,
+the image of every lattice of <span class="math inline">\(R\)</span>
+over <span class="math inline">\(\mathcal{O}\)</span> spans <span
+class="math inline">\(M_{r&#39;}(\mathcal{O})\)</span> over <span
+class="math inline">\(\mathcal{O}\)</span>; and for all large <span
+class="math inline">\(\mathcal{O}\)</span> and every lattice of <span
+class="math inline">\(R\)</span> over <span
+class="math inline">\(\mathcal{O}\)</span>, some <span
+class="math inline">\(g \in G_E\)</span> with <span
+class="math inline">\(\chi_{\mathrm{cyc}}(g) \in \{p_0^{r&#39;},
+p_1^{r&#39;}\}\)</span> acts on it by a scalar;</p></li>
+<li><p>some element of an inertia group above a place dividing <span
+class="math inline">\(M\)</span> and not dividing <span
+class="math inline">\(\ell\)</span> acts through <span
+class="math inline">\(R\)</span> by a scalar <span
+class="math inline">\(y\)</span> with <span class="math inline">\(\lvert
+y^{\ell^a j} - 1\rvert_\ell = 1\)</span> for all integers <span
+class="math inline">\(a \ge 0\)</span> and <span class="math inline">\(1
+\le j \le 4r&#39; + 2\)</span>.</p></li>
+</ol>
+<p>The Hodge–Tate jumps are taken in the convention of the proof, in
+which the cyclotomic character has jump <span
+class="math inline">\(-1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051800--the-local-loss-and-the-sparse-places__workbook.html">Chapter 82</a>; Chapter 85: <a href="20261126T031000--twists-with-few-congruences__workbook.html#thm:twisting">Theorem 85.1.2</a>; <a href="20261126T081200--a-measure-for-hecke-values__workbook.html">Chapter 89</a>; <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html">Chapter 90</a></div><!-- used-in:end -->
+</div>
+<div id="pr:rank-one" class="problem" data-progress-ids="[&quot;20261126T030900--denominators-of-projections-to-lifts__workbook.tex#pr:rank-one&quot;]">
+<p><strong>Problem 80.1.2</strong>. Let <span class="math inline">\(r&#39; =
+1\)</span> and let <span class="math inline">\(R = \rho\)</span> be a
+continuous character <span class="math inline">\(G_E \to
+\bar{\mathbb{Q}}_\ell^\times\)</span>. (i) The trace pairing in (a) is
+nondegenerate, and the identity in (a) says <span
+class="math inline">\(\rho(g^c)\,\rho(g) =
+\chi_{\mathrm{cyc}}(g)^{-\max(t&#39;-1,0)}\)</span> for every <span
+class="math inline">\(g\)</span>. (ii) The first half of (e) holds for
+every lattice of <span class="math inline">\(\rho\)</span>, and its
+second half holds if and only if some <span class="math inline">\(g \in
+G_E\)</span> has <span class="math inline">\(\chi_{\mathrm{cyc}}(g) \in
+\{p_0, p_1\}\)</span>. (iii) In (d), the two determinant inequalities
+become <span class="math inline">\(\operatorname{val}_+(\rho(\delta) -
+1) \le n_\ell\)</span> and <span
+class="math inline">\(\operatorname{val}_+(\rho((\delta^c)^{-1}) - 1)
+\le n_\ell\)</span>.</p>
+</div>
+<div id="def:main-summand" class="definition">
+<p><strong>Definition 80.1.8</strong>. Let <span
+class="math inline">\(\mathfrak s = (\mathfrak s(w,i))\)</span> be a
+family of complex numbers indexed by the finite places <span
+class="math inline">\(w\)</span> of <span
+class="math inline">\(E\)</span> and the integers <span
+class="math inline">\(i \ge 0\)</span>. A form <span
+class="math inline">\(y \in \mathcal A(\mathfrak{O})\)</span>
+<em>lifts</em> <span class="math inline">\(\mathfrak s\)</span> if, at
+every split place <span class="math inline">\(w\)</span> such that
+neither <span class="math inline">\(w\)</span> nor <span
+class="math inline">\(\bar w\)</span> is a place of <span
+class="math inline">\(\mathfrak{O}\)</span>, it is spherical and for
+every <span class="math inline">\(T \in \mathbb{C}\)</span> the Hecke
+polynomial operator at <span class="math inline">\(w\)</span> at the
+value <span class="math inline">\(T\)</span> sends <span
+class="math inline">\(y\)</span> to <span
+class="math inline">\(y\)</span> multiplied by <span
+class="math display">\[\prod_{0 \le i &lt; t&#39;}\bigl(1 - q_w^i\,\nu_W
+T\bigr)\cdot H_{\mathfrak s(w)}\bigl(q_w^{t&#39;}\nu_W T/\nu_V\bigr),
+\qquad H_{\mathfrak s(w)}(T) := \sum_{i=0}^{r&#39;} (-T)^i
+q_w^{i(i-1)/2}\,\mathfrak s(w,i) ,\]</span> where <span
+class="math inline">\(\nu_W\)</span> and <span
+class="math inline">\(\nu_V\)</span> are the Frobenius values at <span
+class="math inline">\(w\)</span> of <span
+class="math inline">\(\upsilon^{r_-}\)</span> in rank <span
+class="math inline">\(r&#39;\)</span> and of <span
+class="math inline">\(\mu\,\upsilon^{\lfloor n&#39;/2\rfloor}\)</span>
+in rank <span class="math inline">\(n&#39;\)</span>, respectively, as in
+Definition <a href="#def:false-lift" data-reference-type="ref"
+data-reference="def:false-lift">80.1.3</a>. A homomorphism <span
+class="math inline">\(R \colon G_E \to
+\mathrm{GL}_{r&#39;}(\bar{\mathbb{Q}}_\ell)\)</span> is a <em>main
+summand</em> for a descent pair <span
+class="math inline">\(\mathfrak{O}_0\)</span> of ranks <span
+class="math inline">\(r&#39; &lt; n&#39;\)</span> and <span
+class="math inline">\(\mathfrak s\)</span> if it is main-summand-like
+for <span class="math inline">\((n&#39; - r&#39;, \mathrm{HT})\)</span>
+for some <span class="math inline">\(\mathrm{HT}\)</span>, and <span
+class="math display">\[\mathrm{tr}\,R^{\mathrm{nor}}(g) =
+\hat\xi(g)\,\mathrm{tr}\,R(g) + \sum_{0 \le e &lt; n&#39;-r&#39;}
+\chi_{\mathrm{cyc}}(g)^{-e} \qquad (g \in G_E)\]</span> for every tame
+character <span class="math inline">\(\xi\)</span>, every descent pair
+<span class="math inline">\(\mathfrak{O}\)</span> with the same basis
+index sets for <span class="math inline">\(W\)</span> and for <span
+class="math inline">\(V\)</span> as <span
+class="math inline">\(\mathfrak{O}_0\)</span> and with character <span
+class="math inline">\(\mu\)</span> that of <span
+class="math inline">\(\mathfrak{O}_0\)</span> times <span
+class="math inline">\(\xi\)</span>, every form in <span
+class="math inline">\(\mathcal A(\mathfrak{O})\)</span> lifting <span
+class="math inline">\(\mathfrak s\)</span>, every family <span
+class="math inline">\(P\)</span> of polynomials for which that form is
+an eigenform, and every representation attached to <span
+class="math inline">\(P\)</span> (Section <a href="20261125T011000--galois-representations-black-box__workbook.html#sec:spherical"
+data-reference-type="ref"
+data-reference="gr-sec:spherical">32.4</a>). Here <span
+class="math inline">\(R^{\mathrm{nor}}\)</span>, the
+<em>normalization</em> of that representation for <span
+class="math inline">\(\mathfrak{O}\)</span>, is its twist by the <span
+class="math inline">\(\ell\)</span>-adic avatar, through <span
+class="math inline">\(\iota\)</span>, of the Hecke character <span
+class="math inline">\(x\mapsto\upsilon^{-r_-}(x/\bar
+x)\,\upsilon_E(x)^{r&#39;}\,|x|^{r&#39;/2}\)</span>, with <span
+class="math inline">\(r_-\)</span> taken for <span
+class="math inline">\(\mathfrak{O}\)</span> and <span
+class="math inline">\(|x|\)</span> the idelic norm.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T070000--clearing-a-projection-two-classes__workbook.html">Chapter 81</a>; <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html">Chapter 83</a>; <a href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.html">Chapter 84</a></div><!-- used-in:end -->
+</div>
+<p>The constant function in the two-class model illustrates the
+cyclotomic string in the trace formula. Its representation <span
+class="math inline">\(1\oplus\chi_{\mathrm{cyc}}\)</span> of <span
+class="math inline">\(\mathrm{Gal}(\bar{\mathbb{Q}}/\mathbb{Q})\)</span>,
+twisted by the inverse <span class="math inline">\(5\)</span>-adic
+cyclotomic character, is <span
+class="math inline">\(1\oplus\chi_{\mathrm{cyc}}^{-1}\)</span>.</p>
+<div id="def:selmer-bound" class="definition">
+<p><strong>Definition 80.1.9</strong>. Let <span class="math inline">\(R
+\colon G_E \to \mathrm{GL}_{r&#39;}(\bar{\mathbb{Q}}_\ell)\)</span> be a
+homomorphism, <span class="math inline">\(\xi\)</span> a tame character,
+<span class="math inline">\(g_* \in G_E\)</span> and <span
+class="math inline">\(\mathrm{sel} \in [0, \infty]\)</span>. Let <span
+class="math inline">\(L\)</span> be a lattice of <span
+class="math inline">\(R\)</span> over a coefficient ring <span
+class="math inline">\(\mathcal{O}\)</span> containing the values of
+<span class="math inline">\(\hat\xi\)</span>, and <span
+class="math inline">\(L_{\mathrm{tw}}\)</span> the module <span
+class="math inline">\(\mathcal{O}^{r&#39;}\)</span> on which <span
+class="math inline">\(g \in G_E\)</span> acts by <span
+class="math inline">\(\hat\xi(g)L(g)\)</span>. For each <span
+class="math inline">\(v\mid\ell\)</span>, let <span
+class="math inline">\(G_v\)</span> be the decomposition group of the
+chosen place above <span class="math inline">\(v\)</span> and use the
+local embedding of <span class="math inline">\(G_v\)</span> into <span
+class="math inline">\(\mathrm{Gal}(\bar{\mathbb{Q}}_\ell/\mathbb{Q}_\ell)\)</span>
+fixed in the proof. In the crystalline relations below, an integral
+crystalline cocycle means a function <span
+class="math inline">\(z_0\colon G_v\to L_{\mathrm{tw}}\)</span> for
+which some <span class="math inline">\(b_0\in
+B_{\max}\otimes_{\mathbb{Z}_\ell} L_{\mathrm{tw}}\)</span> satisfies
+<span class="math inline">\(1\otimes z_0(g)=g b_0-b_0\)</span> for every
+<span class="math inline">\(g\in G_v\)</span>. Here <span
+class="math inline">\(B_{\max}\)</span> is the crystalline period ring
+of the proof, and <span class="math inline">\(G_v\)</span> acts on the
+tensor product through its local embedding on <span
+class="math inline">\(B_{\max}\)</span> and through <span
+class="math inline">\(L_{\mathrm{tw}}\)</span> on the second factor.
+Then <span class="math inline">\(\mathrm{Sel}(L_{\mathrm{tw}},
+g_*)\)</span> is the <span
+class="math inline">\(\mathcal{O}\)</span>-module of locally constant
+maps <span class="math inline">\(z \colon G_E \to L_{\mathrm{tw}}
+\otimes_{\mathcal{O}} (\mathrm{Frac}(\mathcal{O})/\mathcal{O})\)</span>
+such that: <span class="math inline">\(z(gh) = z(g) + g\,z(h)\)</span>
+for all <span class="math inline">\(g, h\)</span>; <span
+class="math inline">\(z\)</span> vanishes on the inertia groups above
+the finite places of <span class="math inline">\(E\)</span> that neither
+divide <span class="math inline">\(\ell M\)</span> nor lie in <span
+class="math inline">\(Q_\xi \cup \bar Q_\xi\)</span>; <span
+class="math inline">\(z\)</span> satisfies the <em>crystalline
+relations</em>, that is, for each <span
+class="math inline">\(v\mid\ell\)</span> and every finite family of
+<span class="math inline">\(g_i \in G_v\)</span> and <span
+class="math inline">\(a_i \in M_{r&#39;}(\mathcal{O})\)</span> such that
+<span class="math inline">\(\sum_i a_i\,z_0(g_i) = 0\)</span> for every
+integral crystalline cocycle <span class="math inline">\(z_0 \colon G_v
+\to L_{\mathrm{tw}}\)</span>, also <span class="math inline">\(\sum_i
+a_i\,z(g_i) = 0\)</span>; and <span class="math inline">\(z(g_*) =
+0\)</span>. The twist <span class="math inline">\(\hat\xi R\)</span>
+<em>has Selmer bound <span
+class="math inline">\(\mathrm{sel}\)</span></em> if there are an element
+<span class="math inline">\(g_*\)</span> of an inertia group above a
+place of <span class="math inline">\(E\)</span> not dividing <span
+class="math inline">\(\ell\)</span> and an integer <span
+class="math inline">\(\zeta\)</span> of <span
+class="math inline">\(\bar{\mathbb{Q}}_\ell\)</span> such that, for all
+large <span class="math inline">\(\mathcal{O}\)</span>, there is a
+lattice <span class="math inline">\(L\)</span> of <span
+class="math inline">\(R\)</span> over <span
+class="math inline">\(\mathcal{O}\)</span> for which <span
+class="math inline">\(\zeta \in \mathcal{O}\)</span>, <span
+class="math inline">\(\zeta - 1 \in \mathcal{O}^\times\)</span>, <span
+class="math inline">\(g_*\)</span> acts on <span
+class="math inline">\(L_{\mathrm{tw}}\)</span> by the scalar <span
+class="math inline">\(\zeta\)</span>, and <span
+class="math inline">\(\mathrm{Sel}(L_{\mathrm{tw}}, g_*)\)</span> has
+normalized length at most <span
+class="math inline">\(\mathrm{sel}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#def:lift-generator">Definition 80.1.11</a>; Chapter 85: <a href="20261126T031000--twists-with-few-congruences__workbook.html#thm:twisting">Theorem 85.1.2</a>; <a href="20261126T081200--a-measure-for-hecke-values__workbook.html">Chapter 89</a>; <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html">Chapter 90</a>: <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#pr:assemble">Problem 90.4.2</a></div><!-- used-in:end -->
+</div>
+<div id="def:lift-setting" class="definition">
+<p><strong>Definition 80.1.10</strong>. A descent pair <span
+class="math inline">\(\mathfrak{O}\)</span> with a tuple of polynomials
+over the residue fields of its chosen places is in <em>lift setting</em>
+for <span class="math inline">\(\vartheta\)</span> if its indexed chosen
+and twist places agree with those of the data and of <span
+class="math inline">\(\vartheta\)</span>; its tame part is the <span
+class="math inline">\(j\)</span>-th power of the tame part of <span
+class="math inline">\(\chi_M\)</span> from Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:characters" data-reference-type="ref"
+data-reference="ob-sec:characters">37.7</a>, times the
+tame part of <span class="math inline">\(\vartheta\)</span>, for some
+<span class="math inline">\(1 \le j \le m\)</span>; <span
+class="math inline">\(r&#39;\)</span> and <span
+class="math inline">\(n&#39; - r&#39;\)</span> are odd, with <span
+class="math inline">\(r&#39; \le r\)</span> and <span
+class="math inline">\(n&#39; - r&#39; \le t\)</span>; each polynomial is
+a label of degree <span class="math inline">\(r&#39;\)</span>
+(Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chosen" data-reference-type="ref"
+data-reference="ob-sec:chosen">37.1</a>), and none of its
+roots becomes <span class="math inline">\(1\)</span> on multiplication
+by the element <span class="math inline">\(a_w\in k_w^\times\)</span>
+defined as follows. Write <span class="math inline">\(T_w\)</span> for
+the fixed injective character of <span
+class="math inline">\(\overline{k_w}^{\,\times}\)</span> from Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chosen" data-reference-type="ref"
+data-reference="ob-sec:chosen">37.1</a> and <span
+class="math inline">\(\psi_w\)</span> for the tame part at <span
+class="math inline">\(w\)</span>. Choose <span
+class="math inline">\(z_w\in k_w^\times\)</span> with <span
+class="math inline">\(T_w(z_w)=\exp(2\pi i/(q_w-1))\)</span>. Then <span
+class="math inline">\(T_w(a_w)=\psi_w(z_w)^{-1}\)</span>. Finally, above
+each <span class="math inline">\(p_i\)</span> one polynomial is
+irreducible with a root of order <span class="math inline">\((\#k_w)^{r}
+- 1\)</span> (and then <span class="math inline">\(r&#39; = r\)</span>),
+or equal to <span class="math inline">\(X - 1\)</span> with <span
+class="math inline">\(r&#39; = 1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#def:lift-generator">Definition 80.1.11</a>; Chapter 83: <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html#pr:deduce">Problem 83.4.5</a></div><!-- used-in:end -->
+</div>
+<div id="def:lift-generator" class="definition">
+<p><strong>Definition 80.1.11</strong>. Let <span
+class="math inline">\(\vartheta\)</span> be a twist, <span
+class="math inline">\(\mathfrak{O}\)</span> a descent pair, <span
+class="math inline">\(e_1\)</span> as in Definition <a
+href="#def:false-lift" data-reference-type="ref"
+data-reference="def:false-lift">80.1.3</a>, <span
+class="math inline">\(\mathcal F \subseteq \mathcal
+A(\mathfrak{O})\)</span> a subspace and <span
+class="math inline">\(\mathrm{sel} \in [0, \infty]\)</span>. A <em>lift
+generator</em> for <span class="math inline">\((\vartheta, \mathfrak{O},
+e_1, \mathcal F)\)</span> with Selmer bound <span
+class="math inline">\(\mathrm{sel}\)</span> is a form <span
+class="math inline">\(y \in \mathcal F\)</span> such that:</p>
+<ol>
+<li><p><span class="math inline">\(y\)</span> lies in the range of the
+idempotent of a tuple of polynomials with which <span
+class="math inline">\(\mathfrak{O}\)</span> is in lift setting for <span
+class="math inline">\(\vartheta\)</span> (Definition <a
+href="#def:lift-setting" data-reference-type="ref"
+data-reference="def:lift-setting">80.1.10</a>), and the whole range of this
+idempotent is contained in <span
+class="math inline">\(\mathrm{im}(e_1)\)</span>;</p></li>
+<li><p><span class="math inline">\(y\)</span> lifts a family <span
+class="math inline">\(\mathfrak s\)</span> for which there are a descent
+pair <span class="math inline">\(\mathfrak{O}_0\)</span> with the same
+basis index sets for <span class="math inline">\(W\)</span> and for
+<span class="math inline">\(V\)</span> as <span
+class="math inline">\(\mathfrak{O}\)</span>, whose character <span
+class="math inline">\(\mu\)</span> times <span
+class="math inline">\(\vartheta\)</span> is that of <span
+class="math inline">\(\mathfrak{O}\)</span>, and a main summand <span
+class="math inline">\(R\)</span> for <span
+class="math inline">\(\mathfrak{O}_0\)</span> and <span
+class="math inline">\(\mathfrak s\)</span> such that <span
+class="math inline">\(\hat\vartheta R\)</span> has Selmer bound <span
+class="math inline">\(\mathrm{sel}\)</span> (Definition <a
+href="#def:selmer-bound" data-reference-type="ref"
+data-reference="def:selmer-bound">80.1.9</a>).</p></li>
+</ol>
+</div>
+<div id="thm:denominators" class="theorem">
+<p><strong>Theorem 80.1.1</strong>. <em>Let <span
+class="math inline">\(\ell\)</span> and <span
+class="math inline">\(\iota\)</span> be as above, and let <span
+class="math inline">\(\vartheta\)</span> be a twist that is auxiliary
+with ramification at most <span
+class="math inline">\(\mathrm{tw}_\ell\)</span>. Let <span
+class="math inline">\(\mathfrak{O}\)</span> be a descent pair of ranks
+<span class="math inline">\(r&#39; &lt; n&#39;\)</span>, <span
+class="math inline">\(e_1\)</span> an element of the complex group
+algebra of <span class="math inline">\(\prod_w
+\mathrm{GL}_{r&#39;}(k_w)\)</span> over its chosen places, and <span
+class="math inline">\(\mathcal F \subseteq \mathcal
+A(\mathfrak{O})\)</span> a subspace contained in the span of the lift
+generators for <span class="math inline">\((\vartheta, \mathfrak{O},
+e_1, \mathcal F)\)</span> with Selmer bound <span
+class="math inline">\(\mathrm{tw}_\ell\)</span>. Then the projection
+onto <span class="math inline">\(\mathcal F\)</span> has denominator at
+most <span class="math inline">\(\mathrm{cl}_\ell \log \ell\)</span> at
+<span class="math inline">\(\iota\)</span>, in the sense of
+Definition <a href="#def:denominator" data-reference-type="ref"
+data-reference="def:denominator">80.1.4</a>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html">Chapter 83</a>: <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html#pr:deduce">Problem 83.4.5</a>; <a href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.html">Chapter 84</a>; <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a></div><!-- used-in:end -->
+</div>
+<p><em>Status</em>: deduced in Problem <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html#pr:deduce"
+data-reference-type="ref"
+data-reference="n1-pr:deduce">83.4.5</a> from Theorem <a
+href="20261126T060400--congruences-bounded-by-lengths__workbook.html#thm:eigenvalues" data-reference-type="ref"
+data-reference="n1-thm:eigenvalues">83.4.1</a>, which is
+read from the proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span> and not proved here. The
+next four problems are arithmetic of the clearing bound and of
+determinants; Problems <a href="#pr:budget" data-reference-type="ref"
+data-reference="pr:budget">80.1.3</a> and <a href="#pr:det-bound"
+data-reference-type="ref" data-reference="pr:det-bound">80.1.5</a> are used
+in that deduction.</p>
+<div id="pr:budget" class="problem" data-progress-ids="[&quot;20261126T030900--denominators-of-projections-to-lifts__workbook.tex#pr:budget&quot;]">
+<p><strong>Problem 80.1.3</strong>. Let <span class="math inline">\(r&#39;,
+t&#39;\)</span> be integers with <span class="math inline">\(1 \le
+r&#39; \le r\)</span> and <span class="math inline">\(0 \le t&#39; \le
+t\)</span>, and let <span class="math inline">\(0 \le \mathrm{sel},
+\mathrm{ram} \le \mathrm{tw}_\ell\)</span>. Then <span
+class="math display">\[\mathrm{sel} + 2t&#39;\,\mathrm{ram} +
+r&#39;\,\mathrm{loc}_\ell + \varepsilon_\ell + n_\ell \le
+r&#39;\mathrm{cl}_\ell .\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:rank-one-budget">Problem 80.1.4</a>; <a href="20261126T051800--the-local-loss-and-the-sparse-places__workbook.html">Chapter 82</a>; <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html">Chapter 83</a></div><!-- used-in:end -->
+</div>
+<div id="pr:rank-one-budget" class="problem" data-progress-ids="[&quot;20261126T030900--denominators-of-projections-to-lifts__workbook.tex#pr:rank-one-budget&quot;]">
+<p><strong>Problem 80.1.4</strong>. For <span class="math inline">\(r&#39; =
+1\)</span>, <span class="math inline">\(1 \le t&#39; \le t\)</span> and
+<span class="math inline">\(\mathrm{sel} = \mathrm{ram} =
+\mathrm{tw}_\ell\)</span>, the two sides of Problem <a href="#pr:budget"
+data-reference-type="ref" data-reference="pr:budget">80.1.3</a> differ by
+exactly <span class="math inline">\(2(t -
+t&#39;)\,\mathrm{tw}_\ell\)</span>.</p>
+</div>
+<div id="pr:det-bound" class="problem" data-progress-ids="[&quot;20261126T030900--denominators-of-projections-to-lifts__workbook.tex#pr:det-bound&quot;]">
+<p><strong>Problem 80.1.5</strong>. Let <span class="math inline">\(\mathcal
+F\)</span> be a finite-dimensional complex vector space, <span
+class="math inline">\(n_0 \ge 0\)</span> an integer, <span
+class="math inline">\(u_0\)</span> a nonnegative real number, and <span
+class="math inline">\(C_\ell \in \mathrm{End}_{\mathbb{C}}(\mathcal
+F)\)</span> with <span
+class="math inline">\(\operatorname{val}_+(n_0\iota(\mu)) \le
+u_0\)</span> for every eigenvalue <span
+class="math inline">\(\mu\)</span> of <span
+class="math inline">\(C_\ell\)</span>. Then, with <span
+class="math inline">\(\lvert \ell \rvert_\ell = \ell^{-1}\)</span>,
+<span class="math inline">\(\lvert \iota(\det(n_0C_\ell)) \rvert_\ell
+\ge \exp(-\dim \mathcal F \cdot u_0 \log \ell)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html">Chapter 83</a></div><!-- used-in:end -->
+</div>
+<div id="pr:negligible" class="problem" data-progress-ids="[&quot;20261126T030900--denominators-of-projections-to-lifts__workbook.tex#pr:negligible&quot;]">
+<p><strong>Problem 80.1.6</strong>. The sum of <span
+class="math inline">\(2^{-\ell}\log \ell\)</span> over all primes <span
+class="math inline">\(\ell\)</span> is <span
+class="math inline">\(0.3776\ldots\)</span>, and for every finite set
+<span class="math inline">\(P_0\)</span> of primes, <span
+class="math inline">\(\sum_{\ell \in P_0} \mathrm{tw}_\ell \log \ell \le
+(4f + 3)\,r \log \mathcal N + 0.378\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a></div><!-- used-in:end -->
+</div>
+<p>The clearing bounds of all primes together fit the budget <span
+class="math inline">\(B\)</span>: the proof bounds by <span
+class="math inline">\(B\)</span> the sum in Problem <a
+href="#pr:budget-sum" data-reference-type="ref"
+data-reference="pr:budget-sum">80.1.7</a>. Let <span
+class="math inline">\(C_1\)</span>, the class number of <span
+class="math inline">\(U(1)\)</span>, be the number of double cosets of
+the finite adelic points of <span class="math inline">\(U(1)\)</span> by
+the rational points and by the integral ideles congruent to <span
+class="math inline">\(1\)</span> at every chosen place. For a main pair
+at <span class="math inline">\(j\)</span> and <span
+class="math inline">\(\vartheta=\theta_\iota^j\)</span>, the pairing of
+the projections of two test forms onto the line of the lift from <span
+class="math inline">\(U(1)\)</span> has <span
+class="math inline">\(\ell\)</span>-adic norm at most <span
+class="math inline">\(\exp((\mathrm{cl}_\ell+\operatorname{val}_\ell(C_1))\log\ell)\)</span>
+(Section <a href="20261126T031000--twists-with-few-congruences__workbook.html#sec:regular" data-reference-type="ref"
+data-reference="tw-sec:regular">85.2</a>). With <span
+class="math inline">\(x\)</span> the length of the prime sum and <span
+class="math inline">\(b\)</span> the weight scale of Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>, consider the following five
+comparisons. <span class="math display">\[\log\bigl(2^{4(q_1d + t +
+3)^{27}} h_E\bigr) \le x^{2000}, \qquad (4f+3)\,r\log\mathcal N + 2 \le
+x^{999}, \qquad \log C_1 \le x^{30},\]</span> <span
+class="math display">\[t\,x^{2000} + \bigl(8ft + 2 + (4t +
+1)(\Delta/2)^{22} + \Delta/2\bigr)\log\mathcal N \le x^{4000},\]</span>
+<span class="math display">\[4\cdot 10^6 e^{180} f\,\frac mk\, b\log b +
+(1 + 2t)\,x^{999} + x^{4000} + \log\mathcal N + x^{30} \le B
+.\]</span></p>
+<div id="pr:budget-sum" class="problem" data-progress-ids="[&quot;20261126T030900--denominators-of-projections-to-lifts__workbook.tex#pr:budget-sum&quot;]">
+<p><strong>Problem 80.1.7</strong>. Granting the five displayed inequalities,
+for every finite set <span class="math inline">\(P_0\)</span> of primes
+<span class="math display">\[\sum_{\ell \in P_0} \bigl(\mathrm{cl}_\ell
++ \operatorname{val}_\ell(C_1)\bigr)\log\ell \;\le\; 4\cdot 10^6 e^{180}
+f\,\frac mk\, b\log b + (1 + 2t)\,x^{999} + x^{4000} + \log\mathcal N +
+x^{30} \;\le\; B .\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051800--the-local-loss-and-the-sparse-places__workbook.html">Chapter 82</a>; <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a></div><!-- used-in:end -->
+</div>
+<p>Fix <span class="math inline">\(1\le j\le m\)</span>. By Theorem <a
+href="20261126T050800--compressions-and-false-lifts__workbook.html#thm:compression" data-reference-type="ref"
+data-reference="l1-thm:compression">75.3.1</a>(b), for a
+twist <span class="math inline">\(\vartheta\)</span> of modulus prime to
+<span class="math inline">\(\ell\)</span>, a real <span
+class="math inline">\(\mathrm{cl}(\ell)\)</span> that clears the
+projection at <span class="math inline">\((\iota,\vartheta,j)\)</span>
+bounds the <span class="math inline">\(\ell\)</span>-adic norm, through
+<span class="math inline">\(\iota\)</span>, of the determinant of the
+compression of a comparison operator to the image of <span
+class="math inline">\(u_{\vartheta,j}\)</span> by <span
+class="math inline">\(\exp(\dim_{\mathbb{C}} H_g(W_j)\cdot
+r\cdot\mathrm{cl}(\ell))\)</span>. For <span class="math inline">\(1 \le
+j \le m\)</span>, <span class="math inline">\(e_1 = e_0\)</span> and
+<span class="math inline">\(\mathcal F\)</span> the image of <span
+class="math inline">\(u_{\vartheta,j}\)</span>, so that <span
+class="math inline">\(r&#39; = r\)</span>, the proof deduces from
+Theorem <a href="#thm:denominators" data-reference-type="ref"
+data-reference="thm:denominators">80.1.1</a> that every real <span
+class="math inline">\(\mathrm{cl}(\ell) \ge
+\mathrm{cl}_\ell\log\ell\)</span> clears the projection at <span
+class="math inline">\((\iota, \vartheta, j)\)</span> in the sense of
+Definition <a href="20261126T050800--compressions-and-false-lifts__workbook.html#def:clears" data-reference-type="ref"
+data-reference="l1-def:clears">75.3.4</a>, provided <span
+class="math inline">\(\vartheta\)</span> is auxiliary with ramification
+at most <span class="math inline">\(\mathrm{tw}_\ell\)</span> and every
+eigensystem occurring in a nonzero good form on <span
+class="math inline">\(W_m\)</span> has a main summand, for the <span
+class="math inline">\(j\)</span>-th descent pair of the trivial twist,
+whose twist by <span class="math inline">\(\hat\vartheta\)</span> has
+Selmer bound <span class="math inline">\(\mathrm{tw}_\ell\)</span>.
+Chapter <a href="20261126T031000--twists-with-few-congruences__workbook.html#chap" data-reference-type="ref"
+data-reference="tw-chap">85</a> chooses an <span
+class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\theta_\iota\)</span> for each <span
+class="math inline">\(\iota \mid \ell\)</span>, and at index <span
+class="math inline">\(j\)</span> one takes <span
+class="math inline">\(\vartheta = \theta_\iota^j\)</span>. Chapter <a
+href="20261126T051800--the-local-loss-and-the-sparse-places__workbook.html#chap" data-reference-type="ref"
+data-reference="n3-chap">82</a> explains the local loss <span
+class="math inline">\(\mathrm{loc}_\ell\)</span> and proves the bound
+for its sum over the primes (Theorem <a href="20261126T051800--the-local-loss-and-the-sparse-places__workbook.html#thm:local-loss"
+data-reference-type="ref"
+data-reference="n3-thm:local-loss">82.4.1</a>); Chapter <a
+href="20261126T060400--congruences-bounded-by-lengths__workbook.html#chap" data-reference-type="ref"
+data-reference="n1-chap">83</a> deduces Theorem <a
+href="#thm:denominators" data-reference-type="ref"
+data-reference="thm:denominators">80.1.1</a> from Theorem <a
+href="20261126T060400--congruences-bounded-by-lengths__workbook.html#thm:eigenvalues" data-reference-type="ref"
+data-reference="n1-thm:eigenvalues">83.4.1</a>, which is
+taken from the proof.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span> (<code>grh/src/</code>,
+with the namespace <code>New.</code> omitted), Definition <a
+href="#def:clearing-bound" data-reference-type="ref"
+data-reference="def:clearing-bound">80.1.1</a> is
+<code>Selmer.clearingBound</code>; Definitions <a href="#def:false-lift"
+data-reference-type="ref" data-reference="def:false-lift">80.1.3</a> and <a
+href="#def:denominator" data-reference-type="ref"
+data-reference="def:denominator">80.1.4</a> are
+<code>DescentPair.falseLiftsAt</code> and
+<code>Selmer.DenominatorLe</code>; Definitions <a href="#def:aux-twist"
+data-reference-type="ref" data-reference="def:aux-twist">80.1.5</a>, <a
+href="#def:main-summand-like" data-reference-type="ref"
+data-reference="def:main-summand-like">80.1.7</a>, <a
+href="#def:main-summand" data-reference-type="ref"
+data-reference="def:main-summand">80.1.8</a>, <a href="#def:selmer-bound"
+data-reference-type="ref" data-reference="def:selmer-bound">80.1.9</a> and <a
+href="#def:lift-generator" data-reference-type="ref"
+data-reference="def:lift-generator">80.1.11</a> are
+<code>Selmer.IsAuxTwist</code>, <code>Selmer.IsMainSummandLike</code>,
+<code>Selmer.IsMainSummand</code>, the existential closure in <span
+class="math inline">\(g_*, \zeta\)</span> of
+<code>Selmer.HasDivisibleSelmerLengthLe</code>, and
+<code>Selmer.IsLiftGenerator</code>; Theorem <a href="#thm:denominators"
+data-reference-type="ref" data-reference="thm:denominators">80.1.1</a> is
+<code>Selmer.denominatorLe_clearingBound</code>; and the bound by <span
+class="math inline">\(B\)</span> behind Problem <a href="#pr:budget-sum"
+data-reference-type="ref" data-reference="pr:budget-sum">80.1.7</a> is
+<code>Selmer.sum_clearingBound_add_padicValNat_le</code>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secstatement">§<a href="#sec:statement"
+data-reference-type="ref" data-reference="sec:statement">80.1</a></h2>
+<dl>
+<dt><a href="#pr:trivial-aux" data-reference-type="ref"
+data-reference="pr:trivial-aux">80.1.1</a></dt>
+<dd>
+<p>Compute the inverse avatar of the trivial character and try the
+trivial finite idele character in (b).</p>
+</dd>
+<dt><a href="#pr:rank-one" data-reference-type="ref"
+data-reference="pr:rank-one">80.1.2</a></dt>
+<dd>
+<p>For (ii), a lattice of a character is the character itself.</p>
+</dd>
+<dt><a href="#pr:budget" data-reference-type="ref"
+data-reference="pr:budget">80.1.3</a></dt>
+<dd>
+<p>Use <span class="math inline">\(r&#39; \ge 1\)</span> and <span
+class="math inline">\(t&#39; \le t\)</span>.</p>
+</dd>
+<dt><a href="#pr:negligible" data-reference-type="ref"
+data-reference="pr:negligible">80.1.6</a></dt>
+<dd>
+<p>Use the factorization of <span class="math inline">\(\mathcal
+N\)</span>. For the prime sum, sum through <span
+class="math inline">\(31\)</span> and bound the rest by <span
+class="math inline">\(\sum_{k &gt; 31} k\,2^{-k}\)</span>.</p>
+</dd>
+<dt><a href="#pr:budget-sum" data-reference-type="ref"
+data-reference="pr:budget-sum">80.1.7</a></dt>
+<dd>
+<p>Sum the four terms of <span
+class="math inline">\(\mathrm{cl}_\ell\)</span> separately. For <span
+class="math inline">\(\mathrm{loc}_\ell\)</span> use Theorem <a
+href="20261126T051800--the-local-loss-and-the-sparse-places__workbook.html#thm:local-loss" data-reference-type="ref"
+data-reference="n3-thm:local-loss">82.4.1</a>; for <span
+class="math inline">\(\mathrm{tw}_\ell\)</span>, Problem <a
+href="#pr:negligible" data-reference-type="ref"
+data-reference="pr:negligible">80.1.6</a>; for <span
+class="math inline">\(\varepsilon_\ell\)</span>, <span
+class="math inline">\(n_\ell\)</span> and <span
+class="math inline">\(\operatorname{val}_\ell(C_1)\)</span>, the
+inequality <span class="math inline">\(\sum_{\ell \in P_0}
+\operatorname{val}_\ell(n)\log\ell \le \log n\)</span> for an integer
+<span class="math inline">\(n \ge 1\)</span>, with the bound for <span
+class="math inline">\(X_{\mathrm{odd}}\)</span> of Definition <a
+href="#def:clearing-bound" data-reference-type="ref"
+data-reference="def:clearing-bound">80.1.1</a>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

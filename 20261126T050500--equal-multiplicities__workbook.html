@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-OGGFCtuTmT7kvSjU7q5nem3qmy1MEvlW4G5vWpYwL4o=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Equal multiplicities</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Q":"\\mathbb{Q}","C":"\\mathbb{C}","Oc":"\\mathcal{O}","Mcal":"\\mathcal{M}","Rc":"\\mathcal{R}","TM":"\\mathbb{T}^{\\mathcal{M}}","tr":"\\operatorname{tr}","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="70">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T050500--equal-multiplicities__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-27 17:44:27
+      <a href="20261126T050500--equal-multiplicities__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T050500--equal-multiplicities__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T050500--equal-multiplicities__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Equal multiplicities</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:finite" id="toc-sec:finite">§70.1. Hecke operators of a finite group</a></li>
+<li><a href="#sec:brandt" id="toc-sec:brandt">§70.2. Brandt matrices: a model</a></li>
+<li><a href="#sec:traces" id="toc-sec:traces">§70.3. Equal traces</a></li>
+<li><a href="#sec:corollary" id="toc-sec:corollary">§70.4. Dimensions, eigenspaces and determinants</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secfinite" id="toc-secfinite">§70.1</a></li>
+<li><a href="#secbrandt" id="toc-secbrandt">§70.2</a></li>
+<li><a href="#sectraces" id="toc-sectraces">§70.3</a></li>
+<li><a href="#seccorollary" id="toc-seccorollary">§70.4</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Linear algebra over <span class="math inline">\(\mathbb{C}\)</span>:
+traces, characteristic polynomials and Newton’s identities <span
+class="citation" data-cites="Mac">[<a href="#ref-Mac">Mac</a>, Ch. I,
+§2]</span>. Modular forms of weight two on <span
+class="math inline">\(\Gamma_0(N)\)</span> and their Hecke operators
+<span class="citation" data-cites="DS">[<a href="#ref-DS">DS</a>,
+Ch. 5]</span>. From Chapter <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="ho-chap">24</a>, <em>Hecke operators and theta
+lifts</em>: Section <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#sec:brandt" data-reference-type="ref"
+data-reference="ho-sec:brandt">24.4</a>, with Problems <a
+href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#pr:brandt" data-reference-type="ref"
+data-reference="ho-pr:brandt">24.4.2</a> and <a
+href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#pr:basis" data-reference-type="ref"
+data-reference="ho-pr:basis">24.4.3</a>. From Chapter <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>, <em>Spaces, forms and
+twists</em>: the chosen places <span
+class="math inline">\(\mathcal{M}\)</span>, the group <span
+class="math inline">\(\bar G\)</span>, good families of labels and the
+idempotent <span class="math inline">\(e_0\)</span> (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chosen" data-reference-type="ref"
+data-reference="ob-sec:chosen">37.1</a>); the gap <span
+class="math inline">\(\Delta\)</span> and the target parameter <span
+class="math inline">\(\varsigma_\tau\)</span> (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:weights" data-reference-type="ref"
+data-reference="ob-sec:weights">37.2</a>, Problem <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#pr:parameter" data-reference-type="ref"
+data-reference="ob-pr:parameter">37.2.1</a>); the spaces
+<span class="math inline">\(Y_0\)</span>, <span
+class="math inline">\(W_j\)</span> and their signs (Sections <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces" data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a> and <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:forms" data-reference-type="ref"
+data-reference="ob-sec:forms">37.4</a>, Problem <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#pr:signs-W" data-reference-type="ref"
+data-reference="ob-pr:signs-W">37.3.1</a>); principal and good
+forms <span class="math inline">\(H(V) \supseteq H_g(V)\)</span> and the
+target <span class="math inline">\(T = H_g(Y_0)\)</span> of dimension
+<span class="math inline">\(d_T\)</span>; tame characters (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:twists" data-reference-type="ref"
+data-reference="ob-sec:twists">37.6</a>). From Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>: <span class="math inline">\(r =
+3^{e&#39;}\)</span> is odd, <span class="math inline">\(x^5 \le
+r\)</span>, <span class="math inline">\(m\)</span> is even, and the
+weights <span class="math inline">\(\kappa(\tau)\)</span> are integers.
+From Chapter <a href="20261126T050400--the-norm-of-one-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="c1-chap">69</a>: the Rallis operators <span
+class="math inline">\(\mathcal{R}_j(\xi; V)\)</span> (Definition <a
+href="20261126T050400--the-norm-of-one-lift__workbook.html#def:rallis-operator" data-reference-type="ref"
+data-reference="c1-def:rallis-operator">69.3.2</a>).
+Inner products are conjugate-linear in the first variable. Problems
+marked “by machine” use Sage <span class="citation"
+data-cites="Sage">[<a href="#ref-Sage">Sage</a>]</span>.</p>
+<p>The single lifts of Chapter <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#chap"
+data-reference-type="ref" data-reference="dch-chap">68</a>,
+<em>The determinant of a chain</em>, start from the spaces <span
+class="math inline">\(W_j\)</span>, which have the rank of <span
+class="math inline">\(Y_0\)</span> but other signs at the real places.
+How can a determinant on <span class="math inline">\(H_g(W_j)\)</span>
+be compared with one on <span class="math inline">\(T =
+H_g(Y_0)\)</span>, when no map between the two spaces is given? In the
+proof one Hecke algebra acts on both spaces with equal traces. The
+equality implies that the two spaces have the same dimension, that each
+element of the Hecke algebra has the same characteristic polynomial on
+both, and that each Hecke eigensystem occurs with the same
+multiplicity.</p>
+<h1 id="sec:finite">§70.1. Hecke operators of a finite group</h1>
+<p>Here <span class="math inline">\(K\)</span> is a subgroup (the field
+<span class="math inline">\(\mathbb{Q}(\sqrt{-d})\)</span> does not
+occur). Let the symmetric group <span class="math inline">\(S_3\)</span>
+act on <span class="math inline">\(\mathbb{C}^3\)</span> by <span
+class="math inline">\((\sigma v)_i = v_{\sigma^{-1}(i)}\)</span>, let
+<span class="math inline">\(K = \{1, (12)\}\)</span> and <span
+class="math inline">\(g = (23)\)</span>.</p>
+<div id="pr:s3-coset" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:s3-coset&quot;]">
+<p><strong>Problem 70.1.1</strong>. The double coset <span
+class="math inline">\(KgK\)</span> has <span
+class="math inline">\(4\)</span> elements. For a <span
+class="math inline">\(K\)</span>-fixed vector <span
+class="math inline">\(v = (v_1, v_1, v_3)\)</span>, the average of <span
+class="math inline">\(\sigma v\)</span> over <span
+class="math inline">\(\sigma \in KgK\)</span> is <span
+class="math inline">\(\bigl(\tfrac{v_1+v_3}2, \tfrac{v_1+v_3}2,
+v_1\bigr)\)</span>; in the coordinates <span class="math inline">\((v_1,
+v_3)\)</span> of the <span class="math inline">\(K\)</span>-fixed
+vectors it is <span class="math inline">\((v_1, v_3) \mapsto
+\bigl(\tfrac{v_1+v_3}2, v_1\bigr)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:s3-traces">Problem 70.1.3</a></div><!-- used-in:end -->
+</div>
+<div id="pr:compress" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:compress&quot;]">
+<p><strong>Problem 70.1.2</strong>. Let a group <span
+class="math inline">\(G\)</span> act on a complex inner product space
+<span class="math inline">\(U\)</span> by unitary operators, let <span
+class="math inline">\(K \subseteq G\)</span> be a subgroup and <span
+class="math inline">\(g \in G\)</span> be such that <span
+class="math inline">\(K_g := K \cap gKg^{-1}\)</span> has finite index
+in <span class="math inline">\(K\)</span>. On the <span
+class="math inline">\(K\)</span>-fixed vectors <span
+class="math inline">\(U^K\)</span> the operator <span
+class="math inline">\(\mathrm{av}_K(g) := [K : K_g]^{-1} \sum_{\delta
+K_g \in K/K_g} \delta g\)</span> does not depend on the representatives,
+maps <span class="math inline">\(U^K\)</span> to itself, and satisfies
+<span class="math inline">\(\langle z, gy \rangle = \langle z,
+\mathrm{av}_K(g) y\rangle\)</span> for all <span
+class="math inline">\(z, y \in U^K\)</span>. If <span
+class="math inline">\(K\)</span> is finite, <span
+class="math inline">\(\mathrm{av}_K(g) y\)</span> is the average of
+<span class="math inline">\(\sigma y\)</span> over <span
+class="math inline">\(\sigma \in KgK\)</span>.</p>
+</div>
+<div id="pr:s3-traces" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:s3-traces&quot;]">
+<p><strong>Problem 70.1.3</strong>. The operator of Problem <a
+href="#pr:s3-coset" data-reference-type="ref"
+data-reference="pr:s3-coset">70.1.1</a> has traces <span
+class="math inline">\(2, \tfrac12, \tfrac54, \tfrac78\)</span> in its
+powers <span class="math inline">\(0, 1, 2, 3\)</span>, characteristic
+polynomial <span class="math inline">\((X - 1)(X + \tfrac12)\)</span>
+and determinant <span class="math inline">\(-\tfrac12\)</span>.</p>
+</div>
+<div id="pr:trace-charpoly" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:trace-charpoly&quot;]">
+<p><strong>Problem 70.1.4</strong>. Let a monoid act linearly, with its unit
+acting as the identity and products as composites, on finite-dimensional
+complex spaces <span class="math inline">\(U\)</span> and <span
+class="math inline">\(U&#39;\)</span>, and suppose <span
+class="math inline">\(\operatorname{tr}_U h = \operatorname{tr}_{U&#39;}
+h\)</span> for every element <span class="math inline">\(h\)</span>.
+Then <span class="math inline">\(\dim U = \dim U&#39;\)</span>, and
+every element <span class="math inline">\(h\)</span> has the same
+characteristic polynomial, hence the same determinant, on <span
+class="math inline">\(U\)</span> and on <span
+class="math inline">\(U&#39;\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:trace-mult">Problem 70.1.6</a></div><!-- used-in:end -->
+</div>
+<div id="pr:trace-check" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:trace-check&quot;]">
+<p><strong>Problem 70.1.5</strong>. The matrices <span
+class="math inline">\(\operatorname{diag}(1, 2)\)</span> and <span
+class="math inline">\(\bigl(\begin{smallmatrix} 0 &amp; -2 \\ 1 &amp; 3
+\end{smallmatrix}\bigr)\)</span> both have traces <span
+class="math inline">\(3, 5, 9\)</span> in their powers <span
+class="math inline">\(1, 2, 3\)</span>, and <span
+class="math inline">\(\det(h + 1) = 6\)</span> for both.</p>
+</div>
+<div id="pr:trace-mult" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:trace-mult&quot;]">
+<p><strong>Problem 70.1.6</strong>. In Problem <a href="#pr:trace-charpoly"
+data-reference-type="ref" data-reference="pr:trace-charpoly">70.1.4</a>,
+suppose moreover that the monoid is commutative and acts diagonalizably
+on <span class="math inline">\(U\)</span> and on <span
+class="math inline">\(U&#39;\)</span>. Then for every function <span
+class="math inline">\(\lambda\)</span> from the monoid to <span
+class="math inline">\(\mathbb{C}\)</span> the joint eigenspaces <span
+class="math inline">\(\{y : hy = \lambda(h) y \text{ for all }
+h\}\)</span> in <span class="math inline">\(U\)</span> and in <span
+class="math inline">\(U&#39;\)</span> have the same dimension.</p>
+</div>
+<h1 id="sec:brandt">§70.2. Brandt matrices: a model</h1>
+<p>Where do two spaces with the same Hecke traces come from? The
+classical case compares a definite quaternion algebra with <span
+class="math inline">\(\mathrm{GL}_2\)</span>. Let <span
+class="math inline">\(B\)</span>, <span
+class="math inline">\(\mathcal{O}_1\)</span>, <span
+class="math inline">\(\mathcal{O}_2\)</span>, the Brandt matrices <span
+class="math inline">\(B(\ell)\)</span> for primes <span
+class="math inline">\(\ell \ne 11\)</span>, and the cusp form <span
+class="math inline">\(f\)</span> be as in Section <a
+href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#sec:brandt" data-reference-type="ref"
+data-reference="ho-sec:brandt">24.4</a> and Problem <a
+href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#pr:basis" data-reference-type="ref"
+data-reference="ho-pr:basis">24.4.3</a>; <span
+class="math inline">\(B(\ell)\)</span> acts on functions <span
+class="math inline">\(y\)</span> on the two classes by <span
+class="math inline">\((B(\ell) y)(i) = \sum_j B_{ij}(\ell)\,
+y(j)\)</span>. The space of cusp forms of weight <span
+class="math inline">\(2\)</span> on <span
+class="math inline">\(\Gamma_0(11)\)</span> is <span
+class="math inline">\(\mathbb{C}f\)</span> <span class="citation"
+data-cites="DS">[<a href="#ref-DS">DS</a>]</span>, and <span
+class="math inline">\(T_\ell f = a_\ell(f) f\)</span>.</p>
+<div id="pr:level11" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:level11&quot;]">
+<p><strong>Problem 70.2.1</strong>. (By machine.) For <span
+class="math inline">\(\ell = 2, 3, 5, 7, 13\)</span>: <span
+class="math inline">\(\operatorname{tr}B(\ell) = 1, 3, 7, 6,
+18\)</span>, and <span class="math inline">\(\operatorname{tr}B(\ell) -
+(\ell + 1) = a_\ell(f) = -2, -1, 1, -2, 4\)</span>.</p>
+</div>
+<div id="pr:remove-constants" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:remove-constants&quot;]">
+<p><strong>Problem 70.2.2</strong>. (a) If an idempotent <span
+class="math inline">\(e\)</span> on a finite-dimensional space <span
+class="math inline">\(U\)</span> commutes with an operator <span
+class="math inline">\(h\)</span>, then <span
+class="math inline">\(eU\)</span> is stable under <span
+class="math inline">\(h\)</span> and <span
+class="math inline">\(\operatorname{tr}(h \mid eU) =
+\operatorname{tr}_U(he)\)</span>. (b) For a prime <span
+class="math inline">\(\ell \ne 11\)</span>, the constant function is an
+eigenvector of <span class="math inline">\(B(\ell)\)</span> with
+eigenvalue <span class="math inline">\(\ell + 1\)</span>, and the line
+<span class="math inline">\(U_0 := \{y :
+y(1)/\lvert\mathcal{O}_1^\times\rvert +
+y(2)/\lvert\mathcal{O}_2^\times\rvert = 0\}\)</span> is stable under
+<span class="math inline">\(B(\ell)\)</span>; hence <span
+class="math inline">\(\operatorname{tr}(B(\ell) \mid U_0) =
+\operatorname{tr}B(\ell) - (\ell + 1)\)</span>.</p>
+</div>
+<p>For the five primes of Problem <a href="#pr:level11"
+data-reference-type="ref" data-reference="pr:level11">70.2.1</a>, Problems <a
+href="#pr:level11" data-reference-type="ref"
+data-reference="pr:level11">70.2.1</a> and <a href="#pr:remove-constants"
+data-reference-type="ref" data-reference="pr:remove-constants">70.2.2</a>
+give <span class="math inline">\(\operatorname{tr}(B(\ell) \mid U_0) =
+a_\ell(f)\)</span>: once the constants are removed, the Brandt matrices
+have the traces of the Hecke operators on cusp forms. The equality for
+every prime <span class="math inline">\(\ell \ne 11\)</span> is the
+level-<span class="math inline">\(11\)</span> case of the correspondence
+of Eichler and of Jacquet and Langlands <span class="citation"
+data-cites="Ei73">[<a href="#ref-Ei73">Ei73</a>]</span>, <span
+class="citation" data-cites="JL">[<a href="#ref-JL">JL</a>]</span>;
+<em>Status</em>: classical. It is a model only: the group of units of
+<span class="math inline">\(B\)</span> and <span
+class="math inline">\(\mathrm{GL}_2\)</span> differ at <span
+class="math inline">\(11\)</span> as well as at infinity, whereas the
+proof compares unitary groups that differ only at the real places.</p>
+<div id="pr:level37" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:level37&quot;]">
+<p><strong>Problem 70.2.3</strong>. (By machine.) The quaternion algebra over
+<span class="math inline">\(\mathbb{Q}\)</span> ramified at <span
+class="math inline">\(37\)</span> and <span
+class="math inline">\(\infty\)</span> has three classes of left ideals
+of a maximal order; its Brandt matrix <span
+class="math inline">\(B(2)\)</span> has characteristic polynomial <span
+class="math inline">\((X - 3)X(X + 2)\)</span>, and <span
+class="math inline">\(T_2\)</span> on the cusp forms of weight <span
+class="math inline">\(2\)</span> on <span
+class="math inline">\(\Gamma_0(37)\)</span> has characteristic
+polynomial <span class="math inline">\(X(X + 2)\)</span>.</p>
+</div>
+<p>At level <span class="math inline">\(37\)</span> the factor of the
+constants is <span class="math inline">\(X - 3\)</span>, and what
+remains is the characteristic polynomial of <span
+class="math inline">\(T_2\)</span> on cusp forms.</p>
+<h1 id="sec:traces">§70.3. Equal traces</h1>
+<p>Let <span class="math inline">\(V\)</span> be a framed space of rank
+<span class="math inline">\(r\)</span> over <span
+class="math inline">\(E\)</span> with numbered signs <span
+class="math inline">\(s = (s(0), \dots, s(r-1))\)</span> (in this sheet
+<span class="math inline">\(s\)</span> is a system of signs and, below,
+<span class="math inline">\(a\)</span> an element of a group algebra;
+the numbers <span class="math inline">\(s\)</span> and <span
+class="math inline">\(a\)</span> of the data do not occur), such as
+<span class="math inline">\(Y_0\)</span> or <span
+class="math inline">\(W_j\)</span> (Sections <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces"
+data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a> and <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:forms" data-reference-type="ref"
+data-reference="ob-sec:forms">37.4</a>). Through the frames,
+all such <span class="math inline">\(V\)</span> have the same finite
+adelic unitary group <span class="math inline">\(G_f\)</span>, that of
+the identity form; it acts on forms on <span
+class="math inline">\(V\)</span> by right translation. <span
+class="math inline">\(H(V)\)</span> and its subspaces carry the
+Petersson inner product <span class="math inline">\(\langle y&#39;,
+y\rangle\)</span> of Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:petersson"
+data-reference-type="ref"
+data-reference="ob-def:petersson">37.4.1</a>,
+conjugate-linear in the first argument.</p>
+<div id="def:gap" class="definition">
+<p><strong>Definition 70.3.1</strong>. The numbered signs <span
+class="math inline">\(s\)</span> of <span
+class="math inline">\(V\)</span> satisfy the <em>gap hypothesis</em> if
+at every infinite place <span class="math inline">\(\tau \in
+\Phi\)</span> the entries <span
+class="math inline">\(2\varsigma_\tau(0), \dots,
+2\varsigma_\tau(r-1)\)</span> are distinct, are congruent to <span
+class="math inline">\(r - 1\)</span> modulo <span
+class="math inline">\(2\)</span>, and satisfy <span
+class="math inline">\(\lvert 2\varsigma_\tau(i) -
+2\varsigma_\tau(i&#39;)\rvert \ge 2\Delta\)</span> whenever <span
+class="math inline">\(s(i) \ne s(i&#39;)\)</span>.</p>
+</div>
+<p>Under the gap hypothesis the proof shows that <span
+class="math inline">\(H(V)\)</span> is finite-dimensional.</p>
+<div id="pr:gap-Y-W" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:gap-Y-W&quot;]">
+<p><strong>Problem 70.3.1</strong>. The gap hypothesis holds for <span
+class="math inline">\(Y_0\)</span> and for <span
+class="math inline">\(W_j\)</span>, <span class="math inline">\(1 \le j
+\le m\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T040100--spaces-forms-and-twists__workbook.html">Chapter 37</a></div><!-- used-in:end -->
+</div>
+<div id="def:hecke-away" class="definition">
+<p><strong>Definition 70.3.2</strong>. In this sheet <span
+class="math inline">\(G_f^{\mathcal{M}}\)</span> is the subgroup of the
+<span class="math inline">\(g \in G_f\)</span> whose component at every
+<span class="math inline">\(w \in \mathcal{M}\)</span> is <span
+class="math inline">\(1\)</span>; the component at <span
+class="math inline">\(w\)</span> determines that at <span
+class="math inline">\(\bar w\)</span>, so these components are <span
+class="math inline">\(1\)</span> as well. An element <span
+class="math inline">\(a\)</span> of the group algebra <span
+class="math inline">\(\mathbb{C}[G_f^{\mathcal{M}}]\)</span> is
+<em>spherical</em> if, in every representation of <span
+class="math inline">\(G_f\)</span>, it maps the vectors fixed by the
+principal level to vectors fixed by the principal level. A spherical
+<span class="math inline">\(a\)</span> acts on <span
+class="math inline">\(H(V)\)</span> for every framed <span
+class="math inline">\(V\)</span> of rank <span
+class="math inline">\(r\)</span>; we define the <em>Hecke algebra away
+from <span class="math inline">\(\mathcal{M}\)</span></em>, <span
+class="math inline">\(\mathbb{T}^{\mathcal{M}}\)</span>, to be the
+algebra of the families of operators on the spaces <span
+class="math inline">\(H(V)\)</span>, one for each <span
+class="math inline">\(V\)</span>, given in this way by one spherical
+element. For a finite place <span class="math inline">\(w\)</span> and
+<span class="math inline">\(i \in \mathbb N\)</span>, let <span
+class="math inline">\(h_{w,i} \in \mathbb{T}^{\mathcal{M}}\)</span> be
+the Hecke operator (the sum of the translates by representatives of its
+single cosets) of the <span
+class="math inline">\(\mathrm{GL}_r(\mathcal{O}_w)\)</span>-double coset
+of <span class="math inline">\(\operatorname{diag}(\varpi_w 1_i,
+1_{r-i})\)</span> in <span
+class="math inline">\(\mathrm{GL}_r(E_w)\)</span>, with <span
+class="math inline">\(\mathcal{O}_w\)</span> the local ring of integers
+and <span class="math inline">\(\varpi_w\)</span> a uniformizer, if
+<span class="math inline">\(w\)</span> is split, <span
+class="math inline">\(w, \bar w \notin \mathcal{M}\)</span> and <span
+class="math inline">\(i \le r\)</span>; in all other cases <span
+class="math inline">\(h_{w,i} := 0\)</span>.</p>
+</div>
+<p>In this sheet we call a family <span class="math inline">\(\lambda =
+(\lambda_{w,i})\)</span> of complex numbers indexed by the finite places
+<span class="math inline">\(w\)</span> and <span class="math inline">\(i
+\in \mathbb N\)</span> an <em>eigensystem</em>, and write <span
+class="math inline">\(H(V)_\lambda := \{y \in H(V) : h_{w,i} y =
+\lambda_{w,i} y \text{ for all } w, i\}\)</span>. The proof lets <span
+class="math inline">\(\bar G\)</span> act on <span
+class="math inline">\(H(V)\)</span> through integral lifts whose
+components outside <span class="math inline">\(\mathcal{M}\cup
+\overline{\mathcal{M}}\)</span> are <span
+class="math inline">\(1\)</span>.</p>
+<div id="pr:commute" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:commute&quot;]">
+<p><strong>Problem 70.3.2</strong>. An element of <span
+class="math inline">\(G_f^{\mathcal{M}}\)</span> commutes with every
+element of <span class="math inline">\(G_f\)</span> whose components
+outside <span class="math inline">\(\mathcal{M}\cup
+\overline{\mathcal{M}}\)</span> are <span
+class="math inline">\(1\)</span>. Hence every <span
+class="math inline">\(h \in \mathbb{T}^{\mathcal{M}}\)</span> commutes
+with the action of <span class="math inline">\(\bar G\)</span>, and so
+with <span class="math inline">\(e_0\)</span>, on <span
+class="math inline">\(H(V)\)</span>, and maps <span
+class="math inline">\(H_g(V)\)</span> to itself.</p>
+</div>
+<p>For <span class="math inline">\(V\)</span> satisfying the gap
+hypothesis and <span class="math inline">\(h \in
+\mathbb{T}^{\mathcal{M}}\)</span>, write <span
+class="math inline">\(\operatorname{tr}(h \mid H_g(V))\)</span> for the
+trace of the restriction of <span class="math inline">\(h\)</span> to
+<span class="math inline">\(H_g(V)\)</span>. The proof establishes the
+following.</p>
+<div id="thm:equal-traces" class="theorem">
+<p><strong>Theorem 70.3.3</strong>. <em>Let <span
+class="math inline">\(V\)</span> and <span
+class="math inline">\(V&#39;\)</span> be framed spaces of rank <span
+class="math inline">\(r\)</span> over <span
+class="math inline">\(E\)</span> whose numbered signs satisfy the gap
+hypothesis. Then every <span class="math inline">\(h \in
+\mathbb{T}^{\mathcal{M}}\)</span> has <span
+class="math inline">\(\operatorname{tr}(h \mid H_g(V)) =
+\operatorname{tr}(h \mid H_g(V&#39;))\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.html">Chapter 41</a></div><!-- used-in:end -->
+</div>
+<p>The proof deduces Theorem <a href="#thm:equal-traces"
+data-reference-type="ref" data-reference="thm:equal-traces">70.3.3</a> from
+Theorem <a href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.html#thm:traces" data-reference-type="ref"
+data-reference="bd-thm:traces">41.7</a>, which compares the
+traces on two unitary groups that differ only at the real places.
+Problem <a href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.html#pr:sign" data-reference-type="ref"
+data-reference="bd-pr:sign">41.1.8</a> checks the local character
+identity in rank two. For a classical comparison with a cuspidal
+component, see <span class="citation"
+data-cites="HL">[<a href="#ref-HL">HL</a>, Props. 1.10.5–1.10.6]</span>.</p>
+<p>The data meet these conditions: the proof shows that <span
+class="math inline">\(E\)</span> contains the <span
+class="math inline">\(5040\)</span>th roots of unity and has an even
+number of infinite places, and <span class="math inline">\(\Delta = 2r^8
+\ge 500 r^3 + 10 r^5\)</span> and <span class="math inline">\(r \ge
+2\)</span> because <span class="math inline">\(r \ge x^5 \ge 9\)</span>,
+<span class="math inline">\(x\)</span> being large. The idempotent <span
+class="math inline">\(e_0\)</span> is the sum of the orthogonal
+idempotents <span class="math inline">\(e_c := \bigotimes_w
+e_{c_w}\)</span> over the good families <span
+class="math inline">\(c\)</span>, so by Problem <a
+href="#pr:remove-constants" data-reference-type="ref"
+data-reference="pr:remove-constants">70.2.2</a>(a) the trace of <span
+class="math inline">\(h \in \mathbb{T}^{\mathcal{M}}\)</span> on <span
+class="math inline">\(H_g(V)\)</span> is <span
+class="math inline">\(\sum_c \operatorname{tr}_{H(V)}(h e_c)\)</span>.
+The proof shows that <span class="math inline">\(h e_c\)</span> acts on
+<span class="math inline">\(H(V)\)</span> for every <span
+class="math inline">\(V\)</span> through one element of <span
+class="math inline">\(\mathbb{C}[G_f]\)</span> that keeps the
+principal-level vectors, and that its test function is cuspidal at a
+chosen place <span class="math inline">\(w\)</span> where <span
+class="math inline">\(c_w\)</span> is primitive (irreducible with a root
+of order <span class="math inline">\((\#k_w)^r - 1\)</span>); every good
+family has such a place (Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chosen"
+data-reference-type="ref"
+data-reference="ob-sec:chosen">37.1</a>), and chosen places
+are split. The comparison applies to each term, with <span
+class="math inline">\(K_f\)</span> the principal level and <span
+class="math inline">\(l_\tau = 2\varsigma_\tau\)</span>.</p>
+<h1 id="sec:corollary">§70.4. Dimensions, eigenspaces and determinants</h1>
+<div id="pr:dim" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:dim&quot;]">
+<p><strong>Problem 70.4.1</strong>. <span class="math inline">\(\dim
+H_g(W_j) = d_T\)</span> for <span class="math inline">\(1 \le j \le
+m\)</span>.</p>
+</div>
+<p>When <span class="math inline">\(H(V)\)</span> is finite-dimensional,
+the proof shows that it is the direct sum of the spaces <span
+class="math inline">\(H(V)_\lambda\)</span> (the operators <span
+class="math inline">\(h_{w,i}\)</span> are normal and commute).</p>
+<div id="pr:eigen-proj" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:eigen-proj&quot;]">
+<p><strong>Problem 70.4.2</strong>. Let <span
+class="math inline">\(\lambda\)</span> be an eigensystem and fix
+finitely many eigensystems <span class="math inline">\(\lambda&#39; \ne
+\lambda\)</span>. A polynomial in finitely many of the <span
+class="math inline">\(h_{w,i}\)</span>, an element of <span
+class="math inline">\(\mathbb{T}^{\mathcal{M}}\)</span>, acts on <span
+class="math inline">\(H(V)\)</span>, for every framed <span
+class="math inline">\(V\)</span> of rank <span
+class="math inline">\(r\)</span>, as the identity on <span
+class="math inline">\(H(V)_\lambda\)</span> and as zero on each of these
+<span class="math inline">\(H(V)_{\lambda&#39;}\)</span>.</p>
+</div>
+<div id="pr:eigen" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:eigen&quot;]">
+<p><strong>Problem 70.4.3</strong>. For every eigensystem <span
+class="math inline">\(\lambda\)</span> and <span class="math inline">\(1
+\le j \le m\)</span>, the spaces <span class="math inline">\(T \cap
+H(Y_0)_\lambda\)</span> and <span class="math inline">\(H_g(W_j) \cap
+H(W_j)_\lambda\)</span> have the same dimension.</p>
+</div>
+<p>Let <span class="math inline">\(\xi\)</span> be a tame character and
+<span class="math inline">\(j \in \mathbb N\)</span>. By Definition <a
+href="20261126T050400--the-norm-of-one-lift__workbook.html#def:rallis-operator" data-reference-type="ref"
+data-reference="c1-def:rallis-operator">69.3.2</a> and
+the formula for its matrix coefficients proved with it, for every framed
+<span class="math inline">\(V\)</span> of rank <span
+class="math inline">\(r\)</span> and all <span class="math inline">\(z,
+y \in H(V)\)</span>, <span class="math display">\[\langle z,
+\mathcal{R}_j(\xi; V)\, y \rangle = \sum_\gamma \mathrm{mc}(\gamma)\,
+\langle z, \gamma y\rangle ,\]</span> a sum, convergent in any order,
+over the countable family of representatives <span
+class="math inline">\(\gamma \in G_f\)</span> of that definition, the
+same family for every <span class="math inline">\(V\)</span>, whose
+components at the places of <span
+class="math inline">\(\mathcal{M}\)</span> are <span
+class="math inline">\(1\)</span>, with the coefficients <span
+class="math inline">\(\mathrm{mc}(\gamma)\)</span> of Chapter <a
+href="20261126T050400--the-norm-of-one-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="c1-chap">69</a>, which depend on <span
+class="math inline">\(\xi\)</span>, <span
+class="math inline">\(j\)</span> and <span
+class="math inline">\(\gamma\)</span> but not on <span
+class="math inline">\(V\)</span>; here <span
+class="math inline">\(\gamma y := y(\cdot\,\gamma)\)</span>. For each
+<span class="math inline">\(\gamma \in G_f^{\mathcal{M}}\)</span> the
+proof supplies an element <span
+class="math inline">\(\mathrm{av}(\gamma) \in
+\mathbb{T}^{\mathcal{M}}\)</span>, an average of translates as in
+Problem <a href="#pr:compress" data-reference-type="ref"
+data-reference="pr:compress">70.1.2</a>, such that <span
+class="math inline">\(\langle z, \mathrm{av}(\gamma) y\rangle = \langle
+z, \gamma y\rangle\)</span> for every framed <span
+class="math inline">\(V\)</span> of rank <span
+class="math inline">\(r\)</span> and all <span class="math inline">\(z,
+y \in H(V)\)</span>.</p>
+<div id="pr:closed" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:closed&quot;]">
+<p><strong>Problem 70.4.4</strong>. Let <span
+class="math inline">\(U\)</span> and <span
+class="math inline">\(U&#39;\)</span> be finite-dimensional complex
+inner product spaces, and let pairs <span class="math inline">\((h_i,
+h&#39;_i) \in \operatorname{End} U \times \operatorname{End}
+U&#39;\)</span>, for <span class="math inline">\(i\)</span> in a
+countable set, lie in one complex linear subspace. Let <span
+class="math inline">\(h_\infty \in \operatorname{End} U\)</span> and
+<span class="math inline">\(h&#39;_\infty \in \operatorname{End}
+U&#39;\)</span> be such that <span class="math inline">\(\sum_i \langle
+z, h_i y\rangle = \langle z, h_\infty y\rangle\)</span> for all <span
+class="math inline">\(z, y \in U\)</span> and <span
+class="math inline">\(\sum_i \langle z&#39;, h&#39;_i y&#39;\rangle =
+\langle z&#39;, h&#39;_\infty y&#39;\rangle\)</span> for all <span
+class="math inline">\(z&#39;, y&#39; \in U&#39;\)</span>, the sums
+converging in any order. Then <span class="math inline">\((h_\infty,
+h&#39;_\infty)\)</span> lies in that subspace. In particular, let a
+complex algebra act on <span class="math inline">\(U\)</span> and on
+<span class="math inline">\(U&#39;\)</span> through complex-linear
+algebra homomorphisms to <span class="math inline">\(\operatorname{End}
+U\)</span> and <span class="math inline">\(\operatorname{End}
+U&#39;\)</span>; if each <span class="math inline">\((h_i,
+h&#39;_i)\)</span> is the action of one element, then one element acts
+as <span class="math inline">\(h_\infty\)</span> on <span
+class="math inline">\(U\)</span> and as <span
+class="math inline">\(h&#39;_\infty\)</span> on <span
+class="math inline">\(U&#39;\)</span>.</p>
+</div>
+<div id="pr:rallis-hecke" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:rallis-hecke&quot;]">
+<p><strong>Problem 70.4.5</strong>. Let <span
+class="math inline">\(V\)</span> and <span
+class="math inline">\(V&#39;\)</span> be framed spaces of rank <span
+class="math inline">\(r\)</span> satisfying the gap hypothesis, <span
+class="math inline">\(\xi\)</span> a tame character and <span
+class="math inline">\(j \in \mathbb N\)</span>. One element of <span
+class="math inline">\(\mathbb{T}^{\mathcal{M}}\)</span> acts as <span
+class="math inline">\(\mathcal{R}_j(\xi; V)\)</span> on <span
+class="math inline">\(H(V)\)</span> and as <span
+class="math inline">\(\mathcal{R}_j(\xi; V&#39;)\)</span> on <span
+class="math inline">\(H(V&#39;)\)</span>. In particular <span
+class="math inline">\(\mathcal{R}_j(\xi; V)\)</span> maps <span
+class="math inline">\(H_g(V)\)</span> to itself.</p>
+</div>
+<div id="pr:det" class="problem" data-progress-ids="[&quot;20261126T050500--equal-multiplicities__workbook.tex#pr:det&quot;]">
+<p><strong>Problem 70.4.6</strong>. For <span class="math inline">\(1 \le j
+\le m\)</span> and every tame character <span
+class="math inline">\(\xi\)</span>, <span
+class="math inline">\(\det\bigl(\mathcal{R}_j(\xi; W_j) \mid
+H_g(W_j)\bigr) = \det\bigl(\mathcal{R}_j(\xi; Y_0) \mid
+T\bigr)\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:dim" data-reference-type="ref"
+data-reference="pr:dim">70.4.1</a>, <a href="#pr:eigen"
+data-reference-type="ref" data-reference="pr:eigen">70.4.3</a>, <a
+href="#pr:rallis-hecke" data-reference-type="ref"
+data-reference="pr:rallis-hecke">70.4.5</a> and <a href="#pr:det"
+data-reference-type="ref" data-reference="pr:det">70.4.6</a> prove the
+following.</p>
+<div id="cor:equal" class="corollary">
+<p><strong>Corollary 70.4.1</strong>. <em>Let <span class="math inline">\(1
+\le j \le m\)</span>. Then <span class="math inline">\(\dim H_g(W_j) =
+d_T\)</span>; for every eigensystem <span
+class="math inline">\(\lambda\)</span> the <span
+class="math inline">\(\lambda\)</span>-eigenspaces of the <span
+class="math inline">\(h_{w,i}\)</span> in <span
+class="math inline">\(T\)</span> and in <span
+class="math inline">\(H_g(W_j)\)</span> have the same dimension; and for
+every tame character <span class="math inline">\(\xi\)</span>, <span
+class="math inline">\(\mathcal{R}_j(\xi; Y_0)\)</span> maps <span
+class="math inline">\(T\)</span> to itself, <span
+class="math inline">\(\mathcal{R}_j(\xi; W_j)\)</span> maps <span
+class="math inline">\(H_g(W_j)\)</span> to itself, and <span
+class="math inline">\(\det\bigl(\mathcal{R}_j(\xi; W_j) \mid
+H_g(W_j)\bigr) = \det\bigl(\mathcal{R}_j(\xi; Y_0) \mid
+T\bigr)\)</span>.</em></p>
+</div>
+<p>The problems deduce Corollary <a href="#cor:equal"
+data-reference-type="ref" data-reference="cor:equal">70.4.1</a> from
+Theorem <a href="#thm:equal-traces" data-reference-type="ref"
+data-reference="thm:equal-traces">70.3.3</a>, which rests on the comparison
+of trace formulas taken as given, and from facts read from the proof:
+finite-dimensionality under the gap hypothesis, the decomposition into
+joint eigenspaces, the series for the matrix coefficients of <span
+class="math inline">\(\mathcal{R}_j(\xi; V)\)</span>, and the operators
+<span class="math inline">\(\mathrm{av}(\gamma)\)</span>. Chapter <a
+href="20261126T030700--the-determinant-of-a-chain__workbook.html#chap" data-reference-type="ref"
+data-reference="dch-chap">68</a> combines the corollary with
+Theorem <a href="20261126T050400--the-norm-of-one-lift__workbook.html#thm:one-lift" data-reference-type="ref"
+data-reference="c1-thm:one-lift">69.4.1</a>, which writes
+<span class="math inline">\(\hat u_{\xi,j}^*\hat u_{\xi,j}\)</span> as a
+multiple of <span class="math inline">\(\mathcal{R}_j(\xi;
+W_j)\)</span>, to express the volume of a single lift by a determinant
+on <span class="math inline">\(T\)</span> (Problem <a
+href="20261126T030700--the-determinant-of-a-chain__workbook.html#pr:one-lift" data-reference-type="ref"
+data-reference="dch-pr:one-lift">68.2.1</a>).</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, in
+<code>New/Spanning/Multiplicities/EqualMultiplicities.lean</code> under
+<code>New.Data</code>, Theorem <a href="#thm:equal-traces"
+data-reference-type="ref" data-reference="thm:equal-traces">70.3.3</a> is
+<code>trace_heckeOnGood_eq</code>; the characteristic-polynomial
+equality is <code>charpoly_heckeOnGood_eq</code>. The dimension
+statement of Corollary <a href="#cor:equal" data-reference-type="ref"
+data-reference="cor:equal">70.4.1</a> is
+<code>targetDim_eq_finrank_goodForms_spaceW</code>, and the multiplicity
+statement specializes <code>finrank_goodForms_inf_eigenPart_eq</code>.
+For any tame character and <span class="math inline">\(j \in \mathbb
+N\)</span>, <code>rallisOnGood</code> restricts the Rallis operator to
+good forms on a space satisfying the gap hypothesis, and
+<code>det_rallisOnGood_eq</code> equates the determinants for two such
+spaces. The comparison of traces is
+<code>New.trace_eq_of_isCuspidalAt</code> in
+<code>Lib/Adelic/TraceFormula/CuspidalComparison.lean</code>. At split
+places away from the level, <code>New.heckeSplit_adjoint</code>
+identifies the adjoint on principal forms with the operator at the
+conjugate place, and <code>New.heckeSplit_comm</code> gives their
+commutation and hence normality. Countability of the index set of the
+Rallis series is
+<code>New.SiegelWeil.countable_quotient_localLevel</code>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secfinite">§<a href="#sec:finite"
+data-reference-type="ref" data-reference="sec:finite">70.1</a></h2>
+<dl>
+<dt><a href="#pr:s3-coset" data-reference-type="ref"
+data-reference="pr:s3-coset">70.1.1</a></dt>
+<dd>
+<p><span class="math inline">\(KgK = Kg \cup K g (12)\)</span>; list the
+four permutations.</p>
+</dd>
+<dt><a href="#pr:compress" data-reference-type="ref"
+data-reference="pr:compress">70.1.2</a></dt>
+<dd>
+<p>For <span class="math inline">\(h \in K_g\)</span>, <span
+class="math inline">\(g^{-1}hg \in K\)</span> fixes <span
+class="math inline">\(y\)</span>. Move <span
+class="math inline">\(\delta\)</span> to the other side of the inner
+product.</p>
+</dd>
+<dt><a href="#pr:s3-traces" data-reference-type="ref"
+data-reference="pr:s3-traces">70.1.3</a></dt>
+<dd>
+<p>Write the operator as a <span class="math inline">\(2 \times
+2\)</span> matrix; the traces of powers are sums of powers of its
+eigenvalues.</p>
+</dd>
+<dt><a href="#pr:trace-charpoly" data-reference-type="ref"
+data-reference="pr:trace-charpoly">70.1.4</a></dt>
+<dd>
+<p>Take <span class="math inline">\(h = 1\)</span>, then the traces of
+the powers of <span class="math inline">\(h\)</span>, and Newton’s
+identities.</p>
+</dd>
+<dt><a href="#pr:trace-mult" data-reference-type="ref"
+data-reference="pr:trace-mult">70.1.6</a></dt>
+<dd>
+<p>Only finitely many <span class="math inline">\(\lambda\)</span> occur
+on <span class="math inline">\(U \oplus U&#39;\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secbrandt">§<a href="#sec:brandt"
+data-reference-type="ref" data-reference="sec:brandt">70.2</a></h2>
+<dl>
+<dt><a href="#pr:level11" data-reference-type="ref"
+data-reference="pr:level11">70.2.1</a></dt>
+<dd>
+<p>Sage: the functions <code>BrandtModule</code> (with its Hecke
+matrices) and <code>EllipticCurve</code> (for the curve <span
+class="math inline">\(X_0(11)\)</span>, whose traces of Frobenius are
+the <span class="math inline">\(a_\ell(f)\)</span>). For <span
+class="math inline">\(\ell = 2, 3\)</span>, Problems <a
+href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#pr:brandt" data-reference-type="ref"
+data-reference="ho-pr:brandt">24.4.2</a> and <a
+href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#pr:basis" data-reference-type="ref"
+data-reference="ho-pr:basis">24.4.3</a>.</p>
+</dd>
+<dt><a href="#pr:remove-constants" data-reference-type="ref"
+data-reference="pr:remove-constants">70.2.2</a></dt>
+<dd>
+<p>(b) The row sums of <span class="math inline">\(B(\ell)\)</span> and
+the relation between <span class="math inline">\(B_{ij}(\ell)\)</span>
+and <span class="math inline">\(B_{ji}(\ell)\)</span> quoted in
+Section <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#sec:brandt" data-reference-type="ref"
+data-reference="ho-sec:brandt">24.4</a>; the constants are
+not in <span class="math inline">\(U_0\)</span>.</p>
+</dd>
+<dt><a href="#pr:level37" data-reference-type="ref"
+data-reference="pr:level37">70.2.3</a></dt>
+<dd>
+<p>Sage: the functions <code>BrandtModule</code> and
+<code>CuspForms</code>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="sectraces">§<a href="#sec:traces"
+data-reference-type="ref" data-reference="sec:traces">70.3</a></h2>
+<dl>
+<dt><a href="#pr:gap-Y-W" data-reference-type="ref"
+data-reference="pr:gap-Y-W">70.3.1</a></dt>
+<dd>
+<p>Problem <a href="20261126T040100--spaces-forms-and-twists__workbook.html#pr:parameter" data-reference-type="ref"
+data-reference="ob-pr:parameter">37.2.1</a> and its hint. For
+<span class="math inline">\(Y_0\)</span> the signs alternate along the
+entries after the semicolon. For <span
+class="math inline">\(W_j\)</span> they change from <span
+class="math inline">\(+1\)</span> to <span
+class="math inline">\(-1\)</span> at index <span class="math inline">\(k
++ j - 1\)</span> if <span class="math inline">\(j &lt; m\)</span>, and
+all are <span class="math inline">\(+1\)</span> if <span
+class="math inline">\(j = m\)</span>.</p>
+</dd>
+<dt><a href="#pr:commute" data-reference-type="ref"
+data-reference="pr:commute">70.3.2</a></dt>
+<dd>
+<p>Compare components place by place; <span class="math inline">\(e_0
+\in \mathbb{C}[\bar G]\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="seccorollary">§<a href="#sec:corollary"
+data-reference-type="ref" data-reference="sec:corollary">70.4</a></h2>
+<dl>
+<dt><a href="#pr:eigen-proj" data-reference-type="ref"
+data-reference="pr:eigen-proj">70.4.2</a></dt>
+<dd>
+<p>For each <span class="math inline">\(\lambda&#39;\)</span> choose
+<span class="math inline">\((w, i)\)</span> with <span
+class="math inline">\(\lambda_{w,i} \ne \lambda&#39;_{w,i}\)</span>; no
+commutation is needed.</p>
+</dd>
+<dt><a href="#pr:eigen" data-reference-type="ref"
+data-reference="pr:eigen">70.4.3</a></dt>
+<dd>
+<p>Only finitely many eigensystems occur in <span
+class="math inline">\(H(Y_0)\)</span> or <span
+class="math inline">\(H(W_j)\)</span>. Compare with Problem <a
+href="#pr:trace-mult" data-reference-type="ref"
+data-reference="pr:trace-mult">70.1.6</a>.</p>
+</dd>
+<dt><a href="#pr:closed" data-reference-type="ref"
+data-reference="pr:closed">70.4.4</a></dt>
+<dd>
+<p>Finite-dimensional subspaces are closed.</p>
+</dd>
+<dt><a href="#pr:rallis-hecke" data-reference-type="ref"
+data-reference="pr:rallis-hecke">70.4.5</a></dt>
+<dd>
+<p>Take <span class="math inline">\(K\)</span> to be the group of
+integral elements of <span
+class="math inline">\(G_f^{\mathcal{M}}\)</span>. It fixes the principal
+forms, and <span class="math inline">\(K_\gamma := K \cap \gamma K
+\gamma^{-1}\)</span> has finite index in <span
+class="math inline">\(K\)</span>. For a choice of representatives of
+<span class="math inline">\(K/K_\gamma\)</span>, the proof shows that
+the normalized sum of the <span
+class="math inline">\(\delta\gamma\)</span> in <span
+class="math inline">\(\mathbb{C}[G_f^{\mathcal{M}}]\)</span> is
+spherical; it induces the family <span
+class="math inline">\(\mathrm{av}(\gamma)\)</span>, whose action on
+principal forms is the average of Problem <a href="#pr:compress"
+data-reference-type="ref" data-reference="pr:compress">70.1.2</a>. For the
+series, Problem <a href="#pr:closed" data-reference-type="ref"
+data-reference="pr:closed">70.4.4</a> with the elements <span
+class="math inline">\(\mathrm{mc}(\gamma)\,\mathrm{av}(\gamma)\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-AC"><span class="bib-label">[AC]</span> J. Arthur and L. Clozel, <em>Simple Algebras, Base Change, and the Advanced Theory of the Trace Formula</em>, Ann. of Math. Stud. 120, Princeton Univ. Press, 1989.</p>
+<p id="ref-DS"><span class="bib-label">[DS]</span> F. Diamond and J. Shurman, <em>A First Course in Modular Forms</em>, Grad. Texts in Math. 228, Springer, 2005.</p>
+<p id="ref-Ei73"><span class="bib-label">[Ei73]</span> M. Eichler, <em>The basis problem for modular forms and the traces of the Hecke operators</em>, in <em>Modular Functions of One Variable I</em>, Lecture Notes in Math. 320, Springer, 1973, 75–151.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-HL"><span class="bib-label">[HL]</span> M. Harris and J.-P. Labesse, <em>Conditional base change for unitary groups</em>, Asian J. Math. <strong>8</strong> (2004), 653–684.</p>
+<p id="ref-JL"><span class="bib-label">[JL]</span> H. Jacquet and R. P. Langlands, <em>Automorphic Forms on <span class="math inline">\(\mathrm{GL}(2)\)</span></em>, Lecture Notes in Math. 114, Springer, 1970.</p>
+<p id="ref-Lab"><span class="bib-label">[Lab]</span> J.-P. Labesse, <em>Changement de base CM et séries discrètes</em>, in <em>On the Stabilization of the Trace Formula</em>, Stab. Trace Formula Shimura Var. Arith. Appl. 1, Int. Press, 2011, 429–470.</p>
+<p id="ref-Mac"><span class="bib-label">[Mac]</span> I. G. Macdonald, <em>Symmetric Functions and Hall Polynomials</em>, 2nd ed., Oxford University Press, 1995.</p>
+<p id="ref-Sage"><span class="bib-label">[Sage]</span> The Sage Developers, <em>SageMath, the Sage Mathematics Software System</em>, <a href="https://www.sagemath.org" class="uri">https://www.sagemath.org</a>.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Mcal}{\mathcal{M}}
+\newcommand{\Rc}{\mathcal{R}}
+\newcommand{\TM}{\mathbb{T}^{\mathcal{M}}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\tl}[1]{\texttt{#1}}
+\title{Equal multiplicities}
+
+\paragraph{Prerequisites.}
+Linear algebra over \(\C\): traces, characteristic polynomials and Newton's identities \cite[Ch.~I, \S2]{Mac}.  Modular forms of weight two on \(\Gamma_0(N)\) and their Hecke operators \cite[Ch.~5]{DS}.  From Chapter~\ref{ho-chap}, \emph{Hecke operators and theta lifts}: Section~\ref{ho-sec:brandt}, with Problems~\ref{ho-pr:brandt} and~\ref{ho-pr:basis}.  From Chapter~\ref{ob-chap}, \emph{Spaces, forms and twists}: the chosen places \(\Mcal\), the group \(\bar G\), good families of labels and the idempotent \(e_0\) (Section~\ref{ob-sec:chosen}); the gap \(\Delta\) and the target parameter \(\varsigma_\tau\) (Section~\ref{ob-sec:weights}, Problem~\ref{ob-pr:parameter}); the spaces \(Y_0\), \(W_j\) and their signs (Sections~\ref{ob-sec:spaces} and~\ref{ob-sec:forms}, Problem~\ref{ob-pr:signs-W}); principal and good forms \(H(V) \supseteq H_g(V)\) and the target \(T = H_g(Y_0)\) of dimension \(d_T\); tame characters (Section~\ref{ob-sec:twists}).  From Chapter~\ref{da-chap}: \(r = 3^{e'}\) is odd, \(x^5 \le r\), \(m\) is even, and the weights \(\kappa(\tau)\) are integers.  From Chapter~\ref{c1-chap}: the Rallis operators \(\Rc_j(\xi; V)\) (Definition~\ref{c1-def:rallis-operator}).  Inner products are conjugate-linear in the first variable.  Problems marked ``by machine'' use Sage \cite{Sage}.
+
+\medskip
+The single lifts of Chapter~\ref{dch-chap}, \emph{The determinant of a chain}, start from the spaces \(W_j\), which have the rank of \(Y_0\) but other signs at the real places.  How can a determinant on \(H_g(W_j)\) be compared with one on \(T = H_g(Y_0)\), when no map between the two spaces is given?  In the proof one Hecke algebra acts on both spaces with equal traces.  The equality implies that the two spaces have the same dimension, that each element of the Hecke algebra has the same characteristic polynomial on both, and that each Hecke eigensystem occurs with the same multiplicity.
+
+\section{Hecke operators of a finite group}\label{sec:finite}
+
+Here \(K\) is a subgroup (the field \(\Q(\sqrt{-d})\) does not occur).  Let the symmetric group \(S_3\) act on \(\C^3\) by \((\sigma v)_i = v_{\sigma^{-1}(i)}\), let \(K = \{1, (12)\}\) and \(g = (23)\).
+
+\begin{problem}\label{pr:s3-coset}
+The double coset \(KgK\) has \(4\) elements.  For a \(K\)-fixed vector \(v = (v_1, v_1, v_3)\), the average of \(\sigma v\) over \(\sigma \in KgK\) is \(\bigl(\tfrac{v_1+v_3}2, \tfrac{v_1+v_3}2, v_1\bigr)\); in the coordinates \((v_1, v_3)\) of the \(K\)-fixed vectors it is \((v_1, v_3) \mapsto \bigl(\tfrac{v_1+v_3}2, v_1\bigr)\).
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:s3-coset
+
+\begin{problem}\label{pr:compress}
+Let a group \(G\) act on a complex inner product space \(U\) by unitary operators, let \(K \subseteq G\) be a subgroup and \(g \in G\) be such that \(K_g := K \cap gKg^{-1}\) has finite index in \(K\).  On the \(K\)-fixed vectors \(U^K\) the operator \(\mathrm{av}_K(g) := [K : K_g]^{-1} \sum_{\delta K_g \in K/K_g} \delta g\) does not depend on the representatives, maps \(U^K\) to itself, and satisfies \(\langle z, gy \rangle = \langle z, \mathrm{av}_K(g) y\rangle\) for all \(z, y \in U^K\).  If \(K\) is finite, \(\mathrm{av}_K(g) y\) is the average of \(\sigma y\) over \(\sigma \in KgK\).
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:compress
+
+\begin{problem}\label{pr:s3-traces}
+The operator of Problem~\ref{pr:s3-coset} has traces \(2, \tfrac12, \tfrac54, \tfrac78\) in its powers \(0, 1, 2, 3\), characteristic polynomial \((X - 1)(X + \tfrac12)\) and determinant \(-\tfrac12\).
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:s3-traces
+
+\begin{problem}\label{pr:trace-charpoly}
+Let a monoid act linearly, with its unit acting as the identity and products as composites, on finite-dimensional complex spaces \(U\) and \(U'\), and suppose \(\tr_U h = \tr_{U'} h\) for every element \(h\).  Then \(\dim U = \dim U'\), and every element \(h\) has the same characteristic polynomial, hence the same determinant, on \(U\) and on \(U'\).
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:trace-charpoly
+
+\begin{problem}\label{pr:trace-check}
+The matrices \(\operatorname{diag}(1, 2)\) and \(\bigl(\begin{smallmatrix} 0 & -2 \\ 1 & 3 \end{smallmatrix}\bigr)\) both have traces \(3, 5, 9\) in their powers \(1, 2, 3\), and \(\det(h + 1) = 6\) for both.
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:trace-check
+
+\begin{problem}\label{pr:trace-mult}
+In Problem~\ref{pr:trace-charpoly}, suppose moreover that the monoid is commutative and acts diagonalizably on \(U\) and on \(U'\).  Then for every function \(\lambda\) from the monoid to \(\C\) the joint eigenspaces \(\{y : hy = \lambda(h) y \text{ for all } h\}\) in \(U\) and in \(U'\) have the same dimension.
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:trace-mult
+
+\section{Brandt matrices: a model}\label{sec:brandt}
+
+Where do two spaces with the same Hecke traces come from?  The classical case compares a definite quaternion algebra with \(\mathrm{GL}_2\).  Let \(B\), \(\Oc_1\), \(\Oc_2\), the Brandt matrices \(B(\ell)\) for primes \(\ell \ne 11\), and the cusp form \(f\) be as in Section~\ref{ho-sec:brandt} and Problem~\ref{ho-pr:basis}; \(B(\ell)\) acts on functions \(y\) on the two classes by \((B(\ell) y)(i) = \sum_j B_{ij}(\ell)\, y(j)\).  The space of cusp forms of weight \(2\) on \(\Gamma_0(11)\) is \(\C f\) \cite[\S3.9]{DS}, and \(T_\ell f = a_\ell(f) f\).
+
+\begin{problem}\label{pr:level11}
+(By machine.)  For \(\ell = 2, 3, 5, 7, 13\): \(\tr B(\ell) = 1, 3, 7, 6, 18\), and \(\tr B(\ell) - (\ell + 1) = a_\ell(f) = -2, -1, 1, -2, 4\).
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:level11
+
+\begin{problem}\label{pr:remove-constants}
+(a) If an idempotent \(e\) on a finite-dimensional space \(U\) commutes with an operator \(h\), then \(eU\) is stable under \(h\) and \(\tr(h \mid eU) = \tr_U(he)\).  (b) For a prime \(\ell \ne 11\), the constant function is an eigenvector of \(B(\ell)\) with eigenvalue \(\ell + 1\), and the line \(U_0 := \{y : y(1)/\lvert\Oc_1^\times\rvert + y(2)/\lvert\Oc_2^\times\rvert = 0\}\) is stable under \(B(\ell)\); hence \(\tr(B(\ell) \mid U_0) = \tr B(\ell) - (\ell + 1)\).
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:remove-constants
+
+For the five primes of Problem~\ref{pr:level11}, Problems~\ref{pr:level11} and~\ref{pr:remove-constants} give \(\tr(B(\ell) \mid U_0) = a_\ell(f)\): once the constants are removed, the Brandt matrices have the traces of the Hecke operators on cusp forms.  The equality for every prime \(\ell \ne 11\) is the level-\(11\) case of the correspondence of Eichler and of Jacquet and Langlands \cite{Ei73}, \cite[\S16]{JL}; \emph{Status}: classical.  It is a model only: the group of units of \(B\) and \(\mathrm{GL}_2\) differ at \(11\) as well as at infinity, whereas the proof compares unitary groups that differ only at the real places.
+
+\begin{problem}\label{pr:level37}
+(By machine.)  The quaternion algebra over \(\Q\) ramified at \(37\) and \(\infty\) has three classes of left ideals of a maximal order; its Brandt matrix \(B(2)\) has characteristic polynomial \((X - 3)X(X + 2)\), and \(T_2\) on the cusp forms of weight \(2\) on \(\Gamma_0(37)\) has characteristic polynomial \(X(X + 2)\).
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:level37
+
+At level \(37\) the factor of the constants is \(X - 3\), and what remains is the characteristic polynomial of \(T_2\) on cusp forms.
+
+\section{Equal traces}\label{sec:traces}
+
+Let \(V\) be a framed space of rank \(r\) over \(E\) with numbered signs \(s = (s(0), \dots, s(r-1))\) (in this sheet \(s\) is a system of signs and, below, \(a\) an element of a group algebra; the numbers \(s\) and \(a\) of the data do not occur), such as \(Y_0\) or \(W_j\) (Sections~\ref{ob-sec:spaces} and~\ref{ob-sec:forms}).  Through the frames, all such \(V\) have the same finite adelic unitary group \(G_f\), that of the identity form; it acts on forms on \(V\) by right translation.  \(H(V)\) and its subspaces carry the Petersson inner product \(\langle y', y\rangle\) of Definition~\ref{ob-def:petersson}, conjugate-linear in the first argument.
+
+\begin{definition}\label{def:gap}
+The numbered signs \(s\) of \(V\) satisfy the \emph{gap hypothesis} if at every infinite place \(\tau \in \Phi\) the entries \(2\varsigma_\tau(0), \dots, 2\varsigma_\tau(r-1)\) are distinct, are congruent to \(r - 1\) modulo \(2\), and satisfy \(\lvert 2\varsigma_\tau(i) - 2\varsigma_\tau(i')\rvert \ge 2\Delta\) whenever \(s(i) \ne s(i')\).
+\end{definition}
+
+Under the gap hypothesis the proof shows that \(H(V)\) is finite-dimensional.
+
+\begin{problem}\label{pr:gap-Y-W}
+The gap hypothesis holds for \(Y_0\) and for \(W_j\), \(1 \le j \le m\).
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:gap-Y-W
+
+\begin{definition}\label{def:hecke-away}
+In this sheet \(G_f^{\Mcal}\) is the subgroup of the \(g \in G_f\) whose component at every \(w \in \Mcal\) is \(1\); the component at \(w\) determines that at \(\bar w\), so these components are \(1\) as well.  An element \(a\) of the group algebra \(\C[G_f^{\Mcal}]\) is \emph{spherical} if, in every representation of \(G_f\), it maps the vectors fixed by the principal level to vectors fixed by the principal level.  A spherical \(a\) acts on \(H(V)\) for every framed \(V\) of rank \(r\); we define the \emph{Hecke algebra away from \(\Mcal\)}, \(\TM\), to be the algebra of the families of operators on the spaces \(H(V)\), one for each \(V\), given in this way by one spherical element.  For a finite place \(w\) and \(i \in \mathbb N\), let \(h_{w,i} \in \TM\) be the Hecke operator (the sum of the translates by representatives of its single cosets) of the \(\mathrm{GL}_r(\Oc_w)\)-double coset of \(\operatorname{diag}(\varpi_w 1_i, 1_{r-i})\) in \(\mathrm{GL}_r(E_w)\), with \(\Oc_w\) the local ring of integers and \(\varpi_w\) a uniformizer, if \(w\) is split, \(w, \bar w \notin \Mcal\) and \(i \le r\); in all other cases \(h_{w,i} := 0\).
+\end{definition}
+
+In this sheet we call a family \(\lambda = (\lambda_{w,i})\) of complex numbers indexed by the finite places \(w\) and \(i \in \mathbb N\) an \emph{eigensystem}, and write \(H(V)_\lambda := \{y \in H(V) : h_{w,i} y = \lambda_{w,i} y \text{ for all } w, i\}\).  The proof lets \(\bar G\) act on \(H(V)\) through integral lifts whose components outside \(\Mcal \cup \overline{\Mcal}\) are \(1\).
+
+\begin{problem}\label{pr:commute}
+An element of \(G_f^{\Mcal}\) commutes with every element of \(G_f\) whose components outside \(\Mcal \cup \overline{\Mcal}\) are \(1\).  Hence every \(h \in \TM\) commutes with the action of \(\bar G\), and so with \(e_0\), on \(H(V)\), and maps \(H_g(V)\) to itself.
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:commute
+
+For \(V\) satisfying the gap hypothesis and \(h \in \TM\), write \(\tr(h \mid H_g(V))\) for the trace of the restriction of \(h\) to \(H_g(V)\).  The proof establishes the following.
+
+\begin{theorem}\label{thm:equal-traces}
+Let \(V\) and \(V'\) be framed spaces of rank \(r\) over \(E\) whose numbered signs satisfy the gap hypothesis.  Then every \(h \in \TM\) has \(\tr(h \mid H_g(V)) = \tr(h \mid H_g(V'))\).
+\end{theorem}
+
+The proof deduces Theorem~\ref{thm:equal-traces} from Theorem~\ref{bd-thm:traces}, which compares the traces on two unitary groups that differ only at the real places.  Problem~\ref{bd-pr:sign} checks the local character identity in rank two.  For a classical comparison with a cuspidal component, see \cite[Props.~1.10.5--1.10.6]{HL}.
+
+The data meet these conditions: the proof shows that \(E\) contains the \(5040\)th roots of unity and has an even number of infinite places, and \(\Delta = 2r^8 \ge 500 r^3 + 10 r^5\) and \(r \ge 2\) because \(r \ge x^5 \ge 9\), \(x\) being large.  The idempotent \(e_0\) is the sum of the orthogonal idempotents \(e_c := \bigotimes_w e_{c_w}\) over the good families \(c\), so by Problem~\ref{pr:remove-constants}(a) the trace of \(h \in \TM\) on \(H_g(V)\) is \(\sum_c \tr_{H(V)}(h e_c)\).  The proof shows that \(h e_c\) acts on \(H(V)\) for every \(V\) through one element of \(\C[G_f]\) that keeps the principal-level vectors, and that its test function is cuspidal at a chosen place \(w\) where \(c_w\) is primitive (irreducible with a root of order \((\#k_w)^r - 1\)); every good family has such a place (Section~\ref{ob-sec:chosen}), and chosen places are split.  The comparison applies to each term, with \(K_f\) the principal level and \(l_\tau = 2\varsigma_\tau\).
+
+\section{Dimensions, eigenspaces and determinants}\label{sec:corollary}
+
+\begin{problem}\label{pr:dim}
+\(\dim H_g(W_j) = d_T\) for \(1 \le j \le m\).
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:dim
+
+When \(H(V)\) is finite-dimensional, the proof shows that it is the direct sum of the spaces \(H(V)_\lambda\) (the operators \(h_{w,i}\) are normal and commute).
+
+\begin{problem}\label{pr:eigen-proj}
+Let \(\lambda\) be an eigensystem and fix finitely many eigensystems \(\lambda' \ne \lambda\).  A polynomial in finitely many of the \(h_{w,i}\), an element of \(\TM\), acts on \(H(V)\), for every framed \(V\) of rank \(r\), as the identity on \(H(V)_\lambda\) and as zero on each of these \(H(V)_{\lambda'}\).
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:eigen-proj
+
+\begin{problem}\label{pr:eigen}
+For every eigensystem \(\lambda\) and \(1 \le j \le m\), the spaces \(T \cap H(Y_0)_\lambda\) and \(H_g(W_j) \cap H(W_j)_\lambda\) have the same dimension.
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:eigen
+
+Let \(\xi\) be a tame character and \(j \in \mathbb N\).  By Definition~\ref{c1-def:rallis-operator} and the formula for its matrix coefficients proved with it, for every framed \(V\) of rank \(r\) and all \(z, y \in H(V)\),
+\[
+  \langle z, \Rc_j(\xi; V)\, y \rangle = \sum_\gamma \mathrm{mc}(\gamma)\, \langle z, \gamma y\rangle ,
+\]
+a sum, convergent in any order, over the countable family of representatives \(\gamma \in G_f\) of that definition, the same family for every \(V\), whose components at the places of \(\Mcal\) are \(1\), with the coefficients \(\mathrm{mc}(\gamma)\) of Chapter~\ref{c1-chap}, which depend on \(\xi\), \(j\) and \(\gamma\) but not on \(V\); here \(\gamma y := y(\cdot\,\gamma)\).  For each \(\gamma \in G_f^{\Mcal}\) the proof supplies an element \(\mathrm{av}(\gamma) \in \TM\), an average of translates as in Problem~\ref{pr:compress}, such that \(\langle z, \mathrm{av}(\gamma) y\rangle = \langle z, \gamma y\rangle\) for every framed \(V\) of rank \(r\) and all \(z, y \in H(V)\).
+
+\begin{problem}\label{pr:closed}
+Let \(U\) and \(U'\) be finite-dimensional complex inner product spaces, and let pairs \((h_i, h'_i) \in \operatorname{End} U \times \operatorname{End} U'\), for \(i\) in a countable set, lie in one complex linear subspace.  Let \(h_\infty \in \operatorname{End} U\) and \(h'_\infty \in \operatorname{End} U'\) be such that \(\sum_i \langle z, h_i y\rangle = \langle z, h_\infty y\rangle\) for all \(z, y \in U\) and \(\sum_i \langle z', h'_i y'\rangle = \langle z', h'_\infty y'\rangle\) for all \(z', y' \in U'\), the sums converging in any order.  Then \((h_\infty, h'_\infty)\) lies in that subspace.  In particular, let a complex algebra act on \(U\) and on \(U'\) through complex-linear algebra homomorphisms to \(\operatorname{End} U\) and \(\operatorname{End} U'\); if each \((h_i, h'_i)\) is the action of one element, then one element acts as \(h_\infty\) on \(U\) and as \(h'_\infty\) on \(U'\).
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:closed
+
+\begin{problem}\label{pr:rallis-hecke}
+Let \(V\) and \(V'\) be framed spaces of rank \(r\) satisfying the gap hypothesis, \(\xi\) a tame character and \(j \in \mathbb N\).  One element of \(\TM\) acts as \(\Rc_j(\xi; V)\) on \(H(V)\) and as \(\Rc_j(\xi; V')\) on \(H(V')\).  In particular \(\Rc_j(\xi; V)\) maps \(H_g(V)\) to itself.
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:rallis-hecke
+
+\begin{problem}\label{pr:det}
+For \(1 \le j \le m\) and every tame character \(\xi\), \(\det\bigl(\Rc_j(\xi; W_j) \mid H_g(W_j)\bigr) = \det\bigl(\Rc_j(\xi; Y_0) \mid T\bigr)\).
+\end{problem}
+% End problem: 20261126T050500--equal-multiplicities__workbook.tex#pr:det
+
+Problems~\ref{pr:dim}, \ref{pr:eigen}, \ref{pr:rallis-hecke} and~\ref{pr:det} prove the following.
+
+\begin{corollary}\label{cor:equal}
+Let \(1 \le j \le m\).  Then \(\dim H_g(W_j) = d_T\); for every eigensystem \(\lambda\) the \(\lambda\)-eigenspaces of the \(h_{w,i}\) in \(T\) and in \(H_g(W_j)\) have the same dimension; and for every tame character \(\xi\), \(\Rc_j(\xi; Y_0)\) maps \(T\) to itself, \(\Rc_j(\xi; W_j)\) maps \(H_g(W_j)\) to itself, and \(\det\bigl(\Rc_j(\xi; W_j) \mid H_g(W_j)\bigr) = \det\bigl(\Rc_j(\xi; Y_0) \mid T\bigr)\).
+\end{corollary}
+
+The problems deduce Corollary~\ref{cor:equal} from Theorem~\ref{thm:equal-traces}, which rests on the comparison of trace formulas taken as given, and from facts read from the proof: finite-dimensionality under the gap hypothesis, the decomposition into joint eigenspaces, the series for the matrix coefficients of \(\Rc_j(\xi; V)\), and the operators \(\mathrm{av}(\gamma)\).  Chapter~\ref{dch-chap} combines the corollary with Theorem~\ref{c1-thm:one-lift}, which writes \(\hat u_{\xi,j}^*\hat u_{\xi,j}\) as a multiple of \(\Rc_j(\xi; W_j)\), to express the volume of a single lift by a determinant on \(T\) (Problem~\ref{dch-pr:one-lift}).
+
+\paragraph{In the Lean formalization.}
+\begin{sloppypar}
+In the Lean proof \cite{GL}, in \tl{New/Spanning/Multiplicities/EqualMultiplicities.lean} under \tl{New.Data}, Theorem~\ref{thm:equal-traces} is \tl{trace\_heckeOnGood\_eq}; the characteristic-polynomial equality is \tl{charpoly\_heckeOnGood\_eq}.  The dimension statement of Corollary~\ref{cor:equal} is \tl{targetDim\_eq\_finrank\_goodForms\_spaceW}, and the multiplicity statement specializes \tl{finrank\_goodForms\_inf\_eigenPart\_eq}.  For any tame character and \(j \in \mathbb N\), \tl{rallisOnGood} restricts the Rallis operator to good forms on a space satisfying the gap hypothesis, and \tl{det\_rallisOnGood\_eq} equates the determinants for two such spaces.
+The comparison of traces is \tl{New.trace\_eq\_of\_isCuspidalAt} in \tl{Lib/Adelic/TraceFormula/CuspidalComparison.lean}.  At split places away from the level, \tl{New.heckeSplit\_adjoint} identifies the adjoint on principal forms with the operator at the conjugate place, and \tl{New.heckeSplit\_comm} gives their commutation and hence normality.  Countability of the index set of the Rallis series is \tl{New.SiegelWeil.countable\_quotient\_localLevel}.
+\end{sloppypar}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:finite}}
+\begin{description}
+\item[\ref{pr:s3-coset}] \(KgK = Kg \cup K g (12)\); list the four permutations.
+\item[\ref{pr:compress}] For \(h \in K_g\), \(g^{-1}hg \in K\) fixes \(y\).  Move \(\delta\) to the other side of the inner product.
+\item[\ref{pr:s3-traces}] Write the operator as a \(2 \times 2\) matrix; the traces of powers are sums of powers of its eigenvalues.
+\item[\ref{pr:trace-charpoly}] Take \(h = 1\), then the traces of the powers of \(h\), and Newton's identities.
+\item[\ref{pr:trace-mult}] Only finitely many \(\lambda\) occur on \(U \oplus U'\).
+\end{description}
+
+\subsection*{\S\ref{sec:brandt}}
+\begin{description}
+\item[\ref{pr:level11}] Sage: the functions \tl{BrandtModule} (with its Hecke matrices) and \tl{EllipticCurve} (for the curve \(X_0(11)\), whose traces of Frobenius are the \(a_\ell(f)\)).  For \(\ell = 2, 3\), Problems~\ref{ho-pr:brandt} and~\ref{ho-pr:basis}.
+\item[\ref{pr:remove-constants}] (b) The row sums of \(B(\ell)\) and the relation between \(B_{ij}(\ell)\) and \(B_{ji}(\ell)\) quoted in Section~\ref{ho-sec:brandt}; the constants are not in \(U_0\).
+\item[\ref{pr:level37}] Sage: the functions \tl{BrandtModule} and \tl{CuspForms}.
+\end{description}
+
+\subsection*{\S\ref{sec:traces}}
+\begin{description}
+\item[\ref{pr:gap-Y-W}] Problem~\ref{ob-pr:parameter} and its hint.  For \(Y_0\) the signs alternate along the entries after the semicolon.  For \(W_j\) they change from \(+1\) to \(-1\) at index \(k + j - 1\) if \(j < m\), and all are \(+1\) if \(j = m\).
+\item[\ref{pr:commute}] Compare components place by place; \(e_0 \in \C[\bar G]\).
+\end{description}
+
+\subsection*{\S\ref{sec:corollary}}
+\begin{description}
+\item[\ref{pr:eigen-proj}] For each \(\lambda'\) choose \((w, i)\) with \(\lambda_{w,i} \ne \lambda'_{w,i}\); no commutation is needed.
+\item[\ref{pr:eigen}] Only finitely many eigensystems occur in \(H(Y_0)\) or \(H(W_j)\).  Compare with Problem~\ref{pr:trace-mult}.
+\item[\ref{pr:closed}] Finite-dimensional subspaces are closed.
+\item[\ref{pr:rallis-hecke}] Take \(K\) to be the group of integral elements of \(G_f^{\Mcal}\).  It fixes the principal forms, and \(K_\gamma := K \cap \gamma K \gamma^{-1}\) has finite index in \(K\).  For a choice of representatives of \(K/K_\gamma\), the proof shows that the normalized sum of the \(\delta\gamma\) in \(\C[G_f^{\Mcal}]\) is spherical; it induces the family \(\mathrm{av}(\gamma)\), whose action on principal forms is the average of Problem~\ref{pr:compress}.  For the series, Problem~\ref{pr:closed} with the elements \(\mathrm{mc}(\gamma)\,\mathrm{av}(\gamma)\).
+\end{description}
+
+{\small
+\begin{thebibliography}{Sage}
+\bibitem[AC]{AC} J.~Arthur and L.~Clozel, \emph{Simple Algebras, Base Change, and the Advanced Theory of the Trace Formula}, Ann.\ of Math.\ Stud.\ 120, Princeton Univ.\ Press, 1989.
+\bibitem[DS]{DS} F.~Diamond and J.~Shurman, \emph{A First Course in Modular Forms}, Grad.\ Texts in Math.\ 228, Springer, 2005.
+\bibitem[Ei73]{Ei73} M.~Eichler, \emph{The basis problem for modular forms and the traces of the Hecke operators}, in \emph{Modular Functions of One Variable I}, Lecture Notes in Math.\ 320, Springer, 1973, 75--151.
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[HL]{HL} M.~Harris and J.-P.~Labesse, \emph{Conditional base change for unitary groups}, Asian J.\ Math.\ \textbf{8} (2004), 653--684.
+\bibitem[JL]{JL} H.~Jacquet and R.~P.~Langlands, \emph{Automorphic Forms on \(\mathrm{GL}(2)\)}, Lecture Notes in Math.\ 114, Springer, 1970.
+\bibitem[Lab]{Lab} J.-P.~Labesse, \emph{Changement de base CM et s\'eries discr\`etes}, in \emph{On the Stabilization of the Trace Formula}, Stab.\ Trace Formula Shimura Var.\ Arith.\ Appl.\ 1, Int.\ Press, 2011, 429--470.
+\bibitem[Mac]{Mac} I.~G.~Macdonald, \emph{Symmetric Functions and Hall Polynomials}, 2nd ed., Oxford University Press, 1995.
+\bibitem[Sage]{Sage} The Sage Developers, \emph{SageMath, the Sage Mathematics Software System}, \url{https://www.sagemath.org}.
+\end{thebibliography}
+}

@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ=' 'sha256-ygUbg/DnjAS1FnpB3kkQfXnuZpK+ztpw/VTESbOUgDw='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Odd Tate twists</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","R":"\\mathbb{R}","F":"\\mathbb{F}","Zl":"\\Z_\\ell","Ql":"\\Q_\\ell","Oc":"\\mathcal{O}","Gal":"\\operatorname{Gal}","Hom":"\\operatorname{Hom}","Cl":"\\operatorname{Cl}","len":"\\operatorname{len}","num":"\\operatorname{num}","Sha":"\\mathrm{Sha}","Shao":"\\Sha^{\\mathrm{odd}}","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="27">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261125T004100--tate-twists-and-sha__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-26 19:19:14
+      <a href="20261125T004100--tate-twists-and-sha__workbook.tex" class="my-link">tex</a>
+      <a href="20261125T004100--tate-twists-and-sha__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261125T004100--tate-twists-and-sha__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Odd Tate twists <a class="stable-tag" href="tag/22T2.html" title="Stable tag: cite as Tag 22T2">Tag 22T2</a></h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:twists" id="toc-sec:twists">§27.1. Tate twists over \(\mathbb{Q}\)</a></li>
+<li><a href="#sec:split" id="toc-sec:split">§27.2. Odd characters</a></li>
+<li><a href="#sec:odd" id="toc-sec:odd">§27.3. Odd cocycles</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#sectwists" id="toc-sectwists">§27.1</a></li>
+<li><a href="#secsplit" id="toc-secsplit">§27.2</a></li>
+<li><a href="#secodd" id="toc-secodd">§27.3</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>This chapter continues Chapter <a href="20261125T004000--denominators-and-sha__workbook.html#chap"
+data-reference-type="ref" data-reference="ds-chap">26</a>,
+<em>Denominators and the Stickelberger element</em>, whose notation
+<span class="math inline">\(A\)</span>, <span
+class="math inline">\(A^{(i)}\)</span>, <span
+class="math inline">\(A^\pm\)</span>, <span
+class="math inline">\(\omega\)</span>, <span
+class="math inline">\(\sigma_a\)</span> (Section <a
+href="20261125T004000--denominators-and-sha__workbook.html#sec:stickelberger" data-reference-type="ref"
+data-reference="ds-sec:stickelberger">26.2</a>, with
+<span class="math inline">\(p = \ell\)</span>), Theorem <a
+href="20261125T004000--denominators-and-sha__workbook.html#thm:HR" data-reference-type="ref"
+data-reference="ds-thm:HR">26.2.2</a> and Problem <a
+href="20261125T004000--denominators-and-sha__workbook.html#pr:irregular" data-reference-type="ref"
+data-reference="ds-pr:irregular">26.2.8</a> we use.
+Continuous cohomology of profinite groups <span class="citation"
+data-cites="NSW">[<a href="#ref-NSW">NSW</a>, Ch. I; Ch. II, §7]</span>,
+inflation–restriction, and the vanishing of <span
+class="math inline">\(H^q(G, M)\)</span>, <span class="math inline">\(q
+\ge 1\)</span>, for finite <span class="math inline">\(G\)</span> of
+order invertible on <span class="math inline">\(M\)</span> <span
+class="citation" data-cites="SeL">[<a href="#ref-SeL">SeL</a>,
+Ch. VII–VIII]</span>. Decomposition and inertia groups <span
+class="citation" data-cites="Ne">[<a href="#ref-Ne">Ne</a>, Ch. I,
+§9]</span>, and the Artin isomorphism between the ideal class group of a
+number field and the Galois group of its Hilbert class field <span
+class="citation" data-cites="Ne">[<a href="#ref-Ne">Ne</a>, Ch. VI,
+§6]</span>. The duality theorems for Galois cohomology of number fields
+are stated in the text with references. In Sections <a
+href="#sec:twists" data-reference-type="ref"
+data-reference="sec:twists">27.1</a> and <a href="#sec:split"
+data-reference-type="ref" data-reference="sec:split">27.2</a>, <span
+class="math inline">\(\ell\)</span> is an odd prime; <span
+class="math inline">\(\operatorname{num}(r)\)</span> is the numerator of
+a rational number <span class="math inline">\(r\)</span> in lowest
+terms.</p>
+<h1 id="sec:twists">§27.1. Tate twists over <span
+class="math inline">\(\mathbb{Q}\)</span> <a class="stable-tag" href="tag/22T3.html" title="Stable tag: cite as Tag 22T3">Tag 22T3</a></h1>
+<p>In the previous chapter Bernoulli values gave the orders of odd
+eigenspaces of a class group. Which Galois cohomology groups account for
+the numerators and denominators of zeta values? Let <span
+class="math inline">\(\mathbb{Q}_S\)</span> be the largest extension of
+<span class="math inline">\(\mathbb{Q}\)</span> unramified outside <span
+class="math inline">\(\ell\)</span> and <span
+class="math inline">\(\infty\)</span>, <span
+class="math inline">\(G_{\mathbb{Q},\ell} :=
+\operatorname{Gal}(\mathbb{Q}_S/\mathbb{Q})\)</span>, and <span
+class="math inline">\(\chi_\ell \colon
+\operatorname{Gal}(\overline{\mathbb{Q}}/\mathbb{Q}) \to
+\mathbb{Z}_\ell^\times\)</span> the cyclotomic character, which factors
+through <span class="math inline">\(G_{\mathbb{Q},\ell}\)</span>. For
+<span class="math inline">\(k \in \mathbb{Z}\)</span>, <span
+class="math inline">\(\mathbb{Z}_\ell(k)\)</span> is <span
+class="math inline">\(\mathbb{Z}_\ell\)</span> with <span
+class="math inline">\(\sigma\)</span> acting by <span
+class="math inline">\(\chi_\ell(\sigma)^k\)</span>, and similarly for
+<span class="math inline">\(\mathbb{Q}_\ell(k)\)</span>, <span
+class="math inline">\(\mathbb{Q}_\ell/\mathbb{Z}_\ell(k)\)</span> and
+<span class="math inline">\(\mathbb{Z}/\ell(k)\)</span>. Let <span
+class="math inline">\(W_e :=
+\mathbb{Q}_\ell/\mathbb{Z}_\ell(-e)\)</span>, and let <span
+class="math inline">\(G_\ell :=
+\operatorname{Gal}(\overline{\mathbb{Q}}_\ell/\mathbb{Q}_\ell)\)</span>,
+mapped to <span class="math inline">\(G_{\mathbb{Q},\ell}\)</span> by
+restriction along a fixed embedding <span
+class="math inline">\(\overline{\mathbb{Q}} \to
+\overline{\mathbb{Q}}_\ell\)</span>.</p>
+<h4 id="definition.">Definition.</h4>
+<p>We define the <em>Tate–Shafarevich group of the twist <span
+class="math inline">\(e\)</span></em> by <span
+class="math display">\[\mathrm{Sha}_\ell(\mathbb{Q}, e) := \ker\bigl(
+H^1(G_{\mathbb{Q},\ell}, W_e) \to H^1(G_\ell, W_e) \bigr) ,\]</span> and
+<span class="math inline">\(h_{\ell,e}(\mathbb{Q}) \in \{0, 1, 2, \dots,
+\infty\}\)</span> is its length as a <span
+class="math inline">\(\mathbb{Z}_\ell\)</span>-module. For a number
+field <span class="math inline">\(E\)</span> one defines <span
+class="math inline">\(\mathrm{Sha}_\ell(E, e)\)</span> and <span
+class="math inline">\(h_{\ell,e}(E)\)</span> in the same way, with the
+local Galois groups at all primes of <span
+class="math inline">\(E\)</span> above <span
+class="math inline">\(\ell\)</span>.</p>
+<div id="pr:H0" class="problem" data-progress-ids="[&quot;22T4&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:H0&quot;]"><a class="stable-tag" href="tag/22T4.html" title="Stable tag: cite as Tag 22T4">Tag 22T4</a>
+<p><strong>Problem 27.1.1</strong>. If <span class="math inline">\((\ell - 1)
+\nmid k\)</span>, then <span
+class="math inline">\(H^0(G_{\mathbb{Q},\ell},
+\mathbb{Q}_\ell/\mathbb{Z}_\ell(k)) = 0\)</span>. If <span
+class="math inline">\((\ell-1) \mid k\)</span> and <span
+class="math inline">\(k \ne 0\)</span>, it is cyclic of order <span
+class="math inline">\(\ell^{1 + v_\ell(k)}\)</span>. The same holds for
+<span class="math inline">\(G_\ell\)</span> in place of <span
+class="math inline">\(G_{\mathbb{Q},\ell}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T014700--pseudocharacters-and-the-length-bound__workbook.html">Chapter 31</a></div><!-- used-in:end -->
+</div>
+<p>By von Staudt and Clausen <span class="citation"
+data-cites="Wa">[<a href="#ref-Wa">Wa</a>, Thm. 5.10]</span>, the
+denominator of <span class="math inline">\(B_k\)</span>, <span
+class="math inline">\(k \ge 2\)</span> even, is the product of the
+primes <span class="math inline">\(p\)</span> with <span
+class="math inline">\((p-1) \mid k\)</span>.</p>
+<div id="pr:den-zeta" class="problem" data-progress-ids="[&quot;22T5&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:den-zeta&quot;]"><a class="stable-tag" href="tag/22T5.html" title="Stable tag: cite as Tag 22T5">Tag 22T5</a>
+<p><strong>Problem 27.1.2</strong>. For even <span class="math inline">\(k
+\ge 2\)</span>, the power of <span class="math inline">\(\ell\)</span>
+in the denominator of <span class="math inline">\(\zeta(1-k) =
+-B_k/k\)</span> is <span class="math inline">\(\lvert
+H^0(G_{\mathbb{Q},\ell}, \mathbb{Q}_\ell/\mathbb{Z}_\ell(k))
+\rvert\)</span>.</p>
+</div>
+<p>For even <span class="math inline">\(k \ge 2\)</span>, the <span
+class="math inline">\(\ell\)</span>-part of the denominator of <span
+class="math inline">\(\zeta(1-k)\)</span> is the order of <span
+class="math inline">\(H^0(G_{\mathbb{Q},\ell},\mathbb{Q}_\ell/\mathbb{Z}_\ell(k))\)</span>.
+The <span class="math inline">\(\ell\)</span>-part of its numerator will
+be the order of <span
+class="math inline">\(\mathrm{Sha}_\ell(\mathbb{Q},k-1)\)</span>.</p>
+<div id="pr:unram-zero" class="problem" data-progress-ids="[&quot;22T6&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:unram-zero&quot;]"><a class="stable-tag" href="tag/22T6.html" title="Stable tag: cite as Tag 22T6">Tag 22T6</a>
+<p><strong>Problem 27.1.3</strong>. Let <span class="math inline">\(p \ne
+\ell\)</span>, <span class="math inline">\(e \ne 0\)</span>, and <span
+class="math inline">\(G_p :=
+\operatorname{Gal}(\overline{\mathbb{Q}}_p/\mathbb{Q}_p)\)</span>. Every
+unramified class in <span class="math inline">\(H^1(G_p, W_e)\)</span>
+is zero. Hence <span class="math inline">\(\mathrm{Sha}_\ell(\mathbb{Q},
+e)\)</span> is the group of classes in <span
+class="math inline">\(H^1(\operatorname{Gal}(\overline{\mathbb{Q}}/\mathbb{Q}),
+W_e)\)</span> that vanish at every prime.</p>
+</div>
+<p>Let <span class="math inline">\(F :=
+\mathbb{Q}(\zeta_\ell)\)</span>.</p>
+<div id="pr:mod-l" class="problem" data-progress-ids="[&quot;22T7&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:mod-l&quot;]"><a class="stable-tag" href="tag/22T7.html" title="Stable tag: cite as Tag 22T7">Tag 22T7</a>
+<p><strong>Problem 27.1.4</strong>. Suppose that <span
+class="math inline">\((\ell - 1) \nmid e\)</span>. Then <span
+class="math inline">\(H^1(G_{\mathbb{Q},\ell}, \mathbb{Z}/\ell(-e)) \to
+H^1(G_{\mathbb{Q},\ell}, W_e)[\ell]\)</span> is an isomorphism, and so
+is its analogue for <span class="math inline">\(G_\ell\)</span>. Hence
+<span class="math inline">\(\mathrm{Sha}_\ell(\mathbb{Q},
+e)[\ell]\)</span> is the group of classes in <span
+class="math inline">\(H^1(G_{\mathbb{Q},\ell},
+\mathbb{Z}/\ell(-e))\)</span> that vanish on <span
+class="math inline">\(G_\ell\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:to-classgroup">Problem 27.1.5</a>; <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html">Chapter 30</a></div><!-- used-in:end -->
+</div>
+<div id="pr:to-classgroup" class="problem" data-progress-ids="[&quot;22T8&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:to-classgroup&quot;]"><a class="stable-tag" href="tag/22T8.html" title="Stable tag: cite as Tag 22T8">Tag 22T8</a>
+<p><strong>Problem 27.1.5</strong>. Suppose that <span
+class="math inline">\((\ell - 1) \nmid e\)</span>. Restriction to <span
+class="math inline">\(\operatorname{Gal}(\mathbb{Q}_S/F)\)</span>,
+followed by the Artin map, identifies the group of Problem <a
+href="#pr:mod-l" data-reference-type="ref"
+data-reference="pr:mod-l">27.1.4</a> with the group of homomorphisms <span
+class="math inline">\(\phi \colon A \to \mathbb{F}_\ell\)</span> such
+that <span class="math inline">\(\phi(\sigma_a z) = \omega(a)^{-e}
+\phi(z)\)</span>, that is, with <span
+class="math inline">\(\operatorname{Hom}(A^{(-e)},
+\mathbb{F}_\ell)\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:mod-l" data-reference-type="ref"
+data-reference="pr:mod-l">27.1.4</a> and <a href="#pr:to-classgroup"
+data-reference-type="ref" data-reference="pr:to-classgroup">27.1.5</a> prove
+the following.</p>
+<div id="thm:sha-class" class="theorem"><a class="stable-tag" href="tag/22T9.html" title="Stable tag: cite as Tag 22T9">Tag 22T9</a>
+<p><strong>Theorem 27.1.1</strong>. <em>Let <span class="math inline">\((\ell
+- 1) \nmid e\)</span>. Then <span
+class="math inline">\(\mathrm{Sha}_\ell(\mathbb{Q}, e)[\ell] \cong
+\operatorname{Hom}(A^{(-e)}, \mathbb{F}_\ell)\)</span>. In particular
+<span class="math inline">\(\mathrm{Sha}_\ell(\mathbb{Q}, e) =
+0\)</span> if and only if <span class="math inline">\(A^{(-e)} =
+0\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html">Chapter 30</a></div><!-- used-in:end -->
+</div>
+<div id="pr:odd-e" class="problem" data-progress-ids="[&quot;22TB&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:odd-e&quot;]"><a class="stable-tag" href="tag/22TB.html" title="Stable tag: cite as Tag 22TB">Tag 22TB</a>
+<p><strong>Problem 27.1.6</strong>. Let <span class="math inline">\(e \ge
+1\)</span> be odd. Then <span
+class="math inline">\(\mathrm{Sha}_\ell(\mathbb{Q}, e) \ne 0\)</span> if
+and only if <span class="math inline">\(\ell \mid
+\operatorname{num}(B_{e+1}/(e+1))\)</span>. For example, <span
+class="math inline">\(\mathrm{Sha}_{691}(\mathbb{Q}, 11) \ne 0\)</span>
+and <span class="math inline">\(\mathrm{Sha}_{37}(\mathbb{Q}, 31) \ne
+0\)</span>.</p>
+</div>
+<p>We state four inputs as black boxes. By Soulé <span class="citation"
+data-cites="So">[<a href="#ref-So">So</a>]</span>, <span
+class="math inline">\(H^2(G_{\mathbb{Q},\ell},
+\mathbb{Z}_\ell(k))\)</span> is finite for <span class="math inline">\(k
+\ge 2\)</span>. By Poitou–Tate duality <span class="citation"
+data-cites="NSW">[<a href="#ref-NSW">NSW</a>, Ch. VIII, §6]</span>, <span
+class="math inline">\(\mathrm{Sha}_\ell(\mathbb{Q}, e)\)</span> is dual
+to the kernel of <span class="math inline">\(H^2(G_{\mathbb{Q},\ell},
+\mathbb{Z}_\ell(e+1)) \to H^2(G_\ell, \mathbb{Z}_\ell(e+1))\)</span>,
+and by local duality <span class="citation"
+data-cites="NSW">[<a href="#ref-NSW">NSW</a>, Ch. VII, §2]</span> <span
+class="math inline">\(H^2(G_\ell, \mathbb{Z}_\ell(k))\)</span> is dual
+to <span class="math inline">\(H^0(G_\ell,
+\mathbb{Q}_\ell/\mathbb{Z}_\ell(1-k))\)</span>. By Tate’s global Euler
+characteristic formula <span class="citation"
+data-cites="NSW">[<a href="#ref-NSW">NSW</a>, Ch. VIII, §7]</span>, for every
+finite <span class="math inline">\(G_{\mathbb{Q},\ell}\)</span>-module
+<span class="math inline">\(M\)</span> of <span
+class="math inline">\(\ell\)</span>-power order, <span
+class="math inline">\(\lvert H^0(M) \rvert \lvert H^2(M) \rvert / \lvert
+H^1(M) \rvert = \lvert M^{c = 1} \rvert / \lvert M \rvert\)</span>,
+where <span class="math inline">\(c\)</span> is a complex conjugation.
+Since <span class="math inline">\(\ell\)</span> is odd, <span
+class="math inline">\(G_{\mathbb{Q},\ell}\)</span> has <span
+class="math inline">\(\ell\)</span>-cohomological dimension at most
+<span class="math inline">\(2\)</span> <span class="citation"
+data-cites="NSW">[<a href="#ref-NSW">NSW</a>, Ch. VIII, §3]</span>, so <span
+class="math inline">\(H^3(G_{\mathbb{Q},\ell}, M) = 0\)</span> for every
+<span class="math inline">\(\ell\)</span>-primary <span
+class="math inline">\(M\)</span>.</p>
+<div id="pr:sha2" class="problem" data-progress-ids="[&quot;22TC&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:sha2&quot;]"><a class="stable-tag" href="tag/22TC.html" title="Stable tag: cite as Tag 22TC">Tag 22TC</a>
+<p><strong>Problem 27.1.7</strong>. Let <span class="math inline">\(e \ge
+1\)</span> be odd. Then <span class="math inline">\(H^2(G_\ell,
+\mathbb{Z}_\ell(e+1)) = 0\)</span>, and <span
+class="math inline">\(\mathrm{Sha}_\ell(\mathbb{Q}, e)\)</span> is dual
+to <span class="math inline">\(H^2(G_{\mathbb{Q},\ell},
+\mathbb{Z}_\ell(e+1))\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html">Chapter 30</a></div><!-- used-in:end -->
+</div>
+<div id="pr:rank" class="problem" data-progress-ids="[&quot;22TD&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:rank&quot;]"><a class="stable-tag" href="tag/22TD.html" title="Stable tag: cite as Tag 22TD">Tag 22TD</a>
+<p><strong>Problem 27.1.8</strong>. Let <span class="math inline">\(k \ge
+2\)</span>. The <span
+class="math inline">\(\mathbb{Z}_\ell\)</span>-module <span
+class="math inline">\(H^1(G_{\mathbb{Q},\ell},
+\mathbb{Z}_\ell(k))\)</span> has rank <span
+class="math inline">\(1\)</span> if <span
+class="math inline">\(k\)</span> is odd and rank <span
+class="math inline">\(0\)</span> if <span
+class="math inline">\(k\)</span> is even, and its torsion subgroup is
+isomorphic to <span class="math inline">\(H^0(G_{\mathbb{Q},\ell},
+\mathbb{Q}_\ell/\mathbb{Z}_\ell(k))\)</span>.</p>
+</div>
+<p>The main conjecture of Iwasawa theory, proved by Mazur and Wiles
+<span class="citation" data-cites="MW">[<a href="#ref-MW">MW</a>]</span>,
+gives the order; see <span class="citation"
+data-cites="Wa">[<a href="#ref-Wa">Wa</a>, Ch. 15]</span>.</p>
+<div id="thm:MW" class="theorem"><a class="stable-tag" href="tag/22TE.html" title="Stable tag: cite as Tag 22TE">Tag 22TE</a>
+<p><strong>Theorem 27.1.2</strong> (Mazur–Wiles). <em>Let <span
+class="math inline">\(e \ge 1\)</span> be odd. Then <span
+class="math display">\[h_{\ell,e}(\mathbb{Q}) =
+v_\ell\bigl(\operatorname{num}(B_{e+1}/(e+1))\bigr) .\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T020430--the-minus-part-by-gauss-sums__workbook.html">Chapter 28</a>: <a href="20261126T020430--the-minus-part-by-gauss-sums__workbook.html#pr:compare">Problem 28.4.3</a>; <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html">Chapter 30</a>; <a href="20261125T014700--pseudocharacters-and-the-length-bound__workbook.html">Chapter 31</a></div><!-- used-in:end -->
+</div>
+<div id="pr:BK" class="problem" data-progress-ids="[&quot;22TF&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:BK&quot;]"><a class="stable-tag" href="tag/22TF.html" title="Stable tag: cite as Tag 22TF">Tag 22TF</a>
+<p><strong>Problem 27.1.9</strong>. Let <span class="math inline">\(k \ge
+2\)</span> be even. Then <span class="math display">\[\frac{\lvert
+H^2(G_{\mathbb{Q},\ell}, \mathbb{Z}_\ell(k)) \rvert}{\lvert
+H^1(G_{\mathbb{Q},\ell}, \mathbb{Z}_\ell(k)) \rvert} = \lvert \zeta(1-k)
+\rvert_\ell^{-1} .\]</span> For <span class="math inline">\(k =
+12\)</span> and <span class="math inline">\(\ell = 691\)</span> both
+sides are <span class="math inline">\(691\)</span>.</p>
+</div>
+<p>This is the simplest case of the Bloch–Kato conjecture <span
+class="citation" data-cites="BK">[<a href="#ref-BK">BK</a>]</span>.</p>
+<h1 id="sec:split">§27.2. Odd characters <a class="stable-tag" href="tag/22TG.html" title="Stable tag: cite as Tag 22TG">Tag 22TG</a></h1>
+<p>Over <span class="math inline">\(\mathbb{Q}\)</span> the odd twists
+are controlled by Bernoulli numbers. How does this look over an abelian
+field, and what does it say about sums over all <span
+class="math inline">\(\ell\)</span>?</p>
+<p>Let <span class="math inline">\(E \subseteq
+\mathbb{Q}(\zeta_\ell)\)</span> and <span class="math inline">\(\Delta_E
+:= \operatorname{Gal}(E/\mathbb{Q})\)</span>. Then <span
+class="math inline">\(\Delta_E\)</span> acts on <span
+class="math inline">\(\mathrm{Sha}_\ell(E, e)\)</span>, by <span
+class="math inline">\((\delta z)(g) := \tilde\delta\,
+z(\tilde\delta^{-1} g \tilde\delta)\)</span> for a lift <span
+class="math inline">\(\tilde\delta\)</span> of <span
+class="math inline">\(\delta\)</span>, and <span
+class="math inline">\(\mathrm{Sha}_\ell(E, e)\)</span> is the direct sum
+of its <span class="math inline">\(\eta\)</span>-parts over the
+characters <span class="math inline">\(\eta\)</span> of <span
+class="math inline">\(\Delta_E\)</span>, with values in <span
+class="math inline">\(\mu_{\ell-1} \subset
+\mathbb{Z}_\ell^\times\)</span>. Let <span
+class="math inline">\(\mathrm{Sha}_\ell(\mathbb{Q}, e; \eta)\)</span> be
+defined as <span class="math inline">\(\mathrm{Sha}_\ell(\mathbb{Q},
+e)\)</span>, with <span class="math inline">\(W_e\)</span> replaced by
+<span class="math inline">\(W_e \otimes \eta^{-1}\)</span>. Call a
+character <span class="math inline">\(\eta\)</span> <em>critical for
+<span class="math inline">\(e\)</span></em> if <span
+class="math inline">\(\eta(-1) = (-1)^{e+1}\)</span>, and <em>plus for
+<span class="math inline">\(e\)</span></em> otherwise. We call the sum
+of the <span class="math inline">\(\eta\)</span>-parts over the critical
+characters the <em>minus part</em> of <span
+class="math inline">\(\mathrm{Sha}_\ell(E, e)\)</span>; it is the part
+on which complex conjugation acts by <span
+class="math inline">\((-1)^{e+1}\)</span>.</p>
+<div id="pr:induced" class="problem" data-progress-ids="[&quot;22TH&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:induced&quot;]"><a class="stable-tag" href="tag/22TH.html" title="Stable tag: cite as Tag 22TH">Tag 22TH</a>
+<p><strong>Problem 27.2.1</strong>. The <span
+class="math inline">\(\eta\)</span>-part of <span
+class="math inline">\(\mathrm{Sha}_\ell(E, e)\)</span> is isomorphic to
+<span class="math inline">\(\mathrm{Sha}_\ell(\mathbb{Q}, e;
+\eta)\)</span>. In particular <span
+class="math inline">\(\mathrm{Sha}_\ell(\mathbb{Q}, e)\)</span> is the
+part fixed by <span class="math inline">\(\Delta_E\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html">Chapter 30</a></div><!-- used-in:end -->
+</div>
+<div id="pr:eta-rank" class="problem" data-progress-ids="[&quot;22TJ&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:eta-rank&quot;]"><a class="stable-tag" href="tag/22TJ.html" title="Stable tag: cite as Tag 22TJ">Tag 22TJ</a>
+<p><strong>Problem 27.2.2</strong>. Let <span class="math inline">\(\eta =
+\omega^j\)</span> with <span class="math inline">\((\ell - 1) \nmid (e +
+j)\)</span>. Then <span
+class="math inline">\(\mathrm{Sha}_\ell(\mathbb{Q}, e; \eta)[\ell] \cong
+\operatorname{Hom}(A^{(-e-j)}, \mathbb{F}_\ell)\)</span>, and <span
+class="math inline">\(\eta\)</span> is critical for <span
+class="math inline">\(e\)</span> if and only if <span
+class="math inline">\(-e-j\)</span> is odd.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html">Chapter 30</a></div><!-- used-in:end -->
+</div>
+<div id="pr:parity" class="problem" data-progress-ids="[&quot;22TK&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:parity&quot;]"><a class="stable-tag" href="tag/22TK.html" title="Stable tag: cite as Tag 22TK">Tag 22TK</a>
+<p><strong>Problem 27.2.3</strong>. For every <span class="math inline">\(e
+\ne 0\)</span>, the minus part of <span
+class="math inline">\(\mathrm{Sha}_\ell(\mathbb{Q}(\zeta_\ell),
+e)\)</span> has the same <span class="math inline">\(\ell\)</span>-rank
+as <span class="math inline">\(A^-\)</span>.</p>
+</div>
+<p>Over <span class="math inline">\(\mathbb{Q}(\zeta_\ell)\)</span> the
+critical characters account for the <span
+class="math inline">\(\ell\)</span>-rank of <span
+class="math inline">\(A^-\)</span>. Over <span
+class="math inline">\(\mathbb{Q}\)</span>, for each fixed positive odd
+<span class="math inline">\(e\)</span>, one Bernoulli numerator controls
+all odd primes.</p>
+<div id="pr:one-number" class="problem" data-progress-ids="[&quot;22TL&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:one-number&quot;]"><a class="stable-tag" href="tag/22TL.html" title="Stable tag: cite as Tag 22TL">Tag 22TL</a>
+<p><strong>Problem 27.2.4</strong>. For a nonzero integer <span
+class="math inline">\(Y\)</span>, <span class="math inline">\(\sum_\ell
+v_\ell(Y) \log \ell \le \log \lvert Y \rvert\)</span>. Hence, for odd
+<span class="math inline">\(e \ge 1\)</span>, <span
+class="math display">\[\sum_{\ell \text{ odd}} h_{\ell,e}(\mathbb{Q})
+\log \ell \le \log \Bigl\lvert
+\operatorname{num}\Bigl(\frac{B_{e+1}}{e+1}\Bigr) \Bigr\rvert
+.\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T020430--the-minus-part-by-gauss-sums__workbook.html">Chapter 28</a></div><!-- used-in:end -->
+</div>
+<div id="pr:bernoulli-size" class="problem" data-progress-ids="[&quot;22TM&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:bernoulli-size&quot;]"><a class="stable-tag" href="tag/22TM.html" title="Stable tag: cite as Tag 22TM">Tag 22TM</a>
+<p><strong>Problem 27.2.5</strong>. For <span class="math inline">\(k \ge
+1\)</span>, <span class="math inline">\(\log \lvert
+\operatorname{num}(B_{2k}/2k) \rvert \le 2k \log(2k) + 3\)</span>.</p>
+</div>
+<p>For the data of Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>, the proof uses a CM subfield of
+a cyclotomic field and the twists <span class="math inline">\(0 \le e
+&lt; 5r\)</span>, where <span class="math inline">\(r\)</span> is the
+target rank of that chapter. The counterpart of Problem <a
+href="#pr:one-number" data-reference-type="ref"
+data-reference="pr:one-number">27.2.4</a> there is Theorem <a
+href="#thm:oddsha" data-reference-type="ref"
+data-reference="thm:oddsha">27.3.2</a> below. It gives one positive integer
+<span class="math inline">\(X_{\mathrm{odd}}\)</span> of controlled size
+such that, for every prime <span class="math inline">\(\ell\)</span> and
+every coefficient ring <span class="math inline">\(\mathcal{O}\)</span>
+allowed in the theorem, <span
+class="math inline">\(v_\mathcal{O}(X_{\mathrm{odd}})\)</span> bounds
+the <span class="math inline">\(\mathcal{O}\)</span>-length of the
+module of cocycles of Definition <a href="#def:shaodd"
+data-reference-type="ref" data-reference="def:shaodd">27.3.1</a> at every
+level <span class="math inline">\(n\)</span>. The argument does not
+prove the main conjecture.</p>
+<h1 id="sec:odd">§27.3. Odd cocycles <a class="stable-tag" href="tag/236D.html" title="Stable tag: cite as Tag 236D">Tag 236D</a></h1>
+<p>In this section <span class="math inline">\(\ell\)</span> is any
+prime. Fix an embedding <span
+class="math inline">\(\overline{\mathbb{Q}} \subset \mathbb{C}\)</span>,
+and let <span class="math inline">\(c \in
+\operatorname{Gal}(\overline{\mathbb{Q}}/\mathbb{Q})\)</span> be complex
+conjugation. Let <span class="math inline">\(E \subset
+\overline{\mathbb{Q}}\)</span> be a CM field, <span
+class="math inline">\(G_E :=
+\operatorname{Gal}(\overline{\mathbb{Q}}/E)\)</span>, and <span
+class="math inline">\(\chi := \chi_\ell|_{G_E}\)</span>. Then <span
+class="math inline">\(c G_E c = G_E\)</span> and <span
+class="math inline">\(\chi(cgc) = \chi(g)\)</span>. For a place <span
+class="math inline">\(\mathfrak{P}\)</span> of <span
+class="math inline">\(\overline{\mathbb{Q}}\)</span> let <span
+class="math inline">\(D_{\mathfrak{P}} \supseteq
+I_{\mathfrak{P}}\)</span> be its decomposition and inertia groups in
+<span class="math inline">\(G_E\)</span>. Let <span
+class="math inline">\(\mathcal{O}\)</span> be the ring of integers of a
+finite extension of <span
+class="math inline">\(\mathbb{Q}_\ell\)</span>, with valuation <span
+class="math inline">\(v_\mathcal{O}\)</span> normalized by <span
+class="math inline">\(v_\mathcal{O}(\pi) = 1\)</span> on a uniformizer
+<span class="math inline">\(\pi\)</span> and <span
+class="math inline">\(v_\mathcal{O}(0) = \infty\)</span>; for <span
+class="math inline">\(n \ge 0\)</span> let <span
+class="math inline">\(\mathcal{O}_n :=
+\mathcal{O}/\ell^n\mathcal{O}\)</span>, and write <span
+class="math inline">\(\mathcal{O}_n(-e)\)</span> for this quotient with
+<span class="math inline">\(g \in G_E\)</span> acting by <span
+class="math inline">\(\chi(g)^{-e}\)</span>. We write <span
+class="math inline">\(\operatorname{len}\)</span> for length over <span
+class="math inline">\(\mathcal{O}\)</span>, with values in <span
+class="math inline">\(\{0, 1, \dots, \infty\}\)</span>.</p>
+<div id="def:shaodd" class="definition"><a class="stable-tag" href="tag/236E.html" title="Stable tag: cite as Tag 236E">Tag 236E</a>
+<p><strong>Definition 27.3.1</strong>. For integers <span
+class="math inline">\(e, n \ge 0\)</span>, <span
+class="math inline">\(\mathrm{Sha}^{\mathrm{odd}}_\ell(E, \mathcal{O};
+e, n)\)</span> is the <span
+class="math inline">\(\mathcal{O}\)</span>-module of maps <span
+class="math inline">\(z \colon G_E \to \mathcal{O}_n\)</span> such
+that:</p>
+<ol>
+<li><p><span class="math inline">\(z\)</span> is locally constant and
+<span class="math inline">\(z(gh) = z(g) + \chi(g)^{-e} z(h)\)</span>
+for all <span class="math inline">\(g, h \in G_E\)</span>;</p></li>
+<li><p><span class="math inline">\(z = 0\)</span> on <span
+class="math inline">\(I_{\mathfrak{P}}\)</span> for every <span
+class="math inline">\(\mathfrak{P}\)</span> above a prime other than
+<span class="math inline">\(\ell\)</span>;</p></li>
+<li><p>for every <span class="math inline">\(\mathfrak{P}\)</span> above
+<span class="math inline">\(\ell\)</span>: <span class="math inline">\(z
+= 0\)</span> on <span class="math inline">\(I_{\mathfrak{P}}\)</span> if
+<span class="math inline">\(e = 0\)</span>, and <span
+class="math inline">\(z = 0\)</span> on <span
+class="math inline">\(D_{\mathfrak{P}} \cap \ker \chi\)</span> if <span
+class="math inline">\(e &gt; 0\)</span>;</p></li>
+<li><p>if <span class="math inline">\(e &gt; 0\)</span>, then <span
+class="math inline">\(z(cgc) = -z(g)\)</span> for all <span
+class="math inline">\(g \in G_E\)</span>.</p></li>
+</ol>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T004000--denominators-and-sha__workbook.html">Chapter 26</a>; <a href="20261126T020430--the-minus-part-by-gauss-sums__workbook.html">Chapter 28</a>; <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html">Chapter 83</a>; <a href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.html">Chapter 84</a></div><!-- used-in:end -->
+</div>
+<p>These are cocycles, not classes: nothing is divided out. In (c) the
+kernel is that of the <span class="math inline">\(\ell\)</span>-adic
+character, not of its reduction modulo <span
+class="math inline">\(\ell^n\)</span>. For <span class="math inline">\(e
+&gt; 0\)</span> this module is modelled on the odd part of <span
+class="math inline">\(\mathrm{Sha}^1(E,\mathcal{O}_n(-e))\)</span>; the
+proof does not compare the two. Problems <a href="#pr:cob-odd"
+data-reference-type="ref" data-reference="pr:cob-odd">27.3.1</a> and <a
+href="#pr:c-action" data-reference-type="ref"
+data-reference="pr:c-action">27.3.2</a> explain the shape of the
+definition.</p>
+<div id="pr:cob-odd" class="problem" data-progress-ids="[&quot;236F&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:cob-odd&quot;]"><a class="stable-tag" href="tag/236F.html" title="Stable tag: cite as Tag 236F">Tag 236F</a>
+<p><strong>Problem 27.3.1</strong>. Let <span
+class="math inline">\(\ell\)</span> be odd and <span
+class="math inline">\(e &gt; 0\)</span>. For <span
+class="math inline">\(b \in \mathcal{O}_n\)</span>, the coboundary <span
+class="math inline">\(z_b(g) := (\chi(g)^{-e} - 1) b\)</span> satisfies
+(a)–(c), and it satisfies (d) only if <span class="math inline">\(z_b =
+0\)</span>.</p>
+</div>
+<div id="pr:c-action" class="problem" data-progress-ids="[&quot;236G&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:c-action&quot;]"><a class="stable-tag" href="tag/236G.html" title="Stable tag: cite as Tag 236G">Tag 236G</a>
+<p><strong>Problem 27.3.2</strong>. For <span
+class="math inline">\(z\)</span> satisfying (a)–(c) put <span
+class="math inline">\((c \cdot z)(g) := (-1)^e z(cgc)\)</span>. Then
+<span class="math inline">\(c \cdot z\)</span> satisfies (a)–(c) and
+<span class="math inline">\(c \cdot (c \cdot z) = z\)</span>. For <span
+class="math inline">\(e &gt; 0\)</span>, condition (d) is equivalent to
+<span class="math inline">\(c \cdot z = (-1)^{e+1}z\)</span>. For odd
+<span class="math inline">\(\ell\)</span> this is the sign of the minus
+part in Section <a href="#sec:split" data-reference-type="ref"
+data-reference="sec:split">27.2</a>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T020430--the-minus-part-by-gauss-sums__workbook.html">Chapter 28</a>; <a href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.html">Chapter 84</a></div><!-- used-in:end -->
+</div>
+<h4 id="the-twist-e-0.">The twist <span class="math inline">\(e =
+0\)</span>.</h4>
+<p>Then (a) says that <span class="math inline">\(z\)</span> is a
+continuous homomorphism, (d) is void, and (b), (c) together say that
+<span class="math inline">\(z\)</span> vanishes on every inertia
+group.</p>
+<div id="pr:e0-hom" class="problem" data-progress-ids="[&quot;236H&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:e0-hom&quot;]"><a class="stable-tag" href="tag/236H.html" title="Stable tag: cite as Tag 236H">Tag 236H</a>
+<p><strong>Problem 27.3.3</strong>. The Artin map identifies <span
+class="math inline">\(\mathrm{Sha}^{\mathrm{odd}}_\ell(E, \mathcal{O};
+0, n)\)</span> with <span
+class="math inline">\(\operatorname{Hom}(\operatorname{Cl}(E),
+\mathcal{O}_n)\)</span>.</p>
+</div>
+<div id="pr:hom-length" class="problem" data-progress-ids="[&quot;236J&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:hom-length&quot;]"><a class="stable-tag" href="tag/236J.html" title="Stable tag: cite as Tag 236J">Tag 236J</a>
+<p><strong>Problem 27.3.4</strong>. Let <span class="math inline">\(C \cong
+\bigoplus_i \mathbb{Z}/m_i\mathbb{Z}\)</span> be a finite abelian group.
+Then <span
+class="math display">\[\operatorname{len}\operatorname{Hom}(C,
+\mathcal{O}_n) = \sum_i \min\bigl(v_\mathcal{O}(m_i),\, n\,
+v_\mathcal{O}(\ell)\bigr) \le v_\mathcal{O}(\lvert C \rvert) ,\]</span>
+with equality for all large <span class="math inline">\(n\)</span>.</p>
+</div>
+<div id="pr:e0-example" class="problem" data-progress-ids="[&quot;236K&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:e0-example&quot;]"><a class="stable-tag" href="tag/236K.html" title="Stable tag: cite as Tag 236K">Tag 236K</a>
+<p><strong>Problem 27.3.5</strong>. For <span class="math inline">\(E =
+\mathbb{Q}(\sqrt{-23})\)</span>, <span class="math inline">\(\ell =
+3\)</span> and <span class="math inline">\(\mathcal{O}=
+\mathbb{Z}_3\)</span>, the length of <span
+class="math inline">\(\mathrm{Sha}^{\mathrm{odd}}_3(E, \mathbb{Z}_3; 0,
+n)\)</span> is <span class="math inline">\(\min(1, n)\)</span>; for
+<span class="math inline">\(\ell \ne 3\)</span> and every <span
+class="math inline">\(\mathcal{O}\)</span> it is <span
+class="math inline">\(0\)</span>.</p>
+</div>
+<p>Let <span class="math inline">\(h_E := \lvert \operatorname{Cl}(E)
+\rvert\)</span>. Problems <a href="#pr:e0-hom" data-reference-type="ref"
+data-reference="pr:e0-hom">27.3.3</a> and <a href="#pr:hom-length"
+data-reference-type="ref" data-reference="pr:hom-length">27.3.4</a> prove
+the following.</p>
+<div id="thm:e0" class="theorem"><a class="stable-tag" href="tag/236L.html" title="Stable tag: cite as Tag 236L">Tag 236L</a>
+<p><strong>Theorem 27.3.1</strong>. <em>Let <span class="math inline">\(E
+\subset \overline{\mathbb{Q}}\)</span> be a CM field, <span
+class="math inline">\(\ell\)</span> a prime, <span
+class="math inline">\(\mathcal{O}\)</span> the ring of integers of a
+finite extension of <span
+class="math inline">\(\mathbb{Q}_\ell\)</span>, and <span
+class="math inline">\(n \ge 0\)</span>. Then <span
+class="math inline">\(\operatorname{len}\mathrm{Sha}^{\mathrm{odd}}_\ell(E,
+\mathcal{O}; 0, n) \le v_\mathcal{O}(h_E)\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T020430--the-minus-part-by-gauss-sums__workbook.html">Chapter 28</a></div><!-- used-in:end -->
+</div>
+<h4 id="the-field-mathbbqzeta_ell-modulo-ell.">The field <span
+class="math inline">\(\mathbb{Q}(\zeta_\ell)\)</span> modulo <span
+class="math inline">\(\ell\)</span>.</h4>
+<p>Now let <span class="math inline">\(\ell\)</span> be odd, <span
+class="math inline">\(E = F := \mathbb{Q}(\zeta_\ell)\)</span>, <span
+class="math inline">\(\mathcal{O}= \mathbb{Z}_\ell\)</span>, <span
+class="math inline">\(n = 1\)</span> and <span class="math inline">\(e
+&gt; 0\)</span>, and let <span class="math inline">\(\lambda\)</span> be
+the prime of <span class="math inline">\(F\)</span> above <span
+class="math inline">\(\ell\)</span>.</p>
+<div id="pr:F-hom" class="problem" data-progress-ids="[&quot;236M&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:F-hom&quot;]"><a class="stable-tag" href="tag/236M.html" title="Stable tag: cite as Tag 236M">Tag 236M</a>
+<p><strong>Problem 27.3.6</strong>. Every <span class="math inline">\(z \in
+\mathrm{Sha}^{\mathrm{odd}}_\ell(F, \mathbb{Z}_\ell; e, 1)\)</span> is a
+homomorphism <span class="math inline">\(G_F \to
+\mathbb{F}_\ell\)</span>. The module <span
+class="math inline">\(\mathrm{Sha}^{\mathrm{odd}}_\ell(F,
+\mathbb{Z}_\ell; e, 1)\)</span> does not depend on <span
+class="math inline">\(e &gt; 0\)</span>.</p>
+</div>
+<div id="pr:F-cyc" class="problem" data-progress-ids="[&quot;236N&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:F-cyc&quot;]"><a class="stable-tag" href="tag/236N.html" title="Stable tag: cite as Tag 236N">Tag 236N</a>
+<p><strong>Problem 27.3.7</strong>. The map <span
+class="math inline">\(z_{\mathrm{cyc}}(g) := (\chi(g) - 1)/\ell \bmod
+\ell\)</span> is a homomorphism <span class="math inline">\(G_F \to
+\mathbb{F}_\ell\)</span> satisfying (b) and (c), it is nonzero on <span
+class="math inline">\(D_{\mathfrak{P}}\)</span> for every <span
+class="math inline">\(\mathfrak{P}\)</span> above <span
+class="math inline">\(\ell\)</span>, and <span
+class="math inline">\(z_{\mathrm{cyc}}(cgc) =
+z_{\mathrm{cyc}}(g)\)</span>. So <span
+class="math inline">\(z_{\mathrm{cyc}} \notin
+\mathrm{Sha}^{\mathrm{odd}}_\ell(F, \mathbb{Z}_\ell; e, 1)\)</span>.</p>
+</div>
+<div id="pr:F-split" class="problem" data-progress-ids="[&quot;236P&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:F-split&quot;]"><a class="stable-tag" href="tag/236P.html" title="Stable tag: cite as Tag 236P">Tag 236P</a>
+<p><strong>Problem 27.3.8</strong>. Every <span class="math inline">\(z \in
+\mathrm{Sha}^{\mathrm{odd}}_\ell(F, \mathbb{Z}_\ell; e, 1)\)</span>
+vanishes on all of <span
+class="math inline">\(D_{\mathfrak{P}}\)</span>, for every <span
+class="math inline">\(\mathfrak{P}\)</span> above <span
+class="math inline">\(\ell\)</span>.</p>
+</div>
+<div id="pr:F-minus" class="problem" data-progress-ids="[&quot;236Q&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:F-minus&quot;]"><a class="stable-tag" href="tag/236Q.html" title="Stable tag: cite as Tag 236Q">Tag 236Q</a>
+<p><strong>Problem 27.3.9</strong>. The Artin map identifies <span
+class="math inline">\(\mathrm{Sha}^{\mathrm{odd}}_\ell(F,
+\mathbb{Z}_\ell; e, 1)\)</span> with <span
+class="math inline">\(\operatorname{Hom}(A^-, \mathbb{F}_\ell)\)</span>,
+for every <span class="math inline">\(e &gt; 0\)</span>. Hence its
+length is the <span class="math inline">\(\ell\)</span>-rank of <span
+class="math inline">\(A^-\)</span>.</p>
+</div>
+<p>By Problem <a href="#pr:parity" data-reference-type="ref"
+data-reference="pr:parity">27.2.3</a>, this is also the <span
+class="math inline">\(\ell\)</span>-rank of the minus part of <span
+class="math inline">\(\mathrm{Sha}_\ell(F, e)\)</span>. So in this case
+the odd cocycles see what the minus part sees modulo <span
+class="math inline">\(\ell\)</span>: condition (d) removes the plus
+part, and (c) and (d) together remove the cyclotomic homomorphism <span
+class="math inline">\(z_{\mathrm{cyc}}\)</span>.</p>
+<h4 id="one-integer-for-all-ell.">One integer for all <span
+class="math inline">\(\ell\)</span>.</h4>
+<p>For a CM field in <span
+class="math inline">\(\mathbb{Q}(\zeta_N)\)</span>, the following
+theorem gives one integer for every prime <span
+class="math inline">\(\ell\)</span>, every coefficient ring specified
+below, every <span class="math inline">\(0 \le e &lt; t\)</span>, and
+every <span class="math inline">\(n \ge 0\)</span>.</p>
+<div id="thm:oddsha" class="theorem"><a class="stable-tag" href="tag/236R.html" title="Stable tag: cite as Tag 236R">Tag 236R</a>
+<p><strong>Theorem 27.3.2</strong>. <em>Let <span class="math inline">\(N \ge
+1\)</span> and <span class="math inline">\(t \ge 0\)</span> be integers
+(in the application, <span class="math inline">\(t = 5r\)</span>), let
+<span class="math inline">\(d_N\)</span> be the exponent of the group
+<span class="math inline">\((\mathbb{Z}/N\mathbb{Z})^\times\)</span>,
+and let <span class="math inline">\(E \subset
+\overline{\mathbb{Q}}\)</span> be a CM field contained in <span
+class="math inline">\(\mathbb{Q}(\zeta_N)\)</span>. There is an integer
+<span class="math inline">\(X_{\mathrm{odd}}\)</span> with <span
+class="math display">\[1 \le X_{\mathrm{odd}} \le 2^{4(N + t + 3)^{27}}
+h_E\]</span> such that for every prime <span
+class="math inline">\(\ell\)</span> (including <span
+class="math inline">\(\ell = 2\)</span>), every ring of integers <span
+class="math inline">\(\mathcal{O}\)</span> of a finite extension of
+<span class="math inline">\(\mathbb{Q}_\ell\)</span> that contains a
+primitive <span class="math inline">\(d_N\)</span>-th root of unity,
+every integer <span class="math inline">\(e\)</span> with <span
+class="math inline">\(0 \le e &lt; t\)</span>, and every <span
+class="math inline">\(n \ge 0\)</span>, <span
+class="math display">\[\operatorname{len}\mathrm{Sha}^{\mathrm{odd}}_\ell(E,
+\mathcal{O}; e, n) \le v_\mathcal{O}(X_{\mathrm{odd}})
+.\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:37">Problem 27.3.10</a>, <a href="#pr:sum-ell">Problem 27.3.11</a>; <a href="20261126T020430--the-minus-part-by-gauss-sums__workbook.html">Chapter 28</a>; <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html">Chapter 80</a>: <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:clearing-bound">Definition 80.1.1</a>; <a href="20261126T070000--clearing-a-projection-two-classes__workbook.html">Chapter 81</a> <details><summary>and 2 more</summary><div><a href="20261126T060400--congruences-bounded-by-lengths__workbook.html">Chapter 83</a>; <a href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.html">Chapter 84</a></div></details></div><!-- used-in:end -->
+</div>
+<p>In particular these lengths are finite. Here <span
+class="math inline">\(N\)</span> is a cyclotomic modulus, not the level
+of Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>. For <span
+class="math inline">\(e = 0\)</span> the bound follows from Theorem <a
+href="#thm:e0" data-reference-type="ref" data-reference="thm:e0">27.3.1</a>,
+and for <span class="math inline">\(t = 1\)</span> one may take <span
+class="math inline">\(X_{\mathrm{odd}} = h_E\)</span>. For <span
+class="math inline">\(0 &lt; e &lt; t\)</span> the proof argues through
+twisted Stickelberger sums, Jacobi-type quotients of Gauss sums and
+Kolyvagin’s derivative cocycles; Chapter <a href="20261126T020430--the-minus-part-by-gauss-sums__workbook.html#chap"
+data-reference-type="ref" data-reference="mi-chap">28</a>
+illustrates the Gauss-sum method. It proves no equality of
+characteristic ideals, only this upper bound at finite level.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. In the Lean proof <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>,
+Theorem <a href="#thm:oddsha" data-reference-type="ref"
+data-reference="thm:oddsha">27.3.2</a> is
+<code>New.exists_length_shaOdd_le</code> and Theorem <a href="#thm:e0"
+data-reference-type="ref" data-reference="thm:e0">27.3.1</a> is
+<code>New.length_shaOdd_zero_le_addVal_classNumber</code>, both in
+<code>grh/src/Lib/Cyclotomic/OddSha.lean</code>, and Definition <a
+href="#def:shaodd" data-reference-type="ref"
+data-reference="def:shaodd">27.3.1</a> is the case <span
+class="math inline">\(\Lambda = \mathcal{O}\)</span> of
+<code>New.Selmer.shaOdd</code> in
+<code>grh/src/Lib/GaloisRep/Main/SelmerModules.lean</code>.</p>
+</div>
+<div id="pr:37" class="problem" data-progress-ids="[&quot;236S&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:37&quot;]"><a class="stable-tag" href="tag/236S.html" title="Stable tag: cite as Tag 236S">Tag 236S</a>
+<p><strong>Problem 27.3.10</strong>. Let <span class="math inline">\(E =
+\mathbb{Q}(\zeta_{37})\)</span>, <span class="math inline">\(N =
+37\)</span> and <span class="math inline">\(t \ge 2\)</span>. Then <span
+class="math inline">\(\mathbb{Z}_{37}\)</span> satisfies the hypotheses
+of Theorem <a href="#thm:oddsha" data-reference-type="ref"
+data-reference="thm:oddsha">27.3.2</a>, and every integer <span
+class="math inline">\(X_{\mathrm{odd}}\)</span> as in that theorem is
+divisible by <span class="math inline">\(37\)</span>.</p>
+</div>
+<div id="pr:sum-ell" class="problem" data-progress-ids="[&quot;236T&quot;,&quot;20261125T004100--tate-twists-and-sha__workbook.tex#pr:sum-ell&quot;]"><a class="stable-tag" href="tag/236T.html" title="Stable tag: cite as Tag 236T">Tag 236T</a>
+<p><strong>Problem 27.3.11</strong>. Let <span
+class="math inline">\(N\)</span>, <span
+class="math inline">\(t\)</span>, <span
+class="math inline">\(d_N\)</span>, <span
+class="math inline">\(E\)</span>, <span
+class="math inline">\(X_{\mathrm{odd}}\)</span> be as in Theorem <a
+href="#thm:oddsha" data-reference-type="ref"
+data-reference="thm:oddsha">27.3.2</a>, and for each prime <span
+class="math inline">\(\ell\)</span> let <span
+class="math inline">\(\mathcal{O}_{(\ell)}\)</span> be the ring of
+integers of <span
+class="math inline">\(\mathbb{Q}_\ell(\zeta_{d_N})\)</span>. Then <span
+class="math inline">\(\mathcal{O}_{(\ell)}\)</span> satisfies the
+hypotheses of the theorem, and for <span class="math inline">\(0 \le e
+&lt; t\)</span>, <span class="math inline">\(n \ge 0\)</span> and every
+finite set <span class="math inline">\(T\)</span> of primes, <span
+class="math display">\[\sum_{\ell \in T}
+\frac{\operatorname{len}\mathrm{Sha}^{\mathrm{odd}}_\ell(E,
+\mathcal{O}_{(\ell)}; e, n)}{v_{\mathcal{O}_{(\ell)}}(\ell)} \log \ell
+\le \log X_{\mathrm{odd}} \le 4 (N + t + 3)^{27} \log 2 + \log h_E
+.\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T020430--the-minus-part-by-gauss-sums__workbook.html">Chapter 28</a></div><!-- used-in:end -->
+</div>
+<p>This is the analogue of Problem <a href="#pr:one-number"
+data-reference-type="ref" data-reference="pr:one-number">27.2.4</a>.
+Chapter <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dl-chap">80</a> applies Theorem <a
+href="#thm:oddsha" data-reference-type="ref"
+data-reference="thm:oddsha">27.3.2</a> to the field <span
+class="math inline">\(E\)</span> of Chapter <a href="20261126T030300--the-data__workbook.html#chap"
+data-reference-type="ref" data-reference="da-chap">36</a>, with
+<span class="math inline">\(t = 5r\)</span>. In the proof, the resulting
+term in the denominator error at <span
+class="math inline">\(\ell\)</span> is <span
+class="math inline">\(t\,v_\ell(X_{\mathrm{odd}})\)</span>. For every
+finite set <span class="math inline">\(T\)</span> of primes its
+contribution to the weighted sum is <span
+class="math inline">\(t\sum_{\ell\in T} v_\ell(X_{\mathrm{odd}})\log\ell
+\le t\log X_{\mathrm{odd}}\)</span>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="sectwists">§<a href="#sec:twists"
+data-reference-type="ref" data-reference="sec:twists">27.1</a></h2>
+<dl>
+<dt><a href="#pr:H0" data-reference-type="ref"
+data-reference="pr:H0">27.1.1</a></dt>
+<dd>
+<p><span class="math inline">\(\chi_\ell\)</span> maps <span
+class="math inline">\(G_{\mathbb{Q},\ell}\)</span> and <span
+class="math inline">\(G_\ell\)</span> onto <span
+class="math inline">\(\mathbb{Z}_\ell^\times\)</span>. Compute the least
+<span class="math inline">\(v_\ell(u^k - 1)\)</span> over <span
+class="math inline">\(u \in \mathbb{Z}_\ell^\times\)</span>.</p>
+</dd>
+<dt><a href="#pr:den-zeta" data-reference-type="ref"
+data-reference="pr:den-zeta">27.1.2</a></dt>
+<dd>
+<p>Combine Problem <a href="#pr:H0" data-reference-type="ref"
+data-reference="pr:H0">27.1.1</a> with the theorem of von Staudt and Clausen.
+If <span class="math inline">\((\ell - 1) \nmid k\)</span>, then <span
+class="math inline">\(B_k/k\)</span> is <span
+class="math inline">\(\ell\)</span>-integral <span class="citation"
+data-cites="Wa">[<a href="#ref-Wa">Wa</a>, Cor. 5.14]</span>.</p>
+</dd>
+<dt><a href="#pr:unram-zero" data-reference-type="ref"
+data-reference="pr:unram-zero">27.1.3</a></dt>
+<dd>
+<p>An unramified class lies in <span
+class="math inline">\(H^1(\hat{\mathbb{Z}}, W_e) = W_e/(\varphi -
+1)W_e\)</span>, where Frobenius <span
+class="math inline">\(\varphi\)</span> acts by <span
+class="math inline">\(p^{-e}\)</span>. For the second statement, inflate
+from <span class="math inline">\(G_{\mathbb{Q},\ell}\)</span>;
+conversely, by inflation–restriction a class that is unramified outside
+<span class="math inline">\(\ell\)</span> comes from <span
+class="math inline">\(G_{\mathbb{Q},\ell}\)</span>, since <span
+class="math inline">\(\operatorname{Gal}(\overline{\mathbb{Q}}/\mathbb{Q}_S)\)</span>
+is generated as a closed normal subgroup by the inertia groups at primes
+<span class="math inline">\(p \ne \ell\)</span>.</p>
+</dd>
+<dt><a href="#pr:mod-l" data-reference-type="ref"
+data-reference="pr:mod-l">27.1.4</a></dt>
+<dd>
+<p>Use the sequence <span class="math inline">\(0 \to
+\mathbb{Z}/\ell(-e) \to W_e \xrightarrow{\ell} W_e \to 0\)</span> and
+Problem <a href="#pr:H0" data-reference-type="ref"
+data-reference="pr:H0">27.1.1</a>.</p>
+</dd>
+<dt><a href="#pr:to-classgroup" data-reference-type="ref"
+data-reference="pr:to-classgroup">27.1.5</a></dt>
+<dd>
+<p>Use inflation–restriction to <span class="math inline">\(G_F :=
+\operatorname{Gal}(\mathbb{Q}_S/F)\)</span>, which acts trivially on
+<span class="math inline">\(\mathbb{Z}/\ell(-e)\)</span>. The prime
+above <span class="math inline">\(\ell\)</span> in <span
+class="math inline">\(F\)</span> is principal, and <span
+class="math inline">\([F_\lambda : \mathbb{Q}_\ell] = \ell - 1\)</span>
+is prime to <span class="math inline">\(\ell\)</span>.</p>
+</dd>
+<dt><a href="#pr:odd-e" data-reference-type="ref"
+data-reference="pr:odd-e">27.1.6</a></dt>
+<dd>
+<p>Let <span class="math inline">\(i \equiv -e \pmod{\ell - 1}\)</span>.
+Use Theorem <a href="#thm:sha-class" data-reference-type="ref"
+data-reference="thm:sha-class">27.1.1</a>, Theorem <a href="20261125T004000--denominators-and-sha__workbook.html#thm:HR"
+data-reference-type="ref" data-reference="ds-thm:HR">26.2.2</a>,
+and Kummer’s congruence <span class="math inline">\(B_m/m \equiv B_n/n
+\pmod \ell\)</span> for even <span class="math inline">\(m, n \ge
+2\)</span> with <span class="math inline">\(m \equiv n \not\equiv 0
+\pmod{\ell-1}\)</span> <span class="citation"
+data-cites="Wa">[<a href="#ref-Wa">Wa</a>, Ch. 5]</span>; treat <span
+class="math inline">\(i \equiv 1\)</span> separately, using <span
+class="math inline">\(A^{(1)} = 0\)</span> <span class="citation"
+data-cites="Wa">[<a href="#ref-Wa">Wa</a>, Prop. 6.16]</span>.</p>
+</dd>
+<dt><a href="#pr:sha2" data-reference-type="ref"
+data-reference="pr:sha2">27.1.7</a></dt>
+<dd>
+<p>Problem <a href="#pr:H0" data-reference-type="ref"
+data-reference="pr:H0">27.1.1</a> with <span class="math inline">\(k =
+-e\)</span>, and local duality.</p>
+</dd>
+<dt><a href="#pr:rank" data-reference-type="ref"
+data-reference="pr:rank">27.1.8</a></dt>
+<dd>
+<p>Apply the Euler characteristic formula to <span
+class="math inline">\(\mathbb{Z}_\ell(k)/\ell^n\)</span> and let <span
+class="math inline">\(n \to \infty\)</span>; since the groups <span
+class="math inline">\(H^i(G_{\mathbb{Q},\ell},
+\mathbb{Z}_\ell(k)/\ell^n)\)</span> are finite, their inverse limit is
+<span class="math inline">\(H^i(G_{\mathbb{Q},\ell},
+\mathbb{Z}_\ell(k))\)</span> <span class="citation"
+data-cites="NSW">[<a href="#ref-NSW">NSW</a>, Ch. II, §7]</span>. For the
+upper bound on the rank, show that <span
+class="math inline">\(H^2(G_{\mathbb{Q},\ell},
+\mathbb{Z}_\ell(k)/\ell^n) = H^2(G_{\mathbb{Q},\ell},
+\mathbb{Z}_\ell(k))/\ell^n\)</span>, which is bounded by Soulé’s
+theorem. For the torsion, use <span class="math inline">\(0 \to
+\mathbb{Z}_\ell(k) \to \mathbb{Q}_\ell(k) \to
+\mathbb{Q}_\ell/\mathbb{Z}_\ell(k) \to 0\)</span>. The groups <span
+class="math inline">\(H^i(G_{\mathbb{Q},\ell}, M)\)</span> are finite
+for finite <span
+class="math inline">\(G_{\mathbb{Q},\ell}\)</span>-modules <span
+class="math inline">\(M\)</span> of <span
+class="math inline">\(\ell\)</span>-power order <span class="citation"
+data-cites="NSW">[<a href="#ref-NSW">NSW</a>, Ch. VIII, §3]</span>; finite
+generation of <span class="math inline">\(H^1(G_{\mathbb{Q},\ell},
+\mathbb{Z}_\ell(k))\)</span> follows from finiteness of its reduction
+modulo <span class="math inline">\(\ell\)</span> by Nakayama’s lemma,
+and <span class="math inline">\(H^3 = 0\)</span> passes to the
+limit.</p>
+</dd>
+<dt><a href="#pr:BK" data-reference-type="ref"
+data-reference="pr:BK">27.1.9</a></dt>
+<dd>
+<p>Problems <a href="#pr:sha2" data-reference-type="ref"
+data-reference="pr:sha2">27.1.7</a>, <a href="#pr:rank"
+data-reference-type="ref" data-reference="pr:rank">27.1.8</a> and <a
+href="#pr:den-zeta" data-reference-type="ref"
+data-reference="pr:den-zeta">27.1.2</a>, and Theorem <a href="#thm:MW"
+data-reference-type="ref" data-reference="thm:MW">27.1.2</a> with <span
+class="math inline">\(e = k - 1\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secsplit">§<a href="#sec:split"
+data-reference-type="ref" data-reference="sec:split">27.2</a></h2>
+<dl>
+<dt><a href="#pr:induced" data-reference-type="ref"
+data-reference="pr:induced">27.2.1</a></dt>
+<dd>
+<p>Shapiro’s lemma for <span
+class="math inline">\(\mathrm{Ind}_{G_{E,\ell}}^{G_{\mathbb{Q},\ell}}
+W_e \cong \bigoplus_\eta W_e \otimes \eta\)</span>. The field <span
+class="math inline">\(E\)</span> has one prime above <span
+class="math inline">\(\ell\)</span>.</p>
+</dd>
+<dt><a href="#pr:eta-rank" data-reference-type="ref"
+data-reference="pr:eta-rank">27.2.2</a></dt>
+<dd>
+<p>Repeat Problems <a href="#pr:mod-l" data-reference-type="ref"
+data-reference="pr:mod-l">27.1.4</a> and <a href="#pr:to-classgroup"
+data-reference-type="ref" data-reference="pr:to-classgroup">27.1.5</a> with
+the twisted coefficients. On <span
+class="math inline">\((W_e\otimes\eta^{-1})[\ell]\)</span>, the action
+is through the reduction of <span
+class="math inline">\(\omega^{-e-j}\)</span>.</p>
+</dd>
+<dt><a href="#pr:parity" data-reference-type="ref"
+data-reference="pr:parity">27.2.3</a></dt>
+<dd>
+<p>Sum Problem <a href="#pr:eta-rank" data-reference-type="ref"
+data-reference="pr:eta-rank">27.2.2</a> over the critical <span
+class="math inline">\(j\)</span>. The one character <span
+class="math inline">\(\omega^{-e}\)</span> not covered there is plus for
+<span class="math inline">\(e\)</span>.</p>
+</dd>
+<dt><a href="#pr:one-number" data-reference-type="ref"
+data-reference="pr:one-number">27.2.4</a></dt>
+<dd>
+<p>For the second part, Theorem <a href="#thm:MW"
+data-reference-type="ref" data-reference="thm:MW">27.1.2</a>.</p>
+</dd>
+<dt><a href="#pr:bernoulli-size" data-reference-type="ref"
+data-reference="pr:bernoulli-size">27.2.5</a></dt>
+<dd>
+<p><span class="math inline">\(B_{2k} = (-1)^{k+1} 2 (2k)!
+\zeta(2k)/(2\pi)^{2k}\)</span>, and bound the denominator by von
+Staudt–Clausen and <span class="math inline">\(\prod_{p \le n} p \le
+4^n\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secodd">§<a href="#sec:odd"
+data-reference-type="ref" data-reference="sec:odd">27.3</a></h2>
+<dl>
+<dt><a href="#pr:cob-odd" data-reference-type="ref"
+data-reference="pr:cob-odd">27.3.1</a></dt>
+<dd>
+<p><span class="math inline">\(\chi\)</span> is trivial on inertia at
+primes other than <span class="math inline">\(\ell\)</span>, and <span
+class="math inline">\(\chi(cgc) = \chi(g)\)</span>; <span
+class="math inline">\(2\)</span> is a unit in <span
+class="math inline">\(\mathcal{O}_n\)</span>.</p>
+</dd>
+<dt><a href="#pr:c-action" data-reference-type="ref"
+data-reference="pr:c-action">27.3.2</a></dt>
+<dd>
+<p><span class="math inline">\(\chi_\ell(c) = -1\)</span>. Conjugation
+by <span class="math inline">\(c\)</span> carries <span
+class="math inline">\(D_{\mathfrak{P}}\)</span>, <span
+class="math inline">\(I_{\mathfrak{P}}\)</span> to <span
+class="math inline">\(D_{c\mathfrak{P}}\)</span>, <span
+class="math inline">\(I_{c\mathfrak{P}}\)</span>.</p>
+</dd>
+<dt><a href="#pr:e0-hom" data-reference-type="ref"
+data-reference="pr:e0-hom">27.3.3</a></dt>
+<dd>
+<p>A homomorphism killing all inertia groups factors through the Galois
+group of the Hilbert class field; <span class="math inline">\(E\)</span>
+has no real places.</p>
+</dd>
+<dt><a href="#pr:hom-length" data-reference-type="ref"
+data-reference="pr:hom-length">27.3.4</a></dt>
+<dd>
+<p><span
+class="math inline">\(\operatorname{Hom}(\mathbb{Z}/m\mathbb{Z},
+\mathcal{O}_n) \cong \mathcal{O}/(m, \ell^n)\)</span>, and <span
+class="math inline">\(\mathcal{O}/\pi^k\mathcal{O}\)</span> has length
+<span class="math inline">\(k\)</span>.</p>
+</dd>
+<dt><a href="#pr:e0-example" data-reference-type="ref"
+data-reference="pr:e0-example">27.3.5</a></dt>
+<dd>
+<p>The class number of <span
+class="math inline">\(\mathbb{Q}(\sqrt{-23})\)</span> is <span
+class="math inline">\(3\)</span>.</p>
+</dd>
+<dt><a href="#pr:F-hom" data-reference-type="ref"
+data-reference="pr:F-hom">27.3.6</a></dt>
+<dd>
+<p><span class="math inline">\(\chi(g) \equiv 1 \pmod \ell\)</span> on
+<span class="math inline">\(G_F\)</span>.</p>
+</dd>
+<dt><a href="#pr:F-cyc" data-reference-type="ref"
+data-reference="pr:F-cyc">27.3.7</a></dt>
+<dd>
+<p><span class="math inline">\(\chi(D_{\mathfrak{P}}) = 1 +
+\ell\mathbb{Z}_\ell\)</span>, since <span
+class="math inline">\(\mathbb{Q}_\ell(\zeta_{\ell^2})\)</span> has
+degree <span class="math inline">\(\ell\)</span> over <span
+class="math inline">\(\mathbb{Q}_\ell(\zeta_\ell)\)</span>.</p>
+</dd>
+<dt><a href="#pr:F-split" data-reference-type="ref"
+data-reference="pr:F-split">27.3.8</a></dt>
+<dd>
+<p>On <span class="math inline">\(D_{\mathfrak{P}}\)</span>, <span
+class="math inline">\(z\)</span> factors through <span
+class="math inline">\(\chi(D_{\mathfrak{P}}) = 1 +
+\ell\mathbb{Z}_\ell\)</span>, so it is a multiple of <span
+class="math inline">\(z_{\mathrm{cyc}}\)</span> there. Compare at <span
+class="math inline">\(\mathfrak{P}\)</span> and <span
+class="math inline">\(c\mathfrak{P}\)</span>, which are conjugate under
+<span class="math inline">\(G_F\)</span>.</p>
+</dd>
+<dt><a href="#pr:F-minus" data-reference-type="ref"
+data-reference="pr:F-minus">27.3.9</a></dt>
+<dd>
+<p>Problems <a href="#pr:F-split" data-reference-type="ref"
+data-reference="pr:F-split">27.3.8</a> and <a href="#pr:c-action"
+data-reference-type="ref" data-reference="pr:c-action">27.3.2</a>; <span
+class="math inline">\(\lambda = (1 - \zeta_\ell)\)</span> is principal,
+the Artin map satisfies <span class="math inline">\(\mathrm{Art}(\sigma
+\mathfrak{a}) = \tilde\sigma\, \mathrm{Art}(\mathfrak{a})\,
+\tilde\sigma^{-1}\)</span>, and <span class="math inline">\(c =
+\sigma_{-1}\)</span> acts on <span
+class="math inline">\(A^{(i)}\)</span> by <span
+class="math inline">\((-1)^i\)</span>.</p>
+</dd>
+<dt><a href="#pr:37" data-reference-type="ref"
+data-reference="pr:37">27.3.10</a></dt>
+<dd>
+<p>Problems <a href="#pr:F-minus" data-reference-type="ref"
+data-reference="pr:F-minus">27.3.9</a> and <a href="20261125T004000--denominators-and-sha__workbook.html#pr:irregular"
+data-reference-type="ref"
+data-reference="ds-pr:irregular">26.2.8</a>.</p>
+</dd>
+<dt><a href="#pr:sum-ell" data-reference-type="ref"
+data-reference="pr:sum-ell">27.3.11</a></dt>
+<dd>
+<p><span class="math inline">\(v_\mathcal{O}(X_{\mathrm{odd}}) =
+v_\mathcal{O}(\ell)\, v_\ell(X_{\mathrm{odd}})\)</span>, and Problem <a
+href="#pr:one-number" data-reference-type="ref"
+data-reference="pr:one-number">27.2.4</a>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-BK"><span class="bib-label">[BK]</span> S. Bloch and K. Kato, <em><span class="math inline">\(L\)</span>-functions and Tamagawa numbers of motives</em>, in: The Grothendieck Festschrift, Vol. I, Progr. Math. 86, Birkhäuser, 1990, 333–400.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-MW"><span class="bib-label">[MW]</span> B. Mazur and A. Wiles, <em>Class fields of abelian extensions of <span class="math inline">\(\mathbf{Q}\)</span></em>, Invent. Math. <strong>76</strong> (1984), 179–330.</p>
+<p id="ref-Ne"><span class="bib-label">[Ne]</span> J. Neukirch, <em>Algebraic Number Theory</em>, Grundlehren Math. Wiss. 322, Springer, 1999.</p>
+<p id="ref-NSW"><span class="bib-label">[NSW]</span> J. Neukirch, A. Schmidt and K. Wingberg, <em>Cohomology of Number Fields</em>, 2nd ed., Grundlehren Math. Wiss. 323, Springer, 2008.</p>
+<p id="ref-SeL"><span class="bib-label">[SeL]</span> J.-P. Serre, <em>Local Fields</em>, Grad. Texts in Math. 67, Springer, 1979.</p>
+<p id="ref-So"><span class="bib-label">[So]</span> C. Soulé, <em><span class="math inline">\(K\)</span>-théorie des anneaux d’entiers de corps de nombres et cohomologie étale</em>, Invent. Math. <strong>55</strong> (1979), 251–295.</p>
+<p id="ref-Wa"><span class="bib-label">[Wa]</span> L. C. Washington, <em>Introduction to Cyclotomic Fields</em>, 2nd ed., Grad. Texts in Math. 83, Springer, 1997.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

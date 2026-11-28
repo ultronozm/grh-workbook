@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-EJ9wGAvYHB01L2EplqEnuzwRUOCFknJMglb/Kwauwg8=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Auxiliary primes: even classes at no cost</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","Oc":"\\mathcal{O}","Kc":"\\mathcal{K}","cyc":"\\chi_{\\mathrm{cyc}}","Fr":"\\mathrm{Fr}","Nm":"\\mathrm{Nm}","ord":"\\operatorname{ord}","len":"\\operatorname{len}","Shao":"\\mathrm{Sha}^{\\mathrm{odd}}","val":"\\operatorname{val}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="84">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-27 01:16:56
+      <a href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Auxiliary primes: even classes at no cost</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:parity" id="toc-sec:parity">§84.1. Even and odd parts</a></li>
+<li><a href="#sec:toy" id="toc-sec:toy">§84.2. A triangle of primes over \(\mathbb{Q}\)</a></li>
+<li><a href="#sec:choice" id="toc-sec:choice">§84.3. Choosing the places</a></li>
+<li><a href="#sec:buys" id="toc-sec:buys">§84.4. What the triangle buys</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secparity" id="toc-secparity">§84.1</a></li>
+<li><a href="#secchoice" id="toc-secchoice">§84.3</a></li>
+<li><a href="#secbuys" id="toc-secbuys">§84.4</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Kummer theory and the Chebotarev density theorem <span
+class="citation" data-cites="Ne">[<a href="#ref-Ne">Ne</a>, IV §3, VII
+§13]</span>. From Chapter <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dp-chap">80</a>: the notation of Section <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#sec:statement" data-reference-type="ref"
+data-reference="dp-sec:statement">80.1</a> (<span
+class="math inline">\(G_E\)</span>, <span
+class="math inline">\(g^c\)</span>, <span
+class="math inline">\(\chi_{\mathrm{cyc}}\)</span>, coefficient rings
+<span class="math inline">\(\mathcal{O}\)</span>, tame generators <span
+class="math inline">\(s_w\)</span>), and Definition <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:clearing-bound" data-reference-type="ref"
+data-reference="dp-def:clearing-bound">80.1.1</a>. From
+Chapter <a href="20261126T070000--clearing-a-projection-two-classes__workbook.html#chap" data-reference-type="ref"
+data-reference="cp-chap">81</a>: Problems <a
+href="20261126T070000--clearing-a-projection-two-classes__workbook.html#pr:eleven-adjoint" data-reference-type="ref"
+data-reference="cp-pr:eleven-adjoint">81.2.1</a>, <a
+href="20261126T070000--clearing-a-projection-two-classes__workbook.html#pr:eleven-pr" data-reference-type="ref"
+data-reference="cp-pr:eleven-pr">81.2.2</a> and <a
+href="20261126T070000--clearing-a-projection-two-classes__workbook.html#pr:kummer" data-reference-type="ref"
+data-reference="cp-pr:kummer">81.3.3</a>. From Chapter <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#chap" data-reference-type="ref"
+data-reference="tt-chap">27</a>: Definition <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#def:shaodd" data-reference-type="ref"
+data-reference="tt-def:shaodd">27.3.1</a>, Problem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#pr:c-action" data-reference-type="ref"
+data-reference="tt-pr:c-action">27.3.2</a> and Theorem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#thm:oddsha" data-reference-type="ref"
+data-reference="tt-thm:oddsha">27.3.2</a>.</p>
+<p>The clearing bound <span
+class="math inline">\(\mathrm{cl}_\ell\)</span> of Definition <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:clearing-bound" data-reference-type="ref"
+data-reference="dp-def:clearing-bound">80.1.1</a> pays
+for the odd classes through <span
+class="math inline">\(X_{\mathrm{odd}}\)</span>, and contains no length
+of even classes. What happens to the even parts of the cocycles that
+congruences produce? The proof allows ramification at auxiliary places,
+chosen one after another so that the vanishing conditions at the earlier
+places force vanishing at the next tame generator up to a controlled
+power of <span class="math inline">\(\ell\)</span>. We work out the
+choice in a model over <span class="math inline">\(\mathbb{Q}\)</span>,
+prove some steps of the general choice, state the theorem used
+(Theorem <a href="#thm:triangle" data-reference-type="ref"
+data-reference="thm:triangle">84.3.1</a>), and show how the auxiliary places
+enter the bound only through powers of <span
+class="math inline">\(\ell\)</span>.</p>
+<h1 id="sec:parity">§84.1. Even and odd parts</h1>
+<p>Let <span class="math inline">\(\ell\)</span> be a prime, let <span
+class="math inline">\(E\)</span>, <span
+class="math inline">\(G_E\)</span>, <span class="math inline">\(g^c =
+cgc\)</span>, <span class="math inline">\(\chi_{\mathrm{cyc}}\)</span>
+and <span class="math inline">\(\mathcal{O}\)</span> be as in Section <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#sec:statement" data-reference-type="ref"
+data-reference="dp-sec:statement">80.1</a>, and let <span
+class="math inline">\(e, \nu \ge 0\)</span> be integers. Throughout,
+<span class="math inline">\(E\)</span> is a CM field containing a
+primitive root of unity of order <span
+class="math inline">\(5040\)</span>. A cocycle for <span
+class="math inline">\(\chi_{\mathrm{cyc}}^{-e}\)</span> with values in
+<span class="math inline">\(\mathcal{O}/\ell^\nu\)</span> is a map <span
+class="math inline">\(z\)</span> with <span class="math inline">\(z(gh)
+= z(g) + \chi_{\mathrm{cyc}}(g)^{-e}z(h)\)</span>; put <span
+class="math inline">\(z^c(g) := z(g^c)\)</span> and <span
+class="math inline">\(z^+ := z + z^c\)</span>.</p>
+<div id="pr:even-odd" class="problem" data-progress-ids="[&quot;20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.tex#pr:even-odd&quot;]">
+<p><strong>Problem 84.1.1</strong>. For a cocycle <span
+class="math inline">\(z\)</span> for <span
+class="math inline">\(\chi_{\mathrm{cyc}}^{-e}\)</span> with values in
+<span class="math inline">\(\mathcal{O}/\ell^\nu\)</span>, <span
+class="math inline">\(z^+\)</span> and <span class="math inline">\(z^c -
+z\)</span> are cocycles for <span
+class="math inline">\(\chi_{\mathrm{cyc}}^{-e}\)</span>, with <span
+class="math inline">\((z^+)^c = z^+\)</span> and <span
+class="math inline">\((z^c - z)^c = -(z^c - z)\)</span>, and <span
+class="math inline">\(2z = z^+ - (z^c - z)\)</span>. If <span
+class="math inline">\(\chi_{\mathrm{cyc}}(g) \equiv 1
+\pmod{\ell^\nu}\)</span>, then <span
+class="math inline">\(z\bigl((g^c)^{-1}\bigr) = -z(g^c)\)</span>.</p>
+</div>
+<div id="def:even" class="definition">
+<p><strong>Definition 84.1.1</strong>. Let <span
+class="math inline">\(\mathcal Q\)</span> be a set of finite places of
+<span class="math inline">\(E\)</span> and <span class="math inline">\(e
+\ge 0\)</span>. An <em>even class of exponent <span
+class="math inline">\(e\)</span> for <span
+class="math inline">\(\mathcal Q\)</span></em> (at precision <span
+class="math inline">\(\nu\)</span>, over <span
+class="math inline">\(\mathcal{O}\)</span>) is a locally constant
+cocycle <span class="math inline">\(z \colon G_E \to
+\mathcal{O}/\ell^\nu\)</span> for <span
+class="math inline">\(\chi_{\mathrm{cyc}}^{-e}\)</span> that vanishes on
+the inertia groups above the finite places neither dividing <span
+class="math inline">\(\ell\)</span> nor in <span
+class="math inline">\(\mathcal Q \cup \bar{\mathcal Q}\)</span>,
+satisfies <span class="math inline">\(z^c = z\)</span>, and vanishes on
+the elements <span class="math inline">\(g\)</span> with <span
+class="math inline">\(\chi_{\mathrm{cyc}}(g) = 1\)</span> of the
+decomposition groups above <span
+class="math inline">\(\ell\)</span>.</p>
+</div>
+<p>For <span class="math inline">\(e &gt; 0\)</span>, <span
+class="math inline">\(\mathrm{Sha}^{\mathrm{odd}}_\ell(E,\mathcal{O};e,\nu)\)</span>
+(Definition <a href="20261125T004100--tate-twists-and-sha__workbook.html#def:shaodd" data-reference-type="ref"
+data-reference="tt-def:shaodd">27.3.1</a>) consists of the
+locally constant cocycles with the local conditions of Definition <a
+href="#def:even" data-reference-type="ref"
+data-reference="def:even">84.1.1</a> for <span class="math inline">\(\mathcal
+Q = \varnothing\)</span> and <span class="math inline">\(z^c =
+-z\)</span>; under the hypotheses of Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:oddsha"
+data-reference-type="ref"
+data-reference="tt-thm:oddsha">27.3.2</a> its length <span
+class="math inline">\(\operatorname{len}\)</span> (throughout this
+sheet, ordinary <span class="math inline">\(\mathcal{O}\)</span>-length,
+with <span
+class="math inline">\(\operatorname{ord}_{\mathcal{O}}\)</span> of a
+uniformizer equal to <span class="math inline">\(1\)</span>) is at most
+<span class="math inline">\(\operatorname{ord}_{\mathcal{O}}
+X_{\mathrm{odd}}\)</span>.</p>
+<h1 id="sec:toy">§84.2. A triangle of primes over <span
+class="math inline">\(\mathbb{Q}\)</span></h1>
+<p>In this section <span class="math inline">\(\ell = 3\)</span>, the
+base field is <span class="math inline">\(\mathbb{Q}\)</span>, and the
+coefficients are <span class="math inline">\(\mathbb{Z}/3\)</span> with
+trivial action. Let <span class="math inline">\(\mathcal Q\)</span> be a
+finite set of primes <span class="math inline">\(q \equiv 1 \pmod
+3\)</span> and <span class="math inline">\(\mathfrak n := \prod_{q \in
+\mathcal Q} q\)</span>. By the Artin map for <span
+class="math inline">\(\mathbb{Q}\)</span>, normalized by <span
+class="math inline">\(a \mapsto (\zeta \mapsto \zeta^a)\)</span> on
+roots of unity, continuous homomorphisms <span
+class="math inline">\(G_{\mathbb{Q}} \to \mathbb{Z}/3\)</span>
+unramified outside <span class="math inline">\(\mathcal Q\)</span> are
+homomorphisms <span class="math inline">\(z \colon (\mathbb{Z}/\mathfrak
+n)^\times \to \mathbb{Z}/3\)</span>; we call them <em>classes ramified
+at <span class="math inline">\(\mathcal Q\)</span></em>. For <span
+class="math inline">\(q \in \mathcal Q\)</span> let <span
+class="math inline">\(\varpi_q\)</span> be the least primitive root
+modulo <span class="math inline">\(q\)</span>, and let <span
+class="math inline">\(s_q \in (\mathbb{Z}/\mathfrak n)^\times\)</span>
+be <span class="math inline">\(\equiv \varpi_q \bmod q\)</span> and
+<span class="math inline">\(\equiv 1\)</span> modulo the other primes of
+<span class="math inline">\(\mathcal Q\)</span>: the image of a tame
+generator at <span class="math inline">\(q\)</span>. For a prime <span
+class="math inline">\(p \nmid \mathfrak n\)</span>, <span
+class="math inline">\(z(p)\)</span> is the value at an arithmetic
+Frobenius element at <span class="math inline">\(p\)</span>. For <span
+class="math inline">\(p \ne q\)</span> let <span
+class="math inline">\(\mathrm{kum}_p(q) \in \mathbb{Z}/3\)</span> be
+<span class="math inline">\(i \bmod 3\)</span> where <span
+class="math inline">\(p \equiv \varpi_q^i \pmod q\)</span>. This is the
+value of the Kummer class of <span class="math inline">\(p\)</span>
+(Problem <a href="20261126T070000--clearing-a-projection-two-classes__workbook.html#pr:kummer" data-reference-type="ref"
+data-reference="cp-pr:kummer">81.3.3</a>) at an arithmetic
+Frobenius element at <span class="math inline">\(q\)</span>, when <span
+class="math inline">\(\mu_3(\mathbb F_q)\)</span> is identified with
+<span class="math inline">\(\mathbb{Z}/3\)</span> by sending <span
+class="math inline">\(\varpi_q^{(q-1)/3}\)</span> to <span
+class="math inline">\(1\)</span>.</p>
+<div id="pr:toy-reciprocity" class="problem" data-progress-ids="[&quot;20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.tex#pr:toy-reciprocity&quot;]">
+<p><strong>Problem 84.2.1</strong>. Every class <span
+class="math inline">\(z\)</span> ramified at <span
+class="math inline">\(\mathcal Q\)</span> satisfies <span
+class="math inline">\(z(p) = \sum_{q \in \mathcal Q}
+\mathrm{kum}_p(q)\,z(s_q)\)</span> for every prime <span
+class="math inline">\(p \nmid \mathfrak n\)</span>, and <span
+class="math inline">\(\mathrm{kum}_p(q) = 0\)</span> if and only if
+<span class="math inline">\(p^{(q-1)/3} \equiv 1 \pmod q\)</span>.</p>
+</div>
+<div id="pr:toy-table" class="problem" data-progress-ids="[&quot;20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.tex#pr:toy-table&quot;]">
+<p><strong>Problem 84.2.2</strong>. The least primitive roots modulo <span
+class="math inline">\(7, 13, 61, 73\)</span> are <span
+class="math inline">\(3, 2, 2, 5\)</span>; <span
+class="math inline">\(3^{(q-1)/3} \bmod q\)</span> is <span
+class="math inline">\(2, 3, 1, 1\)</span>, and <span
+class="math inline">\(\mathrm{kum}_3(q) = 1, 1, 0, 0\)</span>, for <span
+class="math inline">\(q = 7, 13, 61, 73\)</span>; <span
+class="math inline">\(7^{20} \equiv 47 \pmod{61}\)</span> and <span
+class="math inline">\(7^{24} \equiv 1 \pmod{73}\)</span>, with <span
+class="math inline">\(\mathrm{kum}_7(61) = 1\)</span> and <span
+class="math inline">\(\mathrm{kum}_7(73) = 0\)</span>.</p>
+</div>
+<div id="pr:toy-triangle" class="problem" data-progress-ids="[&quot;20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.tex#pr:toy-triangle&quot;]">
+<p><strong>Problem 84.2.3</strong>. Let <span class="math inline">\(\mathcal
+Q = \{7, 61\}\)</span> and let <span class="math inline">\(z\)</span> be
+a class ramified at <span class="math inline">\(\mathcal Q\)</span> with
+<span class="math inline">\(z(3) = 0\)</span>. Then <span
+class="math inline">\(z(s_7) = 0\)</span>. So <span
+class="math inline">\(z\)</span> is a class ramified at <span
+class="math inline">\(\{61\}\)</span>; if moreover <span
+class="math inline">\(z(7) = 0\)</span>, then <span
+class="math inline">\(z(s_{61}) = 0\)</span> and <span
+class="math inline">\(z = 0\)</span>.</p>
+</div>
+<div id="pr:toy-failure" class="problem" data-progress-ids="[&quot;20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.tex#pr:toy-failure&quot;]">
+<p><strong>Problem 84.2.4</strong>. For <span class="math inline">\(\mathcal
+Q = \{7, 13\}\)</span>, the class with <span
+class="math inline">\((z(s_7), z(s_{13})) = (1, 2)\)</span> has <span
+class="math inline">\(z(3) = 0\)</span> and <span
+class="math inline">\(z(s_7) \ne 0\)</span>. For <span
+class="math inline">\(\mathcal Q = \{7, 73\}\)</span>, the class with
+<span class="math inline">\((z(s_7), z(s_{73})) = (0, 1)\)</span> is
+unramified at <span class="math inline">\(7\)</span>, has <span
+class="math inline">\(z(3) = z(7) = 0\)</span>, and is not zero.</p>
+</div>
+<p>The model has one infinite place and trivial action. In the proof the
+base field is <span class="math inline">\(E\)</span>, the classes are
+even classes of exponent <span class="math inline">\(e\)</span>, and the
+relation used at the <span class="math inline">\(j\)</span>-th place
+comes from a Kummer map through a reciprocity law that uses the local
+condition above <span class="math inline">\(\ell\)</span> and the
+Frobenius conditions at the earlier places of the same exponent; twice
+the diagonal Kummer value divides <span
+class="math inline">\(\ell^{yh}\)</span> in <span
+class="math inline">\(\mathbb{Z}/\ell^\nu\)</span>.</p>
+<h1 id="sec:choice">§84.3. Choosing the places</h1>
+<p>Let <span class="math inline">\(G_\nu :=
+\ker(\chi_{\mathrm{cyc}}\bmod \ell^\nu) \subseteq G_E\)</span>. A map
+<span class="math inline">\(\mathrm{kum} \colon G_E \to
+\mathbb{Z}/\ell^\nu\)</span> has <em>Kummer type <span
+class="math inline">\(e\)</span></em> if it is locally constant and, on
+<span class="math inline">\(G_\nu\)</span>, a homomorphism with <span
+class="math inline">\(\mathrm{kum}(a^c) = -\mathrm{kum}(a)\)</span> and
+<span class="math inline">\(\mathrm{kum}(gag^{-1}) =
+\chi_{\mathrm{cyc}}(g)^{e+1}\mathrm{kum}(a)\)</span> for <span
+class="math inline">\(g \in G_E\)</span>.</p>
+<div id="pr:surjective" class="problem" data-progress-ids="[&quot;20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.tex#pr:surjective&quot;]">
+<p><strong>Problem 84.3.1</strong>. Let <span
+class="math inline">\(\nu\)</span> be a positive integer and let <span
+class="math inline">\(\psi_1, \dots, \psi_n \colon G_0 \to
+\mathbb{Z}/\ell^\nu\)</span> be homomorphisms on a group <span
+class="math inline">\(G_0\)</span> whose reductions modulo <span
+class="math inline">\(\ell\)</span> are linearly independent over <span
+class="math inline">\(\mathbb F_\ell\)</span>. Then <span
+class="math inline">\(a \mapsto (\psi_i(a))_i\)</span> maps <span
+class="math inline">\(G_0\)</span> onto <span
+class="math inline">\((\mathbb{Z}/\ell^\nu)^n\)</span>.</p>
+</div>
+<div id="pr:separate" class="problem" data-progress-ids="[&quot;20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.tex#pr:separate&quot;]">
+<p><strong>Problem 84.3.2</strong>. Let <span
+class="math inline">\(t_0\)</span> be a nonnegative integer, <span
+class="math inline">\(s_0\)</span> a subset of <span
+class="math inline">\(\{i\in\mathbb{Z}:0\le i&lt;t_0\}\)</span>, <span
+class="math inline">\(\gamma_1 \in G_E\)</span>, <span
+class="math inline">\(\alpha := \chi_{\mathrm{cyc}}(\gamma_1) \bmod
+\ell^\nu\)</span>, and <span class="math inline">\(u \in G_\nu\)</span>.
+Some <span class="math inline">\(u&#39; \in G_\nu\)</span> has <span
+class="math inline">\(\mathrm{kum}(u&#39;) = \prod_{e&#39; \in
+s_0}(\alpha^d - \alpha^{e&#39;})\,\mathrm{kum}(u)\)</span> for every
+<span class="math inline">\(d \ge 0\)</span> and every <span
+class="math inline">\(\mathrm{kum}\)</span> of Kummer type <span
+class="math inline">\(d\)</span>.</p>
+</div>
+<div id="pr:two-values" class="problem" data-progress-ids="[&quot;20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.tex#pr:two-values&quot;]">
+<p><strong>Problem 84.3.3</strong>. Let <span class="math inline">\(\delta, g
+\in \ker\chi_{\mathrm{cyc}}\)</span>, <span class="math inline">\(u \in
+G_\nu\)</span> (the same <span class="math inline">\(\nu\)</span> as the
+precision of the classes), and <span class="math inline">\(\sigma :=
+\delta^{\ell^\nu} g\,g^c\,u\,(u^c)^{-1}\)</span>. Then <span
+class="math inline">\(\mathrm{kum}(\sigma) = 2\,\mathrm{kum}(u)\)</span>
+for every <span class="math inline">\(\mathrm{kum}\)</span> of Kummer
+type, and <span class="math inline">\(z(\sigma) = 2z(g)\)</span> for
+every even class <span class="math inline">\(z\)</span> for <span
+class="math inline">\(\varnothing\)</span>, of any exponent.</p>
+</div>
+<p>Under the hypotheses of Theorem <a href="#thm:triangle"
+data-reference-type="ref" data-reference="thm:triangle">84.3.1</a> below, fix
+<span class="math inline">\(\nu &gt; 0\)</span>. The places are chosen
+in order <span class="math inline">\(j \in \mathcal{K}\)</span>, each
+with an exponent <span class="math inline">\(e_j\)</span> and a test
+point <span class="math inline">\(g \in
+\ker\chi_{\mathrm{cyc}}\)</span>. At step <span
+class="math inline">\(j\)</span> the proof takes a Kummer map <span
+class="math inline">\(\mathrm{kum}_j\)</span> for the earlier places of
+exponent <span class="math inline">\(e_j\)</span> (defined below), with
+reduction on <span class="math inline">\(G_\nu\)</span> outside the span
+of the reductions of the earlier maps of that exponent, and <span
+class="math inline">\(u \in G_\nu\)</span> killing the earlier maps with
+<span class="math inline">\(\mathrm{kum}_j(u) =
+\prod_{e&#39;}(\alpha^{e_j} - \alpha^{e&#39;})\)</span>, over <span
+class="math inline">\(0 \le e&#39; &lt; t&#39;\)</span>, <span
+class="math inline">\(e&#39; \ne e_j\)</span>, where <span
+class="math inline">\(\alpha = \chi_{\mathrm{cyc}}(\gamma_1) \bmod
+\ell^\nu\)</span> (Problems <a href="#pr:surjective"
+data-reference-type="ref" data-reference="pr:surjective">84.3.1</a>, <a
+href="#pr:separate" data-reference-type="ref"
+data-reference="pr:separate">84.3.2</a>). With <span
+class="math inline">\(\delta\)</span> given by the hypothesis on <span
+class="math inline">\(\mathcal W\)</span> at <span
+class="math inline">\(g\,g^c u(u^c)^{-1}\)</span> and <span
+class="math inline">\(\sigma\)</span> as in Problem <a
+href="#pr:two-values" data-reference-type="ref"
+data-reference="pr:two-values">84.3.3</a>, Chebotarev’s theorem <span
+class="citation" data-cites="Ne">[<a href="#ref-Ne">Ne</a>, VII
+(13.4)]</span> gives a Frobenius datum in <span
+class="math inline">\(\mathcal W\)</span>, off <span
+class="math inline">\(\ell\)</span>, fixing <span
+class="math inline">\(\mu_{\ell^\nu}\)</span>, above a new prime of
+<span class="math inline">\(E^+\)</span> outside finitely many primes to
+be avoided, whose Frobenius element is so close to <span
+class="math inline">\(\sigma\)</span> that the values of Problem <a
+href="#pr:two-values" data-reference-type="ref"
+data-reference="pr:two-values">84.3.3</a> hold there for the finitely many
+Kummer maps and for all even classes of exponent <span
+class="math inline">\(e_j\)</span> for <span
+class="math inline">\(\varnothing\)</span>, over all coefficient rings.
+<em>Status</em>: read from the proof.</p>
+<p>Two inputs are taken from the proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>. Let <span
+class="math inline">\(F := E^+\)</span>, and let <span
+class="math inline">\(\mathcal X_j\)</span> be the finite family of
+earlier data of exponent <span class="math inline">\(e_j\)</span>; its
+places are off <span class="math inline">\(\ell\)</span>, its Frobenius
+elements fix <span class="math inline">\(\mu_{\ell^\nu}\)</span>, and
+the primes of <span class="math inline">\(F\)</span> below them are
+distinct. Extend <span
+class="math inline">\(\chi_{\mathrm{cyc}}\)</span> to a character <span
+class="math inline">\(\chi^+\)</span> of <span
+class="math inline">\(G_F\)</span> with value <span
+class="math inline">\(1\)</span> at complex conjugation, and take
+coefficients <span class="math inline">\(\mathbb{Z}/\ell^\nu\)</span>
+with action <span class="math inline">\((\chi^+)^{-e_j}\)</span>; the
+local conditions on cocycles over <span class="math inline">\(F\)</span>
+at the primes above <span class="math inline">\(\ell\)</span> and below
+<span class="math inline">\(\mathcal X_j\)</span> are vanishing on the
+chosen decomposition groups below <span class="math inline">\(\mathcal
+X_j\)</span>, and on the kernel of <span
+class="math inline">\(\chi^+\)</span> in those above <span
+class="math inline">\(\ell\)</span>. For a finite set <span
+class="math inline">\(\mathcal S\)</span> of primes of <span
+class="math inline">\(F\)</span> containing those above <span
+class="math inline">\(\ell\)</span> and below <span
+class="math inline">\(\mathcal X_j\)</span>, a <em>Kummer map for <span
+class="math inline">\(\mathcal X_j\)</span> off <span
+class="math inline">\(\mathcal S\)</span></em> is a map <span
+class="math inline">\(G_E \to \mathbb{Z}/\ell^\nu\)</span> obtained from
+a dual relation over <span class="math inline">\(F\)</span> for these
+data, unramified outside <span class="math inline">\(\mathcal
+S\)</span>, in the sense of <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span> (see the remark at the
+end). <em>The relation count:</em> if <span
+class="math inline">\(E\)</span> has at least four infinite places, some
+such <span class="math inline">\(\mathcal S_j\)</span> makes the
+reductions on <span class="math inline">\(G_\nu\)</span> of the Kummer
+maps for <span class="math inline">\(\mathcal X_j\)</span> off <span
+class="math inline">\(\mathcal S_j\)</span> span an <span
+class="math inline">\(\mathbb F_\ell\)</span>-space of dimension greater
+than <span class="math inline">\(\#\mathcal X_j\)</span>. For the
+classical formula of Greenberg and Wiles over <span
+class="math inline">\(F\)</span>, see Theorem <a href="20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.html#thm:gw"
+data-reference-type="ref" data-reference="bg-thm:gw">33.1.3</a>.
+<em>Status</em>: read from the proof. <em>Reciprocity:</em> take <span
+class="math inline">\(\mathrm{kum}_j\)</span> to be the chosen Kummer
+map for <span class="math inline">\(\mathcal X_j\)</span> off <span
+class="math inline">\(\mathcal S_j\)</span>. Let the data at <span
+class="math inline">\(w_i\)</span>, <span class="math inline">\(i \ge
+j\)</span>, be off <span class="math inline">\(\ell\)</span>, with
+Frobenius elements fixing <span
+class="math inline">\(\mu_{\ell^\nu}\)</span>, above distinct primes of
+<span class="math inline">\(F\)</span> outside <span
+class="math inline">\(\mathcal S_j\)</span>, and let <span
+class="math inline">\(\tilde s_{w_i}\)</span> be an element of inertia
+at <span class="math inline">\(\tilde w_i\)</span> that multiplies an
+<span class="math inline">\(\ell^\nu\)</span>-th root of a uniformizer
+of <span class="math inline">\(F\)</span> at the prime below <span
+class="math inline">\(w_i\)</span> by the same fixed primitive <span
+class="math inline">\(\ell^\nu\)</span>-th root of unity for every <span
+class="math inline">\(i\)</span>. If <span
+class="math inline">\(z\)</span> is an even class of exponent <span
+class="math inline">\(e_j\)</span> for <span
+class="math inline">\(\{w_i\}_{i \ge j}\)</span> with <span
+class="math inline">\(z(\mathrm{Fr}_{w_i}) = 0\)</span> for the <span
+class="math inline">\(i &lt; j\)</span> with <span
+class="math inline">\(e_i = e_j\)</span>, then <span
+class="math display">\[\sum_{i \ge j} \mathrm{kum}_j(\mathrm{Fr}_{w_i})
+\cdot 2z(\tilde s_{w_i}) = 0 ,\]</span> and the value of <span
+class="math inline">\(z\)</span> at any element of inertia at <span
+class="math inline">\(\tilde w_i\)</span> is a nonnegative integer
+multiple of <span class="math inline">\(z(\tilde s_{w_i})\)</span>.
+<em>Status</em>: read from the proof.</p>
+<div id="pr:triangle-step" class="problem" data-progress-ids="[&quot;20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.tex#pr:triangle-step&quot;]">
+<p><strong>Problem 84.3.4</strong>. In an <span
+class="math inline">\(\mathcal{O}/\ell^\nu\)</span>-module, suppose
+<span class="math inline">\(\sum_{i \ge j}
+\mathrm{kum}_j(\mathrm{Fr}_{w_i})\cdot 2z(\tilde s_{w_i}) = 0\)</span>,
+<span class="math inline">\(\mathrm{kum}_j(\mathrm{Fr}_{w_i}) =
+0\)</span> for <span class="math inline">\(i &gt; j\)</span>, <span
+class="math inline">\(2\mathrm{kum}_j(\mathrm{Fr}_{w_j})\)</span>
+divides the integer <span class="math inline">\(n\)</span> in <span
+class="math inline">\(\mathbb{Z}/\ell^\nu\)</span>, and <span
+class="math inline">\(z(s_{w_j})\)</span> is an integer multiple of
+<span class="math inline">\(z(\tilde s_{w_j})\)</span>. Then <span
+class="math inline">\(n\,z(s_{w_j}) = 0\)</span>.</p>
+</div>
+<div id="pr:count" class="problem" data-progress-ids="[&quot;20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.tex#pr:count&quot;]">
+<p><strong>Problem 84.3.5</strong>. (a) Let <span
+class="math inline">\(t&#39;, y, h \ge 0\)</span> be integers, <span
+class="math inline">\(n \in \mathbb{Z}_\ell\)</span>, and <span
+class="math inline">\(\alpha \in \mathbb{Z}_\ell^\times\)</span> with
+<span class="math inline">\(\alpha^a - 1 \mid \ell^h\)</span> for <span
+class="math inline">\(0 &lt; a &lt; t&#39;\)</span>, let <span
+class="math inline">\(t&#39; + 2 \le y\)</span> and <span
+class="math inline">\(n \mid \ell^{3h}\)</span>. Then <span
+class="math inline">\(n\prod_{i \ne e}(\alpha^e - \alpha^i) \mid
+\ell^{yh}\)</span> for <span class="math inline">\(0 \le e &lt;
+t&#39;\)</span>, the product over <span class="math inline">\(0 \le i
+&lt; t&#39;\)</span>. If <span
+class="math inline">\(\chi_{\mathrm{cyc}}(g) \equiv 1 \pmod 4\)</span>
+for all <span class="math inline">\(g \in G_E\)</span> (automatic for
+odd <span class="math inline">\(\ell\)</span>) and <span
+class="math inline">\(\alpha = \chi_{\mathrm{cyc}}(\gamma_1)\)</span>,
+then <span class="math inline">\(4(\alpha^e - 1)^2 \mid
+\ell^{3h}\)</span> for <span class="math inline">\(0 &lt; e &lt;
+t&#39;\)</span>; divisibility is in <span
+class="math inline">\(\mathbb{Z}_\ell\)</span>. (b) If <span
+class="math inline">\(t&#39; \ge 1\)</span>, <span
+class="math inline">\(\#\mathcal{K}\le (t&#39;-1)\#\Sigma_*\)</span>,
+<span class="math inline">\(\#\Sigma_* \le y^{20}\)</span> and <span
+class="math inline">\(t&#39; + 2 \le y\)</span>, then <span
+class="math inline">\((\#\mathcal{K}+ \#\Sigma_* + 1)\,yh \le
+y^{22}h\)</span>.</p>
+</div>
+<p>A <em>Frobenius datum</em> <span class="math inline">\((w, \tilde w,
+\mathrm{Fr})\)</span> is a finite place <span
+class="math inline">\(w\)</span> of <span
+class="math inline">\(E\)</span> of prime norm <span
+class="math inline">\(q_w\)</span>, a place <span
+class="math inline">\(\tilde w\)</span> of <span
+class="math inline">\(\bar{\mathbb{Q}}\)</span> above <span
+class="math inline">\(w\)</span>, and <span
+class="math inline">\(\mathrm{Fr}\in G_E\)</span> whose inverse is an
+arithmetic Frobenius element at <span class="math inline">\(\tilde
+w\)</span>. A set <span class="math inline">\(\mathcal W\)</span> of
+data <em>contains most data near</em> <span class="math inline">\(g \in
+G_E\)</span> if there are a neighbourhood <span
+class="math inline">\(\Omega_g\)</span> of <span
+class="math inline">\(g\)</span> and a set <span
+class="math inline">\(\mathcal Y\)</span> of data such that every datum
+in <span class="math inline">\(\mathcal Y\)</span> whose Frobenius
+element is in <span class="math inline">\(\Omega_g\)</span> lies in
+<span class="math inline">\(\mathcal W\)</span>, and every neighbourhood
+of a point of <span class="math inline">\(G_E\)</span> contains a
+neighbourhood <span class="math inline">\(\Omega&#39;\)</span> of a
+point such that, for all but finitely many <span
+class="math inline">\(w\)</span>, every datum at <span
+class="math inline">\(w\)</span> whose Frobenius element is in <span
+class="math inline">\(\Omega&#39;\)</span> lies in <span
+class="math inline">\(\mathcal Y\)</span>.</p>
+<div id="def:tw" class="definition">
+<p><strong>Definition 84.3.1</strong>. <em>Taylor–Wiles places</em> of level
+<span class="math inline">\(\ell^\nu\)</span> indexed by a finite set
+<span class="math inline">\(\mathcal{K}\)</span> are Frobenius data
+<span class="math inline">\((w_j, \tilde w_j, \mathrm{Fr}_{w_j})_{j \in
+\mathcal{K}}\)</span> such that the <span
+class="math inline">\(w_j\)</span> are pairwise distinct, <span
+class="math inline">\(\bar w_i \ne w_j\)</span> for all <span
+class="math inline">\(i, j\)</span>, and <span
+class="math inline">\(\ell^\nu \mid q_{w_j} - 1\)</span>. When <span
+class="math inline">\(w_j\)</span> is not above <span
+class="math inline">\(\ell\)</span>, <span
+class="math inline">\(s_{w_j}\)</span> is the distinguished tame
+generator at <span class="math inline">\(\tilde w_j\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: Chapter 35: <a href="20261126T080900--black-box-galois-representations-of-eigenforms-ii__workbook.html#thm:higman">Theorem 35.3.1</a></div><!-- used-in:end -->
+</div>
+<div id="thm:triangle" class="theorem">
+<p><strong>Theorem 84.3.1</strong>. <em>Let <span class="math inline">\(E
+\subset \bar{\mathbb{Q}}\)</span> be a CM field with a primitive root of
+unity of order <span class="math inline">\(5040\)</span> and at least
+four infinite places, contained in <span
+class="math inline">\(\mathbb{Q}(\mu_{N_0})\)</span>, <span
+class="math inline">\(N_0 &gt; 0\)</span>. Let <span
+class="math inline">\(t&#39;, y, h \ge 0\)</span> be integers with <span
+class="math inline">\(N_0 + t&#39; &lt; y\)</span>; let <span
+class="math inline">\(\gamma_1\)</span> generate <span
+class="math inline">\(G_E\)</span> modulo <span
+class="math inline">\(\ker\chi_{\mathrm{cyc}}\)</span> (the only closed
+subgroup containing <span class="math inline">\(\gamma_1\)</span> and
+<span class="math inline">\(\ker\chi_{\mathrm{cyc}}\)</span> is <span
+class="math inline">\(G_E\)</span>), with <span
+class="math inline">\(\chi_{\mathrm{cyc}}(\gamma_1)^a - 1 \mid
+\ell^h\)</span> in <span class="math inline">\(\mathbb{Z}_\ell\)</span>
+for <span class="math inline">\(0 &lt; a &lt; t&#39;\)</span>; let <span
+class="math inline">\(\ell \le y^2\)</span> or <span
+class="math inline">\(h = 0\)</span>; and let <span
+class="math inline">\(\mathcal W\)</span> be a set of Frobenius data
+such that for all <span class="math inline">\(\nu \ge 0\)</span> and
+<span class="math inline">\(g \in G_E\)</span> some <span
+class="math inline">\(\delta \in \ker\chi_{\mathrm{cyc}}\)</span> makes
+<span class="math inline">\(\mathcal W\)</span> contain most data near
+<span class="math inline">\(\delta^{\ell^\nu}g\)</span>. Then there are
+a finite linearly ordered set <span
+class="math inline">\(\mathcal{K}\)</span> and a nondecreasing map <span
+class="math inline">\(j \mapsto e_j \in \{1, \dots, t&#39;-1\}\)</span>
+such that for every <span class="math inline">\(\nu &gt; 0\)</span>
+there are Taylor–Wiles places of level <span
+class="math inline">\(\ell^\nu\)</span> indexed by <span
+class="math inline">\(\mathcal{K}\)</span>, with data in <span
+class="math inline">\(\mathcal W\)</span>, such that:</em></p>
+<ol>
+<li><p><em><span class="math inline">\(w_j\)</span> is not above <span
+class="math inline">\(\ell\)</span>, and <span
+class="math inline">\(\mathrm{Fr}_{w_j}\)</span> fixes <span
+class="math inline">\(\mu_{\ell^\nu}\)</span>;</em></p></li>
+<li><p><em>there is a finite <span class="math inline">\(\Sigma_*
+\subseteq \ker\chi_{\mathrm{cyc}}\)</span> with <span
+class="math inline">\((\#\mathcal{K}+ \#\Sigma_* + 1)\,yh \le
+y^{22}h\)</span> such that, for every coefficient ring <span
+class="math inline">\(\mathcal{O}\)</span> and <span
+class="math inline">\(e \ge 0\)</span>, a locally constant cocycle for
+<span class="math inline">\(\chi_{\mathrm{cyc}}^{-e}\)</span> in <span
+class="math inline">\(\mathcal{O}/\ell^\nu\)</span>, unramified off
+<span class="math inline">\(\ell\)</span>, that vanishes at <span
+class="math inline">\(\gamma_1^{-1}\)</span> and on <span
+class="math inline">\(\Sigma_*\)</span> is zero; and for each <span
+class="math inline">\(0 &lt; e &lt; t&#39;\)</span> and <span
+class="math inline">\(g \in \Sigma_*\)</span> some <span
+class="math inline">\(j\)</span> with <span class="math inline">\(e_j =
+e\)</span> has <span class="math inline">\(z(\mathrm{Fr}_{w_j}) =
+2z(g)\)</span> for every <span
+class="math inline">\(\mathcal{O}\)</span> and every even class <span
+class="math inline">\(z\)</span> of exponent <span
+class="math inline">\(e\)</span> for <span
+class="math inline">\(\varnothing\)</span>;</em></p></li>
+<li><p><em>for <span class="math inline">\(0 \le e &lt; t&#39;\)</span>,
+<span class="math inline">\(\prod_{i \ne
+e}\bigl(\chi_{\mathrm{cyc}}(\gamma_1)^{e} -
+\chi_{\mathrm{cyc}}(\gamma_1)^{i}\bigr)\)</span> divides <span
+class="math inline">\(\ell^{yh}\)</span> in <span
+class="math inline">\(\mathbb{Z}_\ell\)</span>, the product over <span
+class="math inline">\(0 \le i &lt; t&#39;\)</span>; and for <span
+class="math inline">\(0 &lt; e &lt; t&#39;\)</span>, <span
+class="math inline">\(4(\chi_{\mathrm{cyc}}(\gamma_1)^e - 1)^2\)</span>
+divides <span class="math inline">\(\ell^{yh}\)</span> in every <span
+class="math inline">\(\mathcal{O}\)</span>;</em></p></li>
+<li><p><em>for every <span class="math inline">\(\mathcal{O}\)</span>,
+every <span class="math inline">\(j\)</span> and every even class <span
+class="math inline">\(z\)</span> of exponent <span
+class="math inline">\(e_j\)</span> for <span
+class="math inline">\(\{w_i\}_{i \in \mathcal{K}}\)</span>, if <span
+class="math inline">\(z(s_{w_i}) = 0\)</span> for <span
+class="math inline">\(i &lt; j\)</span> and <span
+class="math inline">\(z(\mathrm{Fr}_{w_i}) = 0\)</span> for the <span
+class="math inline">\(i &lt; j\)</span> with <span
+class="math inline">\(e_i = e_j\)</span>, then <span
+class="math inline">\(\ell^{yh}z(s_{w_j}) = 0\)</span>.</em></p></li>
+</ol>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:even-kernel">Problem 84.4.1</a>; <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html">Chapter 83</a></div><!-- used-in:end -->
+</div>
+<p><em>Status</em>: read from the proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>. Problems <a
+href="#pr:surjective" data-reference-type="ref"
+data-reference="pr:surjective">84.3.1</a>–<a href="#pr:count"
+data-reference-type="ref" data-reference="pr:count">84.3.5</a> develop
+several steps of its construction. The proof takes one finite set <span
+class="math inline">\(\Sigma_* \subseteq
+\ker\chi_{\mathrm{cyc}}\)</span> that, together with <span
+class="math inline">\(\gamma_1^{-1}\)</span>, detects these cocycles at
+every precision and exponent, with at most <span
+class="math inline">\(y^{20}\)</span> elements if <span
+class="math inline">\(N_0 \le y\)</span> and <span
+class="math inline">\(\ell \le y^2\)</span> (if <span
+class="math inline">\(h = 0\)</span> the weighted count is zero); and
+<span class="math inline">\(\mathcal{K}= \{1,\dots,t&#39;-1\} \times
+\Sigma_*\)</span>, ordered lexicographically after ordering <span
+class="math inline">\(\Sigma_*\)</span>. In the application <span
+class="math inline">\(y = \Delta/2\)</span>, <span
+class="math inline">\(\gamma_1\)</span> is the element <span
+class="math inline">\(g_{\mathrm{cyc}}\)</span> of Problem <a
+href="20261126T060400--congruences-bounded-by-lengths__workbook.html#pr:generator-sep" data-reference-type="ref"
+data-reference="n1-pr:generator-sep">83.4.1</a> and <span
+class="math inline">\(h = h_\ell\)</span> (Definition <a
+href="20261126T060400--congruences-bounded-by-lengths__workbook.html#def:sep" data-reference-type="ref"
+data-reference="n1-def:sep">83.4.1</a>), so that <span
+class="math inline">\(\ell^{yh}\)</span> is the separation constant
+<span class="math inline">\(c_{\mathrm{sep}}\)</span>. In the
+first-order lemma of Chapter <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html#chap"
+data-reference-type="ref" data-reference="n1-chap">83</a> the
+index set <span class="math inline">\(J\)</span> is <span
+class="math inline">\(\mathcal{K}\)</span>, its variables <span
+class="math inline">\(X_j\)</span> are the <span
+class="math inline">\(\lambda_j\)</span> of Definition <a
+href="#def:lambda" data-reference-type="ref"
+data-reference="def:lambda">84.4.1</a>, <span
+class="math inline">\(n_{\mathrm{aux}} = \#\mathcal{K}\)</span> and
+<span class="math inline">\(n_{\mathrm{test}} = \#\Sigma_* +
+1\)</span>.</p>
+<h1 id="sec:buys">§84.4. What the triangle buys</h1>
+<p>Let <span class="math inline">\(\mathrm{Fr}&#39;_{w_j} :=
+(\mathrm{Fr}_{w_j}^c)^{-1}\)</span> and <span
+class="math inline">\(s&#39;_{w_j} := (s_{w_j}^c)^{-1}\)</span>; these
+serve the conjugate place. Cocycles from congruences are Ribet cocycles
+(Definition <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html#def:ribet" data-reference-type="ref"
+data-reference="n1-def:ribet">83.2.1</a>): they obey the linear
+relations among the families <span class="math inline">\((U_\pi(g) -
+1)_\pi\)</span>, <span class="math inline">\(U_\pi\)</span> the
+normalized representation of a system <span
+class="math inline">\(\pi\)</span> (the normalization of Definition <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:main-summand" data-reference-type="ref"
+data-reference="dp-def:main-summand">80.1.8</a>). In the
+proof, after specializing at a character <span
+class="math inline">\(\chi_{\mathrm{cyc}}^{-e}\)</span>, the tied rows
+give, in the quotient presenting the character block over <span
+class="math inline">\(\mathcal{O}[\lambda_j : j \in
+\mathcal{K}]\)</span>, the two relations <span
+class="math inline">\(Y(s_{w_j}) = \lambda_j
+Y(\mathrm{Fr}_{w_j})\)</span> and <span
+class="math inline">\(Y(s&#39;_{w_j}) = \lambda_j
+Y(\mathrm{Fr}&#39;_{w_j})\)</span>, with one variable for the place and
+its conjugate; here <span class="math inline">\(Y(g)\)</span> is the
+vector that represents evaluation at <span
+class="math inline">\(g\)</span>. For the length estimate the proof
+considers submodules of cocycles vanishing above <span
+class="math inline">\(\ell\)</span> on the cyclotomic kernel in each
+decomposition group when <span class="math inline">\(e &gt; 0\)</span>,
+and on inertia when <span class="math inline">\(e = 0\)</span>,
+vanishing at <span class="math inline">\(s_{w_j}\)</span> and <span
+class="math inline">\(s&#39;_{w_j}\)</span> for every <span
+class="math inline">\(j\)</span>, and with <span
+class="math inline">\(z(\mathrm{Fr}_{w_j}) =
+z(\mathrm{Fr}&#39;_{w_j})\)</span> whenever <span
+class="math inline">\(e_j = e\)</span>.</p>
+<div id="pr:even-kernel" class="problem" data-progress-ids="[&quot;20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.tex#pr:even-kernel&quot;]">
+<p><strong>Problem 84.4.1</strong>. Let the places be as in Theorem <a
+href="#thm:triangle" data-reference-type="ref"
+data-reference="thm:triangle">84.3.1</a>, <span class="math inline">\(0 &lt;
+e &lt; t&#39;\)</span>, and let <span class="math inline">\(\mathcal
+Z\)</span> be an <span class="math inline">\(\mathcal{O}\)</span>-module
+of locally constant cocycles for <span
+class="math inline">\(\chi_{\mathrm{cyc}}^{-e}\)</span> in <span
+class="math inline">\(\mathcal{O}/\ell^\nu\)</span>, unramified off
+<span class="math inline">\(\ell\)</span>, vanishing on the elements of
+<span class="math inline">\(\ker\chi_{\mathrm{cyc}}\)</span> in the
+decomposition groups above <span class="math inline">\(\ell\)</span>,
+with <span class="math inline">\((\chi_{\mathrm{cyc}}(\gamma_1)^e -
+1)z(\gamma_1^{-1}) = 0\)</span> and <span
+class="math inline">\(z^+(\mathrm{Fr}_{w_j}) = 0\)</span> whenever <span
+class="math inline">\(e_j = e\)</span>. Then <span
+class="math inline">\(z \mapsto z^c - z\)</span> maps <span
+class="math inline">\(\mathcal Z\)</span> to <span
+class="math inline">\(\mathrm{Sha}^{\mathrm{odd}}_\ell(E, \mathcal{O};
+e, \nu)\)</span>, its kernel is killed by <span
+class="math inline">\(\ell^{yh}\)</span>, and <span
+class="math inline">\(\operatorname{len}\bigl(\mathcal Z/\mathcal
+Z[\ell^{yh}]\bigr) \le
+\operatorname{len}\mathrm{Sha}^{\mathrm{odd}}_\ell(E,\mathcal{O};e,\nu)\)</span>,
+where <span class="math inline">\(\mathcal Z[\ell^{yh}] = \{z \in
+\mathcal Z : \ell^{yh}z = 0\}\)</span>.</p>
+</div>
+<div id="def:lambda" class="definition">
+<p><strong>Definition 84.4.1</strong>. Call the indeterminates <span
+class="math inline">\(\lambda_j\)</span> for <span
+class="math inline">\(j \in \mathcal{K}\)</span> the <em>first-order
+variables</em>; for <span class="math inline">\(A \subseteq
+\mathcal{K}\)</span>, <span class="math inline">\(\lambda_A := \prod_{j
+\in A}\lambda_j\)</span>.</p>
+</div>
+<p>For <span class="math inline">\(0 \le e &lt; t&#39;\)</span> let
+<span class="math inline">\(I_e := \{j : e_j = e\}\)</span> and <span
+class="math inline">\(\Lambda := \mathcal{O}[\lambda_j : j \in
+\mathcal{K}]\)</span>. Let <span class="math inline">\(n_{\det}\)</span>
+be the number of remaining coordinates of the character block, <span
+class="math inline">\(\mathrm{Rows}_e \subseteq
+\Lambda^{n_{\det}}\)</span> the module of the tied rows after evaluation
+at <span class="math inline">\(\chi_{\mathrm{cyc}}^{-e}\)</span> and
+elimination of the other coordinates, and <span
+class="math inline">\(\mathfrak a\)</span> the ideal generated by the
+monomials that do not divide <span
+class="math inline">\(\lambda_{\mathcal{K}}\)</span>. For <span
+class="math inline">\(e &gt; 0\)</span> the triangle cost uses
+Theorem <a href="#thm:triangle" data-reference-type="ref"
+data-reference="thm:triangle">84.3.1</a>(d) and Problem <a
+href="#pr:even-kernel" data-reference-type="ref"
+data-reference="pr:even-kernel">84.4.1</a>; for <span
+class="math inline">\(e = 0\)</span> there are no indices of type zero,
+and the cocycles in question are everywhere unramified homomorphisms.
+Applying a Fitting ideal estimate to the projected tied rows with these
+costs, the proof finds that the zeroth Fitting ideal of <span
+class="math inline">\(\Lambda^{n_{\det}}/\bigl(\mathrm{Rows}_e +
+(\mathfrak a : \lambda_{\{i : e_i &lt;
+e\}})\Lambda^{n_{\det}}\bigr)\)</span> contains <span
+class="math inline">\(\mathfrak F_e\,\lambda_{I_e}\)</span> for some
+<span class="math inline">\(\mathfrak F_e \in \Lambda\)</span> with
+<span class="math display">\[\operatorname{ord}_{\mathcal{O}} \mathfrak
+F_e(0) \le \mathrm{cost}_e + (\#I_e +
+n_{\det})\,\operatorname{ord}_{\mathcal{O}} \ell^{yh} ,\]</span> where
+<span class="math inline">\(\mathrm{cost}_e\)</span> bounds the sum of
+two lengths: of the module of cocycles for <span
+class="math inline">\(\chi_{\mathrm{cyc}}^{-e}\)</span> modulo <span
+class="math inline">\(\ell^\nu\)</span> obeying the linear relations
+among the <span class="math inline">\((U_\pi(g) - 1)_\pi\)</span>,
+modulo its submodule obeying the crystalline relations above <span
+class="math inline">\(\ell\)</span>; and of <span
+class="math inline">\(\mathrm{Sha}^{\mathrm{odd}}_\ell(E,\mathcal{O};e,\nu)\)</span>
+(at <span class="math inline">\(e = 0\)</span>, the continuous
+everywhere unramified homomorphisms). <em>Status</em>: read from the
+proof. Ramification at <span class="math inline">\(w_j\)</span> has
+become the factor <span class="math inline">\(\lambda_j\)</span>; no
+length of even classes appears.</p>
+<p>To use only the coefficient of <span
+class="math inline">\(\lambda_{\mathcal{K}}\)</span>, the proof works at
+level raised at the <span class="math inline">\(w_j\)</span>, where
+<span class="math inline">\(\mathrm{Nm}_j\)</span> is the sum of the
+actions of <span
+class="math inline">\(\mathrm{GL}_{n&#39;}(k_{w_j})\)</span> and <span
+class="math inline">\(\partial_j\)</span> is a first-order operator at
+<span class="math inline">\(w_j\)</span>; it uses the coefficients of
+the product of the commuting factors <span
+class="math inline">\(\mathrm{Nm}_j + \lambda_j\partial_j\)</span>.</p>
+<div id="pr:top-coefficient" class="problem" data-progress-ids="[&quot;20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.tex#pr:top-coefficient&quot;]">
+<p><strong>Problem 84.4.2</strong>. Let <span
+class="math inline">\(\mathrm{Nm}_j, \partial_j\)</span> (<span
+class="math inline">\(j \in \mathcal{K}\)</span>) be pairwise commuting
+operators, and write <span class="math inline">\(\mathrm{Nm}_B\)</span>,
+<span class="math inline">\(\partial_B\)</span> for products over <span
+class="math inline">\(B \subseteq \mathcal{K}\)</span>. Then <span
+class="math inline">\(\prod_j(\mathrm{Nm}_j + \lambda_j\partial_j) =
+\sum_{A}\lambda_A\,\mathbf N_A\)</span> with <span
+class="math inline">\(\mathbf N_A :=
+\partial_A\mathrm{Nm}_{\mathcal{K}\setminus A}\)</span>, and <span
+class="math inline">\(\mathbf N_\varnothing =
+\mathrm{Nm}_{\mathcal{K}}\)</span>. Hence, if <span
+class="math inline">\(\mathfrak f_A\)</span> (<span
+class="math inline">\(A \subseteq \mathcal{K}\)</span>) are operators
+with <span class="math inline">\(\mathfrak f_A = 0\)</span> for <span
+class="math inline">\(A \ne \mathcal{K}\)</span>, then <span
+class="math inline">\(\sum_A \mathbf N_{\mathcal{K}\setminus
+A}\,\mathfrak f_A = \mathrm{Nm}_{\mathcal{K}} \mathfrak
+f_{\mathcal{K}}\)</span>.</p>
+</div>
+<div id="pr:transversal" class="problem" data-progress-ids="[&quot;20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.tex#pr:transversal&quot;]">
+<p><strong>Problem 84.4.3</strong>. Let a finite group <span
+class="math inline">\(H\)</span> act on a finite set <span
+class="math inline">\(\Omega\)</span>, with stabilizer orders dividing
+<span class="math inline">\(n_{\mathrm{st}}\)</span>, and on functions
+<span class="math inline">\(\varphi \colon \Omega \to
+\mathbb{Z}\)</span> by <span class="math inline">\((h\varphi)(x) :=
+\varphi(h^{-1}x)\)</span>. There is a function <span
+class="math inline">\(\omega \colon \Omega \to \mathbb{Z}\)</span> such
+that the operator <span class="math inline">\(\Psi\)</span> of
+multiplication by <span class="math inline">\(\omega\)</span> satisfies
+<span class="math inline">\(\sum_{h \in H} h^{-1}\Psi h =
+n_{\mathrm{st}}\)</span>. If <span class="math inline">\(H\)</span> acts
+freely, <span class="math inline">\(\omega\)</span> can be <span
+class="math inline">\(n_{\mathrm{st}}\)</span> times the indicator of a
+set of orbit representatives.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T080900--black-box-galois-representations-of-eigenforms-ii__workbook.html">Chapter 35</a></div><!-- used-in:end -->
+</div>
+<p>In the proof <span class="math inline">\(\partial_j\)</span> comes
+from a parahoric Hecke calculation that uses local–global compatibility
+at parahoric level, and the comparison with the product of the norms
+uses the integral operator modelled in Problem <a href="#pr:transversal"
+data-reference-type="ref" data-reference="pr:transversal">84.4.3</a>
+(Theorem <a href="20261126T080900--black-box-galois-representations-of-eigenforms-ii__workbook.html#thm:higman" data-reference-type="ref"
+data-reference="bh-thm:higman">35.3.1</a> gives the integral
+operator at Taylor–Wiles places). <em>Status</em>: read from the proof.
+One more cost would seem to appear: the proof removes the base-level
+systems <span class="math inline">\(\pi\)</span> for which <span
+class="math inline">\(U_\pi\)</span> is not a weak lift (Definition <a
+href="20261126T060400--congruences-bounded-by-lengths__workbook.html#def:weak" data-reference-type="ref"
+data-reference="n1-def:weak">83.3.1</a>) by an integral
+operator.</p>
+<div id="pr:weak" class="problem" data-progress-ids="[&quot;20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.tex#pr:weak&quot;]">
+<p><strong>Problem 84.4.4</strong>. For finitely many systems <span
+class="math inline">\(\pi_k\)</span> that are not weak lifts choose
+<span class="math inline">\(g_k\)</span> with <span
+class="math inline">\(b_k := \det(1 - U_{\pi_k}(g_k)) \ne 0\)</span>,
+and let <span class="math inline">\(\beta_k(\pi) := \det(1 -
+U_\pi(g_k))\)</span> (in this sheet). Then <span
+class="math inline">\(\delta_0 := \prod_k(b_k - \beta_k)\)</span>
+vanishes at every <span class="math inline">\(\pi_k\)</span> and equals
+<span class="math inline">\(n_0 := \prod_k b_k\)</span> at every weak
+lift. For the two classes at <span class="math inline">\(11\)</span>,
+over <span class="math inline">\(\mathbb{Q}\)</span> with <span
+class="math inline">\(\ell = 5\)</span>, let <span
+class="math inline">\(g\)</span> be an arithmetic Frobenius element at
+<span class="math inline">\(2\)</span>, <span class="math inline">\(U =
+1 \oplus \chi_{\mathrm{cyc}}\)</span> on the constant function (a weak
+lift) and <span class="math inline">\(U = \rho_{11}\)</span> on <span
+class="math inline">\(\varphi_{11}\)</span> (Problem <a
+href="20261126T070000--clearing-a-projection-two-classes__workbook.html#pr:eleven-adjoint" data-reference-type="ref"
+data-reference="cp-pr:eleven-adjoint">81.2.1</a>), with
+<span class="math inline">\(\det\rho_{11} =
+\chi_{\mathrm{cyc}}\)</span>. Let <span
+class="math inline">\(\beta\)</span> also denote the operator acting on
+each of these lines by its value at the corresponding system. Then <span
+class="math inline">\(b = \det(1 - \rho_{11}(g)) = 5\)</span>, <span
+class="math inline">\(\beta = 3 - B(2)\)</span>, and <span
+class="math inline">\(b - \beta = B(2) + 2 =
+5\,\mathrm{pr}\)</span>.</p>
+</div>
+<p>In Problem <a href="#pr:weak" data-reference-type="ref"
+data-reference="pr:weak">84.4.4</a> the factor <span
+class="math inline">\(5\)</span> is an <span
+class="math inline">\(n_0\)</span>. In the application the
+characteristic polynomials of the finitely many base-level systems are
+integral, so each <span class="math inline">\(b_k\)</span> is a nonzero
+element of the valuation ring, and it costs nothing: the precision <span
+class="math inline">\(\nu &gt; 0\)</span> is chosen after the <span
+class="math inline">\(g_k\)</span> and <span
+class="math inline">\(\mathcal{K}\)</span>, and before the places, so
+that <span class="math inline">\(2n&#39;!\,(n_0\mathcal
+N^2)^{\#\mathcal{K}+1}\)</span> divides <span
+class="math inline">\(\ell^\nu\)</span> in the valuation ring; the
+operator congruence at the raised level holds modulo <span
+class="math inline">\(\ell^\nu/(2n&#39;!)\)</span>, a multiple of <span
+class="math inline">\((n_0\mathcal N^2)^{\#\mathcal{K}+1}\)</span>, and
+the latter factor is cancelled on an integral vector. <em>Status</em>:
+read from the proof. So, as Definition <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:clearing-bound"
+data-reference-type="ref"
+data-reference="dp-def:clearing-bound">80.1.1</a>
+shows, the clearing bound has the odd-class term <span
+class="math inline">\(t\,\operatorname{val}_\ell(X_{\mathrm{odd}})\)</span>,
+the separation term <span
+class="math inline">\(\bigl((4t+1)(\Delta/2)^{22} +
+\Delta/2\bigr)n_\ell\)</span>, and no term for even classes.</p>
+<h4 id="what-this-sheet-establishes.">What this sheet establishes.</h4>
+<p>In the model over <span class="math inline">\(\mathbb{Q}\)</span> the
+triangle argument runs in full: a class that vanishes at <span
+class="math inline">\(3\)</span> and at the Frobenius element of the
+first prime is unramified at both primes, and each of the two
+requirements on the primes is needed (Problems <a
+href="#pr:toy-triangle" data-reference-type="ref"
+data-reference="pr:toy-triangle">84.2.3</a> and <a href="#pr:toy-failure"
+data-reference-type="ref" data-reference="pr:toy-failure">84.2.4</a>). In
+general the sheet proves the steps of the choice of the places that are
+algebra (Problems <a href="#pr:surjective" data-reference-type="ref"
+data-reference="pr:surjective">84.3.1</a>–<a href="#pr:count"
+data-reference-type="ref" data-reference="pr:count">84.3.5</a>), the passage
+from even classes to the odd module (Problem <a href="#pr:even-kernel"
+data-reference-type="ref" data-reference="pr:even-kernel">84.4.1</a>), and
+the two formal steps of the extraction (Problems <a
+href="#pr:top-coefficient" data-reference-type="ref"
+data-reference="pr:top-coefficient">84.4.2</a> and <a href="#pr:transversal"
+data-reference-type="ref" data-reference="pr:transversal">84.4.3</a>). Taken
+from the proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>: Theorem <a
+href="#thm:triangle" data-reference-type="ref"
+data-reference="thm:triangle">84.3.1</a>; the relation count and the
+reciprocity relation behind it; the Fitting estimate for the character
+block; the first-order operators <span
+class="math inline">\(\partial_j\)</span> at the raised level; and the
+choice of the precision. Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:oddsha"
+data-reference-type="ref"
+data-reference="tt-thm:oddsha">27.3.2</a> bounds the odd
+module. Theorem <a href="#thm:triangle" data-reference-type="ref"
+data-reference="thm:triangle">84.3.1</a> supplies the control of even classes
+in the character-block estimate used for the denominator bound of
+Theorem <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#thm:denominators" data-reference-type="ref"
+data-reference="dp-thm:denominators">80.1.1</a>.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span> (namespace
+<code>New.</code> omitted): Theorem <a href="#thm:triangle"
+data-reference-type="ref" data-reference="thm:triangle">84.3.1</a> is
+<code>Selmer.exists_isPrimeTriangle</code>, with conclusion
+<code>Selmer.IsPrimeTriangle</code>; Definition <a href="#def:even"
+data-reference-type="ref" data-reference="def:even">84.1.1</a> is
+<code>Selmer.evenClasses</code>, and Definition <a href="#def:tw"
+data-reference-type="ref" data-reference="def:tw">84.3.1</a> specializes
+<code>Patching.TaylorWilesPlaces</code> to finite index sets and level
+<span class="math inline">\(\ell^\nu\)</span>; the dimension bound is
+<code>Selmer.exists_card_lt_finrank_kummerReductions</code>, reciprocity
+<code>Selmer.IsKummerMap.sum_eq_zero</code>; the bound of Problem <a
+href="#pr:even-kernel" data-reference-type="ref"
+data-reference="pr:even-kernel">84.4.1</a> is
+<code>Selmer.relLength_torsionBy_le_length_shaOdd</code>; the Fitting
+bound for the character block is
+<code>Selmer.exists_mem_fittingIdeal_character</code> (<span
+class="math inline">\(\lambda_j\)</span> is <code>X j</code>); the
+coefficients of the product of the factors <span
+class="math inline">\(\mathrm{Nm}_j + \lambda_j\partial_j\)</span> are
+constructed in the proof of
+<code>Patching.BaseLevel.exists_deformed_norm_family</code>; the removal
+of the other base systems and the choice of precision are in
+<code>Selmer.exists_ellVal_le_and_diagOp_mem_ellIntegralForms</code>.
+For the separately stated inputs see the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/FirstOrder/KummerMaps.lean#L413">definition
+of a Kummer map</a>, the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/FirstOrder/TrianglePrimes.lean#L417">choice
+of the next place</a>, the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/FirstOrder/TateTwistCocycles.lean#L232">triangle
+cost</a>, the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/FirstOrder/AuxiliaryPrimeTie.lean#L449">top-coefficient
+estimate</a>, the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Cyclotomic/OddSha.lean#L264">detecting
+points</a> and the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/FirstOrder/DenominatorBound.lean#L297">application</a>.
+See also the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/FirstOrder/KummerMaps.lean#L423">Kummer
+type</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/FirstOrder/TrianglePrimes.lean#L176">separation
+of exponents</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/GaloisRep/Main/Defs.lean#L192">Frobenius
+data and their filters</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/LocalLoss/Basic.lean#L359">linear
+relations on cocycles</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Congruences/FirstOrder/TiedTraces.lean#L516">parahoric
+compatibility</a> and the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/GaloisRep/TaylorWiles.lean#L778">integral
+averaging operator</a>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secparity">§<a href="#sec:parity"
+data-reference-type="ref" data-reference="sec:parity">84.1</a></h2>
+<dl>
+<dt><a href="#pr:even-odd" data-reference-type="ref"
+data-reference="pr:even-odd">84.1.1</a></dt>
+<dd>
+<p><span class="math inline">\(\chi_{\mathrm{cyc}}(g^c) =
+\chi_{\mathrm{cyc}}(g)\)</span>; expand <span class="math inline">\(z(x
+x^{-1})\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secchoice">§<a href="#sec:choice"
+data-reference-type="ref" data-reference="sec:choice">84.3</a></h2>
+<dl>
+<dt><a href="#pr:two-values" data-reference-type="ref"
+data-reference="pr:two-values">84.3.3</a></dt>
+<dd>
+<p>Both maps are additive on <span
+class="math inline">\(G_\nu\)</span>.</p>
+</dd>
+<dt><a href="#pr:count" data-reference-type="ref"
+data-reference="pr:count">84.3.5</a></dt>
+<dd>
+<p><span class="math inline">\(\alpha^e - \alpha^i\)</span> is a unit
+times <span class="math inline">\(\alpha^{|e-i|} - 1\)</span>. For <span
+class="math inline">\(4\)</span> with <span class="math inline">\(\ell =
+2\)</span>: <span class="math inline">\(\alpha^e \equiv 1 \pmod
+4\)</span> forces <span class="math inline">\(h \ge 2\)</span>; for odd
+<span class="math inline">\(\ell\)</span>, <span
+class="math inline">\(4\)</span> is a unit.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secbuys">§<a href="#sec:buys"
+data-reference-type="ref" data-reference="sec:buys">84.4</a></h2>
+<dl>
+<dt><a href="#pr:even-kernel" data-reference-type="ref"
+data-reference="pr:even-kernel">84.4.1</a></dt>
+<dd>
+<p>On the kernel <span class="math inline">\(z^+ = 2z\)</span>; use the
+Frobenius evaluations of Theorem <a href="#thm:triangle"
+data-reference-type="ref" data-reference="thm:triangle">84.3.1</a>(b), then
+its detection assertion for <span
+class="math inline">\(4(\chi_{\mathrm{cyc}}(\gamma_1)^e -
+1)z\)</span>.</p>
+</dd>
+<dt><a href="#pr:weak" data-reference-type="ref"
+data-reference="pr:weak">84.4.4</a></dt>
+<dd>
+<p>At a weak lift <span class="math inline">\(\beta_k = 0\)</span>. For
+the example use Problem <a href="20261126T070000--clearing-a-projection-two-classes__workbook.html#pr:eleven-pr"
+data-reference-type="ref"
+data-reference="cp-pr:eleven-pr">81.2.2</a>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-ADT"><span class="bib-label">[ADT]</span> J. S. Milne, <em>Arithmetic Duality Theorems</em>, 2nd ed., BookSurge, 2006.</p>
+<p id="ref-CHT"><span class="bib-label">[CHT]</span> L. Clozel, M. Harris and R. Taylor, <em>Automorphy for some <span class="math inline">\(\ell\)</span>-adic lifts of automorphic mod <span class="math inline">\(\ell\)</span> Galois representations</em>, Publ. Math. IHÉS <strong>108</strong> (2008), 1–181.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Ne"><span class="bib-label">[Ne]</span> J. Neukirch, <em>Algebraic Number Theory</em>, Grundlehren 322, Springer, 1999.</p>
+<p id="ref-Wi"><span class="bib-label">[Wi]</span> A. Wiles, <em>Modular elliptic curves and Fermat’s Last Theorem</em>, Ann. of Math. <strong>141</strong> (1995), 443–551.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

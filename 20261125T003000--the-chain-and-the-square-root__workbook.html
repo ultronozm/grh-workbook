@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-s12elO8oa+j8XNKcuiK3JxDEOVlclNO+qkozjnDvXTM=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>The chain and the square root</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"F":"\\mathbb{F}","Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","R":"\\mathbb{R}","C":"\\mathbb{C}","covol":"\\operatorname{covol}","rk":"\\operatorname{rk}","Naff":"N^{\\mathrm{aff}}","rem":"\\mathrm{rem}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="8">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261125T003000--the-chain-and-the-square-root__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-26 19:19:35
+      <a href="20261125T003000--the-chain-and-the-square-root__workbook.tex" class="my-link">tex</a>
+      <a href="20261125T003000--the-chain-and-the-square-root__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261125T003000--the-chain-and-the-square-root__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">The chain and the square root <a class="stable-tag" href="tag/2289.html" title="Stable tag: cite as Tag 2289">Tag 2289</a></h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:aux" id="toc-sec:aux">§8.1. The auxiliary polynomial</a></li>
+<li><a href="#sec:order" id="toc-sec:order">§8.2. Vanishing to order \(\ell\)</a></li>
+<li><a href="#sec:count" id="toc-sec:count">§8.3. The count and the balance</a></li>
+<li><a href="#sec:chain" id="toc-sec:chain">§8.4. The chain inequality</a></li>
+<li><a href="#sec:budget" id="toc-sec:budget">§8.5. The budget \(x/m + m\)</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secaux" id="toc-secaux">§8.1</a></li>
+<li><a href="#secorder" id="toc-secorder">§8.2</a></li>
+<li><a href="#seccount" id="toc-seccount">§8.3</a></li>
+<li><a href="#secchain" id="toc-secchain">§8.4</a></li>
+<li><a href="#secbudget" id="toc-secbudget">§8.5</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Finite fields and Euler’s criterion; polynomials over a field, their
+roots and multiplicities; a homogeneous linear system with more unknowns
+than equations has a nonzero solution. Lattices in a Euclidean space and
+their covolumes <span class="citation"
+data-cites="Ne">[<a href="#ref-Ne">Ne</a>, Ch. I, §4]</span>; the adjoint of
+a linear map between inner product spaces. The von Mangoldt function
+<span class="math inline">\(\Lambda\)</span> and Mertens’ estimate <span
+class="math inline">\(\sum_{n \le x} \Lambda(n)/n = \log x +
+O(1)\)</span>. The problems in Sections <a href="#sec:aux"
+data-reference-type="ref" data-reference="sec:aux">8.1</a>–<a
+href="#sec:chain" data-reference-type="ref"
+data-reference="sec:chain">8.4</a> require no earlier chapter; Chapter <a
+href="20261125T007000--stepanov-without-multiplicity__workbook.html#chap" data-reference-type="ref"
+data-reference="sw-chap">7</a>, <em>Stepanov without
+multiplicity</em>, is their motivation: one determinant, without
+multiplicity, is the case <span class="math inline">\(m = 1\)</span> of
+the chain. Section <a href="#sec:budget" data-reference-type="ref"
+data-reference="sec:budget">8.5</a> uses the function <span
+class="math inline">\(G\)</span> of <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:G"
+data-reference-type="eqref" data-reference="zr-eq:G">(1)</a> and
+Theorem <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#thm:one-sided" data-reference-type="ref"
+data-reference="zr-thm:one-sided">1.2.1</a> of Chapter <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#chap" data-reference-type="ref"
+data-reference="zr-chap">1</a>. The closing paragraphs of
+Sections <a href="#sec:chain" data-reference-type="ref"
+data-reference="sec:chain">8.4</a> and <a href="#sec:budget"
+data-reference-type="ref" data-reference="sec:budget">8.5</a> point to
+Chapters <a href="20261126T030100--a-twist-for-each-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="c6-chap">6</a>, <a href="20261126T030300--the-data__workbook.html#chap"
+data-reference-type="ref" data-reference="c32-chap">36</a>, <a
+href="20261126T030700--the-determinant-of-a-chain__workbook.html#chap" data-reference-type="ref"
+data-reference="c37-chap">68</a> and <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.html#chap"
+data-reference-type="ref" data-reference="c41-chap">38</a>;
+Problem <a href="#pr:losses" data-reference-type="ref"
+data-reference="pr:losses">8.5.5</a> states what it needs as
+hypotheses.</p>
+<h1 id="sec:aux">§8.1. The auxiliary polynomial <a class="stable-tag" href="tag/228A.html" title="Stable tag: cite as Tag 228A">Tag 228A</a></h1>
+<p>How can a polynomial show that a set of about <span
+class="math inline">\(q/2\)</span> elements of <span
+class="math inline">\(\mathbb{F}_q\)</span> has at most <span
+class="math inline">\(q/2 + O(\sqrt q)\)</span> elements? Stepanov’s
+answer <span class="citation"
+data-cites="Ste69">[<a href="#ref-Ste69">Ste69</a>]</span> is to make it vanish
+to high order on the set. We follow his method for the curve <span
+class="math inline">\(y^2 = f(x)\)</span>.</p>
+<p>Let <span class="math inline">\(q\)</span> be a power of an odd prime
+<span class="math inline">\(p\)</span>, and let <span
+class="math inline">\(f \in \mathbb{F}_q[X]\)</span> have odd degree
+<span class="math inline">\(d = 2g + 1\)</span> with <span
+class="math inline">\(3 \le d &lt; q\)</span>. Let <span
+class="math display">\[c := \frac{q-1}{2} , \qquad D := \frac{q-d}{2}
+.\]</span> For <span class="math inline">\(\eta \in \{1, -1\}\)</span>
+let <span class="math inline">\(S_\eta := \{x \in \mathbb{F}_q : f(x)^c
+= \eta\}\)</span>, let <span class="math inline">\(S_0 := \{x \in
+\mathbb{F}_q : f(x) = 0\}\)</span>, and let <span
+class="math inline">\(N^{\mathrm{aff}}\)</span> be the number of
+solutions <span class="math inline">\((x, y) \in \mathbb{F}_q^2\)</span>
+of <span class="math inline">\(y^2 = f(x)\)</span>.</p>
+<div id="pr:euler" class="problem" data-progress-ids="[&quot;228B&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:euler&quot;]"><a class="stable-tag" href="tag/228B.html" title="Stable tag: cite as Tag 228B">Tag 228B</a>
+<p><strong>Problem 8.1.1</strong>. <span
+class="math inline">\(\mathbb{F}_q\)</span> is the disjoint union of
+<span class="math inline">\(S_1\)</span>, <span
+class="math inline">\(S_{-1}\)</span> and <span
+class="math inline">\(S_0\)</span>, and <span
+class="math inline">\(N^{\mathrm{aff}}= 2\lvert S_1 \rvert + \lvert S_0
+\rvert\)</span>. For <span class="math inline">\(q = 7\)</span> and
+<span class="math inline">\(f = X^3 - X\)</span>, <span
+class="math inline">\(S_1 = \{4, 5\}\)</span>, <span
+class="math inline">\(S_{-1} = \{2, 3\}\)</span> and <span
+class="math inline">\(N^{\mathrm{aff}}= 7\)</span>.</p>
+</div>
+<p>Hence <span class="math inline">\(N^{\mathrm{aff}}- q = \lvert S_1
+\rvert - \lvert S_{-1} \rvert\)</span>, and a bound <span
+class="math inline">\(\lvert S_\eta \rvert \le q/2 + B\)</span> for both
+signs gives <span class="math inline">\(\lvert N^{\mathrm{aff}}- q
+\rvert \le 2B + d\)</span>. For squarefree <span
+class="math inline">\(f\)</span>, Weil’s theorem <span class="citation"
+data-cites="Wei48">[<a href="#ref-Wei48">Wei48</a>]</span> gives <span
+class="math inline">\(\lvert N^{\mathrm{aff}}- q \rvert \le 2g\sqrt
+q\)</span>.</p>
+<p>The principle is the count of zeros against the degree: if <span
+class="math inline">\(F \in \mathbb{F}_q[X]\)</span> is nonzero and
+vanishes to order at least <span class="math inline">\(\ell\)</span> at
+every point of <span class="math inline">\(S_\eta\)</span>, then <span id="eq:count"
+class="math display">\[\begin{equation}
+\label{eq:count}\tag{1}
+  \ell\, \lvert S_\eta \rvert \le \deg F .
+\end{equation}\]</span> The polynomials <span class="math inline">\(f^c
+- \eta\)</span> and <span class="math inline">\(X^q - X\)</span> vanish
+on <span class="math inline">\(S_\eta\)</span>, and give <span
+class="math inline">\(\lvert S_\eta \rvert \le dc\)</span> and <span
+class="math inline">\(\lvert S_\eta \rvert \le q\)</span>. To reach
+<span class="math inline">\(q/2\)</span> one needs <span
+class="math inline">\(\deg F/\ell\)</span> close to <span
+class="math inline">\(q/2\)</span>. Stepanov combines the two
+polynomials. Let <span class="math inline">\(J \ge 1\)</span> be an
+integer, and let <span class="math inline">\(r_j, s_j \in
+\mathbb{F}_q[X]\)</span>, for <span class="math inline">\(0 \le j &lt;
+J\)</span>, have degree less than <span class="math inline">\(D\)</span>
+and be not all zero. Define the <em>auxiliary polynomial</em> by <span id="eq:aux"
+class="math display">\[\begin{equation}
+\label{eq:aux}\tag{2}
+  F := \sum_{j&lt;J} \bigl( r_j + s_j f^c \bigr) X^{jq} .
+\end{equation}\]</span></p>
+<div id="pr:degE" class="problem" data-progress-ids="[&quot;228C&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:degE&quot;]"><a class="stable-tag" href="tag/228C.html" title="Stable tag: cite as Tag 228C">Tag 228C</a>
+<p><strong>Problem 8.1.2</strong>. <span class="math inline">\(\deg f^c = gq
++ D\)</span>, and <span class="math inline">\(2D &lt; q\)</span>.</p>
+</div>
+<div id="pr:nonzero" class="problem" data-progress-ids="[&quot;228D&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:nonzero&quot;]"><a class="stable-tag" href="tag/228D.html" title="Stable tag: cite as Tag 228D">Tag 228D</a>
+<p><strong>Problem 8.1.3</strong>. The nonzero terms <span
+class="math inline">\(r_j X^{jq}\)</span> and <span
+class="math inline">\(s_j f^c X^{jq}\)</span> of <a href="#eq:aux"
+data-reference-type="eqref" data-reference="eq:aux">(2)</a> have
+pairwise distinct degrees. Hence <span class="math inline">\(F \ne
+0\)</span> and <span class="math inline">\(\deg F \le (J + g)q - d -
+1\)</span>.</p>
+</div>
+<p>For <span class="math inline">\(x \in S_\eta\)</span> we have <span
+class="math inline">\(x^{jq} = x^j\)</span> and <span
+class="math inline">\(f(x)^c = \eta\)</span>, so <span
+class="math inline">\(F(x) = C_0(x)\)</span>, where <span
+class="math display">\[C_0 := \sum_{j&lt;J} (r_j + \eta s_j) X^j
+.\]</span> If <span class="math inline">\(C_0 = 0\)</span>, then <span
+class="math inline">\(F\)</span> vanishes on all of <span
+class="math inline">\(S_\eta\)</span>.</p>
+<div id="pr:order-one" class="problem" data-progress-ids="[&quot;228E&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:order-one&quot;]"><a class="stable-tag" href="tag/228E.html" title="Stable tag: cite as Tag 228E">Tag 228E</a>
+<p><strong>Problem 8.1.4</strong>. If <span class="math inline">\(C_0 =
+0\)</span>, then <span class="math inline">\(\deg F \ge q\)</span>. If
+<span class="math inline">\(D \ge 2\)</span> and <span
+class="math inline">\(J \ge 2\)</span>, the tuple <span
+class="math inline">\(r_0 = -X\)</span>, <span class="math inline">\(r_1
+= 1\)</span>, all others zero, gives <span class="math inline">\(F = X^q
+- X\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T007000--stepanov-without-multiplicity__workbook.html">Chapter 7</a></div><!-- used-in:end -->
+</div>
+<p>So the gain must come from the order of vanishing.</p>
+<h1 id="sec:order">§8.2. Vanishing to order <span
+class="math inline">\(\ell\)</span> <a class="stable-tag" href="tag/228F.html" title="Stable tag: cite as Tag 228F">Tag 228F</a></h1>
+<p>In characteristic <span class="math inline">\(p\)</span> the
+derivative of order <span class="math inline">\(p\)</span> vanishes
+identically, so one uses Hasse derivatives. For <span
+class="math inline">\(G \in \mathbb{F}_q[X]\)</span> define <span
+class="math inline">\(H^k G \in \mathbb{F}_q[X]\)</span> by <span
+class="math display">\[G(X + Y) = \sum_{k \ge 0} (H^k G)(X)\, Y^k \qquad
+\text{in } \mathbb{F}_q[X, Y] .\]</span></p>
+<div id="pr:hasse" class="problem" data-progress-ids="[&quot;228G&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:hasse&quot;]"><a class="stable-tag" href="tag/228G.html" title="Stable tag: cite as Tag 228G">Tag 228G</a>
+<p><strong>Problem 8.2.1</strong>. For <span class="math inline">\(0 \le k
+\le n\)</span>, <span class="math inline">\(H^k(X^n) = \binom{n}{k}
+X^{n-k}\)</span>, and <span class="math inline">\(H^k(X^n) = 0\)</span>
+for <span class="math inline">\(k &gt; n\)</span>. Also <span
+class="math inline">\(H^k(G_1 G_2) = \sum_{i \le k} H^i G_1 \cdot
+H^{k-i} G_2\)</span>. For <span class="math inline">\(\alpha \in
+\mathbb{F}_q\)</span>, <span class="math inline">\((X -
+\alpha)^\ell\)</span> divides <span class="math inline">\(G\)</span> if
+and only if <span class="math inline">\((H^k G)(\alpha) = 0\)</span> for
+all <span class="math inline">\(k &lt; \ell\)</span>.</p>
+</div>
+<div id="pr:frobenius" class="problem" data-progress-ids="[&quot;228H&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:frobenius&quot;]"><a class="stable-tag" href="tag/228H.html" title="Stable tag: cite as Tag 228H">Tag 228H</a>
+<p><strong>Problem 8.2.2</strong>. <span class="math inline">\((X + Y)^{jq}
+= (X^q + Y^q)^j\)</span>. Hence <span class="math inline">\(H^k(G
+X^{jq}) = (H^k G) X^{jq}\)</span> for <span class="math inline">\(k &lt;
+q\)</span>.</p>
+</div>
+<p>To differentiate <span class="math inline">\(f^c\)</span>, write
+<span class="math inline">\(f(X + Y)^c = f(X)^c \bigl( f(X+Y)/f(X)
+\bigr)^c\)</span> and define <span class="math inline">\(U_i \in
+\mathbb{F}_q(X)\)</span> by <span class="math display">\[\Bigl(
+\frac{f(X + Y)}{f(X)} \Bigr)^c = \sum_{i \ge 0} \frac{U_i}{f^i}\, Y^i
+\qquad \text{in } \mathbb{F}_q(X)[[Y]] .\]</span></p>
+<div id="pr:Ui" class="problem" data-progress-ids="[&quot;228J&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:Ui&quot;]"><a class="stable-tag" href="tag/228J.html" title="Stable tag: cite as Tag 228J">Tag 228J</a>
+<p><strong>Problem 8.2.3</strong>. Each <span
+class="math inline">\(U_i\)</span> is a polynomial of degree at most
+<span class="math inline">\(i(d-1)\)</span>. Moreover <span
+class="math inline">\(U_0 = 1\)</span> and <span
+class="math inline">\(U_1 = c f&#39;\)</span>.</p>
+</div>
+<p>For <span class="math inline">\(k \ge 0\)</span> let <span id="eq:Ck"
+class="math display">\[\begin{equation}
+\label{eq:Ck}\tag{3}
+  C_k := \sum_{j&lt;J} \Bigl( f^k H^k r_j + \eta \sum_{i \le k} f^{k-i}
+U_i\, H^{k-i} s_j \Bigr) X^j .
+\end{equation}\]</span> For <span class="math inline">\(k = 0\)</span>
+this is the polynomial <span class="math inline">\(C_0\)</span> of
+Section <a href="#sec:aux" data-reference-type="ref"
+data-reference="sec:aux">8.1</a>.</p>
+<div id="pr:jet" class="problem" data-progress-ids="[&quot;228K&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:jet&quot;]"><a class="stable-tag" href="tag/228K.html" title="Stable tag: cite as Tag 228K">Tag 228K</a>
+<p><strong>Problem 8.2.4</strong>. Let <span class="math inline">\(\alpha
+\in S_\eta\)</span>, so that <span class="math inline">\(f(\alpha) \ne
+0\)</span>, and let <span class="math inline">\(k &lt; q\)</span>. Then
+<span class="math inline">\((H^k F)(\alpha) = f(\alpha)^{-k}
+C_k(\alpha)\)</span>.</p>
+</div>
+<div id="pr:degCk" class="problem" data-progress-ids="[&quot;228L&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:degCk&quot;]"><a class="stable-tag" href="tag/228L.html" title="Stable tag: cite as Tag 228L">Tag 228L</a>
+<p><strong>Problem 8.2.5</strong>. <span class="math inline">\(\deg C_k \le
+D + J - 2 + k(d-1)\)</span>.</p>
+</div>
+<p>By Problems <a href="#pr:hasse" data-reference-type="ref"
+data-reference="pr:hasse">8.2.1</a> and <a href="#pr:jet"
+data-reference-type="ref" data-reference="pr:jet">8.2.4</a>, if <span
+class="math inline">\(\ell \le q\)</span> and <span id="eq:conditions"
+class="math display">\[\begin{equation}
+\label{eq:conditions}\tag{4}
+  C_0 = C_1 = \dots = C_{\ell-1} = 0 ,
+\end{equation}\]</span> then <span class="math inline">\(F\)</span>
+vanishes to order at least <span class="math inline">\(\ell\)</span> at
+every point of <span class="math inline">\(S_\eta\)</span>, whatever
+<span class="math inline">\(S_\eta\)</span> is.</p>
+<h1 id="sec:count">§8.3. The count and the balance <a class="stable-tag" href="tag/228M.html" title="Stable tag: cite as Tag 228M">Tag 228M</a></h1>
+<div id="pr:siegel" class="problem" data-progress-ids="[&quot;228N&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:siegel&quot;]"><a class="stable-tag" href="tag/228N.html" title="Stable tag: cite as Tag 228N">Tag 228N</a>
+<p><strong>Problem 8.3.1</strong>. If <span class="math inline">\(2JD &gt;
+\ell(D + J - 1) + (d-1)\ell(\ell-1)/2\)</span>, then there is an
+auxiliary polynomial <a href="#eq:aux" data-reference-type="eqref"
+data-reference="eq:aux">(2)</a> satisfying <a href="#eq:conditions"
+data-reference-type="eqref"
+data-reference="eq:conditions">(4)</a>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:choiceJ">Problem 8.3.2</a></div><!-- used-in:end -->
+</div>
+<div id="pr:choiceJ" class="problem" data-progress-ids="[&quot;228P&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:choiceJ&quot;]"><a class="stable-tag" href="tag/228P.html" title="Stable tag: cite as Tag 228P">Tag 228P</a>
+<p><strong>Problem 8.3.2</strong>. Let <span
+class="math inline">\(\ell\)</span> be an even integer with <span
+class="math inline">\(0 \le \ell &lt; q - d\)</span>, and let <span
+class="math inline">\(J = \ell/2 + t\)</span>. Then <span
+class="math display">\[2JD - \ell(D + J - 1) -
+(d-1)\frac{\ell(\ell-1)}{2} = t\,(q - d - \ell) - \frac{d\ell^2 -
+(d+1)\ell}{2} .\]</span> Hence the hypothesis of Problem <a
+href="#pr:siegel" data-reference-type="ref"
+data-reference="pr:siegel">8.3.1</a> holds if <span class="math inline">\(t
+&gt; d\ell^2/\bigl(2(q - d - \ell)\bigr)\)</span>.</p>
+</div>
+<p>The preceding problems give the following estimate.</p>
+<div id="thm:stepanov" class="theorem"><a class="stable-tag" href="tag/228Q.html" title="Stable tag: cite as Tag 228Q">Tag 228Q</a>
+<p><strong>Theorem 8.3.1</strong> (A bound by Stepanov’s method). <em>Let
+<span class="math inline">\(\ell\)</span> be even with <span
+class="math inline">\(2 \le \ell &lt; q - d\)</span>, and let <span
+class="math inline">\(t := \lfloor d\ell^2/(2(q - d - \ell)) \rfloor +
+1\)</span>. Then, for <span class="math inline">\(\eta = \pm 1\)</span>,
+<span class="math display">\[\lvert S_\eta \rvert \le \frac{q}{2} +
+\frac{(g + t)\, q}{\ell} .\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:no-better">Problem 8.3.4</a>; <a href="20261125T007000--stepanov-without-multiplicity__workbook.html">Chapter 7</a></div><!-- used-in:end -->
+</div>
+<p>This is Stepanov’s method <span class="citation"
+data-cites="Ste69">[<a href="#ref-Ste69">Ste69</a>]</span>; see <span
+class="citation" data-cites="Sch76">[<a href="#ref-Sch76">Sch76</a>]</span> for
+Hasse derivatives. For example, for <span class="math inline">\(q =
+1009\)</span>, <span class="math inline">\(d = 3\)</span> and <span
+class="math inline">\(\ell = 24\)</span> one has <span
+class="math inline">\(t = 1\)</span>, and the bound is <span
+class="math inline">\(588.58\ldots\)</span>; for <span
+class="math inline">\(f = X^3 + X + 1\)</span> the sets have <span
+class="math inline">\(\lvert S_1 \rvert = 516\)</span> and <span
+class="math inline">\(\lvert S_{-1} \rvert = 492\)</span>.</p>
+<div id="pr:sqrtq" class="problem" data-progress-ids="[&quot;228R&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:sqrtq&quot;]"><a class="stable-tag" href="tag/228R.html" title="Stable tag: cite as Tag 228R">Tag 228R</a>
+<p><strong>Problem 8.3.3</strong>. If <span class="math inline">\(q \ge
+16d^2\)</span> and <span class="math inline">\(\ell\)</span> is an even
+integer with <span class="math inline">\(\lvert \ell - \sqrt q \rvert
+\le 1\)</span>, then <span class="math inline">\(\lvert S_\eta \rvert
+\le q/2 + 2d\sqrt q\)</span> for <span class="math inline">\(\eta = \pm
+1\)</span>, and <span class="math inline">\(\lvert N^{\mathrm{aff}}- q
+\rvert \le 4d\sqrt q + d\)</span>.</p>
+</div>
+<p>Where does the square root come from? Write <span
+class="math inline">\((J + g)q - d - 1 = \frac{\ell}{2} q + \bigl((g+1)q
+- d - 1\bigr) + (t - 1) q\)</span>. After division by <span
+class="math inline">\(\ell\)</span> the first term is the main term
+<span class="math inline">\(q/2\)</span>. The second is paid once,
+however high the order. The third comes from the growing number of
+equations of the <span class="math inline">\(k\)</span>th identity,
+through <span class="math inline">\(t - 1 = \lfloor d\ell^2/(2(q - d -
+\ell)) \rfloor\)</span>. For fixed <span
+class="math inline">\(d\)</span> and <span class="math inline">\(d +
+\ell \le q/2\)</span> the error term is <span
+class="math inline">\(O_d(q/\ell + \ell)\)</span>, of the shape <span
+class="math inline">\(q/m + m\)</span>, and the two terms of this upper
+bound balance at <span class="math inline">\(\ell\)</span> of order
+<span class="math inline">\(\sqrt q\)</span>.</p>
+<div id="pr:no-better" class="problem" data-progress-ids="[&quot;228S&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:no-better&quot;]"><a class="stable-tag" href="tag/228S.html" title="Stable tag: cite as Tag 228S">Tag 228S</a>
+<p><strong>Problem 8.3.4</strong>. For every <span
+class="math inline">\(\ell\)</span> as in Theorem <a
+href="#thm:stepanov" data-reference-type="ref"
+data-reference="thm:stepanov">8.3.1</a>, <span class="math inline">\((g +
+t)q/\ell &gt; \sqrt{2gdq}\)</span>.</p>
+</div>
+<p>Thus the error term in Theorem <a href="#thm:stepanov"
+data-reference-type="ref" data-reference="thm:stepanov">8.3.1</a> never
+gives <span class="math inline">\(o(\sqrt q)\)</span>. We expect the
+same for Bombieri’s form <span class="citation"
+data-cites="Bom74">[<a href="#ref-Bom74">Bom74</a>]</span>, but do not prove it
+here.</p>
+<h1 id="sec:chain">§8.4. The chain inequality <a class="stable-tag" href="tag/228T.html" title="Stable tag: cite as Tag 228T">Tag 228T</a></h1>
+<p>What does a chain of <span class="math inline">\(m\)</span> linear
+maps give that one map does not?</p>
+<p>Let <span class="math inline">\(V\)</span> and <span
+class="math inline">\(W\)</span> be Euclidean spaces of the same
+dimension <span class="math inline">\(n \ge 1\)</span>, with lattices
+<span class="math inline">\(L \subset V\)</span> and <span
+class="math inline">\(M \subset W\)</span> of rank <span
+class="math inline">\(n\)</span>. We define the <em>volume</em> of a
+linear map <span class="math inline">\(u \colon V \to W\)</span> to be
+<span class="math inline">\(\det(u^* u)\)</span>, where <span
+class="math inline">\(u^*\)</span> is the adjoint; in orthonormal bases
+it is <span class="math inline">\((\det u)^2\)</span>.</p>
+<div id="pr:one-step" class="problem" data-progress-ids="[&quot;2346&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:one-step&quot;]"><a class="stable-tag" href="tag/2346.html" title="Stable tag: cite as Tag 2346">Tag 2346</a>
+<p><strong>Problem 8.4.1</strong>. Let <span class="math inline">\(u \colon
+V \to W\)</span> be injective, and let <span
+class="math inline">\(\lambda &gt; 0\)</span> be real with <span
+class="math inline">\(u(L) \subseteq \lambda M\)</span>. Then <span
+class="math display">\[n \log \lambda \le \log \operatorname{covol}(L) -
+\log \operatorname{covol}(M) + \tfrac12 \log \det(u^* u) .\]</span> For
+<span class="math inline">\(L = M = \mathbb{Z}\)</span>, <span
+class="math inline">\(u\)</span> the multiplication by <span
+class="math inline">\(6\)</span> and <span class="math inline">\(\lambda
+= 6\)</span>, both sides are <span class="math inline">\(\log
+6\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:stepwise">Problem 8.4.4</a>, <a href="#pr:rank-two">Problem 8.4.5</a>, <a href="#pr:every-step">Problem 8.5.3</a></div><!-- used-in:end -->
+</div>
+<p>Let <span class="math inline">\(m \ge 1\)</span> be an integer, and
+let <span class="math inline">\(V_0, \dots, V_m\)</span> be Euclidean
+spaces of dimension <span class="math inline">\(n\)</span> with lattices
+<span class="math inline">\(L_j \subset V_j\)</span> of rank <span
+class="math inline">\(n\)</span>. Let <span class="math inline">\(u_j
+\colon V_{j-1} \to V_j\)</span> be linear maps and <span
+class="math inline">\(\lambda_j &gt; 0\)</span> real numbers with <span
+class="math inline">\(u_j(L_{j-1}) \subseteq \lambda_j L_j\)</span>, and
+let <span class="math inline">\(\Psi := u_m \circ \dots \circ
+u_1\)</span>.</p>
+<div id="pr:volume-mult" class="problem" data-progress-ids="[&quot;2347&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:volume-mult&quot;]"><a class="stable-tag" href="tag/2347.html" title="Stable tag: cite as Tag 2347">Tag 2347</a>
+<p><strong>Problem 8.4.2</strong>. <span class="math inline">\(\det(\Psi^*
+\Psi) = \prod_{j=1}^m \det(u_j^* u_j)\)</span>, also when some <span
+class="math inline">\(u_j\)</span> is not injective. The identity fails
+for spaces of different dimensions: for <span
+class="math inline">\(u_1(x) = (x, 0)\)</span> from <span
+class="math inline">\(\mathbb{R}\)</span> to <span
+class="math inline">\(\mathbb{R}^2\)</span> and <span
+class="math inline">\(u_2(y, z) = y\)</span> from <span
+class="math inline">\(\mathbb{R}^2\)</span> to <span
+class="math inline">\(\mathbb{R}\)</span> the left side is <span
+class="math inline">\(1\)</span> and the right side is <span
+class="math inline">\(0\)</span>.</p>
+</div>
+<div id="pr:subadd" class="problem" data-progress-ids="[&quot;228V&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:subadd&quot;]"><a class="stable-tag" href="tag/228V.html" title="Stable tag: cite as Tag 228V">Tag 228V</a>
+<p><strong>Problem 8.4.3</strong>. <span class="math inline">\(\Psi(L_0)
+\subseteq \lambda_1 \cdots \lambda_m L_m\)</span>. In particular, if
+<span class="math inline">\(u_j(L_{j-1}) \subseteq p^{e_j} L_j\)</span>
+for each <span class="math inline">\(j\)</span>, then <span
+class="math inline">\(\Psi(L_0) \subseteq p^{e_1 + \dots + e_m}
+L_m\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T016700--divisibility-along-the-chain__workbook.html">Chapter 25</a></div><!-- used-in:end -->
+</div>
+<p>For the composite of the chain we have the following inequality; if
+<span class="math inline">\(\Psi\)</span> is injective, then so is every
+<span class="math inline">\(u_j\)</span>, because all dimensions are
+equal.</p>
+<div id="thm:chain" class="theorem"><a class="stable-tag" href="tag/228W.html" title="Stable tag: cite as Tag 228W">Tag 228W</a>
+<p><strong>Theorem 8.4.1</strong> (Chain inequality). <em>If <span
+class="math inline">\(\Psi\)</span> is injective, then <span
+class="math display">\[n \sum_{j=1}^m \log \lambda_j \le \log
+\operatorname{covol}(L_0) - \log \operatorname{covol}(L_m) + \frac12
+\sum_{j=1}^m \log \det(u_j^* u_j) .\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:stepwise">Problem 8.4.4</a>, <a href="#pr:rank-two">Problem 8.4.5</a>; <a href="20261125T007000--stepanov-without-multiplicity__workbook.html">Chapter 7</a></div><!-- used-in:end -->
+</div>
+<p>The right side uses the two ends and the volume of each step, and the
+ends are paid once: if <span class="math inline">\(\Psi\)</span> is
+injective, <span class="math inline">\(\log \lambda_j \ge \beta\)</span>
+and <span class="math inline">\(\frac{1}{2n} \log \det(u_j^* u_j) \le
+\sigma\)</span> for every <span class="math inline">\(j\)</span>, and
+<span class="math inline">\(\frac1n (\log \operatorname{covol}(L_0) -
+\log \operatorname{covol}(L_m)) \le c_{\mathrm{end}}\)</span>, then
+<span class="math inline">\(\beta \le \sigma +
+c_{\mathrm{end}}/m\)</span>.</p>
+<div id="pr:stepwise" class="problem" data-progress-ids="[&quot;228X&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:stepwise&quot;]"><a class="stable-tag" href="tag/228X.html" title="Stable tag: cite as Tag 228X">Tag 228X</a>
+<p><strong>Problem 8.4.4</strong>. Suppose that every <span
+class="math inline">\(u_j\)</span> is injective. The sum of the
+inequalities of Problem <a href="#pr:one-step" data-reference-type="ref"
+data-reference="pr:one-step">8.4.1</a> for <span class="math inline">\(u_1,
+\dots, u_m\)</span> and <span class="math inline">\(\lambda_1, \dots,
+\lambda_m\)</span> is the inequality of Theorem <a href="#thm:chain"
+data-reference-type="ref" data-reference="thm:chain">8.4.1</a>.</p>
+</div>
+<p>Measured by volumes, then, the intermediate lattices cost nothing.
+The product of the operator norms, by contrast, can strictly exceed the
+operator norm of the composite.</p>
+<div id="pr:rank-two" class="problem" data-progress-ids="[&quot;228Y&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:rank-two&quot;]"><a class="stable-tag" href="tag/228Y.html" title="Stable tag: cite as Tag 228Y">Tag 228Y</a>
+<p><strong>Problem 8.4.5</strong>. Let <span class="math inline">\(w \ge
+2\)</span> be an integer, <span class="math inline">\(L_0 = L_2 =
+\mathbb{Z}^2\)</span> and <span class="math inline">\(L_1 =
+\mathbb{Z}e_1 + \mathbb{Z}w e_2\)</span>, all in <span
+class="math inline">\(\mathbb{R}^2\)</span> with the standard norm, and
+let <span class="math inline">\(u_1(x, y) = (x, wy)\)</span> and <span
+class="math inline">\(u_2(x, y) = (x, y/w)\)</span>. Then <span
+class="math inline">\(\lambda_1 = \lambda_2 = 1\)</span> are the largest
+admissible scalars, <span class="math inline">\(\det(u_1^* u_1) =
+w^2\)</span>, <span class="math inline">\(\det(u_2^* u_2) =
+w^{-2}\)</span>, and the inequalities of Problem <a href="#pr:one-step"
+data-reference-type="ref" data-reference="pr:one-step">8.4.1</a> for <span
+class="math inline">\(u_1\)</span>, <span
+class="math inline">\(u_2\)</span> and of Theorem <a href="#thm:chain"
+data-reference-type="ref" data-reference="thm:chain">8.4.1</a> are
+equalities. But <span class="math inline">\(\lVert u_1 \rVert \, \lVert
+u_2 \rVert = w\)</span>, while <span class="math inline">\(\Psi\)</span>
+is the identity.</p>
+</div>
+<p>A divisibility is often known only on a sublattice. Its index is a
+loss, paid once.</p>
+<div id="pr:index" class="problem" data-progress-ids="[&quot;2348&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:index&quot;]"><a class="stable-tag" href="tag/2348.html" title="Stable tag: cite as Tag 2348">Tag 2348</a>
+<p><strong>Problem 8.4.6</strong>. Suppose that <span
+class="math inline">\(\Psi\)</span> is injective and that <span
+class="math inline">\(\Psi(L_0&#39;) \subseteq \lambda L_m\)</span> for
+a sublattice <span class="math inline">\(L_0&#39; \subseteq L_0\)</span>
+of finite index and a real <span class="math inline">\(\lambda &gt;
+0\)</span>. Then <span class="math display">\[n \log \lambda \le \log
+\operatorname{covol}(L_0) - \log \operatorname{covol}(L_m) + \frac12
+\sum_{j=1}^m \log \det(u_j^* u_j) + \log\, [L_0 : L_0&#39;]
+.\]</span></p>
+</div>
+<p>Theorem <a href="20261126T030100--a-twist-for-each-prime__workbook.html#thm:twist" data-reference-type="ref"
+data-reference="c6-thm:twist">6.2.1</a> gives a related index
+and covolume inequality for a twisted lattice. For the chain of the
+proof, the determinant divided by its value at the trivial twist is the
+product of the corresponding quotients for the single lifts, times a
+correction factor (Theorem <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#thm:main"
+data-reference-type="ref"
+data-reference="c37-thm:main">68.4.1</a>). This factor is a
+power of the norm of the modulus times a product of ratios of absolute
+values of partial Hecke <span class="math inline">\(L\)</span>-values,
+all raised to the dimension of the target forms.</p>
+<p>How precisely must the two ends and the volumes of the steps be
+known?</p>
+<h1 id="sec:budget">§8.5. The budget <span class="math inline">\(x/m +
+m\)</span> <a class="stable-tag" href="tag/228Z.html" title="Stable tag: cite as Tag 228Z">Tag 228Z</a></h1>
+<p>How long should the chain be? Let <span class="math inline">\(G(x) =
+\sum_{n \le x} \Lambda(n) (x/n - 1) - x\log x + (1 + \gamma)x\)</span>
+be the function of <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:G" data-reference-type="eqref"
+data-reference="zr-eq:G">(1)</a> in Chapter <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#chap"
+data-reference-type="ref" data-reference="zr-chap">1</a>. By
+Mertens’ estimate, <span class="math inline">\(G(x) = O(x)\)</span>. By
+Theorem <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#thm:one-sided" data-reference-type="ref"
+data-reference="zr-thm:one-sided">1.2.1</a>, if <span
+class="math inline">\(G(x) \le x^\theta\)</span> for some <span
+class="math inline">\(0 &lt; \theta &lt; 1\)</span> and all large <span
+class="math inline">\(x\)</span>, then <span
+class="math inline">\(\zeta(s) \ne 0\)</span> for <span
+class="math inline">\(\operatorname{Re} s &gt; \theta\)</span>. So a
+one-sided bound with exponent <span
+class="math inline">\(\tfrac12\)</span> gives the Riemann
+hypothesis.</p>
+<p>Let <span class="math inline">\(a, b &gt; 0\)</span> and <span
+class="math inline">\(x := a/b\)</span>. As in Section <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#sec:smoothing" data-reference-type="ref"
+data-reference="zr-sec:smoothing">1.3</a>, <span
+class="math inline">\((a/p^e - b)_+ = b(x/p^e - 1)_+\)</span>, so that
+<span class="math display">\[\sum_p \log p \sum_{e \ge 1} \Bigl(
+\frac{a}{p^e} - b \Bigr)_+ = b \sum_{\nu \le x} \Lambda(\nu) \Bigl(
+\frac{x}{\nu} - 1 \Bigr) ,\]</span> where <span
+class="math inline">\(u_+ := \max(u, 0)\)</span>; for integral <span
+class="math inline">\(a\)</span> the inner sum is a smoothed analogue of
+Legendre’s sum <span class="math inline">\(\sum_{e \ge 1} \lfloor a/p^e
+\rfloor\)</span> for <span class="math inline">\(v_p(a!)\)</span>. We
+consider a chain as in Section <a href="#sec:chain"
+data-reference-type="ref" data-reference="sec:chain">8.4</a>, with <span
+class="math inline">\(\Psi\)</span> injective, and real numbers <span
+class="math inline">\(c_{\mathrm{end}}\)</span> and <span
+class="math inline">\(c_1, \dots, c_m\)</span> such that for <span
+class="math inline">\(1 \le j \le m\)</span> <span id="eq:toy"
+class="math display">\[\begin{equation}
+\label{eq:toy}\tag{5}
+\begin{gathered}
+  \log \lambda_j \ge b \sum_{\nu \le x} \Lambda(\nu) \Bigl(
+\frac{x}{\nu} - 1 \Bigr) , \qquad \frac{1}{2n} \log \det(u_j^* u_j) \le
+a(\log x - 1 - \gamma) + c_j , \\
+  \frac1n \bigl( \log \operatorname{covol}(L_0) - \log
+\operatorname{covol}(L_m) \bigr) \le c_{\mathrm{end}} .
+\end{gathered}
+\end{equation}\]</span> Here <span
+class="math inline">\(c_{\mathrm{end}}\)</span> is the cost at the ends,
+and <span class="math inline">\(c_j\)</span> the cost of the <span
+class="math inline">\(j\)</span>th step. This models the bookkeeping
+only.</p>
+<div id="pr:toy" class="problem" data-progress-ids="[&quot;2292&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:toy&quot;]"><a class="stable-tag" href="tag/2292.html" title="Stable tag: cite as Tag 2292">Tag 2292</a>
+<p><strong>Problem 8.5.1</strong>. Under <a href="#eq:toy"
+data-reference-type="eqref" data-reference="eq:toy">(5)</a>, <span
+class="math inline">\(G(x) \le (c_{\mathrm{end}} + c_1 + \dots +
+c_m)/(mb)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T007000--stepanov-without-multiplicity__workbook.html">Chapter 7</a></div><!-- used-in:end -->
+</div>
+<div id="pr:half" class="problem" data-progress-ids="[&quot;2293&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:half&quot;]"><a class="stable-tag" href="tag/2293.html" title="Stable tag: cite as Tag 2293">Tag 2293</a>
+<p><strong>Problem 8.5.2</strong>. If <span
+class="math inline">\(c_{\mathrm{end}} = a\)</span> and <span
+class="math inline">\(c_j = (2j - 1)b\)</span>, then <span
+class="math inline">\(G(x) \le x/m + m\)</span>. With <span
+class="math inline">\(m = \lceil \sqrt x \rceil\)</span> this gives
+<span class="math inline">\(G(x) \le 2\sqrt x + 1\)</span>. For <span
+class="math inline">\(x = 10^6\)</span> the bound is <span
+class="math inline">\(2000\)</span> at <span class="math inline">\(m =
+1000\)</span> and <span class="math inline">\(10100\)</span> at <span
+class="math inline">\(m = 100\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T007000--stepanov-without-multiplicity__workbook.html">Chapter 7</a></div><!-- used-in:end -->
+</div>
+<p>What happens if the cost at the ends is paid separately for every
+step?</p>
+<div id="pr:every-step" class="problem" data-progress-ids="[&quot;2294&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:every-step&quot;]"><a class="stable-tag" href="tag/2294.html" title="Stable tag: cite as Tag 2294">Tag 2294</a>
+<p><strong>Problem 8.5.3</strong>. Retain the first two bounds of <a
+href="#eq:toy" data-reference-type="eqref"
+data-reference="eq:toy">(5)</a>. Suppose that every <span
+class="math inline">\(u_j\)</span> is injective and that Problem <a
+href="#pr:one-step" data-reference-type="ref"
+data-reference="pr:one-step">8.4.1</a> is applied to each <span
+class="math inline">\(u_j\)</span> separately, with <span
+class="math inline">\(\frac1n (\log \operatorname{covol}(L_{j-1}) - \log
+\operatorname{covol}(L_j)) \le a\)</span> for every <span
+class="math inline">\(j\)</span> and <span class="math inline">\(c_j =
+(2j-1)b\)</span>. Then the <span class="math inline">\(j\)</span>th step
+gives <span class="math inline">\(G(x) \le x + 2j - 1\)</span>, so the
+best of these bounds is <span class="math inline">\(G(x) \le x +
+1\)</span>, the bound for <span class="math inline">\(m =
+1\)</span>.</p>
+</div>
+<div id="pr:two-thirds" class="problem" data-progress-ids="[&quot;2295&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:two-thirds&quot;]"><a class="stable-tag" href="tag/2295.html" title="Stable tag: cite as Tag 2295">Tag 2295</a>
+<p><strong>Problem 8.5.4</strong>. <span class="math inline">\(\sum_{j=1}^m
+(3j^2 - 3j + 1) = m^3\)</span>. So if <span
+class="math inline">\(c_{\mathrm{end}} = a\)</span> and <span
+class="math inline">\(c_j = (3j^2 - 3j + 1)b\)</span>, then <span
+class="math inline">\(G(x) \le x/m + m^2\)</span>. For every <span
+class="math inline">\(m &gt; 0\)</span>, <span class="math inline">\(x/m
++ m^2 \ge 3 \cdot 2^{-2/3} x^{2/3}\)</span>. For <span
+class="math inline">\(x = 10^6\)</span> the least value over integers
+<span class="math inline">\(m\)</span> is <span
+class="math inline">\(18899.2\ldots\)</span>, at <span
+class="math inline">\(m = 79\)</span>.</p>
+</div>
+<p>If such chains exist for every sufficiently large <span
+class="math inline">\(x\)</span> at a length minimizing the bound in
+Problem <a href="#pr:two-thirds" data-reference-type="ref"
+data-reference="pr:two-thirds">8.5.4</a>, that bound gives <span
+class="math inline">\(G(x) \le x^\theta\)</span> eventually for each
+<span class="math inline">\(\theta &gt; 2/3\)</span>, and hence a
+zero-free half-plane <span class="math inline">\(\operatorname{Re} s
+&gt; 2/3\)</span> for <span class="math inline">\(\zeta\)</span>. The
+exponent is decided by how the total cost grows with the length of the
+chain.</p>
+<h4 id="the-chain-of-the-proof.">The chain of the proof.</h4>
+<p>This chapter serves the main inequality. Chapter <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.html#chap"
+data-reference-type="ref" data-reference="c41-chap">38</a>
+proves <span class="math inline">\(m \cdot \mathrm{rem}\le fa\log^5
+b\)</span> (Theorem <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.html#thm:main" data-reference-type="ref"
+data-reference="c41-thm:main">38.2.1</a>) and deduces a bound
+for <span class="math inline">\(R_{d,q_0}(x)\)</span>. From here on
+<span class="math inline">\(f\)</span> is the number of infinite places
+of the field <span class="math inline">\(E\)</span>, <span
+class="math inline">\(k = r + 1 - m\)</span> is the rank of the source,
+and <span class="math inline">\(U = fa\log^3 b\)</span> is the unit of
+error, all as in Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="c32-chap">36</a> (they are not the polynomial
+<span class="math inline">\(f\)</span> and the index <span
+class="math inline">\(k\)</span> of Sections <a href="#sec:aux"
+data-reference-type="ref" data-reference="sec:aux">8.1</a>–<a
+href="#sec:count" data-reference-type="ref"
+data-reference="sec:count">8.3</a>); the data have <span
+class="math inline">\(\sqrt x \le m \le 2\sqrt x\)</span>. In the proof
+two estimates involve <span class="math inline">\(m\)</span> through
+<span class="math inline">\(m^2\)</span> relative to their budgets.
+First, the level <span class="math inline">\(N\)</span> is a prime with
+<span class="math inline">\(m \log b \le \log N \le 30 m \log
+b\)</span>; the allowed loss at <span class="math inline">\(N\)</span>
+is <span class="math inline">\(2mfb\)</span> (here <span
+class="math inline">\(N \ge b &gt; x_1\)</span>, so <span
+class="math inline">\(N\)</span> is not a small non-split prime); and
+for every finite set of natural numbers the sum over its elements <span
+class="math inline">\(p\)</span> of the allowed loss at <span
+class="math inline">\(p\)</span> times <span class="math inline">\(\log
+p\)</span>, with the summand at <span class="math inline">\(p =
+0\)</span> defined to be zero, is at most <span
+class="math inline">\(U\)</span>. Second, local defect bounds <span
+class="math inline">\(\delta_p\)</span> satisfy <span
+class="math inline">\(\sum_{p \in T} \delta_p \log p \le
+C_{\mathrm{loc}} f (m/k) b \log b\)</span> for every finite set <span
+class="math inline">\(T\)</span> of primes, with <span
+class="math inline">\(C_{\mathrm{loc}} = 4 \cdot 10^6 e^{180}\)</span>,
+while for each lift index the sum of the logarithmic denominator bounds
+over every finite set of primes must be at most <span
+class="math inline">\(B = U/(mk)\)</span>.</p>
+<div id="pr:losses" class="problem" data-progress-ids="[&quot;2349&quot;,&quot;20261125T003000--the-chain-and-the-square-root__workbook.tex#pr:losses&quot;]"><a class="stable-tag" href="tag/2349.html" title="Stable tag: cite as Tag 2349">Tag 2349</a>
+<p><strong>Problem 8.5.5</strong>. Let <span class="math inline">\(m, x, f,
+k &gt; 0\)</span>, <span class="math inline">\(b &gt; 1\)</span>, <span
+class="math inline">\(L := \log b\)</span>, <span
+class="math inline">\(a := xb\)</span> and <span class="math inline">\(U
+:= faL^3\)</span>. (a) If <span class="math inline">\(mL \le \log N \le
+30 mL\)</span>, then <span class="math inline">\(2m^2 fbL \le 2mfb \log
+N \le 60 m^2 fbL\)</span>; hence <span class="math inline">\(2mfb \log N
+\le U\)</span> forces <span class="math inline">\(m \le
+L\sqrt{x/2}\)</span>, and holds if <span class="math inline">\(m \le L
+\sqrt{x/60}\)</span>. (b) For <span
+class="math inline">\(C_{\mathrm{loc}} &gt; 0\)</span>, <span
+class="math inline">\(C_{\mathrm{loc}} f (m/k) bL \le U/(mk)\)</span> if
+and only if <span class="math inline">\(m \le
+L\sqrt{x/C_{\mathrm{loc}}}\)</span>.</p>
+</div>
+<p>The data have <span class="math inline">\(\log\log b \ge 10^{12}
+C\)</span>, with <span class="math inline">\(C \ge 1\)</span> the
+constant of Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="c32-chap">36</a>, so both comparisons of
+Problem <a href="#pr:losses" data-reference-type="ref"
+data-reference="pr:losses">8.5.5</a> hold in the range <span
+class="math inline">\(\sqrt x \le m \le 2\sqrt x\)</span>. Up to powers
+of <span class="math inline">\(\log b\)</span>, the length has the same
+square-root scale as in Problem <a href="#pr:half"
+data-reference-type="ref" data-reference="pr:half">8.5.2</a>.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span> the main inequality is
+<code>New.star_inequality</code>
+(<code>grh/src/New/Reduction/MainInequality.lean</code>); the allowed
+loss is <code>New.Data.allowedLoss</code>, and the estimates used in the
+discussion of Problem <a href="#pr:losses" data-reference-type="ref"
+data-reference="pr:losses">8.5.5</a> are
+<code>New.Data.log_N_mem_Icc</code>,
+<code>New.Data.sum_allowedLoss_mul_log_le</code>,
+<code>New.Selmer.sum_localDefectBound_mul_log_le</code> and
+<code>New.Data.IsDenominatorBound.sum_le</code> with
+<code>New.Data.denominatorBudget</code>, together with the fields
+<code>N_prime</code>, <code>m_mem</code> and
+<code>constantBound_le</code> of <code>New.Data</code>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secaux">§<a href="#sec:aux"
+data-reference-type="ref" data-reference="sec:aux">8.1</a></h2>
+<dl>
+<dt><a href="#pr:euler" data-reference-type="ref"
+data-reference="pr:euler">8.1.1</a></dt>
+<dd>
+<p>Euler’s criterion: <span class="math inline">\(f(x)\)</span> is a
+nonzero square in <span class="math inline">\(\mathbb{F}_q\)</span>
+exactly when <span class="math inline">\(f(x)^c = 1\)</span>.</p>
+</dd>
+<dt><a href="#pr:degE" data-reference-type="ref"
+data-reference="pr:degE">8.1.2</a></dt>
+<dd>
+<p>Substitute <span class="math inline">\(d = 2g + 1\)</span> in <span
+class="math inline">\(dc\)</span>.</p>
+</dd>
+<dt><a href="#pr:nonzero" data-reference-type="ref"
+data-reference="pr:nonzero">8.1.3</a></dt>
+<dd>
+<p>Look at the quotient and the remainder of each degree on division by
+<span class="math inline">\(q\)</span>.</p>
+</dd>
+<dt><a href="#pr:order-one" data-reference-type="ref"
+data-reference="pr:order-one">8.1.4</a></dt>
+<dd>
+<p>If <span class="math inline">\(r_j = s_j = 0\)</span> for all <span
+class="math inline">\(j \ge 1\)</span>, then <span
+class="math inline">\(s_0 \ne 0\)</span>. Otherwise use Problem <a
+href="#pr:nonzero" data-reference-type="ref"
+data-reference="pr:nonzero">8.1.3</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secorder">§<a href="#sec:order"
+data-reference-type="ref" data-reference="sec:order">8.2</a></h2>
+<dl>
+<dt><a href="#pr:hasse" data-reference-type="ref"
+data-reference="pr:hasse">8.2.1</a></dt>
+<dd>
+<p>For the last statement, expand <span class="math inline">\(G(\alpha +
+Y)\)</span> and substitute <span class="math inline">\(Y = X -
+\alpha\)</span>.</p>
+</dd>
+<dt><a href="#pr:frobenius" data-reference-type="ref"
+data-reference="pr:frobenius">8.2.2</a></dt>
+<dd>
+<p>The map <span class="math inline">\(u \mapsto u^q\)</span> is a ring
+homomorphism in characteristic <span
+class="math inline">\(p\)</span>.</p>
+</dd>
+<dt><a href="#pr:Ui" data-reference-type="ref"
+data-reference="pr:Ui">8.2.3</a></dt>
+<dd>
+<p>Write <span class="math inline">\(f(X + Y) = f(X) + \Delta\)</span>
+with <span class="math inline">\(\Delta = \sum_{k \ge 1} (H^k f)
+Y^k\)</span>, and expand <span class="math inline">\((1 +
+\Delta/f)^c\)</span> by the binomial theorem. Note <span
+class="math inline">\(\deg H^k f \le d - k\)</span>.</p>
+</dd>
+<dt><a href="#pr:jet" data-reference-type="ref"
+data-reference="pr:jet">8.2.4</a></dt>
+<dd>
+<p>Expand <span class="math inline">\(F(\alpha + Y)\)</span> modulo
+<span class="math inline">\(Y^{k+1}\)</span>. Use Problem <a
+href="#pr:frobenius" data-reference-type="ref"
+data-reference="pr:frobenius">8.2.2</a>, <span
+class="math inline">\(\alpha^q = \alpha\)</span>, and <span
+class="math inline">\(f(\alpha)^c = \eta\)</span>.</p>
+</dd>
+<dt><a href="#pr:degCk" data-reference-type="ref"
+data-reference="pr:degCk">8.2.5</a></dt>
+<dd>
+<p>Bound each of the two kinds of terms in <a href="#eq:Ck"
+data-reference-type="eqref" data-reference="eq:Ck">(3)</a>
+separately, using Problem <a href="#pr:Ui" data-reference-type="ref"
+data-reference="pr:Ui">8.2.3</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="seccount">§<a href="#sec:count"
+data-reference-type="ref" data-reference="sec:count">8.3</a></h2>
+<dl>
+<dt><a href="#pr:siegel" data-reference-type="ref"
+data-reference="pr:siegel">8.3.1</a></dt>
+<dd>
+<p>Compare the number of unknowns with the upper bound for the number of
+equations from Problem <a href="#pr:degCk" data-reference-type="ref"
+data-reference="pr:degCk">8.2.5</a>.</p>
+</dd>
+<dt><a href="#pr:choiceJ" data-reference-type="ref"
+data-reference="pr:choiceJ">8.3.2</a></dt>
+<dd>
+<p>Use <span class="math inline">\(2D = q - d\)</span>.</p>
+</dd>
+<dt><a href="#pr:sqrtq" data-reference-type="ref"
+data-reference="pr:sqrtq">8.3.3</a></dt>
+<dd>
+<p>Check that <span class="math inline">\(\sqrt q \ge 12\)</span>, <span
+class="math inline">\(q - d - \ell \ge 8q/9\)</span> and <span
+class="math inline">\(11\sqrt q/12 \le \ell \le 13\sqrt q/12\)</span>.
+Then bound <span class="math inline">\(t - 1\)</span> and <span
+class="math inline">\(g\)</span> by multiples of <span
+class="math inline">\(d\)</span>.</p>
+</dd>
+<dt><a href="#pr:no-better" data-reference-type="ref"
+data-reference="pr:no-better">8.3.4</a></dt>
+<dd>
+<p><span class="math inline">\(t &gt; d\ell^2/(2q)\)</span>. Then use
+the inequality between arithmetic and geometric means.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secchain">§<a href="#sec:chain"
+data-reference-type="ref" data-reference="sec:chain">8.4</a></h2>
+<dl>
+<dt><a href="#pr:one-step" data-reference-type="ref"
+data-reference="pr:one-step">8.4.1</a></dt>
+<dd>
+<p>Compare <span class="math inline">\(\operatorname{covol}(u(L)) =
+\lvert \det u \rvert \operatorname{covol}(L)\)</span> with <span
+class="math inline">\(\operatorname{covol}(\lambda M)\)</span>.</p>
+</dd>
+<dt><a href="#pr:volume-mult" data-reference-type="ref"
+data-reference="pr:volume-mult">8.4.2</a></dt>
+<dd>
+<p>Take orthonormal bases. For the counterexample write out the <span
+class="math inline">\(2 \times 2\)</span> matrix of <span
+class="math inline">\(u_2^* u_2\)</span>.</p>
+</dd>
+<dt><a href="#pr:subadd" data-reference-type="ref"
+data-reference="pr:subadd">8.4.3</a></dt>
+<dd>
+<p>Track the image of one lattice vector along the chain.</p>
+</dd>
+<dt><a href="#pr:stepwise" data-reference-type="ref"
+data-reference="pr:stepwise">8.4.4</a></dt>
+<dd>
+<p>Follow the coefficient of each intermediate <span
+class="math inline">\(\log\operatorname{covol}(L_j)\)</span>.</p>
+</dd>
+<dt><a href="#pr:rank-two" data-reference-type="ref"
+data-reference="pr:rank-two">8.4.5</a></dt>
+<dd>
+<p><span class="math inline">\(u_1(L_0) = L_1\)</span> and <span
+class="math inline">\(u_2(L_1) = L_2\)</span>.</p>
+</dd>
+<dt><a href="#pr:index" data-reference-type="ref"
+data-reference="pr:index">8.4.6</a></dt>
+<dd>
+<p>Apply Problem <a href="#pr:one-step" data-reference-type="ref"
+data-reference="pr:one-step">8.4.1</a> to <span
+class="math inline">\(\Psi\)</span> and the lattice <span
+class="math inline">\(L_0&#39;\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secbudget">§<a href="#sec:budget"
+data-reference-type="ref" data-reference="sec:budget">8.5</a></h2>
+<dl>
+<dt><a href="#pr:toy" data-reference-type="ref"
+data-reference="pr:toy">8.5.1</a></dt>
+<dd>
+<p>Divide Theorem <a href="#thm:chain" data-reference-type="ref"
+data-reference="thm:chain">8.4.1</a> by <span
+class="math inline">\(n\)</span> before applying <a href="#eq:toy"
+data-reference-type="eqref" data-reference="eq:toy">(5)</a>.</p>
+</dd>
+<dt><a href="#pr:half" data-reference-type="ref"
+data-reference="pr:half">8.5.2</a></dt>
+<dd>
+<p>Write <span class="math inline">\(2j - 1\)</span> as a difference of
+consecutive squares.</p>
+</dd>
+<dt><a href="#pr:every-step" data-reference-type="ref"
+data-reference="pr:every-step">8.5.3</a></dt>
+<dd>
+<p>Each step gives a bound for the same quantity.</p>
+</dd>
+<dt><a href="#pr:two-thirds" data-reference-type="ref"
+data-reference="pr:two-thirds">8.5.4</a></dt>
+<dd>
+<p>Minimize over real <span class="math inline">\(m &gt; 0\)</span>
+first.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Bom74"><span class="bib-label">[Bom74]</span> E. Bombieri, <em>Counting points on curves over finite fields (d’après S. A. Stepanov)</em>, Séminaire Bourbaki, Exp. 430, Lecture Notes in Math. <strong>383</strong>, Springer, 1974, 234–241.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Ne"><span class="bib-label">[Ne]</span> J. Neukirch, <em>Algebraic Number Theory</em>, Grundlehren Math. Wiss. <strong>322</strong>, Springer, 1999.</p>
+<p id="ref-Sch76"><span class="bib-label">[Sch76]</span> W. M. Schmidt, <em>Equations over Finite Fields: An Elementary Approach</em>, Lecture Notes in Math. <strong>536</strong>, Springer, 1976.</p>
+<p id="ref-Ste69"><span class="bib-label">[Ste69]</span> S. A. Stepanov, <em>On the number of points of a hyperelliptic curve over a finite prime field</em>, Izv. Akad. Nauk SSSR Ser. Mat. <strong>33</strong> (1969), 1171–1181.</p>
+<p id="ref-Wei48"><span class="bib-label">[Wei48]</span> A. Weil, <em>Sur les courbes algébriques et les variétés qui s’en déduisent</em>, Hermann, 1948.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

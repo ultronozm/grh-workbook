@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-7oaPAU6rl3QZ46TCklC0uBh4LEWEk43RjCgGh5f1tuo=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Odd classes by Gauss sums</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","F":"\\mathbb{F}","Zl":"\\Z_\\ell","Ql":"\\Q_\\ell","Oc":"\\mathcal{O}","Gal":"\\operatorname{Gal}","len":"\\operatorname{len}","Sha":"\\mathrm{Sha}","Shao":"\\Sha^{\\mathrm{odd}}","So":"\\Sha^{\\mathrm{odd}}","Pp":"\\mathfrak{P}","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="28">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T020430--the-minus-part-by-gauss-sums__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-26 19:19:14
+      <a href="20261126T020430--the-minus-part-by-gauss-sums__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T020430--the-minus-part-by-gauss-sums__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T020430--the-minus-part-by-gauss-sums__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Odd classes by Gauss sums <a class="stable-tag" href="tag/236U.html" title="Stable tag: cite as Tag 236U">Tag 236U</a></h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:signs" id="toc-sec:signs">§28.1. Odd classes</a></li>
+<li><a href="#sec:bernoulli" id="toc-sec:bernoulli">§28.2. One integer for all characters</a></li>
+<li><a href="#sec:euler" id="toc-sec:euler">§28.3. Gauss sums and the Euler system</a></li>
+<li><a href="#sec:examples" id="toc-sec:examples">§28.4. Examples, and the main conjecture</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Chapter <a href="20261125T004100--tate-twists-and-sha__workbook.html#chap" data-reference-type="ref"
+data-reference="tt-chap">27</a>: Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:MW"
+data-reference-type="ref" data-reference="tt-thm:MW">27.1.2</a>,
+and from Section <a href="20261125T004100--tate-twists-and-sha__workbook.html#sec:odd" data-reference-type="ref"
+data-reference="tt-sec:odd">27.3</a> the notation, Definition <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#def:shaodd" data-reference-type="ref"
+data-reference="tt-def:shaodd">27.3.1</a>, Problem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#pr:c-action" data-reference-type="ref"
+data-reference="tt-pr:c-action">27.3.2</a>, Theorem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#thm:e0" data-reference-type="ref"
+data-reference="tt-thm:e0">27.3.1</a> and Problem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#pr:sum-ell" data-reference-type="ref"
+data-reference="tt-pr:sum-ell">27.3.11</a>. Chapter <a
+href="20261125T004000--denominators-and-sha__workbook.html#chap" data-reference-type="ref"
+data-reference="ds-chap">26</a>: the Stickelberger element and
+Problems <a href="20261125T004000--denominators-and-sha__workbook.html#pr:c-twist" data-reference-type="ref"
+data-reference="ds-pr:c-twist">26.2.3</a> and <a
+href="20261125T004000--denominators-and-sha__workbook.html#pr:irregular" data-reference-type="ref"
+data-reference="ds-pr:irregular">26.2.8</a>. Generalized
+Bernoulli numbers and the Hurwitz zeta function <span class="citation"
+data-cites="Wa">[<a href="#ref-Wa">Wa</a>, Ch. 4]</span>, Gauss sums <span
+class="citation" data-cites="Wa">[<a href="#ref-Wa">Wa</a>, Ch. 6]</span>,
+and Hilbert symbols <span class="citation"
+data-cites="Se">[<a href="#ref-Se">Se</a>, Ch. III]</span>. Throughout,
+<span class="math inline">\(\ell\)</span> is a prime, <span
+class="math inline">\(2\)</span> included unless said otherwise, and
+<span class="math inline">\(\mathcal{O}\)</span> is the ring of integers
+of a finite extension of <span
+class="math inline">\(\mathbb{Q}_\ell\)</span>, with valuation <span
+class="math inline">\(v_\mathcal{O}\)</span> normalized by <span
+class="math inline">\(v_\mathcal{O}(\pi)=1\)</span> on a uniformizer;
+for an integer <span class="math inline">\(X\ne0\)</span>, <span
+class="math inline">\(v_\mathcal{O}(X)=v_\mathcal{O}(\ell)\,v_\ell(X)\)</span>.</p>
+<h1 id="sec:signs">§28.1. Odd classes <a class="stable-tag" href="tag/236V.html" title="Stable tag: cite as Tag 236V">Tag 236V</a></h1>
+<p>For odd primes <span class="math inline">\(\ell\)</span> and odd
+<span class="math inline">\(e\ge1\)</span>, Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:MW"
+data-reference-type="ref" data-reference="tt-thm:MW">27.1.2</a>
+gives the length <span
+class="math inline">\(h_{\ell,e}(\mathbb{Q})\)</span> in terms of <span
+class="math inline">\(B_{e+1}/(e+1)\)</span>. The proof <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span> needs a
+bound of this kind over a CM field <span
+class="math inline">\(E\)</span>, for all <span
+class="math inline">\(\ell\)</span> at once, and for cocycles with
+values in <span class="math inline">\(\mathcal{O}/\ell^n\)</span>. Which
+module is bounded, and by what?</p>
+<p>Recall from Section <a href="20261125T004100--tate-twists-and-sha__workbook.html#sec:odd" data-reference-type="ref"
+data-reference="tt-sec:odd">27.3</a> the CM field <span
+class="math inline">\(E\subset\overline{\mathbb{Q}}\)</span>, <span
+class="math inline">\(G_E=\operatorname{Gal}(\overline{\mathbb{Q}}/E)\)</span>,
+complex conjugation <span class="math inline">\(c\)</span>, <span
+class="math inline">\(\chi=\chi_\ell|_{G_E}\)</span>, the groups <span
+class="math inline">\(D_\mathfrak{P}\supseteq I_\mathfrak{P}\)</span> in
+<span class="math inline">\(G_E\)</span> of a place <span
+class="math inline">\(\mathfrak{P}\)</span> of <span
+class="math inline">\(\overline{\mathbb{Q}}\)</span>, and <span
+class="math inline">\(\mathcal{O}_n=\mathcal{O}/\ell^n\mathcal{O}\)</span>.
+For <span class="math inline">\(e,n\ge0\)</span>, <span
+class="math inline">\(\mathrm{Sha}^{\mathrm{odd}}_\ell(E,\mathcal{O};e,n)\)</span>
+is the <span class="math inline">\(\mathcal{O}\)</span>-module of maps
+<span class="math inline">\(z\colon G_E\to\mathcal{O}_n\)</span> such
+that (Definition <a href="20261125T004100--tate-twists-and-sha__workbook.html#def:shaodd" data-reference-type="ref"
+data-reference="tt-def:shaodd">27.3.1</a>)</p>
+<ol>
+<li><p><span class="math inline">\(z\)</span> is locally constant and
+<span class="math inline">\(z(gh)=z(g)+\chi(g)^{-e}z(h)\)</span> for all
+<span class="math inline">\(g,h\in G_E\)</span>;</p></li>
+<li><p><span class="math inline">\(z=0\)</span> on <span
+class="math inline">\(I_\mathfrak{P}\)</span> for every <span
+class="math inline">\(\mathfrak{P}\)</span> above a prime other than
+<span class="math inline">\(\ell\)</span>;</p></li>
+<li><p>for every <span class="math inline">\(\mathfrak{P}\)</span> above
+<span class="math inline">\(\ell\)</span>: <span
+class="math inline">\(z=0\)</span> on <span
+class="math inline">\(I_\mathfrak{P}\)</span> if <span
+class="math inline">\(e=0\)</span>, and <span
+class="math inline">\(z=0\)</span> on <span
+class="math inline">\(D_\mathfrak{P}\cap\ker\chi\)</span> if <span
+class="math inline">\(e&gt;0\)</span>;</p></li>
+<li><p>if <span class="math inline">\(e&gt;0\)</span>, then <span
+class="math inline">\(z(cgc)=-z(g)\)</span> for all <span
+class="math inline">\(g\in G_E\)</span>.</p></li>
+</ol>
+<p>We write <span
+class="math inline">\(\mathrm{Sha}^{\mathrm{odd}}_{e,n}\)</span> when
+<span class="math inline">\(\ell\)</span>, <span
+class="math inline">\(E\)</span> and <span
+class="math inline">\(\mathcal{O}\)</span> are fixed. For <span
+class="math inline">\(e=0\)</span>, Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:e0"
+data-reference-type="ref" data-reference="tt-thm:e0">27.3.1</a>
+gives <span
+class="math inline">\(\operatorname{len}_\mathcal{O}\mathrm{Sha}^{\mathrm{odd}}_{0,n}\le
+v_\mathcal{O}(h_E)\)</span> for every CM field <span
+class="math inline">\(E\)</span>. This chapter treats <span
+class="math inline">\(e&gt;0\)</span>.</p>
+<div id="pr:split" class="problem" data-progress-ids="[&quot;236W&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:split&quot;]"><a class="stable-tag" href="tag/236W.html" title="Stable tag: cite as Tag 236W">Tag 236W</a>
+<p><strong>Problem 28.1.1</strong>. Let <span
+class="math inline">\(R\)</span> be a commutative ring with <span
+class="math inline">\(2\in R^\times\)</span>, <span
+class="math inline">\(M\)</span> an <span
+class="math inline">\(R\)</span>-module of finite length, and <span
+class="math inline">\(\sigma\)</span> an <span
+class="math inline">\(R\)</span>-linear involution of <span
+class="math inline">\(M\)</span>. Then <span
+class="math inline">\(M=M^{\sigma=1}\oplus M^{\sigma=-1}\)</span> and
+<span
+class="math inline">\(\operatorname{len}M=\operatorname{len}M^{\sigma=1}+\operatorname{len}M^{\sigma=-1}\)</span>.</p>
+</div>
+<p>By Problem <a href="20261125T004100--tate-twists-and-sha__workbook.html#pr:c-action" data-reference-type="ref"
+data-reference="tt-pr:c-action">27.3.2</a>, for odd <span
+class="math inline">\(\ell\)</span> and <span
+class="math inline">\(e&gt;0\)</span> the module of maps satisfying
+(a)–(c) therefore splits, when it has finite length, into <span
+class="math inline">\(\mathrm{Sha}^{\mathrm{odd}}_{e,n}\)</span> and the
+part where <span class="math inline">\(z(cgc)=z(g)\)</span>. Over <span
+class="math inline">\(\mathbb{Q}\)</span> the odd cocycles are seen
+through characters. Let <span class="math inline">\(e&gt;0\)</span> and
+<span class="math inline">\(E\subseteq\mathbb{Q}(\mu_N)\)</span>; in
+this chapter <span class="math inline">\(N\)</span> is such a modulus,
+as in Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:oddsha" data-reference-type="ref"
+data-reference="tt-thm:oddsha">27.3.2</a>, not the level of
+Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>. Suppose that <span
+class="math inline">\(\mathcal{O}\)</span> contains the values of all
+characters modulo <span class="math inline">\(N\)</span>. Write <span
+class="math inline">\(H=\operatorname{Gal}(\overline{\mathbb{Q}}/\mathbb{Q}(\mu_N))\)</span>.
+For an <span class="math inline">\(\mathcal{O}\)</span>-valued Dirichlet
+character <span class="math inline">\(\psi\)</span> modulo <span
+class="math inline">\(N\)</span>, put <span
+class="math inline">\(\Upsilon=\chi_\ell^e\cdot(\psi\circ\chi_N)\)</span>,
+where <span class="math inline">\(\chi_N\)</span> is the cyclotomic
+character modulo <span class="math inline">\(N\)</span>. We define the
+<em>component</em> of <span class="math inline">\(\psi\)</span> to
+consist of the locally constant <span
+class="math inline">\(\Upsilon^{-1}\)</span>-cocycles <span
+class="math inline">\(\operatorname{Gal}(\overline{\mathbb{Q}}/\mathbb{Q})\to\mathcal{O}_n\)</span>
+that vanish at <span class="math inline">\(c\)</span> and at the
+elements of <span class="math inline">\(H\)</span> that lie in an
+inertia group at a place away from <span
+class="math inline">\(\ell\)</span>, or in a decomposition group above
+<span class="math inline">\(\ell\)</span> with <span
+class="math inline">\(\chi_\ell(g)=1\)</span>; here inertia and
+decomposition groups are taken in <span
+class="math inline">\(\operatorname{Gal}(\overline{\mathbb{Q}}/\mathbb{Q})\)</span>.
+The proof associates to each <span
+class="math inline">\(z\in\mathrm{Sha}^{\mathrm{odd}}_{e,n}\)</span> a
+cocycle in each component; if the associated cocycles vanish for every
+<span class="math inline">\(\psi\)</span> with <span
+class="math inline">\(\Upsilon(c)=-1\)</span>, then <span
+class="math inline">\(4\varphi(N)z=0\)</span>.</p>
+<div id="pr:parts" class="problem" data-progress-ids="[&quot;236X&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:parts&quot;]"><a class="stable-tag" href="tag/236X.html" title="Stable tag: cite as Tag 236X">Tag 236X</a>
+<p><strong>Problem 28.1.2</strong>. <span
+class="math inline">\(\chi_\ell(c)=-1\)</span>. Hence <span
+class="math inline">\(\Upsilon(c)=-1\)</span> if and only if <span
+class="math inline">\(\psi(-1)=(-1)^{e+1}\)</span>, that is, if and only
+if <span class="math inline">\(\psi\)</span> is <em>critical</em> for
+<span class="math inline">\(e\)</span>.</p>
+</div>
+<div id="pr:parity" class="problem" data-progress-ids="[&quot;236Y&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:parity&quot;]"><a class="stable-tag" href="tag/236Y.html" title="Stable tag: cite as Tag 236Y">Tag 236Y</a>
+<p><strong>Problem 28.1.3</strong>. Let <span
+class="math inline">\(\chi\)</span> be a primitive Dirichlet character
+and <span class="math inline">\(k\ge2\)</span>. Then <span
+class="math inline">\(B_{k,\chi}=0\)</span> if <span
+class="math inline">\(\chi(-1)\ne(-1)^k\)</span>, and <span
+class="math inline">\(B_{k,\chi}\ne0\)</span> if <span
+class="math inline">\(\chi(-1)=(-1)^k\)</span>. So <span
+class="math inline">\(L(-e,\chi)\ne0\)</span>, for <span
+class="math inline">\(e\ge1\)</span>, exactly when <span
+class="math inline">\(\chi\)</span> is critical for <span
+class="math inline">\(e\)</span>.</p>
+</div>
+<p>The next problem describes the kind of field used in the proof.</p>
+<div id="pr:degree" class="problem" data-progress-ids="[&quot;236Z&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:degree&quot;]"><a class="stable-tag" href="tag/236Z.html" title="Stable tag: cite as Tag 236Z">Tag 236Z</a>
+<p><strong>Problem 28.1.4</strong>. Let <span
+class="math inline">\(d\equiv3\pmod4\)</span> be prime and <span
+class="math inline">\(q\ge1\)</span>. Then <span
+class="math inline">\(\mathbb{Q}(\sqrt{-d})\subseteq\mathbb{Q}(\mu_d)\)</span>,
+and <span class="math inline">\(\mathbb{Q}(\sqrt{-d},\mu_q)\)</span> is
+a CM field contained in <span
+class="math inline">\(\mathbb{Q}(\mu_{qd})\)</span>.</p>
+</div>
+<p>The proof specializes the theorem of this chapter to <span
+class="math inline">\(E=\mathbb{Q}(\sqrt{-d},\mu_{q_1})\)</span>, <span
+class="math inline">\(N=q_1d\)</span>, and the integer <span
+class="math inline">\(t\)</span> of its admissible data; the chosen
+embedding of <span class="math inline">\(E\)</span> has image in <span
+class="math inline">\(\mathbb{Q}(\mu_N)\)</span> <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>.</p>
+<h1 id="sec:bernoulli">§28.2. One integer for all characters <a class="stable-tag" href="tag/2372.html" title="Stable tag: cite as Tag 2372">Tag 2372</a></h1>
+<p>On the components of the critical characters an <span
+class="math inline">\(L\)</span>-value is available. How can one integer
+serve for all the characters modulo <span
+class="math inline">\(N\)</span> at once? Fix <span
+class="math inline">\(N,e\ge1\)</span>; for <span
+class="math inline">\(N=1\)</span> the character modulo <span
+class="math inline">\(1\)</span> takes the value <span
+class="math inline">\(1\)</span> at <span
+class="math inline">\(0\)</span>. For <span class="math inline">\(0\le
+a&lt;N\)</span> put <span
+class="math display">\[\beta_a=(e+2)!\,N^{e+1}B_{e+1}(a/N).\]</span></p>
+<div id="pr:integral" class="problem" data-progress-ids="[&quot;2373&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:integral&quot;]"><a class="stable-tag" href="tag/2373.html" title="Stable tag: cite as Tag 2373">Tag 2373</a>
+<p><strong>Problem 28.2.1</strong>. For integers <span
+class="math inline">\(k\ge1\)</span>, <span
+class="math inline">\(N\ge1\)</span> and <span
+class="math inline">\(a\)</span>, the number <span
+class="math inline">\((k+1)!\,N^kB_k(a/N)\)</span> is an integer. In
+particular <span
+class="math inline">\(\beta_a\in\mathbb{Z}\)</span>.</p>
+</div>
+<div id="pr:hurwitz" class="problem" data-progress-ids="[&quot;2374&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:hurwitz&quot;]"><a class="stable-tag" href="tag/2374.html" title="Stable tag: cite as Tag 2374">Tag 2374</a>
+<p><strong>Problem 28.2.2</strong>. Let <span
+class="math inline">\(\chi\)</span> be a Dirichlet character modulo
+<span class="math inline">\(N\)</span>, not necessarily primitive. Then
+<span class="math inline">\(\sum_{0\le
+a&lt;N}\chi(a)\beta_a=-(e+2)!\,(e+1)\,N\,L(-e,\chi)\)</span>. For <span
+class="math inline">\(N=3\)</span>, <span
+class="math inline">\(e=1\)</span> and <span
+class="math inline">\(\chi\)</span> trivial both sides are <span
+class="math inline">\(-6\)</span>.</p>
+</div>
+<div id="pr:size" class="problem" data-progress-ids="[&quot;2375&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:size&quot;]"><a class="stable-tag" href="tag/2375.html" title="Stable tag: cite as Tag 2375">Tag 2375</a>
+<p><strong>Problem 28.2.3</strong>. For <span
+class="math inline">\(k\ge2\)</span> and <span
+class="math inline">\(0\le s\le1\)</span>, <span
+class="math inline">\(\lvert B_k(s)\rvert\le4\,k!/(2\pi)^k\)</span>.
+Hence <span
+class="math inline">\(\lvert\beta_a\rvert&lt;(e+2)!\,(e+1)!\,N^{e+1}\)</span>.</p>
+</div>
+<p>Let <span class="math inline">\(U_N=(\mathbb{Z}/N)^\times\)</span>.
+For <span class="math inline">\(t\in U_N\)</span> put <span
+class="math inline">\(\kappa(t)=2\beta_t+(-1)^e[t=1]+[t=-1]\)</span>,
+where <span class="math inline">\(\beta_t\)</span> is taken at the
+representative of <span class="math inline">\(t\)</span> in <span
+class="math inline">\([0,N)\)</span> and <span
+class="math inline">\([\,\cdot\,]\)</span> is <span
+class="math inline">\(1\)</span> or <span
+class="math inline">\(0\)</span> as the condition holds or not. Let
+<span class="math inline">\(T\)</span> be the integer matrix with
+entries <span class="math inline">\(T_{s,t}=\kappa(t/s)\)</span>, <span
+class="math inline">\(s,t\in U_N\)</span>. In this chapter <span
+class="math inline">\(T\)</span> and <span
+class="math inline">\(\kappa\)</span> denote this matrix and this
+function.</p>
+<div id="pr:matrix" class="problem" data-progress-ids="[&quot;2376&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:matrix&quot;]"><a class="stable-tag" href="tag/2376.html" title="Stable tag: cite as Tag 2376">Tag 2376</a>
+<p><strong>Problem 28.2.4</strong>. For each Dirichlet character <span
+class="math inline">\(\psi\)</span> modulo <span
+class="math inline">\(N\)</span>, the vector <span
+class="math inline">\((\psi(t))_{t\in U_N}\)</span> is an eigenvector of
+<span class="math inline">\(T\)</span> with eigenvalue <span
+class="math inline">\(\lambda_\psi=\sum_{t\in
+U_N}\psi(t)\kappa(t)\)</span>, and <span class="math inline">\(\det
+T=\prod_\psi\lambda_\psi\)</span>.</p>
+</div>
+<div id="pr:eigen" class="problem" data-progress-ids="[&quot;2377&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:eigen&quot;]"><a class="stable-tag" href="tag/2377.html" title="Stable tag: cite as Tag 2377">Tag 2377</a>
+<p><strong>Problem 28.2.5</strong>. <span
+class="math inline">\(\lambda_\psi=2\sum_{0\le
+a&lt;N}\psi(a)\beta_a+(-1)^e+\psi(-1)\)</span>. It equals <span
+class="math inline">\(2\sum_a\psi(a)\beta_a\ne0\)</span> if <span
+class="math inline">\(\psi\)</span> is critical for <span
+class="math inline">\(e\)</span>, and <span
+class="math inline">\(2(-1)^e\)</span> otherwise. In particular <span
+class="math inline">\(\det T\ne0\)</span>.</p>
+</div>
+<p>The correction <span
+class="math inline">\((-1)^e[t=1]+[t=-1]\)</span> does nothing on the
+critical characters and replaces the zeros of Problem <a
+href="#pr:parity" data-reference-type="ref"
+data-reference="pr:parity">28.1.3</a> by <span
+class="math inline">\(\pm2\)</span>. One integer is divisible by every
+eigenvalue.</p>
+<div id="pr:adjugate" class="problem" data-progress-ids="[&quot;2378&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:adjugate&quot;]"><a class="stable-tag" href="tag/2378.html" title="Stable tag: cite as Tag 2378">Tag 2378</a>
+<p><strong>Problem 28.2.6</strong>. Let <span
+class="math inline">\(R\)</span> be a commutative ring, <span
+class="math inline">\(A\)</span> a commutative <span
+class="math inline">\(R\)</span>-algebra, free of finite rank as an
+<span class="math inline">\(R\)</span>-module, <span
+class="math inline">\(z\in A\)</span>, and <span
+class="math inline">\(\Delta=\det_R(z\mid A)\)</span>. Then <span
+class="math inline">\(\Delta\in zA\)</span>. Hence every <span
+class="math inline">\(A\)</span>-module killed by <span
+class="math inline">\(z\)</span> is killed by <span
+class="math inline">\(\Delta\)</span>, and, with <span
+class="math inline">\(A=\mathbb{Z}[U_N]\)</span> and <span
+class="math inline">\(z=\sum_t\kappa(t)\,t\)</span>, every <span
+class="math inline">\(\lambda_\psi\)</span> divides <span
+class="math inline">\(\det T\)</span> in <span
+class="math inline">\(\mathbb{Z}[\psi]\)</span>.</p>
+</div>
+<div id="pr:simplest" class="problem" data-progress-ids="[&quot;2379&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:simplest&quot;]"><a class="stable-tag" href="tag/2379.html" title="Stable tag: cite as Tag 2379">Tag 2379</a>
+<p><strong>Problem 28.2.7</strong>. For <span
+class="math inline">\(N=3\)</span> and <span
+class="math inline">\(e=1\)</span>: <span
+class="math inline">\(\beta_1=\beta_2=-3\)</span>, <span
+class="math inline">\(\kappa(1)=-7\)</span>, <span
+class="math inline">\(\kappa(2)=-5\)</span>, <span
+class="math inline">\(\lambda_\psi=-12\)</span> for the trivial
+character, which is critical, <span
+class="math inline">\(\lambda_\psi=-2\)</span> for the other, and <span
+class="math inline">\(\det T=24\)</span>.</p>
+</div>
+<p>The eigenvalues are tied to Stickelberger sums by a
+character-weighted form of Voronoi’s congruence, as in the proof <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>; for the
+classical congruence see <span class="citation"
+data-cites="IR">[<a href="#ref-IR">IR</a>, Ch. 15, §2]</span>.</p>
+<div id="pr:zcong" class="problem" data-progress-ids="[&quot;237A&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:zcong&quot;]"><a class="stable-tag" href="tag/237A.html" title="Stable tag: cite as Tag 237A">Tag 237A</a>
+<p><strong>Problem 28.2.8</strong>. Let <span
+class="math inline">\(u\ge0\)</span> be an integer with <span
+class="math inline">\(u\equiv1\pmod N\)</span>, let <span
+class="math inline">\(F\ge1\)</span> be prime to <span
+class="math inline">\(u\)</span>, and let <span
+class="math inline">\(\chi\)</span> be a Dirichlet character modulo
+<span class="math inline">\(N\)</span>. Then, in <span
+class="math inline">\(\mathbb{Z}[\chi]\)</span>, <span
+class="math display">\[(e+2)!\,(e+1)\,N\,u^e\sum_{0\le
+a&lt;NF}\Bigl\lfloor\frac{ua}{NF}\Bigr\rfloor
+a^e\chi(a)\equiv(u^{e+1}-1)\sum_{0\le a&lt;N}\chi(a)\beta_a\pmod
+F.\]</span> For <span class="math inline">\(N=1\)</span>, <span
+class="math inline">\(e=1\)</span>, <span
+class="math inline">\(u=2\)</span>, <span
+class="math inline">\(F=5\)</span> the two sides are <span
+class="math inline">\(168\)</span> and <span
+class="math inline">\(3\)</span>; for <span
+class="math inline">\(N=3\)</span>, <span
+class="math inline">\(e=1\)</span>, <span
+class="math inline">\(u=4\)</span>, <span
+class="math inline">\(F=5\)</span> and <span
+class="math inline">\(\chi\)</span> trivial they are <span
+class="math inline">\(22320\)</span> and <span
+class="math inline">\(-90\)</span>.</p>
+</div>
+<div id="pr:witness" class="problem" data-progress-ids="[&quot;237B&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:witness&quot;]"><a class="stable-tag" href="tag/237B.html" title="Stable tag: cite as Tag 237B">Tag 237B</a>
+<p><strong>Problem 28.2.9</strong>. Let <span
+class="math inline">\(\psi\)</span> be critical for <span
+class="math inline">\(e\)</span>, let <span
+class="math inline">\(X\)</span> be an integer divisible by <span
+class="math inline">\(\det T\)</span>, and let <span
+class="math inline">\(u\ge0\)</span>, <span
+class="math inline">\(u\equiv1\pmod N\)</span>. There is <span
+class="math inline">\(w\in\mathbb{Z}[\psi]\)</span> such that for every
+<span class="math inline">\(F\ge1\)</span> prime to <span
+class="math inline">\(u\)</span>, <span
+class="math display">\[(u^{e+1}-1)X\equiv2w\sum_{0\le
+a&lt;NF}\Bigl\lfloor\frac{ua}{NF}\Bigr\rfloor a^e\psi(a)\pmod
+F.\]</span></p>
+</div>
+<p>For fixed <span class="math inline">\(N,e\ge1\)</span>, the proof
+uses the integer <span
+class="math display">\[X=\bigl((1+N)^e-1\bigr)\bigl((1+N)^{e+1}-1\bigr)\bigl((1+2N)^e-1\bigr)\bigl((1+2N)^{e+1}-1\bigr)\,\lvert\det
+T\rvert,\]</span> so that for every prime <span
+class="math inline">\(\ell\)</span> one of <span
+class="math inline">\(u=1+N\)</span>, <span
+class="math inline">\(u=1+2N\)</span> is prime to <span
+class="math inline">\(\ell\)</span> and <span
+class="math inline">\((u^e-1)(u^{e+1}-1)\mid X\)</span>. It bounds <span
+class="math inline">\(\lvert\det T\rvert\)</span> through the entries of
+<span class="math inline">\(T\)</span>, using <span
+class="math inline">\(\lvert B_{e+1}(s)\rvert&lt;17\,(e+1)!\)</span> on
+<span class="math inline">\([0,1]\)</span>, and obtains the
+following.</p>
+<div id="thm:stick" class="theorem"><a class="stable-tag" href="tag/237C.html" title="Stable tag: cite as Tag 237C">Tag 237C</a>
+<p><strong>Theorem 28.2.1</strong> (Stickelberger bound). <em>Let <span
+class="math inline">\(N,e\ge1\)</span>. There is an integer <span
+class="math inline">\(X\)</span> with <span class="math inline">\(1\le
+X\le2^{(N+e+3)^6}\)</span> such that</em></p>
+<ol>
+<li><p><em>for every prime <span class="math inline">\(\ell\)</span>
+there is an integer <span class="math inline">\(u\ge1\)</span> with
+<span class="math inline">\(u\equiv1\pmod N\)</span>, <span
+class="math inline">\(\ell\nmid u\)</span> and <span
+class="math inline">\((u^e-1)(u^{e+1}-1)\mid X\)</span>;</em></p></li>
+<li><p><em>for every integer <span class="math inline">\(u\ge0\)</span>
+with <span class="math inline">\(u\equiv1\pmod N\)</span>, every
+integral domain <span class="math inline">\(\Lambda\)</span> of
+characteristic <span class="math inline">\(0\)</span>, and every
+Dirichlet character <span class="math inline">\(\psi\)</span> modulo
+<span class="math inline">\(N\)</span> with values in <span
+class="math inline">\(\Lambda\)</span> and <span
+class="math inline">\(\psi(-1)=-(-1)^e\)</span>, there is <span
+class="math inline">\(w\in\Lambda\)</span> such that for every integer
+<span class="math inline">\(F\ge1\)</span> prime to <span
+class="math inline">\(u\)</span>, in <span
+class="math inline">\(\Lambda\)</span>, <span class="math display">\[F\
+\Big|\ (u^{e+1}-1)X-2w\sum_{0\le
+a&lt;NF}\Bigl\lfloor\frac{ua}{NF}\Bigr\rfloor
+a^e\psi(a).\]</span></em></p></li>
+</ol>
+</div>
+<p>For <span class="math inline">\(N=3\)</span> and <span
+class="math inline">\(e=1\)</span> this <span
+class="math inline">\(X\)</span> is <span
+class="math inline">\(311040\)</span>.</p>
+<h1 id="sec:euler">§28.3. Gauss sums and the Euler system <a class="stable-tag" href="tag/237D.html" title="Stable tag: cite as Tag 237D">Tag 237D</a></h1>
+<p>How does an integer such as <span class="math inline">\(X\)</span>
+bound a module of cocycles from above, without the main conjecture? The
+proof uses Kolyvagin’s method for Gauss sums, in Rubin’s version for
+class groups <span class="citation"
+data-cites="Ru91">[<a href="#ref-Ru91">Ru91</a>]</span>, <span
+class="citation" data-cites="La">[<a href="#ref-La">La</a>,
+Appendix]</span>, <span class="citation"
+data-cites="Gr">[<a href="#ref-Gr">Gr</a>]</span>, with a Tate twist as in
+<span class="citation" data-cites="BG">[<a href="#ref-BG">BG</a>]</span>. At
+level <span class="math inline">\(\ell^n\)</span>, let <span
+class="math inline">\(u\ge1\)</span> be an auxiliary exponent, <span
+class="math inline">\(P\)</span> a finite set of primes <span
+class="math inline">\(q\equiv1\pmod{uN\ell^n}\)</span>, and <span
+class="math inline">\(p\)</span> a prime congruent to <span
+class="math inline">\(1\)</span> modulo <span
+class="math inline">\(N\ell^n\prod_{q\in P}q\)</span>. The Gauss sums at
+<span class="math inline">\(p\)</span> give elements of known valuation.
+For <span class="math inline">\(S\subseteq P\)</span> the derivative
+cocycle <span class="math inline">\(\kappa_S\)</span> has character
+<span class="math inline">\(\chi_\ell^{e+1}(\psi\circ\chi_N)\)</span>;
+over <span class="math inline">\(\mathbb{Q}(\mu_N)\)</span> it is
+unramified outside <span class="math inline">\(\ell\)</span>, <span
+class="math inline">\(p\)</span> and <span
+class="math inline">\(S\)</span>; and at <span
+class="math inline">\(q\in P\setminus S\)</span> its value at a
+Frobenius is a value of <span
+class="math inline">\(\kappa_{S\cup\{q\}}\)</span> on inertia at the
+same place.</p>
+<p>For <span class="math inline">\(x\in\mathbb{Q}/\mathbb{Z}\)</span>
+let <span class="math inline">\(\langle x\rangle\in[0,1)\)</span> be its
+representative, and for an integer <span
+class="math inline">\(u\ge0\)</span> put <span
+class="math display">\[\vartheta_u(x)=\lfloor u\langle
+x\rangle\rfloor-\lfloor u\langle -x\rangle\rfloor .\]</span> For <span
+class="math inline">\(F\ge2\)</span> let <span
+class="math inline">\(\theta_F=\sum_a\langle
+a/F\rangle\,\sigma_a^{-1}\in\mathbb{Q}[(\mathbb{Z}/F)^\times]\)</span>,
+the sum over <span
+class="math inline">\(a\in(\mathbb{Z}/F)^\times\)</span>, be the
+Stickelberger element at modulus <span class="math inline">\(F\)</span>,
+extending the prime-modulus definition of Chapter <a href="20261125T004000--denominators-and-sha__workbook.html#chap"
+data-reference-type="ref" data-reference="ds-chap">26</a>.</p>
+<div id="pr:theta" class="problem" data-progress-ids="[&quot;237E&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:theta&quot;]"><a class="stable-tag" href="tag/237E.html" title="Stable tag: cite as Tag 237E">Tag 237E</a>
+<p><strong>Problem 28.3.1</strong>. Let <span
+class="math inline">\(u\ge1\)</span> be prime to <span
+class="math inline">\(F\)</span>. For <span
+class="math inline">\(a\)</span> prime to <span
+class="math inline">\(F\)</span>, <span
+class="math inline">\(\vartheta_u(a/F)=2\lfloor u\langle
+a/F\rangle\rfloor-u+1\)</span>, and <span
+class="math inline">\(\sum_a\vartheta_u(a/F)\,\sigma_a^{-1}=2(u-\sigma_u)\theta_F-(u-1)\sum_a\sigma_a\)</span>.
+For <span class="math inline">\(F=5\)</span>, <span
+class="math inline">\(u=2\)</span> the values at <span
+class="math inline">\(a=1,2,3,4\)</span> are <span
+class="math inline">\(-1,-1,1,1\)</span>.</p>
+</div>
+<p>Fix a place <span class="math inline">\(\mathfrak{P}\)</span> of
+<span class="math inline">\(\overline{\mathbb{Q}}\)</span> above <span
+class="math inline">\(p\)</span>, normalize its valuation by <span
+class="math inline">\(v_\mathfrak{P}(p)=1\)</span>, and form all Gauss
+sums <span class="math inline">\(g(\chi)\)</span> with the same
+nontrivial additive character of <span
+class="math inline">\(\mathbb{F}_p\)</span>. By Stickelberger’s
+factorization <span class="citation"
+data-cites="Wa">[<a href="#ref-Wa">Wa</a>, Ch. 6]</span>, the characters
+<span class="math inline">\(\chi\)</span> of <span
+class="math inline">\(\mathbb{F}_p^\times\)</span> can be indexed by the
+points <span class="math inline">\(x\in\mathbb{Q}/\mathbb{Z}\)</span> of
+order dividing <span class="math inline">\(p-1\)</span> so that <span
+class="math inline">\(j(\chi)=g(\chi)^u/g(\chi^u)\)</span> satisfies
+<span class="math inline">\(v_\mathfrak{P}(j(\chi))=\lfloor u\langle
+x\rangle\rfloor\)</span> and <span
+class="math inline">\(v_\mathfrak{P}(j(\chi)/j(\chi^{-1}))=\vartheta_u(x)\)</span>.
+The proof builds its elements of known valuation from these quotients.
+The next problem is a cyclic group-ring model for the derivative
+operator.</p>
+<div id="pr:derivative" class="problem" data-progress-ids="[&quot;237F&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:derivative&quot;]"><a class="stable-tag" href="tag/237F.html" title="Stable tag: cite as Tag 237F">Tag 237F</a>
+<p><strong>Problem 28.3.2</strong>. Let <span
+class="math inline">\(\sigma\)</span> generate a cyclic group of order
+<span class="math inline">\(M\)</span>, <span
+class="math inline">\(D=\sum_{i=1}^{M-1}i\sigma^i\)</span> and <span
+class="math inline">\(\mathcal N=\sum_{i=0}^{M-1}\sigma^i\)</span>. Then
+<span class="math inline">\((\sigma-1)D=M-\mathcal N\)</span>.</p>
+</div>
+<p>The Hilbert symbol over <span
+class="math inline">\(\mathbb{Q}\)</span> gives a classical example of
+global reciprocity <span class="citation"
+data-cites="Se">[<a href="#ref-Se">Se</a>, Ch. III]</span>.</p>
+<div id="pr:hilbert" class="problem" data-progress-ids="[&quot;237G&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:hilbert&quot;]"><a class="stable-tag" href="tag/237G.html" title="Stable tag: cite as Tag 237G">Tag 237G</a>
+<p><strong>Problem 28.3.3</strong>. The Hilbert symbol <span
+class="math inline">\((-1,-1)_v\)</span> is <span
+class="math inline">\(-1\)</span> for <span
+class="math inline">\(v=\infty\)</span> and <span
+class="math inline">\(v=2\)</span>, and <span
+class="math inline">\(1\)</span> for odd <span
+class="math inline">\(v\)</span>. If <span
+class="math inline">\(a,b\in\mathbb{Q}^\times\)</span> and <span
+class="math inline">\((a,b)_v=1\)</span> for all places <span
+class="math inline">\(v\ne r\)</span>, then <span
+class="math inline">\((a,b)_r=1\)</span>.</p>
+</div>
+<p>The reciprocity law used in the proof is Artin reciprocity over <span
+class="math inline">\(\mathbb{Q}(\mu_{Nm})\)</span> at primes <span
+class="math inline">\(q\equiv1\pmod{Nm}\)</span>, where <span
+class="math inline">\(m\ge1\)</span> kills the component cocycle. Let
+<span class="math inline">\(e\ge1\)</span>, <span
+class="math inline">\(\psi\)</span> critical for <span
+class="math inline">\(e\)</span>, and <span
+class="math inline">\(X\)</span> as in Theorem <a href="#thm:stick"
+data-reference-type="ref" data-reference="thm:stick">28.2.1</a>. Then <span
+class="math inline">\(4X^2\)</span> kills the component of <span
+class="math inline">\(\psi\)</span>, an analogue of Stickelberger’s
+theorem; and if <span class="math inline">\(\ell&gt;N+e+3\)</span>,
+Kolyvagin’s descent gives a family <span
+class="math inline">\((\gamma_i)_{0\le i\le v_\ell(X)}\)</span> in <span
+class="math inline">\(\operatorname{Gal}(\overline{\mathbb{Q}}/\mathbb{Q})\)</span>
+such that every cocycle in the component of <span
+class="math inline">\(\psi\)</span> vanishing at all the <span
+class="math inline">\(\gamma_i\)</span> is zero. For a CM field <span
+class="math inline">\(E\subseteq\mathbb{Q}(\mu_N)\)</span> and <span
+class="math inline">\(\mathcal{O}\)</span> containing the values of the
+characters modulo <span class="math inline">\(N\)</span>, it follows
+that <span class="math inline">\(Y_e=4\varphi(N)\cdot4X^2\)</span> kills
+<span class="math inline">\(\mathrm{Sha}^{\mathrm{odd}}_{e,n}\)</span>,
+and that for <span class="math inline">\(\ell&gt;y^2\)</span>, where
+<span class="math inline">\(y\ge N+e+3\)</span>, the elements of <span
+class="math inline">\(G_E\)</span> obtained from triples (a unit modulo
+<span class="math inline">\(N\)</span>, a character <span
+class="math inline">\(\psi\)</span>, an index <span
+class="math inline">\(0\le i\le v_\ell(X)\)</span>) detect <span
+class="math inline">\(\mathrm{Sha}^{\mathrm{odd}}_{e,n}\)</span>. For
+each <span class="math inline">\(E\subseteq\mathbb{Q}(\mu_N)\)</span>
+and each prime <span class="math inline">\(\ell\)</span>, there is a
+finite set in <span class="math inline">\(G_E\)</span> detecting all
+maps satisfying (a) and (b), simultaneously for all <span
+class="math inline">\(\mathcal{O}\)</span>, <span
+class="math inline">\(n\)</span>, <span
+class="math inline">\(e\)</span>; for every integer <span
+class="math inline">\(y\ge N\)</span> with <span
+class="math inline">\(\ell\le y^2\)</span>, it has at most <span
+class="math inline">\(y^{20}\)</span> elements.</p>
+<div id="pr:exponent-rank" class="problem" data-progress-ids="[&quot;237H&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:exponent-rank&quot;]"><a class="stable-tag" href="tag/237H.html" title="Stable tag: cite as Tag 237H">Tag 237H</a>
+<p><strong>Problem 28.3.4</strong>. Let <span
+class="math inline">\(Z\)</span> be an <span
+class="math inline">\(\mathcal{O}\)</span>-submodule of the functions
+<span class="math inline">\(G_E\to\mathcal{O}_n\)</span>, killed by an
+integer <span class="math inline">\(m\ge1\)</span>, and let <span
+class="math inline">\(g_1,\dots,g_k\in G_E\)</span> be such that the
+only <span class="math inline">\(z\in Z\)</span> with <span
+class="math inline">\(z(g_1)=\dots=z(g_k)=0\)</span> is <span
+class="math inline">\(z=0\)</span>. Then <span
+class="math inline">\(\operatorname{len}_\mathcal{O}Z\le
+v_\mathcal{O}(m^k)\)</span>.</p>
+</div>
+<p>If <span class="math inline">\(X\le2^{y^6}\)</span>, <span
+class="math inline">\(y\ge4\)</span> and <span
+class="math inline">\(N\le y\)</span>, there are at most <span
+class="math inline">\(\varphi(N)^2(y^6+1)\le y^{20}\)</span> triples. So
+for <span class="math inline">\(0&lt;e&lt;t\)</span>, every <span
+class="math inline">\(\ell\)</span> and <span
+class="math inline">\(y=N+t+3\)</span>, <span
+class="math inline">\(\operatorname{len}_\mathcal{O}\mathrm{Sha}^{\mathrm{odd}}_{e,n}\le
+v_\mathcal{O}(Y_e^{y^{20}})\)</span>, where <span
+class="math inline">\(X_e\)</span> is an integer as in Theorem <a
+href="#thm:stick" data-reference-type="ref"
+data-reference="thm:stick">28.2.1</a> for <span
+class="math inline">\(N\)</span> and <span
+class="math inline">\(e\)</span>, and <span
+class="math inline">\(Y_e=4\varphi(N)\cdot4X_e^2\)</span>. One integer
+for all <span class="math inline">\(0&lt;e&lt;t\)</span> is <span
+class="math inline">\(\bigl(\prod_{0&lt;e&lt;t}Y_e\bigr)^{y^{20}}\)</span>.</p>
+<div id="pr:sum-e" class="problem" data-progress-ids="[&quot;237J&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:sum-e&quot;]"><a class="stable-tag" href="tag/237J.html" title="Stable tag: cite as Tag 237J">Tag 237J</a>
+<p><strong>Problem 28.3.5</strong>. Let <span
+class="math inline">\(N\ge1\)</span>, <span
+class="math inline">\(t\ge0\)</span>, <span
+class="math inline">\(y=N+t+3\)</span>, and let <span
+class="math inline">\(1\le X_e\le2^{(N+e+3)^6}\)</span> for <span
+class="math inline">\(0&lt;e&lt;t\)</span>. Then <span
+class="math display">\[\Bigl(\prod_{0&lt;e&lt;t}4\varphi(N)\cdot4X_e^2\Bigr)^{y^{20}}\le2^{4y^{27}}.\]</span></p>
+</div>
+<p>Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:e0" data-reference-type="ref"
+data-reference="tt-thm:e0">27.3.1</a>, Problems <a
+href="#pr:exponent-rank" data-reference-type="ref"
+data-reference="pr:exponent-rank">28.3.4</a> and <a href="#pr:sum-e"
+data-reference-type="ref" data-reference="pr:sum-e">28.3.5</a>, Theorem <a
+href="#thm:stick" data-reference-type="ref"
+data-reference="thm:stick">28.2.1</a> and the statements above prove
+Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:oddsha" data-reference-type="ref"
+data-reference="tt-thm:oddsha">27.3.2</a>, with <span
+class="math inline">\(X_{\mathrm{odd}}=\bigl(\prod_{0&lt;e&lt;t}Y_e\bigr)^{y^{20}}h_E\)</span>:
+one integer <span
+class="math inline">\(X_{\mathrm{odd}}\le2^{4(N+t+3)^{27}}h_E\)</span>
+bounds <span
+class="math inline">\(\operatorname{len}_\mathcal{O}\mathrm{Sha}^{\mathrm{odd}}_\ell(E,\mathcal{O};e,n)\)</span>
+by <span class="math inline">\(v_\mathcal{O}(X_{\mathrm{odd}})\)</span>
+for every prime <span class="math inline">\(\ell\)</span>, <span
+class="math inline">\(2\)</span> and the primes dividing <span
+class="math inline">\(N\)</span> included, every <span
+class="math inline">\(\mathcal{O}\)</span> as in that theorem, every
+<span class="math inline">\(0\le e&lt;t\)</span> and every <span
+class="math inline">\(n\ge0\)</span>.</p>
+<h1 id="sec:examples">§28.4. Examples, and the main conjecture <a class="stable-tag" href="tag/237K.html" title="Stable tag: cite as Tag 237K">Tag 237K</a></h1>
+<p>How much is lost? For odd <span class="math inline">\(\ell\)</span>
+and odd <span class="math inline">\(e\ge1\)</span>, we can compare the
+eigenvalue for the principal character modulo <span
+class="math inline">\(\ell\)</span> with the exact value of <span
+class="math inline">\(h_{\ell,e}(\mathbb{Q})\)</span> in Theorem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#thm:MW" data-reference-type="ref"
+data-reference="tt-thm:MW">27.1.2</a>. First we compute the <span
+class="math inline">\(37\)</span>-adic valuations of the eigenvalues for
+all critical characters modulo <span class="math inline">\(37\)</span>
+at <span class="math inline">\(e=1\)</span>. For <span
+class="math inline">\(N&gt;1\)</span> and <span
+class="math inline">\(\psi\)</span> critical, <span
+class="math inline">\(\lambda_\psi=2\,(e+2)!\,N\,B^{(N)}_{e+1,\psi}\)</span>
+with <span
+class="math inline">\(B^{(N)}_{k,\psi}=N^{k-1}\sum_{a=1}^N\psi(a)B_k(a/N)\)</span>,
+which is <span class="math inline">\(B_{k,\psi}\)</span> when <span
+class="math inline">\(\psi\)</span> is primitive of conductor <span
+class="math inline">\(N\)</span>. Let <span
+class="math inline">\(\omega\)</span> be the Teichmüller character
+modulo <span class="math inline">\(\ell\)</span>.</p>
+<div id="pr:37" class="problem" data-progress-ids="[&quot;237L&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:37&quot;]"><a class="stable-tag" href="tag/237L.html" title="Stable tag: cite as Tag 237L">Tag 237L</a>
+<p><strong>Problem 28.4.1</strong>. Let <span
+class="math inline">\(\ell=N=37\)</span>, <span
+class="math inline">\(e=1\)</span>, and <span
+class="math inline">\(\psi=\omega^j\)</span> with <span
+class="math inline">\(j\)</span> even, <span class="math inline">\(0\le
+j&lt;36\)</span>. Then <span
+class="math inline">\(v_{37}(\lambda_\psi)=1+v_{37}(B_{2,\omega^j})\)</span>
+for <span class="math inline">\(j\ne0\)</span>, and <span
+class="math inline">\(v_{37}(\lambda_\psi)=1\)</span> for <span
+class="math inline">\(j=0\)</span>. It equals <span
+class="math inline">\(2\)</span> for <span
+class="math inline">\(j=30\)</span>, <span
+class="math inline">\(0\)</span> for <span
+class="math inline">\(j=34\)</span>, and <span
+class="math inline">\(1\)</span> for the other <span
+class="math inline">\(j\)</span>.</p>
+</div>
+<p>At <span class="math inline">\(j=30\)</span> the value reflects the
+irregular pair <span class="math inline">\((37,32)\)</span> of
+Problem <a href="20261125T004000--denominators-and-sha__workbook.html#pr:irregular" data-reference-type="ref"
+data-reference="ds-pr:irregular">26.2.8</a>, through Kummer’s
+congruences <span class="citation"
+data-cites="Wa">[<a href="#ref-Wa">Wa</a>, Ch. 5]</span>.</p>
+<div id="pr:psi-one" class="problem" data-progress-ids="[&quot;237M&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:psi-one&quot;]"><a class="stable-tag" href="tag/237M.html" title="Stable tag: cite as Tag 237M">Tag 237M</a>
+<p><strong>Problem 28.4.2</strong>. Let <span
+class="math inline">\(\ell\)</span> be odd, <span
+class="math inline">\(N=\ell\)</span>, <span
+class="math inline">\(\psi=1\)</span> and <span
+class="math inline">\(e\)</span> odd. Then <span
+class="math inline">\(v_\ell(\lambda_\psi)=v_\ell(B_{e+1})+1+v_\ell\bigl((e+2)!\bigr)\)</span>.
+For <span class="math inline">\(\ell=691\)</span>, <span
+class="math inline">\(e=11\)</span> this is <span
+class="math inline">\(2\)</span>, while <span
+class="math inline">\(h_{691,11}(\mathbb{Q})=1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:compare">Problem 28.4.3</a></div><!-- used-in:end -->
+</div>
+<div id="pr:compare" class="problem" data-progress-ids="[&quot;237N&quot;,&quot;20261126T020430--the-minus-part-by-gauss-sums__workbook.tex#pr:compare&quot;]"><a class="stable-tag" href="tag/237N.html" title="Stable tag: cite as Tag 237N">Tag 237N</a>
+<p><strong>Problem 28.4.3</strong>. If <span
+class="math inline">\(\ell\)</span> is odd, <span
+class="math inline">\(e\)</span> is odd and <span
+class="math inline">\((\ell-1)\nmid(e+1)\)</span> (so <span
+class="math inline">\(\ell\ge5\)</span>), the value of Problem <a
+href="#pr:psi-one" data-reference-type="ref"
+data-reference="pr:psi-one">28.4.2</a> exceeds the value <span
+class="math inline">\(h_{\ell,e}(\mathbb{Q})\)</span> given by
+Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:MW" data-reference-type="ref"
+data-reference="tt-thm:MW">27.1.2</a> by exactly <span
+class="math inline">\(1+v_\ell\bigl((e+2)!\bigr)+v_\ell(e+1)\)</span>.</p>
+</div>
+<p>For each <span class="math inline">\(0&lt;e&lt;t\)</span>, one may
+take <span class="math inline">\(X_e\)</span> to be the determinant
+multiple of Section <a href="#sec:bernoulli" data-reference-type="ref"
+data-reference="sec:bernoulli">28.2</a>; each eigenvalue for that <span
+class="math inline">\(e\)</span> divides <span
+class="math inline">\(X_e\)</span> in its character ring, and the
+witness above contains the squares <span
+class="math inline">\(X_e^2\)</span> in a product raised to the power
+<span class="math inline">\(y^{20}\)</span>. Why is so coarse a bound
+good enough, and why does a bound at finite level replace the main
+conjecture? The proof applies Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:oddsha"
+data-reference-type="ref"
+data-reference="tt-thm:oddsha">27.3.2</a> to choose a witness
+<span class="math inline">\(X_{\mathrm{odd}}\)</span> for the data of
+Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>. At every prime <span
+class="math inline">\(\ell\)</span>, <span
+class="math inline">\(v_\mathcal{O}(X_{\mathrm{odd}})\)</span> bounds
+the lengths in that theorem for all sufficiently large coefficient rings
+<span class="math inline">\(\mathcal{O}\)</span> in the tower of finite
+Galois subextensions of <span
+class="math inline">\(\overline{\mathbb{Q}}_\ell/\mathbb{Q}_\ell\)</span>,
+ordered by inclusion. The denominator error at <span
+class="math inline">\(\ell\)</span> includes <span
+class="math inline">\(t\,v_\ell(X_{\mathrm{odd}})\)</span> (Chapter <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dp-chap">80</a>) <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>. The main conjecture of
+Mazur and Wiles <span class="citation"
+data-cites="MW">[<a href="#ref-MW">MW</a>]</span> gives the formula of
+Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:MW" data-reference-type="ref"
+data-reference="tt-thm:MW">27.1.2</a> for the rational Tate twists;
+the proof notes that for large <span class="math inline">\(\ell\)</span>
+a bound of this kind follows from it, and proves only an upper bound at
+finite level. To bound the valuations <span
+class="math inline">\(v_\ell(X_{\mathrm{odd}})\)</span> with weights
+<span class="math inline">\(\log\ell\)</span> it uses the size of <span
+class="math inline">\(X_{\mathrm{odd}}\)</span>, by Problem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#pr:one-number" data-reference-type="ref"
+data-reference="tt-pr:one-number">27.2.4</a>: <span
+class="math display">\[\sum_{\ell\in\mathcal
+L}v_\ell(X_{\mathrm{odd}})\log\ell\le\log
+X_{\mathrm{odd}}\le4(N+t+3)^{27}\log2+\log h_E\]</span> for every finite
+set <span class="math inline">\(\mathcal L\)</span> of primes. For the
+data, <span class="math inline">\(\log h_E\le x^{30}\)</span>, the sum
+is at most <span class="math inline">\(x^{2000}\)</span>, and <span
+class="math inline">\(x^{10^6}\le x_1\)</span>, <span
+class="math inline">\(x_1^{10^6}\le b\)</span> <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>. So the sum is at most
+<span class="math inline">\(b^{1/(5\cdot10^8)}\)</span>, and its
+contribution to the denominator errors, weighted by <span
+class="math inline">\(\log\ell\)</span>, is at most <span
+class="math inline">\(t\,x^{2000}\)</span>.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, Theorem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#thm:oddsha" data-reference-type="ref"
+data-reference="tt-thm:oddsha">27.3.2</a> is
+<code>New.exists_length_shaOdd_le</code>, in
+<code>Lib/Cyclotomic/OddSha.lean</code>, and Theorem <a
+href="#thm:stick" data-reference-type="ref"
+data-reference="thm:stick">28.2.1</a> is
+<code>New.OddPart.exists_isStickelbergerBound</code>, in
+<code>Lib/Cyclotomic/Voronoi.lean</code>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<p>§<a href="#sec:signs" data-reference-type="ref"
+data-reference="sec:signs">28.1</a>.</p>
+<div class="description">
+<p>The projections <span
+class="math inline">\((1\pm\sigma)/2\)</span>.</p>
+<p><span class="math inline">\(c\)</span> acts on roots of unity by
+inversion.</p>
+<p><span class="math inline">\(B_k(1-s)=(-1)^kB_k(s)\)</span>; for the
+nonvanishing, <span
+class="math inline">\(L(1-k,\chi)=-B_{k,\chi}/k\)</span> <span
+class="citation" data-cites="Wa">[<a href="#ref-Wa">Wa</a>, Thm. 4.2]</span>
+and the functional equation relating <span
+class="math inline">\(L(1-k,\chi)\)</span> to <span
+class="math inline">\(L(k,\bar\chi)\ne0\)</span>.</p>
+<p>The quadratic Gauss sum.</p>
+</div>
+<p>§<a href="#sec:bernoulli" data-reference-type="ref"
+data-reference="sec:bernoulli">28.2</a>.</p>
+<div class="description">
+<p>Expand <span class="math inline">\(B_k(a/N)\)</span> in powers of
+<span class="math inline">\(a/N\)</span>, and apply von Staudt–Clausen
+to the coefficients.</p>
+<p><span
+class="math inline">\(L(s,\chi)=N^{-s}\sum_{a=1}^N\chi(a)\zeta(s,a/N)\)</span>
+and <span class="math inline">\(\zeta(-e,x)=-B_{e+1}(x)/(e+1)\)</span>
+<span class="citation" data-cites="Wa">[<a href="#ref-Wa">Wa</a>,
+Ch. 4]</span>.</p>
+<p>The Fourier series of <span class="math inline">\(B_k(s)\)</span> on
+<span class="math inline">\([0,1]\)</span>, obtained by integrating by
+parts with <span class="math inline">\(B_k&#39;=kB_{k-1}\)</span>; and
+<span class="math inline">\(\zeta(k)\le\zeta(2)\)</span>.</p>
+<p>Substitute <span class="math inline">\(t=st&#39;\)</span>; then
+orthogonality of characters.</p>
+<p>Problems <a href="#pr:hurwitz" data-reference-type="ref"
+data-reference="pr:hurwitz">28.2.2</a> and <a href="#pr:parity"
+data-reference-type="ref" data-reference="pr:parity">28.1.3</a>, and <span
+class="math inline">\(L(-e,\chi)=L(-e,\chi_0)\prod_{p\mid
+N}(1-\chi_0(p)p^e)\)</span> for the primitive <span
+class="math inline">\(\chi_0\)</span> inducing <span
+class="math inline">\(\chi\)</span>.</p>
+<p>The Cayley–Hamilton theorem for multiplication by <span
+class="math inline">\(z\)</span>; in the basis <span
+class="math inline">\(U_N\)</span> its matrix is the transpose of <span
+class="math inline">\(T\)</span>.</p>
+<p>Write <span class="math inline">\(ua=r_a+NF q_a\)</span> with <span
+class="math inline">\(0\le r_a&lt;NF\)</span>, expand <span
+class="math inline">\((ua)^{e+1}\)</span> modulo <span
+class="math inline">\((NF)^2\)</span> and sum against <span
+class="math inline">\(\chi(a)\)</span>; <span
+class="math inline">\(a\mapsto r_a\)</span> permutes the residues.
+Evaluate <span class="math inline">\(\sum_{0\le
+a&lt;NF}\chi(a)a^{e+1}\)</span> by <span
+class="math inline">\(\sum_{0\le
+i&lt;n}(x+i)^k=\bigl(B_{k+1}(x+n)-B_{k+1}(x)\bigr)/(k+1)\)</span>, and
+control denominators with Problem <a href="#pr:integral"
+data-reference-type="ref" data-reference="pr:integral">28.2.1</a>.</p>
+<p>Problems <a href="#pr:adjugate" data-reference-type="ref"
+data-reference="pr:adjugate">28.2.6</a> and <a href="#pr:zcong"
+data-reference-type="ref" data-reference="pr:zcong">28.2.8</a>.</p>
+</div>
+<p>§<a href="#sec:euler" data-reference-type="ref"
+data-reference="sec:euler">28.3</a>.</p>
+<div class="description">
+<p>Here <span class="math inline">\(F\nmid ua\)</span>. For the
+group-ring identity, reindex the sum over units as in the prime-modulus
+Problem <a href="20261125T004000--denominators-and-sha__workbook.html#pr:c-twist" data-reference-type="ref"
+data-reference="ds-pr:c-twist">26.2.3</a>.</p>
+<p>Telescope, using <span class="math inline">\(\sigma^M=1\)</span>.</p>
+<p>The formulas for <span class="math inline">\((a,b)_v\)</span> and the
+product formula <span class="citation"
+data-cites="Se">[<a href="#ref-Se">Se</a>, Ch. III, §2]</span>.</p>
+<p>Evaluate at <span class="math inline">\(g_1,\dots,g_k\)</span>.</p>
+<p>Bound one factor by a power of <span
+class="math inline">\(2\)</span>.</p>
+</div>
+<p>§<a href="#sec:examples" data-reference-type="ref"
+data-reference="sec:examples">28.4</a>.</p>
+<div class="description">
+<p>Compute <span
+class="math inline">\(\lambda_\psi=2\sum_{t=1}^{36}\omega(t)^j(6t^2-222t+1369)\)</span>
+in <span class="math inline">\(\mathbb{Z}_{37}\)</span> to a few
+digits.</p>
+<p><span
+class="math inline">\(B^{(\ell)}_{k,1}=(1-\ell^{k-1})B_k\)</span>, <span
+class="math inline">\(B_{12}=-691/2730\)</span>, and Theorem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#thm:MW" data-reference-type="ref"
+data-reference="tt-thm:MW">27.1.2</a>.</p>
+<p><span class="math inline">\(B_{e+1}/(e+1)\)</span> is <span
+class="math inline">\(\ell\)</span>-integral when <span
+class="math inline">\((\ell-1)\nmid(e+1)\)</span> <span class="citation"
+data-cites="Wa">[<a href="#ref-Wa">Wa</a>, Cor. 5.14]</span>.</p>
+</div>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-BG"><span class="bib-label">[BG]</span> G. Banaszak and W. Gajda, <em>Euler systems for higher <span class="math inline">\(K\)</span>-theory of number fields</em>, J. Number Theory <strong>58</strong> (1996), 213–252.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Gr"><span class="bib-label">[Gr]</span> C. Greither, <em>Class groups of abelian fields, and the main conjecture</em>, Ann. Inst. Fourier (Grenoble) <strong>42</strong> (1992), 449–499.</p>
+<p id="ref-IR"><span class="bib-label">[IR]</span> K. Ireland and M. Rosen, <em>A Classical Introduction to Modern Number Theory</em>, 2nd ed., Grad. Texts in Math. 84, Springer, 1990.</p>
+<p id="ref-La"><span class="bib-label">[La]</span> S. Lang, <em>Cyclotomic Fields I and II</em>, combined 2nd ed., with an appendix by K. Rubin, Grad. Texts in Math. 121, Springer, 1990.</p>
+<p id="ref-MW"><span class="bib-label">[MW]</span> B. Mazur and A. Wiles, <em>Class fields of abelian extensions of <span class="math inline">\(\mathbf{Q}\)</span></em>, Invent. Math. <strong>76</strong> (1984), 179–330.</p>
+<p id="ref-Ru91"><span class="bib-label">[Ru91]</span> K. Rubin, <em>Kolyvagin’s system of Gauss sums</em>, in: Arithmetic Algebraic Geometry (Texel, 1989), Progr. Math. 89, Birkhäuser, 1991, 309–324.</p>
+<p id="ref-Se"><span class="bib-label">[Se]</span> J.-P. Serre, <em>A Course in Arithmetic</em>, Grad. Texts in Math. 7, Springer, 1973.</p>
+<p id="ref-Wa"><span class="bib-label">[Wa]</span> L. C. Washington, <em>Introduction to Cyclotomic Fields</em>, 2nd ed., Grad. Texts in Math. 83, Springer, 1997.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

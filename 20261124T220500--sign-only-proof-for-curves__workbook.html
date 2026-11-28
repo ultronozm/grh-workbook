@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-PIm/lcWrQ8TTDFK8Ml2iLLaMqBcr9h4t3afc4wJ6E3s=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-24" />
+  <title>The sign-only proof of the Riemann hypothesis for curves</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","F":"\\mathbb{F}","A":"\\mathbb{A}","Fb":"\\overline{\\F}_q","Ql":"\\overline{\\Q}_\\ell","cF":"\\mathcal{F}","cG":"\\mathcal{G}","Fr":"\\mathrm{Fr}","Tr":"\\operatorname{Tr}","e":"e"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="S1">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261124T220500--sign-only-proof-for-curves__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-26 19:19:35
+      <a href="20261124T220500--sign-only-proof-for-curves__workbook.tex" class="my-link">tex</a>
+      <a href="20261124T220500--sign-only-proof-for-curves__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261124T220500--sign-only-proof-for-curves__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">The sign-only proof of the Riemann hypothesis for
+curves <a class="stable-tag" href="tag/22XD.html" title="Stable tag: cite as Tag 22XD">Tag 22XD</a></h1>
+<p class="date">November 24, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:identity" id="toc-sec:identity">§S1.1. The identity \(qN = M^k + R\)</a></li>
+<li><a href="#sec:cohomology" id="toc-sec:cohomology">§S1.2. The sign under a vanishing hypothesis</a></li>
+<li><a href="#sec:curves" id="toc-sec:curves">§S1.3. Weak Lefschetz in place of (H2)</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secidentity" id="toc-secidentity">§S1.1</a></li>
+<li><a href="#seccohomology" id="toc-seccohomology">§S1.2</a></li>
+<li><a href="#seccurves" id="toc-seccurves">§S1.3</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Finite fields and their additive characters. The formalism of <span
+class="math inline">\(\ell\)</span>-adic cohomology with compact
+supports for schemes of finite type over a finite field, as summarized
+in <span class="citation" data-cites="SGA45">[<a href="#ref-SGA45">SGA4\(\frac12\)</a>,
+Rapport]</span>: the Grothendieck–Lefschetz trace formula <span
+class="citation" data-cites="SGA45">[<a href="#ref-SGA45">SGA4\(\frac12\)</a>, Rapport,
+Théorème 3.2]</span>, the Künneth formula, Poincaré duality, Tate
+twists, Artin’s vanishing theorem, and the long exact sequence of an
+open subscheme and its closed complement; see also <span
+class="citation" data-cites="Mil">[<a href="#ref-Mil">Mil</a>]</span>.
+Noether normalization. The Artin–Schreier sheaf, whose trace function is
+the additive character <span class="math inline">\(e\)</span> of §<a
+href="#sec:identity" data-reference-type="ref"
+data-reference="sec:identity">S1.1</a> <span class="citation"
+data-cites="SGA45">[<a href="#ref-SGA45">SGA4\(\frac12\)</a>, Sommes trig.]</span>. One
+theorem of weak Lefschetz type, stated in §<a href="#sec:curves"
+data-reference-type="ref" data-reference="sec:curves">S1.3</a>. No earlier
+chapter is used. The sequel, <em>Deligne’s bound by the sign-only
+method</em>, extends the argument to all dimensions.</p>
+<h1 id="sec:identity">§S1.1. The identity <span class="math inline">\(qN = M^k
++ R\)</span> <a class="stable-tag" href="tag/22XE.html" title="Stable tag: cite as Tag 22XE">Tag 22XE</a></h1>
+<p>How large is a weighted count of the zeros of a quadratic form, and
+which part of it has square-root size? Alpöge’s note sketches a “<span
+class="math inline">\(qN = M^k + R\)</span> sign-only proof of Weil and
+Deligne” using the form <span class="math inline">\(x_1x_2 + \dots +
+x_{k-1}x_k\)</span> <span class="citation"
+data-cites="Alp">[<a href="#ref-Alp">Alp</a> and footnote 3]</span>, without
+defining <span class="math inline">\(t\)</span>, <span
+class="math inline">\(M\)</span>, <span class="math inline">\(N\)</span>
+or <span class="math inline">\(R\)</span>. We follow the reading of
+<span class="citation" data-cites="Dup">[<a href="#ref-Dup">Dup</a>]</span>
+and the proof written out in <span class="citation"
+data-cites="Ald">[<a href="#ref-Ald">Ald</a>]</span>. That text reports that
+its proof was produced by an AI model from Alpöge’s sketch and checked
+by two others, and that no human has checked it. D. Zhang has since
+written out the same proof for lisse sheaves on the affine line <span
+class="citation" data-cites="Zh">[<a href="#ref-Zh">Zh</a>]</span>. His note
+is the primary source for §<a href="#sec:curves"
+data-reference-type="ref" data-reference="sec:curves">S1.3</a> wherever it
+applies, and the text says where <span class="citation"
+data-cites="Ald">[<a href="#ref-Ald">Ald</a>]</span> goes further.</p>
+<p>Let <span class="math inline">\(q = p^f\)</span>, and let <span
+class="math inline">\(e(y) := \exp\bigl(2\pi i
+\operatorname{Tr}_{\mathbb{F}_q/\mathbb{F}_p}(y)/p\bigr)\)</span> for
+<span class="math inline">\(y \in \mathbb{F}_q\)</span>. For <span
+class="math inline">\(h \in \mathbb{F}_q\)</span> let <span
+class="math inline">\(K_h\)</span> be the <span class="math inline">\(q
+\times q\)</span> matrix with entries <span
+class="math inline">\(K_h(x,y) := e(hxy)\)</span>.</p>
+<div id="pr:orth" class="problem" data-progress-ids="[&quot;22XF&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:orth&quot;]"><a class="stable-tag" href="tag/22XF.html" title="Stable tag: cite as Tag 22XF">Tag 22XF</a>
+<p><strong>Problem S1.1.1</strong>. Every additive character of <span
+class="math inline">\(\mathbb{F}_q\)</span> is <span
+class="math inline">\(y \mapsto e(ay)\)</span> for a unique <span
+class="math inline">\(a \in \mathbb{F}_q\)</span>, and <span
+class="math inline">\(\sum_{h \in \mathbb{F}_q} e(hy)\)</span> equals
+<span class="math inline">\(q\)</span> if <span class="math inline">\(y
+= 0\)</span> and <span class="math inline">\(0\)</span> otherwise.</p>
+</div>
+<div id="pr:unitary" class="problem" data-progress-ids="[&quot;22XG&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:unitary&quot;]"><a class="stable-tag" href="tag/22XG.html" title="Stable tag: cite as Tag 22XG">Tag 22XG</a>
+<p><strong>Problem S1.1.2</strong>. If <span class="math inline">\(h \ne
+0\)</span>, then <span class="math inline">\(K_h K_h^* = q\)</span>. So
+<span class="math inline">\(K_h\)</span> has operator norm <span
+class="math inline">\(\sqrt q\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261124T221500--deligne-bound-by-the-sign-only-method__workbook.html">Chapter S2</a></div><!-- used-in:end -->
+</div>
+<div id="pr:as-hat" class="problem" data-progress-ids="[&quot;22XH&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:as-hat&quot;]"><a class="stable-tag" href="tag/22XH.html" title="Stable tag: cite as Tag 22XH">Tag 22XH</a>
+<p><strong>Problem S1.1.3</strong>. Let <span class="math inline">\(t(x) :=
+e(x)\)</span> for <span class="math inline">\(x \ne 0\)</span> and <span
+class="math inline">\(t(0) := 0\)</span>. Then <span
+class="math inline">\(\sum_x t(x) = -1\)</span> and <span
+class="math inline">\(\sum_x t(x)\, e(x\xi) = q\,\delta_{\xi,-1} -
+1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:as-small">Problem S1.1.8</a>, <a href="#pr:fail">Problem S1.2.6</a></div><!-- used-in:end -->
+</div>
+<p>Let <span class="math inline">\(k \ge 2\)</span>, let <span
+class="math inline">\(Q(x) := x_1x_2 + x_2x_3 + \dots +
+x_{k-1}x_k\)</span> be the quadratic form of the path with vertices
+<span class="math inline">\(1, \dots, k\)</span>, and let <span
+class="math inline">\(Z \subset \mathbb{A}^k\)</span> be the quadric
+<span class="math inline">\(Q = 0\)</span>. For <span
+class="math inline">\(t \colon \mathbb{F}_q \to \mathbb{C}\)</span> let
+<span class="math display">\[N := \sum_{x \in Z(\mathbb{F}_q)} t(x_1)
+\cdots t(x_k), \qquad
+  M := \sum_{x \in \mathbb{F}_q} t(x),\]</span> <span
+class="math display">\[R := \sum_{h \ne 0} \sum_{x \in \mathbb{F}_q^k}
+t(x_1) \cdots t(x_k)\, e\bigl(hQ(x)\bigr).\]</span></p>
+<div id="pr:identity" class="problem" data-progress-ids="[&quot;22XJ&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:identity&quot;]"><a class="stable-tag" href="tag/22XJ.html" title="Stable tag: cite as Tag 22XJ">Tag 22XJ</a>
+<p><strong>Problem S1.1.4</strong>. <span class="math inline">\(qN = M^k +
+R\)</span>.</p>
+</div>
+<p>The identity holds for every <span class="math inline">\(t\)</span>.
+Its content is that <span class="math inline">\(R\)</span> is controlled
+by Fourier analysis, and <span class="math inline">\(N\)</span> and
+<span class="math inline">\(M^k\)</span> by cohomology. Let <span
+class="math inline">\(D_t\)</span> be the diagonal matrix with entries
+<span class="math inline">\(t(x)\)</span>, and regard <span
+class="math inline">\(t\)</span> as a column vector.</p>
+<div id="pr:matrix" class="problem" data-progress-ids="[&quot;22XK&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:matrix&quot;]"><a class="stable-tag" href="tag/22XK.html" title="Stable tag: cite as Tag 22XK">Tag 22XK</a>
+<p><strong>Problem S1.1.5</strong>. For every <span
+class="math inline">\(h\)</span>, <span class="math display">\[\sum_{x
+\in \mathbb{F}_q^k} t(x_1) \cdots t(x_k)\, e(hQ(x)) = t^{\mathsf T} K_h
+D_t K_h D_t \cdots D_t K_h\, t,\]</span> with <span
+class="math inline">\(k-1\)</span> factors <span
+class="math inline">\(K_h\)</span> and <span
+class="math inline">\(k-2\)</span> factors <span
+class="math inline">\(D_t\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:parseval-k">Problem S1.1.6</a></div><!-- used-in:end -->
+</div>
+<div id="pr:parseval-k" class="problem" data-progress-ids="[&quot;22XL&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:parseval-k&quot;]"><a class="stable-tag" href="tag/22XL.html" title="Stable tag: cite as Tag 22XL">Tag 22XL</a>
+<p><strong>Problem S1.1.6</strong>. If <span class="math inline">\(\lvert t
+\rvert \le T\)</span> and <span class="math inline">\(h \ne 0\)</span>,
+the sum in Problem <a href="#pr:matrix" data-reference-type="ref"
+data-reference="pr:matrix">S1.1.5</a> has absolute value at most <span
+class="math inline">\(T^k q^{(k+1)/2}\)</span>. Hence <span
+class="math inline">\(\lvert R \rvert \le T^k q^{(k+3)/2}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261124T221500--deligne-bound-by-the-sign-only-method__workbook.html">Chapter S2</a></div><!-- used-in:end -->
+</div>
+<p>The trivial bound is <span class="math inline">\(\lvert R \rvert \le
+T^kq^{k+1}\)</span>. If <span class="math inline">\(M\)</span> has the
+hoped-for size <span class="math inline">\(\sqrt q\)</span>, then <span
+class="math inline">\(M^k\)</span> has size <span
+class="math inline">\(q^{k/2}\)</span>, and the bound of Problem <a
+href="#pr:parseval-k" data-reference-type="ref"
+data-reference="pr:parseval-k">S1.1.6</a> exceeds <span
+class="math inline">\(M^k\)</span> by <span
+class="math inline">\(q^{3/2}\)</span> for every <span
+class="math inline">\(k\)</span>. After a <span
+class="math inline">\(k\)</span>-th root the loss <span
+class="math inline">\(q^{3/(2k)}\)</span> tends to <span
+class="math inline">\(1\)</span>. In §<a href="#sec:curves"
+data-reference-type="ref" data-reference="sec:curves">S1.3</a> the weights
+vary with the variable and the field.</p>
+<div id="pr:vector" class="problem" data-progress-ids="[&quot;22XM&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:vector&quot;]"><a class="stable-tag" href="tag/22XM.html" title="Stable tag: cite as Tag 22XM">Tag 22XM</a>
+<p><strong>Problem S1.1.7</strong>. Let <span
+class="math inline">\(E\)</span> be a finite field with <span
+class="math inline">\(r\)</span> elements, <span
+class="math inline">\(\psi\)</span> a nontrivial additive character of
+<span class="math inline">\(E\)</span>, and <span
+class="math inline">\(t_1, \dots, t_k \colon E \to \mathbb{C}\)</span>
+functions bounded by <span class="math inline">\(T\)</span>. For <span
+class="math inline">\(h \in E^\times\)</span> and <span
+class="math inline">\(c \in E\)</span>, <span
+class="math inline">\(\bigl\lvert \sum_{x \in E^k} t_1(x_1) \cdots
+t_k(x_k)\, \psi\bigl(hQ(x) + hc\bigr) \bigr\rvert \le T^k
+r^{(k+1)/2}\)</span>.</p>
+</div>
+<p>This is <span class="citation" data-cites="Zh">[<a href="#ref-Zh">Zh</a>,
+Lemma 2.6]</span> and <span class="citation"
+data-cites="Ald">[<a href="#ref-Ald">Ald</a>, Lemma 3]</span>. For <span
+class="math inline">\(k = 2\)</span> it is a finite-field form of
+Vinogradov’s bilinear bound <span class="citation"
+data-cites="Zh">[<a href="#ref-Zh">Zh</a>, Remark 2.7]</span>. The path is
+what matters. For odd <span class="math inline">\(q\)</span> and <span
+class="math inline">\(t(x) := e(-x^2/2)\)</span>, completing the square
+gives <span class="math inline">\(\lvert \sum_{x,y} t(x)t(y)\,e(xy)
+\rvert = q^{3/2}\)</span>. So with <span
+class="math inline">\(k\)</span> even and the disjoint pairs <span
+class="math inline">\(x_1x_2 + x_3x_4 + \dots + x_{k-1}x_k\)</span> in
+place of <span class="math inline">\(Q\)</span>, the sum can reach <span
+class="math inline">\(q^{3k/4}\)</span>, and the loss after a <span
+class="math inline">\(k\)</span>-th root does not tend to <span
+class="math inline">\(1\)</span> <span class="citation"
+data-cites="Zh">[<a href="#ref-Zh">Zh</a>, Remark 2.7]</span>.</p>
+<div id="pr:as-small" class="problem" data-progress-ids="[&quot;22XN&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:as-small&quot;]"><a class="stable-tag" href="tag/22XN.html" title="Stable tag: cite as Tag 22XN">Tag 22XN</a>
+<p><strong>Problem S1.1.8</strong>. Let <span
+class="math inline">\(t\)</span> be as in Problem <a href="#pr:as-hat"
+data-reference-type="ref" data-reference="pr:as-hat">S1.1.3</a>. Then <span
+class="math inline">\(N = 1 - q\)</span> for <span
+class="math inline">\(k = 3\)</span>, and <span class="math inline">\(N
+= q - 2\)</span> for <span class="math inline">\(k = 4\)</span>.</p>
+</div>
+<h1 id="sec:cohomology">§S1.2. The sign under a vanishing hypothesis <a class="stable-tag" href="tag/22XP.html" title="Stable tag: cite as Tag 22XP">Tag 22XP</a></h1>
+<p>Problem <a href="#pr:parseval-k" data-reference-type="ref"
+data-reference="pr:parseval-k">S1.1.6</a> bounds <span
+class="math inline">\(R\)</span>, but <span
+class="math inline">\(qN\)</span> and <span
+class="math inline">\(M^k\)</span> may each be much larger than <span
+class="math inline">\(R\)</span>. Why can they not cancel? The note’s
+answer is that their Frobenius eigenvalues sit in adjacent cohomological
+degrees, “one off” <span class="citation"
+data-cites="Alp">[<a href="#ref-Alp">Alp</a>, footnote 3]</span>.</p>
+<p>Let <span class="math inline">\(U \subset
+\mathbb{A}^1_{\mathbb{F}_q}\)</span> be a nonempty open subset with
+<span class="math inline">\(0 \notin U\)</span>, and <span
+class="math inline">\(\mathcal{F}\)</span> a lisse <span
+class="math inline">\(\overline{\mathbb{Q}}_\ell\)</span>-sheaf on <span
+class="math inline">\(U\)</span> of rank <span
+class="math inline">\(\rho\)</span>, pointwise pure of weight <span
+class="math inline">\(0\)</span> for a fixed embedding <span
+class="math inline">\(\iota \colon \overline{\mathbb{Q}}_\ell\to
+\mathbb{C}\)</span>. Let <span class="math inline">\(t(x)\)</span> be
+the trace of Frobenius on the stalk at <span class="math inline">\(x \in
+U(\mathbb{F}_q)\)</span>, and <span class="math inline">\(t(x) :=
+0\)</span> for <span class="math inline">\(x \notin U\)</span>; then
+<span class="math inline">\(\lvert t \rvert \le \rho\)</span>. Over
+<span class="math inline">\(\mathbb{F}_{q^n}\)</span> write <span
+class="math inline">\(M_n\)</span>, <span
+class="math inline">\(N_n\)</span>, <span
+class="math inline">\(R_n\)</span> for the sums of §<a
+href="#sec:identity" data-reference-type="ref"
+data-reference="sec:identity">S1.1</a>. Cohomology is taken over <span
+class="math inline">\(\overline{\mathbb{F}}_q\)</span>, and <span
+class="math inline">\(\mathrm{Fr}\)</span> is the geometric Frobenius.
+Let <span class="math inline">\(\mathcal{F}_k := \mathcal{F}^{\boxtimes
+k}\)</span> on <span class="math inline">\(U^k\)</span> and <span
+class="math inline">\(Z_k := Z \cap U^k\)</span>. By the trace formula
+<span class="math inline">\(M_n = \sum_i (-1)^i
+\operatorname{Tr}(\mathrm{Fr}^n \mid H^i_c(U, \mathcal{F}))\)</span> and
+<span class="math inline">\(N_n = \sum_i (-1)^i
+\operatorname{Tr}(\mathrm{Fr}^n \mid H^i_c(Z_k,
+\mathcal{F}_k))\)</span>. Following <span class="citation"
+data-cites="Dup">[<a href="#ref-Dup">Dup</a>]</span>, assume:</p>
+<ul>
+<li><p><span class="math inline">\(H^i_c(U, \mathcal{F}) = 0\)</span>
+for <span class="math inline">\(i \ne 1\)</span>;</p></li>
+<li><p>for infinitely many <span class="math inline">\(k\)</span>, <span
+class="math inline">\(H^i_c(Z_k, \mathcal{F}_k) = 0\)</span> for <span
+class="math inline">\(i \ne k - 1\)</span>.</p></li>
+</ul>
+<p>Let <span class="math inline">\(\alpha_1, \dots, \alpha_d\)</span> be
+the eigenvalues of <span class="math inline">\(\mathrm{Fr}\)</span> on
+<span class="math inline">\(H^1_c(U, \mathcal{F})\)</span>, and <span
+class="math inline">\(\alpha_I := \alpha_{i_1} \cdots
+\alpha_{i_k}\)</span> for <span class="math inline">\(I = (i_1, \dots,
+i_k)\)</span>. Under (H1), <span class="math inline">\(M_n = -\sum_j
+\alpha_j^n\)</span>.</p>
+<div id="pr:H1" class="problem" data-progress-ids="[&quot;22XQ&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:H1&quot;]"><a class="stable-tag" href="tag/22XQ.html" title="Stable tag: cite as Tag 22XQ">Tag 22XQ</a>
+<p><strong>Problem S1.2.1</strong>. If <span
+class="math inline">\(\mathcal{F}\)</span> has rank one and is
+geometrically nonconstant, then (H1) holds.</p>
+</div>
+<div id="pr:kunneth" class="problem" data-progress-ids="[&quot;22XR&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:kunneth&quot;]"><a class="stable-tag" href="tag/22XR.html" title="Stable tag: cite as Tag 22XR">Tag 22XR</a>
+<p><strong>Problem S1.2.2</strong>. <span class="math inline">\(H^i_c(U^k,
+\mathcal{F}_k) = 0\)</span> for <span class="math inline">\(i &lt;
+k\)</span>, and <span class="math inline">\(H^k_c(U^k, \mathcal{F}_k) =
+H^1_c(U, \mathcal{F})^{\otimes k}\)</span>. Under (H1) it vanishes also
+for <span class="math inline">\(i &gt; k\)</span>, and <span
+class="math inline">\(M_n^k = (-1)^k \sum_I \alpha_I^n\)</span>.</p>
+</div>
+<div id="pr:lower-half" class="problem" data-progress-ids="[&quot;22XS&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:lower-half&quot;]"><a class="stable-tag" href="tag/22XS.html" title="Stable tag: cite as Tag 22XS">Tag 22XS</a>
+<p><strong>Problem S1.2.3</strong>. <span class="math inline">\(Z_k\)</span>
+is smooth, of pure dimension <span class="math inline">\(k-1\)</span> or
+empty. Hence <span class="math inline">\(H^i_c(Z_k, \mathcal{F}_k) =
+0\)</span> for <span class="math inline">\(i &lt; k - 1\)</span>.</p>
+</div>
+<p>Let <span class="math inline">\(\beta_1, \dots, \beta_e\)</span> be
+the eigenvalues of <span class="math inline">\(\mathrm{Fr}\)</span> on
+<span class="math inline">\(H^{k-1}_c(Z_k, \mathcal{F}_k)\)</span>.</p>
+<div id="pr:sign" class="problem" data-progress-ids="[&quot;22XT&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:sign&quot;]"><a class="stable-tag" href="tag/22XT.html" title="Stable tag: cite as Tag 22XT">Tag 22XT</a>
+<p><strong>Problem S1.2.4</strong>. Under (H1), and (H2) for the given <span
+class="math inline">\(k\)</span>, <span class="math inline">\(R_n =
+(-1)^{k-1}\bigl(\sum_j (q\beta_j)^n + \sum_I \alpha_I^n\bigr)\)</span>
+for all <span class="math inline">\(n \ge 1\)</span>.</p>
+</div>
+<p>Every eigenvalue enters <span class="math inline">\(R_n\)</span> with
+the same sign: <span class="math inline">\(M^k\)</span> comes from
+degree <span class="math inline">\(k\)</span>, and <span
+class="math inline">\(qN\)</span> from degree <span
+class="math inline">\(k - 1\)</span>.</p>
+<div id="pr:power" class="problem" data-progress-ids="[&quot;22XU&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:power&quot;]"><a class="stable-tag" href="tag/22XU.html" title="Stable tag: cite as Tag 22XU">Tag 22XU</a>
+<p><strong>Problem S1.2.5</strong>. Let <span
+class="math inline">\(\gamma_1, \dots, \gamma_s \in \mathbb{C}\)</span>
+be distinct and nonzero, and <span class="math inline">\(m_1, \dots, m_s
+\in \mathbb{C}\)</span> nonzero. If <span class="math inline">\(\lvert
+\sum_i m_i \gamma_i^n \rvert \le A\, C^n\)</span> for all <span
+class="math inline">\(n \ge 1\)</span>, then <span
+class="math inline">\(\lvert \gamma_i \rvert \le C\)</span> for all
+<span class="math inline">\(i\)</span>.</p>
+</div>
+<p>In Problem <a href="#pr:sign" data-reference-type="ref"
+data-reference="pr:sign">S1.2.4</a> the coefficients are positive integers
+after equal eigenvalues are collected, so no <span
+class="math inline">\(\alpha_I\)</span> is cancelled by a <span
+class="math inline">\(q\beta_j\)</span>. Problems <a
+href="#pr:parseval-k" data-reference-type="ref"
+data-reference="pr:parseval-k">S1.1.6</a>, <a href="#pr:sign"
+data-reference-type="ref" data-reference="pr:sign">S1.2.4</a> and <a
+href="#pr:power" data-reference-type="ref"
+data-reference="pr:power">S1.2.5</a> with <span class="math inline">\(I =
+(j, \dots, j)\)</span> give <span class="math inline">\(\lvert \alpha_j
+\rvert^k \le q^{(k+3)/2}\)</span>, and letting <span
+class="math inline">\(k \to \infty\)</span> proves:</p>
+<div id="th:conditional" class="theorem"><a class="stable-tag" href="tag/22XV.html" title="Stable tag: cite as Tag 22XV">Tag 22XV</a>
+<p><strong>Theorem S1.2.1</strong> (<span><span class="citation"
+data-cites="Dup">[<a href="#ref-Dup">Dup</a>, Theorem 2.10.2]</span></span>).
+<em>Under (H1) and (H2), every eigenvalue <span
+class="math inline">\(\alpha\)</span> of <span
+class="math inline">\(\mathrm{Fr}\)</span> on <span
+class="math inline">\(H^1_c(U, \mathcal{F})\)</span> satisfies <span
+class="math inline">\(\lvert \alpha \rvert \le \sqrt q\)</span>, and
+<span class="math inline">\(\lvert \sum_{x \in \mathbb{F}_q} t(x) \rvert
+\le d \sqrt q\)</span>.</em></p>
+</div>
+<p>Hypothesis (H1) is harmless: as in Problem <a href="#pr:H1"
+data-reference-type="ref" data-reference="pr:H1">S1.2.1</a>, it holds
+whenever <span class="math inline">\(\mathcal{F}\)</span> has no nonzero
+geometrically constant quotient. Hypothesis (H2) is not, and <span
+class="citation" data-cites="Dup">[<a href="#ref-Dup">Dup</a>]</span> does
+not prove it.</p>
+<div id="pr:fail" class="problem" data-progress-ids="[&quot;22XW&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:fail&quot;]"><a class="stable-tag" href="tag/22XW.html" title="Stable tag: cite as Tag 22XW">Tag 22XW</a>
+<p><strong>Problem S1.2.6</strong>. Let <span class="math inline">\(U =
+\mathbb{A}^1 \smallsetminus \{0\}\)</span> and <span
+class="math inline">\(\mathcal{F}\)</span> the Artin–Schreier sheaf,
+with trace function <span class="math inline">\(t\)</span> as in
+Problem <a href="#pr:as-hat" data-reference-type="ref"
+data-reference="pr:as-hat">S1.1.3</a>. Then <span
+class="math inline">\(\mathcal{F}\)</span> is geometrically nonconstant,
+(H1) holds with <span class="math inline">\(d = 1\)</span> and <span
+class="math inline">\(\alpha_1 = 1\)</span>, and the vanishing in (H2)
+fails for <span class="math inline">\(k = 3\)</span> and for <span
+class="math inline">\(k = 4\)</span>.</p>
+</div>
+<p>Replacing <span class="math inline">\(Q\)</span> by <span
+class="math inline">\(\sum_i a_ix_ix_{i+1}\)</span> with <span
+class="math inline">\(a_i \ne 0\)</span> dilates the weight in each
+variable, by different factors. For a given sheaf this can matter: in
+Problem <a href="#pr:fail" data-reference-type="ref"
+data-reference="pr:fail">S1.2.6</a> with <span class="math inline">\(k =
+3\)</span>, the cohomology of <span class="math inline">\(a_1x_1x_2 +
+a_2x_2x_3 = 0\)</span> in <span class="math inline">\(U^3\)</span> is
+concentrated in degree <span class="math inline">\(2\)</span> when <span
+class="math inline">\(a_1 \ne a_2\)</span>. But (H2) asks for infinitely
+many <span class="math inline">\(k\)</span>, and the proof below does
+not rest on a choice of coefficients. What is wanted is a hypersurface
+in <span class="math inline">\(U^k\)</span> whose cohomology above the
+middle degree is forced to match that of <span
+class="math inline">\(U^k\)</span>. This is a weak Lefschetz property,
+and it holds for a generic hyperplane section, which has linear terms as
+well as quadratic ones.</p>
+<h1 id="sec:curves">§S1.3. Weak Lefschetz in place of (H2) <a class="stable-tag" href="tag/22XX.html" title="Stable tag: cite as Tag 22XX">Tag 22XX</a></h1>
+<p>The argument of <span class="citation"
+data-cites="Ald">[<a href="#ref-Ald">Ald</a>]</span> and <span
+class="citation" data-cites="Zh">[<a href="#ref-Zh">Zh</a>]</span> keeps the
+identity and the estimate, and replaces (H2) by a weak Lefschetz
+theorem. The higher cohomology of the hypersurface cancels against that
+of <span class="math inline">\(U^k\)</span>, and what survives is the
+trace on an actual vector space.</p>
+<h4 id="duality-and-the-gysin-map.">Duality and the Gysin map.</h4>
+<p>Let <span class="math inline">\(X\)</span> be smooth of pure
+dimension <span class="math inline">\(D\)</span> over a finite field
+<span class="math inline">\(\mathbb{F}_r\)</span>, and <span
+class="math inline">\(\mathcal{G}\)</span> lisse on <span
+class="math inline">\(X\)</span>. Poincaré duality pairs <span
+class="math inline">\(H^i_c(X, \mathcal{G})\)</span> perfectly with
+<span class="math inline">\(H^{2D-i}(X, \mathcal{G}^\vee)(D)\)</span>,
+compatibly with Frobenius, and the twist <span
+class="math inline">\((-1)\)</span> multiplies Frobenius eigenvalues by
+<span class="math inline">\(r\)</span>. If <span
+class="math inline">\(X\)</span> is affine, Artin’s theorem and duality
+give <span class="math inline">\(H^i_c(X, \mathcal{G}) = 0\)</span> for
+<span class="math inline">\(i &lt; D\)</span>. Let <span
+class="math inline">\(Y \subset X\)</span> be smooth and closed of pure
+dimension <span class="math inline">\(D - 1\)</span>, or empty. The
+transpose of restriction <span class="math inline">\(H^a(X,
+\mathcal{G}^\vee) \to H^a(Y, \mathcal{G}^\vee)\)</span> is the Gysin map
+<span class="math inline">\(H^j_c(Y, \mathcal{G})(-1) \to H^{j+2}_c(X,
+\mathcal{G})\)</span>, <span class="math inline">\(j = 2D - 2 -
+a\)</span>. We say that <span class="math inline">\(Y\)</span> has
+property (WL) for <span class="math inline">\(\mathcal{G}\)</span> if
+this restriction is bijective for <span class="math inline">\(a &lt; D -
+1\)</span> and injective for <span class="math inline">\(a = D -
+1\)</span>.</p>
+<div id="pr:gysin" class="problem" data-progress-ids="[&quot;22XY&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:gysin&quot;]"><a class="stable-tag" href="tag/22XY.html" title="Stable tag: cite as Tag 22XY">Tag 22XY</a>
+<p><strong>Problem S1.3.1</strong>. If <span
+class="math inline">\(Y\)</span> has property (WL) for <span
+class="math inline">\(\mathcal{G}\)</span>, the Gysin map <span
+class="math inline">\(H^j_c(Y, \mathcal{G})(-1) \to H^{j+2}_c(X,
+\mathcal{G})\)</span> is bijective for <span class="math inline">\(j
+&gt; D - 1\)</span> and surjective for <span class="math inline">\(j = D
+- 1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261124T221500--deligne-bound-by-the-sign-only-method__workbook.html">Chapter S2</a></div><!-- used-in:end -->
+</div>
+<p>Now let <span class="math inline">\(U\)</span> be a smooth affine
+curve over <span class="math inline">\(\mathbb{F}_r\)</span>, <span
+class="math inline">\(\mathcal{F}\)</span> lisse on <span
+class="math inline">\(U\)</span>, <span class="math inline">\(X :=
+U^k\)</span>, <span class="math inline">\(D = k\)</span>, and <span
+class="math inline">\(\mathcal{F}_k := \mathcal{F}^{\boxtimes
+k}\)</span>. Let <span class="math inline">\(Y \subset X\)</span> be
+smooth and closed of pure dimension <span class="math inline">\(D -
+1\)</span>, or empty, with property (WL) for <span
+class="math inline">\(\mathcal{F}_k\)</span>. Let <span
+class="math inline">\(M_n\)</span> and <span
+class="math inline">\(N_n\)</span> be the sums of the traces of
+Frobenius on the stalks of <span
+class="math inline">\(\mathcal{F}\)</span> over <span
+class="math inline">\(U(\mathbb{F}_{r^n})\)</span> and of <span
+class="math inline">\(\mathcal{F}_k\)</span> over <span
+class="math inline">\(Y(\mathbb{F}_{r^n})\)</span>, let <span
+class="math inline">\(R_n := r^nN_n - M_n^k\)</span>, and let <span
+class="math inline">\(K\)</span> be the kernel of the Gysin map <span
+class="math inline">\(H^{k-1}_c(Y, \mathcal{F}_k)(-1) \to H^{k+1}_c(X,
+\mathcal{F}_k)\)</span>.</p>
+<div id="pr:prop4" class="problem" data-progress-ids="[&quot;22XZ&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:prop4&quot;]"><a class="stable-tag" href="tag/22XZ.html" title="Stable tag: cite as Tag 22XZ">Tag 22XZ</a>
+<p><strong>Problem S1.3.2</strong>. For all <span class="math inline">\(n
+\ge 1\)</span>, <span class="math inline">\((-1)^{k-1} R_n =
+\operatorname{Tr}\bigl(\mathrm{Fr}^n \mid H^1_c(U, \mathcal{F})^{\otimes
+k}\bigr) + \operatorname{Tr}\bigl(\mathrm{Fr}^n \mid
+K\bigr).\)</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261124T221500--deligne-bound-by-the-sign-only-method__workbook.html">Chapter S2</a></div><!-- used-in:end -->
+</div>
+<p>This is <span class="citation"
+data-cites="Ald">[<a href="#ref-Ald">Ald</a>, Proposition 4]</span>. In <span
+class="citation" data-cites="Zh">[<a href="#ref-Zh">Zh</a>, Lemma 2.2 and
+Definition 2.3]</span> the right side is the trace on the single group
+<span class="math inline">\(H^k_c(X, Rj_*j^*\mathcal{F}_k)\)</span>,
+where <span class="math inline">\(j\)</span> is the inclusion of <span
+class="math inline">\(X \smallsetminus Y\)</span>. That group is an
+extension of <span class="math inline">\(K\)</span> by <span
+class="math inline">\(H^k_c(X, \mathcal{F}_k)\)</span>, and property
+(WL) says that it is the only nonzero one. Up to one global sign, <span
+class="math inline">\(R_n\)</span> is the trace of Frobenius on an
+actual vector space, so Problem <a href="#pr:power"
+data-reference-type="ref" data-reference="pr:power">S1.2.5</a> applies with
+positive integer coefficients. Nothing is assumed about the higher
+cohomology of <span class="math inline">\(U\)</span> or of <span
+class="math inline">\(Y\)</span>.</p>
+<div id="pr:conic" class="problem" data-progress-ids="[&quot;22Y2&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:conic&quot;]"><a class="stable-tag" href="tag/22Y2.html" title="Stable tag: cite as Tag 22Y2">Tag 22Y2</a>
+<p><strong>Problem S1.3.3</strong>. Let <span class="math inline">\(U =
+\mathbb{A}^1\)</span>, <span class="math inline">\(\mathcal{F}=
+\overline{\mathbb{Q}}_\ell\)</span>, <span class="math inline">\(k =
+2\)</span>, and <span class="math inline">\(Y\)</span> the conic <span
+class="math inline">\(xy + ax + by + c = 0\)</span> with <span
+class="math inline">\(ab \ne c\)</span>. Then <span
+class="math inline">\(N_n = r^n - 1\)</span> and <span
+class="math inline">\(-R_n = r^n\)</span>; here <span
+class="math inline">\(H^1_c(\mathbb{A}^1, \overline{\mathbb{Q}}_\ell) =
+0\)</span>, and <span class="math inline">\(K\)</span> has dimension one
+and eigenvalue <span class="math inline">\(r\)</span>.</p>
+</div>
+<p>The following theorem supplies hypersurfaces with property (WL).</p>
+<div id="th:wl" class="theorem"><a class="stable-tag" href="tag/22Y3.html" title="Stable tag: cite as Tag 22Y3">Tag 22Y3</a>
+<p><strong>Theorem S1.3.1</strong> (<span>Deligne; <span class="citation"
+data-cites="Kat93">[<a href="#ref-Kat93">Kat93</a>, Appendix,
+Corollary A.5]</span></span>). <em>Let <span
+class="math inline">\(V\)</span> be smooth of pure dimension <span
+class="math inline">\(D\)</span> over <span
+class="math inline">\(\overline{\mathbb{F}}_q\)</span>, let <span
+class="math inline">\(f \colon V \to \mathbb{P}^m\)</span> be
+quasi-finite, and let <span class="math inline">\(\mathcal{G}\)</span>
+be lisse on <span class="math inline">\(V\)</span>. For <span
+class="math inline">\(H\)</span> in a dense open subset of the space of
+hyperplanes of <span class="math inline">\(\mathbb{P}^m\)</span>,
+restriction <span class="math inline">\(H^a(V, \mathcal{G}) \to
+H^a(f^{-1}H, \mathcal{G})\)</span> is bijective for <span
+class="math inline">\(a &lt; D - 1\)</span> and injective for <span
+class="math inline">\(a = D - 1\)</span>.</em></p>
+</div>
+<p>Katz states this for a perverse sheaf <span
+class="math inline">\(\mathcal{K}\)</span>, in degrees <span
+class="math inline">\(a &lt; -1\)</span> and <span
+class="math inline">\(a = -1\)</span>. The case above is <span
+class="math inline">\(\mathcal{K} = \mathcal{G}[D]\)</span>, which is
+perverse because <span class="math inline">\(V\)</span> is smooth of
+pure dimension <span class="math inline">\(D\)</span> <span
+class="citation" data-cites="Kat93">[<a href="#ref-Kat93">Kat93</a>, proof of
+Corollary 3.4.1]</span>. The proof uses generic base change, duality and
+Artin’s theorem, and no weights.</p>
+<div id="pr:wl-affine" class="problem" data-progress-ids="[&quot;22Y4&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:wl-affine&quot;]"><a class="stable-tag" href="tag/22Y4.html" title="Stable tag: cite as Tag 22Y4">Tag 22Y4</a>
+<p><strong>Problem S1.3.4</strong>. Let <span
+class="math inline">\(V\)</span> be smooth and affine of pure dimension
+<span class="math inline">\(D\)</span> over <span
+class="math inline">\(\mathbb{F}_q\)</span>, let <span
+class="math inline">\(\Gamma = (y_1, \dots, y_m) \colon V \to
+\mathbb{A}^m\)</span> be a closed immersion, and let <span
+class="math inline">\(\mathcal{G}\)</span> be lisse on <span
+class="math inline">\(V\)</span>. For <span
+class="math inline">\((\lambda, \mu)\)</span> in a dense open subset of
+the affine space over <span
+class="math inline">\(\overline{\mathbb{F}}_q\)</span> of parameters
+with <span class="math inline">\(\lambda_m = 1\)</span>, let <span
+class="math inline">\(Y := \{\sum_i \lambda_i y_i + \mu = 0\}\)</span>.
+(a) Restriction <span class="math inline">\(H^a(V, \mathcal{G}) \to
+H^a(Y, \mathcal{G})\)</span> is bijective for <span
+class="math inline">\(a &lt; D - 1\)</span> and injective for <span
+class="math inline">\(a = D - 1\)</span>. (b) <span
+class="math inline">\(Y\)</span> is smooth, of pure dimension <span
+class="math inline">\(D - 1\)</span> or empty.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261124T221500--deligne-bound-by-the-sign-only-method__workbook.html">Chapter S2</a></div><!-- used-in:end -->
+</div>
+<p>This is the form used below. It is <span class="citation"
+data-cites="Ald">[<a href="#ref-Ald">Ald</a>, Lemma 8]</span>, and for <span
+class="math inline">\(V = \mathbb{A}^n\)</span> it is <span
+class="citation" data-cites="Zh">[<a href="#ref-Zh">Zh</a>, Theorem 2.4 and
+Construction 2.5]</span>.</p>
+<p>Let <span class="math inline">\(U\)</span> be a smooth affine curve
+over <span class="math inline">\(\mathbb{F}_q\)</span>, and <span
+class="math inline">\(\mathcal{F}\)</span> lisse on <span
+class="math inline">\(U\)</span> with <span class="math inline">\(\lvert
+\iota \operatorname{Tr}(\mathrm{Fr}_u \mid \mathcal{F}_{\bar u}) \rvert
+\le C\)</span> for all <span class="math inline">\(n\)</span> and <span
+class="math inline">\(u \in U(\mathbb{F}_{q^n})\)</span>. Choose a
+finite morphism <span class="math inline">\(\pi \colon U \to
+\mathbb{A}^1\)</span> of degree <span class="math inline">\(B\)</span>,
+and generators <span class="math inline">\(z_1, \dots, z_s\)</span> of
+the <span class="math inline">\(\mathbb{F}_q\)</span>-algebra <span
+class="math inline">\(\mathcal{O}(U)\)</span>. For <span
+class="math inline">\(a = (a_{ij}) \in \mathbb{A}^{ks}\)</span> and
+<span class="math inline">\(c \in \mathbb{A}^1\)</span> let <span
+class="math inline">\(Y_{a,c} \subset U^k\)</span> be the zero set of
+<span class="math display">\[P_{a,c}(u_1, \dots, u_k) :=
+\sum_{i=1}^{k-1} \pi(u_i)\,\pi(u_{i+1}) + \sum_{i=1}^{k} \sum_{j=1}^{s}
+a_{ij}\, z_j(u_i) + c .\]</span></p>
+<div id="pr:Gamma" class="problem" data-progress-ids="[&quot;22Y5&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:Gamma&quot;]"><a class="stable-tag" href="tag/22Y5.html" title="Stable tag: cite as Tag 22Y5">Tag 22Y5</a>
+<p><strong>Problem S1.3.5</strong>. The map <span class="math inline">\(u
+\mapsto \bigl(z(u_1), \dots, z(u_k), \sum_i
+\pi(u_i)\pi(u_{i+1})\bigr)\)</span> is a closed immersion <span
+class="math inline">\(U^k \to \mathbb{A}^{ks+1}\)</span>, and the <span
+class="math inline">\(Y_{a,c}\)</span> are its hyperplane sections with
+last coefficient <span class="math inline">\(1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261124T221500--deligne-bound-by-the-sign-only-method__workbook.html">Chapter S2</a></div><!-- used-in:end -->
+</div>
+<p>By Problem <a href="#pr:wl-affine" data-reference-type="ref"
+data-reference="pr:wl-affine">S1.3.4</a> with <span
+class="math inline">\(\mathcal{G}= \mathcal{F}_k^\vee\)</span>, there
+are <span class="math inline">\(e \ge 1\)</span> and <span
+class="math inline">\((a, c)\)</span> with coordinates in <span
+class="math inline">\(\mathbb{F}_r\)</span>, <span
+class="math inline">\(r := q^e\)</span>, for which <span
+class="math inline">\(Y := Y_{a,c}\)</span> has property (WL) for <span
+class="math inline">\(\mathcal{F}_k\)</span>. Over the field <span
+class="math inline">\(E\)</span> with <span
+class="math inline">\(r^n\)</span> elements, let <span
+class="math inline">\(\psi\)</span> be a nontrivial additive character
+and <span class="math inline">\(\tau(u)\)</span> the trace of Frobenius
+at <span class="math inline">\(u \in U(E)\)</span>, and for <span
+class="math inline">\(h, x \in E\)</span> let <span
+class="math display">\[t_{i,h}(x) := \sum_{u \in U(E),\ \pi(u) = x}
+\tau(u)\, \psi\Bigl(h \sum_j a_{ij} z_j(u)\Bigr).\]</span></p>
+<div id="pr:char-sum" class="problem" data-progress-ids="[&quot;22Y6&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:char-sum&quot;]"><a class="stable-tag" href="tag/22Y6.html" title="Stable tag: cite as Tag 22Y6">Tag 22Y6</a>
+<p><strong>Problem S1.3.6</strong>. <span class="math inline">\(r^n N_n =
+\sum_{h \in E} \psi(hc) \sum_{x \in E^k} t_{1,h}(x_1) \cdots
+t_{k,h}(x_k)\, \psi\bigl(hQ(x)\bigr)\)</span>, and the term <span
+class="math inline">\(h = 0\)</span> is <span
+class="math inline">\(M_n^k\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261124T221500--deligne-bound-by-the-sign-only-method__workbook.html">Chapter S2</a></div><!-- used-in:end -->
+</div>
+<div id="pr:R-curve" class="problem" data-progress-ids="[&quot;22Y7&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:R-curve&quot;]"><a class="stable-tag" href="tag/22Y7.html" title="Stable tag: cite as Tag 22Y7">Tag 22Y7</a>
+<p><strong>Problem S1.3.7</strong>. <span class="math inline">\(\lvert
+t_{i,h} \rvert \le BC\)</span>, and <span class="math inline">\(\lvert
+R_n \rvert \le (BC)^k\, r^{n(k+3)/2}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261124T221500--deligne-bound-by-the-sign-only-method__workbook.html">Chapter S2</a></div><!-- used-in:end -->
+</div>
+<p>So the weights of §<a href="#sec:identity" data-reference-type="ref"
+data-reference="sec:identity">S1.1</a> reappear, twisted by additive
+characters that depend on <span class="math inline">\(h\)</span>. It
+remains to let <span class="math inline">\(k\)</span> and the field
+vary.</p>
+<div id="pr:lemma2" class="problem" data-progress-ids="[&quot;22Y8&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:lemma2&quot;]"><a class="stable-tag" href="tag/22Y8.html" title="Stable tag: cite as Tag 22Y8">Tag 22Y8</a>
+<p><strong>Problem S1.3.8</strong>. Let <span
+class="math inline">\(L\)</span> be a finite-dimensional <span
+class="math inline">\(\overline{\mathbb{Q}}_\ell\)</span>-vector space
+with an automorphism <span class="math inline">\(\Phi\)</span>, and
+<span class="math inline">\(a\)</span> real. Suppose that for infinitely
+many <span class="math inline">\(k\)</span> there are <span
+class="math inline">\(e_k \ge 1\)</span>, a finite-dimensional space
+<span class="math inline">\(K_k\)</span> with an automorphism <span
+class="math inline">\(\Phi_k\)</span>, a sign <span
+class="math inline">\(\varepsilon_k\)</span>, and constants <span
+class="math inline">\(C_k &gt; 0\)</span>, <span
+class="math inline">\(c_k \ge 0\)</span> with <span
+class="math inline">\(c_k/k \to 0\)</span>, such that for all <span
+class="math inline">\(n \ge 1\)</span> <span
+class="math display">\[\varepsilon_k R_{k,n} =
+\iota\operatorname{Tr}\bigl(\Phi^{e_kn} \mid L^{\otimes k}\bigr) +
+\iota\operatorname{Tr}\bigl(\Phi_k^n \mid K_k\bigr), \qquad \lvert
+R_{k,n} \rvert \le C_k\, q^{e_kn(ka + c_k)} .\]</span> Then every
+eigenvalue <span class="math inline">\(\alpha\)</span> of <span
+class="math inline">\(\Phi\)</span> satisfies <span
+class="math inline">\(\lvert \iota\alpha \rvert \le q^a\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261124T221500--deligne-bound-by-the-sign-only-method__workbook.html">Chapter S2</a></div><!-- used-in:end -->
+</div>
+<p>This is <span class="citation"
+data-cites="Ald">[<a href="#ref-Ald">Ald</a>, Lemma 2]</span>. Problems <a
+href="#pr:prop4" data-reference-type="ref"
+data-reference="pr:prop4">S1.3.2</a>, <a href="#pr:Gamma"
+data-reference-type="ref" data-reference="pr:Gamma">S1.3.5</a>, <a
+href="#pr:char-sum" data-reference-type="ref"
+data-reference="pr:char-sum">S1.3.6</a>, <a href="#pr:R-curve"
+data-reference-type="ref" data-reference="pr:R-curve">S1.3.7</a> and <a
+href="#pr:lemma2" data-reference-type="ref"
+data-reference="pr:lemma2">S1.3.8</a>, with <span class="math inline">\(a =
+1/2\)</span> and <span class="math inline">\(c_k = 3/2\)</span>,
+together with Problem <a href="#pr:wl-affine" data-reference-type="ref"
+data-reference="pr:wl-affine">S1.3.4</a>, prove:</p>
+<div id="th:curve-lowest" class="theorem"><a class="stable-tag" href="tag/22Y9.html" title="Stable tag: cite as Tag 22Y9">Tag 22Y9</a>
+<p><strong>Theorem S1.3.2</strong> (<span><span class="citation"
+data-cites="Ald">[<a href="#ref-Ald">Ald</a>, Theorem 9]</span>, <span
+class="math inline">\(d = 1\)</span>; for <span
+class="math inline">\(U\)</span> open in <span
+class="math inline">\(\mathbb{A}^1\)</span>, <span class="citation"
+data-cites="Zh">[<a href="#ref-Zh">Zh</a>, Theorem 1.1 and
+Remark 1.2]</span></span>). <em>Let <span
+class="math inline">\(U\)</span> be a smooth affine curve over <span
+class="math inline">\(\mathbb{F}_q\)</span>, and <span
+class="math inline">\(\mathcal{F}\)</span> a lisse sheaf on <span
+class="math inline">\(U\)</span> with bounded traces as above. Then
+every eigenvalue <span class="math inline">\(\alpha\)</span> of <span
+class="math inline">\(\mathrm{Fr}\)</span> on <span
+class="math inline">\(H^1_c(U, \mathcal{F})\)</span> satisfies <span
+class="math inline">\(\lvert \iota\alpha \rvert \le \sqrt
+q\)</span>.</em></p>
+</div>
+<p><span class="citation" data-cites="Zh">[<a href="#ref-Zh">Zh</a>]</span>
+treats a lisse sheaf on an open subset of <span
+class="math inline">\(\mathbb{A}^1\)</span>, with weights at most <span
+class="math inline">\(w\)</span> in place of bounded traces. That case
+is enough for curves. Let <span class="math inline">\(C\)</span> be a
+smooth projective geometrically connected curve of genus <span
+class="math inline">\(g\)</span> over <span
+class="math inline">\(\mathbb{F}_q\)</span>. Choose <span
+class="math inline">\(x \in \mathbb{F}_q(C)\)</span> such that <span
+class="math inline">\(\mathbb{F}_q(C)\)</span> is finite and separable
+over <span class="math inline">\(\mathbb{F}_q(x)\)</span>, let <span
+class="math inline">\(V \subset \mathbb{A}^1\)</span> be a nonempty open
+subset over which <span class="math inline">\(x\)</span> is finite and
+étale, and let <span class="math inline">\(U := x^{-1}(V) \subset
+C\)</span>.</p>
+<div id="pr:quotient" class="problem" data-progress-ids="[&quot;22YA&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:quotient&quot;]"><a class="stable-tag" href="tag/22YA.html" title="Stable tag: cite as Tag 22YA">Tag 22YA</a>
+<p><strong>Problem S1.3.9</strong>. <span class="math inline">\(H^1(C,
+\overline{\mathbb{Q}}_\ell)\)</span> is a quotient of <span
+class="math inline">\(H^1_c(U, \overline{\mathbb{Q}}_\ell)\)</span>,
+compatibly with <span class="math inline">\(\mathrm{Fr}\)</span>.
+Moreover <span class="math inline">\(H^1_c(U,
+\overline{\mathbb{Q}}_\ell) = H^1_c(V,
+x_*\overline{\mathbb{Q}}_\ell)\)</span>, and <span
+class="math inline">\(x_*\overline{\mathbb{Q}}_\ell\)</span> is lisse on
+<span class="math inline">\(V\)</span> with traces of Frobenius between
+<span class="math inline">\(0\)</span> and the degree of <span
+class="math inline">\(x\)</span>.</p>
+</div>
+<div id="pr:lower" class="problem" data-progress-ids="[&quot;22YB&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:lower&quot;]"><a class="stable-tag" href="tag/22YB.html" title="Stable tag: cite as Tag 22YB">Tag 22YB</a>
+<p><strong>Problem S1.3.10</strong>. If <span
+class="math inline">\(\alpha\)</span> is an eigenvalue of <span
+class="math inline">\(\mathrm{Fr}\)</span> on <span
+class="math inline">\(H^1(C, \overline{\mathbb{Q}}_\ell)\)</span>, so is
+<span class="math inline">\(q/\alpha\)</span>.</p>
+</div>
+<p>Theorem <a href="#th:curve-lowest" data-reference-type="ref"
+data-reference="th:curve-lowest">S1.3.2</a> for <span
+class="math inline">\(x_*\overline{\mathbb{Q}}_\ell\)</span> on <span
+class="math inline">\(V\)</span>, and Problems <a href="#pr:quotient"
+data-reference-type="ref" data-reference="pr:quotient">S1.3.9</a> and <a
+href="#pr:lower" data-reference-type="ref"
+data-reference="pr:lower">S1.3.10</a>, give the Riemann hypothesis for <span
+class="math inline">\(C\)</span>: every eigenvalue of <span
+class="math inline">\(\mathrm{Fr}\)</span> on <span
+class="math inline">\(H^1(C, \overline{\mathbb{Q}}_\ell)\)</span> has
+absolute value <span class="math inline">\(\sqrt q\)</span>. This is
+Weil’s theorem <span class="citation"
+data-cites="Wei48">[<a href="#ref-Wei48">Wei48</a>]</span>. The route is that
+of <span class="citation"
+data-cites="Ald">[<a href="#ref-Ald">Ald</a>]</span>, after <span
+class="citation" data-cites="Alp">[<a href="#ref-Alp">Alp</a>]</span>, and it
+uses Theorem <a href="#th:curve-lowest" data-reference-type="ref"
+data-reference="th:curve-lowest">S1.3.2</a> only in the case of <span
+class="citation" data-cites="Zh">[<a href="#ref-Zh">Zh</a>, Theorem 1.1 and
+Remark 1.2]</span>.</p>
+<div id="pr:count" class="problem" data-progress-ids="[&quot;22YC&quot;,&quot;20261124T220500--sign-only-proof-for-curves__workbook.tex#pr:count&quot;]"><a class="stable-tag" href="tag/22YC.html" title="Stable tag: cite as Tag 22YC">Tag 22YC</a>
+<p><strong>Problem S1.3.11</strong>. <span class="math inline">\(\lvert
+\#C(\mathbb{F}_{q^n}) - q^n - 1 \rvert \le 2g\, q^{n/2}\)</span>.</p>
+</div>
+<p>Nothing in this section used <span class="math inline">\(\dim U =
+1\)</span> except the degrees of the cohomology groups, the finite map
+<span class="math inline">\(\pi\)</span> to <span
+class="math inline">\(\mathbb{A}^1\)</span> and the shape of the
+coupling <span class="math inline">\(\pi(u_i)\pi(u_{i+1})\)</span>.
+Replacing the coupling <span
+class="math inline">\(\pi(u_i)\pi(u_{i+1})\)</span> by a nondegenerate
+bilinear form on <span class="math inline">\(\mathbb{A}^d\)</span> is
+the note’s “vectorize to go up dimensions”, and leads to Deligne’s
+bound. We do not know for which sheaves and which <span
+class="math inline">\(k\)</span> hypothesis (H2) holds for the plain
+quadric <span class="math inline">\(Q = 0\)</span> <span
+class="citation" data-cites="Dup">[<a href="#ref-Dup">Dup</a>,
+Question 2.10.10]</span>; it is no longer needed.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secidentity">§<a href="#sec:identity"
+data-reference-type="ref" data-reference="sec:identity">S1.1</a></h2>
+<dl>
+<dt><a href="#pr:orth" data-reference-type="ref"
+data-reference="pr:orth">S1.1.1</a></dt>
+<dd>
+<p>For <span class="math inline">\(y \ne 0\)</span>, <span
+class="math inline">\(h \mapsto e(hy)\)</span> is a nontrivial
+character, because the trace is onto <span
+class="math inline">\(\mathbb{F}_p\)</span>. Count the characters.</p>
+</dd>
+<dt><a href="#pr:unitary" data-reference-type="ref"
+data-reference="pr:unitary">S1.1.2</a></dt>
+<dd>
+<p>The <span class="math inline">\((x,x&#39;)\)</span> entry of <span
+class="math inline">\(K_hK_h^*\)</span> is a sum over <span
+class="math inline">\(y\)</span> of a character of <span
+class="math inline">\(y\)</span>.</p>
+</dd>
+<dt><a href="#pr:as-hat" data-reference-type="ref"
+data-reference="pr:as-hat">S1.1.3</a></dt>
+<dd>
+<p>Problem <a href="#pr:orth" data-reference-type="ref"
+data-reference="pr:orth">S1.1.1</a>, applied to <span
+class="math inline">\(\sum_{x \in \mathbb{F}_q} e(x(1 +
+\xi))\)</span>.</p>
+</dd>
+<dt><a href="#pr:identity" data-reference-type="ref"
+data-reference="pr:identity">S1.1.4</a></dt>
+<dd>
+<p>Sum over <span class="math inline">\(h\)</span> first, using
+Problem <a href="#pr:orth" data-reference-type="ref"
+data-reference="pr:orth">S1.1.1</a>. Then split off <span
+class="math inline">\(h = 0\)</span>.</p>
+</dd>
+<dt><a href="#pr:matrix" data-reference-type="ref"
+data-reference="pr:matrix">S1.1.5</a></dt>
+<dd>
+<p>Sum over <span class="math inline">\(x_1\)</span>, then <span
+class="math inline">\(x_2\)</span>, and so on.</p>
+</dd>
+<dt><a href="#pr:parseval-k" data-reference-type="ref"
+data-reference="pr:parseval-k">S1.1.6</a></dt>
+<dd>
+<p>The operator norm of <span class="math inline">\(K_h\)</span> is
+<span class="math inline">\(\sqrt q\)</span>, that of <span
+class="math inline">\(D_t\)</span> at most <span
+class="math inline">\(T\)</span>, and <span class="math inline">\(\lVert
+t \rVert \le T\sqrt q\)</span>.</p>
+</dd>
+<dt><a href="#pr:vector" data-reference-type="ref"
+data-reference="pr:vector">S1.1.7</a></dt>
+<dd>
+<p>As in Problem <a href="#pr:parseval-k" data-reference-type="ref"
+data-reference="pr:parseval-k">S1.1.6</a>, with the matrices <span
+class="math inline">\(\psi(hxy)\)</span> and the diagonal matrices of
+the <span class="math inline">\(t_i\)</span>.</p>
+</dd>
+<dt><a href="#pr:as-small" data-reference-type="ref"
+data-reference="pr:as-small">S1.1.8</a></dt>
+<dd>
+<p>For <span class="math inline">\(k = 4\)</span>, sum over <span
+class="math inline">\(x_1\)</span> and <span
+class="math inline">\(x_4\)</span> first, and use Problem <a
+href="#pr:as-hat" data-reference-type="ref"
+data-reference="pr:as-hat">S1.1.3</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="seccohomology">§<a href="#sec:cohomology"
+data-reference-type="ref" data-reference="sec:cohomology">S1.2</a></h2>
+<dl>
+<dt><a href="#pr:H1" data-reference-type="ref"
+data-reference="pr:H1">S1.2.1</a></dt>
+<dd>
+<p><span class="math inline">\(U\)</span> is geometrically connected. On
+an affine curve <span class="math inline">\(H^0_c\)</span> of a lisse
+sheaf vanishes; <span class="math inline">\(H^2_c(U,
+\mathcal{F})\)</span> is the space of coinvariants of the geometric
+monodromy, twisted by <span class="math inline">\((-1)\)</span>.</p>
+</dd>
+<dt><a href="#pr:kunneth" data-reference-type="ref"
+data-reference="pr:kunneth">S1.2.2</a></dt>
+<dd>
+<p>Apply the Künneth formula.</p>
+</dd>
+<dt><a href="#pr:lower-half" data-reference-type="ref"
+data-reference="pr:lower-half">S1.2.3</a></dt>
+<dd>
+<p>The gradient of <span class="math inline">\(Q\)</span> has first
+coordinate <span class="math inline">\(x_2\)</span>. For the vanishing,
+combine Poincaré duality with Artin’s theorem on the affine scheme <span
+class="math inline">\(Z_k\)</span>.</p>
+</dd>
+<dt><a href="#pr:sign" data-reference-type="ref"
+data-reference="pr:sign">S1.2.4</a></dt>
+<dd>
+<p>Write <span class="math inline">\(q^nN_n\)</span> and <span
+class="math inline">\(M_n^k\)</span> by the trace formula and
+Problems <a href="#pr:kunneth" data-reference-type="ref"
+data-reference="pr:kunneth">S1.2.2</a> and <a href="#pr:lower-half"
+data-reference-type="ref" data-reference="pr:lower-half">S1.2.3</a>.</p>
+</dd>
+<dt><a href="#pr:power" data-reference-type="ref"
+data-reference="pr:power">S1.2.5</a></dt>
+<dd>
+<p>Compare <span class="math inline">\(\sum_n (\sum_i m_i \gamma_i^n)
+z^n\)</span> with <span class="math inline">\(\sum_i m_i\gamma_i z/(1 -
+\gamma_i z)\)</span> in <span class="math inline">\(\lvert z \rvert &lt;
+1/C\)</span>.</p>
+</dd>
+<dt><a href="#pr:fail" data-reference-type="ref"
+data-reference="pr:fail">S1.2.6</a></dt>
+<dd>
+<p>Problems <a href="#pr:H1" data-reference-type="ref"
+data-reference="pr:H1">S1.2.1</a> and <a href="#pr:as-small"
+data-reference-type="ref" data-reference="pr:as-small">S1.1.8</a> over <span
+class="math inline">\(\mathbb{F}_{q^n}\)</span>. Compare with the form
+that (H2) prescribes; by Problem <a href="#pr:power"
+data-reference-type="ref" data-reference="pr:power">S1.2.5</a>, applied to
+the difference of two power sums, the coefficients of a power sum are
+unique.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="seccurves">§<a href="#sec:curves"
+data-reference-type="ref" data-reference="sec:curves">S1.3</a></h2>
+<dl>
+<dt><a href="#pr:gysin" data-reference-type="ref"
+data-reference="pr:gysin">S1.3.1</a></dt>
+<dd>
+<p>Dualize the hypothesis on restriction, using Poincaré duality on
+<span class="math inline">\(X\)</span> and on <span
+class="math inline">\(Y\)</span>.</p>
+</dd>
+<dt><a href="#pr:prop4" data-reference-type="ref"
+data-reference="pr:prop4">S1.3.2</a></dt>
+<dd>
+<p>Write <span class="math inline">\(r^nN_n\)</span> and <span
+class="math inline">\(M_n^k\)</span> by the trace formula on <span
+class="math inline">\(Y\)</span> and <span
+class="math inline">\(X\)</span>. The first statement of Problem <a
+href="#pr:kunneth" data-reference-type="ref"
+data-reference="pr:kunneth">S1.2.2</a> holds for every smooth affine curve.
+Then use Problem <a href="#pr:gysin" data-reference-type="ref"
+data-reference="pr:gysin">S1.3.1</a>.</p>
+</dd>
+<dt><a href="#pr:conic" data-reference-type="ref"
+data-reference="pr:conic">S1.3.3</a></dt>
+<dd>
+<p>Translate <span class="math inline">\(x\)</span> and <span
+class="math inline">\(y\)</span> to factor the equation of <span
+class="math inline">\(Y\)</span>.</p>
+</dd>
+<dt><a href="#pr:wl-affine" data-reference-type="ref"
+data-reference="pr:wl-affine">S1.3.4</a></dt>
+<dd>
+<p>(a) Theorem <a href="#th:wl" data-reference-type="ref"
+data-reference="th:wl">S1.3.1</a> for <span class="math inline">\(V \to
+\mathbb{A}^m \subset \mathbb{P}^m\)</span>; the hyperplanes with <span
+class="math inline">\(\lambda_m \ne 0\)</span> can be scaled to <span
+class="math inline">\(\lambda_m = 1\)</span>. (b) Bound the dimension of
+the set of pairs <span class="math inline">\((v, H)\)</span> with <span
+class="math inline">\(H\)</span> containing the tangent space of <span
+class="math inline">\(\Gamma(V)\)</span> at <span
+class="math inline">\(\Gamma(v)\)</span>.</p>
+</dd>
+<dt><a href="#pr:Gamma" data-reference-type="ref"
+data-reference="pr:Gamma">S1.3.5</a></dt>
+<dd>
+<p>The first <span class="math inline">\(ks\)</span> coordinates already
+give a closed immersion.</p>
+</dd>
+<dt><a href="#pr:char-sum" data-reference-type="ref"
+data-reference="pr:char-sum">S1.3.6</a></dt>
+<dd>
+<p>Problem <a href="#pr:orth" data-reference-type="ref"
+data-reference="pr:orth">S1.1.1</a>, then group the <span
+class="math inline">\(u_i\)</span> by <span class="math inline">\(x_i =
+\pi(u_i)\)</span>.</p>
+</dd>
+<dt><a href="#pr:R-curve" data-reference-type="ref"
+data-reference="pr:R-curve">S1.3.7</a></dt>
+<dd>
+<p>A fibre of <span class="math inline">\(\pi\)</span> over a point of
+<span class="math inline">\(E\)</span> is the spectrum of an algebra of
+dimension at most <span class="math inline">\(B\)</span>. Then apply
+Problem <a href="#pr:vector" data-reference-type="ref"
+data-reference="pr:vector">S1.1.7</a>.</p>
+</dd>
+<dt><a href="#pr:lemma2" data-reference-type="ref"
+data-reference="pr:lemma2">S1.3.8</a></dt>
+<dd>
+<p>Problem <a href="#pr:power" data-reference-type="ref"
+data-reference="pr:power">S1.2.5</a>.</p>
+</dd>
+<dt><a href="#pr:quotient" data-reference-type="ref"
+data-reference="pr:quotient">S1.3.9</a></dt>
+<dd>
+<p>Use the exact sequence of the open subscheme <span
+class="math inline">\(U\)</span> and its finite complement. For the
+rest, <span class="math inline">\(x\)</span> is finite, and the stalk of
+<span class="math inline">\(x_*\overline{\mathbb{Q}}_\ell\)</span> at a
+geometric point is the sum over its fibre.</p>
+</dd>
+<dt><a href="#pr:lower" data-reference-type="ref"
+data-reference="pr:lower">S1.3.10</a></dt>
+<dd>
+<p>Use Poincaré duality on <span class="math inline">\(C\)</span>.</p>
+</dd>
+<dt><a href="#pr:count" data-reference-type="ref"
+data-reference="pr:count">S1.3.11</a></dt>
+<dd>
+<p>The trace formula on <span class="math inline">\(C\)</span>, and
+<span class="math inline">\(\dim H^1(C, \overline{\mathbb{Q}}_\ell) =
+2g\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Ald"><span class="bib-label">[Ald]</span> <em>A short proof of Deligne’s bound for Frobenius eigenvalues, after Alpöge</em>, contributed by F. Alderliefste, deposit hexagon:2611.00789v1, 21 November 2026, <a href="https://hexagonmath.org/2611.00789v1" class="uri">https://hexagonmath.org/2611.00789v1</a>.</p>
+<p id="ref-Alp"><span class="bib-label">[Alp]</span> L. Alpöge, untitled note announcing a proof of the Riemann hypothesis, 20 November 2026, <a href="https://alpo.ge/remark.pdf" class="uri">https://alpo.ge/remark.pdf</a>.</p>
+<p id="ref-Dup"><span class="bib-label">[Dup]</span> <em>Notes on Alpöge’s proof of the Riemann hypothesis</em>, printed by T. Dupuy, AI generated, 21 November 2026, <a href="https://tdupu.github.io/riemann-public/riemann-book.pdf" class="uri">https://tdupu.github.io/riemann-public/riemann-book.pdf</a>.</p>
+<p id="ref-Kat93"><span class="bib-label">[Kat93]</span> N. M. Katz, <em>Affine cohomological transforms, perversity, and monodromy</em>, J. Amer. Math. Soc. <strong>6</strong> (1993), 149–222.</p>
+<p id="ref-Mil"><span class="bib-label">[Mil]</span> J. S. Milne, <em>Étale Cohomology</em>, Princeton, 1980.</p>
+<p id="ref-SGA45"><span class="bib-label">[SGA4\(\frac12\)]</span> P. Deligne, <em>Cohomologie étale</em> (SGA 4<span class="math inline">\(\frac12\)</span>), Lecture Notes in Math. <strong>569</strong>, Springer, 1977.</p>
+<p id="ref-Wei48"><span class="bib-label">[Wei48]</span> A. Weil, <em>Sur les courbes algébriques et les variétés qui s’en déduisent</em>, Hermann, 1948.</p>
+<p id="ref-Zh"><span class="bib-label">[Zh]</span> D. Zhang, <em>On an elementary proof of Weil II</em>, arXiv:2611.30749, 23 November 2026 (listed as <em>Notes on an elementary proof of Weil II from Hexagon</em>), <a href="https://arxiv.org/abs/2611.30749" class="uri">https://arxiv.org/abs/2611.30749</a>.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

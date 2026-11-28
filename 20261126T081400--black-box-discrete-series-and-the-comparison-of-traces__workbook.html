@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-DuYLAWCnglQS6+APnTAgqhubnKUded43GfRKEO9a/g0=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Black box: discrete series and the comparison of traces</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"C":"\\mathbb C","Z":"\\mathbb Z","cc":"\\mathsf c","ee":"\\mathsf e","ranka":"\\mathsf a","NN":"\\mathsf N","kk":"\\mathsf k","ch":"\\mathrm{ch}","Ch":"\\mathrm{Ch}","tr":"\\operatorname{tr}","diag":"\\operatorname{diag}","op":"\\mathrm{op}","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="41">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-27 17:44:27
+      <a href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Black box: discrete series and the comparison of
+traces <a class="stable-tag" href="tag/23CJ.html" title="Stable tag: cite as Tag 23CJ">Tag 23CJ</a></h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:real" id="toc-sec:real">§41.1. One real group</a></li>
+<li><a href="#sec:comparison" id="toc-sec:comparison">§41.2. The comparison</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<p>Two steps of the proof use the same formula for a matrix coefficient
+at the real places. To form the full Bessel functions of Theorem <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#thm:bessel-system" data-reference-type="ref"
+data-reference="m1-thm:bessel-system">40.3.1</a>, the
+proof shifts the coefficient, read in the <em>sign frame</em> (the
+infinite-place basis of Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces"
+data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a>, in which the Gram
+matrix is diagonal with the prescribed signs), by a chosen position. At
+each subgroup element it multiplies the shifted coefficient by the
+inverse subgroup action on a fixed unit vector, including the inverse
+Bessel character. It averages over the Bessel subgroup and scales the
+result. The proof of Theorem <a href="20261126T050500--equal-multiplicities__workbook.html#thm:equal-traces"
+data-reference-type="ref"
+data-reference="c2-thm:equal-traces">70.3.3</a> uses
+conjugacy-class integrals of the corresponding kernels to compare Hecke
+traces for spaces with different real signatures. Here we state the
+inputs for both steps and work out the coefficient and its integrals for
+two-by-two matrices.</p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Schur orthogonality for compact groups and Weyl’s character formula
+for <span class="math inline">\(U(n)\)</span>. Problem <a
+href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#pr:formal-degree" data-reference-type="ref"
+data-reference="ps-pr:formal-degree">10.5.5</a> gives the
+formal degree on the upper half-plane with hyperbolic area. For the
+comparison we use the framed spaces, standard lattice stabilizers and
+principal forms from Sections <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces"
+data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a> and <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:forms" data-reference-type="ref"
+data-reference="ob-sec:forms">37.4</a>. In this chapter <span
+class="math inline">\(K\)</span> denotes a subgroup. We use inner
+products conjugate-linear in the first argument, as in the definition of
+the Petersson product in Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap"
+data-reference-type="ref" data-reference="ob-chap">37</a>.</p>
+<h1 id="sec:real">§41.1. One real group <a class="stable-tag" href="tag/23CK.html" title="Stable tag: cite as Tag 23CK">Tag 23CK</a></h1>
+<p>In this chapter let <span class="math inline">\(n\ge 1\)</span> and
+let <span
+class="math inline">\(\varepsilon=(\varepsilon_i)_{i=1}^n\)</span> have
+<span class="math inline">\(p\)</span> plus and <span
+class="math inline">\(q\)</span> minus signs. Put <span
+class="math inline">\(J=\operatorname{diag}(\varepsilon)\)</span>, <span
+class="math inline">\(G=U(J)\)</span> and <span
+class="math inline">\(K=G\cap U(n)\cong U(p)\times U(q)\)</span>. Let
+<span class="math inline">\(l\)</span> have distinct integer entries
+congruent to <span class="math inline">\(n-1\)</span> modulo <span
+class="math inline">\(2\)</span>, and put <span
+class="math inline">\(\lambda=l/2\)</span>. The positive roots are the
+coordinate differences <span class="math inline">\(e_i-e_j\)</span> for
+<span class="math inline">\(l_i&gt;l_j\)</span>, with <span
+class="math inline">\(e_i\)</span> the <span
+class="math inline">\(i\)</span>-th coordinate vector. Write <span
+class="math inline">\(\rho\)</span> for their half sum and <span
+class="math inline">\(\rho_c\)</span> for the half sum over <span
+class="math inline">\(\varepsilon_i=\varepsilon_j\)</span>. For a
+nonnegative integer <span class="math inline">\(h\)</span>, we say that
+<span class="math inline">\(l\)</span> has gap at least <span
+class="math inline">\(h\)</span> if <span
+class="math inline">\(|\lambda_i-\lambda_j|\ge h\)</span> for every
+opposite-sign pair.</p>
+<div id="thm:ds" class="theorem"><a class="stable-tag" href="tag/23CL.html" title="Stable tag: cite as Tag 23CL">Tag 23CL</a>
+<p><strong>Theorem 41.1</strong> (Discrete series). There is an irreducible
+unitary representation <span class="math inline">\(\pi_l\)</span> of
+<span class="math inline">\(G\)</span> with square-integrable matrix
+coefficients and Harish-Chandra parameter <span
+class="math inline">\(\lambda\)</span>. In the restriction to <span
+class="math inline">\(K\)</span>, the irreducible constituent of highest
+weight <span class="math inline">\(\Lambda=\lambda+\rho-2\rho_c\)</span>
+occurs once and is called the lowest <span
+class="math inline">\(K\)</span>-type. The other constituents have
+highest weights obtained from <span
+class="math inline">\(\Lambda\)</span> by adding positive roots. For a
+unit highest-weight vector <span class="math inline">\(u\)</span> in
+that constituent, put <span class="math inline">\(\mathsf c_l(g)=\langle
+u,\pi_l(g)u\rangle\)</span>, so <span class="math inline">\(\mathsf
+c_l(1)=1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T081500--a-bessel-function-at-a-real-place__workbook.html">Chapter 42</a></div><!-- used-in:end -->
+</div>
+<p>Existence is classical <span class="citation"
+data-cites="HC">[<a href="#ref-HC">HC</a>, Theorem 16]</span>. For the <span
+class="math inline">\(K\)</span>-types see <span class="citation"
+data-cites="AS">[<a href="#ref-AS">AS</a>, Theorem (8.5)]</span>, <span
+class="citation" data-cites="BV">[<a href="#ref-BV">BV</a>]</span>. For an
+account of the parametrization see Knapp <span class="citation"
+data-cites="Knapp">[<a href="#ref-Knapp">Knapp</a>]</span>. The proof uses the
+integral construction in Theorem <a href="#thm:fj"
+data-reference-type="ref" data-reference="thm:fj">41.3</a> for parameters
+of gap at least <span class="math inline">\(500n^3+10n^5\)</span> in the
+trace comparison.</p>
+<p>Write <span class="math inline">\(\mathrm{ch}_l\)</span> for the
+character of the irreducible <span
+class="math inline">\(U(n)\)</span>-representation of highest weight
+<span class="math inline">\(\lambda-\rho\)</span>, with the order on
+coordinates determined by <span class="math inline">\(l\)</span>. In the
+compact-dual Haar normalization, <span class="math inline">\(dg\)</span>
+on <span class="math inline">\(G\)</span> has the same density at the
+identity as probability Haar measure on <span
+class="math inline">\(U(n)\)</span> when the tangent vectors are
+identified by <span class="math inline">\(X\mapsto JX\)</span>. Write
+<span class="math inline">\(dk\)</span> for probability Haar measure on
+<span class="math inline">\(K\)</span>.</p>
+<div id="thm:schur" class="theorem"><a class="stable-tag" href="tag/23CM.html" title="Stable tag: cite as Tag 23CM">Tag 23CM</a>
+<p><strong>Theorem 41.2</strong> (Schur orthogonality and formal degree).
+<span id="thm:degree" data-label="thm:degree"></span> With <span
+class="math inline">\(d_l=(\int_G|\mathsf c_l(g)|^2\,dg)^{-1}\)</span>,
+for <span class="math inline">\(x,y\in G\)</span> one has <span
+class="math display">\[d_l\int_G \mathsf c_l(xgy)\overline{\mathsf
+c_l(g)}\,dg=\mathsf c_l(x)\mathsf c_l(y),
+\qquad
+d_l=\mathrm{ch}_l(1)=
+\frac{\prod_{l_i&gt;l_j}(\lambda_i-\lambda_j)}{\prod_{a=0}^{n-1}a!}.\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html">Chapter 40</a>; <a href="20261126T081500--a-bessel-function-at-a-real-place__workbook.html">Chapter 42</a>; <a href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html">Chapter 48</a></div><!-- used-in:end -->
+</div>
+<p>Both identities are classical. The degree uses the compact-dual Haar
+normalization <span class="citation"
+data-cites="AS">[<a href="#ref-AS">AS</a>, Theorem (8.1)]</span>. For the
+coefficient defined by the integral below, the proof establishes the
+Schur identity for gap at least <span
+class="math inline">\(500n^3\)</span> and the degree formula for gap at
+least <span class="math inline">\(500n^3+10n^5\)</span>.</p>
+<div class="samepage">
+<div id="thm:fj" class="theorem"><a class="stable-tag" href="tag/23CN.html" title="Stable tag: cite as Tag 23CN">Tag 23CN</a>
+<p><strong>Theorem 41.3</strong> (Flensted-Jensen’s formula). For an
+integer weight <span class="math inline">\(\mathbf w=(w_i)\)</span> and
+an invertible matrix <span class="math inline">\(g\)</span>, let <span
+class="math inline">\(m_{\mathbf w}(g)\)</span> be the product over
+integers <span class="math inline">\(s\)</span> of the determinant of
+the submatrix on rows and columns <span class="math inline">\(\{i:w_i\ge
+s\}\)</span>, with each factor for <span
+class="math inline">\(s\le0\)</span> divided by <span
+class="math inline">\(\det g\)</span>. The empty minor is <span
+class="math inline">\(1\)</span> and only finitely many factors differ
+from <span class="math inline">\(1\)</span>. For <span
+class="math inline">\(g\in G\)</span>, keep the two same-sign diagonal
+blocks of <span class="math inline">\(g\)</span> and set the other
+blocks to zero to obtain an invertible matrix <span
+class="math inline">\(D_g\)</span>. With <span
+class="math inline">\(z=D_g^{-1}g\)</span>, the integral formula is
+<span class="math display">\[\mathsf c_l(g)=
+\frac{\displaystyle\int_K
+   \frac{m_\Lambda(D_g
+k)\overline{m_\Lambda(k)}}{m_{-\lambda-\rho}(k^*zk)}
+   \,dk}
+{\displaystyle\int_K |m_\Lambda(k)|^2\,dk},\]</span> where <span
+class="math inline">\(k^*\)</span> is the conjugate transpose.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:coefficient">Problem 41.1.3</a>; <a href="20261126T081500--a-bessel-function-at-a-real-place__workbook.html">Chapter 42</a></div><!-- used-in:end -->
+</div>
+<p>The proof defines the coefficient by the displayed integral. Its
+identification with the lowest-type coefficient is classical, by the
+construction of Flensted-Jensen and Sun <span class="citation"
+data-cites="FJ Sun">[<a href="#ref-FJ">FJ</a>;
+<a href="#ref-Sun">Sun</a>]</span>.</p>
+</div>
+<div id="thm:decay" class="theorem"><a class="stable-tag" href="tag/23CP.html" title="Stable tag: cite as Tag 23CP">Tag 23CP</a>
+<p><strong>Theorem 41.4</strong> (Decay). If <span
+class="math inline">\(l\)</span> has gap at least <span
+class="math inline">\(h\)</span>, then for each integer <span
+class="math inline">\(0\le c\le h\)</span> and each <span
+class="math inline">\(g\in G\)</span>, <span
+class="math display">\[|\mathsf c_l(g)|\le (2/\|g\|_{\mathrm{op}})^c
+,\]</span> with the Euclidean operator norm. In particular <span
+class="math inline">\(|\mathsf c_l(g)|\le 1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T081500--a-bessel-function-at-a-real-place__workbook.html">Chapter 42</a></div><!-- used-in:end -->
+</div>
+<p>The estimate with constant <span class="math inline">\(2\)</span> is
+read from the proof. For asymptotic decay of discrete-series matrix
+coefficients see Miličić <span class="citation"
+data-cites="Mil">[<a href="#ref-Mil">Mi</a>]</span>.</p>
+<div id="thm:character" class="theorem"><a class="stable-tag" href="tag/23CQ.html" title="Stable tag: cite as Tag 23CQ">Tag 23CQ</a>
+<p><strong>Theorem 41.5</strong> (Character on the diagonal torus). Let
+<span
+class="math inline">\(x=\operatorname{diag}(t_1,\ldots,t_n)\)</span>
+have distinct entries <span class="math inline">\(t_i\)</span> of
+modulus one. In this chapter set <span class="math inline">\(\mathsf
+k_i=(l_i+n-1)/2\)</span>. Write <span class="math inline">\(A_K(\mathsf
+k)(x)\)</span> for the alternating sum of the monomial <span
+class="math inline">\(\prod_i t_i^{\mathsf k_i}\)</span> over
+permutations preserving the signs. The character <span
+class="math inline">\(\mathrm{Ch}_l\)</span> of <span
+class="math inline">\(\pi_l\)</span> on the regular diagonal torus
+satisfies <span class="math display">\[\mathrm{ch}_l(1)\int_G\mathsf
+c_l(g^{-1}xg)\,dg
+   = \mathrm{Ch}_l(x)
+   = (-1)^{pq}\frac{A_K(\mathsf k)(x)}{\prod_{l_i&gt;l_j}(t_i-t_j)}
+.\]</span> Define the kernel <span class="math inline">\(\mathsf
+e_l=d_l\overline{\mathsf c_l}\)</span>. For gap at least <span
+class="math inline">\(500n^3+10n^5\)</span> the proof gives <span
+class="math inline">\(d_l=\mathrm{ch}_l(1)\)</span> for the integral
+coefficient. With <span
+class="math inline">\(x_\sigma=\operatorname{diag}(t_{\sigma(1)},\dots,t_{\sigma(n)})\)</span>
+for each of the <span class="math inline">\(n!\)</span> permutations
+<span class="math inline">\(\sigma\)</span>, the proof gives <span
+class="math display">\[(-1)^{pq}\sum_{\sigma\in S_n}\int_G
+  \mathsf e_l(g^{-1}x_\sigma g)\,dg
+   =p!\,q!\,\overline{\mathrm{ch}_l(x)}.\]</span> The classical single
+orbital integral converges absolutely. The proof gives absolute
+convergence for the integral coefficient at the gap of the sum.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:sign">Problem 41.1.8</a></div><!-- used-in:end -->
+</div>
+<p>The first identity uses the classical character and orbital-integral
+formulas, with the compact centralizer given mass one <span
+class="citation" data-cites="AS">[<a href="#ref-AS">AS</a>,
+Theorem (8.1)]</span>, <span class="citation"
+data-cites="Art">[<a href="#ref-Art">Ar</a>, formula (1)]</span>. The sum
+over permutations is read from the proof.</p>
+<p>The next problems check the degree in the compact case and then find
+the coefficient, measure and degree for <span
+class="math inline">\(U(1,1)\)</span>. The smallest weights give
+rank-one models of the large-gap identities.</p>
+<div id="pr:compact" class="problem" data-progress-ids="[&quot;23CR&quot;,&quot;20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.tex#pr:compact&quot;]"><a class="stable-tag" href="tag/23CR.html" title="Stable tag: cite as Tag 23CR">Tag 23CR</a>
+<p><strong>Problem 41.1.1</strong>. For an integer <span
+class="math inline">\(j\ge 0\)</span>, the normalized coefficient of the
+vector <span class="math inline">\(e_1^{\otimes j}\)</span> in <span
+class="math inline">\(\mathrm{Sym}^j\mathbb C^2\)</span> is <span
+class="math inline">\(g_{11}^j\)</span>, with <span
+class="math inline">\(e_1=(1,0)\)</span> and the inner product induced
+from tensor powers of <span class="math inline">\(\mathbb C^2\)</span>.
+For probability Haar measure on <span
+class="math inline">\(U(2)\)</span>, <span
+class="math inline">\(\int_{U(2)} |g_{11}|^{2j}\,dg=1/(j+1)\)</span>,
+equal to <span class="math inline">\(1/2\)</span> at <span
+class="math inline">\(j=1\)</span>.</p>
+</div>
+<p>In the rank-one problems <span class="math inline">\(\mathsf
+a\ge1\)</span> and <span class="math inline">\(\mathsf N\ge2\)</span>
+are integers, and <span class="math inline">\(K\)</span> is the diagonal
+torus of <span class="math inline">\(U(1,1)\)</span>. Use the same
+diagonal torus in <span class="math inline">\(U(2)\)</span>.</p>
+<div id="pr:weight" class="problem" data-progress-ids="[&quot;23CS&quot;,&quot;20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.tex#pr:weight&quot;]"><a class="stable-tag" href="tag/23CS.html" title="Stable tag: cite as Tag 23CS">Tag 23CS</a>
+<p><strong>Problem 41.1.2</strong>. For <span
+class="math inline">\(G=U(1,1)\)</span> with signs <span
+class="math inline">\((+,-)\)</span>, the parameter <span
+class="math inline">\(l=(-2\mathsf a-1,-2\mathsf a-2\mathsf
+N+1)\)</span> gives the lowest weight <span
+class="math inline">\((-\mathsf a,-\mathsf a-\mathsf N)\)</span> and
+maximal gap <span class="math inline">\(\mathsf N-1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:coefficient">Problem 41.1.3</a></div><!-- used-in:end -->
+</div>
+<div id="pr:coefficient" class="problem" data-progress-ids="[&quot;23CT&quot;,&quot;20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.tex#pr:coefficient&quot;]"><a class="stable-tag" href="tag/23CT.html" title="Stable tag: cite as Tag 23CT">Tag 23CT</a>
+<p><strong>Problem 41.1.3</strong>. For the parameter in Problem <a
+href="#pr:weight" data-reference-type="ref"
+data-reference="pr:weight">41.1.2</a>, Theorem <a href="#thm:fj"
+data-reference-type="ref" data-reference="thm:fj">41.3</a> gives <span
+class="math inline">\(\mathsf c_l(g)=\det(g)^{-\mathsf
+a}g_{22}^{-\mathsf N}\)</span>. The coefficient transforms on the left
+and the right under <span class="math inline">\(K\)</span> by the
+character <span class="math inline">\((u_1,u_2)\mapsto u_1^{-\mathsf
+a}u_2^{-\mathsf a-\mathsf N}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:degree">Problem 41.1.5</a>, <a href="#pr:rank-decay">Problem 41.1.7</a></div><!-- used-in:end -->
+</div>
+<p>In the chart of complex lines <span
+class="math inline">\([z:1]\)</span>, <span
+class="math inline">\(U(2)/K\)</span> is the sphere and <span
+class="math inline">\(U(1,1)/K\)</span> is the disk <span
+class="math inline">\(|z|&lt;1\)</span>, by the action on the line <span
+class="math inline">\([0:1]\)</span>. The two invariant measures have
+densities proportional to <span
+class="math inline">\((1+|z|^2)^{-2}\)</span> and <span
+class="math inline">\((1-|z|^2)^{-2}\)</span>, respectively, against
+Euclidean area. For the compact-dual normalization the two quotient
+densities agree at <span class="math inline">\(z=0\)</span>. Write <span
+class="math display">\[a_t=\begin{pmatrix}\cosh t&amp;\sinh t\\\sinh
+t&amp;\cosh t\end{pmatrix}\qquad(t\ge0).\]</span></p>
+<div id="pr:radial" class="problem" data-progress-ids="[&quot;23CU&quot;,&quot;20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.tex#pr:radial&quot;]"><a class="stable-tag" href="tag/23CU.html" title="Stable tag: cite as Tag 23CU">Tag 23CU</a>
+<p><strong>Problem 41.1.4</strong>. In the compact chart take <span
+class="math inline">\(|z|=\tan t\)</span>, <span
+class="math inline">\(0\le t&lt;\pi/2\)</span>. Probability measure has
+radial density <span class="math inline">\(\sin(2t)\,dt\)</span>. In the
+disk take <span class="math inline">\(|z|=\tanh t\)</span>, the radius
+of <span class="math inline">\(a_t[0:1]\)</span>. The compact-dual
+measure has radial density <span
+class="math inline">\(\sinh(2t)\,dt\)</span>.</p>
+</div>
+<div id="pr:degree" class="problem" data-progress-ids="[&quot;23CV&quot;,&quot;20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.tex#pr:degree&quot;]"><a class="stable-tag" href="tag/23CV.html" title="Stable tag: cite as Tag 23CV">Tag 23CV</a>
+<p><strong>Problem 41.1.5</strong>. The squared mass of the coefficient in
+Problem <a href="#pr:coefficient" data-reference-type="ref"
+data-reference="pr:coefficient">41.1.3</a> is <span
+class="math display">\[\int_0^\infty \cosh(t)^{-2\mathsf
+N}\sinh(2t)\,dt=\frac{1}{\mathsf N-1}.\]</span> At <span
+class="math inline">\(\mathsf N=3\)</span> the mass is <span
+class="math inline">\(1/2\)</span>. The reciprocal of the mass is <span
+class="math inline">\((l_1-l_2)/2=\mathrm{ch}_l(1)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html">Chapter 48</a></div><!-- used-in:end -->
+</div>
+<div id="pr:half-plane" class="problem" data-progress-ids="[&quot;23CW&quot;,&quot;20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.tex#pr:half-plane&quot;]"><a class="stable-tag" href="tag/23CW.html" title="Stable tag: cite as Tag 23CW">Tag 23CW</a>
+<p><strong>Problem 41.1.6</strong>. The pullback of half-plane area <span
+class="math inline">\(dx\,dy/y^2\)</span> under <span
+class="math inline">\(z\mapsto \mathrm{i}(1+z)/(1-z)\)</span> is <span
+class="math inline">\(4\pi\)</span> times the compact-dual quotient
+measure on the disk. The rescaled degree is <span
+class="math inline">\((\mathsf N-1)/(4\pi)\)</span>. For even <span
+class="math inline">\(\mathsf N\ge4\)</span> the result agrees with
+Problem <a href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#pr:formal-degree" data-reference-type="ref"
+data-reference="ps-pr:formal-degree">10.5.5</a> at weight
+<span class="math inline">\(\mathsf N\)</span>.</p>
+</div>
+<div id="pr:rank-decay" class="problem" data-progress-ids="[&quot;23CX&quot;,&quot;20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.tex#pr:rank-decay&quot;]"><a class="stable-tag" href="tag/23CX.html" title="Stable tag: cite as Tag 23CX">Tag 23CX</a>
+<p><strong>Problem 41.1.7</strong>. For <span class="math inline">\(g=k a_t
+k&#39;\)</span> with <span class="math inline">\(k,k&#39;\in K\)</span>,
+the coefficient in Problem <a href="#pr:coefficient"
+data-reference-type="ref" data-reference="pr:coefficient">41.1.3</a> has
+modulus <span class="math inline">\(\cosh(t)^{-\mathsf N}\)</span>, and
+<span class="math inline">\(\|g\|_{\mathrm{op}}=e^t\)</span>. In
+particular <span class="math inline">\(|\mathsf c_l(g)|\le
+(2/\|g\|_{\mathrm{op}})^{\mathsf N}\)</span>.</p>
+</div>
+<p>The last problems in the real group section check the sign in the
+torus formula and the character recovered by conjugation averaging.</p>
+<div id="pr:sign" class="problem" data-progress-ids="[&quot;23CY&quot;,&quot;20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.tex#pr:sign&quot;]"><a class="stable-tag" href="tag/23CY.html" title="Stable tag: cite as Tag 23CY">Tag 23CY</a>
+<p><strong>Problem 41.1.8</strong>. For signs <span
+class="math inline">\((+,-)\)</span> and <span
+class="math inline">\(\mathsf k_1&gt;\mathsf k_2\)</span>, write <span
+class="math inline">\(\mathrm{Ch}(t_1,t_2)=t_1^{\mathsf k_1}t_2^{\mathsf
+k_2}/(t_2-t_1)\)</span> for the character in Theorem <a
+href="#thm:character" data-reference-type="ref"
+data-reference="thm:character">41.5</a> at distinct unit entries. Then
+<span
+class="math display">\[-\bigl(\mathrm{Ch}(t_1,t_2)+\mathrm{Ch}(t_2,t_1)\bigr)
+  =\sum_{i=0}^{\mathsf k_1-\mathsf k_2-1} t_1^{\mathsf
+k_1-1-i}t_2^{\mathsf k_2+i}.\]</span> The sum is the <span
+class="math inline">\(U(2)\)</span>-character of highest weight <span
+class="math inline">\((\mathsf k_1-1,\mathsf k_2)\)</span>, and is <span
+class="math inline">\(t_1^2+t_1t_2+t_2^2\)</span> at <span
+class="math inline">\((\mathsf k_1,\mathsf k_2)=(3,0)\)</span>. The
+local sign is <span class="math inline">\((-1)^{pq}=-1\)</span>. With
+one fixed signature at an even number <span
+class="math inline">\(f\)</span> of infinite places, the product of the
+local signs is <span class="math inline">\(1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T050500--equal-multiplicities__workbook.html">Chapter 70</a></div><!-- used-in:end -->
+</div>
+<div id="pr:finite-orbital" class="problem" data-progress-ids="[&quot;23CZ&quot;,&quot;20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.tex#pr:finite-orbital&quot;]"><a class="stable-tag" href="tag/23CZ.html" title="Stable tag: cite as Tag 23CZ">Tag 23CZ</a>
+<p><strong>Problem 41.1.9</strong>. Let <span
+class="math inline">\(\pi\)</span> be an irreducible unitary
+representation of a finite group <span
+class="math inline">\(G_0\)</span>, of dimension <span
+class="math inline">\(d_\pi\)</span>, and <span
+class="math inline">\(u\)</span> a unit vector. For <span
+class="math inline">\(\mathsf c(g)=\langle u,\pi(g)u\rangle\)</span>,
+one has <span class="math display">\[\frac{d_\pi}{\#G_0}\sum_{g\in
+G_0}\mathsf c(g^{-1}xg)=\operatorname{tr}\pi(x)\quad(x\in
+G_0).\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:s3">Problem 41.1.10</a></div><!-- used-in:end -->
+</div>
+<div id="pr:s3" class="problem" data-progress-ids="[&quot;23D2&quot;,&quot;20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.tex#pr:s3&quot;]"><a class="stable-tag" href="tag/23D2.html" title="Stable tag: cite as Tag 23D2">Tag 23D2</a>
+<p><strong>Problem 41.1.10</strong>. For the action of <span
+class="math inline">\(S_3\)</span> permuting the coordinates on the
+sum-zero subspace of <span class="math inline">\(\mathbb C^3\)</span>,
+the averages on the left of Problem <a href="#pr:finite-orbital"
+data-reference-type="ref" data-reference="pr:finite-orbital">41.1.9</a> are
+<span class="math inline">\(2,-1,0\)</span> at the identity, a
+three-cycle and a transposition, respectively.</p>
+</div>
+<p>The comparison section gives the vanishing and trace identities for
+framed spaces.</p>
+<h1 id="sec:comparison">§41.2. The comparison <a class="stable-tag" href="tag/23D3.html" title="Stable tag: cite as Tag 23D3">Tag 23D3</a></h1>
+<p>Let <span class="math inline">\(E\)</span> be a CM field with a fixed
+CM type and <span class="math inline">\(V\)</span> a framed space of
+rank <span class="math inline">\(n\ge2\)</span> as in Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces" data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a>. The frames identify
+the finite adelic unitary groups of all such spaces with the group <span
+class="math inline">\(G_f\)</span> for the identity form. For each
+infinite place <span class="math inline">\(\tau\)</span>, choose a
+doubled parameter <span class="math inline">\(l_\tau\)</span> for the
+signs of <span class="math inline">\(V\)</span> of gap at least <span
+class="math inline">\(500n^3+10n^5\)</span>. Use the product of the
+corresponding kernels <span class="math inline">\(\mathsf
+e_{l_\tau}\)</span> on the real factors.</p>
+<div id="thm:selberg" class="theorem"><a class="stable-tag" href="tag/23D4.html" title="Stable tag: cite as Tag 23D4">Tag 23D4</a>
+<p><strong>Theorem 41.6</strong> (Selberg principle). Let <span
+class="math inline">\(\phi\)</span> be a locally constant compactly
+supported function on <span class="math inline">\(G_f\)</span>. For a
+rational unitary element <span class="math inline">\(\gamma\)</span> of
+<span class="math inline">\(V\)</span>, integrate the product of the
+real kernels and <span class="math inline">\(\phi\)</span>, evaluated at
+the real and finite factors of <span class="math inline">\(g^{-1}\gamma
+g\)</span>, over the left quotient of the adelic group by the rational
+centralizer of <span class="math inline">\(\gamma\)</span>. Use the
+quotient of product Haar measure by counting measure on the rational
+centralizer. At infinity use the compact-dual measures, and on <span
+class="math inline">\(G_f\)</span> give the standard lattice stabilizer
+mass one. The orbital integral is zero if the characteristic polynomial
+over <span class="math inline">\(E\)</span> is irreducible and has a
+root off the unit circle under the embedding selected by the CM type at
+some infinite place.</p>
+</div>
+<p>The adelic statement is read from the proof. The local vanishing for
+discrete-series coefficients on regular nonelliptic classes is classical
+<span class="citation" data-cites="Art">[<a href="#ref-Art">Ar</a>,
+formula (1)]</span>.</p>
+<div id="thm:traces" class="theorem"><a class="stable-tag" href="tag/23D5.html" title="Stable tag: cite as Tag 23D5">Tag 23D5</a>
+<p><strong>Theorem 41.7</strong> (Comparison of traces). With <span
+class="math inline">\(E\)</span>, <span class="math inline">\(V\)</span>
+and <span class="math inline">\(l_\tau\)</span> as in the setup for this
+section, suppose that</p>
+<ol>
+<li><p><span class="math inline">\(E\)</span> contains the <span
+class="math inline">\(5040\)</span>th roots of unity and has an even
+number of infinite places.</p></li>
+<li><p><span class="math inline">\(V&#39;\)</span> is a framed space of
+the same rank over <span class="math inline">\(E\)</span>, and the
+parameters <span class="math inline">\(l_\tau\)</span> meet the same gap
+condition for the signs of <span
+class="math inline">\(V&#39;\)</span>.</p></li>
+<li><p><span class="math inline">\(K_f\)</span> is a subgroup of the
+integral elements of <span class="math inline">\(G_f\)</span> containing
+a neighbourhood of the identity, and <span
+class="math inline">\(a\in\mathbb C[G_f]\)</span> preserves <span
+class="math inline">\(K_f\)</span>-fixed vectors in every representation
+of <span class="math inline">\(G_f\)</span>.</p></li>
+<li><p>The function <span class="math inline">\(\phi=a\star
+1_{K_f}\)</span> is cuspidal at a split place <span
+class="math inline">\(w\)</span>. Here <span class="math inline">\(\star
+1_{K_f}\)</span> sends each <span class="math inline">\(b\in
+G_f\)</span> to <span class="math inline">\(1_{bK_f}\)</span> and
+extends linearly. For cuspidality, let <span
+class="math inline">\(P\)</span> be the coordinate projection onto any
+nonempty proper coordinate subset and let <span
+class="math inline">\(\bar b\in\mathrm{GL}_n(k_w)\)</span>, where <span
+class="math inline">\(k_w\)</span> is the residue field. For each matrix
+<span class="math inline">\(A\in M_n(k_w)\)</span> take any integral
+invertible lift <span class="math inline">\(u_A\)</span> of <span
+class="math inline">\((1+PA(1-P))\bar b\)</span>, viewed in <span
+class="math inline">\(G_f\)</span> with inverse conjugate transpose at
+the conjugate place and identity components elsewhere. For every choice
+of lifts and every <span class="math inline">\(g\in G_f\)</span>, the
+sum of <span class="math inline">\(\phi(gu_A)\)</span> over <span
+class="math inline">\(A\)</span> is zero.</p></li>
+</ol>
+<p>Then the operators induced by <span class="math inline">\(a\)</span>
+through right translation have equal traces on the spaces of forms for
+<span class="math inline">\(V\)</span> and <span
+class="math inline">\(V&#39;\)</span>. The spaces are defined as for
+principal forms in Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:forms"
+data-reference-type="ref"
+data-reference="ob-sec:forms">37.4</a>, using level <span
+class="math inline">\(K_f\)</span> and the real kernels of the
+parameters <span class="math inline">\(l_\tau\)</span> for the
+respective signs.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T050500--equal-multiplicities__workbook.html">Chapter 70</a></div><!-- used-in:end -->
+</div>
+<p>The method is classical <span class="citation"
+data-cites="AC FK Lab">[<a href="#ref-AC">AC</a>; <a href="#ref-FK">FK</a>;
+<a href="#ref-Lab">Lab</a>]</span>; for the use of a cuspidal component see
+Harris–Labesse <span class="citation"
+data-cites="HL">[<a href="#ref-HL">HL</a>, Proposition 1.10.5]</span>. The
+statement with the discrete-series kernels and the split cuspidality
+condition above is read from the proof. Chapter <a href="20261126T050500--equal-multiplicities__workbook.html#chap"
+data-reference-type="ref" data-reference="c2-chap">70</a> checks
+the comparison hypotheses for the good forms.</p>
+<div id="thm:landherr" class="theorem"><a class="stable-tag" href="tag/23D6.html" title="Stable tag: cite as Tag 23D6">Tag 23D6</a>
+<p><strong>Theorem 41.8</strong> (Landherr’s theorem). Hermitian spaces for
+a quadratic extension of number fields that are isometric at each
+completion of the base field are isometric over the extension.</p>
+</div>
+<p>The theorem is classical <span class="citation"
+data-cites="Kne">[<a href="#ref-Kne">Kn</a>]</span>. The proof establishes
+the case of framed spaces with the same numbered signs over a CM field
+containing the <span class="math inline">\(5040\)</span>th roots of
+unity.</p>
+<div class="theorem">
+<p><strong>Theorem 41.2.9</strong> (Bessel models). Use the Bessel subgroup
+and character of Section <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:subgroup"
+data-reference-type="ref"
+data-reference="bp-sec:subgroup">39.1</a> at a real place.
+A Bessel functional is a continuous linear form on the completed tensor
+product of two smooth representations, equivariant for the generic
+Bessel character. The subgroup acts on the smaller representation
+through the quotient by its unipotent radical. For an irreducible pair
+of smooth admissible Fréchet representations of moderate growth with
+finite-length modules of <span class="math inline">\(K\)</span>-finite
+vectors, the space of Bessel functionals has dimension at most one. For
+fixed tempered Langlands parameters for the two groups, exactly one pair
+across the relevant pure inner forms has a nonzero Bessel
+functional.</p>
+</div>
+<p>The statements are context from the literature <span class="citation"
+data-cites="JSZ">[<a href="#ref-JSZ">JSZ</a>, Theorem A]</span>, <span
+class="citation" data-cites="BP Xue">[<a href="#ref-BP">BP</a>;
+<a href="#ref-Xue">Xue</a>]</span>. In codimension one for discrete series
+see also He <span class="citation"
+data-cites="He">[<a href="#ref-He">He</a>]</span>. In Chapter <a
+href="20261126T081500--a-bessel-function-at-a-real-place__workbook.html#chap" data-reference-type="ref"
+data-reference="b1-chap">42</a>, Theorem <a href="20261126T081500--a-bessel-function-at-a-real-place__workbook.html#thm:period"
+data-reference-type="ref"
+data-reference="b1-thm:period">42.3.1</a> gives the lower bound
+for the Bessel period used in normalizing the real Bessel functions.</p>
+<p>The problems check the normalization, degree, decay and character
+sign on the two-by-two groups and conjugation averaging on a finite
+group. We took as given the discrete-series parametrization and lowest
+type, Schur orthogonality and formal degree, the principal-minor
+formula, the general decay estimate, the character formulas, Selberg
+vanishing, trace comparison, Landherr’s theorem and the statements about
+Bessel models.</p>
+<div class="leanremark">
+<p><strong>In the Lean formalization 1</strong>. In <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, the
+parameter is <code>HCParam</code>. The condition
+<code>HCParam.HasLargeGap</code> asks for gap at least <span
+class="math inline">\(500n^3+A\)</span> with <span
+class="math inline">\(A\)</span> a nonnegative integer. The integral
+coefficient is <code>HCParam.dsCoeff</code>. For Schur orthogonality and
+the degree formula see <code>dsCoeff_schur_orthogonality</code> and
+<code>Orbital.formalDegree_eq_weylDimensionPoly</code>. For the decay
+and the sum over permutations see
+<code>DiscreteSeries.norm_dsCoeff_le_pow</code> and
+<code>Orbital.neg_one_pow_mul_sum_integral_dsKernel</code>. Vanishing,
+comparison and the framed case of Landherr are
+<code>Space.orbitalIntegral_eq_zero</code>,
+<code>trace_eq_of_isCuspidalAt</code> and
+<code>Space.landherr</code>.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<dl>
+<dt><a href="#pr:coefficient" data-reference-type="ref"
+data-reference="pr:coefficient">41.1.3</a></dt>
+<dd>
+<p>First specialize the product of minors to diagonal matrices and
+matrices with diagonal entries <span
+class="math inline">\(1\)</span>.</p>
+</dd>
+<dt><a href="#pr:radial" data-reference-type="ref"
+data-reference="pr:radial">41.1.4</a></dt>
+<dd>
+<p>Use Euclidean polar area, and fix the sphere constant by total mass
+one.</p>
+</dd>
+<dt><a href="#pr:finite-orbital" data-reference-type="ref"
+data-reference="pr:finite-orbital">41.1.9</a></dt>
+<dd>
+<p>Schur’s lemma.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-AC"><span class="bib-label">[AC]</span> J. Arthur and L. Clozel, <em>Simple Algebras, Base Change, and the Advanced Theory of the Trace Formula</em>, Ann. of Math. Stud. 120, Princeton University Press, 1989.</p>
+<p id="ref-Art"><span class="bib-label">[Ar]</span> J. Arthur, <em>The characters of discrete series as orbital integrals</em>, Invent. Math. <strong>32</strong> (1976), 205–261.</p>
+<p id="ref-AS"><span class="bib-label">[AS]</span> M. F. Atiyah and W. Schmid, <em>A geometric construction of the discrete series for semisimple Lie groups</em>, Invent. Math. <strong>42</strong> (1977), 1–62.</p>
+<p id="ref-BV"><span class="bib-label">[BV]</span> V. Baldoni and M. Vergne, <em>Discrete series representations and <span class="math inline">\(K\)</span> multiplicities for <span class="math inline">\(U(p,q)\)</span>. User’s guide</em>, arXiv:1008.5360, 2010.</p>
+<p id="ref-BP"><span class="bib-label">[BP]</span> R. Beuzart-Plessis, <em>A local trace formula for the Gan–Gross–Prasad conjecture for unitary groups: the Archimedean case</em>, Astérisque <strong>418</strong> (2020).</p>
+<p id="ref-FK"><span class="bib-label">[FK]</span> Y. Z. Flicker and D. A. Kazhdan, <em>A simple trace formula</em>, J. Analyse Math. <strong>50</strong> (1988), 189–200.</p>
+<p id="ref-FJ"><span class="bib-label">[FJ]</span> M. Flensted-Jensen, <em>Discrete series for semisimple symmetric spaces</em>, Ann. of Math. <strong>111</strong> (1980), 253–311.</p>
+<p id="ref-HC"><span class="bib-label">[HC]</span> Harish-Chandra, <em>Discrete series for semisimple Lie groups. II. Explicit determination of the characters</em>, Acta Math. <strong>116</strong> (1966), 1–111.</p>
+<p id="ref-He"><span class="bib-label">[He]</span> H. He, <em>On the Gan–Gross–Prasad conjectures for <span class="math inline">\(U(p,q)\)</span></em>, Invent. Math. <strong>209</strong> (2017), 837–884.</p>
+<p id="ref-HL"><span class="bib-label">[HL]</span> M. Harris and J.-P. Labesse, <em>Conditional base change for unitary groups</em>, Asian J. Math. <strong>8</strong> (2004), 653–684.</p>
+<p id="ref-JSZ"><span class="bib-label">[JSZ]</span> D. Jiang, B. Sun and C.-B. Zhu, <em>Uniqueness of Bessel models: the archimedean case</em>, Geom. Funct. Anal. <strong>20</strong> (2010), 690–709.</p>
+<p id="ref-Knapp"><span class="bib-label">[Knapp]</span> A. W. Knapp, <em>Representation Theory of Semisimple Groups. An Overview Based on Examples</em>, Princeton University Press, 1986.</p>
+<p id="ref-Kne"><span class="bib-label">[Kn]</span> M. Kneser, <em>Lectures on Galois Cohomology of Classical Groups</em>, Tata Inst. Lectures 47, Bombay, 1969.</p>
+<p id="ref-Lab"><span class="bib-label">[Lab]</span> J.-P. Labesse, <em>Changement de base CM et séries discrètes</em>, in <em>On the Stabilization of the Trace Formula</em>, International Press, 2011, 429–470.</p>
+<p id="ref-Mil"><span class="bib-label">[Mi]</span> D. Miličić, <em>Asymptotic behaviour of matrix coefficients of the discrete series</em>, Duke Math. J. <strong>44</strong> (1977), 59–88.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Sun"><span class="bib-label">[Sun]</span> B. Sun, <em>Matrix coefficients of cohomologically induced representations</em>, Compos. Math. <strong>143</strong> (2007), 201–221.</p>
+<p id="ref-Xue"><span class="bib-label">[Xue]</span> H. Xue, <em>Bessel models for real unitary groups: the tempered case</em>, Duke Math. J. <strong>172</strong> (2023), 995–1031.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

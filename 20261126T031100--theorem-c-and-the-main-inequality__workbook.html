@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-hcu6o/r2nrh8NNTUE86wgHQbgamiMdBHfyiHvNjz++4=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>The main inequality</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"{\\mathbb{Z}}","Q":"{\\mathbb{Q}}","R":"\\mathbb R","C":"{\\mathbb{C}}","Oc":"\\mathcal O","Lc":"\\mathcal L","main":"h_{\\mathrm{main}}","rem":"\\mathrm{rem}","hdir":"h_{\\mathrm{dir}}","hgt":"\\operatorname{ht}","Gram":"\\operatorname{Gram}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="38">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T031100--theorem-c-and-the-main-inequality__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 10:12:34
+      <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T031100--theorem-c-and-the-main-inequality__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">The main inequality</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:toy" id="toc-sec:toy">§38.1. The comparison in a lattice</a></li>
+<li><a href="#sec:main" id="toc-sec:main">§38.2. The main inequality</a></li>
+<li><a href="#sec:end" id="toc-sec:end">§38.3. From the main inequality to the theorem</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#sectoy" id="toc-sectoy">§38.1</a></li>
+<li><a href="#secmain" id="toc-secmain">§38.2</a></li>
+<li><a href="#secend" id="toc-secend">§38.3</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Hadamard’s inequality for positive definite Hermitian matrices <span
+class="citation" data-cites="HJ">[<a href="#ref-HJ">HJ</a>]</span>.
+Dirichlet <span class="math inline">\(L\)</span>-functions: <span
+class="math inline">\(L(1, \chi) \ne 0\)</span> for <span
+class="math inline">\(\chi\)</span> nonprincipal, induced and primitive
+characters, and the functional equation <span class="citation"
+data-cites="Dav">[<a href="#ref-Dav">Dav</a>, Ch. 4, Ch. 5, Ch. 8,
+Ch. 9]</span>. From Chapter <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#chap" data-reference-type="ref"
+data-reference="zr-chap">1</a> the remainder <span
+class="math inline">\(R_{d,q}\)</span>, written <span
+class="math inline">\(R_q\)</span> here for fixed <span
+class="math inline">\(d\)</span>, the one-sided criterion and the prime
+number theorem in progressions; from Chapter <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap"
+data-reference-type="ref" data-reference="gf-chap">3</a> the
+identity for the total remainder; from Chapter <a href="20261126T030300--the-data__workbook.html#chap"
+data-reference-type="ref" data-reference="da-chap">36</a> the
+data and Problem <a href="20261126T030300--the-data__workbook.html#pr:eps-bounds" data-reference-type="ref"
+data-reference="da-pr:eps-bounds">36.6.4</a>; from
+Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a> the objects and the target
+lattice (Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:target-lattice"
+data-reference-type="ref"
+data-reference="ob-def:target-lattice">37.11.1</a>); and
+the statements of Theorems A, B and C (Chapters <a href="20261126T030600--theorem-a-short-forms__workbook.html#chap"
+data-reference-type="ref" data-reference="ta-chap">49</a>, <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">39</a> and <a href="20261126T040200--theorem-c__workbook.html#chap"
+data-reference-type="ref" data-reference="tc-chap">67</a>). The
+problems in Section <a href="#sec:toy" data-reference-type="ref"
+data-reference="sec:toy">38.1</a> use no earlier chapter.</p>
+<p>Theorems A and B supply many independent target forms, with upper
+bounds for the lengths of their untwisted lifts and for the index of the
+family; Theorem C bounds the covolume plus twice the index of the family
+of target forms from below by the main amount (Section <a
+href="20261126T030300--the-data__workbook.html#sec:amounts" data-reference-type="ref"
+data-reference="da-sec:amounts">36.4</a>), times the
+dimension, less a small error. How do the three statements give the
+theorem? Comparing the two bounds gives the main inequality for the
+total remainder <span class="math inline">\(\mathrm{rem}\)</span>. The
+identity of Theorem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#thm:remainder"
+data-reference-type="ref"
+data-reference="gf-thm:remainder">3.2.1</a> then gives an
+upper bound for the prime-sum remainder <span
+class="math inline">\(R_{q_0}(x)\)</span>. We first do the comparison in
+a lattice, then state the main inequality, and finally pass to the
+one-sided bound and to the theorem. Parts VII, VIII and IX state and
+deduce Theorems B, A and C.</p>
+<h1 id="sec:toy">§38.1. The comparison in a lattice</h1>
+<p>Divisibility and size already meet in the plane.</p>
+<div id="pr:toy-columns" class="problem" data-progress-ids="[&quot;20261126T031100--theorem-c-and-the-main-inequality__workbook.tex#pr:toy-columns&quot;]">
+<p><strong>Problem 38.1.1</strong>. The columns <span
+class="math inline">\((1, 1)\)</span> and <span
+class="math inline">\((1, 7)\)</span> are linearly independent and agree
+modulo <span class="math inline">\(2\)</span> and modulo <span
+class="math inline">\(3\)</span>, so their determinant is a nonzero
+multiple of <span class="math inline">\(6\)</span>; the product of their
+lengths is <span class="math inline">\(10\)</span>. Hence the
+determinant is <span class="math inline">\(\pm 6\)</span>.</p>
+</div>
+<p>Let <span class="math inline">\(N \ge 1\)</span> be an integer, and
+give <span class="math inline">\({\mathbb{C}}^d\)</span> the Hermitian
+form <span class="math inline">\(\langle v, w \rangle := N\, \bar
+v^{\mathsf T} w\)</span>. For <span class="math inline">\(y_1, \dots,
+y_n \in {\mathbb{Q}}^d\)</span> write <span
+class="math inline">\(\operatorname{Gram}(y) := \det(\langle y_i, y_j
+\rangle)_{i,j \le n}\)</span>, and let <span class="math inline">\(H :=
+\log N\)</span>.</p>
+<div id="pr:toy-hadamard" class="problem" data-progress-ids="[&quot;20261126T031100--theorem-c-and-the-main-inequality__workbook.tex#pr:toy-hadamard&quot;]">
+<p><strong>Problem 38.1.2</strong>. If <span class="math inline">\(\langle
+y_i, y_i \rangle \le e^{u}\)</span> for <span class="math inline">\(i =
+1, \dots, n\)</span>, then <span
+class="math inline">\(\operatorname{Gram}(y) \le e^{nu}\)</span>; if the
+<span class="math inline">\(y_i\)</span> are linearly independent, <span
+class="math inline">\(\log \operatorname{Gram}(y) \le nu\)</span>.</p>
+</div>
+<p>The comparison itself is an inequality between real numbers. Suppose
+that a family of <span class="math inline">\(n\)</span> vectors in a
+space of dimension <span class="math inline">\(d \ge 1\)</span>
+satisfies a lower bound and two upper bounds, <span
+class="math display">\[d(H - 3F) \le c + 2\delta , \qquad c \le n(H -
+\rho + F) , \qquad \delta \le dI ,\]</span> for real numbers <span
+class="math inline">\(H, F, I, \rho, c, \delta\)</span>. The upper
+exponent per vector is <span class="math inline">\(H - \rho +
+F\)</span>, including the error <span
+class="math inline">\(F\)</span>.</p>
+<div id="pr:toy-compare" class="problem" data-progress-ids="[&quot;20261126T031100--theorem-c-and-the-main-inequality__workbook.tex#pr:toy-compare&quot;]">
+<p><strong>Problem 38.1.3</strong>. If moreover <span class="math inline">\(H
++ F \ge 0\)</span> and <span class="math inline">\(d/2 \le n \le
+d\)</span>, then <span class="math inline">\(n\rho \le d(4F +
+2I)\)</span>, and <span class="math inline">\(\rho \le 2(4F +
+2I)\)</span> when <span class="math inline">\(4F + 2I \ge
+0\)</span>.</p>
+</div>
+<div id="pr:toy-sign" class="problem" data-progress-ids="[&quot;20261126T031100--theorem-c-and-the-main-inequality__workbook.tex#pr:toy-sign&quot;]">
+<p><strong>Problem 38.1.4</strong>. In the comparison of real numbers above,
+after dropping the hypothesis <span class="math inline">\(H + F \ge
+0\)</span> one can satisfy all three bounds and <span
+class="math inline">\(d/2 \le n \le d\)</span> while <span
+class="math inline">\(n\rho &gt; d(4F + 2I)\)</span>. (Here <span
+class="math inline">\(H\)</span> is any real number, not necessarily
+<span class="math inline">\(\log N\)</span>.)</p>
+</div>
+<p>In this lattice the main amount sits in the metric. In Chapter <a
+href="20261126T040200--theorem-c__workbook.html#chap" data-reference-type="ref"
+data-reference="tc-chap">67</a> the main amount enters through
+the height of the family <span class="math inline">\(\iota \mapsto
+Z(1)/Z(\theta_\iota)\)</span>, where the twist <span
+class="math inline">\(\theta_\iota\)</span> is chosen for each pair
+<span class="math inline">\((\ell, \iota)\)</span> (Problem <a
+href="20261126T040200--theorem-c__workbook.html#pr:volume" data-reference-type="ref"
+data-reference="tc-pr:volume">67.2.5</a>).</p>
+<h1 id="sec:main">§38.2. The main inequality</h1>
+<p>Let <span class="math inline">\(\mathrm{rem}\)</span> be the total
+remainder of Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>, <span class="math inline">\(U =
+fa\log^3 b\)</span> the unit of the errors and <span
+class="math inline">\(F := U\log b\)</span>. Theorems A and B
+(Chapters <a href="20261126T030600--theorem-a-short-forms__workbook.html#chap" data-reference-type="ref"
+data-reference="ta-chap">49</a> and <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap"
+data-reference-type="ref" data-reference="bp-chap">39</a>)
+concern the ramified source forms <span
+class="math inline">\(S_{\mathrm{ram}}\)</span>, the integral ones <span
+class="math inline">\(S_{\mathrm{ram}}^{\mathrm{int}}\)</span>, the
+finite group <span class="math inline">\(\bar G\)</span>, and the
+normalized translates <span class="math inline">\(A_s \colon
+S_{\mathrm{ram}} \to T\)</span> of the Poincaré map, <span
+class="math inline">\(s \in \bar G\)</span>. For <span
+class="math inline">\(v \in T\)</span> and <span
+class="math inline">\(\sigma \in
+\operatorname{Aut}({\mathbb{C}})\)</span>, <span
+class="math inline">\(\lVert v \rVert_\sigma^2\)</span> is the squared
+length of Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:target-lattice"
+data-reference-type="ref"
+data-reference="ob-def:target-lattice">37.11.1</a>,
+computed from the <span class="math inline">\(\sigma\)</span>-conjugate
+coordinates of the untwisted lift <span class="math inline">\(\Theta_1
+v\)</span>. Theorems A, B and C are proved in Parts VIII, VII and IX
+(Chapters <a href="20261126T030600--theorem-a-short-forms__workbook.html#chap" data-reference-type="ref"
+data-reference="ta-chap">49</a>, <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap"
+data-reference-type="ref" data-reference="bp-chap">39</a> and <a
+href="20261126T040200--theorem-c__workbook.html#chap" data-reference-type="ref"
+data-reference="tc-chap">67</a>); here we use only their
+statements, in the following form.</p>
+<ul>
+<li><p>(Theorem <a href="20261126T030600--theorem-a-short-forms__workbook.html#thm:A" data-reference-type="ref"
+data-reference="ta-thm:A">49.3.2</a>(a), which writes <span
+class="math inline">\(\lVert \Theta_1 A_s\varphi \rVert_\sigma\)</span>
+for the length used here and <span class="math inline">\(fa\log^4
+b\)</span> for <span class="math inline">\(F\)</span>.) <span
+class="math inline">\(S_{\mathrm{ram}}\)</span> is spanned by the set
+<span class="math inline">\(S_{\mathrm{short}}\)</span> of <span
+class="math inline">\(\varphi \in
+S_{\mathrm{ram}}^{\mathrm{int}}\)</span> with <span
+class="math inline">\(\lVert A_s\varphi \rVert_\sigma^2 \le
+\exp(h_{\mathrm{main}}- m\,\mathrm{rem}+ F)\)</span> for every <span
+class="math inline">\(s \in \bar G\)</span> and every <span
+class="math inline">\(\sigma\)</span>.</p></li>
+<li><p>(Theorem <a href="20261126T030600--theorem-a-short-forms__workbook.html#thm:A" data-reference-type="ref"
+data-reference="ta-thm:A">49.3.2</a>(b), which writes <span
+class="math inline">\(2fa\log^3 b\)</span> for <span
+class="math inline">\(2U\)</span>.) If <span class="math inline">\(J
+\subseteq \bar G\)</span> is finite and every <span
+class="math inline">\(y_i\)</span> lies in <span
+class="math inline">\(A_s(S_{\mathrm{ram}}^{\mathrm{int}})\)</span> for
+some <span class="math inline">\(s \in J\)</span>, then <span
+class="math inline">\(y_1, \dots, y_n\)</span> has index at most <span
+class="math inline">\(2\,\# J \dim S_{\mathrm{ram}} \cdot
+U\)</span>.</p></li>
+<li><p>(Consequence of Theorem <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#thm:B"
+data-reference-type="ref" data-reference="bp-thm:B">39.4.2</a>:
+there the maps <span
+class="math inline">\(e_0\rho(s)\mathcal{P}\)</span> on <span
+class="math inline">\(S_{\mathrm{ram}}\)</span> have the same ranges as
+the <span class="math inline">\(A_s\)</span>.) <span
+class="math inline">\(d_T &gt; 0\)</span>, and there is a finite <span
+class="math inline">\(J \subseteq \bar G\)</span> with <span
+class="math inline">\(\# J \dim S_{\mathrm{ram}} \le 5d_T\log(1 +
+2b^2)\)</span> and <span class="math inline">\(\dim \sum_{s \in J}
+A_s(S_{\mathrm{ram}}) \ge (1 - 4/b^2)d_T\)</span>.</p></li>
+</ul>
+<p>Theorem C (Theorem <a href="20261126T040200--theorem-c__workbook.html#thm:C" data-reference-type="ref"
+data-reference="tc-thm:C">67.2.1</a>), in full, is the lower bound:
+if <span class="math inline">\(y_1, \dots, y_n\)</span> are linearly
+independent target forms with <span class="math inline">\((1 - 4/b^2)d_T
+\le n\)</span>, of index at most <span
+class="math inline">\(\delta\)</span> and covolume at most <span
+class="math inline">\(c\)</span>, then <span
+class="math display">\[d_T(h_{\mathrm{main}}- 3fa\log^4 b) \le c +
+2\delta ;\]</span> index and covolume are those of the target lattice
+(Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:target-lattice" data-reference-type="ref"
+data-reference="ob-def:target-lattice">37.11.1</a>).</p>
+<p>The upper bound for the covolume is Hadamard’s inequality: if <span
+class="math inline">\(\lVert z_i \rVert_\sigma^2 \le e^u\)</span> for
+<span class="math inline">\(i = 1, \dots, n\)</span> and every <span
+class="math inline">\(\sigma\)</span>, then <span
+class="math inline">\(z_1, \dots, z_n\)</span> has covolume at most
+<span class="math inline">\(nu\)</span>.</p>
+<div id="pr:family" class="problem" data-progress-ids="[&quot;20261126T031100--theorem-c-and-the-main-inequality__workbook.tex#pr:family&quot;]">
+<p><strong>Problem 38.2.1</strong>. For <span
+class="math inline">\(J\)</span> as in (B), the span of <span
+class="math inline">\(\bigcup_{s \in J} A_s(S_{\mathrm{short}})\)</span>
+is <span class="math inline">\(\sum_{s \in J}
+A_s(S_{\mathrm{ram}})\)</span>. Hence that space has a basis <span
+class="math inline">\(y_1, \dots, y_n\)</span> with each <span
+class="math inline">\(y_i \in A_s(S_{\mathrm{short}})\)</span> for some
+<span class="math inline">\(s \in J\)</span>, and <span
+class="math inline">\((1 - 4/b^2)d_T \le n \le d_T\)</span>.</p>
+</div>
+<div id="pr:upper" class="problem" data-progress-ids="[&quot;20261126T031100--theorem-c-and-the-main-inequality__workbook.tex#pr:upper&quot;]">
+<p><strong>Problem 38.2.2</strong>. This family has covolume at most <span
+class="math inline">\(n(h_{\mathrm{main}}- m\,\mathrm{rem}+ F)\)</span>
+and index at most <span class="math inline">\(d_T \cdot 10\log(1 +
+2b^2)\, U\)</span>.</p>
+</div>
+<div id="pr:compare" class="problem" data-progress-ids="[&quot;20261126T031100--theorem-c-and-the-main-inequality__workbook.tex#pr:compare&quot;]">
+<p><strong>Problem 38.2.3</strong>. <span class="math inline">\(n\,
+m\,\mathrm{rem}\le d_T\bigl(4F + 20\log(1 + 2b^2)\,U\bigr)\)</span>.</p>
+</div>
+<div id="pr:errors" class="problem" data-progress-ids="[&quot;20261126T031100--theorem-c-and-the-main-inequality__workbook.tex#pr:errors&quot;]">
+<p><strong>Problem 38.2.4</strong>. <span class="math inline">\(n \ge
+d_T/2\)</span>, and <span class="math inline">\(8F + 40\log(1 + 2b^2)\,
+U \le fa\log^5 b\)</span>. Hence <span
+class="math inline">\(m\,\mathrm{rem}\le fa\log^5 b\)</span>.</p>
+</div>
+<div id="thm:main" class="theorem">
+<p><strong>Theorem 38.2.1</strong> (Main inequality). <em><span
+class="math inline">\(m\,\mathrm{rem}\le fa\log^5 b\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T005000--galois-fourier-and-averaging__workbook.html">Chapter 3</a>; <a href="20261125T003000--the-chain-and-the-square-root__workbook.html">Chapter 8</a></div><!-- used-in:end -->
+</div>
+<p>In the Lean code as first released, the inequality called <span
+class="math inline">\((M)\)</span> bounds the excess of the prime-power
+sums over their main terms, summed over cells (as indexed in <span
+class="citation" data-cites="Nas">[<a href="#ref-Nas">Nas</a>]</span>) and
+<span class="math inline">\(m\)</span> weight tables for each allowed
+translation. Here the single weight function of Chapter <a
+href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap" data-reference-type="ref"
+data-reference="gf-chap">3</a> has two cutoffs, and the same
+remainder is counted <span class="math inline">\(m\)</span> times.</p>
+<p>The errors per dimension are: <span class="math inline">\(F\)</span>
+from the size in Theorem A, <span class="math inline">\(20\log(1 +
+2b^2)\,U\)</span> from the index in Theorems A and B (counted twice, as
+it enters as <span class="math inline">\(2\delta\)</span>), and <span
+class="math inline">\(3F\)</span> from Theorem C.</p>
+<p>Keeping the factor <span class="math inline">\(d_T/n\)</span> from
+Problems <a href="#pr:family" data-reference-type="ref"
+data-reference="pr:family">38.2.1</a> and <a href="#pr:compare"
+data-reference-type="ref" data-reference="pr:compare">38.2.3</a> gives <span
+class="math inline">\(m\,\mathrm{rem}\le (44 + o(1))fa(\log
+b)^4\)</span> as <span class="math inline">\(b \to \infty\)</span>, so
+there is a logarithm to spare.</p>
+<h1 id="sec:end">§38.3. From the main inequality to the theorem</h1>
+<p>Let <span class="math inline">\(q_0 \ge 1\)</span> and <span
+class="math inline">\(d\)</span> be the parameters of the data, with
+<span class="math inline">\(18480 \mid q_0\)</span> and <span
+class="math inline">\(d\)</span> prime. By Problem <a
+href="20261126T030300--the-data__workbook.html#pr:class" data-reference-type="ref"
+data-reference="da-pr:class">36.1.1</a>, <span
+class="math inline">\(d \equiv q_0/2 - 1 \pmod{q_0}\)</span>, so <span
+class="math inline">\(d\)</span> is odd and prime to <span
+class="math inline">\(q_0\)</span>. Recall that, for <span
+class="math inline">\(q \ge 1\)</span> prime to <span
+class="math inline">\(d\)</span>, <span class="math inline">\(R_q(y) =
+\sum_{n \le y} \lambda(n)(1/n - 1/y) - \log y/\varphi(q) - c_q\)</span>,
+with <span class="math inline">\(\lambda(n) = \Lambda(n)(1 -
+(n/d))\)</span> for <span class="math inline">\(n \equiv 1 \pmod
+q\)</span> and <span class="math inline">\(\lambda(n) = 0\)</span>
+otherwise, where <span class="math inline">\((n/d)\)</span> is the
+Legendre symbol. Here <span class="math inline">\(c_q = c_{d,q}\)</span>
+is as in Chapter <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#chap" data-reference-type="ref"
+data-reference="zr-chap">1</a>, and Problem <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#pr:R-limit" data-reference-type="ref"
+data-reference="zr-pr:R-limit">1.4.7</a> gives <span
+class="math inline">\(R_q(y) \to 0\)</span> as <span
+class="math inline">\(y \to \infty\)</span>. When <span
+class="math inline">\(d\)</span> varies we write <span
+class="math inline">\(R_q^{(d)} = R_{d,q}\)</span>.</p>
+<p>For an admissible datum, <span class="math inline">\(m &gt;
+0\)</span> and <span class="math inline">\(b &gt; 1\)</span>. In
+Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>, Problem <a href="20261126T030300--the-data__workbook.html#pr:degree"
+data-reference-type="ref"
+data-reference="da-pr:degree">36.2.2</a> gives <span
+class="math inline">\(\#\Phi_a = T(s)\)</span>, so Definition <a
+href="20261126T030300--the-data__workbook.html#def:data" data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a> gives <span
+class="math inline">\(\#\Phi_a \le \#\Phi_b \log b\)</span>.</p>
+<div id="pr:Rx" class="problem" data-progress-ids="[&quot;20261126T031100--theorem-c-and-the-main-inequality__workbook.tex#pr:Rx&quot;]">
+<p><strong>Problem 38.3.1</strong>. For every admissible datum, the main
+inequality gives <span class="math display">\[R_{q_0}(x) \le
+\frac{\varphi(q_0)(\log b)^6}{m} + \lvert R_{q_0}(x_1)\rvert + \log
+b\,\lvert R_1(x_1)\rvert .\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T005000--galois-fourier-and-averaging__workbook.html">Chapter 3</a></div><!-- used-in:end -->
+</div>
+<p>Two further inputs. By the prime number theorem in progressions <span
+class="citation" data-cites="MV">[<a href="#ref-MV">MV</a>]</span>, for
+every prime <span class="math inline">\(d \ne 2\)</span>, every <span
+class="math inline">\(q \ge 1\)</span> prime to <span
+class="math inline">\(d\)</span> and every integer <span
+class="math inline">\(B \ge 0\)</span>, one has <span
+class="math inline">\(\lvert R_q(y) \rvert \le (\log y)^{-B}\)</span>
+for all large <span class="math inline">\(y\)</span> (Chapter <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#chap" data-reference-type="ref"
+data-reference="zr-chap">1</a>). By Theorem <a
+href="20261126T030300--the-data__workbook.html#thm:existence" data-reference-type="ref"
+data-reference="da-thm:existence">36.6.1</a>, for <span
+class="math inline">\(0 &lt; \varepsilon &lt; 1/100\)</span> and every
+large integer <span class="math inline">\(x\)</span> there are data with
+this <span class="math inline">\(x\)</span>, with <span
+class="math inline">\(\log b \le 2x^\varepsilon\)</span>, <span
+class="math inline">\(m \ge \sqrt x\)</span> and <span
+class="math inline">\(\log x_1 \ge x^{\varepsilon/12}\)</span> (the
+bounds of Problem <a href="20261126T030300--the-data__workbook.html#pr:eps-bounds" data-reference-type="ref"
+data-reference="da-pr:eps-bounds">36.6.4</a>).</p>
+<div id="pr:PNT" class="problem" data-progress-ids="[&quot;20261126T031100--theorem-c-and-the-main-inequality__workbook.tex#pr:PNT&quot;]">
+<p><strong>Problem 38.3.2</strong>. Let <span
+class="math inline">\(\varepsilon &gt; 0\)</span>. For all large
+integers <span class="math inline">\(x\)</span> and every real <span
+class="math inline">\(y\)</span> with <span class="math inline">\(\log y
+\ge x^{\varepsilon/12}\)</span>, one has <span
+class="math inline">\(\lvert R_{q_0}(y) \rvert \le x^{-2}\)</span> and
+<span class="math inline">\(\lvert R_1(y) \rvert \le
+x^{-2}\)</span>.</p>
+</div>
+<p>The three public versions of the Lean proof treat the cutoff <span
+class="math inline">\(x_1\)</span> differently. The readable edition,
+followed here, bounds both absolute values at the prescribed <span
+class="math inline">\(x_1\)</span> by the prime number theorem for a
+fixed modulus. The compact edition needs only an upper bound for the
+difference <span class="math inline">\(R_{q_0}(x_1) -
+(\#\Phi_a/\#\Phi_b) R_1(x_1)\)</span> of Problem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#pr:solve"
+data-reference-type="ref"
+data-reference="gf-pr:solve">3.3.1</a>, at one <span
+class="math inline">\(x_1\)</span>. For every large <span
+class="math inline">\(t\)</span> and every ratio in <span
+class="math inline">\([0,e^t]\)</span>, it finds <span
+class="math inline">\(\log x_1 \in [t,t^2]\)</span> at which the
+difference is at most <span class="math inline">\(e^{-t}\)</span>, and
+takes <span class="math inline">\(t = 10^6\log x\)</span>. The two
+transforms continue across <span class="math inline">\(\operatorname{Re}
+s = 1\)</span>, since Dirichlet <span
+class="math inline">\(L\)</span>-functions do not vanish there, and
+Cauchy’s estimate bounds their high moments. The level <span
+class="math inline">\(N\)</span> is then chosen after the cutoff; the
+construction of the data still uses primes in a progression. The code as
+first released <span class="citation"
+data-cites="Rel">[<a href="#ref-Rel">Rel</a>]</span> instead assumes a bound
+on arbitrarily late windows <span
+class="math inline">\([Y,Y^{1+\delta}]\)</span>, and compares high
+derivatives of the transform with the contributions of its poles.</p>
+<div id="pr:integers" class="problem" data-progress-ids="[&quot;20261126T031100--theorem-c-and-the-main-inequality__workbook.tex#pr:integers&quot;]">
+<p><strong>Problem 38.3.3</strong>. Let <span class="math inline">\(0 &lt;
+\varepsilon &lt; 1/100\)</span>. For all large integers <span
+class="math inline">\(x\)</span>, <span class="math inline">\(R_{q_0}(x)
+\le (64\varphi(q_0) + 3)\, x^{-1/2 + 6\varepsilon}\)</span>.</p>
+</div>
+<div id="pr:floor" class="problem" data-progress-ids="[&quot;20261126T031100--theorem-c-and-the-main-inequality__workbook.tex#pr:floor&quot;]">
+<p><strong>Problem 38.3.4</strong>. For <span class="math inline">\(q \ge
+1\)</span> prime to <span class="math inline">\(d\)</span> and real
+<span class="math inline">\(y \ge 2\)</span>, <span
+class="math inline">\(R_q(y) - R_q(\lfloor y \rfloor) \le 3/y\)</span>.
+For <span class="math inline">\(-1 \le u \le 0\)</span>, <span
+class="math inline">\(\lfloor y \rfloor^{u} \le 2y^{u}\)</span>.</p>
+</div>
+<div id="pr:reals" class="problem" data-progress-ids="[&quot;20261126T031100--theorem-c-and-the-main-inequality__workbook.tex#pr:reals&quot;]">
+<p><strong>Problem 38.3.5</strong>. Let <span
+class="math inline">\(\varepsilon &gt; 0\)</span>. For all large real
+<span class="math inline">\(y\)</span>, <span
+class="math inline">\(R_{q_0}(y) \le y^{-1/2 +
+\varepsilon}\)</span>.</p>
+</div>
+<div id="thm:one-sided" class="theorem">
+<p><strong>Theorem 38.3.1</strong> (One-sided bound). <em>Let <span
+class="math inline">\(q_0 \ge 1\)</span> be a multiple of <span
+class="math inline">\(18480\)</span>, let <span class="math inline">\(d
+\equiv q_0/2 - 1 \pmod{q_0}\)</span> be a prime, and let <span
+class="math inline">\(\varepsilon &gt; 0\)</span>. Then <span
+class="math inline">\(R_{q_0}(y) \le y^{-1/2 + \varepsilon}\)</span> for
+all large real <span class="math inline">\(y\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T005000--galois-fourier-and-averaging__workbook.html">Chapter 3</a></div><!-- used-in:end -->
+</div>
+<p>The criterion of Chapter <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#chap" data-reference-type="ref"
+data-reference="zr-chap">1</a> reads: let <span
+class="math inline">\(q_0 \ge 1\)</span> be a multiple of <span
+class="math inline">\(8\)</span>, let <span class="math inline">\(d_0
+\ge 0\)</span> be an integer with <span class="math inline">\(d_0 \equiv
+7 \pmod 8\)</span> and prime to <span
+class="math inline">\(q_0\)</span>, and let <span
+class="math inline">\(\beta &gt; \frac12\)</span> (in this section only,
+<span class="math inline">\(\beta\)</span> denotes this exponent); if
+for every prime <span class="math inline">\(d \equiv d_0
+\pmod{q_0}\)</span> one has <span class="math inline">\(R^{(d)}_{q_0}(y)
+\le y^{\beta - 1}\)</span> for all large <span
+class="math inline">\(y\)</span>, then <span
+class="math inline">\(L(\rho, \psi) \ne 0\)</span> for every character
+<span class="math inline">\(\psi\)</span> modulo <span
+class="math inline">\(q_0\)</span> and every <span
+class="math inline">\(\rho \ne 1\)</span> with <span
+class="math inline">\(\operatorname{Re}\rho &gt; \beta\)</span>.</p>
+<div id="pr:d0" class="problem" data-progress-ids="[&quot;20261126T031100--theorem-c-and-the-main-inequality__workbook.tex#pr:d0&quot;]">
+<p><strong>Problem 38.3.6</strong>. For <span class="math inline">\(q \ge
+1\)</span>, <span class="math inline">\(q_0 := 18480q\)</span> and <span
+class="math inline">\(d_0 := 9240q - 1\)</span>: <span
+class="math inline">\(d_0 \equiv 7 \pmod 8\)</span>, <span
+class="math inline">\(\gcd(d_0, q_0) = 1\)</span>, and <span
+class="math inline">\(d_0 = q_0/2 - 1\)</span>.</p>
+</div>
+<div id="pr:induced" class="problem" data-progress-ids="[&quot;20261126T031100--theorem-c-and-the-main-inequality__workbook.tex#pr:induced&quot;]">
+<p><strong>Problem 38.3.7</strong>. Let <span class="math inline">\(q \ge
+1\)</span>, let <span class="math inline">\(\chi\)</span> be a character
+modulo <span class="math inline">\(q\)</span>, and let <span
+class="math inline">\(\chi&#39;\)</span> be the character modulo <span
+class="math inline">\(q_0 = 18480q\)</span> that it induces. If <span
+class="math inline">\(\chi\)</span> is nonprincipal or <span
+class="math inline">\(s \ne 1\)</span>, then <span
+class="math inline">\(L(s, \chi&#39;) = L(s, \chi)\prod_{p \mid q_0}(1 -
+\chi(p)p^{-s})\)</span>, so <span class="math inline">\(L(s, \chi&#39;)
+\ne 0\)</span> implies <span class="math inline">\(L(s, \chi) \ne
+0\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:d0" data-reference-type="ref"
+data-reference="pr:d0">38.3.6</a> and <a href="#pr:induced"
+data-reference-type="ref" data-reference="pr:induced">38.3.7</a>, Theorem <a
+href="#thm:one-sided" data-reference-type="ref"
+data-reference="thm:one-sided">38.3.1</a>, the criterion and <span
+class="math inline">\(L(1, \chi) \ne 0\)</span> for <span
+class="math inline">\(\chi\)</span> nonprincipal prove the
+following.</p>
+<div id="thm:grh" class="theorem">
+<p><strong>Theorem 38.3.2</strong>. <em>Let <span class="math inline">\(q \ge
+1\)</span>, let <span class="math inline">\(\chi\)</span> be a Dirichlet
+character modulo <span class="math inline">\(q\)</span>, and let <span
+class="math inline">\(s \in {\mathbb{C}}\)</span> with <span
+class="math inline">\(\operatorname{Re} s &gt; \frac12\)</span>, where
+<span class="math inline">\(s \ne 1\)</span> if <span
+class="math inline">\(\chi\)</span> is principal. Then <span
+class="math inline">\(L(s, \chi) \ne 0\)</span>.</em></p>
+</div>
+<div id="pr:line" class="problem" data-progress-ids="[&quot;20261126T031100--theorem-c-and-the-main-inequality__workbook.tex#pr:line&quot;]">
+<p><strong>Problem 38.3.8</strong>. Every zero <span
+class="math inline">\(s\)</span> of a Dirichlet <span
+class="math inline">\(L\)</span>-function with <span
+class="math inline">\(0 &lt; \operatorname{Re} s &lt; 1\)</span> has
+<span class="math inline">\(\operatorname{Re} s = \frac12\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261127T100000--overview__workbook.html">Chapter Overview</a></div><!-- used-in:end -->
+</div>
+<p>Theorem <a href="#thm:grh" data-reference-type="ref"
+data-reference="thm:grh">38.3.2</a> is the half-plane form of the generalized
+Riemann hypothesis for Dirichlet <span
+class="math inline">\(L\)</span>-functions. Thus Theorems A, B and C
+give the main inequality, from which the one-sided bound and the
+criterion of Chapter <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#chap" data-reference-type="ref"
+data-reference="zr-chap">1</a> yield Theorem <a href="#thm:grh"
+data-reference-type="ref" data-reference="thm:grh">38.3.2</a>.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, Theorem <a
+href="#thm:main" data-reference-type="ref"
+data-reference="thm:main">38.2.1</a> is <code>New.star_inequality</code>, in
+<code>grh/src/New/Reduction/MainInequality.lean</code>; Problem <a
+href="#pr:Rx" data-reference-type="ref" data-reference="pr:Rx">38.3.1</a>,
+Theorem <a href="#thm:one-sided" data-reference-type="ref"
+data-reference="thm:one-sided">38.3.1</a> and Theorem <a href="#thm:grh"
+data-reference-type="ref" data-reference="thm:grh">38.3.2</a> are
+<code>New.Data.primeRemainder_le</code>,
+<code>New.eventually_primeRemainder_le_rpow</code> and
+<code>New.grh</code>, in
+<code>grh/src/New/Reduction/OneSidedBound.lean</code>. Hadamard’s
+inequality for the covolume is
+<code>New.TwistedLattice.covolumeLe_of_normSqAt_le</code>, and
+Problems <a href="#pr:family" data-reference-type="ref"
+data-reference="pr:family">38.2.1</a>–<a href="#pr:errors"
+data-reference-type="ref" data-reference="pr:errors">38.2.4</a> follow the
+proof of <code>New.star_inequality</code>. Problems <a href="#pr:PNT"
+data-reference-type="ref" data-reference="pr:PNT">38.3.2</a> and <a
+href="#pr:integers" data-reference-type="ref"
+data-reference="pr:integers">38.3.3</a> are
+<code>New.eventually_abs_primeRemainder_exp_le</code> and
+<code>New.eventually_primeRemainder_natCast_le</code>. For the first
+bound of Problem <a href="#pr:floor" data-reference-type="ref"
+data-reference="pr:floor">38.3.4</a> the proof uses
+<code>New.primeRemainder_sub_primeRemainder_floor_le</code>, which gives
+<span class="math inline">\(26/y\)</span> in place of <span
+class="math inline">\(3/y\)</span>, for every prime <span
+class="math inline">\(d\)</span> and every <span class="math inline">\(q
+\ge 1\)</span>; the sharper bound is an exercise here. The second bound
+is <code>New.natFloor_rpow_le_two_mul_rpow</code>. Problem <a
+href="#pr:line" data-reference-type="ref"
+data-reference="pr:line">38.3.8</a> is <code>New.zeros_on_line</code>, in
+<code>grh/src/New/Main.lean</code>, applied to <code>New.grh</code>. The
+fixed-modulus estimate used in Problem <a href="#pr:PNT"
+data-reference-type="ref" data-reference="pr:PNT">38.3.2</a> is
+<code>New.eventually_abs_primeRemainder_le</code> in
+<code>grh/src/New/Reduction/Zeros/PrimeNumberTheorem.lean</code>. In
+<code>grh-compact/src/</code>, <code>IsPolar.eventually_moment_le</code>
+gives <code>IsPolar.exists_window_sub_mul_le</code> in
+<code>New/Endgame/OneSidedCriterion.lean</code>, applied in
+<code>eventually_primeError_le_rpow</code> in
+<code>New/Main.lean</code>. The data and level are <code>Data</code> in
+<code>New/Data/AdmissibleData.lean</code> and <code>Data.N</code> in
+<code>New/Seesaw/IndexTypes.lean</code>. The construction
+<code>exists_data</code> in <code>New/Data/DataExist.lean</code> uses
+<code>exists_prime_modEq_one_log_mem</code> in
+<code>Lib/Analytic/Primes/AuxiliaryPrimes.lean</code>. In the release
+archive, <code>Deduction.lemmaL</code> and
+<code>Deduction.landau_window_key</code> are in <code>lemmaL.lean</code>
+and <code>landauWindow.lean</code> under
+<code>src/Development/AutomorphicArithmetic/DedekindLFunctions/LandauTheorems/</code>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="sectoy">§<a href="#sec:toy"
+data-reference-type="ref" data-reference="sec:toy">38.1</a></h2>
+<dl>
+<dt><a href="#pr:toy-columns" data-reference-type="ref"
+data-reference="pr:toy-columns">38.1.1</a></dt>
+<dd>
+<p>Subtract one column from the other; Hadamard’s inequality.</p>
+</dd>
+<dt><a href="#pr:toy-hadamard" data-reference-type="ref"
+data-reference="pr:toy-hadamard">38.1.2</a></dt>
+<dd>
+<p>Apply Hadamard’s inequality to the Gram matrix.</p>
+</dd>
+<dt><a href="#pr:toy-compare" data-reference-type="ref"
+data-reference="pr:toy-compare">38.1.3</a></dt>
+<dd>
+<p>Insert the upper bounds into the lower bound; then use <span
+class="math inline">\(n(H + F) \le d(H + F)\)</span>.</p>
+</dd>
+<dt><a href="#pr:toy-sign" data-reference-type="ref"
+data-reference="pr:toy-sign">38.1.4</a></dt>
+<dd>
+<p>Take <span class="math inline">\(d = 2\)</span>, <span
+class="math inline">\(n = 1\)</span>, <span class="math inline">\(F = I
+= \delta = 0\)</span> and <span class="math inline">\(H =
+-1\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secmain">§<a href="#sec:main"
+data-reference-type="ref" data-reference="sec:main">38.2</a></h2>
+<dl>
+<dt><a href="#pr:family" data-reference-type="ref"
+data-reference="pr:family">38.2.1</a></dt>
+<dd>
+<p>Images of a spanning set span the image.</p>
+</dd>
+<dt><a href="#pr:upper" data-reference-type="ref"
+data-reference="pr:upper">38.2.2</a></dt>
+<dd>
+<p>Hadamard’s inequality with <span class="math inline">\(u =
+h_{\mathrm{main}}- m\,\mathrm{rem}+ F\)</span>; (A2) and the bound for
+<span class="math inline">\(\# J\dim S_{\mathrm{ram}}\)</span>
+in (B).</p>
+</dd>
+<dt><a href="#pr:compare" data-reference-type="ref"
+data-reference="pr:compare">38.2.3</a></dt>
+<dd>
+<p>Compare the two bounds for <span class="math inline">\(c +
+2\delta\)</span>, using <span class="math inline">\(n \le d_T\)</span>
+and <span class="math inline">\(h_{\mathrm{main}}+ F \ge 0\)</span>
+(Problem <a href="20261126T030300--the-data__workbook.html#pr:main" data-reference-type="ref"
+data-reference="da-pr:main">36.4.6</a>).</p>
+</dd>
+<dt><a href="#pr:errors" data-reference-type="ref"
+data-reference="pr:errors">38.2.4</a></dt>
+<dd>
+<p><span class="math inline">\(\log(1 + 2b^2) \le 3\log b\)</span>, and
+<span class="math inline">\(\log b \ge 128\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secend">§<a href="#sec:end"
+data-reference-type="ref" data-reference="sec:end">38.3</a></h2>
+<dl>
+<dt><a href="#pr:Rx" data-reference-type="ref"
+data-reference="pr:Rx">38.3.1</a></dt>
+<dd>
+<p>Apply Problem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#pr:with-main" data-reference-type="ref"
+data-reference="gf-pr:with-main">3.3.4</a> to Theorem <a
+href="#thm:main" data-reference-type="ref"
+data-reference="thm:main">38.2.1</a>.</p>
+</dd>
+<dt><a href="#pr:PNT" data-reference-type="ref"
+data-reference="pr:PNT">38.3.2</a></dt>
+<dd>
+<p>Take <span class="math inline">\(B \ge 24/\varepsilon\)</span>; <span
+class="math inline">\(d\)</span> is odd and prime to <span
+class="math inline">\(q_0\)</span>.</p>
+</dd>
+<dt><a href="#pr:integers" data-reference-type="ref"
+data-reference="pr:integers">38.3.3</a></dt>
+<dd>
+<p>Use Problem <a href="#pr:Rx" data-reference-type="ref"
+data-reference="pr:Rx">38.3.1</a> for the data at <span
+class="math inline">\(x\)</span> and Problem <a href="#pr:PNT"
+data-reference-type="ref" data-reference="pr:PNT">38.3.2</a> with <span
+class="math inline">\(y = x_1\)</span>.</p>
+</dd>
+<dt><a href="#pr:floor" data-reference-type="ref"
+data-reference="pr:floor">38.3.4</a></dt>
+<dd>
+<p>The two sums differ by <span class="math inline">\((1/\lfloor y
+\rfloor - 1/y)\sum_{n \le y}\lambda(n)\)</span>; use <span
+class="math inline">\(0 \le \lambda \le 2\Lambda\)</span> and <span
+class="math inline">\(\psi(\lfloor y \rfloor) &lt; 1.04\lfloor y
+\rfloor\)</span> <span class="citation"
+data-cites="RS">[<a href="#ref-RS">RS</a>, Thm. 12]</span>.</p>
+</dd>
+<dt><a href="#pr:reals" data-reference-type="ref"
+data-reference="pr:reals">38.3.5</a></dt>
+<dd>
+<p>Problem <a href="#pr:integers" data-reference-type="ref"
+data-reference="pr:integers">38.3.3</a> with <span
+class="math inline">\(\min(\varepsilon/7, 1/200)\)</span> in place of
+<span class="math inline">\(\varepsilon\)</span>, and Problem <a
+href="#pr:floor" data-reference-type="ref"
+data-reference="pr:floor">38.3.4</a>.</p>
+</dd>
+<dt><a href="#pr:induced" data-reference-type="ref"
+data-reference="pr:induced">38.3.7</a></dt>
+<dd>
+<p>Compare Euler products for <span
+class="math inline">\(\operatorname{Re} s &gt; 1\)</span>, then continue
+analytically.</p>
+</dd>
+<dt><a href="#pr:line" data-reference-type="ref"
+data-reference="pr:line">38.3.8</a></dt>
+<dd>
+<p>Reduce to a primitive character; then the functional equation and
+Theorem <a href="#thm:grh" data-reference-type="ref"
+data-reference="thm:grh">38.3.2</a>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Dav"><span class="bib-label">[Dav]</span> H. Davenport, <em>Multiplicative Number Theory</em>, 3rd ed., Grad. Texts in Math. 74, Springer, 2000.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-HJ"><span class="bib-label">[HJ]</span> R. A. Horn and C. R. Johnson, <em>Matrix Analysis</em>, 2nd ed., Cambridge Univ. Press, 2013.</p>
+<p id="ref-MV"><span class="bib-label">[MV]</span> H. L. Montgomery and R. C. Vaughan, <em>Multiplicative Number Theory I. Classical Theory</em>, Cambridge Stud. Adv. Math. <strong>97</strong>, Cambridge University Press, 2007.</p>
+<p id="ref-Nas"><span class="bib-label">[Nas]</span> H. Nashida, <em>What does the main inequality <span class="math inline">\((\star)\)</span> assert?</em>, Zenodo, November 27, 2026, <a href="https://doi.org/10.5281/zenodo.24575852" class="uri">https://doi.org/10.5281/zenodo.24575852</a>.</p>
+<p id="ref-Rel"><span class="bib-label">[Rel]</span> <em>The Lean code as first released</em>, archive linked in footnote 1 of <a href="https://alpo.ge/remark.pdf" class="uri">https://alpo.ge/remark.pdf</a>.</p>
+<p id="ref-RS"><span class="bib-label">[RS]</span> J. B. Rosser and L. Schoenfeld, <em>Approximate formulas for some functions of prime numbers</em>, Illinois J. Math. <strong>6</strong> (1962), 64–94.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

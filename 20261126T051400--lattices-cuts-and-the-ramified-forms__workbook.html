@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-BBsxg7nh4Cle5O2ZhUmMipOF0daqgWBWvUdHbP2UdSU=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Lattices, cuts and the ramified forms</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","A":"\\mathbb{A}","Af":"\\mathbb{A}_f","Oc":"\\mathcal{O}","Pc":"\\mathcal{P}","Wc":"\\mathcal{W}","uu":"\\mathfrak{u}","au":"\\mathfrak{a}","st":"\\mathrm{st}","Cut":"\\mathrm{Cut}","mult":"\\mathrm{mult}","ssx":"\\mathrm{ss}_\\xi","ev":"\\mathrm{ev}","res":"\\mathrm{res}","Sr":"S_{\\mathrm{ram}}","Nm":"\\mathrm{Nm}\\,","Stab":"\\operatorname{Stab}","diag":"\\operatorname{diag}","pr":"\\operatorname{pr}","KYo":["K^{Y\\circ}_{#1}",1],"KY":["K^{Y}_{#1}(\\xi)",1],"tl":["\\texttt{#1}",1],"gls":["\\href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/#1.lean\\#L#2}{#3}",3],"glu":["\\gls{New/UpperBound/#1}{#2}{#3}",3]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="55">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 08:30:58
+      <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Lattices, cuts and the ramified forms</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:first" id="toc-sec:first">§55.1. The first lift</a></li>
+<li><a href="#sec:lattices" id="toc-sec:lattices">§55.2. Lattices of finite points</a></li>
+<li><a href="#sec:cuts" id="toc-sec:cuts">§55.3. Cuts and multiplicities</a></li>
+<li><a href="#sec:sum" id="toc-sec:sum">§55.4. Summing over the cuts</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secfirst" id="toc-secfirst">§55.1</a></li>
+<li><a href="#seclattices" id="toc-seclattices">§55.2</a></li>
+<li><a href="#seccuts" id="toc-seccuts">§55.3</a></li>
+<li><a href="#secsum" id="toc-secsum">§55.4</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Lattices and their duals <span class="citation"
+data-cites="OM">[<a href="#ref-OM">OM</a>]</span>. From Chapter <a
+href="20261126T051300--two-lifts-at-a-time__workbook.html#chap" data-reference-type="ref"
+data-reference="s2-chap">54</a>: stage functions <span
+class="math inline">\(\mathcal{W}_j\)</span> (Definition <a
+href="20261126T051300--two-lifts-at-a-time__workbook.html#def:stage" data-reference-type="ref"
+data-reference="s2-def:stage">54.2.1</a>), the evaluated pair
+data <span class="math inline">\(\phi^{\mathrm{ev}}_i(\xi,y)\)</span>
+(Definition <a href="20261126T051300--two-lifts-at-a-time__workbook.html#def:evaluated" data-reference-type="ref"
+data-reference="s2-def:evaluated">54.4.2</a>), the
+transposes <span class="math inline">\(\Theta^\top_{\xi,j}\)</span> with
+<span class="math inline">\(\int
+z\,\Theta_{\xi,j}f=\int(\Theta^\top_{\xi,j}z)f\)</span>, the ordered
+pair tensors <span class="math inline">\(\mathsf
+T_\varrho\otimes\dots\otimes\mathsf T_0\)</span>, Problem <a
+href="20261126T051300--two-lifts-at-a-time__workbook.html#pr:stage" data-reference-type="ref"
+data-reference="s2-pr:stage">54.2.3</a> and Theorem <a
+href="20261126T051300--two-lifts-at-a-time__workbook.html#thm:two-lifts" data-reference-type="ref"
+data-reference="s2-thm:two-lifts">54.4.1</a>; from
+Chapter <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="s1-chap">53</a>, the grades (Definition <a
+href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html#def:degree" data-reference-type="ref"
+data-reference="s1-def:degree">53.2.2</a>) and the string maps
+<span class="math inline">\(\mathrm{st}_j\colon Y_{j-1}\to Y_j\)</span>
+(Definition <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html#def:stringmap" data-reference-type="ref"
+data-reference="s1-def:stringmap">53.2.3</a>). From
+Section <a href="20261126T030400--the-seesaw-identity__workbook.html#sec:theorem" data-reference-type="ref"
+data-reference="ss-sec:theorem">52.4</a>: the lower and
+definite chains, their data, the definite lift <span
+class="math inline">\(\Theta^X_\xi(\cdot)\)</span> of a tensor, its Weil
+action <span class="math inline">\(\omega^X\)</span>, and the
+restriction <span class="math inline">\(\mathrm{res}\)</span>; from
+Chapter <a href="20261126T030400--the-seesaw-identity__workbook.html#chap" data-reference-type="ref"
+data-reference="ss-chap">52</a>, Problems <a href="20261126T030400--the-seesaw-identity__workbook.html#pr:cut"
+data-reference-type="ref" data-reference="ss-pr:cut">52.3.2</a>, <a
+href="20261126T030400--the-seesaw-identity__workbook.html#pr:mean-several" data-reference-type="ref"
+data-reference="ss-pr:mean-several">52.5.2</a> and <a
+href="20261126T030400--the-seesaw-identity__workbook.html#pr:fixed" data-reference-type="ref"
+data-reference="ss-pr:fixed">52.5.4</a>. <span
+class="math inline">\(K^{Y\circ}_{j}\)</span> is the lattice stabilizer
+on <span class="math inline">\(Y_j\)</span>, <span
+class="math inline">\(K^{Y}_{j}(\xi)\)</span> its subgroup reducing to
+<span class="math inline">\(1\)</span> at the places dividing <span
+class="math inline">\(\pi_M\)</span> and those of <span
+class="math inline">\(Q_\xi\)</span>. <span
+class="math inline">\(K_M\)</span> is the principal level of <span
+class="math inline">\(Y_0\)</span> (Sections <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:forms"
+data-reference-type="ref"
+data-reference="ob-sec:forms">37.4</a> and <a
+href="20261126T030400--the-seesaw-identity__workbook.html#sec:theorem" data-reference-type="ref"
+data-reference="ss-sec:theorem">52.4</a>); <span
+class="math inline">\(K^{Y}_{0}(\xi)\subseteq K_M\subseteq
+K^{Y\circ}_{0}\)</span>. From Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap"
+data-reference-type="ref" data-reference="bp-chap">39</a>: the
+Bessel subgroups (Section <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:subgroup"
+data-reference-type="ref"
+data-reference="bp-sec:subgroup">39.1</a>). The Poincaré
+map <span class="math inline">\(\mathcal{P}_{g,\lambda}\)</span> is that
+of Definition <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:poincare" data-reference-type="ref"
+data-reference="bp-def:poincare">39.2.1</a>. From Chapter <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>: the spaces, <span
+class="math inline">\(S\supseteq S_{\mathrm{ram}}\)</span>, <span
+class="math inline">\(T_w\)</span>, <span
+class="math inline">\(z_w\)</span>, tame characters <span
+class="math inline">\(\xi\)</span> with <span
+class="math inline">\(Q_\xi\)</span> and <span
+class="math inline">\(\mathrm{Nm}\,Q_\xi\)</span>. <span
+class="math inline">\(R_j\)</span> is the Bessel subgroup of <span
+class="math inline">\(Y_j\)</span>, <span
+class="math inline">\([R_j]:=R_j(F)\backslash R_j(\mathbb{A})\)</span>;
+for <span class="math inline">\(0\le j&lt;m\)</span> the string has
+length <span class="math inline">\(m-1-j\)</span>, and <span
+class="math inline">\(R_m=U(Y_m)\)</span>. <span
+class="math inline">\(\varrho=m/2-1\)</span>.</p>
+<p>The seesaw identity (Theorem <a href="20261126T030400--the-seesaw-identity__workbook.html#thm:seesaw"
+data-reference-type="ref"
+data-reference="ss-thm:seesaw">52.4.1</a>) is proved by pairing
+<span
+class="math inline">\(\Theta_{\xi,m}\cdots\Theta_{\xi,1}\mathcal{P}_{g,\lambda}\varphi\)</span>
+with a form on <span class="math inline">\(Y_m\)</span> and transferring
+the Bessel period up the lower chain. Chapter <a href="20261126T051300--two-lifts-at-a-time__workbook.html#chap"
+data-reference-type="ref" data-reference="s2-chap">54</a>
+computes what is left after the transfers as a function of the outer
+variables <span class="math inline">\((g_k,y_k)\in
+U(Y_k)(\mathbb{A})\)</span>. At stage zero the finite sum is over
+classes in <span class="math inline">\(K_M\)</span>. At the subsequent
+stages the Bessel periods must be integrated over the remaining outer
+variables. Which finite sets of level classes suffice to compute these
+integrals, and with which weights? These sets are the <em>cuts</em>
+(Definition <a href="#def:cut" data-reference-type="ref"
+data-reference="def:cut">55.3.2</a>). The answer uses the lattices of the
+finite points and, at one place, the hypothesis <span
+class="math inline">\(\varphi\in S_{\mathrm{ram}}\)</span>. The result
+is Theorem <a href="#thm:proportional" data-reference-type="ref"
+data-reference="thm:proportional">55.4.1</a>.</p>
+<h1 id="sec:first">§55.1. The first lift</h1>
+<div id="pr:base" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:base&quot;]">
+<p><strong>Problem 55.1.1</strong>. Let <span
+class="math inline">\(y\)</span> and <span
+class="math inline">\(z&#39;\)</span> be functions on <span
+class="math inline">\([U(Y_0)]\)</span>, fixed by right translation by
+<span class="math inline">\(K_M\)</span> and by <span
+class="math inline">\(K^{Y}_{0}(\xi)\)</span> respectively, with <span
+class="math inline">\(y z&#39;\)</span> integrable. Then <span
+class="math display">\[\int_{[U(Y_0)]} y(h)\sum_{c\in
+K_M/K^{Y}_{0}(\xi)}
+z&#39;(hc)\,dh=[K_M:K^{Y}_{0}(\xi)]\int_{[U(Y_0)]}y\,z&#39; .\]</span>
+Hence, for every tame <span class="math inline">\(\xi\)</span>, every
+<span class="math inline">\(\varphi\in S\)</span> and every form <span
+class="math inline">\(z\)</span> on <span
+class="math inline">\(Y_1\)</span> as in Problem <a href="20261126T051300--two-lifts-at-a-time__workbook.html#pr:stage"
+data-reference-type="ref"
+data-reference="s2-pr:stage">54.2.3</a>, <span
+class="math display">\[\int_{[U(Y_1)]}
+z\;\Theta_{\xi,1}\mathcal{P}_{g,\lambda}\varphi=[K^{Y\circ}_{0}:K_M]\sum_{c\in
+K_M/K^{Y}_{0}(\xi)}\ \int_{R_1(F)\backslash
+U(Y_1)(\mathbb{A})}\mathcal{W}_1\,z ,\]</span> where the summand uses
+<span class="math inline">\((g,\tilde c)\)</span> in outer slot <span
+class="math inline">\(0\)</span>, with <span
+class="math inline">\(\tilde c\in K_M\)</span> any representative of
+<span class="math inline">\(c\)</span>, and the identity in every other
+slot.</p>
+</div>
+<h1 id="sec:lattices">§55.2. Lattices of finite points</h1>
+<p>The lattice of the finite point enters the support condition. The
+classes used for the evaluated data are taken modulo <span
+class="math inline">\(K^{Y}_{j}(\xi)\)</span>. For <span
+class="math inline">\(0\le j\le m-1\)</span>, write <span
+class="math inline">\(X_j\)</span> for the definite summand of <span
+class="math inline">\(Y_j\)</span> and <span
+class="math inline">\(X_j^\perp\)</span> for the span of its string in
+the rational basis.</p>
+<div id="def:lattices" class="definition">
+<p><strong>Definition 55.2.1</strong>. Let <span
+class="math inline">\(B_j\)</span> be the finite component of the adelic
+frame of Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces" data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a>. The <em>lattice</em>
+<span class="math inline">\(\Lambda(x)\)</span> of <span
+class="math inline">\(x\in U(Y_j)(\mathbb{A}_f)\)</span> consists of the
+finite adelic vectors whose coordinates in the frame <span
+class="math inline">\(B_jx\)</span> are integral. In rational
+coordinates, <span
+class="math inline">\(\Lambda(x)=(B_jxB_j^{-1})\Lambda(1)\)</span>.
+Define the <em>string parts</em> of <span
+class="math inline">\(\Lambda(x)\)</span> by <span
+class="math inline">\(\Lambda^-(x):=\Lambda(x)\cap X_j^\perp\)</span>
+and <span
+class="math inline">\(\Lambda^+(x):=\operatorname{pr}\Lambda(x)\)</span>,
+where <span class="math inline">\(\operatorname{pr}\)</span> is the
+orthogonal projection to <span class="math inline">\(X_j^\perp\)</span>.
+We write <span class="math inline">\(\Lambda^\pm_j\)</span> when the
+stage must be named.</p>
+</div>
+<div id="def:graded" class="definition">
+<p><strong>Definition 55.2.2</strong>. A lattice is <em>graded</em> if it
+contains the part of each grade of each of its vectors.</p>
+</div>
+<p>As the frame of <span class="math inline">\(x\)</span> is
+orthonormal, <span class="math inline">\(\Lambda(x)\)</span> is
+self-dual. The standard lattice <span
+class="math inline">\(\Lambda(1)\)</span> is graded. At a place <span
+class="math inline">\(w\mid\pi_N\)</span>, the standard lattice of an
+odd string is spanned, in the last definite coordinate and the middle
+string coordinate, by vectors <span
+class="math inline">\((1,\epsilon/N)\)</span> and <span
+class="math inline">\((0,\epsilon&#39;)\)</span> with units <span
+class="math inline">\(\epsilon,\epsilon&#39;\)</span>. In the toy <span
+class="math inline">\(N=5\)</span>, the place has degree one, <span
+class="math inline">\(\epsilon=\epsilon&#39;=1\)</span>. In <span
+class="math inline">\(\mathbb{Q}_5^2=\mathbb{Q}_5e_1\oplus\mathbb{Q}_5e_2\)</span>
+call <span class="math inline">\(e_1\)</span> the definite coordinate
+and <span class="math inline">\(e_2\)</span> the string coordinate, and
+define <span class="math inline">\(\Lambda^\pm\)</span> as in
+Definition <a href="#def:lattices" data-reference-type="ref"
+data-reference="def:lattices">55.2.1</a> with <span
+class="math inline">\(X^\perp=\mathbb{Q}_5e_2\)</span>; no form is fixed
+here.</p>
+<div id="pr:toy-lattice" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:toy-lattice&quot;]">
+<p><strong>Problem 55.2.3</strong>. For <span
+class="math inline">\(\Lambda=B\mathbb{Z}_5^2\)</span>, <span
+class="math inline">\(B=\left(\begin{smallmatrix}1&amp;0\\1/5&amp;1\end{smallmatrix}\right)\)</span>:
+<span class="math inline">\(\Lambda^-=\mathbb{Z}_5e_2\)</span>, <span
+class="math inline">\(\Lambda^+=5^{-1}\mathbb{Z}_5e_2\)</span> and <span
+class="math inline">\(\#\Lambda^+/\Lambda^-=5\)</span>. For <span
+class="math inline">\(\Lambda=D&#39;\mathbb{Z}_5^2\)</span>, <span
+class="math inline">\(D&#39;=\operatorname{diag}(5,1/5)\)</span>: <span
+class="math inline">\(\Lambda^-=\Lambda^+=5^{-1}\mathbb{Z}_5e_2\)</span>.</p>
+</div>
+<div id="pr:dual" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:dual&quot;]">
+<p><strong>Problem 55.2.4</strong>. Over a DVR, or a product of two exchanged
+by the involution, let <span class="math inline">\(\Lambda\)</span> be a
+lattice, self-dual for a nondegenerate hermitian form, in a space <span
+class="math inline">\(W\perp W&#39;\)</span>. Then the dual of <span
+class="math inline">\(\Lambda\cap W\)</span> in <span
+class="math inline">\(W\)</span> is the projection of <span
+class="math inline">\(\Lambda\)</span> to <span
+class="math inline">\(W\)</span>. Hence, for <span
+class="math inline">\(x,x&#39;\in U(Y_j)(\mathbb{A}_f)\)</span> and a
+finite idele <span class="math inline">\(\varpi\)</span>, <span
+class="math inline">\(\varpi\Lambda^-(x)\subseteq\Lambda^-(x&#39;)\)</span>
+implies <span
+class="math inline">\(\bar\varpi\Lambda^+(x&#39;)\subseteq\Lambda^+(x)\)</span>.</p>
+</div>
+<div id="pr:fourier" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:fourier&quot;]">
+<p><strong>Problem 55.2.5</strong>. A function on <span
+class="math inline">\(\mathbb{Z}/25\)</span> invariant under translation
+by <span class="math inline">\(5\mathbb{Z}/25\)</span> has Fourier
+transform supported on <span
+class="math inline">\(5\mathbb{Z}/25\)</span>.</p>
+</div>
+<div id="def:u" class="definition">
+<p><strong>Definition 55.2.6</strong>. Let <span
+class="math inline">\(\varpi_\xi\)</span> and <span
+class="math inline">\(\varpi_M\)</span> be the generator ideles fixed in
+the proof for the ideals <span class="math inline">\((\pi_M)\prod_{w\in
+Q_\xi}w\)</span> and <span class="math inline">\((\pi_M)\)</span>; each
+has component <span class="math inline">\(1\)</span> away from the
+places dividing its ideal. Define the <em>idele of the modulus</em> by
+<span class="math inline">\(\mathfrak{u}:=\varpi_\xi/\varpi_M\)</span>.
+It is a uniformizer at every <span class="math inline">\(w\in
+Q_\xi\)</span> and a unit at every other finite place.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html">Chapter 56</a>: <a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html#def:neighbour">Definition 56.3.1</a></div><!-- used-in:end -->
+</div>
+<p>In this sheet <span
+class="math inline">\(\mathfrak{a}:=\varpi_W/\bar\varpi_M\)</span>,
+where <span class="math inline">\(\varpi_W\)</span> is the self-dual
+scale of the Weil data. Throughout this paragraph let <span
+class="math inline">\(0\le j\le m-2\)</span>. The finite datum of lift
+<span class="math inline">\(j+1\)</span> is fixed by the finite
+Heisenberg translations by <span class="math inline">\(\varpi_\xi
+v\)</span> for every integral vector <span
+class="math inline">\(v\)</span> in the finite space of maps from <span
+class="math inline">\(Y_j\)</span> to <span
+class="math inline">\(Y_{j+1}\)</span>. The proof shows: let <span
+class="math inline">\(\mathcal{W}_{j+1}(g_\infty,x&#39;)\ne0\)</span>,
+so that the integrand defining it (Definitions <a
+href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html#def:transfer" data-reference-type="ref"
+data-reference="s1-def:transfer">53.4.2</a> and <a
+href="20261126T051300--two-lifts-at-a-time__workbook.html#def:stage" data-reference-type="ref"
+data-reference="s2-def:stage">54.2.1</a>) is nonzero at some
+<span class="math inline">\(r\in R_j(\mathbb{A})\)</span>, and let <span
+class="math inline">\(x\)</span> be the finite part of <span
+class="math inline">\(r(g_j,y_j)\)</span>; if <span
+class="math inline">\(r_1\in R_j(\mathbb{A}_f)\)</span> and <span
+class="math inline">\(r_2\in R_{j+1}(\mathbb{A}_f)\)</span> make <span
+class="math inline">\(\Lambda(r_1x)\)</span> and <span
+class="math inline">\(\Lambda(r_2x&#39;)\)</span> graded, then <span
+class="math display">\[(\bar{\mathfrak{u}}/\mathfrak{a})\,\mathrm{st}_{j+1}\Lambda^+_j(r_1x)\subseteq\Lambda^-_{j+1}(r_2x&#39;)
+.\]</span> For the standard lattices it shows <span
+class="math inline">\(\mathrm{st}_{j+1}\Lambda^+_j(1)=\mathfrak{a}\,\Lambda^-_{j+1}(1)\)</span>.</p>
+<div id="pr:standard" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:standard&quot;]">
+<p><strong>Problem 55.2.7</strong>. Use the string matrices <span
+class="math inline">\(J_3=\left(\begin{smallmatrix}0&amp;0&amp;1\\0&amp;-5&amp;0\\1&amp;0&amp;0\end{smallmatrix}\right)\)</span>,
+<span
+class="math inline">\(J_2=\left(\begin{smallmatrix}0&amp;1\\1&amp;0\end{smallmatrix}\right)\)</span>
+and <span
+class="math inline">\(\mathrm{st}_1=\left(\begin{smallmatrix}1&amp;0&amp;0\\0&amp;-5&amp;0\end{smallmatrix}\right)\)</span>
+of Chapter <a href="20261126T051300--two-lifts-at-a-time__workbook.html#chap" data-reference-type="ref"
+data-reference="s2-chap">54</a> (<span
+class="math inline">\(N=5\)</span>, string constant <span
+class="math inline">\(1\)</span>), and let <span
+class="math inline">\(\hat{\mathcal{O}}\)</span> be the integral finite
+adeles of <span class="math inline">\(\mathbb{Q}(\mathrm{i})\)</span>.
+On the first string let <span
+class="math inline">\(L^-=\hat{\mathcal{O}}^3\)</span> and <span
+class="math inline">\(L^+=\operatorname{diag}(1,\tfrac15,1)\hat{\mathcal{O}}^3\)</span>,
+on the second <span
+class="math inline">\(L&#39;=\hat{\mathcal{O}}^2\)</span>. Then <span
+class="math inline">\(L^-\)</span> and <span
+class="math inline">\(L^+\)</span> are dual for <span
+class="math inline">\(J_3\)</span>, <span
+class="math inline">\(L&#39;\)</span> is self-dual for <span
+class="math inline">\(J_2\)</span>, and <span
+class="math inline">\(\mathrm{st}_1L^+=L&#39;\)</span>.</p>
+</div>
+<div id="def:bounds" class="definition">
+<p><strong>Definition 55.2.8</strong>. A point <span
+class="math inline">\(x\in U(Y_j)(\mathbb{A}_f)\)</span> has the
+<em>lattice bounds</em> at stage <span class="math inline">\(j\)</span>
+if <span
+class="math inline">\(\bar{\mathfrak{u}}^{\,j}\Lambda^-_j(1)\subseteq\Lambda^-_j(x)\)</span>
+and <span
+class="math inline">\(\mathfrak{u}^{\,j}\Lambda^-_j(x)\subseteq\Lambda^-_j(1)\)</span>.</p>
+</div>
+<div id="pr:lower" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:lower&quot;]">
+<p><strong>Problem 55.2.9</strong>. Let <span class="math inline">\(0\le
+j\le m-2\)</span>, and suppose <span
+class="math inline">\(\mathfrak{u}^{\,j}\Lambda^-_j(r_1x)\subseteq\Lambda^-_j(1)\)</span>
+and <span
+class="math inline">\((\bar{\mathfrak{u}}/\mathfrak{a})\,\mathrm{st}_{j+1}\Lambda^+_j(r_1x)\subseteq\Lambda^-_{j+1}(r_2x&#39;)\)</span>.
+Then <span
+class="math inline">\(\bar{\mathfrak{u}}^{\,j+1}\Lambda^-_{j+1}(1)\subseteq\Lambda^-_{j+1}(r_2x&#39;)\)</span>.</p>
+</div>
+<div id="def:split" class="definition">
+<p><strong>Definition 55.2.10</strong>. <span
+class="math inline">\(\Lambda(x)\)</span> is <em>split</em> at a finite
+place <span class="math inline">\(w\)</span> if <span
+class="math inline">\(1_w\Lambda^+(x)\subseteq\Lambda^-(x)\)</span>,
+where <span class="math inline">\(1_w\)</span> is the idempotent finite
+adele that is <span class="math inline">\(1\)</span> at <span
+class="math inline">\(w\)</span> and <span
+class="math inline">\(0\)</span> elsewhere.</p>
+</div>
+<p>The proof shows that <span
+class="math inline">\(\Lambda^+_j(1)=\Lambda^-_j(1)\)</span> for an even
+string, and that for an odd string the two differ only in the middle
+coordinate, by a simple pole at the places above <span
+class="math inline">\(N\)</span>: at each <span
+class="math inline">\(w\mid N\)</span> the quotient is the residue field
+<span class="math inline">\(k_w\)</span>, as in Problem <a
+href="#pr:toy-lattice" data-reference-type="ref"
+data-reference="pr:toy-lattice">55.2.3</a>.</p>
+<div id="pr:upper" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:upper&quot;]">
+<p><strong>Problem 55.2.11</strong>. Let <span class="math inline">\(1\le
+j\le m-1\)</span> and <span
+class="math inline">\(\bar{\mathfrak{u}}^{\,j}\Lambda^-_j(1)\subseteq\Lambda^-_j(x)\)</span>,
+but <span
+class="math inline">\(\mathfrak{u}^{\,j}\Lambda^-_j(x)\not\subseteq\Lambda^-_j(1)\)</span>.
+Then some <span class="math inline">\(\mathfrak{u}^{\,j}v\)</span>,
+<span class="math inline">\(v\in\Lambda^-_j(x)\)</span>, lies in <span
+class="math inline">\(\Lambda^+_j(1)\)</span> but not in <span
+class="math inline">\(\Lambda^-_j(1)\)</span>. Moreover, the string of
+<span class="math inline">\(Y_j\)</span> is odd, <span
+class="math inline">\(j\)</span> is even, and <span
+class="math inline">\(\Lambda(x)\)</span> is split at a place <span
+class="math inline">\(w\)</span> dividing <span
+class="math inline">\(\pi_N\)</span>.</p>
+</div>
+<div id="pr:scaling" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:scaling&quot;]">
+<p><strong>Problem 55.2.12</strong>. For <span
+class="math inline">\(z=\operatorname{diag}(2,1)\)</span>, the scaling
+of the definite coordinate by a generator of <span
+class="math inline">\((\mathbb{Z}/5)^\times\)</span>: <span
+class="math inline">\(B^{-1}zB=\left(\begin{smallmatrix}2&amp;0\\-1/5&amp;1\end{smallmatrix}\right)\)</span>
+is not integral, and <span
+class="math inline">\(D&#39;^{-1}zD&#39;=z\)</span>.</p>
+</div>
+<p>In general, if <span class="math inline">\(\Lambda(x)\)</span> is
+split at <span class="math inline">\(w\mid\pi_N\)</span>, then <span
+class="math inline">\(x^{-1}z_wx\)</span>, with <span
+class="math inline">\(z_w\)</span> acting as a scalar on <span
+class="math inline">\(X_j\)</span> and trivially on the string, is
+integral and <span class="math inline">\(1\)</span> off <span
+class="math inline">\(w,\bar w\)</span>. It belongs to <span
+class="math inline">\(K^{Y}_{j}(\xi)\)</span>.</p>
+<div id="pr:shift" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:shift&quot;]">
+<p><strong>Problem 55.2.13</strong>. For <span
+class="math inline">\(\mathrm{sh}\,e_k=e_{k+1\bmod 4}\)</span> on <span
+class="math inline">\(\mathbb{C}^4\)</span>: <span
+class="math inline">\((1-\mathrm{sh})e_0=(1,-1,0,0)\)</span> and <span
+class="math inline">\((1+\mathrm{sh}+\mathrm{sh}^2+\mathrm{sh}^3)(1-\mathrm{sh})e_0=0\)</span>.</p>
+</div>
+<div id="pr:kills" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:kills&quot;]">
+<p><strong>Problem 55.2.14</strong>. Suppose <span
+class="math inline">\(\omega^X(z_w,z_w)\)</span> acts trivially on the
+data of every lift <span class="math inline">\(X_k\to X_{k+1}\)</span>,
+and <span class="math inline">\(\omega^X(1,z_w)\)</span>, acting on one
+factor alone, fixes a tensor <span class="math inline">\(v\)</span> of
+data. Then the (partial) chain <span
+class="math inline">\(\Theta^X_\xi(v)\)</span> satisfies <span
+class="math inline">\(\Theta^X_\xi(v)\,T_w=\Theta^X_\xi(v)\)</span>, and
+it vanishes on <span
+class="math inline">\(S_{\mathrm{ram}}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a></div><!-- used-in:end -->
+</div>
+<p>For <span class="math inline">\(w\mid\pi_N\)</span>, the diagonal
+scaling <span class="math inline">\(\omega^X(z_w,z_w)\)</span> is the
+identity on every lift: the base changes of the characters of the lifts
+are unramified at the places above <span
+class="math inline">\(N\)</span>. For <span class="math inline">\(0\le
+i&lt;\varrho\)</span>, embed <span
+class="math inline">\(U(X_{2i+2})\)</span> into <span
+class="math inline">\(U(Y_{2i+2})\)</span> by the identity on the
+string. If <span class="math inline">\(y_{2i+2}^{-1}z_wy_{2i+2}\in
+K^{Y}_{2i+2}(\xi)\)</span>, then <span
+class="math inline">\(\omega^X(1,z_w)\)</span> on the second tensor
+factor fixes <span
+class="math inline">\(\phi^{\mathrm{ev}}_i(\xi,y)\)</span>.</p>
+<div id="pr:vanish" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:vanish&quot;]">
+<p><strong>Problem 55.2.15</strong>. Let <span
+class="math inline">\(\varphi\in S_{\mathrm{ram}}\)</span>, <span
+class="math inline">\(2\le j\le m-1\)</span> even, and <span
+class="math inline">\(\Lambda(x)\)</span> split at some <span
+class="math inline">\(w\mid\pi_N\)</span>. Then <span
+class="math inline">\(\mathcal{W}_j(\gamma(g_\infty,x))=0\)</span> for
+every <span class="math inline">\(\gamma\in R_j(\mathbb{A})\)</span> and
+every archimedean point <span
+class="math inline">\(g_\infty\)</span>.</p>
+</div>
+<div id="pr:bounds" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:bounds&quot;]">
+<p><strong>Problem 55.2.16</strong>. Let <span
+class="math inline">\(\varphi\in S_{\mathrm{ram}}\)</span>, <span
+class="math inline">\(y_0\in K_M\)</span>, <span
+class="math inline">\(1\le j\le m-1\)</span>, and <span
+class="math inline">\(\mathcal{W}_j(g_\infty,x)\ne0\)</span>. Then <span
+class="math inline">\(r_2x\)</span> has the lattice bounds at stage
+<span class="math inline">\(j\)</span> for every <span
+class="math inline">\(r_2\in R_j(\mathbb{A}_f)\)</span> with <span
+class="math inline">\(\Lambda(r_2x)\)</span> graded.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a></div><!-- used-in:end -->
+</div>
+<p>This is where the hypothesis <span class="math inline">\(\varphi\in
+S_{\mathrm{ram}}\)</span> enters. We use two facts for the field <span
+class="math inline">\(E\)</span> of the data, which contains a primitive
+<span class="math inline">\(5040\)</span>th root of unity. (i) Every
+finite point <span class="math inline">\(x\)</span> has a translate
+<span class="math inline">\(ux\)</span> with <span
+class="math inline">\(u\)</span> in the unipotent subgroup of <span
+class="math inline">\(R_j(\mathbb{A}_f)\)</span> and <span
+class="math inline">\(\Lambda(ux)\)</span> graded. This is the lattice
+form of the Iwasawa decomposition <span class="citation"
+data-cites="Ti">[<a href="#ref-Ti">Ti</a>]</span>. (ii) There is a finite
+set <span class="math inline">\(\mathcal Z_j\)</span> of finite points
+equal to <span class="math inline">\(1\)</span> outside <span
+class="math inline">\(Q_\xi\cup\bar Q_\xi\)</span> such that, if the
+<span class="math inline">\(R_j(\mathbb{A}_f)\)</span>-orbit of <span
+class="math inline">\(x\)</span> contains a graded point satisfying the
+bounds, then <span class="math inline">\(rx\in \mathcal
+Z_jK^{Y\circ}_{j}\)</span> for some <span class="math inline">\(r\in
+R_j(\mathbb{A}_f)\)</span>. Fact (ii) is read from the proof; it is not
+proved here. Two classical lattice facts used there are that only
+finitely many lattices lie between two fixed full lattices, and that a
+lattice is determined by its local components <span class="citation"
+data-cites="OM">[<a href="#ref-OM">OM</a>]</span>.</p>
+<h1 id="sec:cuts">§55.3. Cuts and multiplicities</h1>
+<p>In this sheet let a group <span class="math inline">\(G_0\)</span>
+act on a set, let <span class="math inline">\(G_1\subseteq G_0\)</span>
+be a subgroup and <span class="math inline">\(\mathrm{Cut}\)</span> a
+finite <span class="math inline">\(G_1\)</span>-stable subset, and put
+<span class="math inline">\(\mathrm{mult}(t):=\#\{rG_1\in G_0/G_1 :
+r^{-1}t\in\mathrm{Cut}\}\)</span>, with the value <span
+class="math inline">\(0\)</span> for an infinite count. For a finite
+group acting on a finite set, if the cut meets every orbit, this is the
+setting of Problem <a href="20261126T030400--the-seesaw-identity__workbook.html#pr:cut" data-reference-type="ref"
+data-reference="ss-pr:cut">52.3.2</a> with translates counted
+modulo <span class="math inline">\(G_1\)</span>.</p>
+<div id="pr:toy-cut" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:toy-cut&quot;]">
+<p><strong>Problem 55.3.1</strong>. Let <span
+class="math inline">\(G_0=H=S_3\)</span> act on <span
+class="math inline">\(H/H_0\)</span>, <span
+class="math inline">\(G_1=H_0:=\langle(1\,2)\rangle\)</span>, <span
+class="math inline">\(x=(1\,2\,3)\)</span>, <span
+class="math inline">\(\mathrm{Cut}:=\{h xH_0:h\in H_0\}\subset
+H/H_0\)</span>. Then <span
+class="math inline">\(\#\mathrm{Cut}=2\)</span>, the multiplicities of
+the three cosets are <span class="math inline">\(2,2,2\)</span>, and for
+<span class="math inline">\(f_1(hH_0):=h(3)\)</span>, <span
+class="math display">\[\sum_{t\in H/H_0}f_1(t)=6=\sum_{rH_0\in H/H_0}\
+\sum_{c\in\mathrm{Cut}}\frac{f_1(rc)}{\mathrm{mult}(rc)} .\]</span></p>
+</div>
+<div id="def:cut" class="definition">
+<p><strong>Definition 55.3.2</strong>. <span
+class="math inline">\(\mathrm{Cut}_0(\xi)\)</span> is the set of classes
+modulo <span class="math inline">\(K^{Y}_{0}(\xi)\)</span> of the
+elements of <span class="math inline">\(K_M\)</span>, with <span
+class="math inline">\(\mathrm{mult}_0:=1\)</span>. For <span
+class="math inline">\(1\le j\le m-1\)</span>, let <span
+class="math inline">\(G_0=R_j(\mathbb{A}_f)\)</span> and <span
+class="math inline">\(G_1=R_j(\mathbb{A}_f)\cap K^{Y\circ}_{j}\)</span>
+act on <span
+class="math inline">\(U(Y_j)(\mathbb{A}_f)/K^{Y}_{j}(\xi)\)</span>;
+write <span class="math inline">\(\mathrm{mult}_j\)</span> for the
+multiplicity above. A <em>cut</em> at stage <span
+class="math inline">\(j\)</span> is a finite set <span
+class="math inline">\(\mathrm{Cut}_j(\xi)\)</span> of classes such that:
+(a) it is <span class="math inline">\(G_1\)</span>-stable; (b) its
+points are integral at every place not above a prime dividing <span
+class="math inline">\(\mathrm{Nm}\,Q_\xi\)</span>; (c) on it <span
+class="math inline">\(\mathrm{mult}_j\)</span> divides a power of <span
+class="math inline">\(\mathrm{Nm}\,Q_\xi\)</span>; (d) <span
+class="math inline">\(\mathrm{mult}_j(x)\ne0\)</span> whenever the <span
+class="math inline">\(G_0\)</span>-orbit of <span
+class="math inline">\(x\)</span> contains a point with graded lattice
+and the lattice bounds at stage <span class="math inline">\(j\)</span>.
+The proof fixes one cut at each stage.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a>; <a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html">Chapter 56</a></div><!-- used-in:end -->
+</div>
+<p>For <span class="math inline">\(1\le j&lt;m\)</span> the proof shows
+that a cut exists by choosing, inside the image of <span
+class="math inline">\(\mathcal Z_jK^{Y\circ}_{j}\)</span> modulo <span
+class="math inline">\(K^{Y}_{j}(\xi)\)</span>, one class in each <span
+class="math inline">\(G_0\)</span>-orbit meeting that image, and taking
+the <span class="math inline">\(G_1\)</span>-saturation. For <span
+class="math inline">\(x\)</span> integral off <span
+class="math inline">\(Q_\xi\cup\bar Q_\xi\)</span>, such as the points
+of <span class="math inline">\(\mathcal Z_jK^{Y\circ}_{j}\)</span>, it
+shows that there is <span class="math inline">\(n\)</span> with <span
+class="math inline">\((xux^{-1})^{(\mathrm{Nm}\,Q_\xi)^n}\in
+K^{Y\circ}_{j}\)</span> for all <span class="math inline">\(u\in
+K^{Y}_{j}(\xi)\)</span>.</p>
+<div id="pr:stab" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:stab&quot;]">
+<p><strong>Problem 55.3.3</strong>. Let <span
+class="math inline">\(C\)</span> meet each <span
+class="math inline">\(G_0\)</span>-orbit in at most one point, and <span
+class="math inline">\(\mathrm{Cut}=G_1\cdot C\)</span>. For <span
+class="math inline">\(c\in C\)</span>, <span
+class="math inline">\(\mathrm{mult}(c)=[\operatorname{Stab}_c:\operatorname{Stab}_c\cap
+G_1]\)</span> with <span
+class="math inline">\(\operatorname{Stab}_c:=\operatorname{Stab}_{G_0}(c)\)</span>
+(index <span class="math inline">\(0\)</span> if infinite); and <span
+class="math inline">\(\mathrm{mult}(st)=\mathrm{mult}(t)\)</span> for
+<span class="math inline">\(s\in G_0\)</span>.</p>
+</div>
+<div id="pr:mult-dvd" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:mult-dvd&quot;]">
+<p><strong>Problem 55.3.4</strong>. (a) Let <span
+class="math inline">\(q,n\)</span> be nonnegative integers. A finite
+group in which every element has order dividing <span
+class="math inline">\(q^n\)</span> has order dividing a power of <span
+class="math inline">\(q\)</span>. (b) For <span
+class="math inline">\(u\equiv1\pmod p\)</span> in <span
+class="math inline">\(\mathrm{GL}_2(\mathbb{Z}_p)\)</span> and <span
+class="math inline">\(x=\operatorname{diag}(p^{-2},1)\)</span>, <span
+class="math inline">\(xu^px^{-1}\)</span> is integral; for <span
+class="math inline">\(p=3\)</span>, <span
+class="math inline">\(u=\left(\begin{smallmatrix}4&amp;3\\3&amp;1\end{smallmatrix}\right)\)</span>,
+<span class="math inline">\(xux^{-1}\)</span> is not. (c) For the <span
+class="math inline">\(G_1\)</span>-saturation of the classes chosen in
+the construction above, every <span class="math inline">\(c\)</span> has
+<span
+class="math inline">\(\mathrm{mult}_j(c)\mid(\mathrm{Nm}\,Q_\xi)^n\)</span>
+for some <span class="math inline">\(n\ge0\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a>; <a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html">Chapter 56</a></div><!-- used-in:end -->
+</div>
+<div id="pr:cut-count" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:cut-count&quot;]">
+<p><strong>Problem 55.3.5</strong>. For <span class="math inline">\(0\le
+j&lt;m\)</span>, if <span
+class="math inline">\(Q_\xi=\varnothing\)</span>, every finite point
+representing a class of <span
+class="math inline">\(\mathrm{Cut}_j(\xi)\)</span> lies in <span
+class="math inline">\(K^{Y\circ}_{j}\)</span>, and <span
+class="math inline">\(\#\mathrm{Cut}_j(\xi)\le\#\mathrm{GL}_{r+jt}(\mathcal{O}_E/\pi_M)\le
+M^{f(r+jt)^2}\le M^{fn_m^2}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html">Chapter 56</a></div><!-- used-in:end -->
+</div>
+<h1 id="sec:sum">§55.4. Summing over the cuts</h1>
+<p>Fix <span class="math inline">\(1\le j\le m-1\)</span>, and let <span
+class="math inline">\(G_0,G_1\)</span> be as in Definition <a
+href="#def:cut" data-reference-type="ref"
+data-reference="def:cut">55.3.2</a>. A level <span
+class="math inline">\(K&#39;\)</span> here means a subgroup of <span
+class="math inline">\(K^{Y\circ}_{j}\)</span> containing a neighbourhood
+of the identity.</p>
+<div id="pr:remove" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:remove&quot;]">
+<p><strong>Problem 55.4.1</strong>. Let <span
+class="math inline">\(F_\infty\)</span> be a function on <span
+class="math inline">\(U(Y_j)_\infty\)</span>. There is <span
+class="math inline">\(k(F_\infty)\in\mathbb{C}\)</span> with the
+following property, for every level <span
+class="math inline">\(K&#39;\)</span>, every finite <span
+class="math inline">\(G_1\)</span>-stable set <span
+class="math inline">\(\mathrm{Cut}\)</span> of classes modulo <span
+class="math inline">\(K&#39;\)</span>, every complex function <span
+class="math inline">\(h_1\)</span> on <span
+class="math inline">\(U(Y_j)(\mathbb{A}_f)/K&#39;\)</span> and every
+continuous left <span class="math inline">\(R_j(F)\)</span>-invariant
+function <span class="math inline">\(f_1\)</span> on <span
+class="math inline">\(U(Y_j)(\mathbb{A})\)</span>, integrable on <span
+class="math inline">\(R_j(F)\backslash U(Y_j)(\mathbb{A})\)</span>, with
+<span class="math inline">\(\mathrm{mult}(x_f)\ne0\)</span> wherever
+<span class="math inline">\(f_1(x)\ne0\)</span>. If <span
+class="math inline">\(\int_{[R_j]}f_1(rx)\,dr=[K^{Y\circ}_{j}:K&#39;]\,F_\infty(x_\infty)\,h_1(x_fK&#39;)\)</span>
+whenever <span class="math inline">\(x_fK&#39;\in\mathrm{Cut}\)</span>,
+then <span class="math display">\[\int_{R_j(F)\backslash
+U(Y_j)(\mathbb{A})}f_1=k(F_\infty)\sum_{c\in\mathrm{Cut}}\frac{h_1(c)}{\mathrm{mult}(c)}
+.\]</span></p>
+</div>
+<p>Problem <a href="#pr:remove" data-reference-type="ref"
+data-reference="pr:remove">55.4.1</a> uses quotient integration in stages
+<span class="citation" data-cites="Bou">[<a href="#ref-Bou">Bou</a>, Ch. VII,
+§2]</span>; <em>Status</em>: classical. Problems <a href="#pr:base"
+data-reference-type="ref" data-reference="pr:base">55.1.1</a> and <a
+href="#pr:remove" data-reference-type="ref"
+data-reference="pr:remove">55.4.1</a>, with Problem <a href="20261126T051300--two-lifts-at-a-time__workbook.html#pr:stage"
+data-reference-type="ref" data-reference="s2-pr:stage">54.2.3</a>
+and Problem <a href="#pr:bounds" data-reference-type="ref"
+data-reference="pr:bounds">55.2.16</a> for the support, give the following by
+induction. Fix <span class="math inline">\(g,\lambda\)</span>, a stage
+<span class="math inline">\(0\le j\le m-1\)</span>, and the grading of
+<span class="math inline">\(Y_{j+1}\)</span> used in the stage function.
+For every complex function <span class="math inline">\(F_\infty\)</span>
+of the tuple of archimedean outer points there is <span
+class="math inline">\(c_j(F_\infty)\in\mathbb{C}\)</span> with the
+following property. Let <span class="math inline">\(\xi\)</span> be
+tame, <span class="math inline">\(\varphi\in S_{\mathrm{ram}}\)</span>,
+<span class="math inline">\(z\)</span> a form on <span
+class="math inline">\(Y_{j+1}\)</span> as in Problem <a
+href="20261126T051300--two-lifts-at-a-time__workbook.html#pr:stage" data-reference-type="ref"
+data-reference="s2-pr:stage">54.2.3</a>, and <span
+class="math inline">\(S_1\)</span> a complex function of the tuple of
+finite level classes. Suppose that for every tuple <span
+class="math inline">\((g_k,y_k)_k\)</span> with <span
+class="math inline">\(y_0\in K_M\)</span> and <span
+class="math inline">\(y_m=1\)</span>, the integral of <span
+class="math inline">\(\mathcal{W}_{j+1}z\)</span> over <span
+class="math inline">\(R_{j+1}(F)\backslash
+U(Y_{j+1})(\mathbb{A})\)</span> equals <span
+class="math inline">\(F_\infty((g_k)_k)\,S_1((y_kK^{Y}_{k}(\xi))_k)\)</span>.
+Then the integral of <span
+class="math inline">\(z\,\Theta_{\xi,j+1}\cdots\Theta_{\xi,1}\mathcal{P}_{g,\lambda}\varphi\)</span>
+over <span class="math inline">\([U(Y_{j+1})]\)</span> equals <span
+class="math display">\[c_j(F_\infty)\sum_{c_0\in\mathrm{Cut}_0(\xi),\dots,c_j\in\mathrm{Cut}_j(\xi)}\frac{S_1(c_0,\dots,c_j,1,1,\dots)}{\prod_{k=0}^j\mathrm{mult}_k(c_k)}
+,\]</span> where each <span class="math inline">\(1\)</span> denotes the
+identity class at its stage.</p>
+<p>For interlacing highest weights, restriction from <span
+class="math inline">\(U(n+1)\)</span> to <span
+class="math inline">\(U(n)\)</span> has multiplicity one <span
+class="citation" data-cites="GW">[<a href="#ref-GW">GW</a>,
+Thm. 8.1.1]</span>; <em>Status</em>: classical. For the weights and
+integral Weyl modules of <span class="math inline">\(X_m,Y_m\)</span>,
+the proof fixes an integer matrix whose complex span is the space of
+intertwiners for the block embedding.</p>
+<div id="pr:top" class="problem" data-progress-ids="[&quot;20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.tex#pr:top&quot;]">
+<p><strong>Problem 55.4.2</strong>. Let <span
+class="math inline">\(l\)</span> be a linear form on the value space of
+the algebraic forms on <span class="math inline">\(X_m\)</span> of the
+prescribed weight. There is <span
+class="math inline">\(c(l)\in\mathbb{C}\)</span> with the following
+property, for every such form <span class="math inline">\(\psi\)</span>
+and every <span class="math inline">\(h&#39;\)</span> with <span
+class="math inline">\(h&#39;(g_\infty,x)=\langle
+v^+,\rho(g_\infty^{-1})P&#39;(x)\rangle\)</span> for an algebraic form
+<span class="math inline">\(P&#39;\)</span> on <span
+class="math inline">\(Y_m\)</span> of the weight of the lower chain.
+Identify <span class="math inline">\(Y_m\)</span> with the complement of
+the last basis vector of <span class="math inline">\(X_m\)</span>. If
+<span class="math inline">\(F&#39;(k)\)</span> is the coefficient of
+<span class="math inline">\(\psi\)</span> at <span
+class="math inline">\(l\)</span>, evaluated at <span
+class="math inline">\(\operatorname{diag}(k,1)\)</span>, for every <span
+class="math inline">\(k\in U(Y_m)(\mathbb{A})\)</span>, then <span
+class="math display">\[\int_{[U(Y_m)]}F&#39;\,\overline{h&#39;}=c(l)\int_{[U(Y_m)]}(\mathrm{res}\psi)\,\overline{h&#39;}
+,\]</span> where <span class="math inline">\(v^+\)</span> is the
+highest-weight vector, <span class="math inline">\(\rho\)</span> the
+action on the value space, the product is conjugate-linear in the first
+variable, and on the right <span
+class="math inline">\(\mathrm{res}\psi\)</span> is read in the same
+way.</p>
+</div>
+<div id="def:ss" class="definition">
+<p><strong>Definition 55.4.3</strong>. Define the <em>seesaw tensor</em> of
+a tame character <span class="math inline">\(\xi\)</span> by <span
+class="math display">\[\mathrm{ss}_\xi:=\sum_{c_0\in\mathrm{Cut}_0(\xi),\dots,c_{m-1}\in\mathrm{Cut}_{m-1}(\xi)}\Bigl(\prod_{j=0}^{m-1}\frac1{\mathrm{mult}_j(c_j)}\Bigr)\,\bigl(\phi^{\mathrm{ev}}_\varrho(\xi,c)\otimes\dots\otimes\phi^{\mathrm{ev}}_0(\xi,c)\bigr),\]</span>
+with <span class="math inline">\(c_m:=1\)</span>, in the order of
+Chapter <a href="20261126T051300--two-lifts-at-a-time__workbook.html#chap" data-reference-type="ref"
+data-reference="s2-chap">54</a>; the evaluated data do not depend
+on the representatives of the classes.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a>; <a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html">Chapter 56</a></div><!-- used-in:end -->
+</div>
+<p>In the proof <span
+class="math inline">\(\Theta^\top_{\xi,j+1}\)</span> preserves the forms
+of Problem <a href="20261126T051300--two-lifts-at-a-time__workbook.html#pr:stage" data-reference-type="ref"
+data-reference="s2-pr:stage">54.2.3</a>, and both sides below
+have the shape of <span class="math inline">\(h&#39;\)</span> in
+Problem <a href="#pr:top" data-reference-type="ref"
+data-reference="pr:top">55.4.2</a>, where pairing with such <span
+class="math inline">\(h&#39;\)</span> is nondegenerate. So Problems <a
+href="#pr:base" data-reference-type="ref"
+data-reference="pr:base">55.1.1</a>, <a href="#pr:bounds"
+data-reference-type="ref" data-reference="pr:bounds">55.2.16</a>, <a
+href="#pr:remove" data-reference-type="ref"
+data-reference="pr:remove">55.4.1</a> and <a href="#pr:top"
+data-reference-type="ref" data-reference="pr:top">55.4.2</a>, with
+Theorem <a href="20261126T051300--two-lifts-at-a-time__workbook.html#thm:two-lifts" data-reference-type="ref"
+data-reference="s2-thm:two-lifts">54.4.1</a> and the facts
+quoted, prove the following.</p>
+<div id="thm:proportional" class="theorem">
+<p><strong>Theorem 55.4.1</strong>. <em>Let <span
+class="math inline">\(\lambda\)</span> be a linear form on the values of
+source forms and <span class="math inline">\(g\)</span> a point of the
+archimedean unitary group of <span class="math inline">\(Y_0\)</span>.
+There is <span class="math inline">\(c&#39;\in\mathbb{C}\)</span>,
+possibly zero, such that for every tame character <span
+class="math inline">\(\xi\)</span> and every <span
+class="math inline">\(\varphi\in S_{\mathrm{ram}}\)</span> <span
+class="math display">\[\Theta_{\xi,m}\cdots\Theta_{\xi,1}\mathcal{P}_{g,\lambda}\varphi=c&#39;\,\mathrm{res}\,\Theta^X_\xi(\mathrm{ss}_\xi)\varphi
+,\]</span> an equality of automorphic forms on <span
+class="math inline">\(Y_m\)</span>, with <span
+class="math inline">\(\mathrm{res}\)</span> read in automorphic
+forms.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a>; <a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html">Chapter 56</a></div><!-- used-in:end -->
+</div>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. Theorem <a
+href="#thm:proportional" data-reference-type="ref"
+data-reference="thm:proportional">55.4.1</a> is
+<code>exists_lowerChainUpTo_poincareAt_eq</code> in the Lean proof <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>; the
+string parts <span class="math inline">\(\Lambda^-\)</span>, <span
+class="math inline">\(\Lambda^+\)</span> are <code>latticeMinus</code>,
+<code>latticePlus</code>; <span
+class="math inline">\(\mathfrak{u}\)</span> is <code>twistIdele</code>;
+the lattice bounds are <code>HasLatticeBounds</code>; a split lattice is
+<code>LatticeSplitsAt</code>; the cuts and multiplicities are
+<code>cutPoints</code> and <code>cutMultiplicity</code>; and <span
+class="math inline">\(\mathrm{ss}_\xi\)</span> is
+<code>seesawDatum</code>. Problem <a href="#pr:bounds"
+data-reference-type="ref" data-reference="pr:bounds">55.2.16</a> is
+<code>hasLatticeBounds_of_unfoldStage_ne_zero</code>. Other assertions
+attributed to the proof: <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean#L1141">the
+one-lift inclusion</a> (<a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/Frequency.lean#L307">in
+general</a>), <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean#L1044">the
+standard image</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/StandardLines.lean#L301">the
+string parts of the standard lattice</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/LatticeBounds.lean#L195">fact (ii)</a>,
+<a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/IntegralAsCosetSum.lean#L156">the
+construction of a cut</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/Cut.lean#L44">the
+common conjugate power</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Objects/Columns.lean#L747">the
+integer branching matrix</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean#L173">the
+transpose on conjugate-type forms</a> and <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean#L569">the
+comparison by pairing</a>. The finite datum has the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean#L977">translation
+invariance</a> used in the one-lift inclusion. At the primes of <span
+class="math inline">\(\pi_N\)</span> the proof gives the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/Sandwich.lean#L112">conjugation
+into the lattice stabilizer</a>, its <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean#L1090">membership
+in the level</a>, the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Objects/CharactersAtLevel.lean#L43">unramified
+character</a>, the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Objects/CharactersAtLevel.lean#L73">diagonal
+action</a> and the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean#L910">invariance
+of the evaluated pair</a>. For the integration steps see the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean#L358">first
+lift</a>, the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/IntegralAsCosetSum.lean#L367">integral
+over a cut</a>, the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean#L413">induction
+over the outer variables</a> and the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean#L90">top
+pairing</a>. The <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean#L934">independence
+of representatives</a> applies to each evaluated pair.</p>
+</div>
+<p>This proves Theorem <a href="#thm:proportional"
+data-reference-type="ref" data-reference="thm:proportional">55.4.1</a> from
+the statements taken as given: the one-lift inclusion and the image of
+the standard lattice, the string parts of the standard lattice, facts
+(i) and (ii), the existence of a cut, quotient integration in stages,
+the branching rule with its integer matrix, and the statements marked
+“in the proof”. Theorem <a href="#thm:proportional"
+data-reference-type="ref" data-reference="thm:proportional">55.4.1</a> allows
+<span class="math inline">\(c&#39;=0\)</span>. The next chapter
+expresses <span class="math inline">\(\mathrm{ss}_\xi\)</span> as a
+finite linear combination of glued tensors of translated vacua. The next
+step needs Definitions <a href="#def:cut" data-reference-type="ref"
+data-reference="def:cut">55.3.2</a> and <a href="#def:ss"
+data-reference-type="ref" data-reference="def:ss">55.4.3</a> and Problems <a
+href="#pr:mult-dvd" data-reference-type="ref"
+data-reference="pr:mult-dvd">55.3.4</a> and <a href="#pr:cut-count"
+data-reference-type="ref" data-reference="pr:cut-count">55.3.5</a>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secfirst">§<a href="#sec:first"
+data-reference-type="ref" data-reference="sec:first">55.1</a></h2>
+<dl>
+<dt><a href="#pr:base" data-reference-type="ref"
+data-reference="pr:base">55.1.1</a></dt>
+<dd>
+<p>Then use the transpose relation, the definition of <span
+class="math inline">\(\mathcal{P}_{g,\lambda}\)</span> and Problem <a
+href="20261126T051300--two-lifts-at-a-time__workbook.html#pr:stage" data-reference-type="ref"
+data-reference="s2-pr:stage">54.2.3</a>; <span
+class="math inline">\(\Theta^\top_{\xi,1}z\)</span> is <span
+class="math inline">\(K^{Y}_{0}(\xi)\)</span>-fixed and the <span
+class="math inline">\(K_M\)</span>-trace of its conjugate lies in <span
+class="math inline">\(H(Y_0)\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="seclattices">§<a href="#sec:lattices"
+data-reference-type="ref" data-reference="sec:lattices">55.2</a></h2>
+<dl>
+<dt><a href="#pr:toy-lattice" data-reference-type="ref"
+data-reference="pr:toy-lattice">55.2.3</a></dt>
+<dd>
+<p><span class="math inline">\(\Lambda\)</span> is spanned by <span
+class="math inline">\((1,\tfrac15)\)</span> and <span
+class="math inline">\((0,1)\)</span>.</p>
+</dd>
+<dt><a href="#pr:dual" data-reference-type="ref"
+data-reference="pr:dual">55.2.4</a></dt>
+<dd>
+<p>A vector of <span class="math inline">\(W\)</span> pairs with <span
+class="math inline">\(v\in\Lambda\)</span> as with the projection of
+<span class="math inline">\(v\)</span>.</p>
+</dd>
+<dt><a href="#pr:fourier" data-reference-type="ref"
+data-reference="pr:fourier">55.2.5</a></dt>
+<dd>
+<p>Translation invariance of the function.</p>
+</dd>
+<dt><a href="#pr:lower" data-reference-type="ref"
+data-reference="pr:lower">55.2.9</a></dt>
+<dd>
+<p>Apply Problem <a href="#pr:dual" data-reference-type="ref"
+data-reference="pr:dual">55.2.4</a> to the upper bound at stage <span
+class="math inline">\(j\)</span>.</p>
+</dd>
+<dt><a href="#pr:upper" data-reference-type="ref"
+data-reference="pr:upper">55.2.11</a></dt>
+<dd>
+<p>Dualize the lower bound; work at a place above <span
+class="math inline">\(N\)</span> (where <span
+class="math inline">\(\mathfrak{u}\)</span> is a unit) at which <span
+class="math inline">\(\mathfrak{u}^{\,j}v\)</span> is nonzero in the
+local quotient; the quotients at <span class="math inline">\(w\)</span>
+and <span class="math inline">\(\bar w\)</span> are dual (Problem <a
+href="#pr:dual" data-reference-type="ref"
+data-reference="pr:dual">55.2.4</a>). <span class="math inline">\(m\)</span>
+is even.</p>
+</dd>
+<dt><a href="#pr:kills" data-reference-type="ref"
+data-reference="pr:kills">55.2.14</a></dt>
+<dd>
+<p>Problems <a href="20261126T030400--the-seesaw-identity__workbook.html#pr:mean-several" data-reference-type="ref"
+data-reference="ss-pr:mean-several">52.5.2</a> and <a
+href="20261126T030400--the-seesaw-identity__workbook.html#pr:fixed" data-reference-type="ref"
+data-reference="ss-pr:fixed">52.5.4</a>, and the equivariance
+<span class="math inline">\(\Theta(\omega^X(g,h)f)=h\circ\Theta(f)\circ
+g^{-1}\)</span> of each lift. Note <span
+class="math inline">\(T_w^{N-1}=1\)</span> on <span
+class="math inline">\(S\)</span>.</p>
+</dd>
+<dt><a href="#pr:vanish" data-reference-type="ref"
+data-reference="pr:vanish">55.2.15</a></dt>
+<dd>
+<p>Take <span class="math inline">\((g_\infty,x)\)</span> as outer point
+at stage <span class="math inline">\(j\)</span>. Apply Theorem <a
+href="20261126T051300--two-lifts-at-a-time__workbook.html#thm:two-lifts" data-reference-type="ref"
+data-reference="s2-thm:two-lifts">54.4.1</a> on the definite
+subgroup and use the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean#L657">equivariance
+of the translated restriction</a> <span
+class="math inline">\(r\mapsto\mathcal{W}_j(r(g_\infty,x))\)</span> on
+<span class="math inline">\(R_j(\mathbb{A})\)</span>.</p>
+</dd>
+<dt><a href="#pr:bounds" data-reference-type="ref"
+data-reference="pr:bounds">55.2.16</a></dt>
+<dd>
+<p>Strong induction. At stage zero the point <span
+class="math inline">\(\gamma_fy_0\)</span> has the translate <span
+class="math inline">\(y_0\)</span>, with lattice <span
+class="math inline">\(\Lambda(1)\)</span>. Later, use (i) and the
+earlier bounds where the integrand is nonzero, then Problems <a
+href="#pr:lower" data-reference-type="ref"
+data-reference="pr:lower">55.2.9</a>, <a href="#pr:upper"
+data-reference-type="ref" data-reference="pr:upper">55.2.11</a> and <a
+href="#pr:vanish" data-reference-type="ref"
+data-reference="pr:vanish">55.2.15</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="seccuts">§<a href="#sec:cuts"
+data-reference-type="ref" data-reference="sec:cuts">55.3</a></h2>
+<dl>
+<dt><a href="#pr:toy-cut" data-reference-type="ref"
+data-reference="pr:toy-cut">55.3.1</a></dt>
+<dd>
+<p><span class="math inline">\(H\)</span> is transitive on <span
+class="math inline">\(H/H_0\)</span>.</p>
+</dd>
+<dt><a href="#pr:stab" data-reference-type="ref"
+data-reference="pr:stab">55.3.3</a></dt>
+<dd>
+<p>The classes counted at <span class="math inline">\(c\)</span> form a
+<span class="math inline">\(\operatorname{Stab}_c\)</span>-orbit in
+<span class="math inline">\(G_0/G_1\)</span>.</p>
+</dd>
+<dt><a href="#pr:mult-dvd" data-reference-type="ref"
+data-reference="pr:mult-dvd">55.3.4</a></dt>
+<dd>
+<p>(a) Cauchy’s theorem. (b) <span
+class="math inline">\(u^p\equiv1\pmod{p^2}\)</span>. (c) At a selected
+class <span class="math inline">\(c\)</span>, <span
+class="math inline">\([\operatorname{Stab}_c:\operatorname{Stab}_c\cap
+G_1]&lt;\infty\)</span>; let <span
+class="math inline">\(\operatorname{Stab}_c\)</span> act on <span
+class="math inline">\(\operatorname{Stab}_c/(\operatorname{Stab}_c\cap
+G_1)\)</span>; Problem <a href="#pr:stab" data-reference-type="ref"
+data-reference="pr:stab">55.3.3</a>.</p>
+</dd>
+<dt><a href="#pr:cut-count" data-reference-type="ref"
+data-reference="pr:cut-count">55.3.5</a></dt>
+<dd>
+<p>Reduce integral representatives modulo <span
+class="math inline">\(\pi_M\)</span>; <span
+class="math inline">\(\#\mathcal{O}_E/(\pi_M)=M^f\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secsum">§<a href="#sec:sum"
+data-reference-type="ref" data-reference="sec:sum">55.4</a></h2>
+<dl>
+<dt><a href="#pr:remove" data-reference-type="ref"
+data-reference="pr:remove">55.4.1</a></dt>
+<dd>
+<p>A cutoff <span class="math inline">\(\mathfrak k\ge0\)</span> of
+<span class="math inline">\(R_j(\mathbb{A})\)</span>-orbit integral
+<span class="math inline">\(1\)</span>; the Haar measure <span
+class="math inline">\(du\)</span> on <span
+class="math inline">\(G_0\)</span> giving <span
+class="math inline">\(G_1\)</span> measure <span
+class="math inline">\(1\)</span>; weight <span
+class="math inline">\(\int_{G_0}\mathfrak k(x_\infty,u)\,du\)</span>
+times <span class="math inline">\(1/\mathrm{mult}(x_fK&#39;)\)</span> on
+the cut, <span class="math inline">\(0\)</span> off it. Compare
+Problem <a href="20261126T030400--the-seesaw-identity__workbook.html#pr:cut" data-reference-type="ref"
+data-reference="ss-pr:cut">52.3.2</a>.</p>
+</dd>
+<dt><a href="#pr:top" data-reference-type="ref"
+data-reference="pr:top">55.4.2</a></dt>
+<dd>
+<p>Average <span class="math inline">\(v\mapsto l(v)v^+\)</span> over
+<span class="math inline">\(U(Y_m)_\infty\)</span> (a model: <span
+class="math inline">\(\frac14\sum_{u\in\mu_4}u^{-1}(2+3u)=3\)</span>
+extracts one weight), then use branching and Schur orthogonality; <span
+class="math inline">\(R_m=U(Y_m)\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Bou"><span class="bib-label">[Bou]</span> N. Bourbaki, <em>Intégration</em>, Ch. VII–VIII, Hermann, Paris, 1963.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-GW"><span class="bib-label">[GW]</span> R. Goodman, N. R. Wallach, <em>Symmetry, Representations, and Invariants</em>, Grad. Texts in Math. 255, Springer, 2009.</p>
+<p id="ref-OM"><span class="bib-label">[OM]</span> O. T. O’Meara, <em>Introduction to Quadratic Forms</em>, Grundlehren Math. Wiss. 117, Springer, 1963.</p>
+<p id="ref-Ti"><span class="bib-label">[Ti]</span> J. Tits, Reductive groups over local fields, in <em>Automorphic Forms, Representations and <span class="math inline">\(L\)</span>-Functions</em>, Proc. Sympos. Pure Math. 33, Part 1, Amer. Math. Soc., 1979, 29–69.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-1zfDOYIytcCl0bq6nVWuALexBrVaimvBKVWd6a51i7s=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Lengths as values of polynomials</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","Ql":"\\bar{\\mathbb{Q}}_\\ell","Zl":"\\bar{\\mathbb{Z}}_\\ell","Sel":"\\mathrm{Sel}","val":"\\operatorname{val}","ord":"\\mathrm{ord}","rk":"\\operatorname{rk}","Oc":"\\mathcal{O}","St":"\\mathrm{St}","bd":"\\mathrm{bd}","TS":"T_{\\mathrm{Sel}}","ctor":"c_{\\mathrm{tor}}","Fr":"\\mathrm{Fr}","sla":"\\mathrm{sl}","Ti":"T_{\\mathrm{Sel},i}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="87">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T060600--lengths-as-values-of-polynomials__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-27 02:20:30
+      <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T060600--lengths-as-values-of-polynomials__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Lengths as values of polynomials</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:minors" id="toc-sec:minors">§87.1. Lengths and minors</a></li>
+<li><a href="#sec:universal" id="toc-sec:universal">§87.2. A character with variables</a></li>
+<li><a href="#sec:data" id="toc-sec:data">§87.3. Selmer data and tied primes</a></li>
+<li><a href="#sec:line" id="toc-sec:line">§87.4. Untying along a line</a></li>
+<li><a href="#sec:systems" id="toc-sec:systems">§87.5. Stickelberger systems</a></li>
+<li><a href="#sec:input" id="toc-sec:input">§87.6. The polynomial input</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#section-secminors"
+id="toc-section-secminors">Section 87.1</a></li>
+<li><a href="#section-secuniversal"
+id="toc-section-secuniversal">Section 87.2</a></li>
+<li><a href="#section-secline"
+id="toc-section-secline">Section 87.4</a></li>
+<li><a href="#section-secsystems"
+id="toc-section-secsystems">Section 87.5</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Modules over a discrete valuation ring: length, elementary divisors
+<span class="citation" data-cites="La">[<a href="#ref-La">La</a>, III,
+§7]</span>; cocycles of a profinite group <span class="citation"
+data-cites="SLF">[<a href="#ref-SLF">SLF</a>, Ch. VII, §3 and Ch. X,
+§3]</span>; inertia, tame inertia and Frobenius elements at a finite
+place <span class="citation" data-cites="SLF">[<a href="#ref-SLF">SLF</a>,
+Ch. I, §8 and Ch. IV, §§1–2]</span>. Chapter <a href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#chap"
+data-reference-type="ref" data-reference="w1-chap">86</a>: the
+Gauss valuation <span class="math inline">\(v_\rho\)</span> and
+Problems <a href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#pr:radius" data-reference-type="ref"
+data-reference="w1-pr:radius">86.1.1</a>, <a href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#pr:gauss"
+data-reference-type="ref" data-reference="w1-pr:gauss">86.1.2</a>
+and <a href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#pr:at-point" data-reference-type="ref"
+data-reference="w1-pr:at-point">86.1.3</a>. Section <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#sec:statement" data-reference-type="ref"
+data-reference="dp-sec:statement">80.1</a>: <span
+class="math inline">\(G_E\)</span>, <span
+class="math inline">\(g^c\)</span>, <span
+class="math inline">\(\chi_{\mathrm{cyc}}\)</span>, the tame generators
+<span class="math inline">\(s_w\)</span>, coefficient rings <span
+class="math inline">\(\mathcal{O}\)</span> and normalized lengths;
+Definition <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:aux-twist" data-reference-type="ref"
+data-reference="dp-def:aux-twist">80.1.5</a> (the inverse
+avatar <span class="math inline">\(\hat\xi\)</span>). Tame characters,
+twists, critical pairs and their ratios (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:twists" data-reference-type="ref"
+data-reference="ob-sec:twists">37.6</a>, Definition <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#def:pair" data-reference-type="ref"
+data-reference="ob-def:pair">37.10.1</a>). As background:
+Stickelberger’s theorem (Theorem <a href="20261125T004000--denominators-and-sha__workbook.html#thm:stickelberger"
+data-reference-type="ref"
+data-reference="ds-thm:stickelberger">26.2.1</a>) and
+Selmer classes (Chapter <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#chap" data-reference-type="ref"
+data-reference="es-chap">30</a>).</p>
+<p>The twisting theorem of Chapter <a href="20261126T031000--twists-with-few-congruences__workbook.html#chap"
+data-reference-type="ref" data-reference="tw-chap">85</a> asks
+for one twist that bounds the lengths of many Selmer modules and the
+positive parts of the <span class="math inline">\(\ell\)</span>-adic
+valuations of many ratios of Hecke values. On the Galois side one
+constructs a character <span class="math inline">\(\chi_\zeta\)</span>
+from roots of unity <span class="math inline">\(\zeta_w\)</span> at
+auxiliary places <span class="math inline">\(w\)</span> (Theorem <a
+href="20261126T031000--twists-with-few-congruences__workbook.html#thm:small" data-reference-type="ref"
+data-reference="tw-thm:small">85.1.1</a>). Why should the length
+of a Selmer module of the twist by <span
+class="math inline">\(\chi_\zeta\)</span> be bounded by the valuation of
+<em>one polynomial</em> at the point <span
+class="math inline">\((\zeta_w - 1)_w\)</span>, and why should that
+polynomial have small valuation somewhere? This sheet develops the
+answers and states Theorem <a href="#thm:polynomials"
+data-reference-type="ref" data-reference="thm:polynomials">87.6.1</a>, the
+polynomial input of Section <a href="20261126T031000--twists-with-few-congruences__workbook.html#sec:twisting"
+data-reference-type="ref"
+data-reference="tw-sec:twisting">85.1</a>. Corollary <a
+href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#pr:powers" data-reference-type="ref"
+data-reference="w1-pr:powers">86.2.2</a> of Chapter <a
+href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#chap" data-reference-type="ref"
+data-reference="w1-chap">86</a> then gives one tuple of roots of
+unity that controls the polynomial values for the first <span
+class="math inline">\(m\)</span> powers of the twist.</p>
+<p>Throughout, <span class="math inline">\(\ell\)</span> is a prime,
+<span class="math inline">\(\operatorname{val}\)</span> is the valuation
+of <span class="math inline">\(\bar{\mathbb{Q}}_\ell\)</span> with <span
+class="math inline">\(\operatorname{val}(\ell) = 1\)</span>, <span
+class="math inline">\(\bar{\mathbb{Z}}_\ell\)</span> is its valuation
+ring, <span class="math inline">\(\operatorname{val}_+ :=
+\max(\operatorname{val}, 0)\)</span>, and <span
+class="math inline">\(\operatorname{val}_\ell\)</span> is the <span
+class="math inline">\(\ell\)</span>-adic valuation of integers. A
+discrete valuation ring <span
+class="math inline">\(\mathcal{O}&#39;\)</span> has the valuation <span
+class="math inline">\(\mathrm{ord}_{\mathcal{O}&#39;}\)</span> with
+value <span class="math inline">\(1\)</span> at a uniformizer; for a
+coefficient ring, <span class="math inline">\(\operatorname{val}=
+\mathrm{ord}_{\mathcal{O}&#39;}/e_{\mathcal{O}&#39;}\)</span> on <span
+class="math inline">\(\mathcal{O}&#39;\)</span>. A <em>cocycle</em> for
+a group <span class="math inline">\(G\)</span> acting linearly on a
+module <span class="math inline">\(B\)</span> is a map <span
+class="math inline">\(z \colon G \to B\)</span> with <span
+class="math inline">\(z(gh) = z(g) + g\,z(h)\)</span>. In this sheet
+<span class="math inline">\(\rho\)</span> is a rational radius, and for
+<span class="math inline">\(g \in G_E\)</span> we write <span
+class="math inline">\(g^{+} := g\)</span> and <span
+class="math inline">\(g^{-} := (g^c)^{-1}\)</span>.</p>
+<h1 id="sec:minors">§87.1. Lengths and minors</h1>
+<div id="pr:one-equation" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:one-equation&quot;]">
+<p><strong>Problem 87.1.1</strong>. Let <span class="math inline">\(\ell =
+3\)</span> and <span class="math inline">\(X \in \mathbb{Z}_3\)</span>.
+The solutions <span class="math inline">\(u \in \mathbb{Z}/9\)</span> of
+<span class="math inline">\(Xu = 0\)</span> number <span
+class="math inline">\(9, 3, 9, 1\)</span> for <span
+class="math inline">\(X = 0, 3, 9, 1\)</span>, and form a module of
+length <span class="math inline">\(\min(2,
+\operatorname{val}(X))\)</span>. The solutions <span
+class="math inline">\((u, u&#39;) \in (\mathbb{Z}/9)^2\)</span> of <span
+class="math inline">\(Xu + u&#39; = 0\)</span>, <span
+class="math inline">\(Xu&#39; = 0\)</span> number <span
+class="math inline">\(9, 9, 1\)</span> for <span class="math inline">\(X
+= 0, 3, 1\)</span>, and form a module of length <span
+class="math inline">\(\min(2, 2\operatorname{val}(X))\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:sharp">Problem 87.1.2</a></div><!-- used-in:end -->
+</div>
+<div id="pr:sharp" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:sharp&quot;]">
+<p><strong>Problem 87.1.2</strong>. Let <span
+class="math inline">\(\mathcal{O}&#39;\)</span> be a discrete valuation
+ring, <span class="math inline">\(0 \ne a \in \mathcal{O}&#39;\)</span>,
+and <span class="math inline">\(A\)</span> a matrix over <span
+class="math inline">\(\mathcal{O}&#39;\)</span> with <span
+class="math inline">\(n\)</span> columns and any set of rows. Let <span
+class="math inline">\(A_a\)</span> be <span
+class="math inline">\(A\)</span> with the <span
+class="math inline">\(n\)</span> rows of <span class="math inline">\(a
+I_n\)</span> added. Then the length of the <span
+class="math inline">\(\mathcal{O}&#39;\)</span>-module <span
+class="math inline">\(\{u \in (\mathcal{O}&#39;/a)^n : Au = 0\}\)</span>
+is the least <span
+class="math inline">\(\mathrm{ord}_{\mathcal{O}&#39;}(P)\)</span>, for
+<span class="math inline">\(P\)</span> running over the <span
+class="math inline">\(n \times n\)</span> minors of <span
+class="math inline">\(A_a\)</span>. For the two systems of Problem <a
+href="#pr:one-equation" data-reference-type="ref"
+data-reference="pr:one-equation">87.1.1</a>, with <span
+class="math inline">\(a = 9\)</span>, the sets of minors are <span
+class="math inline">\(\{X, 9\}\)</span> and, up to sign, <span
+class="math inline">\(\{X^2, 9, 9X, 0, 81\}\)</span>.</p>
+</div>
+<div id="pr:sharp-use" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:sharp-use&quot;]">
+<p><strong>Problem 87.1.3</strong>. Let <span
+class="math inline">\(\mathcal{O}\)</span> be a coefficient ring, <span
+class="math inline">\(Q\)</span> a finite set, <span
+class="math inline">\(A\)</span> a matrix with <span
+class="math inline">\(n\)</span> columns and entries in <span
+class="math inline">\(\mathcal{O}[X_w : w \in Q]\)</span>, <span
+class="math inline">\(0 \ne a \in \mathcal{O}\)</span>, and <span
+class="math inline">\(\mathcal D\)</span> the set of <span
+class="math inline">\(n \times n\)</span> minors of <span
+class="math inline">\(A_a\)</span>; they are polynomials. For a point
+<span class="math inline">\(x\)</span> with coordinates in a coefficient
+ring <span class="math inline">\(\mathcal{O}&#39; \supseteq
+\mathcal{O}\)</span> let <span class="math inline">\(Z(x) := \{u \in
+(\mathcal{O}&#39;/a)^n : A(x)u = 0\}\)</span>. <span
+class="upright">(a)</span> The normalized length of <span
+class="math inline">\(Z(x)\)</span> is <span
+class="math inline">\(\min_{P \in \mathcal D}
+\operatorname{val}(P(x))\)</span>, and it is at most <span
+class="math inline">\(n \operatorname{val}(a)\)</span>. <span
+class="upright">(b)</span> Every <span class="math inline">\(P \in
+\mathcal D\)</span> bounds the normalized length of <span
+class="math inline">\(Z(x)\)</span> by <span
+class="math inline">\(\operatorname{val}(P(x))\)</span> at
+<em>every</em> point <span class="math inline">\(x\)</span>; we say
+<span class="math inline">\(P\)</span> is <em>sharp</em> at <span
+class="math inline">\(x_0\)</span> if equality holds there. A minor
+sharp at one point therefore computes the length there and bounds it
+everywhere. <span class="upright">(c)</span> For <span
+class="math inline">\(\ell = 3\)</span>, <span class="math inline">\(Xu
+= 0\)</span> and <span class="math inline">\(a = 9\)</span>: the minor
+<span class="math inline">\(9\)</span> is sharp at <span
+class="math inline">\(X = 0\)</span> and the minor <span
+class="math inline">\(X\)</span> at <span class="math inline">\(X =
+3\)</span>; the latter bounds the length at <span
+class="math inline">\(X = \zeta - 1\)</span>, <span
+class="math inline">\(\zeta\)</span> of order <span
+class="math inline">\(9\)</span>, by <span
+class="math inline">\(1/6\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:model">Problem 87.2.2</a></div><!-- used-in:end -->
+</div>
+<h1 id="sec:universal">§87.2. A character with variables</h1>
+<p>Fix a CM field <span class="math inline">\(E \subseteq
+\bar{\mathbb{Q}}\)</span>, a finite set <span
+class="math inline">\(\Sigma_0\)</span> of finite places of <span
+class="math inline">\(E\)</span> containing those above <span
+class="math inline">\(\ell\)</span>, and an element <span
+class="math inline">\(g_0\)</span> of inertia at a place of <span
+class="math inline">\(\Sigma_0\)</span> prime to <span
+class="math inline">\(\ell\)</span>.</p>
+<div id="def:chi" class="definition">
+<p><strong>Definition 87.2.1</strong>. A finite set <span
+class="math inline">\(Q\)</span> of finite places of <span
+class="math inline">\(E\)</span> is <em>admissible</em> for <span
+class="math inline">\(\Sigma_0\)</span> if its places have prime norm,
+and <span class="math inline">\(Q\)</span>, its conjugate <span
+class="math inline">\(\bar Q\)</span> and <span
+class="math inline">\(\Sigma_0\)</span> are pairwise disjoint. A
+<em>character for <span class="math inline">\(Q\)</span></em> is a
+locally constant character <span class="math inline">\(\chi\colon
+G_E\to\bar{\mathbb{Q}}_\ell^\times\)</span> for which there is a
+character <span class="math inline">\(\chi_0\)</span> of the finite
+ideles of <span class="math inline">\(E\)</span>, trivial on the
+principal ideles and on every idele that is a unit at the places not
+above <span class="math inline">\(\ell\)</span> and congruent to <span
+class="math inline">\(1\)</span> at the places of <span
+class="math inline">\(Q\)</span> not above <span
+class="math inline">\(\ell\)</span>, with <span
+class="math inline">\(\chi(\mathrm{Art}\,y)=\chi_0(y/\bar y)\)</span>
+for every finite idele <span class="math inline">\(y\)</span>; here
+<span class="math inline">\(\mathrm{Art}\)</span> is the Artin map of
+Definition <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:aux-twist" data-reference-type="ref"
+data-reference="dp-def:aux-twist">80.1.5</a>. The same
+definition is used for homomorphisms to the additive group <span
+class="math inline">\(\mathbb{Z}/\ell^{h}\)</span>.</p>
+<p>Let <span class="math inline">\(h_1 \ge 1\)</span> and, for each
+<span class="math inline">\(w \in Q\)</span>, let <span
+class="math inline">\(\lg_w \colon G_E \to
+\mathbb{Z}/\ell^{h_1}\)</span> be a locally constant homomorphism; write
+<span class="math inline">\([n] \in \{0, \dots, \ell^{h_1} -
+1\}\)</span> for the representative of <span class="math inline">\(n \in
+\mathbb{Z}/\ell^{h_1}\)</span>. For <span
+class="math inline">\(\ell^{h_1}\)</span>-th roots of unity <span
+class="math inline">\(\zeta_w\)</span> and for variables <span
+class="math inline">\(X_w\)</span> put <span
+class="math display">\[\chi_\zeta(g) := \prod_{w \in Q}
+\zeta_w^{[\lg_w(g)]}, \qquad \chi_X(g) := \prod_{w \in Q} (1 +
+X_w)^{[\lg_w(g)]} \in \mathbb{Z}[X_w : w \in Q] .\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#def:tied">Definition 87.3.4</a>; <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a>: <a href="20261126T031000--twists-with-few-congruences__workbook.html#thm:small">Theorem 85.1.1</a>; <a href="20261126T060700--tied-primes__workbook.html">Chapter 88</a>; <a href="20261126T081200--a-measure-for-hecke-values__workbook.html">Chapter 89</a></div><!-- used-in:end -->
+</div>
+<div id="pr:universal" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:universal&quot;]">
+<p><strong>Problem 87.2.1</strong>. <span class="upright">(a)</span> At <span
+class="math inline">\(X_w = \zeta_w - 1\)</span> the polynomial <span
+class="math inline">\(\chi_X(g)\)</span> takes the value <span
+class="math inline">\(\chi_\zeta(g)\)</span>; <span
+class="math inline">\(\chi_\zeta\)</span> is a character of <span
+class="math inline">\(G_E\)</span>, and <span
+class="math inline">\(\chi_\zeta^n = \chi_{\zeta^n}\)</span> for <span
+class="math inline">\(n \ge 1\)</span>, where <span
+class="math inline">\(\zeta^n := (\zeta_w^n)_w\)</span>. <span
+class="upright">(b)</span> For <span class="math inline">\(g, h \in
+G_E\)</span>, <span class="math inline">\(\chi_X(gh) -
+\chi_X(g)\chi_X(h)\)</span> lies in the ideal generated by the <span
+class="math inline">\((1 + X_w)^{\ell^{h_1}} - 1\)</span>, <span
+class="math inline">\(w \in Q\)</span>.</p>
+</div>
+<p>The next problem is a model with a finite group in place of <span
+class="math inline">\(G_E\)</span>: <span
+class="math inline">\(s\)</span> plays a tame generator at an auxiliary
+place, acting through <span class="math inline">\(1 + X\)</span>; <span
+class="math inline">\(g_1\)</span> plays a Frobenius element there,
+acting trivially; <span class="math inline">\(\gamma\)</span> plays an
+inertia element acting by a scalar.</p>
+<div id="pr:model" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:model&quot;]">
+<p><strong>Problem 87.2.2</strong>. Let <span class="math inline">\(\ell =
+5\)</span>, and let <span class="math inline">\(G\)</span> be the group
+of order <span class="math inline">\(100\)</span> generated by <span
+class="math inline">\(g_1, \gamma, s\)</span> with <span
+class="math inline">\(g_1^5 = \gamma^4 = s^5 = 1\)</span>, <span
+class="math inline">\(\gamma g_1 \gamma^{-1} = g_1^2\)</span> and <span
+class="math inline">\(s\)</span> central. Let <span
+class="math inline">\(\zeta_5\)</span> be a root of unity of order <span
+class="math inline">\(5\)</span>, <span
+class="math inline">\(\mathcal{O}&#39; = \mathbb{Z}_5[\zeta_5]\)</span>
+and <span class="math inline">\(B = \mathcal{O}&#39;/5\)</span>, and let
+<span class="math inline">\(i \in \mathbb{Z}_5\)</span> be the fourth
+root of unity with <span class="math inline">\(i \equiv 2 \pmod
+5\)</span>. For <span class="math inline">\(0 \le j \le 4\)</span> let
+<span class="math inline">\(G\)</span> act on <span
+class="math inline">\(B\)</span> by the scalars <span
+class="math inline">\(g_1 \mapsto 1\)</span>, <span
+class="math inline">\(\gamma \mapsto i\)</span>, <span
+class="math inline">\(s \mapsto \zeta_5^j\)</span>. The cocycles <span
+class="math inline">\(z \colon G \to B\)</span> with <span
+class="math inline">\(z(\gamma) = 0\)</span> are determined by <span
+class="math inline">\(u = z(g_1)\)</span>, and they are the <span
+class="math inline">\(u\)</span> with <span
+class="math inline">\((\zeta_5^j - 1)u = 0\)</span>. They number <span
+class="math inline">\(625, 5, 5, 5, 5\)</span> for <span
+class="math inline">\(j = 0, \dots, 4\)</span>; the normalized length is
+<span class="math inline">\(\min(1, \operatorname{val}(\zeta_5^j - 1)) =
+1, \tfrac14, \tfrac14, \tfrac14, \tfrac14\)</span>. With <span
+class="math inline">\(1 + X\)</span> for the scalar of <span
+class="math inline">\(s\)</span>, the minors of Problem <a
+href="#pr:sharp-use" data-reference-type="ref"
+data-reference="pr:sharp-use">87.1.3</a> for the equation <span
+class="math inline">\(Xu = 0\)</span> on <span
+class="math inline">\(B\)</span> are <span
+class="math inline">\(X\)</span> and <span
+class="math inline">\(5\)</span>.</p>
+</div>
+<div id="pr:normalize" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:normalize&quot;]">
+<p><strong>Problem 87.2.3</strong>. Let a group <span
+class="math inline">\(G\)</span> act linearly on a module <span
+class="math inline">\(B\)</span> over a commutative ring, and let <span
+class="math inline">\(\gamma \in G\)</span> act by a scalar <span
+class="math inline">\(\lambda\)</span> with <span
+class="math inline">\(\lambda - 1\)</span> invertible. Every cocycle
+<span class="math inline">\(G \to B\)</span> is, in exactly one way, the
+sum of a coboundary <span class="math inline">\(g \mapsto gb -
+b\)</span> and a cocycle vanishing at <span
+class="math inline">\(\gamma\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060700--tied-primes__workbook.html">Chapter 88</a></div><!-- used-in:end -->
+</div>
+<p><em>The finite presentation.</em> Let <span
+class="math inline">\(\mathcal{O}\)</span> be a coefficient ring, <span
+class="math inline">\(T_{\mathrm{Sel}}\colon G_E \to
+\mathrm{GL}_{r&#39;}(\mathcal{O})\)</span> a continuous homomorphism
+(for instance the action on a Selmer datum), <span
+class="math inline">\(c\)</span> a nonnegative integer, <span
+class="math inline">\(S\)</span> a finite set of finite places, and
+<span class="math inline">\(\mathcal L\)</span> a set of relations <span
+class="math inline">\(\sum_j a_j z(g_j) = 0\)</span> with finitely many
+<span class="math inline">\(g_j \in G_E\)</span> and matrices <span
+class="math inline">\(a_j\)</span> over <span
+class="math inline">\(\mathcal{O}\)</span>. For a point <span
+class="math inline">\(x\)</span> with coordinates in a commutative ring
+<span class="math inline">\(\mathcal{O}&#39;\)</span> with a ring map
+from <span class="math inline">\(\mathcal{O}\)</span>, let <span
+class="math inline">\(\mathrm{Sel}(x)\)</span> be the <span
+class="math inline">\(\mathcal{O}&#39;\)</span>-module of locally
+constant maps <span class="math inline">\(z \colon G_E \to
+(\mathcal{O}&#39;/\ell^{c})^{r&#39;}\)</span> with <span
+class="math inline">\(z(gh) = z(g) +
+\chi_x(g)T_{\mathrm{Sel}}(g)z(h)\)</span> that vanish on the inertia
+groups at the places outside <span class="math inline">\(S\)</span> and
+satisfy the relations of <span class="math inline">\(\mathcal
+L\)</span>, with coefficients mapped to <span
+class="math inline">\(\mathcal{O}&#39;\)</span>; here <span
+class="math inline">\(\chi_x(g)\)</span> is the value of <span
+class="math inline">\(\chi_X(g)\)</span> at <span
+class="math inline">\(x\)</span>. (These are equations; <span
+class="math inline">\(\chi_x\)</span> need not be a character.) There is
+a matrix <span class="math inline">\(A\)</span> over <span
+class="math inline">\(\mathcal{O}[X_w : w \in Q]\)</span> with finitely
+many columns and possibly infinitely many rows such that, for every such
+<span class="math inline">\(\mathcal{O}&#39;\)</span> and <span
+class="math inline">\(x\)</span>, <span
+class="math inline">\(\mathrm{Sel}(x)\)</span> is isomorphic to the
+kernel of <span class="math inline">\(A(x)\)</span> on <span
+class="math inline">\((\mathcal{O}&#39;/\ell^{c})^{n}\)</span>, <span
+class="math inline">\(n\)</span> the number of columns. Hence there is
+one set of polynomials over <span
+class="math inline">\(\mathcal{O}\)</span> such that for every discrete
+valuation ring <span class="math inline">\(\mathcal{O}&#39;\)</span> of
+characteristic zero with a ring map from <span
+class="math inline">\(\mathcal{O}\)</span>, and every <span
+class="math inline">\(x\)</span>, the <span
+class="math inline">\(\mathcal{O}&#39;\)</span>-length of <span
+class="math inline">\(\mathrm{Sel}(x)\)</span> is the least <span
+class="math inline">\(\mathrm{ord}_{\mathcal{O}&#39;}(P(x))\)</span>,
+<span class="math inline">\(P\)</span> in the set; for coefficient rings
+<span class="math inline">\(\mathcal{O}&#39; \supseteq
+\mathcal{O}\)</span> the normalized length is the least <span
+class="math inline">\(\operatorname{val}(P(x))\)</span>.
+<em>Status</em>: read from the proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, in the case of a
+coefficient ring and a continuous representation. The columns are
+indexed by the pairs of an element of a finite continuous quotient of
+<span class="math inline">\(G_E\)</span> and a coordinate of <span
+class="math inline">\((\mathcal{O}&#39;/\ell^c)^{r&#39;}\)</span>; the
+quotient is the same for every <span
+class="math inline">\(\mathcal{O}&#39;\)</span> and <span
+class="math inline">\(x\)</span>, each <span
+class="math inline">\(\lg_w\)</span> and the reduction of <span
+class="math inline">\(T_{\mathrm{Sel}}\)</span> modulo <span
+class="math inline">\(\ell^c\)</span> are trivial on its kernel, and
+every <span class="math inline">\(z \in \mathrm{Sel}(x)\)</span>
+vanishes there. That it exists rests on the following fact. <em>For a
+finite discrete <span class="math inline">\(G_E\)</span>-module with
+continuous action, only finitely many locally constant cocycles vanish
+on every inertia group at the places outside a fixed finite set.</em>
+<em>Status</em>: classical, by the theorem of Hermite and Minkowski
+<span class="citation" data-cites="Ne">[<a href="#ref-Ne">Ne</a>, Ch. III,
+§2]</span>.</p>
+<p>At a point <span class="math inline">\(x = (\zeta_w - 1)_w\)</span>
+the <span class="math inline">\(z\)</span> are cocycles for the twist of
+<span class="math inline">\(T_{\mathrm{Sel}}\)</span> by the character
+<span class="math inline">\(\chi_\zeta\)</span>, by Problem <a
+href="#pr:universal" data-reference-type="ref"
+data-reference="pr:universal">87.2.1</a>. The Selmer modules of Definition <a
+href="#def:twisted-length" data-reference-type="ref"
+data-reference="def:twisted-length">87.3.2</a> below have coefficients in
+<span
+class="math inline">\(\mathrm{Frac}(\mathcal{O}&#39;)/\mathcal{O}&#39;\)</span>;
+their elements take finitely many values, so each is killed by a power
+of <span class="math inline">\(\ell\)</span>, and those killed by <span
+class="math inline">\(\ell^{c}\)</span> form the module with
+coefficients in <span
+class="math inline">\(\ell^{-c}\mathcal{O}&#39;/\mathcal{O}&#39; \cong
+\mathcal{O}&#39;/\ell^{c}\)</span>. The next problem compares the
+two.</p>
+<div id="pr:cutoff" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:cutoff&quot;]">
+<p><strong>Problem 87.2.4</strong>. Let <span
+class="math inline">\(\mathcal{O}&#39;\)</span> be a coefficient ring,
+<span class="math inline">\(c \ge 1\)</span> an integer, and <span
+class="math inline">\(Z\)</span> an <span
+class="math inline">\(\mathcal{O}&#39;\)</span>-module in which every
+element is killed by a power of <span
+class="math inline">\(\ell\)</span>. If the submodule <span
+class="math inline">\(Z[\ell^c]\)</span> of elements killed by <span
+class="math inline">\(\ell^c\)</span> has normalized length less than
+<span class="math inline">\(c\)</span>, then <span
+class="math inline">\(Z = Z[\ell^c]\)</span>. For <span
+class="math inline">\(\ell = 3\)</span>, <span class="math inline">\(Z =
+\mathbb{Z}/27\)</span> over <span
+class="math inline">\(\mathbb{Z}_3\)</span> and <span
+class="math inline">\(c = 2\)</span>: <span
+class="math inline">\(Z[9]\)</span> has <span
+class="math inline">\(9\)</span> elements and length <span
+class="math inline">\(2\)</span>, and <span class="math inline">\(Z \ne
+Z[9]\)</span>.</p>
+</div>
+<h1 id="sec:data">§87.3. Selmer data and tied primes</h1>
+<div id="def:selmer-datum" class="definition">
+<p><strong>Definition 87.3.1</strong>. Let <span
+class="math inline">\(\mathcal{O}\)</span> be a coefficient ring. A
+<em>Selmer datum</em> for <span class="math inline">\((\Sigma_0,
+g_0)\)</span> over <span class="math inline">\(\mathcal{O}\)</span> is a
+free <span class="math inline">\(\mathcal{O}\)</span>-module <span
+class="math inline">\(T_{\mathrm{Sel}}\)</span> of finite rank <span
+class="math inline">\(\operatorname{rk}T_{\mathrm{Sel}}\ge 1\)</span>
+with a continuous <span
+class="math inline">\(\mathcal{O}\)</span>-linear action of <span
+class="math inline">\(G_E\)</span>, unramified outside a set <span
+class="math inline">\(\Sigma(T_{\mathrm{Sel}}) \subseteq
+\Sigma_0\)</span> containing the places above <span
+class="math inline">\(\ell\)</span>; write <span
+class="math inline">\(T_{\mathrm{Sel}}(g)\)</span> for the action of
+<span class="math inline">\(g\)</span>. The endomorphisms <span
+class="math inline">\(T_{\mathrm{Sel}}(g)\)</span>, <span
+class="math inline">\(g \in G_E\)</span>, span <span
+class="math inline">\(\operatorname{End}_{\mathcal{O}}(T_{\mathrm{Sel}})\)</span>
+over <span class="math inline">\(\mathcal{O}\)</span>. For each finite
+place <span class="math inline">\(w\)</span> of <span
+class="math inline">\(E\)</span> fix a place of <span
+class="math inline">\(\bar{\mathbb{Q}}\)</span> above <span
+class="math inline">\(w\)</span>, and write <span
+class="math inline">\(G_w\)</span> for its decomposition group. For each
+<span class="math inline">\(w \mid \ell\)</span> the datum supplies a
+finitely generated <span
+class="math inline">\(\mathcal{O}\)</span>-module <span
+class="math inline">\(\mathcal Z_w\)</span> of cocycles <span
+class="math inline">\(G_w \to T_{\mathrm{Sel}}\)</span> containing the
+coboundaries, with <span class="math inline">\(\sum_{w \mid
+\ell}(\operatorname{rk}\mathcal Z_w - \operatorname{rk}T_{\mathrm{Sel}})
+\le f_E \operatorname{rk}T_{\mathrm{Sel}}\)</span>, where <span
+class="math inline">\(f_E\)</span> is the number of infinite places of
+<span class="math inline">\(E\)</span>. The <em>local relations</em> at
+<span class="math inline">\(w\)</span> are the relations <span
+class="math inline">\(\sum_j a_j z(g_j) = 0\)</span>, with finitely many
+<span class="math inline">\(g_j \in G_w\)</span> and <span
+class="math inline">\(a_j \in
+\operatorname{End}_{\mathcal{O}}(T_{\mathrm{Sel}})\)</span>, satisfied
+by all <span class="math inline">\(z \in \mathcal Z_w\)</span>. The
+datum also supplies an element <span
+class="math inline">\(\gamma(T_{\mathrm{Sel}})\)</span> of inertia at a
+place of <span class="math inline">\(\Sigma(T_{\mathrm{Sel}})\)</span>
+prime to <span class="math inline">\(\ell\)</span> and a scalar <span
+class="math inline">\(\lambda \in \mathcal{O}\)</span> with <span
+class="math inline">\(\lambda^2 - 1 \in \mathcal{O}^\times\)</span>;
+both <span class="math inline">\(\gamma(T_{\mathrm{Sel}})\)</span> and
+<span class="math inline">\((\gamma(T_{\mathrm{Sel}})^c)^{-1}\)</span>
+act on <span class="math inline">\(T_{\mathrm{Sel}}\)</span> by <span
+class="math inline">\(\lambda\)</span>.</p>
+<p>A datum has three terms, in the nonnegative extended integers. For
+<span class="math inline">\(0 \ne a \in \mathcal{O}\)</span> write <span
+class="math inline">\(\bar T_a :=
+T_{\mathrm{Sel}}/aT_{\mathrm{Sel}}\)</span>, and <span
+class="math inline">\(\bar T_a^{*c}\)</span> for the additive dual <span
+class="math inline">\(\operatorname{Hom}_{\mathbb{Z}}(\bar T_a,
+\mathbb{Q}/\mathbb{Z})\)</span>, on which <span
+class="math inline">\(\mathcal{O}\)</span> acts by precomposition and
+<span class="math inline">\(g \in G_E\)</span> acts by <span
+class="math inline">\(y \mapsto y \circ
+\bigl(\chi_{\mathrm{cyc}}(g^c)\,T_{\mathrm{Sel}}((g^c)^{-1})\bigr)\)</span>.
+Define the <em>global term</em> <span
+class="math inline">\(\mathrm{glob}(T_{\mathrm{Sel}})\)</span> as the
+supremum, over <span class="math inline">\(0 \ne a \in
+\mathcal{O}\)</span>, of the <span
+class="math inline">\(\mathcal{O}\)</span>-length of the module of <span
+class="math inline">\(\mathcal{O}\)</span>-linear <span
+class="math inline">\(G_E\)</span>-equivariant maps <span
+class="math inline">\(\bar T_a \to \bar T_a^{*c}\)</span>. At a place
+<span class="math inline">\(v \in \Sigma(T_{\mathrm{Sel}})\)</span>
+prime to <span class="math inline">\(\ell\)</span>, the local term is
+the supremum over the same <span class="math inline">\(a\)</span> of the
+excess, taken to be <span class="math inline">\(0\)</span> if negative,
+of the length of the module of restrictions to <span
+class="math inline">\(G_v\)</span> of the locally constant cocycles
+<span class="math inline">\(G_E \to \bar T_a\)</span> over the length of
+<span class="math inline">\(\bar T_a\)</span>; <span
+class="math inline">\(\mathrm{plc}(T_{\mathrm{Sel}})\)</span> is the sum
+of these local terms over the places <span class="math inline">\(v \in
+\Sigma(T_{\mathrm{Sel}})\)</span> prime to <span
+class="math inline">\(\ell\)</span>. The third term is <span
+class="math inline">\(\mathrm{inr}(T_{\mathrm{Sel}}) := \sum_g
+\mathrm{ord}_{\mathcal{O}}\det(T_{\mathrm{Sel}}(g) - 1)\)</span>, with
+one summand for each of <span class="math inline">\(g = g_0^{+}\)</span>
+and <span class="math inline">\(g = g_0^{-}\)</span> (two summands even
+if they coincide). For a datum, <span
+class="math inline">\(\mathrm{glob}(T_{\mathrm{Sel}})\)</span> and <span
+class="math inline">\(\mathrm{plc}(T_{\mathrm{Sel}}) +
+\mathrm{inr}(T_{\mathrm{Sel}})\)</span> are finite. Put <span
+class="math display">\[\mathrm{bd}(T_{\mathrm{Sel}}) :=
+\bigl(\mathrm{glob}(T_{\mathrm{Sel}}) + \mathrm{plc}(T_{\mathrm{Sel}}) +
+\mathrm{inr}(T_{\mathrm{Sel}})\bigr)/e_{\mathcal{O}} .\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a>; <a href="20261126T060700--tied-primes__workbook.html">Chapter 88</a>: <a href="20261126T060700--tied-primes__workbook.html#pr:inject">Problem 88.4.5</a>; <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html">Chapter 90</a>: <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#pr:rank-one-dual">Problem 90.1.1</a>, <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#pr:glob">Problem 90.2.1</a> <details><summary>and 1 more</summary><div>Chapter 90: <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#pr:rank">Problem 90.3.2</a></div></details></div><!-- used-in:end -->
+</div>
+<div id="def:twisted-length" class="definition">
+<p><strong>Definition 87.3.2</strong>. For a Selmer datum <span
+class="math inline">\(T_{\mathrm{Sel}}\)</span> over <span
+class="math inline">\(\mathcal{O}\)</span>, a finite set <span
+class="math inline">\(Q\)</span> of finite places and a character <span
+class="math inline">\(\chi\colon G_E \to
+\bar{\mathbb{Q}}_\ell^\times\)</span>, an <span
+class="math inline">\(\mathcal{O}&#39;\)</span>-valued model of <span
+class="math inline">\(\chi\)</span> is a homomorphism <span
+class="math inline">\(\chi&#39; \colon G_E \to
+\mathcal{O}&#39;^\times\)</span> with the same values, and the extended
+twisted lattice is <span
+class="math inline">\(T_{\mathrm{Sel}}\otimes_{\mathcal{O}}
+\mathcal{O}&#39;\)</span> with <span class="math inline">\(g\)</span>
+acting by <span
+class="math inline">\(\chi&#39;(g)T_{\mathrm{Sel}}(g)\)</span>. A bound
+<span
+class="math inline">\(\mathrm{len}\,\mathrm{Sel}_Q(T_{\mathrm{Sel}}\chi)
+\le d\)</span> means that for every sufficiently large coefficient ring
+<span class="math inline">\(\mathcal{O}&#39; \supseteq
+\mathcal{O}\)</span> there is an <span
+class="math inline">\(\mathcal{O}&#39;\)</span>-valued model of <span
+class="math inline">\(\chi\)</span> for which the following module has
+normalized length at most <span class="math inline">\(d\)</span>: the
+locally constant cocycles with coefficients in the extended twisted
+lattice tensored over <span
+class="math inline">\(\mathcal{O}&#39;\)</span> with <span
+class="math inline">\(\mathrm{Frac}(\mathcal{O}&#39;)/\mathcal{O}&#39;\)</span>
+that are unramified outside <span
+class="math inline">\(\Sigma(T_{\mathrm{Sel}}) \cup Q \cup \bar
+Q\)</span>, satisfy the local relations with coefficients extended to
+<span class="math inline">\(\mathcal{O}&#39;\)</span>, and vanish at
+<span class="math inline">\(\gamma(T_{\mathrm{Sel}})\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a>; Chapter 90: <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#pr:assemble">Problem 90.4.2</a></div><!-- used-in:end -->
+</div>
+<div id="def:torsion-level" class="definition">
+<p><strong>Definition 87.3.3</strong>. A natural number <span
+class="math inline">\(c_{\mathrm{tor}}\)</span> is a <em>torsion
+level</em> for finitely many Selmer data over one coefficient ring <span
+class="math inline">\(\mathcal{O}\)</span> if, for every datum, <span
+class="math inline">\(\mathrm{bd}(T_{\mathrm{Sel}}) + 1 &lt;
+c_{\mathrm{tor}}\)</span> and <span
+class="math inline">\(2\operatorname{rk}T_{\mathrm{Sel}}\,\mathrm{ord}_{\mathcal{O}}(\ell^{c_{\mathrm{tor}}})
++ 1 &lt; \#k_{\mathcal{O}}\)</span>, where <span
+class="math inline">\(k_{\mathcal{O}}\)</span> is the residue field.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a>; <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html">Chapter 90</a></div><!-- used-in:end -->
+</div>
+<div id="def:tied" class="definition">
+<p><strong>Definition 87.3.4</strong>. Let <span
+class="math inline">\(T_{\mathrm{Sel},1}, \dots,
+T_{\mathrm{Sel},n}\)</span> be Selmer data for <span
+class="math inline">\((\Sigma_0, g_0)\)</span> over <span
+class="math inline">\(\mathcal{O}\)</span>, let <span
+class="math inline">\(c \ge 0\)</span> and <span
+class="math inline">\(h_1 \ge 1\)</span> be integers and <span
+class="math inline">\(W \subseteq G_E\)</span>. <em>Tied primes</em> at
+level <span class="math inline">\(\ell^{h_1}\)</span>, for <span
+class="math inline">\(c\)</span> and <span
+class="math inline">\(W\)</span>, consist of a set <span
+class="math inline">\(Q\)</span> admissible for <span
+class="math inline">\(\Sigma_0\)</span> with a <em>first prime</em>
+<span class="math inline">\(w_* \in Q\)</span>; for each <span
+class="math inline">\(w \in Q\)</span> a place of <span
+class="math inline">\(\bar{\mathbb{Q}}\)</span> above <span
+class="math inline">\(w\)</span>, an arithmetic Frobenius element <span
+class="math inline">\(\mathrm{Fr}_w \in G_E\)</span> and the tame
+generator <span class="math inline">\(s_w\)</span> at that place, taken
+in its inertia group, and a homomorphism <span
+class="math inline">\(\lg_w \colon G_E \to
+\mathbb{Z}/\ell^{h_1}\)</span>; and <em>slopes</em> <span
+class="math inline">\(\mathrm{sl}_i(w) \in \mathcal{O}\)</span> for
+<span class="math inline">\(w \in Q\)</span> and <span
+class="math inline">\(1 \le i \le n\)</span>; such that:</p>
+<ol>
+<li><p>for every <span class="math inline">\(w \in Q\)</span>: <span
+class="math inline">\(\#k_w \equiv 1 \pmod{\ell^{h_1}}\)</span>, where
+<span class="math inline">\(k_w\)</span> is the residue field at <span
+class="math inline">\(w\)</span>, <span
+class="math inline">\(\lg_w\)</span> is a character for <span
+class="math inline">\(\{w\}\)</span> in the sense of Definition <a
+href="#def:chi" data-reference-type="ref"
+data-reference="def:chi">87.2.1</a>, and <span
+class="math inline">\(\lg_w(s_w) = 1\)</span>;</p></li>
+<li><p>for <span class="math inline">\(w \in Q\)</span> with <span
+class="math inline">\(w \ne w_*\)</span> and for <span
+class="math inline">\(w&#39; \in Q\)</span>: <span
+class="math inline">\(\lg_{w&#39;}(\mathrm{Fr}_w)\)</span> is <span
+class="math inline">\(1\)</span> if <span class="math inline">\(w&#39; =
+w_*\)</span> and <span class="math inline">\(0\)</span>
+otherwise;</p></li>
+<li><p><span class="math inline">\(\mathrm{Fr}_{w_*} \in W\)</span>;
+<span class="math inline">\(\mathrm{sl}_i(w_*) = 0\)</span> for all
+<span class="math inline">\(i\)</span>; and no place of <span
+class="math inline">\(\Sigma_0\)</span>, and no place of <span
+class="math inline">\(Q\)</span> other than <span
+class="math inline">\(w_*\)</span>, lies above the rational prime <span
+class="math inline">\(\#k_{w_*}\)</span>;</p></li>
+<li><p>if <span class="math inline">\(\mathrm{sl}_i(w) \ne 0\)</span>,
+then <span
+class="math inline">\(T_{\mathrm{Sel},i}(\mathrm{Fr}_w^{+})\)</span> and
+<span
+class="math inline">\(T_{\mathrm{Sel},i}(\mathrm{Fr}_w^{-})\)</span> are
+the identity modulo <span
+class="math inline">\(\ell^{c}\)</span>.</p></li>
+</ol>
+<p>For <span class="math inline">\(Q&#39; \subseteq Q\)</span> and <span
+class="math inline">\(0 \ne a \in \mathcal{O}\)</span>, the module of
+<span class="math inline">\(T_{\mathrm{Sel},i}\)</span> <em>tied at
+<span class="math inline">\(Q&#39;\)</span></em> at level <span
+class="math inline">\(a\)</span> consists of the locally constant
+cocycles <span class="math inline">\(z \colon G_E \to
+T_{\mathrm{Sel},i}/aT_{\mathrm{Sel},i}\)</span> that vanish at <span
+class="math inline">\(\gamma(T_{\mathrm{Sel},i})\)</span>, are
+unramified outside <span
+class="math inline">\(\Sigma(T_{\mathrm{Sel},i}) \cup Q \cup \bar
+Q\)</span>, satisfy the local relations of <span
+class="math inline">\(T_{\mathrm{Sel},i}\)</span>, and satisfy the
+<em>ties</em> <span class="math inline">\(z(s_w^{\pm}) =
+\mathrm{sl}_i(w)\, z(\mathrm{Fr}_w^{\pm})\)</span> for <span
+class="math inline">\(w \in Q&#39;\)</span> and both signs. Call the
+module obtained by taking <span class="math inline">\(Q&#39; =
+Q\)</span> the <em>tied module</em>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060700--tied-primes__workbook.html">Chapter 88</a></div><!-- used-in:end -->
+</div>
+<p><em>Bounded tied primes.</em> Let <span class="math inline">\(E
+\subseteq \bar{\mathbb{Q}}\)</span> be a CM field, <span
+class="math inline">\(\Sigma_0\)</span> a finite set of finite places of
+<span class="math inline">\(E\)</span>, and <span
+class="math inline">\(g_0\)</span> an element of inertia at a place of
+<span class="math inline">\(\Sigma_0\)</span> prime to <span
+class="math inline">\(\ell\)</span>. Let <span
+class="math inline">\(T_{\mathrm{Sel},1}, \dots,
+T_{\mathrm{Sel},n}\)</span> be Selmer data for <span
+class="math inline">\((\Sigma_0, g_0)\)</span> over one coefficient ring
+<span class="math inline">\(\mathcal{O}\)</span>, let <span
+class="math inline">\(c\)</span> be a nonnegative integer with <span
+class="math inline">\(2\operatorname{rk}T_{\mathrm{Sel},i}\,\mathrm{ord}_{\mathcal{O}}(\ell^{c})
++ 1 &lt; \#k_{\mathcal{O}}\)</span> for all <span
+class="math inline">\(i\)</span>, and let <span
+class="math inline">\(W\)</span> be a neighbourhood of <span
+class="math inline">\(g_0\)</span> in <span
+class="math inline">\(G_E\)</span>. There is a nonnegative integer <span
+class="math inline">\(n_Q\)</span> such that for every integer <span
+class="math inline">\(h_1 &gt; c\)</span> there are tied primes at level
+<span class="math inline">\(\ell^{h_1}\)</span>, for <span
+class="math inline">\(c\)</span> and <span
+class="math inline">\(W\)</span>, with <span class="math inline">\(\#Q
+\le n_Q\)</span>, for which the tied module of each <span
+class="math inline">\(T_{\mathrm{Sel},i}\)</span> at level <span
+class="math inline">\(\ell^{c}\)</span> has <span
+class="math inline">\(\mathcal{O}\)</span>-length at most <span
+class="math inline">\(\mathrm{glob}(T_{\mathrm{Sel},i}) +
+\mathrm{plc}(T_{\mathrm{Sel},i})\)</span>. <em>Status</em>: the
+coefficient-ring case of a result read from the proof <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>; not
+proved here. Theorem <a href="20261126T060700--tied-primes__workbook.html#thm:tied" data-reference-type="ref"
+data-reference="w3-thm:tied">88.4.1</a> of Chapter <a
+href="20261126T060700--tied-primes__workbook.html#chap" data-reference-type="ref"
+data-reference="w3-chap">88</a> treats the case in which <span
+class="math inline">\(\Sigma_0\)</span> contains the places above <span
+class="math inline">\(\ell\)</span>.</p>
+<h1 id="sec:line">§87.4. Untying along a line</h1>
+<p>In the tied module the value of a cocycle at each tame generator is
+given by its value at a Frobenius element, and the term <span
+class="math inline">\(\mathrm{inr}\)</span> is missing from the bound.
+The twists we want are not tied. The ties are removed along a line
+through the origin of the space of the <span
+class="math inline">\(X_w\)</span>. In the construction below, <span
+class="math inline">\(\mathrm{Fr}_{w_*}^{+}\)</span> and <span
+class="math inline">\(\mathrm{Fr}_{w_*}^{-}\)</span> act modulo <span
+class="math inline">\(\ell^{c_{\mathrm{tor}}}\)</span> as <span
+class="math inline">\(g_0^{+}\)</span> and <span
+class="math inline">\(g_0^{-}\)</span>; at the origin, releasing the two
+ties at <span class="math inline">\(w_*\)</span> then increases the
+<span class="math inline">\(\mathcal{O}\)</span>-length by at most <span
+class="math inline">\(\mathrm{inr}(T_{\mathrm{Sel}})\)</span>. At the
+levels and radii specified below, the increase in length from the other
+primes is bounded by the valuation of a product of determinants
+evaluated on the line, and at a suitable point the normalized valuation
+of this product equals its Gauss valuation.</p>
+<div id="pr:geometric" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:geometric&quot;]">
+<p><strong>Problem 87.4.1</strong>. Let <span class="math inline">\(0 &lt;
+\rho \le 1\)</span>, <span class="math inline">\(h\)</span> a
+nonnegative integer, and <span class="math inline">\(\alpha \in
+\bar{\mathbb{Z}}_\ell\)</span> with <span
+class="math inline">\(\operatorname{val}(\alpha - 1) \ge \rho\)</span>.
+Then <span class="math inline">\(\operatorname{val}\bigl(\sum_{0 \le j
+&lt; \ell^{h}} \alpha^j\bigr) \ge h\rho\)</span>; for <span
+class="math inline">\(\ell = 3\)</span>, <span
+class="math inline">\(\alpha = 4\)</span>, <span class="math inline">\(h
+= 2\)</span> the sum is <span class="math inline">\(87381 = 9 \cdot
+9709\)</span>. Hence, let <span class="math inline">\(c\)</span> be a
+nonnegative integer with <span class="math inline">\(h_1\rho \ge
+c\)</span>, and let <span class="math inline">\(x\)</span> have
+coordinates in a coefficient ring <span
+class="math inline">\(\mathcal{O}&#39;\)</span> with <span
+class="math inline">\(\operatorname{val}(x_w) \ge \rho\)</span> for
+every <span class="math inline">\(w \in Q\)</span>. Modulo <span
+class="math inline">\(\ell^c\mathcal{O}&#39;\)</span>, one has <span
+class="math inline">\((1 + x_w)^{\ell^{h_1}} \equiv 1\)</span> for every
+<span class="math inline">\(w \in Q\)</span> and <span
+class="math inline">\(\chi_x(gu) \equiv \chi_x(g)\chi_x(u)\)</span> for
+all <span class="math inline">\(g, u \in G_E\)</span>.</p>
+</div>
+<p>In the next two problems <span class="math inline">\(u\)</span> and
+<span class="math inline">\(u&#39;\)</span> stand for the values of a
+cocycle at a tame generator <span class="math inline">\(s\)</span> and
+at a Frobenius element <span class="math inline">\(\varphi\)</span>.</p>
+<div id="pr:line-rank-one" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:line-rank-one&quot;]">
+<p><strong>Problem 87.4.2</strong>. Modulo <span
+class="math inline">\(9\)</span>, with <span class="math inline">\(y =
+3\)</span>: the pairs <span class="math inline">\((u, u&#39;) \in
+(\mathbb{Z}/9)^2\)</span> with <span class="math inline">\(\bigl((1 + y)
+- 1\bigr)(u - 2u&#39;) = 0\)</span> number <span
+class="math inline">\(27\)</span>, and those with the tie <span
+class="math inline">\(u = 2u&#39;\)</span> number <span
+class="math inline">\(9\)</span>. The lengths differ by <span
+class="math inline">\(1 = \operatorname{val}_3\bigl((1 + y) -
+1\bigr)\)</span>.</p>
+</div>
+<div id="pr:line" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:line&quot;]">
+<p><strong>Problem 87.4.3</strong>. Let a group <span
+class="math inline">\(G\)</span> act linearly on a module <span
+class="math inline">\(B\)</span> over a commutative ring <span
+class="math inline">\(\Lambda\)</span>, and let <span
+class="math inline">\(z \colon G \to B\)</span> be a cocycle. Let <span
+class="math inline">\(s, \varphi \in G\)</span> with <span
+class="math inline">\(\varphi s \varphi^{-1} = s^{q}\)</span> or <span
+class="math inline">\(\varphi^{-1} s \varphi = s^{q}\)</span>, where
+<span class="math inline">\(h\)</span> is a nonnegative integer and
+<span class="math inline">\(q\)</span> a positive integer with <span
+class="math inline">\(q \equiv 1 \pmod{\ell^{h}}\)</span>. Let <span
+class="math inline">\(s\)</span> act by a scalar <span
+class="math inline">\(\Gamma \in \Lambda\)</span> with <span
+class="math inline">\(\sum_{0 \le j &lt; \ell^{h}} \Gamma^j = 0\)</span>
+on <span class="math inline">\(B\)</span>, and let <span
+class="math inline">\(\varphi\)</span> act by <span
+class="math inline">\(\Phi\)</span>. <span class="upright">(a)</span>
+<span class="math inline">\(z(s^{q}) = z(s)\)</span>, and <span
+class="math inline">\((\Phi - 1)\,z(s) = (\Gamma -
+1)\,z(\varphi)\)</span>. <span class="upright">(b)</span> If <span
+class="math inline">\(\Gamma = 1 + \sigma y\)</span> and <span
+class="math inline">\(\Phi = (1 + y)A\)</span> with <span
+class="math inline">\(\sigma, y \in \Lambda\)</span> and a <span
+class="math inline">\(\Lambda\)</span>-linear <span
+class="math inline">\(A\)</span> such that <span
+class="math inline">\(\sigma(A - 1) = 0\)</span> on <span
+class="math inline">\(B\)</span>, then <span
+class="math inline">\(\bigl((1 + y)A - 1\bigr)\bigl(z(s) - \sigma
+z(\varphi)\bigr) = 0\)</span>.</p>
+</div>
+<p>Now fix one of the Selmer data, <span
+class="math inline">\(T_{\mathrm{Sel}}= T_{\mathrm{Sel},i}\)</span>,
+with a torsion level <span
+class="math inline">\(c_{\mathrm{tor}}\)</span>, tied primes at level
+<span class="math inline">\(\ell^{h_1}\)</span> for <span
+class="math inline">\(c = c_{\mathrm{tor}}\)</span> with <span
+class="math inline">\(h_1 &gt; c_{\mathrm{tor}}\)</span>, and a rational
+<span class="math inline">\(0 &lt; \rho \le 1\)</span> with <span
+class="math inline">\(h_1\rho \ge c_{\mathrm{tor}}\)</span>. Write <span
+class="math inline">\(\mathrm{sl}(w) := \mathrm{sl}_i(w)\)</span>. Let
+<span class="math inline">\(\mathrm{Sel}(x)\)</span> be the module of
+the finite presentation for <span
+class="math inline">\(T_{\mathrm{Sel}}\)</span>, <span
+class="math inline">\(c = c_{\mathrm{tor}}\)</span>, <span
+class="math inline">\(S = \Sigma(T_{\mathrm{Sel}}) \cup Q \cup \bar
+Q\)</span>, and <span class="math inline">\(\mathcal L\)</span> the
+local relations of <span class="math inline">\(T_{\mathrm{Sel}}\)</span>
+with the relation <span
+class="math inline">\(z(\gamma(T_{\mathrm{Sel}})) = 0\)</span>. The
+<em>line</em> of <span class="math inline">\(T_{\mathrm{Sel}}\)</span>
+consists of the points <span class="math inline">\(x(y)\)</span> with
+<span class="math inline">\(x_{w_*} = y\)</span> and <span
+class="math inline">\(x_w = \mathrm{sl}(w)\,y\)</span> for <span
+class="math inline">\(w \ne w_*\)</span>. For <span
+class="math inline">\(w \in Q\)</span> with <span
+class="math inline">\(w \ne w_*\)</span>, the values on the line are
+<span class="math inline">\(\chi_{x(y)}(s_w^{\pm}) = 1 +
+\mathrm{sl}(w)y\)</span> and <span
+class="math inline">\(\chi_{x(y)}(\mathrm{Fr}_w^{\pm}) = 1 + y\)</span>.
+If <span class="math inline">\(y\)</span> lies in a coefficient ring
+<span class="math inline">\(\mathcal{O}&#39; \supseteq
+\mathcal{O}\)</span> and <span
+class="math inline">\(\operatorname{val}(y) \ge \rho\)</span>, then for
+every <span class="math inline">\(z \in \mathrm{Sel}(x(y))\)</span>,
+every such <span class="math inline">\(w\)</span> and both signs, <span id="eq:untie"
+class="math display">\[\begin{equation}
+\label{eq:untie}\tag{1}
+  \bigl((1 + y)\,T_{\mathrm{Sel}}(\mathrm{Fr}_w^{\pm}) -
+1\bigr)\bigl(z(s_w^{\pm}) - \mathrm{sl}(w)\,
+z(\mathrm{Fr}_w^{\pm})\bigr) = 0 .
+\end{equation}\]</span></p>
+<div id="pr:det-gauss" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:det-gauss&quot;]">
+<p><strong>Problem 87.4.4</strong>. <span class="upright">(a)</span> Let
+<span class="math inline">\(\mathcal{O}&#39;\)</span> be a discrete
+valuation ring, <span class="math inline">\(0 \ne a \in
+\mathcal{O}&#39;\)</span> and <span class="math inline">\(A\)</span> an
+<span class="math inline">\(r&#39; \times r&#39;\)</span> matrix over
+<span class="math inline">\(\mathcal{O}&#39;\)</span>. The kernel of
+<span class="math inline">\(A\)</span> on <span
+class="math inline">\((\mathcal{O}&#39;/a)^{r&#39;}\)</span> has length
+at most <span class="math inline">\(\mathrm{ord}_{\mathcal{O}&#39;}\det
+A\)</span>. <span class="upright">(b)</span> For <span
+class="math inline">\(A \in \mathrm{GL}_{r&#39;}(\mathcal{O})\)</span>
+and rational <span class="math inline">\(\rho \ge 0\)</span>, <span
+class="math inline">\(v_\rho\bigl(\det((1 + Y)A - 1)\bigr) \le
+r&#39;\rho\)</span>. For <span class="math inline">\(A =
+\bigl(\begin{smallmatrix} 1 &amp; 1 \\ 0 &amp; 1
+\end{smallmatrix}\bigr)\)</span> the determinant is <span
+class="math inline">\(Y^2\)</span>.</p>
+</div>
+<div id="pr:generic" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:generic&quot;]">
+<p><strong>Problem 87.4.5</strong>. Let <span class="math inline">\(G_1,
+\dots, G_k \in \bar{\mathbb{Z}}_\ell[Y]\)</span> be nonzero and <span
+class="math inline">\(\rho &gt; 0\)</span> rational. Some <span
+class="math inline">\(y \in \bar{\mathbb{Z}}_\ell\)</span> with <span
+class="math inline">\(\operatorname{val}(y) = \rho\)</span> has <span
+class="math inline">\(\operatorname{val}(G_j(y)) = v_\rho(G_j)\)</span>
+for every <span class="math inline">\(j\)</span>. Moreover <span
+class="math inline">\(v_\rho(G_j) \le
+\operatorname{val}(G_j(0))\)</span>.</p>
+</div>
+<p><em>The polynomial of a datum.</em> Let <span
+class="math inline">\(\mathrm{Sel}&#39;(x) \subseteq
+\mathrm{Sel}(x)\)</span> be the submodule of the <span
+class="math inline">\(z\)</span> that satisfy the ties at the <span
+class="math inline">\(w \ne w_*\)</span>; it is the module of the finite
+presentation for <span class="math inline">\(\mathcal L\)</span>
+enlarged by these ties. For <span
+class="math inline">\(\operatorname{val}(y) \ge \rho\)</span>, the
+length of <span class="math inline">\(\mathrm{Sel}(x(y))\)</span>
+exceeds that of <span
+class="math inline">\(\mathrm{Sel}&#39;(x(y))\)</span> by at most <span
+class="math inline">\(\mathrm{ord}_{\mathcal{O}&#39;}
+D_{\mathrm{tie}}(y)\)</span>, where, in this sheet, <span
+class="math display">\[D_{\mathrm{tie}}(Y) := \prod_{w \in Q,\ w \ne
+w_*}\ \prod_{\pm} \det\bigl((1 +
+Y)\,T_{\mathrm{Sel}}(\mathrm{Fr}_w^{\pm}) - 1\bigr),\]</span> and <span
+class="math inline">\(v_\rho(D_{\mathrm{tie}}) \le
+2\operatorname{rk}T_{\mathrm{Sel}}\,(\#Q - 1)\rho\)</span> by Problem <a
+href="#pr:det-gauss" data-reference-type="ref"
+data-reference="pr:det-gauss">87.4.4</a>(b). At the origin <span
+class="math inline">\(\chi_0 = 1\)</span>, and <span
+class="math inline">\(\mathrm{Sel}&#39;(0)\)</span>, taken over <span
+class="math inline">\(\mathcal{O}\)</span>, is the module of <span
+class="math inline">\(T_{\mathrm{Sel}}\)</span> tied at <span
+class="math inline">\(Q \smallsetminus \{w_*\}\)</span> at level <span
+class="math inline">\(\ell^{c_{\mathrm{tor}}}\)</span>. Assume <span
+class="math inline">\(T_{\mathrm{Sel}}(\mathrm{Fr}_{w_*}^{\pm}) \equiv
+T_{\mathrm{Sel}}(g_0^{\pm}) \pmod{\ell^{c_{\mathrm{tor}}}}\)</span> for
+both signs. If the tied module has <span
+class="math inline">\(\mathcal{O}\)</span>-length at most <span
+class="math inline">\(\mathrm{glob}(T_{\mathrm{Sel}}) +
+\mathrm{plc}(T_{\mathrm{Sel}})\)</span>, then <span
+class="math inline">\(\mathrm{Sel}&#39;(0)\)</span> has <span
+class="math inline">\(\mathcal{O}\)</span>-length at most <span
+class="math inline">\(\mathrm{glob}(T_{\mathrm{Sel}}) +
+\mathrm{plc}(T_{\mathrm{Sel}}) +
+\mathrm{inr}(T_{\mathrm{Sel}})\)</span>: releasing the two ties at <span
+class="math inline">\(w_*\)</span> costs at most <span
+class="math inline">\(\mathrm{inr}(T_{\mathrm{Sel}})\)</span>.
+<em>Status</em>: read from the proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>. Under the same hypothesis
+on the tied module, there are a polynomial <span
+class="math inline">\(F\)</span> over <span
+class="math inline">\(\mathcal{O}\)</span> in the variables <span
+class="math inline">\(X_w\)</span> and a <span class="math inline">\(y
+\in \bar{\mathbb{Z}}_\ell\)</span> with <span
+class="math inline">\(\operatorname{val}(y) = \rho\)</span> such that
+<span class="math display">\[\operatorname{val}F(x(y)) \le
+\mathrm{bd}(T_{\mathrm{Sel}}) + 2\operatorname{rk}T_{\mathrm{Sel}}\,(\#Q
+- 1)\rho .\]</span> For every discrete valuation ring <span
+class="math inline">\(\mathcal{O}&#39;\)</span> of characteristic zero
+with a ring map from <span class="math inline">\(\mathcal{O}\)</span>,
+and every <span class="math inline">\(x\)</span> over <span
+class="math inline">\(\mathcal{O}&#39;\)</span>, the <span
+class="math inline">\(\mathcal{O}&#39;\)</span>-length of <span
+class="math inline">\(\mathrm{Sel}(x)\)</span> is at most <span
+class="math inline">\(\mathrm{ord}_{\mathcal{O}&#39;} F(x)\)</span>; for
+coefficient rings <span class="math inline">\(\mathcal{O}&#39; \supseteq
+\mathcal{O}\)</span> this bounds the normalized length by <span
+class="math inline">\(\operatorname{val}F(x)\)</span>. At <span
+class="math inline">\(x = (\zeta_w - 1)_w\)</span>, if <span
+class="math inline">\(\operatorname{val}F(x) &lt;
+c_{\mathrm{tor}}\)</span>, Problem <a href="#pr:cutoff"
+data-reference-type="ref" data-reference="pr:cutoff">87.2.4</a> gives <span
+class="math inline">\(\mathrm{len}\,\mathrm{Sel}_Q(T_{\mathrm{Sel}}\chi_\zeta)
+\le \operatorname{val}F(x)\)</span>.</p>
+<h1 id="sec:systems">§87.5. Stickelberger systems</h1>
+<p>For a finite set <span class="math inline">\(Q\)</span> of finite
+places, write <span class="math inline">\(\mathrm{Cl}_Q\)</span> for the
+group of finite ideles <span class="math inline">\(u\)</span> of <span
+class="math inline">\(E\)</span> with <span class="math inline">\(u\bar
+u = 1\)</span>, modulo the subgroup generated by those that are
+principal and those that are units at every place and congruent to <span
+class="math inline">\(1\)</span> at every place of <span
+class="math inline">\(Q\)</span>. Every class of <span
+class="math inline">\(\mathrm{Cl}_Q\)</span> is represented by <span
+class="math inline">\(y/\bar y\)</span> for a finite idele <span
+class="math inline">\(y\)</span>. The value of a character <span
+class="math inline">\(\chi\)</span> for <span
+class="math inline">\(Q\)</span> at the class of <span
+class="math inline">\(y/\bar y\)</span> is <span
+class="math inline">\(\chi(\mathrm{Art}\,y)\)</span>, where <span
+class="math inline">\(\mathrm{Art}\)</span> is the Artin map; it depends
+only on the class. Extend this evaluation linearly to <span
+class="math inline">\(\bar{\mathbb{Z}}_\ell[\mathrm{Cl}_Q]\)</span>.</p>
+<div id="def:system" class="definition">
+<p><strong>Definition 87.5.1</strong>. A <em>Stickelberger system</em> <span
+class="math inline">\(\mathrm{St}\)</span> for <span
+class="math inline">\((\Sigma_0, g_0)\)</span> comprises a continuous
+character <span class="math inline">\(\alpha\colon G_E \to
+\bar{\mathbb{Q}}_\ell^\times\)</span> unramified outside <span
+class="math inline">\(\Sigma_0\)</span> with <span
+class="math inline">\(\alpha(g_0) \ne 1\)</span>, a finite list <span
+class="math inline">\(L\)</span> of integer exponents, and an element
+<span class="math inline">\(\mathrm{St}_Q \in
+\bar{\mathbb{Z}}_\ell[\mathrm{Cl}_Q]\)</span> for each finite set <span
+class="math inline">\(Q\)</span> of finite places, such that <span
+class="math inline">\(1(\mathrm{St}_\varnothing) \ne 0\)</span>, where
+<span class="math inline">\(1\)</span> denotes the trivial character. If
+<span class="math inline">\(v \notin Q\)</span> and <span
+class="math inline">\(Q \cup \{v\}\)</span> is admissible for <span
+class="math inline">\(\Sigma_0\)</span>, then <span
+class="math display">\[\chi(\mathrm{St}_{Q \cup \{v\}})
+  = \chi(\mathrm{St}_Q) \prod_{e \in L} \prod_{\epsilon = \pm 1}
+      \bigl(1 - (\alpha(\mathrm{Fr}_v)\chi(\mathrm{Fr}_v))^{\epsilon}\,
+(\# k_v)^{-e}\bigr)\]</span> for every character <span
+class="math inline">\(\chi\)</span> for <span
+class="math inline">\(Q\)</span> and every arithmetic Frobenius element
+<span class="math inline">\(\mathrm{Fr}_v\)</span> at any place of <span
+class="math inline">\(\bar{\mathbb{Q}}\)</span> above <span
+class="math inline">\(v\)</span>; the product over <span
+class="math inline">\(L\)</span> counts entries with multiplicity, as
+does <span class="math inline">\(\#L\)</span>. Put <span
+class="math display">\[\mathrm{bd}(\mathrm{St}) :=
+\operatorname{val}\bigl(1(\mathrm{St}_\varnothing)\bigr) + 2\,\#
+L\,\operatorname{val}\bigl(\alpha(g_0) - 1\bigr) .\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:delete">Problem 87.5.1</a>; <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a>; <a href="20261126T081200--a-measure-for-hecke-values__workbook.html">Chapter 89</a>: <a href="20261126T081200--a-measure-for-hecke-values__workbook.html#pr:insert">Problem 89.1.2</a>; <a href="20261127T100000--overview__workbook.html">Chapter Overview</a></div><!-- used-in:end -->
+</div>
+<div id="pr:delete" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:delete&quot;]">
+<p><strong>Problem 87.5.1</strong>. The zeta function of <span
+class="math inline">\(\mathbb{Q}(i)\)</span> at <span
+class="math inline">\(2\)</span> without its Euler factors at the two
+primes <span class="math inline">\(6 \pm i\)</span> of norm <span
+class="math inline">\(37\)</span> is <span
+class="math inline">\(\zeta_{\mathbb{Q}(i)}(2)\,(1 -
+37^{-2})^2\)</span>, and <span class="math inline">\((1 - 37^{-2})^2 =
+1871424/1874161\)</span> has <span class="math inline">\(3\)</span>-adic
+valuation <span class="math inline">\(4\)</span>. This factor equals the
+product on the right-hand side of the identity in Definition <a
+href="#def:system" data-reference-type="ref"
+data-reference="def:system">87.5.1</a> for one place <span
+class="math inline">\(v\)</span> of norm <span
+class="math inline">\(37\)</span> (the two signs <span
+class="math inline">\(\epsilon\)</span> give the factors at <span
+class="math inline">\(v\)</span> and <span class="math inline">\(\bar
+v\)</span>), with <span class="math inline">\(L = [2]\)</span> and the
+values of <span class="math inline">\(\alpha\)</span> and <span
+class="math inline">\(\chi\)</span> at <span
+class="math inline">\(\mathrm{Fr}_v\)</span> both set to <span
+class="math inline">\(1\)</span>.</p>
+</div>
+<div id="pr:euler-line" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:euler-line&quot;]">
+<p><strong>Problem 87.5.2</strong>. For <span class="math inline">\(\ell =
+3\)</span> and <span class="math inline">\(\zeta\)</span> of order <span
+class="math inline">\(9\)</span>: <span
+class="math inline">\(\operatorname{val}\bigl((1 - \zeta/19)(1 -
+\zeta^{-1}/19)\bigr) = 1/3 = \operatorname{val}\bigl((1 - \zeta)(1 -
+\zeta^{-1})\bigr)\)</span>. In general, let <span
+class="math inline">\(q \ne \ell\)</span> be a prime, <span
+class="math inline">\(M&#39; \ge 1\)</span> an integer and <span
+class="math inline">\(\alpha_1, \alpha_0 \in
+\bar{\mathbb{Z}}_\ell^\times\)</span> with <span class="math inline">\(q
+\equiv 1 \pmod{\ell^{M&#39;}}\)</span>, <span
+class="math inline">\(\operatorname{val}(\alpha_1 - \alpha_0) \ge
+M&#39;\)</span> and <span
+class="math inline">\(\operatorname{val}(\alpha_0 - 1) &lt;
+M&#39;\)</span>. Then <span
+class="math inline">\(\operatorname{val}\bigl(1 - \alpha_1^{\pm 1}
+q^{-e}\bigr) = \operatorname{val}(\alpha_0 - 1)\)</span> for every
+integer <span class="math inline">\(e\)</span> and both signs.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T081200--a-measure-for-hecke-values__workbook.html">Chapter 89</a></div><!-- used-in:end -->
+</div>
+<p>Let <span class="math inline">\(\mathrm{St}\)</span> be a
+Stickelberger system and let tied primes be given, with <span
+class="math inline">\(0 &lt; \rho \le 1\)</span>. For <span
+class="math inline">\(Q&#39;\)</span> with <span
+class="math inline">\(w_* \in Q&#39; \subseteq Q\)</span> let <span
+class="math inline">\(F_{Q&#39;}(Y) \in
+\bar{\mathbb{Z}}_\ell[Y]\)</span> be the result of replacing each class
+of <span class="math inline">\(\mathrm{Cl}_{Q&#39;}\)</span> in <span
+class="math inline">\(\mathrm{St}_{Q&#39;}\)</span>, represented by
+<span class="math inline">\(y/\bar y\)</span>, by <span
+class="math inline">\((1 + Y)^{[\lg_{w_*}(\mathrm{Art}\,y)]}\)</span>,
+which does not depend on <span class="math inline">\(y\)</span>; so
+<span class="math inline">\(F_{Q&#39;}(\zeta - 1) =
+\chi(\mathrm{St}_{Q&#39;})\)</span> for <span class="math inline">\(\chi
+= \zeta^{\lg_{w_*}}\)</span> and <span
+class="math inline">\(\zeta^{\ell^{h_1}} = 1\)</span>. Write <span
+class="math inline">\(\alpha_w := \alpha(\mathrm{Fr}_w)\)</span> and
+<span class="math inline">\(q_w := \#k_w\)</span>; the values of <span
+class="math inline">\(\alpha\)</span> lie in <span
+class="math inline">\(\bar{\mathbb{Z}}_\ell^\times\)</span>, since its
+image is compact.</p>
+<div id="pr:system-congruence" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:system-congruence&quot;]">
+<p><strong>Problem 87.5.3</strong>. Put, in this sheet, <span
+class="math inline">\(R_{\mathrm{Eu}}(Y) := \prod_{w \in Q,\, w \ne w_*}
+\prod_{e \in L} \bigl(1 - \alpha_w q_w^{-e}(1 + Y)\bigr)\bigl(1 + Y -
+\alpha_w^{-1} q_w^{-e}\bigr)\)</span>. Then <span
+class="math inline">\(R_{\mathrm{Eu}} \in
+\bar{\mathbb{Z}}_\ell[Y]\)</span>, <span
+class="math inline">\(v_\rho(R_{\mathrm{Eu}}) \le 2\,\#L\,(\#Q -
+1)\rho\)</span>, and <span class="math display">\[(1 + Y)^{\#L(\#Q -
+1)}\, F_Q(Y) \equiv F_{\{w_*\}}(Y)\, R_{\mathrm{Eu}}(Y) \pmod{(1 +
+Y)^{\ell^{h_1}} - 1} \quad\text{in }
+\bar{\mathbb{Z}}_\ell[Y].\]</span></p>
+</div>
+<div id="pr:system-line" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:system-line&quot;]">
+<p><strong>Problem 87.5.4</strong>. Let <span
+class="math inline">\(M&#39;\)</span> be an integer with <span
+class="math inline">\(\mathrm{bd}(\mathrm{St}) + 1 &lt; M&#39; \le
+h_1\rho\)</span>, and suppose <span
+class="math inline">\(\operatorname{val}\bigl(\alpha(\mathrm{Fr}_{w_*})
+- \alpha(g_0)\bigr) \ge M&#39;\)</span> and <span
+class="math inline">\(2\,\#L\,\#Q\,\rho &lt; 1\)</span>. <span
+class="upright">(a)</span> <span
+class="math inline">\(\operatorname{val}F_{\{w_*\}}(0) =
+\mathrm{bd}(\mathrm{St})\)</span>. <span class="upright">(b)</span> Some
+<span class="math inline">\(y\)</span> with <span
+class="math inline">\(\operatorname{val}(y) = \rho\)</span> has <span
+class="math inline">\(\operatorname{val}F_Q(y) \le
+\mathrm{bd}(\mathrm{St}) + 2\,\#L\,(\#Q - 1)\rho\)</span>.</p>
+</div>
+<p>For <span class="math inline">\(Q\)</span> itself, define <span
+class="math inline">\(F = \chi_X(\mathrm{St}_Q)\)</span> by replacing
+each class represented by <span class="math inline">\(u/\bar u\)</span>
+by <span class="math inline">\(\chi_X(\mathrm{Art}\,u)\)</span> and
+extending linearly; each <span class="math inline">\(\lg_w\)</span> is a
+character for <span class="math inline">\(Q\)</span>, so the value does
+not depend on the representative. The restriction of <span
+class="math inline">\(F\)</span> to the <span
+class="math inline">\(w_*\)</span>-axis is <span
+class="math inline">\(F_Q\)</span>. At the point with coordinate <span
+class="math inline">\(y\)</span> of Problem <a href="#pr:system-line"
+data-reference-type="ref" data-reference="pr:system-line">87.5.4</a>(b) at
+<span class="math inline">\(w_*\)</span> and zero elsewhere, <span
+class="math inline">\(F\)</span> has valuation at most <span
+class="math inline">\(\mathrm{bd}(\mathrm{St}) + 2\,\#L\,(\#Q -
+1)\rho\)</span>, and at every point <span class="math inline">\(x =
+(\zeta_w - 1)_w\)</span>, <span class="math inline">\(F(x) =
+\chi_\zeta(\mathrm{St}_Q)\)</span>.</p>
+<p><em>The systems of the ratios.</em> Theorem <a
+href="20261126T081200--a-measure-for-hecke-values__workbook.html#thm:pair-system" data-reference-type="ref"
+data-reference="w4-thm:pair-system">89.3.1</a> supplies
+the system, the bound and the norm identity for each ramified critical
+pair and sign.</p>
+<div id="pr:ratio-from-system" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:ratio-from-system&quot;]">
+<p><strong>Problem 87.5.5</strong>. With the notation of Theorem <a
+href="20261126T081200--a-measure-for-hecke-values__workbook.html#thm:pair-system" data-reference-type="ref"
+data-reference="w4-thm:pair-system">89.3.1</a>, let <span
+class="math inline">\(\mathrm{St}\)</span> be a system supplied by that
+theorem for a ramified critical pair <span
+class="math inline">\(P\)</span> and sign <span
+class="math inline">\(\epsilon\)</span>, let <span
+class="math inline">\(\xi\)</span> be a twist satisfying its hypotheses,
+and let <span class="math inline">\(\delta \ge 0\)</span> be real. If
+<span
+class="math inline">\(\operatorname{val}\bigl(\hat\xi(\mathrm{St}_{Q_\xi})\bigr)
+\le \mathrm{bd}(\mathrm{St}) + \delta\)</span>, then <span
+class="math inline">\(\operatorname{val}_+\bigl(\iota(R_P(\xi,
+\epsilon))\bigr) \le 4\operatorname{val}_\ell(\#k_{w_0} - 1) +
+\delta\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a>; <a href="20261126T081200--a-measure-for-hecke-values__workbook.html">Chapter 89</a>; <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html">Chapter 90</a></div><!-- used-in:end -->
+</div>
+<h1 id="sec:input">§87.6. The polynomial input</h1>
+<div id="pr:order" class="problem" data-progress-ids="[&quot;20261126T060600--lengths-as-values-of-polynomials__workbook.tex#pr:order&quot;]">
+<p><strong>Problem 87.6.1</strong>. Let <span class="math inline">\(c&#39;
+\ge 1\)</span> be an integer that bounds the ranks of finitely many
+Selmer data and the numbers <span class="math inline">\(\#L\)</span> of
+finitely many Stickelberger systems, let <span
+class="math inline">\(n_Q\)</span> be a nonnegative integer, and put
+<span class="math inline">\(s_0 := 2c&#39;(1 + n_Q)\)</span>. If <span
+class="math inline">\(Q\)</span> is a nonempty finite set with <span
+class="math inline">\(\#Q \le n_Q\)</span> and <span
+class="math inline">\(\rho &gt; 0\)</span> with <span
+class="math inline">\(s_0\rho &lt; 1\)</span>, then <span
+class="math inline">\(\rho \le 1\)</span>, <span
+class="math inline">\(2c&#39;\#Q \le s_0\)</span>, <span
+class="math inline">\(2\,\#Q \le s_0\)</span>, <span
+class="math inline">\(2\operatorname{rk}T_{\mathrm{Sel}}\,(\#Q - 1)\rho
+\le s_0\rho\)</span> and <span class="math inline">\(2\,\#L\,(\#Q -
+1)\rho \le s_0\rho\)</span> for each datum and system, and <span
+class="math inline">\(2\,\#L\,\#Q\,\rho &lt; 1\)</span>.</p>
+</div>
+<div id="thm:polynomials" class="theorem">
+<p><strong>Theorem 87.6.1</strong> (the polynomial input). <em>Let <span
+class="math inline">\(E \subseteq \bar{\mathbb{Q}}\)</span> be a CM
+field, <span class="math inline">\(\Sigma_0\)</span> a finite set of
+finite places of <span class="math inline">\(E\)</span>, and <span
+class="math inline">\(g_0\)</span> an element of inertia at a place of
+<span class="math inline">\(\Sigma_0\)</span> prime to <span
+class="math inline">\(\ell\)</span>. Let finitely many Selmer data for
+<span class="math inline">\((\Sigma_0, g_0)\)</span> over one
+coefficient ring <span class="math inline">\(\mathcal{O}\)</span> and
+finitely many Stickelberger systems for <span
+class="math inline">\((\Sigma_0, g_0)\)</span> be given, and let <span
+class="math inline">\(c_{\mathrm{tor}}\)</span> be a torsion level for
+the data. There is an integer <span class="math inline">\(s_0 \ge
+1\)</span> such that for every rational <span class="math inline">\(\rho
+&gt; 0\)</span> with <span class="math inline">\(s_0\rho &lt; 1\)</span>
+and every sufficiently large integer <span
+class="math inline">\(h_1\)</span> there are:</em></p>
+<ol>
+<li><p><em>a set <span class="math inline">\(Q\)</span>, admissible for
+<span class="math inline">\(\Sigma_0\)</span>, of at most <span
+class="math inline">\(s_0/2\)</span> places, and for each <span
+class="math inline">\(w \in Q\)</span> a homomorphism <span
+class="math inline">\(\lg_w\colon G_E \to \mathbb{Z}/\ell^{h_1}\)</span>
+that is a character for <span class="math inline">\(\{w\}\)</span> and
+takes the value <span class="math inline">\(1\)</span> at an element of
+an inertia group at <span
+class="math inline">\(w\)</span>;</em></p></li>
+<li><p><em>for each datum and each system a polynomial <span
+class="math inline">\(F\)</span> over <span
+class="math inline">\(\bar{\mathbb{Z}}_\ell\)</span> in the variables
+<span class="math inline">\(X_w\)</span>, <span class="math inline">\(w
+\in Q\)</span>, and a point with coordinates in <span
+class="math inline">\(\bar{\mathbb{Z}}_\ell\)</span> of valuation at
+least <span class="math inline">\(\rho\)</span> at which <span
+class="math inline">\(\operatorname{val}(F) \le \mathrm{bd}+
+s_0\rho\)</span>, where <span class="math inline">\(\mathrm{bd}\)</span>
+is <span class="math inline">\(\mathrm{bd}(T_{\mathrm{Sel}})\)</span> or
+<span
+class="math inline">\(\mathrm{bd}(\mathrm{St})\)</span>;</em></p></li>
+<li><p><em>for <span class="math inline">\(\ell^{h_1}\)</span>-th roots
+of unity <span class="math inline">\(\zeta_w\)</span>, with <span
+class="math inline">\(x := (\zeta_w - 1)_w\)</span>: for a system, <span
+class="math inline">\(F(x) = \chi_\zeta(\mathrm{St}_Q)\)</span>; for a
+datum with <span class="math inline">\(\operatorname{val}(F(x)) &lt;
+\mathrm{bd}(T_{\mathrm{Sel}}) + 1\)</span>, <span
+class="math inline">\(\mathrm{len}\,\mathrm{Sel}_Q(T_{\mathrm{Sel}}\chi_\zeta)
+\le \operatorname{val}(F(x))\)</span>.</em></p></li>
+</ol>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a>: <a href="20261126T031000--twists-with-few-congruences__workbook.html#pr:twist-from-roots">Problem 85.1.5</a>; <a href="20261126T081200--a-measure-for-hecke-values__workbook.html">Chapter 89</a></div><!-- used-in:end -->
+</div>
+<p><em>Status</em>: read from the proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>. In the proof, <span
+class="math inline">\(c&#39;\)</span> is an integer as in Problem <a
+href="#pr:order" data-reference-type="ref"
+data-reference="pr:order">87.6.1</a>, <span
+class="math inline">\(M&#39;\)</span> is a nonnegative integer with
+<span class="math inline">\(\mathrm{bd}(\mathrm{St}) + 1 &lt;
+M&#39;\)</span> for every system, and <span
+class="math inline">\(W\)</span> is a neighbourhood of <span
+class="math inline">\(g_0\)</span> on which <span
+class="math inline">\(T_{\mathrm{Sel}}(g^{\pm}) \equiv
+T_{\mathrm{Sel}}(g_0^{\pm})\)</span> modulo <span
+class="math inline">\(\ell^{c_{\mathrm{tor}}}\)</span> for every datum
+and <span class="math inline">\(\operatorname{val}(\alpha(g) -
+\alpha(g_0)) \ge M&#39;\)</span> for every system. The bounded tied
+primes, for <span class="math inline">\(c = c_{\mathrm{tor}}\)</span>
+and this <span class="math inline">\(W\)</span>, give <span
+class="math inline">\(n_Q\)</span>, and <span class="math inline">\(s_0
+:= 2c&#39;(1 + n_Q)\)</span>; the number <span
+class="math inline">\(n_Q\)</span> is found before <span
+class="math inline">\(h_1\)</span>. For the construction it suffices
+that <span class="math inline">\(h_1 &gt; c_{\mathrm{tor}}\)</span>,
+<span class="math inline">\(h_1\rho \ge c_{\mathrm{tor}}\)</span> and
+<span class="math inline">\(h_1\rho \ge M&#39;\)</span>. The set <span
+class="math inline">\(Q\)</span> and the <span
+class="math inline">\(\lg_w\)</span> are those of the tied primes. The
+proof chooses a sharp minor on the line for each datum and evaluates the
+universal character on <span
+class="math inline">\(\mathrm{St}_Q\)</span> for each system; its line
+parameters have valuation at least <span
+class="math inline">\(\rho\)</span>, and Sections <a href="#sec:line"
+data-reference-type="ref" data-reference="sec:line">87.4</a> and <a
+href="#sec:systems" data-reference-type="ref"
+data-reference="sec:systems">87.5</a> choose them of valuation exactly
+<span class="math inline">\(\rho\)</span>.</p>
+<p>Problems <a href="#pr:sharp" data-reference-type="ref"
+data-reference="pr:sharp">87.1.2</a>, <a href="#pr:sharp-use"
+data-reference-type="ref" data-reference="pr:sharp-use">87.1.3</a> and <a
+href="#pr:cutoff" data-reference-type="ref"
+data-reference="pr:cutoff">87.2.4</a> give the length comparisons.
+Problems <a href="#pr:geometric" data-reference-type="ref"
+data-reference="pr:geometric">87.4.1</a>, <a href="#pr:line"
+data-reference-type="ref" data-reference="pr:line">87.4.3</a>, <a
+href="#pr:det-gauss" data-reference-type="ref"
+data-reference="pr:det-gauss">87.4.4</a> and <a href="#pr:generic"
+data-reference-type="ref" data-reference="pr:generic">87.4.5</a> give the
+geometric sum, the abstract cocycle relation, the determinant estimates
+and the choice of a point; Section <a href="#sec:line"
+data-reference-type="ref" data-reference="sec:line">87.4</a> applies them
+to the local relation <a href="#eq:untie" data-reference-type="eqref"
+data-reference="eq:untie">(1)</a> and to the cost of releasing
+the remaining ties. Problems <a href="#pr:system-congruence"
+data-reference-type="ref" data-reference="pr:system-congruence">87.5.3</a>
+and <a href="#pr:system-line" data-reference-type="ref"
+data-reference="pr:system-line">87.5.4</a> give the point for a system, and
+Problem <a href="#pr:order" data-reference-type="ref"
+data-reference="pr:order">87.6.1</a> verifies the bounds for the chosen
+<span class="math inline">\(s_0\)</span>. Taken as given: the finite
+presentation, with the finiteness of cocycles unramified outside a
+finite set; the bound for releasing the ties at the first prime; the
+bounded tied primes, which are the subject of Chapter <a href="20261126T060700--tied-primes__workbook.html#chap"
+data-reference-type="ref" data-reference="w3-chap">88</a>; and
+the systems of the ratios (Theorem <a href="20261126T081200--a-measure-for-hecke-values__workbook.html#thm:pair-system"
+data-reference-type="ref"
+data-reference="w4-thm:pair-system">89.3.1</a>).
+Chapter <a href="20261126T031000--twists-with-few-congruences__workbook.html#chap" data-reference-type="ref"
+data-reference="tw-chap">85</a> combines the polynomial input
+with Corollary <a href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#pr:powers" data-reference-type="ref"
+data-reference="w1-pr:powers">86.2.2</a> to obtain one Galois
+character whose first <span class="math inline">\(m\)</span> powers
+satisfy the bounds of the small-twists theorem. Chapter <a
+href="20261126T031000--twists-with-few-congruences__workbook.html#chap" data-reference-type="ref"
+data-reference="tw-chap">85</a> uses the implication of
+Problem <a href="#pr:ratio-from-system" data-reference-type="ref"
+data-reference="pr:ratio-from-system">87.5.5</a> for the ratio bound in the
+twisting theorem.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span> (<code>grh/src/</code>,
+namespace <code>New.Selmer</code>), Theorem <a href="#thm:polynomials"
+data-reference-type="ref" data-reference="thm:polynomials">87.6.1</a> is
+<code>exists_twistPolynomials</code>, with conclusions
+<code>TwistPolynomials</code> and hypothesis
+<code>IsTorsionLevel</code>. The finite presentation is
+<code>exists_matrix_selmerAtPoint_equiv</code>, and the bounded tied
+primes are <code>exists_isTiedPrimes_card_le_and_length_le</code>. The
+first-prime bound is
+<code>SelmerDatum.length_tiedSelmer_erase_le</code>. The bounds with
+allowance <span class="math inline">\(s_0\rho\)</span> and coordinate
+valuations at least <span class="math inline">\(\rho\)</span> used to
+assemble Theorem <a href="#thm:polynomials" data-reference-type="ref"
+data-reference="thm:polynomials">87.6.1</a> are
+<code>SelmerDatum.exists_boundsSelmer_ellVal_eval_le</code> and
+<code>StickelbergerSystem.exists_point_ellVal_universalChar_le</code>,
+for the data and the systems, respectively. Theorem <a
+href="20261126T081200--a-measure-for-hecke-values__workbook.html#thm:pair-system" data-reference-type="ref"
+data-reference="w4-thm:pair-system">89.3.1</a> is
+<code>exists_stickelbergerSystem_</code><span
+class="math inline">\(\beta\)</span><code>_le_and_norm_eq</code>. The
+implication of Problem <a href="#pr:ratio-from-system"
+data-reference-type="ref" data-reference="pr:ratio-from-system">87.5.5</a>
+occurs in <code>exists_stickelbergerSystem_ellVal_ratio_le</code>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="section-secminors">Section <a
+href="#sec:minors" data-reference-type="ref"
+data-reference="sec:minors">87.1</a></h2>
+<dl>
+<dt><a href="#pr:sharp" data-reference-type="ref"
+data-reference="pr:sharp">87.1.2</a></dt>
+<dd>
+<p>Let <span class="math inline">\(\Lambda_a\)</span> be the lattice
+spanned by the rows of <span class="math inline">\(A_a\)</span>. Compare
+the solution module with <span
+class="math inline">\(\operatorname{Hom}_{\mathcal{O}&#39;}(\mathcal{O}&#39;^n/\Lambda_a,
+\mathcal{O}&#39;/a)\)</span>, and the ideal of maximal minors of <span
+class="math inline">\(A_a\)</span> with the determinant of a basis of
+<span class="math inline">\(\Lambda_a\)</span>.</p>
+</dd>
+<dt><a href="#pr:sharp-use" data-reference-type="ref"
+data-reference="pr:sharp-use">87.1.3</a></dt>
+<dd>
+<p>Apply Problem <a href="#pr:sharp" data-reference-type="ref"
+data-reference="pr:sharp">87.1.2</a> over <span
+class="math inline">\(\mathcal{O}&#39;\)</span> to <span
+class="math inline">\(A(x)\)</span>. Which minor uses only rows of <span
+class="math inline">\(a I_n\)</span>?</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="section-secuniversal">Section <a
+href="#sec:universal" data-reference-type="ref"
+data-reference="sec:universal">87.2</a></h2>
+<dl>
+<dt><a href="#pr:universal" data-reference-type="ref"
+data-reference="pr:universal">87.2.1</a></dt>
+<dd>
+<p><span class="math inline">\([n + n&#39;]\)</span> and <span
+class="math inline">\([n] + [n&#39;]\)</span> differ by <span
+class="math inline">\(0\)</span> or <span
+class="math inline">\(\ell^{h_1}\)</span>.</p>
+</dd>
+<dt><a href="#pr:model" data-reference-type="ref"
+data-reference="pr:model">87.2.2</a></dt>
+<dd>
+<p>Compare <span class="math inline">\(z(\gamma g_1
+\gamma^{-1})\)</span> with <span
+class="math inline">\(z(g_1^2)\)</span>, and <span
+class="math inline">\(z(sg)\)</span> with <span
+class="math inline">\(z(gs)\)</span> for <span class="math inline">\(g =
+\gamma\)</span> and <span class="math inline">\(g = g_1\)</span>.
+Conversely, check that each such <span class="math inline">\(u\)</span>
+defines a cocycle, for instance through the relations of <span
+class="math inline">\(G\)</span> in <span class="math inline">\(B
+\rtimes G\)</span>. <span class="math inline">\(\mathcal{O}&#39;/5 =
+\mathbb F_5[\pi]/\pi^4\)</span> with <span class="math inline">\(\pi =
+\zeta_5 - 1\)</span>.</p>
+</dd>
+<dt><a href="#pr:normalize" data-reference-type="ref"
+data-reference="pr:normalize">87.2.3</a></dt>
+<dd>
+<p>Evaluate the decomposition at <span
+class="math inline">\(\gamma\)</span>.</p>
+</dd>
+<dt><a href="#pr:cutoff" data-reference-type="ref"
+data-reference="pr:cutoff">87.2.4</a></dt>
+<dd>
+<p>If <span class="math inline">\(z \notin Z[\ell^c]\)</span>, what is
+<span class="math inline">\((\mathcal{O}&#39; z)[\ell^c]\)</span>?</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="section-secline">Section <a href="#sec:line"
+data-reference-type="ref" data-reference="sec:line">87.4</a></h2>
+<dl>
+<dt><a href="#pr:geometric" data-reference-type="ref"
+data-reference="pr:geometric">87.4.1</a></dt>
+<dd>
+<p>Factor the geometric sum into sums with <span
+class="math inline">\(\ell\)</span> terms, and compare each factor with
+<span class="math inline">\(\ell\)</span>. For the last part, <span
+class="math inline">\((1 + x)^{n} - 1 = x \sum_{j &lt; n} (1 +
+x)^j\)</span>, and Problem <a href="#pr:universal"
+data-reference-type="ref" data-reference="pr:universal">87.2.1</a>(b).</p>
+</dd>
+<dt><a href="#pr:line" data-reference-type="ref"
+data-reference="pr:line">87.4.3</a></dt>
+<dd>
+<p>(a) <span class="math inline">\(z(s^n) = \sum_{j &lt; n} \Gamma^j
+z(s)\)</span> and <span class="math inline">\(\Gamma^{\ell^h} =
+1\)</span> on <span class="math inline">\(B\)</span>; then compute <span
+class="math inline">\(z(\varphi s) = z(s^q\varphi)\)</span> in two ways.
+In the second case compute <span class="math inline">\(z(s\varphi) =
+z(\varphi s^q)\)</span>. (b) Apply <span class="math inline">\(\Phi -
+1\)</span> to <span class="math inline">\(z(s) - \sigma
+z(\varphi)\)</span>.</p>
+</dd>
+<dt><a href="#eq:untie" data-reference-type="eqref"
+data-reference="eq:untie">(1)</a></dt>
+<dd>
+<p>For a unit idele <span class="math inline">\(u\)</span> supported at
+<span class="math inline">\(w\)</span>, examine the two components of
+<span class="math inline">\(u/\bar u\)</span> when computing <span
+class="math inline">\(\lg_{w&#39;}(s_w)\)</span> <span class="citation"
+data-cites="Ne">[<a href="#ref-Ne">Ne</a>, Ch. VI]</span>; use
+anticyclotomicity for the conjugate place. Which of the two relations of
+Problem <a href="#pr:line" data-reference-type="ref"
+data-reference="pr:line">87.4.3</a> applies at <span
+class="math inline">\(w\)</span>, and which at <span
+class="math inline">\(\bar w\)</span>, and what happens to wild inertia?
+Then Problem <a href="#pr:geometric" data-reference-type="ref"
+data-reference="pr:geometric">87.4.1</a> and Definition <a href="#def:tied"
+data-reference-type="ref" data-reference="def:tied">87.3.4</a>(d).</p>
+</dd>
+<dt><a href="#pr:det-gauss" data-reference-type="ref"
+data-reference="pr:det-gauss">87.4.4</a></dt>
+<dd>
+<p>(a) Use Problem <a href="#pr:sharp" data-reference-type="ref"
+data-reference="pr:sharp">87.1.2</a>. (b) Inspect the top coefficient.</p>
+</dd>
+<dt><a href="#pr:generic" data-reference-type="ref"
+data-reference="pr:generic">87.4.5</a></dt>
+<dd>
+<p>Problem <a href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#pr:at-point" data-reference-type="ref"
+data-reference="w1-pr:at-point">86.1.3</a>(b): avoid finitely
+many residue classes; the residue field of <span
+class="math inline">\(\bar{\mathbb{Z}}_\ell\)</span> is infinite.</p>
+</dd>
+<dt>The polynomial of a datum</dt>
+<dd>
+<p>Consider the map that records the differences in the ties, with <a
+href="#eq:untie" data-reference-type="eqref"
+data-reference="eq:untie">(1)</a> and Problem <a
+href="#pr:det-gauss" data-reference-type="ref"
+data-reference="pr:det-gauss">87.4.4</a>(a). For the polynomial bound, start
+with a minor sharp for <span
+class="math inline">\(\mathrm{Sel}&#39;\)</span> at the origin,
+restricted to the line, and use Problem <a href="#pr:generic"
+data-reference-type="ref" data-reference="pr:generic">87.4.5</a>; then take
+<span class="math inline">\(F\)</span> a minor of the presentation of
+<span class="math inline">\(\mathrm{Sel}\)</span> sharp at <span
+class="math inline">\(x(y)\)</span>, and Problem <a href="#pr:sharp-use"
+data-reference-type="ref" data-reference="pr:sharp-use">87.1.3</a>(b).</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="section-secsystems">Section <a
+href="#sec:systems" data-reference-type="ref"
+data-reference="sec:systems">87.5</a></h2>
+<dl>
+<dt><a href="#pr:euler-line" data-reference-type="ref"
+data-reference="pr:euler-line">87.5.2</a></dt>
+<dd>
+<p>Compare <span class="math inline">\(19 - \zeta\)</span> with <span
+class="math inline">\(1 - \zeta\)</span>. In general, compare each
+factor with <span class="math inline">\(1 - \alpha_0^{\pm 1}\)</span>
+modulo <span class="math inline">\(\ell^{M&#39;}\)</span>; how does
+inversion affect the valuation of the difference of two units?</p>
+</dd>
+<dt><a href="#pr:system-congruence" data-reference-type="ref"
+data-reference="pr:system-congruence">87.5.3</a></dt>
+<dd>
+<p>Evaluate at the <span class="math inline">\(\ell^{h_1}\)</span>
+distinct roots <span class="math inline">\(\zeta - 1\)</span> of the
+monic polynomial <span class="math inline">\((1 + Y)^{\ell^{h_1}} -
+1\)</span>, inserting the places <span class="math inline">\(w \ne
+w_*\)</span> one at a time. Which character occurs in the insertion
+identity, and what is its value at <span
+class="math inline">\(\mathrm{Fr}_w\)</span>?</p>
+</dd>
+<dt><a href="#pr:system-line" data-reference-type="ref"
+data-reference="pr:system-line">87.5.4</a></dt>
+<dd>
+<p>(a) Use the trivial character in the insertion identity at <span
+class="math inline">\(w_*\)</span>, and Problem <a href="#pr:euler-line"
+data-reference-type="ref" data-reference="pr:euler-line">87.5.2</a>; treat
+the empty list separately (for <span class="math inline">\(\#L \ge
+1\)</span>, <span class="math inline">\(\operatorname{val}(\alpha(g_0) -
+1) \le \mathrm{bd}(\mathrm{St})/2 &lt; M&#39;\)</span>). (b) Compare the
+valuation of the modulus with that of the right-hand side of the
+congruence at a generic point.</p>
+</dd>
+<dt><a href="#pr:ratio-from-system" data-reference-type="ref"
+data-reference="pr:ratio-from-system">87.5.5</a></dt>
+<dd>
+<p>If <span class="math inline">\(\lVert\iota(R_P(\xi, \epsilon))\rVert
+\ge 1\)</span> there is nothing to prove.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-La"><span class="bib-label">[La]</span> S. Lang, <em>Algebra</em>, 3rd ed., Grad. Texts in Math. 211, Springer, 2002.</p>
+<p id="ref-Ne"><span class="bib-label">[Ne]</span> J. Neukirch, <em>Algebraic Number Theory</em>, Grundlehren Math. Wiss. 322, Springer, 1999.</p>
+<p id="ref-SLF"><span class="bib-label">[SLF]</span> J.-P. Serre, <em>Local Fields</em>, Grad. Texts in Math. 67, Springer, 1979.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

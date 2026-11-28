@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-h5En5CqvTpEW4JWPWRbYpIgKU1AnHMpvcxe4dk9ab34=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>The determinant of a chain</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb Z","Q":"\\mathbb Q","R":"\\mathbb R","C":"\\mathbb C","Nm":"\\operatorname{Nm}","vol":"\\operatorname{vol}","Rc":"\\mathcal R"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="68">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T030700--the-determinant-of-a-chain__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 09:11:17
+      <a href="20261126T030700--the-determinant-of-a-chain__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T030700--the-determinant-of-a-chain__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T030700--the-determinant-of-a-chain__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">The determinant of a chain</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:volumes" id="toc-sec:volumes">§68.1. Volumes of maps</a></li>
+<li><a href="#sec:one-lift" id="toc-sec:one-lift">§68.2. One lift</a></li>
+<li><a href="#sec:twists" id="toc-sec:twists">§68.3. Twists and the ratios</a></li>
+<li><a href="#sec:factor" id="toc-sec:factor">§68.4. The factorization</a></li>
+<li><a href="#sec:aux" id="toc-sec:aux">§68.5. Auxiliary forms</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secvolumes" id="toc-secvolumes">§68.1</a></li>
+<li><a href="#secone-lift" id="toc-secone-lift">§68.2</a></li>
+<li><a href="#sectwists" id="toc-sectwists">§68.3</a></li>
+<li><a href="#secfactor" id="toc-secfactor">§68.4</a></li>
+<li><a href="#secaux" id="toc-secaux">§68.5</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Linear algebra over <span class="math inline">\(\mathbb C\)</span>:
+adjoints and determinants. From Chapter <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#chap"
+data-reference-type="ref" data-reference="tn-chap">23</a>: the
+Gaussian moments <span class="math inline">\(c_a\)</span> of Section <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#sec:smallest" data-reference-type="ref"
+data-reference="tn-sec:smallest">23.2</a>, and Problems <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:ca" data-reference-type="ref"
+data-reference="tn-pr:ca">23.2.1</a>, <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:U1U1"
+data-reference-type="ref" data-reference="tn-pr:U1U1">23.2.3</a>
+and <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:rallis" data-reference-type="ref"
+data-reference="tn-pr:rallis">23.3.2</a>. From Chapter <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>: the chosen places <span
+class="math inline">\(\mathcal M\)</span>, the spaces <span
+class="math inline">\(Y_j\)</span>, <span
+class="math inline">\(W_j\)</span>, <span
+class="math inline">\(V_j\)</span>, the principal and good forms <span
+class="math inline">\(H(V) \supseteq H_g(V)\)</span> with the Petersson
+product (Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:petersson"
+data-reference-type="ref"
+data-reference="ob-def:petersson">37.4.1</a>), the target
+forms <span class="math inline">\(T = H_g(Y_0)\)</span> of dimension
+<span class="math inline">\(d_T\)</span>, tame characters <span
+class="math inline">\(\xi\)</span> with their sets <span
+class="math inline">\(Q_\xi\)</span>, twists and <span
+class="math inline">\(m\)</span>-fold twists <span
+class="math inline">\(\vartheta\)</span>, the characters <span
+class="math inline">\(\mu_j^0\)</span> of the lifts, the lower chain
+<span class="math inline">\(\Theta_\xi\)</span>, the single lifts <span
+class="math inline">\(\hat u_{\xi,j}\)</span> and <span
+class="math inline">\(u_{\xi,j}\)</span>, the determinants <span
+class="math inline">\(Z(\vartheta)\)</span>, <span
+class="math inline">\(Z_j(\vartheta)\)</span>, and the partial Hecke
+values <span class="math inline">\(L^S(z,\nu)\)</span> and critical
+pairs, with their ratios <span class="math inline">\(R_P(\vartheta,
+\epsilon)\)</span> (Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:pair"
+data-reference-type="ref"
+data-reference="ob-def:pair">37.10.1</a>). From Chapter <a
+href="20261126T050400--the-norm-of-one-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="c1-chap">69</a>: the twist factor <span
+class="math inline">\(c_Q\)</span> (Definition <a
+href="20261126T050400--the-norm-of-one-lift__workbook.html#def:twist-factor" data-reference-type="ref"
+data-reference="c1-def:twist-factor">69.3.1</a>), the
+Rallis operators <span class="math inline">\(\mathcal R_j(\xi;
+V)\)</span> (Definition <a href="20261126T050400--the-norm-of-one-lift__workbook.html#def:rallis-operator"
+data-reference-type="ref"
+data-reference="c1-def:rallis-operator">69.3.2</a>)
+and Theorem <a href="20261126T050400--the-norm-of-one-lift__workbook.html#thm:one-lift" data-reference-type="ref"
+data-reference="c1-thm:one-lift">69.4.1</a>. From Chapter <a
+href="20261126T050500--equal-multiplicities__workbook.html#chap" data-reference-type="ref"
+data-reference="c2-chap">70</a>: Corollary <a
+href="20261126T050500--equal-multiplicities__workbook.html#cor:equal" data-reference-type="ref"
+data-reference="c2-cor:equal">70.4.1</a>. From Chapter <a
+href="20261126T050700--squares-and-the-triangle__workbook.html#chap" data-reference-type="ref"
+data-reference="c4-chap">72</a>: the ratios <span
+class="math inline">\(\rho_{ij}(\vartheta)\)</span>, the product <span
+class="math inline">\(\mathcal R_\vartheta\)</span> and the relation
+<span class="math inline">\(\doteq\)</span> (Definitions <a
+href="20261126T050700--squares-and-the-triangle__workbook.html#def:rho" data-reference-type="ref"
+data-reference="c4-def:rho">72.3.2</a>, <a
+href="20261126T050700--squares-and-the-triangle__workbook.html#def:rallis-product" data-reference-type="ref"
+data-reference="c4-def:rallis-product">72.4.1</a>, <a
+href="20261126T050700--squares-and-the-triangle__workbook.html#def:doteq" data-reference-type="ref"
+data-reference="c4-def:doteq">72.3.1</a>), Theorem <a
+href="20261126T050700--squares-and-the-triangle__workbook.html#thm:chain-gram" data-reference-type="ref"
+data-reference="c4-thm:chain-gram">72.4.1</a> and
+Problems <a href="20261126T050700--squares-and-the-triangle__workbook.html#pr:theta-injective" data-reference-type="ref"
+data-reference="c4-pr:theta-injective">72.4.3</a>
+and <a href="20261126T050700--squares-and-the-triangle__workbook.html#pr:rho-pair" data-reference-type="ref"
+data-reference="c4-pr:rho-pair">72.4.6</a>. From Chapter <a
+href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#chap" data-reference-type="ref"
+data-reference="c5-chap">73</a>: the turn ratios <span
+class="math inline">\(\rho&#39;_{ij}(\vartheta)\)</span> (Definition <a
+href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#def:turn-ratio" data-reference-type="ref"
+data-reference="c5-def:turn-ratio">73.2.1</a>), auxiliary
+forms (Definition <a href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#def:aux" data-reference-type="ref"
+data-reference="c5-def:aux">73.4.1</a>), Theorem <a
+href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#thm:aux" data-reference-type="ref"
+data-reference="c5-thm:aux">73.4.1</a> and Problem <a
+href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#pr:turn-pair" data-reference-type="ref"
+data-reference="c5-pr:turn-pair">73.2.2</a>. From Chapter <a
+href="20261125T000000--slope-method__workbook.html#chap" data-reference-type="ref"
+data-reference="sd-chap">5</a>: heights of families (Problems <a
+href="20261125T000000--slope-method__workbook.html#pr:height-mul" data-reference-type="ref"
+data-reference="sd-pr:height-mul">5.3.2</a> and <a
+href="20261125T000000--slope-method__workbook.html#pr:height-easy" data-reference-type="ref"
+data-reference="sd-pr:height-easy">5.3.3</a>); from
+Chapter <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#chap" data-reference-type="ref"
+data-reference="l5-chap">79</a>: families with small ratios
+(Definition <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:small-ratios" data-reference-type="ref"
+data-reference="l5-def:small-ratios">79.1.2</a>).
+Chapter <a href="20261125T003000--the-chain-and-the-square-root__workbook.html#chap" data-reference-type="ref"
+data-reference="cs-chap">8</a> explains why a chain of <span
+class="math inline">\(m\)</span> maps is used; it is not needed for the
+problems.</p>
+<p>For the lower chain and the single lifts, fix the data of Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>. Let <span
+class="math inline">\(m\)</span> be the number of lifts, <span
+class="math inline">\(r\)</span> the rank of <span
+class="math inline">\(Y_0\)</span>, <span class="math inline">\(t :=
+5r\)</span>, and <span class="math inline">\(x_1\)</span> and <span
+class="math inline">\(b\)</span> the scales of <span
+class="math inline">\(D\)</span>.</p>
+<p>How does the determinant <span
+class="math inline">\(Z(\vartheta)\)</span> of the chain change with the
+<span class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span>? By Theorem <a href="#thm:main"
+data-reference-type="ref" data-reference="thm:main">68.4.1</a>, its quotient
+by <span class="math inline">\(Z(1)\)</span> is the product of the <span
+class="math inline">\(m\)</span> quotients <span
+class="math inline">\(Z_j(\vartheta)/Z_j(1)\)</span> for single lifts,
+times a correction factor: a product of pairwise ratios <span
+class="math inline">\(\rho_{ij}(\vartheta)\)</span> of Hecke <span
+class="math inline">\(L\)</span>-values, multiplied by <span
+class="math inline">\((\operatorname{Nm}Q_\vartheta)^{e_Z/2}\)</span>
+with an integer <span class="math inline">\(e_Z\)</span> independent of
+<span class="math inline">\(\vartheta\)</span>, and raised to the power
+<span class="math inline">\(d_T\)</span>. The problems derive Theorem <a
+href="#thm:main" data-reference-type="ref"
+data-reference="thm:main">68.4.1</a> using the Gram identity of one lift
+(Theorem <a href="20261126T050400--the-norm-of-one-lift__workbook.html#thm:one-lift" data-reference-type="ref"
+data-reference="c1-thm:one-lift">69.4.1</a>), the comparison
+on good forms (Corollary <a href="20261126T050500--equal-multiplicities__workbook.html#cor:equal"
+data-reference-type="ref"
+data-reference="c2-cor:equal">70.4.1</a>), the Gram identity of
+the chain (Theorem <a href="20261126T050700--squares-and-the-triangle__workbook.html#thm:chain-gram"
+data-reference-type="ref"
+data-reference="c4-thm:chain-gram">72.4.1</a>), and the
+injectivity of the single lifts and the chain. Chapter <a
+href="20261126T050700--squares-and-the-triangle__workbook.html#chap" data-reference-type="ref"
+data-reference="c4-chap">72</a> derives the Gram identity of the
+chain from three statements read from the proof: the realization of a
+triangle of lifts, the inner product formula on its first edges, and the
+comparison at the final level. The square laws in the realization use
+the exchange identity (Theorem <a href="20261126T050600--the-exchange-identity__workbook.html#thm:exchange"
+data-reference-type="ref"
+data-reference="c3-thm:exchange">71.5.1</a>, stated and not
+proved in Chapter <a href="20261126T050600--the-exchange-identity__workbook.html#chap" data-reference-type="ref"
+data-reference="c3-chap">71</a>). Section <a href="#sec:volumes"
+data-reference-type="ref" data-reference="sec:volumes">68.1</a> treats the
+linear algebra in its simplest setting; Sections <a href="#sec:one-lift"
+data-reference-type="ref" data-reference="sec:one-lift">68.2</a>–<a
+href="#sec:factor" data-reference-type="ref"
+data-reference="sec:factor">68.4</a> assemble the theorem. Section <a
+href="#sec:aux" data-reference-type="ref" data-reference="sec:aux">68.5</a>
+recalls the auxiliary forms of Chapter <a href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#chap"
+data-reference-type="ref" data-reference="c5-chap">73</a>
+(Theorem <a href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#thm:aux" data-reference-type="ref"
+data-reference="c5-thm:aux">73.4.1</a>) and proves a height bound
+for the ratios (Theorem <a href="#thm:small-ratios"
+data-reference-type="ref" data-reference="thm:small-ratios">68.5.1</a>); both
+are used in the proof of Theorem <a href="20261126T040200--theorem-c__workbook.html#thm:C"
+data-reference-type="ref" data-reference="tc-thm:C">67.2.1</a>.</p>
+<h1 id="sec:volumes">§68.1. Volumes of maps</h1>
+<p>For a linear map <span class="math inline">\(u \colon \mathcal E \to
+\mathcal E&#39;\)</span> of finite-dimensional complex inner product
+spaces let <span class="math display">\[Z(u) := \det\nolimits_{\mathcal
+E} (u^* u) ,\]</span> the determinant on the domain <span
+class="math inline">\(\mathcal E\)</span>; we call it the
+<em>volume</em> of <span class="math inline">\(u\)</span>. Dimensions
+are complex dimensions, the determinant on the zero space is <span
+class="math inline">\(1\)</span>, and inner products are
+conjugate-linear in the first argument and linear in the second.</p>
+<div id="pr:gram" class="problem" data-progress-ids="[&quot;20261126T030700--the-determinant-of-a-chain__workbook.tex#pr:gram&quot;]">
+<p><strong>Problem 68.1.1</strong>. For every orthonormal basis <span
+class="math inline">\(e_1, \dots, e_d\)</span> of <span
+class="math inline">\(\mathcal E\)</span>, <span
+class="math inline">\(Z(u) = \det\bigl(\langle u e_a, u e_b
+\rangle\bigr)_{a,b}\)</span>. The number <span
+class="math inline">\(Z(u)\)</span> is real and <span
+class="math inline">\(\ge 0\)</span>, and <span
+class="math inline">\(Z(u) &gt; 0\)</span> if and only if <span
+class="math inline">\(u\)</span> is injective.</p>
+</div>
+<div id="pr:scalar-gram" class="problem" data-progress-ids="[&quot;20261126T030700--the-determinant-of-a-chain__workbook.tex#pr:scalar-gram&quot;]">
+<p><strong>Problem 68.1.2</strong>. Let <span class="math inline">\(\mathcal
+R\)</span> be an endomorphism of <span class="math inline">\(\mathcal
+E\)</span> and <span class="math inline">\(a \in \mathbb C\)</span> with
+<span class="math inline">\(\langle ux, uy\rangle = a \langle x,
+\mathcal R y\rangle\)</span> for all <span class="math inline">\(x, y
+\in \mathcal E\)</span>. Then <span class="math inline">\(Z(u) = a^{\dim
+\mathcal E} \det \mathcal R\)</span>.</p>
+</div>
+<div id="pr:square-chain" class="problem" data-progress-ids="[&quot;20261126T030700--the-determinant-of-a-chain__workbook.tex#pr:square-chain&quot;]">
+<p><strong>Problem 68.1.3</strong>. If <span class="math inline">\(u_j \colon
+\mathcal E_{j-1} \to \mathcal E_j\)</span>, for <span
+class="math inline">\(1 \le j \le m\)</span>, are linear maps between
+spaces of one and the same dimension, then <span
+class="math inline">\(Z(u_m \circ \dots \circ u_1) = \prod_{j=1}^m
+Z(u_j)\)</span>.</p>
+</div>
+<p>When the dimension grows along the chain, equality can fail.</p>
+<div id="pr:position" class="problem" data-progress-ids="[&quot;20261126T030700--the-determinant-of-a-chain__workbook.tex#pr:position&quot;]">
+<p><strong>Problem 68.1.4</strong>. Let <span class="math inline">\(u_2
+\colon \mathbb C^2 \to \mathbb C^2\)</span> be <span
+class="math inline">\(\operatorname{diag}(1, 2)\)</span>, and let <span
+class="math inline">\(u_1, u_1&#39; \colon \mathbb C\to \mathbb
+C^2\)</span> be <span class="math inline">\(x \mapsto (x, 0)\)</span>
+and <span class="math inline">\(x \mapsto (0, x)\)</span>. Then <span
+class="math inline">\(Z(u_1) = Z(u_1&#39;) = 1\)</span> and <span
+class="math inline">\(Z(u_2) = 4\)</span>, while <span
+class="math inline">\(Z(u_2u_1) = 1\)</span> and <span
+class="math inline">\(Z(u_2u_1&#39;) = 4\)</span>.</p>
+</div>
+<p>Nor is the volume of a composite determined by the volumes of its
+factors when the first one is not onto.</p>
+<div id="pr:not-onto" class="problem" data-progress-ids="[&quot;20261126T030700--the-determinant-of-a-chain__workbook.tex#pr:not-onto&quot;]">
+<p><strong>Problem 68.1.5</strong>. Let <span class="math inline">\(u_1
+\colon \mathbb C\to \mathbb C^2\)</span> be <span
+class="math inline">\(x \mapsto (x, x)\)</span>, and let <span
+class="math inline">\(u_2 = \operatorname{diag}(2, 3)\)</span>, <span
+class="math inline">\(u_2&#39; = \operatorname{diag}(1, 6)\)</span> on
+<span class="math inline">\(\mathbb C^2\)</span>. Then <span
+class="math inline">\(Z(u_1) = 2\)</span> and <span
+class="math inline">\(Z(u_2) = Z(u_2&#39;) = 36\)</span>, while <span
+class="math inline">\(Z(u_2u_1) = 13\)</span> and <span
+class="math inline">\(Z(u_2&#39;u_1) = 37\)</span>.</p>
+</div>
+<p>For the lower chain restricted to <span
+class="math inline">\(T\)</span>, Theorem <a href="20261126T050700--squares-and-the-triangle__workbook.html#thm:chain-gram"
+data-reference-type="ref"
+data-reference="c4-thm:chain-gram">72.4.1</a> gives an
+identity for its Gram form on <span class="math inline">\(T\)</span>.
+Problem <a href="20261126T050700--squares-and-the-triangle__workbook.html#pr:push-down" data-reference-type="ref"
+data-reference="c4-pr:push-down">72.1.2</a> is a model of how
+such an identity can be propagated along a chain.</p>
+<p>For <span class="math inline">\(a \ge 0\)</span> divisible by <span
+class="math inline">\(4\)</span>, the two lifts from <span
+class="math inline">\(\mathrm U(1)\)</span> of Chapter <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#chap" data-reference-type="ref"
+data-reference="tn-chap">23</a> used here have a one-dimensional
+source. The lift <span class="math inline">\(\Theta_{(a)}\)</span> from
+<span class="math inline">\(\mathrm U(1)\)</span> to <span
+class="math inline">\(\mathrm U(1)\)</span> is multiplication by <span
+class="math inline">\(c_a/4\)</span> (Problem <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:U1U1"
+data-reference-type="ref" data-reference="tn-pr:U1U1">23.2.3</a>),
+and by Problem <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:rallis" data-reference-type="ref"
+data-reference="tn-pr:rallis">23.3.2</a> the lift <span
+class="math inline">\(\Theta_{(a)}\)</span> from <span
+class="math inline">\(\mathrm U(1)\)</span> to <span
+class="math inline">\(\mathrm U(2)\)</span> satisfies <span
+class="math display">\[\lVert \Theta_{(a)}\varphi \rVert^2 = \lambda_a
+\lVert \varphi \rVert^2 , \qquad
+  \lambda_a := \frac{1}{128} \sum_j \binom{a}{j} c_j^2 c_{a-j}^2
+.\]</span> This finite calculation illustrates the inner product of a
+lift with itself; the strict rank inequality of the inner product
+formula (Theorem <a href="20261126T050400--the-norm-of-one-lift__workbook.html#thm:rallis" data-reference-type="ref"
+data-reference="c1-thm:rallis">69.2.1</a>) first allows a
+source of rank <span class="math inline">\(1\)</span> when the target
+has rank <span class="math inline">\(3\)</span>, the case with which
+Chapter <a href="20261126T050400--the-norm-of-one-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="c1-chap">69</a> begins.</p>
+<div id="pr:smallest" class="problem" data-progress-ids="[&quot;20261126T030700--the-determinant-of-a-chain__workbook.tex#pr:smallest&quot;]">
+<p><strong>Problem 68.1.6</strong>. For <span class="math inline">\(4 \mid
+a\)</span>, the composite of the lift <span
+class="math inline">\(\mathrm U(1) \to \mathrm U(1)\)</span> with the
+lift <span class="math inline">\(\mathrm U(1) \to \mathrm U(2)\)</span>
+of Chapter <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#chap" data-reference-type="ref"
+data-reference="tn-chap">23</a>, in degree <span
+class="math inline">\(a\)</span>, has volume <span
+class="math inline">\(\lambda_a c_a^2/16\)</span>, the product of the
+two volumes.</p>
+</div>
+<h1 id="sec:one-lift">§68.2. One lift</h1>
+<p>For <span class="math inline">\(1 \le j \le m\)</span> and a tame
+character <span class="math inline">\(\xi\)</span>, the single lift
+<span class="math inline">\(\hat u_{\xi,j}\)</span> on <span
+class="math inline">\(H(W_j)\)</span> and its restriction <span
+class="math inline">\(u_{\xi,j}\)</span> to <span
+class="math inline">\(H_g(W_j)\)</span> are those of Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chain" data-reference-type="ref"
+data-reference="ob-sec:chain">37.9</a>; <span
+class="math inline">\(H(V)\)</span> carries the Petersson product
+(Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:petersson" data-reference-type="ref"
+data-reference="ob-def:petersson">37.4.1</a>). We recall two
+statements. By Theorem <a href="20261126T050400--the-norm-of-one-lift__workbook.html#thm:one-lift"
+data-reference-type="ref"
+data-reference="c1-thm:one-lift">69.4.1</a>, for every <span
+class="math inline">\(1 \le j \le m\)</span> there is <span
+class="math inline">\(a_j \in \mathbb C\)</span>, <span
+class="math inline">\(a_j \ne 0\)</span>, such that for every tame
+character <span class="math inline">\(\xi\)</span>, <span
+class="math display">\[\hat u_{\xi,j}^*\, \hat u_{\xi,j} = a_j\,
+c_{Q_\xi}\, \mathcal R_j(\xi; W_j)\]</span> on <span
+class="math inline">\(H(W_j)\)</span>, with <span
+class="math inline">\(c_Q\)</span> the twist factor of Definition <a
+href="20261126T050400--the-norm-of-one-lift__workbook.html#def:twist-factor" data-reference-type="ref"
+data-reference="c1-def:twist-factor">69.3.1</a> (a power
+of <span class="math inline">\(\operatorname{Nm}Q_\xi\)</span> times a
+product of factors <span class="math inline">\(1 - q_w^{-v}\)</span>
+over <span class="math inline">\(w \in Q_\xi\)</span>, with <span
+class="math inline">\(c_\varnothing = 1\)</span>) and <span
+class="math inline">\(\mathcal R_j(\xi; V)\)</span> the Rallis operator
+of Definition <a href="20261126T050400--the-norm-of-one-lift__workbook.html#def:rallis-operator"
+data-reference-type="ref"
+data-reference="c1-def:rallis-operator">69.3.2</a> (a
+convergent sum of right translations by finite adelic representatives
+supported outside the places of <span class="math inline">\(\mathcal M
+\cup Q_\xi\)</span> and their conjugates, with coefficients that do not
+depend on <span class="math inline">\(V\)</span>). For the same <span
+class="math inline">\(j\)</span> and <span
+class="math inline">\(\xi\)</span>, <span class="math inline">\(\hat
+u_{\xi,j}\)</span> is injective (Chapter <a href="20261126T050400--the-norm-of-one-lift__workbook.html#chap"
+data-reference-type="ref" data-reference="c1-chap">69</a>,
+Section <a href="20261126T050400--the-norm-of-one-lift__workbook.html#sec:theorem" data-reference-type="ref"
+data-reference="c1-sec:theorem">69.4</a>). By Corollary <a
+href="20261126T050500--equal-multiplicities__workbook.html#cor:equal" data-reference-type="ref"
+data-reference="c2-cor:equal">70.4.1</a>, for <span
+class="math inline">\(1 \le j \le m\)</span>: <span
+class="math inline">\(\dim H_g(W_j) = d_T\)</span>, and for every tame
+character <span class="math inline">\(\xi\)</span>, <span
+class="math inline">\(\mathcal R_j(\xi; Y_0)\)</span> maps <span
+class="math inline">\(T\)</span> to itself, <span
+class="math inline">\(\mathcal R_j(\xi; W_j)\)</span> maps <span
+class="math inline">\(H_g(W_j)\)</span> to itself, and <span
+class="math display">\[\det\bigl(\mathcal R_j(\xi; W_j) \mid
+H_g(W_j)\bigr) = \det\bigl(\mathcal R_j(\xi; Y_0) \mid T\bigr)
+.\]</span></p>
+<div id="pr:one-lift" class="problem" data-progress-ids="[&quot;20261126T030700--the-determinant-of-a-chain__workbook.tex#pr:one-lift&quot;]">
+<p><strong>Problem 68.2.1</strong>. For <span class="math inline">\(1 \le j
+\le m\)</span> and every tame character <span
+class="math inline">\(\xi\)</span>, <span
+class="math inline">\(Z(u_{\xi,j}) = (a_j c_{Q_\xi})^{d_T}
+\det\bigl(\mathcal R_j(\xi; Y_0) \mid T\bigr)\)</span>. Moreover <span
+class="math inline">\(Z(u_{\xi,j}) &gt; 0\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T050500--equal-multiplicities__workbook.html">Chapter 70</a></div><!-- used-in:end -->
+</div>
+<h1 id="sec:twists">§68.3. Twists and the ratios</h1>
+<p>Tame characters <span class="math inline">\(\xi\)</span>, their sets
+<span class="math inline">\(Q_\xi\)</span> and powers <span
+class="math inline">\(\xi^n\)</span>, twists and <span
+class="math inline">\(m\)</span>-fold twists <span
+class="math inline">\(\vartheta\)</span> are as in Chapter <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>; By definition, the tame power
+<span class="math inline">\(\xi^n\)</span> has the same set <span
+class="math inline">\(Q_\xi\)</span>, so <span
+class="math inline">\(c_{Q_{\xi^n}} = c_{Q_\xi}\)</span>.</p>
+<div id="pr:powers" class="problem" data-progress-ids="[&quot;20261126T030700--the-determinant-of-a-chain__workbook.tex#pr:powers&quot;]">
+<p><strong>Problem 68.3.1</strong>. If <span
+class="math inline">\(\vartheta\)</span> is an <span
+class="math inline">\(m\)</span>-fold twist and <span
+class="math inline">\(1 \le n \le m\)</span>, its tame power <span
+class="math inline">\(\vartheta^n\)</span> satisfies the twist
+condition.</p>
+</div>
+<p>For <span class="math inline">\(1 \le i &lt; j \le m\)</span> and an
+<span class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span>, <span
+class="math inline">\(\rho_{ij}(\vartheta)\)</span> is the ratio of
+Definition <a href="20261126T050700--squares-and-the-triangle__workbook.html#def:rho" data-reference-type="ref"
+data-reference="c4-def:rho">72.3.2</a>: with <span
+class="math inline">\(\nu := \mu_j^0/\mu_i^0\)</span>, <span
+class="math display">\[\rho_{ij}(\vartheta) = \prod_{z=1}^{t}
+\frac{\lvert L^{\mathcal M \cup Q_\vartheta}\bigl(z,
+(\nu\vartheta^{j-i})^{-1}\bigr)\rvert}{\lvert L^{\mathcal M}(z,
+\nu^{-1})\rvert} ,\]</span> a nonnegative real number (a quotient by
+<span class="math inline">\(0\)</span> being <span
+class="math inline">\(0\)</span>, as in Definition <a href="20261126T050700--squares-and-the-triangle__workbook.html#def:rho"
+data-reference-type="ref" data-reference="c4-def:rho">72.3.2</a>).
+These ratios enter the Gram identity of the chain through the exchange
+identity (Theorem <a href="20261126T050600--the-exchange-identity__workbook.html#thm:exchange" data-reference-type="ref"
+data-reference="c3-thm:exchange">71.5.1</a>). In the direct
+square for <span class="math inline">\(i &lt; j\)</span>, the squared
+modulus of the exchange scalar is a constant independent of <span
+class="math inline">\(\vartheta\)</span> times <span
+class="math inline">\(\mathrm{ex}_t\bigl(\mathcal M \cup Q_\vartheta,
+(\nu\vartheta^{j-i})^{-1}\bigr)\)</span> (Definition <a
+href="20261126T050600--the-exchange-identity__workbook.html#def:exchange-factor" data-reference-type="ref"
+data-reference="c3-def:exchange-factor">71.2.3</a> and
+Problem <a href="20261126T050700--squares-and-the-triangle__workbook.html#pr:square-char" data-reference-type="ref"
+data-reference="c4-pr:square-char">72.3.2</a>). There is
+one such square for each pair <span class="math inline">\(1 \le i &lt; j
+\le m\)</span>.</p>
+<p>By Problem <a href="20261126T050700--squares-and-the-triangle__workbook.html#pr:rho-pair" data-reference-type="ref"
+data-reference="c4-pr:rho-pair">72.4.6</a>, <span
+class="math inline">\(\rho_{ij}(1) = 1\)</span> for <span
+class="math inline">\(1 \le i &lt; j \le m\)</span>.</p>
+<h1 id="sec:factor">§68.4. The factorization</h1>
+<p>For an <span class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span>, the lower chain <span
+class="math inline">\(\Theta_\vartheta\)</span> of Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chain" data-reference-type="ref"
+data-reference="ob-sec:chain">37.9</a>, restricted to <span
+class="math inline">\(T\)</span>, takes values in a space of algebraic
+level forms on <span class="math inline">\(Y_m\)</span> with the
+class-sum inner product; it is injective (Problem <a
+href="20261126T050700--squares-and-the-triangle__workbook.html#pr:theta-injective" data-reference-type="ref"
+data-reference="c4-pr:theta-injective">72.4.3</a>). In
+the notation of Section <a href="#sec:volumes" data-reference-type="ref"
+data-reference="sec:volumes">68.1</a>, <span
+class="math inline">\(Z(\vartheta) = Z(\Theta_\vartheta|_T)\)</span> and
+<span class="math inline">\(Z_j(\vartheta) = Z(u_{\vartheta^j,
+j})\)</span>. Let <span class="math inline">\(\mathcal R_\vartheta =
+\mathcal R_1(\vartheta; Y_0)\,\mathcal R_2(\vartheta^2; Y_0) \cdots
+\mathcal R_m(\vartheta^m; Y_0)\)</span> be the endomorphism of <span
+class="math inline">\(T\)</span> of Definition <a
+href="20261126T050700--squares-and-the-triangle__workbook.html#def:rallis-product" data-reference-type="ref"
+data-reference="c4-def:rallis-product">72.4.1</a>. By
+Theorem <a href="20261126T050700--squares-and-the-triangle__workbook.html#thm:chain-gram" data-reference-type="ref"
+data-reference="c4-thm:chain-gram">72.4.1</a> there is a
+function <span class="math inline">\(c\)</span> from <span
+class="math inline">\(m\)</span>-fold twists to <span
+class="math inline">\(\mathbb C\)</span> with <span
+class="math inline">\(c \doteq \prod_{1 \le i &lt; j \le
+m}\rho_{ij}\)</span>, that is (Definition <a href="20261126T050700--squares-and-the-triangle__workbook.html#def:doteq"
+data-reference-type="ref"
+data-reference="c4-def:doteq">72.3.1</a>), with a real number
+<span class="math inline">\(C&#39;\)</span> and an integer <span
+class="math inline">\(e&#39;\)</span> such that <span
+class="math inline">\(\lvert c(\vartheta)\rvert^2 =
+C&#39;(\operatorname{Nm}Q_\vartheta)^{e&#39;}\bigl(\prod_{1 \le i &lt; j
+\le m}\rho_{ij}(\vartheta)\bigr)^2\)</span> for every <span
+class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span>, and such that for every <span
+class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span> and all <span
+class="math inline">\(x, y \in T\)</span>, <span
+class="math display">\[\langle \Theta_\vartheta x, \Theta_\vartheta
+y\rangle = c(\vartheta)\,c_{Q_\vartheta}^m\,\langle x, \mathcal
+R_\vartheta y\rangle .\]</span></p>
+<div id="pr:abs-ratio" class="problem" data-progress-ids="[&quot;20261126T030700--the-determinant-of-a-chain__workbook.tex#pr:abs-ratio&quot;]">
+<p><strong>Problem 68.4.1</strong>. Let <span
+class="math inline">\(\Sigma\)</span> be a set with a point <span
+class="math inline">\(1\)</span>, let <span class="math inline">\(\nu
+\colon \Sigma \to \mathbb R_{&gt;0}\)</span> and <span
+class="math inline">\(f \colon \Sigma \to \mathbb R_{\ge 0}\)</span>
+with <span class="math inline">\(\nu(1) = f(1) = 1\)</span>, and let
+<span class="math inline">\(c \colon \Sigma \to \mathbb C\)</span>,
+<span class="math inline">\(C&#39; \in \mathbb R\)</span> and <span
+class="math inline">\(e&#39; \in \mathbb Z\)</span> satisfy <span
+class="math inline">\(\lvert c(x) \rvert^2 = C&#39; \nu(x)^{e&#39;}
+f(x)^2\)</span> for all <span class="math inline">\(x\)</span>. If <span
+class="math inline">\(c(1) \ne 0\)</span>, then <span
+class="math inline">\(C&#39; = \lvert c(1)\rvert^2\)</span> and <span
+class="math inline">\(\lvert c(x)/c(1) \rvert = \nu(x)^{e&#39;/2}
+f(x)\)</span> for all <span class="math inline">\(x\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html">Chapter 73</a></div><!-- used-in:end -->
+</div>
+<div id="pr:chain-det" class="problem" data-progress-ids="[&quot;20261126T030700--the-determinant-of-a-chain__workbook.tex#pr:chain-det&quot;]">
+<p><strong>Problem 68.4.2</strong>. In Theorem <a href="20261126T050700--squares-and-the-triangle__workbook.html#thm:chain-gram"
+data-reference-type="ref"
+data-reference="c4-thm:chain-gram">72.4.1</a>, if <span
+class="math inline">\(c(1) = 0\)</span> then <span
+class="math inline">\(T = 0\)</span>. For every <span
+class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span>, <span
+class="math display">\[Z(\vartheta) = \Bigl( c(\vartheta) \Big/
+\prod_{j=1}^m a_j \Bigr)^{d_T} \prod_{j=1}^m Z_j(\vartheta) ,\]</span>
+and <span class="math inline">\(Z(\vartheta) &gt; 0\)</span>.</p>
+</div>
+<div id="pr:quotient" class="problem" data-progress-ids="[&quot;20261126T030700--the-determinant-of-a-chain__workbook.tex#pr:quotient&quot;]">
+<p><strong>Problem 68.4.3</strong>. If <span class="math inline">\(T \ne
+0\)</span>, then for every <span class="math inline">\(m\)</span>-fold
+twist <span class="math inline">\(\vartheta\)</span>, <span
+class="math display">\[\frac{Z(\vartheta)}{Z(1)} = \Bigl(
+(\operatorname{Nm}Q_\vartheta)^{e&#39;/2} \prod_{1 \le i &lt; j \le m}
+\rho_{ij}(\vartheta) \Bigr)^{d_T} \prod_{j=1}^m
+\frac{Z_j(\vartheta)}{Z_j(1)} .\]</span> If <span
+class="math inline">\(T = 0\)</span>, both sides equal <span
+class="math inline">\(1\)</span> (a real number to the power <span
+class="math inline">\(0\)</span> is <span
+class="math inline">\(1\)</span>).</p>
+</div>
+<p>The normalized determinant identity is the following.</p>
+<div id="thm:main" class="theorem">
+<p><strong>Theorem 68.4.1</strong>. <em>For the data of Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a> there is an integer <span
+class="math inline">\(e_Z\)</span> such that for every <span
+class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span>:</em></p>
+<ol>
+<li><p><em><span class="math inline">\(0 &lt;
+Z(\vartheta)\)</span>;</em></p></li>
+<li><p><em><span class="math inline">\(0 &lt; Z_j(\vartheta)\)</span>
+for every integer <span class="math inline">\(j\)</span> with <span
+class="math inline">\(1 \le j \le m\)</span>;</em></p></li>
+<li><p><em>in <span class="math inline">\(\mathbb C\)</span>, <span
+class="math display">\[\frac{Z(\vartheta)}{Z(1)} = \biggl(
+(\operatorname{Nm}Q_\vartheta)^{e_Z/2} \prod_{i=1}^{m} \prod_{j=i+1}^{m}
+\rho_{ij}(\vartheta) \biggr)^{d_T} \prod_{j=1}^m
+\frac{Z_j(\vartheta)}{Z_j(1)} .\]</span></em></p></li>
+</ol>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T003000--the-chain-and-the-square-root__workbook.html">Chapter 8</a>; <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html">Chapter 23</a>; <a href="20261126T040200--theorem-c__workbook.html">Chapter 67</a>; <a href="20261126T050400--the-norm-of-one-lift__workbook.html">Chapter 69</a>; <a href="20261126T050700--squares-and-the-triangle__workbook.html">Chapter 72</a></div><!-- used-in:end -->
+</div>
+<p>By definition <span class="math inline">\(Z(\vartheta)\)</span> and
+<span class="math inline">\(Z_j(\vartheta)\)</span> are squares of the
+real norm determinants of the corresponding maps, viewed in <span
+class="math inline">\(\mathbb C\)</span>. Injectivity gives their strict
+positivity in (a) and (b). The base of the power <span
+class="math inline">\(d_T\)</span> in (c) is a real number, with <span
+class="math inline">\(e_Z/2\)</span> a real exponent, and <span
+class="math inline">\(e_Z\)</span> does not depend on <span
+class="math inline">\(\vartheta\)</span>. Problems <a
+href="#pr:one-lift" data-reference-type="ref"
+data-reference="pr:one-lift">68.2.1</a> and <a href="#pr:abs-ratio"
+data-reference-type="ref" data-reference="pr:abs-ratio">68.4.1</a>–<a
+href="#pr:quotient" data-reference-type="ref"
+data-reference="pr:quotient">68.4.3</a> prove Theorem <a href="#thm:main"
+data-reference-type="ref" data-reference="thm:main">68.4.1</a>. One may take
+<span class="math inline">\(e_Z = e&#39;\)</span> when <span
+class="math inline">\(T \ne 0\)</span>. Thus the volume of the chain at
+a twist, relative to the trivial twist, is expressed through <span
+class="math inline">\(m\)</span> volumes of single lifts, a power of
+<span class="math inline">\(\operatorname{Nm}Q_\vartheta\)</span>, and
+<span class="math inline">\(m(m-1)/2\)</span> ratios <span
+class="math inline">\(\rho_{ij}\)</span> of <span
+class="math inline">\(L\)</span>-values.</p>
+<h1 id="sec:aux">§68.5. Auxiliary forms</h1>
+<p>The proof of Theorem <a href="20261126T040200--theorem-c__workbook.html#thm:C" data-reference-type="ref"
+data-reference="tc-thm:C">67.2.1</a> extends a linearly independent
+family of target forms to a basis by auxiliary forms (Definition <a
+href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#def:aux" data-reference-type="ref"
+data-reference="c5-def:aux">73.4.1</a>). By Theorem <a
+href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#thm:aux" data-reference-type="ref"
+data-reference="c5-thm:aux">73.4.1</a> there are an integer <span
+class="math inline">\(e_\gamma\)</span> and a function <span
+class="math inline">\(\gamma\)</span> from the <span
+class="math inline">\(m\)</span>-fold twists to <span
+class="math inline">\(\mathbb C\)</span>, with <span
+class="math inline">\(\gamma(\vartheta) \ne 0\)</span> for every <span
+class="math inline">\(\vartheta\)</span>, <span
+class="math inline">\(\gamma(1) = 1\)</span> and <span
+class="math display">\[\lvert\gamma(\vartheta)\rvert =
+(\operatorname{Nm}Q_\vartheta)^{e_\gamma/2} \prod_{0 \le i, j &lt; m}
+\rho&#39;_{ij}(\vartheta)\]</span> for every <span
+class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span>, such that <span
+class="math inline">\(T\)</span> is spanned over <span
+class="math inline">\(\mathbb C\)</span> by the forms that are auxiliary
+for <span class="math inline">\(\gamma\)</span>. Here <span
+class="math inline">\(\rho&#39;_{ij}\)</span>, <span
+class="math inline">\(0 \le i, j &lt; m\)</span>, are the turn ratios of
+Definition <a href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#def:turn-ratio" data-reference-type="ref"
+data-reference="c5-def:turn-ratio">73.2.1</a>. Theorem <a
+href="#thm:small-ratios" data-reference-type="ref"
+data-reference="thm:small-ratios">68.5.1</a> below is proved by Problems <a
+href="#pr:count-ratios" data-reference-type="ref"
+data-reference="pr:count-ratios">68.5.1</a> and <a href="#pr:norm-height"
+data-reference-type="ref" data-reference="pr:norm-height">68.5.2</a>, with
+Problems <a href="20261126T050700--squares-and-the-triangle__workbook.html#pr:rho-pair" data-reference-type="ref"
+data-reference="c4-pr:rho-pair">72.4.6</a> and <a
+href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#pr:turn-pair" data-reference-type="ref"
+data-reference="c5-pr:turn-pair">73.2.2</a>.</p>
+<div id="thm:small-ratios" class="theorem">
+<p><strong>Theorem 68.5.1</strong> (small ratios). <em>Let <span
+class="math inline">\(\theta\)</span> be a family of <span
+class="math inline">\(m\)</span>-fold twists with small ratios
+(Definition <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:small-ratios" data-reference-type="ref"
+data-reference="l5-def:small-ratios">79.1.2</a>). For
+every integer <span class="math inline">\(e\)</span>, the families <span
+class="math display">\[\iota \mapsto
+\Bigl((\operatorname{Nm}Q_{\theta_\iota})^{e/2}\prod_{1 \le i &lt; j \le
+m}\rho_{ij}(\theta_\iota)\Bigr)^{-1}
+  \quad\text{and}\quad
+  \iota \mapsto \Bigl((\operatorname{Nm}Q_{\theta_\iota})^{e/2}\prod_{0
+\le i, j &lt; m}\rho&#39;_{ij}(\theta_\iota)\Bigr)^{-1}\]</span> have
+height at most <span class="math inline">\(m^2tx_1\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:norm-height">Problem 68.5.2</a>; <a href="20261126T040200--theorem-c__workbook.html">Chapter 67</a>; <a href="20261126T050700--squares-and-the-triangle__workbook.html">Chapter 72</a>; <a href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html">Chapter 73</a></div><!-- used-in:end -->
+</div>
+<p>By Problem <a href="20261126T050700--squares-and-the-triangle__workbook.html#pr:rho-pair" data-reference-type="ref"
+data-reference="c4-pr:rho-pair">72.4.6</a> each <span
+class="math inline">\(\rho_{ij}\)</span> is a product of <span
+class="math inline">\(t\)</span> ratios <span
+class="math inline">\(R_P(\vartheta^{j-i}, 1)\)</span> with <span
+class="math inline">\(P\)</span> a ramified critical pair. By Problem <a
+href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#pr:turn-pair" data-reference-type="ref"
+data-reference="c5-pr:turn-pair">73.2.2</a>, for <span
+class="math inline">\(0 \le i, j &lt; m\)</span> each <span
+class="math inline">\(\rho&#39;_{ij}(\vartheta)\)</span> is the product
+of the <span class="math inline">\(t\)</span> ratios <span
+class="math inline">\(R_{P_z}(\vartheta^{j+1}, 1)\)</span>, <span
+class="math inline">\(1 \le z \le t\)</span>, with <span
+class="math inline">\(P_z := (\mu^0_{i+1}\mu^0_{j+1}, z)\)</span> a
+ramified critical pair and <span class="math inline">\(1 \le j + 1 \le
+m\)</span>.</p>
+<div id="pr:count-ratios" class="problem" data-progress-ids="[&quot;20261126T030700--the-determinant-of-a-chain__workbook.tex#pr:count-ratios&quot;]">
+<p><strong>Problem 68.5.1</strong>. Let <span
+class="math inline">\(\theta\)</span> be a family of <span
+class="math inline">\(m\)</span>-fold twists such that, for every <span
+class="math inline">\(1 \le n \le m\)</span> and every ramified critical
+pair <span class="math inline">\(P\)</span>, the ratios <span
+class="math inline">\(R_P(\theta_\iota^n, 1)\)</span> are nonzero and
+the family <span class="math inline">\(\iota \mapsto R_P(\theta_\iota^n,
+1)^{-1}\)</span> has height at most <span
+class="math inline">\(x_1\)</span>. Then the families <span
+class="math inline">\(\iota \mapsto \bigl(\prod_{1 \le i &lt; j \le
+m}\rho_{ij}(\theta_\iota)\bigr)^{-1}\)</span> and <span
+class="math inline">\(\iota \mapsto \bigl(\prod_{0 \le i, j &lt;
+m}\rho&#39;_{ij}(\theta_\iota)\bigr)^{-1}\)</span> have height at most
+<span class="math inline">\(m^2tx_1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T050700--squares-and-the-triangle__workbook.html">Chapter 72</a></div><!-- used-in:end -->
+</div>
+<div id="pr:norm-height" class="problem" data-progress-ids="[&quot;20261126T030700--the-determinant-of-a-chain__workbook.tex#pr:norm-height&quot;]">
+<p><strong>Problem 68.5.2</strong>. Let <span class="math inline">\(\theta =
+(\theta_\iota)\)</span> be a family of <span
+class="math inline">\(m\)</span>-fold twists. Suppose that for every
+prime <span class="math inline">\(\ell\)</span> and every <span
+class="math inline">\(\iota \mid \ell\)</span> one has <span
+class="math inline">\(\ell \nmid
+\operatorname{Nm}Q_{\theta_\iota}\)</span>. Then for every integer <span
+class="math inline">\(e\)</span> the family <span
+class="math inline">\(\iota \mapsto
+(\operatorname{Nm}Q_{\theta_\iota})^{-e/2}\)</span> has height at most
+<span class="math inline">\(0\)</span>. Deduce Theorem <a
+href="#thm:small-ratios" data-reference-type="ref"
+data-reference="thm:small-ratios">68.5.1</a>.</p>
+</div>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, Theorem <a
+href="#thm:main" data-reference-type="ref"
+data-reference="thm:main">68.4.1</a> is
+<code>New.Data.exists_chainDeterminant_pos_and_div_chainDeterminant_one_eq</code>
+in <code>New/Determinant/Chain/NormOfChain.lean</code> of the readable
+edition; Theorem <a href="#thm:small-ratios" data-reference-type="ref"
+data-reference="thm:small-ratios">68.5.1</a> is
+<code>HasSmallRatios.heightLe_inv_rpow_mul_prod_quotientRatio</code> in
+<code>NormOfChain.lean</code> together with
+<code>HasSmallRatios.heightLe_inv_rpow_mul_prod_turnRatio</code> in
+<code>New/Determinant/Twist/LongForms.lean</code>. Theorem C is
+<code>New.Data.integral_forms_long</code> in
+<code>LongForms.lean</code>. The critical pairs for the turn ratios are
+supplied by <code>isRamifiedRatio_turnRatio</code> in
+<code>New/Determinant/AuxiliaryForms/Turns.lean</code>, and their
+product formula by <code>CriticalPair.ofReal_lRatioProd</code> in
+<code>New/Determinant/Chain/Moduli.lean</code>. The single lifts and the
+lower chain are injective by <code>New.Data.singleLift_injective</code>
+in <code>AdjointThetaLift.lean</code> and
+<code>New.Data.lowerChainAtLevel_injective</code> in
+<code>ChainNorms.lean</code>, respectively. The ratios <span
+class="math inline">\(R_P(\xi, \epsilon)\)</span> of critical pairs are
+nonzero by <code>New.Data.CriticalPair.ratio_ne_zero</code> in
+<code>TwistedRatio.lean</code>, and the small-ratios condition is
+<code>New.Data.HasSmallRatios</code> in <code>FitTwists.lean</code>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secvolumes">§<a href="#sec:volumes"
+data-reference-type="ref" data-reference="sec:volumes">68.1</a></h2>
+<dl>
+<dt><a href="#pr:gram" data-reference-type="ref"
+data-reference="pr:gram">68.1.1</a></dt>
+<dd>
+<p><span class="math inline">\(\langle u e_a, u e_b\rangle = \langle
+e_a, u^*u\, e_b\rangle\)</span>, and <span
+class="math inline">\(u^*u\)</span> is positive semidefinite with kernel
+<span class="math inline">\(\ker u\)</span>.</p>
+</dd>
+<dt><a href="#pr:scalar-gram" data-reference-type="ref"
+data-reference="pr:scalar-gram">68.1.2</a></dt>
+<dd>
+<p>Rewrite the hypothesis as an identity of endomorphisms of <span
+class="math inline">\(\mathcal E\)</span>.</p>
+</dd>
+<dt><a href="#pr:square-chain" data-reference-type="ref"
+data-reference="pr:square-chain">68.1.3</a></dt>
+<dd>
+<p>In orthonormal bases of spaces of equal dimension, <span
+class="math inline">\(Z(u) = \lvert\det u\rvert^2\)</span>.</p>
+</dd>
+<dt><a href="#pr:position" data-reference-type="ref"
+data-reference="pr:position">68.1.4</a></dt>
+<dd>
+<p>Problem <a href="#pr:gram" data-reference-type="ref"
+data-reference="pr:gram">68.1.1</a> with <span class="math inline">\(\mathcal
+E = \mathbb C\)</span>.</p>
+</dd>
+<dt><a href="#pr:not-onto" data-reference-type="ref"
+data-reference="pr:not-onto">68.1.5</a></dt>
+<dd>
+<p><span class="math inline">\(u_2u_1(1) = (2, 3)\)</span>.</p>
+</dd>
+<dt><a href="#pr:smallest" data-reference-type="ref"
+data-reference="pr:smallest">68.1.6</a></dt>
+<dd>
+<p>Problem <a href="#pr:gram" data-reference-type="ref"
+data-reference="pr:gram">68.1.1</a> on a line.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secone-lift">§<a href="#sec:one-lift"
+data-reference-type="ref" data-reference="sec:one-lift">68.2</a></h2>
+<dl>
+<dt><a href="#pr:one-lift" data-reference-type="ref"
+data-reference="pr:one-lift">68.2.1</a></dt>
+<dd>
+<p>Problem <a href="#pr:scalar-gram" data-reference-type="ref"
+data-reference="pr:scalar-gram">68.1.2</a> on <span
+class="math inline">\(H_g(W_j)\)</span>, which <span
+class="math inline">\(\mathcal R_j(\xi; W_j)\)</span> preserves; then
+the equality of determinants and <span class="math inline">\(\dim
+H_g(W_j) = d_T\)</span>. For positivity, Problem <a href="#pr:gram"
+data-reference-type="ref" data-reference="pr:gram">68.1.1</a> and the
+injectivity of <span class="math inline">\(\hat u_{\xi,j}\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="sectwists">§<a href="#sec:twists"
+data-reference-type="ref" data-reference="sec:twists">68.3</a></h2>
+<dl>
+<dt><a href="#pr:powers" data-reference-type="ref"
+data-reference="pr:powers">68.3.1</a></dt>
+<dd>
+<p>The definition of <span class="math inline">\(\vartheta^n\)</span> in
+Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:twists" data-reference-type="ref"
+data-reference="ob-sec:twists">37.6</a>, and Definition <a
+href="20261126T050400--the-norm-of-one-lift__workbook.html#def:twist-factor" data-reference-type="ref"
+data-reference="c1-def:twist-factor">69.3.1</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secfactor">§<a href="#sec:factor"
+data-reference-type="ref" data-reference="sec:factor">68.4</a></h2>
+<dl>
+<dt><a href="#pr:abs-ratio" data-reference-type="ref"
+data-reference="pr:abs-ratio">68.4.1</a></dt>
+<dd>
+<p>Evaluate at <span class="math inline">\(1\)</span> first.</p>
+</dd>
+<dt><a href="#pr:chain-det" data-reference-type="ref"
+data-reference="pr:chain-det">68.4.2</a></dt>
+<dd>
+<p>For the first statement, Theorem <a href="20261126T050700--squares-and-the-triangle__workbook.html#thm:chain-gram"
+data-reference-type="ref"
+data-reference="c4-thm:chain-gram">72.4.1</a> at <span
+class="math inline">\(\vartheta = 1\)</span>, and injectivity. For the
+formula, Problems <a href="#pr:scalar-gram" data-reference-type="ref"
+data-reference="pr:scalar-gram">68.1.2</a>, <a href="#pr:powers"
+data-reference-type="ref" data-reference="pr:powers">68.3.1</a> and <a
+href="#pr:one-lift" data-reference-type="ref"
+data-reference="pr:one-lift">68.2.1</a>; compare the factors <span
+class="math inline">\(c_{Q}\)</span> for <span
+class="math inline">\(\vartheta^j\)</span> and <span
+class="math inline">\(\vartheta\)</span>.</p>
+</dd>
+<dt><a href="#pr:quotient" data-reference-type="ref"
+data-reference="pr:quotient">68.4.3</a></dt>
+<dd>
+<p>Take absolute values in Problem <a href="#pr:chain-det"
+data-reference-type="ref" data-reference="pr:chain-det">68.4.2</a> and
+divide by the case <span class="math inline">\(\vartheta = 1\)</span>,
+using Problems <a href="#pr:abs-ratio" data-reference-type="ref"
+data-reference="pr:abs-ratio">68.4.1</a> and <a href="20261126T050700--squares-and-the-triangle__workbook.html#pr:rho-pair"
+data-reference-type="ref"
+data-reference="c4-pr:rho-pair">72.4.6</a>. For <span
+class="math inline">\(T = 0\)</span>, Corollary <a href="20261126T050500--equal-multiplicities__workbook.html#cor:equal"
+data-reference-type="ref"
+data-reference="c2-cor:equal">70.4.1</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secaux">§<a href="#sec:aux"
+data-reference-type="ref" data-reference="sec:aux">68.5</a></h2>
+<dl>
+<dt><a href="#pr:count-ratios" data-reference-type="ref"
+data-reference="pr:count-ratios">68.5.1</a></dt>
+<dd>
+<p>Count the pairs in each index set and the critical ratios contributed
+by one pair. Use Problem <a href="20261125T000000--slope-method__workbook.html#pr:height-mul"
+data-reference-type="ref"
+data-reference="sd-pr:height-mul">5.3.2</a>.</p>
+</dd>
+<dt><a href="#pr:norm-height" data-reference-type="ref"
+data-reference="pr:norm-height">68.5.2</a></dt>
+<dd>
+<p>What does the equation <span class="math inline">\(X^2 =
+\operatorname{Nm}Q_{\theta_\iota}\)</span> give for the <span
+class="math inline">\(\iota\)</span>-absolute value of either root? Use
+Problem <a href="20261125T000000--slope-method__workbook.html#pr:height-easy" data-reference-type="ref"
+data-reference="sd-pr:height-easy">5.3.3</a>(a). For the
+deduction, use the two clauses of Definition <a
+href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:small-ratios" data-reference-type="ref"
+data-reference="l5-def:small-ratios">79.1.2</a> and
+Problem <a href="#pr:count-ratios" data-reference-type="ref"
+data-reference="pr:count-ratios">68.5.1</a>; the ratios <span
+class="math inline">\(R_P(\xi, \epsilon)\)</span> of critical pairs are
+nonzero by the nonvanishing in Section <a href="20261126T050600--the-exchange-identity__workbook.html#sec:integrals"
+data-reference-type="ref"
+data-reference="c3-sec:integrals">71.2</a>, since the
+characters involved have nonzero weight.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

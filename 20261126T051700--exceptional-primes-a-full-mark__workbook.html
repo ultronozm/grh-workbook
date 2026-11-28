@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ=' 'sha256-xrnYBfqWSZMHs+3eJCZyjoBgnHIvtzQGITm4pm8uKl0='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Exceptional primes: a full mark</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","C":"\\mathbb{C}","Oc":"\\mathcal O","Dc":"\\mathcal D","Ic":"\\mathcal I","Qc":"\\mathcal Q","Mk":"\\mathfrak M","Mb":"\\bar{\\mathfrak M}","ch":"\\mathfrak c","val":"\\operatorname{val}","gain":"\\operatorname{gain}","bl":"\\beta_{>1}","bT":"\\mathbf T","tr":"e_{\\mathrm{tr}}","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="62">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T051700--exceptional-primes-a-full-mark__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 17:44:10
+      <a href="20261126T051700--exceptional-primes-a-full-mark__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T051700--exceptional-primes-a-full-mark__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T051700--exceptional-primes-a-full-mark__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Exceptional primes: a full mark</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:primes" id="toc-sec:primes">§62.1. The primes above an exceptional prime</a></li>
+<li><a href="#sec:neighbour" id="toc-sec:neighbour">§62.2. One lift at a neighbour</a></li>
+<li><a href="#sec:transfer" id="toc-sec:transfer">§62.3. Moving the Hecke operators into the data</a></li>
+<li><a href="#sec:pay" id="toc-sec:pay">§62.4. Paying for the transfer</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secprimes" id="toc-secprimes">§62.1</a></li>
+<li><a href="#secneighbour" id="toc-secneighbour">§62.2</a></li>
+<li><a href="#sectransfer" id="toc-sectransfer">§62.3</a></li>
+<li><a href="#secpay" id="toc-secpay">§62.4</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>: the data and the scale
+inequalities (Definition <a href="20261126T030300--the-data__workbook.html#def:data"
+data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a>, Problem <a
+href="20261126T030300--the-data__workbook.html#pr:T" data-reference-type="ref"
+data-reference="da-pr:T">36.3.3</a>). Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap"
+data-reference-type="ref" data-reference="ob-chap">37</a>: the
+spaces <span class="math inline">\(X_j\)</span> of rank <span
+class="math inline">\(n_j\)</span> and the diagram <span
+class="math inline">\(\beta\)</span> of the data (Definition <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#def:diagram" data-reference-type="ref"
+data-reference="ob-def:diagram">37.2.1</a>). Chapter <a
+href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="dl-chap">57</a>: <span
+class="math inline">\(c_p\)</span>, <span
+class="math inline">\(I_p\)</span>, <span
+class="math inline">\(\operatorname{gain}(p)\)</span> (Section <a
+href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#sec:gain" data-reference-type="ref"
+data-reference="dl-sec:gain">57.1</a>); <span
+class="math inline">\(C_p(\Phi&#39;)\)</span>, <span
+class="math inline">\(o_p\)</span>, <span
+class="math inline">\(r_p\)</span>, exceptional primes, <span
+class="math inline">\(L_p\)</span> (Section <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#sec:collisions"
+data-reference-type="ref"
+data-reference="dl-sec:collisions">57.2</a>); gauges and
+valuations (Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:gauge" data-reference-type="ref"
+data-reference="ob-def:gauge">37.5.1</a>), <span
+class="math inline">\(S_\eta\)</span>, weak chain data, translations
+<span class="math inline">\(\mathfrak t\)</span> with translated vacua
+<span class="math inline">\(v_j(\mathfrak t)\)</span>, and the
+restricted chain <span class="math inline">\(R_{\vartheta,\Psi}\)</span>
+(Section <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#sec:chain" data-reference-type="ref"
+data-reference="dl-sec:chain">57.3</a>); the primes <span
+class="math inline">\(v_\sigma\)</span>, marks, full marks, <span
+class="math inline">\(\Phi_{\mathfrak M}\)</span>, <span
+class="math inline">\(a_v\)</span>, <span
+class="math inline">\(T_v\)</span>, <span class="math inline">\(Y_v =
+p^{a_v}T_v\)</span> and <span class="math inline">\(Y_{\mathfrak
+M}\)</span>, the product of the <span class="math inline">\(Y_v\)</span>
+in a fixed order (Section <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#sec:exceptional"
+data-reference-type="ref"
+data-reference="dl-sec:exceptional">57.4</a>).
+Chapter <a href="20261126T050100--the-count-congruences-directions-and-factorials__workbook.html#chap" data-reference-type="ref"
+data-reference="d1-chap">58</a>: <span
+class="math inline">\(\beta_{&gt;1}\)</span> (Definition <a
+href="20261126T050100--the-count-congruences-directions-and-factorials__workbook.html#def:diagram" data-reference-type="ref"
+data-reference="d1-def:diagram">58.2.1</a>), charges
+(Definition <a href="20261126T050100--the-count-congruences-directions-and-factorials__workbook.html#def:charges" data-reference-type="ref"
+data-reference="d1-def:charges">58.3.1</a>) and Theorem <a
+href="20261126T050100--the-count-congruences-directions-and-factorials__workbook.html#thm:count-charges" data-reference-type="ref"
+data-reference="d1-thm:count-charges">58.3.2</a>.
+Chapter <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="d2-chap">59</a>: standard data (Definition <a
+href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#def:standard" data-reference-type="ref"
+data-reference="d2-def:standard">59.4.1</a>), “multiplies
+gauges by at most” (Definition <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#def:raises"
+data-reference-type="ref"
+data-reference="d2-def:raises">59.4.2</a>), the stage bound
+<span class="math inline">\(\mathcal D_j(\Phi&#39;)\)</span>
+(Definition <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#def:stage" data-reference-type="ref"
+data-reference="d2-def:stage">59.1.1</a>), Theorem <a
+href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#thm:stage" data-reference-type="ref"
+data-reference="d2-thm:stage">59.4.4</a>, statements (III) and
+(IV) of Section <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#sec:kernel" data-reference-type="ref"
+data-reference="d2-sec:kernel">59.4</a>, Problems <a
+href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#pr:diagram" data-reference-type="ref"
+data-reference="d2-pr:diagram">59.1.1</a>, <a
+href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#pr:fits" data-reference-type="ref"
+data-reference="d2-pr:fits">59.4.3</a>, <a
+href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#pr:kernel-bound" data-reference-type="ref"
+data-reference="d2-pr:kernel-bound">59.4.6</a> and <a
+href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#pr:two-places" data-reference-type="ref"
+data-reference="d2-pr:two-places">59.5.1</a>. Hecke
+operators at a split place (Chapter <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#chap"
+data-reference-type="ref" data-reference="ho-chap">24</a>,
+Section <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#sec:split" data-reference-type="ref"
+data-reference="ho-sec:split">24.5</a>). Decomposition groups
+in abelian extensions <span class="citation"
+data-cites="Ne">[<a href="#ref-Ne">Ne</a>, Ch. I, §9]</span>; elementary
+divisors over a discrete valuation ring.</p>
+<p>At an exceptional prime <span class="math inline">\(p &lt;
+x_1\)</span> the total collision cost <span class="math inline">\(m
+C_p(\varnothing)\)</span> can exceed the <em>local loss allowance</em>
+<span class="math inline">\(L_p\)</span> (Problem <a
+href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#pr:why-mark" data-reference-type="ref"
+data-reference="dl-pr:why-mark">57.2.5</a>). Chapter <a
+href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="dl-chap">57</a> therefore applies <span
+class="math inline">\(Y_{\mathfrak M}^m\)</span> for a full mark <span
+class="math inline">\(\mathfrak M\)</span> before the chain and uses
+Theorem <a href="#thm:full-mark" data-reference-type="ref"
+data-reference="thm:full-mark">62.4.1</a> below. How does a Hecke operator at
+primes above <span class="math inline">\(p\)</span> remove the
+collisions, and what does it cost?</p>
+<h1 id="sec:primes">§62.1. The primes above an exceptional prime</h1>
+<p>Let <span class="math inline">\(p\)</span> be a prime with <span
+class="math inline">\(\chi_K(p) = -1\)</span> and <span
+class="math inline">\(\eta\colon \mathbb{C}\to \mathbb{C}_p\)</span> a
+ring map. Then <span class="math inline">\(p \ne d\)</span>, and <span
+class="math inline">\(p \nmid q_1\)</span> by Problem <a
+href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#pr:qone-split" data-reference-type="ref"
+data-reference="dl-pr:qone-split">57.1.1</a>; so <span
+class="math inline">\(p\)</span> is unramified in <span
+class="math inline">\(E\)</span>. For <span class="math inline">\(\sigma
+\in \Phi\)</span>, <span class="math inline">\(v_\sigma\)</span> is the
+prime of <span class="math inline">\(E\)</span> induced by <span
+class="math inline">\(\eta \circ \Phi_\sigma\)</span>, and <span
+class="math inline">\(\bar v\)</span> is the complex conjugate of <span
+class="math inline">\(v\)</span>.</p>
+<div id="def:fp" class="definition">
+<p><strong>Definition 62.1.1</strong>. The <em>residue degree above <span
+class="math inline">\(p\)</span></em> is <span class="math inline">\(f_p
+:= \operatorname{lcm}(2, o)\)</span>, where <span
+class="math inline">\(o\)</span> is the order of <span
+class="math inline">\([-p]\)</span> in <span class="math inline">\(\Phi
+\cong (\mathbb{Z}/q_1)^\times\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060100--a-hecke-operator-is-nearly-onto__workbook.html">Chapter 63</a></div><!-- used-in:end -->
+</div>
+<div id="pr:decomposition" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:decomposition&quot;]">
+<p><strong>Problem 62.1.1</strong>. For <span class="math inline">\(\sigma,
+\tau \in \Phi\)</span>: <span class="math inline">\(v_\sigma =
+v_\tau\)</span> if and only if <span class="math inline">\(\sigma =
+[-p]^i\tau\)</span> with <span class="math inline">\(i\)</span> even,
+and <span class="math inline">\(v_\sigma = \bar v_\tau\)</span> if and
+only if <span class="math inline">\(\sigma = [-p]^i\tau\)</span> with
+<span class="math inline">\(i\)</span> odd. The residue field of every
+<span class="math inline">\(v \mid p\)</span> has <span
+class="math inline">\(p^{f_p}\)</span> elements.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html">Chapter 57</a>; <a href="20261126T060100--a-hecke-operator-is-nearly-onto__workbook.html">Chapter 63</a></div><!-- used-in:end -->
+</div>
+<div id="pr:o-r" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:o-r&quot;]">
+<p><strong>Problem 62.1.2</strong>. For a numerical test of the
+exceptional-prime predicate alone, take <span
+class="math inline">\(q_0=18480\)</span>, <span
+class="math inline">\(d=138599\)</span> and <span
+class="math inline">\(m=16384\)</span>. The prime <span
+class="math inline">\(479\)</span> is inert in <span
+class="math inline">\(K\)</span>, with <span
+class="math inline">\(o_{479} = 15\)</span> and <span
+class="math inline">\(r_{479} = 2\)</span>; it is not exceptional. The
+prime <span class="math inline">\(55439 \equiv 6287 \pmod m\)</span> is
+inert, with <span class="math inline">\(o_{55439} = r_{55439} =
+1\)</span>; it is exceptional.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:m-divides">Problem 62.1.3</a></div><!-- used-in:end -->
+</div>
+<div id="pr:m-divides" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:m-divides&quot;]">
+<p><strong>Problem 62.1.3</strong>. If <span class="math inline">\(p
+\not\equiv \pm 1 \pmod m\)</span>, then <span
+class="math inline">\(m\)</span> divides the order of <span
+class="math inline">\([-p]\)</span>; so <span
+class="math inline">\(f_p\)</span> is this order, it is even, and <span
+class="math inline">\(f_p \ge m\)</span>. [For the numerical parameters
+of Problem <a href="#pr:o-r" data-reference-type="ref"
+data-reference="pr:o-r">62.1.2</a>, with <span
+class="math inline">\(s=308\)</span>, check that the order of <span
+class="math inline">\(-55439\)</span> modulo <span
+class="math inline">\(q_1\)</span> has <span
+class="math inline">\(2\)</span>-adic valuation <span
+class="math inline">\(308\)</span>.]</p>
+</div>
+<div id="pr:orbit" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:orbit&quot;]">
+<p><strong>Problem 62.1.4</strong>. Let <span
+class="math inline">\(p\)</span> be exceptional. For <span
+class="math inline">\(\tau \in \Phi_a\)</span>, the partner <span
+class="math inline">\([-p^{o_p}]\tau\)</span> (Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>) lies in <span
+class="math inline">\(\Phi_a\)</span> and <span
+class="math inline">\(v_{[-p^{o_p}]\tau} = \bar v_\tau\)</span>. No
+prime <span class="math inline">\(v \mid p\)</span> equals <span
+class="math inline">\(\bar v\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060100--a-hecke-operator-is-nearly-onto__workbook.html">Chapter 63</a></div><!-- used-in:end -->
+</div>
+<div id="pr:full-mark-exists" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:full-mark-exists&quot;]">
+<p><strong>Problem 62.1.5</strong>. If <span class="math inline">\(p &lt;
+x_1\)</span> is exceptional, a full mark at <span
+class="math inline">\((p, \eta)\)</span> exists.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html">Chapter 57</a></div><!-- used-in:end -->
+</div>
+<p>For a full mark, <span class="math inline">\(C_p(\Phi_{\mathfrak M})
+= 0\)</span> (Problem <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#pr:full-mark"
+data-reference-type="ref"
+data-reference="dl-pr:full-mark">57.4.1</a>). Let <span
+class="math inline">\(\bar{\mathfrak M}:= \{\bar v : v \in \mathfrak
+M\}\)</span> and <span class="math inline">\(\Phi_{\bar{\mathfrak M}} :=
+\{\sigma : v_\sigma \in \bar{\mathfrak M}\}\)</span>.</p>
+<div id="pr:no-b-place" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:no-b-place&quot;]">
+<p><strong>Problem 62.1.6</strong>. Let <span class="math inline">\(\mathfrak
+M\)</span> be a mark. No <span class="math inline">\(\sigma \in
+\Phi_{\mathfrak M} \cup \Phi_{\bar{\mathfrak M}}\)</span> is a <span
+class="math inline">\(b\)</span>-place, so <span
+class="math inline">\(\kappa(\sigma) = a/x_1\)</span> there. For <span
+class="math inline">\(v \in \mathfrak M\)</span>, <span
+class="math inline">\(\sigma \mapsto [-p]\sigma\)</span> maps <span
+class="math inline">\(\{\sigma : v_\sigma = v\}\)</span> bijectively
+onto <span class="math inline">\(\{\sigma : v_\sigma = \bar v\}\)</span>
+and preserves <span class="math inline">\(\kappa\)</span>.</p>
+</div>
+<p>The <em>model</em> is that of Problem <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#pr:two-places"
+data-reference-type="ref"
+data-reference="d2-pr:two-places">59.5.1</a>: <span
+class="math inline">\(\Phi = (\mathbb{Z}/4)^\times = \{1, 3\}\)</span>,
+both places are <span class="math inline">\(a\)</span>-places, <span
+class="math inline">\(a = 24\)</span>, and <span class="math inline">\(p
+= 5\)</span> is treated as inert, so that <span
+class="math inline">\([-5^e]\)</span> exchanges <span
+class="math inline">\(1\)</span> and <span
+class="math inline">\(3\)</span> for every <span class="math inline">\(e
+\in I_5\)</span>, the odd <span class="math inline">\(e \ge 1\)</span>.
+Think of <span class="math inline">\(1\)</span> as inducing <span
+class="math inline">\(v\)</span> and <span
+class="math inline">\(3\)</span> as inducing <span
+class="math inline">\(\bar v\)</span>, and put <span
+class="math inline">\(\Phi_{\mathfrak M} := \{1\}\)</span>. There are
+two rows, <span class="math inline">\(0\)</span> and <span
+class="math inline">\(1\)</span>, and <span
+class="math inline">\(\beta\)</span> has <span
+class="math inline">\(24\)</span> columns of height one at each place
+and no others. The model is bookkeeping, not data.</p>
+<div id="pr:model-mark" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:model-mark&quot;]">
+<p><strong>Problem 62.1.7</strong>. In the model, <span
+class="math inline">\(C_5(\varnothing) = 10\)</span> and <span
+class="math inline">\(C_5(\{1\}) = 0\)</span>; <span
+class="math inline">\(\mathcal D(\beta) = 0\)</span>, while <span
+class="math inline">\(\mathcal D(\beta \smallsetminus \{1\}) + \gamma_5
+\cdot 24 = 10 = 48\gamma_5\)</span>, with <span
+class="math inline">\(\gamma_5 = 5/24\)</span>.</p>
+</div>
+<p>Without the mark the collision takes the whole credit <span
+class="math inline">\(48\gamma_5\)</span>; with it, nothing is lost. The
+erasure is not free: at a neighbour the charges and the diagonal cost
+<span class="math inline">\(a_v\)</span> (Section <a
+href="#sec:neighbour" data-reference-type="ref"
+data-reference="sec:neighbour">62.2</a>), and <span
+class="math inline">\(Y_v\)</span> carries the factor <span
+class="math inline">\(p^{a_v}\)</span> that pays for them.</p>
+<h1 id="sec:neighbour">§62.2. One lift at a neighbour</h1>
+<p>Let <span class="math inline">\(\mathfrak M\)</span> be a mark and
+<span class="math inline">\(j \ge 0\)</span>. For <span
+class="math inline">\(v \in \mathfrak M\)</span> the pair <span
+class="math inline">\(\{v, \bar v\}\)</span> is split (Problem <a
+href="#pr:orbit" data-reference-type="ref"
+data-reference="pr:orbit">62.1.4</a>), and the unitary group of <span
+class="math inline">\(X_{j+1}\)</span> at it is <span
+class="math inline">\(\mathrm{GL}_{n_{j+1}}(E_v)\)</span>: <span
+class="math inline">\(g\)</span> at <span
+class="math inline">\(v\)</span> and <span class="math inline">\((\bar
+g^{\,t})^{-1}\)</span> at <span class="math inline">\(\bar v\)</span>.
+As <span class="math inline">\(p\)</span> is unramified, it is a
+uniformizer of <span class="math inline">\(E_v\)</span>.</p>
+<div id="def:neighbour" class="definition">
+<p><strong>Definition 62.2.1</strong>. A <em>neighbour of index at most <span
+class="math inline">\(r_p\)</span></em> at <span
+class="math inline">\(\mathfrak M\)</span> is an element of the finite
+adelic unitary group of <span class="math inline">\(X_{j+1}\)</span>
+which is <span class="math inline">\(1\)</span> away from <span
+class="math inline">\(\mathfrak M\cup \bar{\mathfrak M}\)</span> and
+whose component <span class="math inline">\(g_v\)</span> at each <span
+class="math inline">\(v \in \mathfrak M\)</span> lies in the <span
+class="math inline">\(\mathrm{GL}_{n_{j+1}}(\mathcal
+O_v)\)</span>-double coset of <span
+class="math inline">\(\operatorname{diag}(p 1_i, 1)\)</span> for some
+<span class="math inline">\(i \le r_p\)</span>.</p>
+</div>
+<div id="pr:cartan" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:cartan&quot;]">
+<p><strong>Problem 62.2.1</strong>. An element of the double coset of <span
+class="math inline">\(\operatorname{diag}(p1_i, 1)\)</span> in <span
+class="math inline">\(\mathrm{GL}_n(E_v)\)</span> is <span
+class="math inline">\(g_1 \operatorname{diag}(p 1_{\mathcal I}, 1)\,
+g_2\)</span> with <span class="math inline">\(g_1, g_2 \in
+\mathrm{GL}_n(\mathcal O_v)\)</span>, for every set <span
+class="math inline">\(\mathcal I\)</span> of <span
+class="math inline">\(i\)</span> rows, <span
+class="math inline">\(\operatorname{diag}(p1_{\mathcal I}, 1)\)</span>
+having <span class="math inline">\(p\)</span> at the rows of <span
+class="math inline">\(\mathcal I\)</span> and <span
+class="math inline">\(1\)</span> elsewhere.</p>
+</div>
+<p>Fix sets <span class="math inline">\(\mathcal I_v\)</span> of rows,
+<span class="math inline">\(\#\mathcal I_v \le r_p\)</span>, for <span
+class="math inline">\(v \in \mathfrak M\)</span>. For <span
+class="math inline">\(\tau\)</span> with <span
+class="math inline">\(v_\tau \in \mathfrak M\)</span> or <span
+class="math inline">\(\bar v_\tau \in \mathfrak M\)</span> let <span
+class="math inline">\(\mathcal I(\tau) := \mathcal I_v\)</span> for that
+<span class="math inline">\(v \in \mathfrak M\)</span>; otherwise <span
+class="math inline">\(\mathcal I(\tau) := \varnothing\)</span>. Define
+the <em>neighbour diagonal</em> <span class="math inline">\(g_{\mathcal
+I}\)</span> to be the neighbour (Definition <a href="#def:neighbour"
+data-reference-type="ref" data-reference="def:neighbour">62.2.1</a>) with
+component <span class="math inline">\(\operatorname{diag}(p1_{\mathcal
+I_v}, 1)\)</span> at each <span class="math inline">\(v \in \mathfrak
+M\)</span>.</p>
+<div id="pr:diagonal" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:diagonal&quot;]">
+<p><strong>Problem 62.2.2</strong>. (i) At <span
+class="math inline">\(\tau\)</span>, the extension to finite adeles of
+<span class="math inline">\(u \mapsto \eta(\Phi_\tau(\bar u))\)</span>
+sends <span class="math inline">\(g_{\mathcal I}\)</span> to the
+diagonal matrix with entries <span
+class="math inline">\(p^{-\epsilon_\tau(i)}\)</span>, where <span
+class="math inline">\(\epsilon_\tau(i) = 1\)</span> if <span
+class="math inline">\(v_\tau \in \mathfrak M\)</span> and <span
+class="math inline">\(i \in \mathcal I(\tau)\)</span>, <span
+class="math inline">\(\epsilon_\tau(i) = -1\)</span> if <span
+class="math inline">\(\bar v_\tau \in \mathfrak M\)</span> and <span
+class="math inline">\(i \in \mathcal I(\tau)\)</span>, and <span
+class="math inline">\(\epsilon_\tau(i) = 0\)</span> otherwise; so a box
+in row <span class="math inline">\(i\)</span> at <span
+class="math inline">\(\tau\)</span> has its gauge multiplied by <span
+class="math inline">\(\lvert p^{-\epsilon_\tau(i)}\rvert =
+p^{\epsilon_\tau(i)}\)</span>. (ii) For every integer <span
+class="math inline">\(c\)</span>, <span class="math inline">\(\sum_{\tau
+:\, \kappa(\tau) = c}\, \sum_i \epsilon_\tau(i) = 0\)</span>.</p>
+</div>
+<p>The following extends statement (II) of Section <a
+href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#sec:kernel" data-reference-type="ref"
+data-reference="d2-sec:kernel">59.4</a> from <span
+class="math inline">\(1\)</span> to a diagonal; it is read from the
+proof. <em>(C)</em> Let <span class="math inline">\(\phi\)</span> be a
+standard datum of denominator <span
+class="math inline">\(\delta\)</span> on <span
+class="math inline">\(\mathrm{Hom}(X_j, X_{j+1})\)</span>, let <span
+class="math inline">\(g_1, g_2\)</span> be elements of the finite adelic
+unitary group of <span class="math inline">\(X_{j+1}\)</span> whose
+components at the places above <span class="math inline">\(p\)</span>
+are integral with integral inverses, and let <span
+class="math inline">\(g_0\)</span> be an element of the same group sent
+at each <span class="math inline">\(\tau\)</span>, as in Problem <a
+href="#pr:diagonal" data-reference-type="ref"
+data-reference="pr:diagonal">62.2.2</a>, to a diagonal matrix with entries
+<span class="math inline">\(y_\tau(i)\)</span>. For a filling <span
+class="math inline">\(\mathbf i\)</span> put <span
+class="math inline">\(\mathrm{dw}(\mathbf i) := \prod_\tau \lvert\det
+y_\tau\rvert^{e_\tau} \prod_{\text{boxes}} \lvert
+y_\tau(\text{row})\rvert\)</span>, where <span
+class="math inline">\(e_\tau\)</span>, a function of <span
+class="math inline">\(\kappa(\tau)\)</span> and <span
+class="math inline">\(j\)</span>, is the exponent of the determinant in
+the weight on <span class="math inline">\(X_{j+1}\)</span> at <span
+class="math inline">\(\tau\)</span>. Suppose that, for every standard
+datum of denominator <span class="math inline">\(\delta\)</span> and
+every pair consisting of an output filling <span
+class="math inline">\(\mathbf i&#39;\)</span> and an input filling <span
+class="math inline">\(\mathbf i\)</span>, the <span
+class="math inline">\((\mathbf i&#39;,\mathbf i)\)</span> entry of the
+Schur jet matrix of its jet series at the scale of the kernel has <span
+class="math inline">\(p\)</span>-adic absolute value after <span
+class="math inline">\(\eta\)</span> which, multiplied by <span
+class="math inline">\(\mathrm{dw}(\mathbf i&#39;)\)</span>, is at most
+<span class="math inline">\(\mathfrak b\)</span>. Then <span
+class="math inline">\((1, g_1g_0g_2)\phi\)</span>, the translate under
+the Weil representation as in Definition <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#def:raises"
+data-reference-type="ref"
+data-reference="d2-def:raises">59.4.2</a>, multiplies gauges by
+at most <span class="math inline">\(\mathfrak b\)</span>.</p>
+<p>For <span class="math inline">\(\tau \in \Phi\)</span>, <span
+class="math inline">\(h \ge 1\)</span> and rows <span
+class="math inline">\(i\)</span> let <span
+class="math inline">\(\mathfrak c(\tau, h, i) := 1\)</span> if either
+<span class="math inline">\(v_\tau \in \mathfrak M\)</span>, <span
+class="math inline">\(h = 1\)</span> and <span class="math inline">\(i
+\notin \mathcal I(\tau)\)</span>, or <span class="math inline">\(\bar
+v_\tau \in \mathfrak M\)</span> and <span class="math inline">\(i \in
+\mathcal I(\tau)\)</span>; and <span class="math inline">\(\mathfrak
+c(\tau, h, i) := 0\)</span> otherwise.</p>
+<div id="pr:charges-mark" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:charges-mark&quot;]">
+<p><strong>Problem 62.2.3</strong>. The numbers <span
+class="math inline">\(\mathfrak c\)</span> are charges for <span
+class="math inline">\((\beta, \Phi_{\mathfrak M})\)</span>, with <span
+class="math inline">\(\beta\)</span> read at heights below <span
+class="math inline">\(n_{j+1}\)</span>. [With two rows and <span
+class="math inline">\(\mathcal I_v = \{0\}\)</span>: <span
+class="math inline">\(\mathfrak c(\tau, 1, \cdot) = (0, 1)\)</span> if
+<span class="math inline">\(v_\tau \in \mathfrak M\)</span>, <span
+class="math inline">\(\mathfrak c(\tau, h, \cdot) = (1, 0)\)</span> for
+every <span class="math inline">\(h\)</span> if <span
+class="math inline">\(\bar v_\tau \in \mathfrak M\)</span>, and in each
+pairing exempt by Definition <a href="20261126T050100--the-count-congruences-directions-and-factorials__workbook.html#def:charges"
+data-reference-type="ref"
+data-reference="d1-def:charges">58.3.1</a> the two charges add
+up to <span class="math inline">\(1\)</span> in each row.]</p>
+</div>
+<div id="pr:neighbour" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:neighbour&quot;]">
+<p><strong>Problem 62.2.4</strong>. Let <span
+class="math inline">\(\phi\)</span> be a standard datum of denominator
+<span class="math inline">\(1\)</span> on <span
+class="math inline">\(\mathrm{Hom}(X_j, X_{j+1})\)</span> and <span
+class="math inline">\(g\)</span> a neighbour of index at most <span
+class="math inline">\(r_p\)</span> at <span
+class="math inline">\(\mathfrak M\)</span>. Then <span
+class="math inline">\((1, g)\phi\)</span> multiplies gauges by at most
+<span class="math display">\[p^{\sum_{v \in \mathfrak M} a_v + r_p
+\sum_{\sigma \in \Phi_{\mathfrak M}} \beta_{&gt;1}(\sigma) - \mathcal
+D_j(\Phi_{\mathfrak M})} ,\]</span> with <span
+class="math inline">\(\beta\)</span> read at heights below <span
+class="math inline">\(n_{j+1}\)</span>.</p>
+</div>
+<p>In the model, with <span class="math inline">\(\mathcal I=
+\{0\}\)</span> and one input coordinate, let <span
+class="math inline">\(F := \exp\bigl(\sum_{i=0,1}(z_{1i}^5 z_{3i} +
+z_{3i}^5 z_{1i})/5\bigr)\)</span>, which has the normal form with <span
+class="math inline">\(W = 1\)</span>. A filling puts <span
+class="math inline">\(a_i\)</span> boxes in row <span
+class="math inline">\(i\)</span> at place <span
+class="math inline">\(1\)</span> and <span
+class="math inline">\(a&#39;_i\)</span> at place <span
+class="math inline">\(3\)</span> (in this sheet), <span
+class="math inline">\(a_0 + a_1 = a&#39;_0 + a&#39;_1 = 24\)</span>; its
+jet is <span
+class="math inline">\(\partial_{z_{10}}^{a_0}\partial_{z_{11}}^{a_1}\partial_{z_{30}}^{a&#39;_0}\partial_{z_{31}}^{a&#39;_1}F(0)\)</span>,
+its charges total <span class="math inline">\(a_1 + a&#39;_0\)</span>,
+and the diagonal weights it by <span class="math inline">\(5^{a_0 -
+a&#39;_0}\)</span> in absolute value.</p>
+<div id="pr:model-jets" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:model-jets&quot;]">
+<p><strong>Problem 62.2.5</strong>. (m) By machine: of the <span
+class="math inline">\(625\)</span> pairs <span
+class="math inline">\((a_0,a&#39;_0)\)</span> with <span
+class="math inline">\(0\le a_0,a&#39;_0\le24\)</span>, <span
+class="math inline">\(25\)</span> have a nonzero jet; every nonzero jet
+has valuation <span class="math inline">\(0\)</span>; and <span
+class="math inline">\(\operatorname{val}(\text{jet}) + a_1 + a&#39;_0
+\ge 8\)</span>, with equality only at <span class="math inline">\((a_0,
+a&#39;_0) = (20, 4)\)</span>.</p>
+</div>
+<p>The weighted jets multiplied by <span
+class="math inline">\(5^{24}\)</span> have minimum valuation <span
+class="math inline">\(8\)</span>. The plain jets have minimum valuation
+<span class="math inline">\(0\)</span>. The shortfall from the predicted
+credit <span class="math inline">\(10\)</span> is the factorial digit
+loss <span class="math inline">\(2\)</span>. In this model the error
+expression of Theorem <a href="20261126T050100--the-count-congruences-directions-and-factorials__workbook.html#thm:count-charges"
+data-reference-type="ref"
+data-reference="d1-thm:count-charges">58.3.2</a>
+evaluates to <span class="math inline">\(16(1+\log_5 48)\)</span>, about
+<span class="math inline">\(54\)</span>.</p>
+<h1 id="sec:transfer">§62.3. Moving the Hecke operators into the data</h1>
+<p>For <span class="math inline">\(v \in \mathfrak M\)</span>, <span
+class="math inline">\(q_v := p^{f_p}\)</span>, and <span
+class="math inline">\(0 \le i \le n_j\)</span>, let <span
+class="math inline">\(T^{(j)}_{v,i}\)</span> be the Hecke operator at
+<span class="math inline">\(v\)</span> of the double coset of <span
+class="math inline">\(\operatorname{diag}(p1_i, 1)\)</span> on forms on
+<span class="math inline">\(X_j\)</span>, and <span
+class="math inline">\(\mathbf T_j(X) := \sum_{i \le n_j} (-X)^i
+q_v^{\binom i2} T^{(j)}_{v,i}\)</span> for an indeterminate <span
+class="math inline">\(X\)</span>; so <span class="math inline">\(T_v =
+T^{(0)}_{v,r_p}\)</span>.</p>
+<p><em>(A) The split unramified theta correspondence.</em> Let <span
+class="math inline">\(w\)</span> be a split place of norm <span
+class="math inline">\(q\)</span> and fix the Weil data. Let the two
+hermitian spaces have ranks <span class="math inline">\(n\)</span> and
+<span class="math inline">\(n+k&#39;\)</span>, with automorphic
+characters <span class="math inline">\(a_0,b_0\)</span> of the norm-one
+ideles whose base changes are unramified at <span
+class="math inline">\(w\)</span>. Write <span
+class="math inline">\(\omega(g,h)\)</span> for the Weil action induced
+by <span class="math inline">\(x\mapsto hxg^{-1}\)</span> on the space
+of maps from the source to the target, multiplied by <span
+class="math inline">\(a_0(\det h)b_0(\det g)^{-1}\)</span>. Let the data
+space of the bilinear pairing <span
+class="math inline">\(\Theta\)</span> be a complex subspace of the
+Schwartz space of these maps containing a vacuum <span
+class="math inline">\(\phi_0\)</span> at <span
+class="math inline">\(w\)</span> and all its finite adelic translates
+under this action. For every pair <span
+class="math inline">\((g,h)\)</span> in the source and target finite
+adelic groups and every source vector <span
+class="math inline">\(u\)</span>, assume <span
+class="math inline">\(\rho(h)\Theta(\phi_0;u)=\Theta(\omega(g,h)\phi_0;\pi(g)u)\)</span>,
+where <span class="math inline">\(\pi,\rho\)</span> are the source and
+target representations. For <span class="math inline">\(\varphi\)</span>
+spherical at <span class="math inline">\(w\)</span>, <span
+class="math inline">\(\Theta(\phi_0; \varphi)\)</span> is spherical at
+<span class="math inline">\(w\)</span> and <span
+class="math inline">\(\mathbf T&#39;(X)\Theta(\phi_0; \varphi) =
+\prod_{l&lt;k&#39;}(1 - q^l\mathrm{fr}\, X)\,\Theta\bigl(\phi_0; \mathbf
+T(q^{k&#39;}\mathrm{fr}\,\mathrm{fr}&#39;^{-1}X)\varphi\bigr)\)</span>,
+where <span class="math inline">\(\mathbf T\)</span>, <span
+class="math inline">\(\mathbf T&#39;\)</span> are the Hecke polynomials
+of the two spaces and <span
+class="math inline">\(\mathrm{fr}=F_w(a_0,n)\)</span>, <span
+class="math inline">\(\mathrm{fr}&#39;=F_w(b_0,n+k&#39;)\)</span>. Here
+<span class="math inline">\(F_w(c,N)=q^{N/2}c(x_w/\bar
+x_w)\upsilon_E(x_w)^{-N}\)</span>, where <span
+class="math inline">\(x_w\)</span> is the idele of the chosen
+uniformizer at <span class="math inline">\(w\)</span>, equal to <span
+class="math inline">\(1\)</span> elsewhere, and <span
+class="math inline">\(\upsilon_E\)</span> is the splitting character of
+the Weil data. <em>Status</em>: classical <span class="citation"
+data-cites="Ra Ku">[<a href="#ref-Ra">Ra</a>; <a href="#ref-Ku">Ku</a>]</span>;
+the proof proves it.</p>
+<p><em>(B)</em> For the chain, (A) takes the following form, read from
+the proof. Let <span class="math inline">\(\Psi\)</span> be a weak chain
+datum for <span class="math inline">\(\vartheta\)</span>, <span
+class="math inline">\(p \nmid \mathrm{Nm}\,Q_\vartheta\)</span>, <span
+class="math inline">\(v \in \mathfrak M\)</span> and <span
+class="math inline">\(j \ge 0\)</span>. Let <span
+class="math inline">\(\chi_{v,j}\)</span> be the value at a uniformizer
+of <span class="math inline">\(E_v\)</span> of the base change of the
+character of the lift <span class="math inline">\(X_j \to
+X_{j+1}\)</span>; then <span
+class="math inline">\(\lvert\eta\chi_{v,j}\rvert = 1\)</span>, and for
+every <span class="math inline">\(\mathfrak t\)</span> in the support of
+<span class="math inline">\(\Psi\)</span> the lift <span
+class="math inline">\(\Theta\)</span> from <span
+class="math inline">\(X_j\)</span> to <span
+class="math inline">\(X_{j+1}\)</span> with datum <span
+class="math inline">\(v_j(\mathfrak t)\)</span> maps forms spherical at
+<span class="math inline">\(v\)</span> to forms spherical at <span
+class="math inline">\(v\)</span>, and on them <span
+class="math display">\[\mathbf T_{j+1}(X)\,\Theta = \mathcal Q_j(X)\,
+\Theta\, \mathbf T_j\bigl(p^{(t+1)f_p/2}X\bigr), \qquad
+  \mathcal Q_j(X) := \prod_{l=0}^{t}\bigl(1 - q_v^l\,
+p^{n_jf_p/2}\chi_{v,j} X\bigr) .\]</span></p>
+<div id="pr:transfer-model" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:transfer-model&quot;]">
+<p><strong>Problem 62.3.1</strong>. In a model of (B), take <span
+class="math inline">\(q_v=25\)</span>, <span
+class="math inline">\(p^{f_p/2}=5\)</span>, <span
+class="math inline">\(\chi_{v,0}=1\)</span>, and ranks <span
+class="math inline">\(1\)</span> and <span
+class="math inline">\(2\)</span> (<span
+class="math inline">\(t=0\)</span>). Suppose <span
+class="math inline">\(T^{(0)}_{v,1}\)</span> acts by <span
+class="math inline">\(2\)</span> on a subspace of forms spherical at
+<span class="math inline">\(v\)</span>. Then on its image under <span
+class="math inline">\(\Theta\)</span>, <span
+class="math inline">\(T^{(1)}_{v,1}\)</span> acts by <span
+class="math inline">\(15\)</span> and <span
+class="math inline">\(T^{(1)}_{v,2}\)</span> by <span
+class="math inline">\(2\)</span>, and <span
+class="math inline">\(5\,\Theta
+T^{(0)}_{v,1}=(T^{(1)}_{v,1}-5)\Theta\)</span> on the given
+subspace.</p>
+</div>
+<div id="pr:triangular" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:triangular&quot;]">
+<p><strong>Problem 62.3.2</strong>. Let <span class="math inline">\(0\le
+n\le n&#39;\)</span>, <span class="math inline">\(\mathcal Q\in\mathcal
+O_\eta[X]\)</span> with <span class="math inline">\(\mathcal
+Q(0)=1\)</span>, and <span
+class="math inline">\(s_0=p^{(t+1)f_p/2}\)</span>. Let <span
+class="math inline">\(\Theta\colon V\to V&#39;\)</span> be a linear map
+of complex vector spaces, with endomorphisms <span
+class="math inline">\(T_i\)</span> of <span
+class="math inline">\(V\)</span> for <span class="math inline">\(0\le
+i\le n\)</span> and <span class="math inline">\(T&#39;_i\)</span> of
+<span class="math inline">\(V&#39;\)</span> for <span
+class="math inline">\(0\le i\le n&#39;\)</span>. Suppose <span
+class="math inline">\(\sum_{i=0}^{n&#39;}(-X)^i q_v^{\binom
+i2}T&#39;_i\Theta=\mathcal Q(X)\,\Theta\sum_{i=0}^{n}(-s_0 X)^i
+q_v^{\binom i2}T_i\)</span> as polynomials in <span
+class="math inline">\(X\)</span>. Then for every <span
+class="math inline">\(0\le i\le n\)</span> there are <span
+class="math inline">\(c_{ii&#39;}\in\mathcal O_\eta\)</span>, depending
+only on <span class="math inline">\(\mathcal Q,q_v,i,i&#39;\)</span>,
+with <span class="math inline">\(s_0^i q_v^{\binom i2}\Theta
+T_i=\sum_{i&#39;\le i}c_{ii&#39;}T&#39;_{i&#39;}\Theta\)</span>.</p>
+</div>
+<p>Put <span class="math inline">\(e_{\mathrm{tr}}:= r_p f(n_m +
+r_p)\)</span>, the <em>transfer exponent</em>.</p>
+<div id="pr:scalar" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:scalar&quot;]">
+<p><strong>Problem 62.3.3</strong>. For <span class="math inline">\(i \le
+r_p\)</span>, <span class="math inline">\(p^{(t+1)if_p/2}q_v^{\binom
+i2}\)</span> divides <span class="math inline">\(p^{fr_pt}\)</span>; and
+<span class="math inline">\((j+1) f r_p t \le e_{\mathrm{tr}}\)</span>
+for <span class="math inline">\(j &lt; m\)</span>.</p>
+</div>
+<p>Fix <span class="math inline">\(v\in\mathfrak M\)</span> and <span
+class="math inline">\(j\ge0\)</span>, with <span
+class="math inline">\(\Psi,\vartheta,p\)</span> as in (B). For each
+translation <span class="math inline">\(\mathfrak t\)</span> in the
+support of <span class="math inline">\(\Psi\)</span>, the datum <span
+class="math inline">\(v_j(\mathfrak t)\)</span> is fixed by the target
+maximal compact group at <span class="math inline">\(v\)</span>. Write
+<span class="math inline">\(C_{j+1}^{\mathfrak t}\)</span> for the first
+<span class="math inline">\(j+1\)</span> lifts with these translated
+vacua. Iterating Problem <a href="#pr:triangular"
+data-reference-type="ref" data-reference="pr:triangular">62.3.2</a>, the
+proof gives coefficients <span
+class="math inline">\(c_i\in\mathbb{C}\)</span>, independent of <span
+class="math inline">\(\mathfrak t\)</span> and of the input form, such
+that on forms on <span class="math inline">\(X_0\)</span> spherical at
+<span class="math inline">\(v\)</span> one has <span
+class="math inline">\(p^{e_{\mathrm{tr}}} C_{j+1}^{\mathfrak
+t}T^{(0)}_{v,r_p}=\sum_{i\le r_p}c_i T^{(j+1)}_{v,i}C_{j+1}^{\mathfrak
+t}\)</span>. Source forms of the prescribed level are spherical at <span
+class="math inline">\(v\)</span>. For <span
+class="math inline">\(j&lt;m\)</span> the <span
+class="math inline">\(c_i\)</span> belong to <span
+class="math inline">\(\mathcal O_\eta\)</span> (Problem <a
+href="#pr:scalar" data-reference-type="ref"
+data-reference="pr:scalar">62.3.3</a>). Theorem <a href="20261125T016700--divisibility-along-the-chain__workbook.html#thm:move"
+data-reference-type="ref"
+data-reference="dac-thm:move">25.3.1</a> computes such
+coefficients in a model. Write <span
+class="math inline">\(H^{(j+1)}_{v,i}\)</span> for the Hecke operator of
+the same double coset on the data of lift <span
+class="math inline">\(j\)</span>, acting by the sum of the translates by
+<span class="math inline">\((1,u)\)</span> over coset representatives
+<span class="math inline">\(u\)</span>. Lifting with <span
+class="math inline">\(H^{(j+1)}_{v,i}\)</span> applied to the datum
+gives <span class="math inline">\(T^{(j+1)}_{v,i}\)</span> applied to
+the lifted form. For each <span class="math inline">\(v\in\mathfrak
+M\)</span> in turn, apply <span
+class="math inline">\(\sum_{i=0}^{r_p}c_i
+p^{a_v-e_{\mathrm{tr}}}H^{(j+1)}_{v,i}\)</span> to the current datum of
+lift <span class="math inline">\(j\)</span>, using the coefficients for
+this <span class="math inline">\(v,j\)</span>. For a source form <span
+class="math inline">\(\varphi\)</span> of the prescribed level, the
+chain of <span class="math inline">\(m\)</span> lifts with these new
+data equals the original chain applied to <span
+class="math inline">\(Y_{\mathfrak M}^m\varphi\)</span>. For <span
+class="math inline">\(j &lt; m\)</span>, by Problem <a
+href="#pr:neighbour" data-reference-type="ref"
+data-reference="pr:neighbour">62.2.4</a> and as <span
+class="math inline">\(\lvert\eta(c_ip^{a_v - e_{\mathrm{tr}}})\rvert \le
+p^{e_{\mathrm{tr}}- a_v}\)</span>, the new datum of lift <span
+class="math inline">\(j\)</span> multiplies gauges by at most <span
+class="math inline">\(p\)</span> to the power <span
+class="math inline">\(\#\mathfrak M\cdot e_{\mathrm{tr}}+
+r_p\sum_{\Phi_{\mathfrak M}}\beta_{&gt;1}- \mathcal D_j(\Phi_{\mathfrak
+M})\)</span>: the <span class="math inline">\(a_v\)</span> cancel. At
+each translated vacuum in the support of <span
+class="math inline">\(\Psi\)</span>, the operator making the replacement
+commutes with the action of the source and target levels. The weighted
+sum of tensors of the new data is therefore jointly invariant. The
+exponents add as in Problem <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#pr:gauge-chain"
+data-reference-type="ref"
+data-reference="dl-pr:gauge-chain">57.3.1</a>, and
+restriction to <span class="math inline">\(Y_m\)</span> at <span
+class="math inline">\(p\ne N\)</span> preserves the gauge bound. The
+proof obtains, for a mark <span class="math inline">\(\mathfrak
+M\)</span>, a weak chain datum <span class="math inline">\(\Psi\)</span>
+for <span class="math inline">\(\vartheta\)</span> with <span
+class="math inline">\(p \nmid \mathrm{Nm}\,Q_\vartheta\)</span>, and
+<span class="math inline">\(\varphi \in S_\eta\)</span>:</p>
+<p>(<span class="math inline">\(\star\)</span>) <span
+class="math inline">\(R_{\vartheta,\Psi}(Y_{\mathfrak
+M}^m\varphi)\)</span> has valuation at least <span
+class="math display">\[-\sum_{j&lt;m}\Bigl(\#\mathfrak M\cdot
+e_{\mathrm{tr}}+ r_p \sum_{\sigma \in \Phi_{\mathfrak M}}
+\beta_{&gt;1}(\sigma) - \mathcal D_j(\Phi_{\mathfrak M})\Bigr)
+,\]</span> <span class="math inline">\(\beta\)</span> read at heights
+below <span class="math inline">\(n_{j+1}\)</span> in the <span
+class="math inline">\(j\)</span>th term.</p>
+<h1 id="sec:pay">§62.4. Paying for the transfer</h1>
+<p>Let <span class="math inline">\(\mathfrak M\)</span> be a mark and
+<span class="math inline">\(0 \le j &lt; m\)</span>, with <span
+class="math inline">\(\beta\)</span> read at heights below <span
+class="math inline">\(n_{j+1}\)</span>.</p>
+<div id="pr:low-columns" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:low-columns&quot;]">
+<p><strong>Problem 62.4.1</strong>. For <span class="math inline">\(\sigma
+\in \Phi_{\mathfrak M}\)</span>, <span
+class="math inline">\(r_p\beta_{&gt;1}(\sigma) \le a/(pm) + \mathbf
+1_{\Phi_a}(\sigma)\,a/x_1\)</span>.</p>
+</div>
+<div id="pr:transfer-paid" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:transfer-paid&quot;]">
+<p><strong>Problem 62.4.2</strong>. <span class="math inline">\(\#\mathfrak
+M\cdot e_{\mathrm{tr}}+ r_p \sum_{\sigma \in \Phi_{\mathfrak M}}
+\beta_{&gt;1}(\sigma) \le L_p/m + \#(\Phi_a \cap \Phi_{\mathfrak M})\,
+a/x_1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T016700--divisibility-along-the-chain__workbook.html">Chapter 25</a></div><!-- used-in:end -->
+</div>
+<div id="pr:stage-cost" class="problem" data-progress-ids="[&quot;20261126T051700--exceptional-primes-a-full-mark__workbook.tex#pr:stage-cost&quot;]">
+<p><strong>Problem 62.4.3</strong>. If <span class="math inline">\(\mathfrak
+M\)</span> is full, then <span class="math inline">\(\#\mathfrak M\cdot
+e_{\mathrm{tr}}+ r_p\sum_{\sigma \in \Phi_{\mathfrak
+M}}\beta_{&gt;1}(\sigma) - \mathcal D_j(\Phi_{\mathfrak M}) \le (2L_p -
+\operatorname{gain}(p))/m\)</span>.</p>
+</div>
+<p>In the model of Problem <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#pr:model-ineq"
+data-reference-type="ref"
+data-reference="d2-pr:model-ineq">59.2.6</a> at <span
+class="math inline">\(p = 7\)</span>, the set <span
+class="math inline">\(\{1, 9\}\)</span> plays the part of <span
+class="math inline">\(\Phi_{\mathfrak M}\)</span>: <span
+class="math inline">\(C_7(\{1, 9\}) = 0\)</span>, and the left side
+there is <span class="math inline">\(46865/48\)</span>, against <span
+class="math inline">\(\operatorname{gain}(7)/m = 1022\)</span>
+(Problems <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#pr:toy-values" data-reference-type="ref"
+data-reference="d2-pr:toy-values">59.2.7</a> and <a
+href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#pr:toy-gain" data-reference-type="ref"
+data-reference="d2-pr:toy-gain">59.2.2</a>). Summing
+Problem <a href="#pr:stage-cost" data-reference-type="ref"
+data-reference="pr:stage-cost">62.4.3</a> over <span class="math inline">\(j
+&lt; m\)</span> in (<span class="math inline">\(\star\)</span>) gives
+the following theorem; (<span class="math inline">\(\star\)</span>) is
+read from the proof.</p>
+<div id="thm:full-mark" class="theorem">
+<p><strong>Theorem 62.4.1</strong>. <em>Let <span
+class="math inline">\(p\)</span> be a prime, <span
+class="math inline">\(\eta\colon \mathbb{C}\to \mathbb{C}_p\)</span> a
+ring map, <span class="math inline">\(\vartheta\)</span> a twist, <span
+class="math inline">\(\Psi\)</span> a weak chain datum for <span
+class="math inline">\(\vartheta\)</span> with <span
+class="math inline">\(p \nmid \mathrm{Nm}\,Q_\vartheta\)</span>, and
+<span class="math inline">\(\mathfrak M\)</span> a full mark at <span
+class="math inline">\((p, \eta)\)</span> (so <span
+class="math inline">\(p &lt; x_1\)</span> is exceptional). For every
+<span class="math inline">\(\varphi \in S_\eta\)</span>, <span
+class="math inline">\(R_{\vartheta,\Psi}(Y_{\mathfrak
+M}^m\varphi)\)</span> has valuation at least <span
+class="math inline">\(\operatorname{gain}(p) - 2L_p\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T016700--divisibility-along-the-chain__workbook.html">Chapter 25</a>; <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html">Chapter 57</a></div><!-- used-in:end -->
+</div>
+<h4 id="what-has-been-established.">What has been established.</h4>
+<p>Theorem <a href="#thm:full-mark" data-reference-type="ref"
+data-reference="thm:full-mark">62.4.1</a>, from (<span
+class="math inline">\(\star\)</span>) and Problems <a
+href="#pr:low-columns" data-reference-type="ref"
+data-reference="pr:low-columns">62.4.1</a>–<a href="#pr:stage-cost"
+data-reference-type="ref" data-reference="pr:stage-cost">62.4.3</a>; (<span
+class="math inline">\(\star\)</span>) rests on Problem <a
+href="#pr:neighbour" data-reference-type="ref"
+data-reference="pr:neighbour">62.2.4</a> (from Problems <a href="#pr:cartan"
+data-reference-type="ref" data-reference="pr:cartan">62.2.1</a>–<a
+href="#pr:charges-mark" data-reference-type="ref"
+data-reference="pr:charges-mark">62.2.3</a>, (C), Theorem <a
+href="20261126T050100--the-count-congruences-directions-and-factorials__workbook.html#thm:count-charges" data-reference-type="ref"
+data-reference="d1-thm:count-charges">58.3.2</a> and
+(III), (IV) of Chapter <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="d2-chap">59</a>), on (A) and (B), and on
+Problems <a href="#pr:triangular" data-reference-type="ref"
+data-reference="pr:triangular">62.3.2</a> and <a href="#pr:scalar"
+data-reference-type="ref" data-reference="pr:scalar">62.3.3</a>. A full mark
+exists (Problem <a href="#pr:full-mark-exists" data-reference-type="ref"
+data-reference="pr:full-mark-exists">62.1.5</a>). Taken as given: the split
+unramified theta correspondence (A), classical; its form (B) for the
+chain and the kernel bound (C), read from the proof; the steps of
+Section <a href="#sec:transfer" data-reference-type="ref"
+data-reference="sec:transfer">62.3</a> that lead from Problems <a
+href="#pr:triangular" data-reference-type="ref"
+data-reference="pr:triangular">62.3.2</a> and <a href="#pr:scalar"
+data-reference-type="ref" data-reference="pr:scalar">62.3.3</a> to (<span
+class="math inline">\(\star\)</span>), read from the proof; and, from
+the earlier chapters, Theorem <a href="20261126T050100--the-count-congruences-directions-and-factorials__workbook.html#thm:count-charges"
+data-reference-type="ref"
+data-reference="d1-thm:count-charges">58.3.2</a> and
+statements (III), (IV) of Chapter <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#chap"
+data-reference-type="ref" data-reference="d2-chap">59</a>.
+Problem <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#pr:two-pieces" data-reference-type="ref"
+data-reference="dl-pr:two-pieces">57.4.3</a> adds <span
+class="math inline">\(p^{j_p}S_\eta\)</span> to the image; what remains
+for the exceptional primes is the colength of <span
+class="math inline">\(Y_{\mathfrak M}^mS_\eta + p^{j_p}S_\eta\)</span>
+in <span class="math inline">\(S_\eta\)</span> (Section <a
+href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#sec:exceptional" data-reference-type="ref"
+data-reference="dl-sec:exceptional">57.4</a>).</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. In the Lean proof <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span> (paths
+relative to <code>grh/src/</code>; the namespace <code>New.</code> is
+omitted from names), Theorem <a href="#thm:full-mark"
+data-reference-type="ref" data-reference="thm:full-mark">62.4.1</a> is
+<code>Data.IsWeakChainDatum.gaugeLe_restrictedChain_of_isFullMark</code>
+(<code>New/UpperBound/Divisibility/LocalDivisibility.lean</code>);
+(<span class="math inline">\(\star\)</span>) is
+<code>Data.IsWeakChainDatum.gaugeLe_scaledHeckeOperator_pow</code> and
+Problem <a href="#pr:neighbour" data-reference-type="ref"
+data-reference="pr:neighbour">62.2.4</a> is <code>Data.IsMarked.</code><span
+class="math inline">\(\omega\)</span><code>_ofSplitPlaces_mem_raises</code>
+(<code>New/UpperBound/Divisibility/ValuationAtNonSplitPrimes.lean</code>);
+Problems <a href="#pr:full-mark-exists" data-reference-type="ref"
+data-reference="pr:full-mark-exists">62.1.5</a> and <a
+href="#pr:transfer-paid" data-reference-type="ref"
+data-reference="pr:transfer-paid">62.4.2</a> are
+<code>Data.exists_isFullMark</code> and
+<code>Data.IsMarked.card_mul_transferExponent_add_sum_lowColumns_le</code>
+(<code>New/UpperBound/Divisibility/MarkedPrimes.lean</code>). Statement
+(A) is <code>SiegelWeil.hecke_transfer_of_pairing</code>, with <span
+class="math inline">\(F_w\)</span> <code>AutChar.frobValue</code>, (B)
+is <code>Data.IsWeakChainDatum.exists_heckePolyOp_lift</code>, which
+states the existence of a polynomial with integral coefficients and
+constant term <span class="math inline">\(1\)</span> (<span
+class="math inline">\(\mathcal Q_j\)</span> is the one its proof
+constructs), and (C) is
+<code>Parameters.omega_mem_raises_of_schurJet_le</code>. In the
+derivation of (<span class="math inline">\(\star\)</span>) in Section <a
+href="#sec:transfer" data-reference-type="ref"
+data-reference="sec:transfer">62.3</a>, the transfer through the first
+<span class="math inline">\(j+1\)</span> lifts is
+<code>Data.IsWeakChainDatum.exists_hecke_transfer</code>; the Hecke
+operator on the datum is <code>Data.liftKernel_lift_heckeSplit</code>
+and <code>Data.IsMarked.</code><span
+class="math inline">\(\omega\)</span><code>_heckeSplit_mem_raises</code>;
+the new data are
+<code>Data.IsWeakChainDatum.exists_lift_eq_chain_scaledHeckeOperator</code>;
+the addition of the exponents and the restriction to <span
+class="math inline">\(Y_m\)</span> are
+<code>Data.IsWeakChainDatum.gaugeLe_chain</code> and
+<code>Data.GaugeLe.restrictToY</code>
+(<code>New/UpperBound/Divisibility/ChainValuation.lean</code>). The
+double coset of Definition <a href="#def:neighbour"
+data-reference-type="ref" data-reference="def:neighbour">62.2.1</a> is
+<code>basicDoubleCoset</code>, with <code>ofSplitPlaces</code>; <span
+class="math inline">\(f_p\)</span> occurs in
+<code>Parameters.q_eq_pow_lcm_of_inert</code>.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secprimes">§<a href="#sec:primes"
+data-reference-type="ref" data-reference="sec:primes">62.1</a></h2>
+<dl>
+<dt><a href="#pr:decomposition" data-reference-type="ref"
+data-reference="pr:decomposition">62.1.1</a></dt>
+<dd>
+<p><span class="math inline">\(\mathrm{Gal}(E/\mathbb Q) \cong
+\mathrm{Gal}(K/\mathbb Q) \times (\mathbb{Z}/q_1)^\times\)</span>; the
+Frobenius at <span class="math inline">\(p\)</span> is <span
+class="math inline">\((\text{nontrivial}, p)\)</span> and complex
+conjugation is <span class="math inline">\((\text{nontrivial},
+-1)\)</span>. Compare <span class="math inline">\(v_\sigma\)</span> and
+<span class="math inline">\(v_\tau\)</span> through the decomposition
+group.</p>
+</dd>
+<dt><a href="#pr:o-r" data-reference-type="ref"
+data-reference="pr:o-r">62.1.2</a></dt>
+<dd>
+<p>Orders modulo <span class="math inline">\(18480\)</span>; <span
+class="math inline">\(r_p\)</span> is the least <span
+class="math inline">\(h\)</span> with <span class="math inline">\(m \le
+p^h\)</span>.</p>
+</dd>
+<dt><a href="#pr:m-divides" data-reference-type="ref"
+data-reference="pr:m-divides">62.1.3</a></dt>
+<dd>
+<p><span class="math inline">\(2^{s+1} \mid q_1\)</span> and <span
+class="math inline">\(m = 2^e\)</span>, <span class="math inline">\(s =
+22e\)</span> (Definition <a href="20261126T030300--the-data__workbook.html#def:data"
+data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a>). Lift the exponent in
+<span class="math inline">\((-p)^o \equiv 1 \pmod{2^{s+1}}\)</span>.</p>
+</dd>
+<dt><a href="#pr:orbit" data-reference-type="ref"
+data-reference="pr:orbit">62.1.4</a></dt>
+<dd>
+<p>Classes modulo <span class="math inline">\(q_0\)</span>; Problems <a
+href="#pr:decomposition" data-reference-type="ref"
+data-reference="pr:decomposition">62.1.1</a> and <a href="#pr:m-divides"
+data-reference-type="ref" data-reference="pr:m-divides">62.1.3</a>.</p>
+</dd>
+<dt><a href="#pr:full-mark-exists" data-reference-type="ref"
+data-reference="pr:full-mark-exists">62.1.5</a></dt>
+<dd>
+<p>Choose one prime of each pair <span class="math inline">\(\{v_\tau,
+\bar v_\tau\}\)</span>, <span class="math inline">\(\tau \in
+\Phi_a\)</span>, by a total order; Problem <a href="#pr:orbit"
+data-reference-type="ref" data-reference="pr:orbit">62.1.4</a> for why both
+are induced by <span class="math inline">\(a\)</span>-places.</p>
+</dd>
+<dt><a href="#pr:no-b-place" data-reference-type="ref"
+data-reference="pr:no-b-place">62.1.6</a></dt>
+<dd>
+<p>The class of <span class="math inline">\([-p]^i\)</span> modulo <span
+class="math inline">\(q_0\)</span> lies in a group of odd order <span
+class="math inline">\(o_p\)</span>, which does not contain <span
+class="math inline">\(-1\)</span>.</p>
+</dd>
+<dt><a href="#pr:model-mark" data-reference-type="ref"
+data-reference="pr:model-mark">62.1.7</a></dt>
+<dd>
+<p>Geometric series in <span class="math inline">\(1/25\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secneighbour">§<a href="#sec:neighbour"
+data-reference-type="ref" data-reference="sec:neighbour">62.2</a></h2>
+<dl>
+<dt><a href="#pr:cartan" data-reference-type="ref"
+data-reference="pr:cartan">62.2.1</a></dt>
+<dd>
+<p>Elementary divisors over <span class="math inline">\(\mathcal
+O_v\)</span>, and permutation matrices.</p>
+</dd>
+<dt><a href="#pr:diagonal" data-reference-type="ref"
+data-reference="pr:diagonal">62.2.2</a></dt>
+<dd>
+<p>(i) The map is continuous for <span class="math inline">\(\bar
+v_\tau\)</span>. (ii) Problem <a href="#pr:no-b-place"
+data-reference-type="ref" data-reference="pr:no-b-place">62.1.6</a>.</p>
+</dd>
+<dt><a href="#pr:charges-mark" data-reference-type="ref"
+data-reference="pr:charges-mark">62.2.3</a></dt>
+<dd>
+<p>For <span class="math inline">\(e \in I_p\)</span>, <span
+class="math inline">\(v_{[-p^e]\tau} = \bar v_\tau\)</span> and <span
+class="math inline">\(\mathcal I([-p^e]\tau) = \mathcal
+I(\tau)\)</span>. Treat the rows in and out of <span
+class="math inline">\(\mathcal I(\tau)\)</span> separately.</p>
+</dd>
+<dt><a href="#pr:neighbour" data-reference-type="ref"
+data-reference="pr:neighbour">62.2.4</a></dt>
+<dd>
+<p>Problem <a href="#pr:cartan" data-reference-type="ref"
+data-reference="pr:cartan">62.2.1</a> and (C); then, as in Problem <a
+href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#pr:kernel-bound" data-reference-type="ref"
+data-reference="d2-pr:kernel-bound">59.4.6</a>, Theorem <a
+href="20261126T050100--the-count-congruences-directions-and-factorials__workbook.html#thm:count-charges" data-reference-type="ref"
+data-reference="d1-thm:count-charges">58.3.2</a> with
+Problem <a href="#pr:charges-mark" data-reference-type="ref"
+data-reference="pr:charges-mark">62.2.3</a>. Count <span
+class="math inline">\(\epsilon + \mathfrak c\)</span> box by box at
+<span class="math inline">\(\Phi_{\mathfrak M}\)</span> and at <span
+class="math inline">\(\Phi_{\bar{\mathfrak M}}\)</span>; a column has
+distinct rows.</p>
+</dd>
+<dt><a href="#pr:model-jets" data-reference-type="ref"
+data-reference="pr:model-jets">62.2.5</a></dt>
+<dd>
+<p>Only the monomials <span
+class="math inline">\((z_{1i}^5z_{3i})^k(z_{3i}^5z_{1i})^l\)</span>
+contribute; exact rational arithmetic.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="sectransfer">§<a href="#sec:transfer"
+data-reference-type="ref" data-reference="sec:transfer">62.3</a></h2>
+<dl>
+<dt><a href="#pr:transfer-model" data-reference-type="ref"
+data-reference="pr:transfer-model">62.3.1</a></dt>
+<dd>
+<p><span class="math inline">\(\mathcal Q_0(X) = 1 - 5X\)</span>; expand
+<span class="math inline">\(\mathcal Q_0(X)(1 - 2\cdot 5X)\)</span> and
+compare the coefficients of <span class="math inline">\(X\)</span> and
+<span class="math inline">\(X^2\)</span>.</p>
+</dd>
+<dt><a href="#pr:triangular" data-reference-type="ref"
+data-reference="pr:triangular">62.3.2</a></dt>
+<dd>
+<p><span class="math inline">\(\mathcal Q\)</span> is a unit in <span
+class="math inline">\(\mathcal O_\eta[[X]]\)</span>.</p>
+</dd>
+<dt><a href="#pr:scalar" data-reference-type="ref"
+data-reference="pr:scalar">62.3.3</a></dt>
+<dd>
+<p><span class="math inline">\(f_p \le f\)</span> and <span
+class="math inline">\(r_p \le t\)</span>; <span class="math inline">\(mt
+\le n_m\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secpay">§<a href="#sec:pay"
+data-reference-type="ref" data-reference="sec:pay">62.4</a></h2>
+<dl>
+<dt><a href="#pr:low-columns" data-reference-type="ref"
+data-reference="pr:low-columns">62.4.1</a></dt>
+<dd>
+<p>Problems <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#pr:diagram" data-reference-type="ref"
+data-reference="d2-pr:diagram">59.1.1</a> and <a
+href="#pr:no-b-place" data-reference-type="ref"
+data-reference="pr:no-b-place">62.1.6</a>; <span class="math inline">\(r_p
+\le s\)</span>. If <span class="math inline">\(p &gt; m\)</span>, then
+<span class="math inline">\(r_p = o_p = 1\)</span>.</p>
+</dd>
+<dt><a href="#pr:transfer-paid" data-reference-type="ref"
+data-reference="pr:transfer-paid">62.4.2</a></dt>
+<dd>
+<p><span class="math inline">\(\#\mathfrak M\le f\)</span>; the scale
+inequalities make <span class="math inline">\(f^2 r_p(n_m + r_p)p + fa/m
+\le fa(\log b)^2/m\)</span>.</p>
+</dd>
+<dt><a href="#pr:stage-cost" data-reference-type="ref"
+data-reference="pr:stage-cost">62.4.3</a></dt>
+<dd>
+<p>Theorem <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#thm:stage" data-reference-type="ref"
+data-reference="d2-thm:stage">59.4.4</a>(b) and Problem <a
+href="#pr:transfer-paid" data-reference-type="ref"
+data-reference="pr:transfer-paid">62.4.2</a>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Ku"><span class="bib-label">[Ku]</span> S. S. Kudla, On the local theta-correspondence, <em>Invent. Math.</em> <strong>83</strong> (1986), 229–255.</p>
+<p id="ref-Ne"><span class="bib-label">[Ne]</span> J. Neukirch, <em>Algebraic Number Theory</em>, Grundlehren Math. Wiss. 322, Springer, 1999.</p>
+<p id="ref-Ra"><span class="bib-label">[Ra]</span> S. Rallis, Langlands’ functoriality and the Weil representation, <em>Amer. J. Math.</em> <strong>104</strong> (1982), 469–515.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

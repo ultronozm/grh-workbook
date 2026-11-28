@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-3PCd1VwBA5BK5Fsjl/+aEjMTcEEkrkRqNQvOvoEKOJo=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Size, congruence saving and count: the remaining terms</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"{\\mathbb{Z}}","C":"{\\mathbb{C}}","ii":"\\mathrm{i}","Oc":"\\mathcal O","Uc":"{\\mathcal{U}}","Bc":"\\mathcal B","Rb":"\\bar R_0","Sf":"\\mathfrak S","Amp":"\\mathrm{Amp}","Did":"D_{\\mathrm{id}}","Dmain":"D_{\\mathrm{main}}","Dcell":"D_{\\mathrm{cell}}","disc":"\\operatorname{disc}","lk":"\\operatorname{lk}","mt":"\\operatorname{mt}","ts":"\\mathrm{ts}","pc":"\\mathrm{pc}","sz":"\\operatorname{sz}","calb":"\\operatorname{cal}","cri":"\\operatorname{cr}","dsc":"\\operatorname{dsc}","crk":"\\operatorname{crk}","lcr":"\\operatorname{lcr}","Rep":"\\mathrm{Rep}","Nm":"\\operatorname{Nm}","diag":"\\operatorname{diag}","A":"\\mathbb A","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="44">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T080300--size-gain-and-count-the-remaining-terms__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 09:42:12
+      <a href="20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T080300--size-gain-and-count-the-remaining-terms__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Size, congruence saving and count: the remaining
+terms</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:one-place" id="toc-sec:one-place">§44.1. The size at one place</a></li>
+<li><a href="#sec:size" id="toc-sec:size">§44.2. The size of a term</a></li>
+<li><a href="#sec:gain" id="toc-sec:gain">§44.3. Congruence saving and count</a></li>
+<li><a href="#sec:pairs" id="toc-sec:pairs">§44.4. Pairs</a></li>
+<li><a href="#sec:back" id="toc-sec:back">§44.5. The bounds of Chapter 43</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secone-place" id="toc-secone-place">§44.1</a></li>
+<li><a href="#secgain" id="toc-secgain">§44.3</a></li>
+<li><a href="#secpairs" id="toc-secpairs">§44.4</a></li>
+<li><a href="#secback" id="toc-secback">§44.5</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Chapter <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#chap" data-reference-type="ref"
+data-reference="m2-chap">43</a> in full, in particular the
+<em>Bessel tuple</em> <span
+class="math inline">\((v_1,\dots,v_\varrho,v_{\varrho+1})\)</span> with
+<span class="math inline">\(v_{\varrho+1}:=z\)</span>, the leading
+minors <span class="math inline">\(\langle\gamma\rangle_j\)</span>,
+<span class="math inline">\(\operatorname{disc}\)</span>, <span
+class="math inline">\(\operatorname{lk}\)</span>, the remaining terms
+<span class="math inline">\(\Gamma^*\)</span>, <span
+class="math inline">\(\operatorname{mt}\)</span>, the second moments and
+the link second moment (Definitions <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:frame"
+data-reference-type="ref"
+data-reference="m2-def:frame">43.2.1</a>–<a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:meet"
+data-reference-type="ref" data-reference="m2-def:meet">43.2.5</a>
+and <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:moments" data-reference-type="ref"
+data-reference="m2-def:moments">43.3.1</a>), Theorems <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:survivors" data-reference-type="ref"
+data-reference="m2-thm:survivors">43.2.1</a>, <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:link-bound" data-reference-type="ref"
+data-reference="m2-thm:link-bound">43.3.1</a>, <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:cut" data-reference-type="ref"
+data-reference="m2-thm:cut">43.3.2</a> and Problems <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#pr:cross" data-reference-type="ref"
+data-reference="m2-pr:cross">43.3.4</a>, <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#pr:columns"
+data-reference-type="ref"
+data-reference="m2-pr:columns">43.3.2</a>, <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#pr:hua"
+data-reference-type="ref" data-reference="m2-pr:hua">43.3.5</a>.
+From Chapter <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#chap" data-reference-type="ref"
+data-reference="m1-chap">40</a>: amplitude sums (Definition <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#def:amplitude" data-reference-type="ref"
+data-reference="m1-def:amplitude">40.3.1</a>; <span
+class="math inline">\(\mathrm{Amp}^\flat\)</span> sums <em>truncated
+amplitudes</em>, formed with the <em>Bessel truncation</em> <span
+class="math inline">\(W^\flat\)</span> by length as in Definition <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:moments" data-reference-type="ref"
+data-reference="m2-def:moments">43.3.1</a>), <span
+class="math inline">\(D_{\mathrm{id}}\)</span>, <span
+class="math inline">\(D_{\mathrm{main}}\)</span> and, for the data,
+<span class="math inline">\(b^{11kf}D_{\mathrm{id}}\le
+D_{\mathrm{main}}\le(M/b^6)^{kf}D_{\mathrm{id}}\)</span>. From
+Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">39</a>: classes <span
+class="math inline">\(c\)</span> and representatives <span
+class="math inline">\(h_c\)</span>, integrality and reduction, <span
+class="math inline">\(K_M\)</span>, <span
+class="math inline">\({\mathcal{U}}\)</span>, <span
+class="math inline">\(\nu\)</span> (Definition <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:scaled"
+data-reference-type="ref"
+data-reference="bp-def:scaled">39.4.1</a>), <span
+class="math inline">\(\bar R_0\)</span> (Definition <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:bessel-rep" data-reference-type="ref"
+data-reference="bp-def:bessel-rep">39.4.2</a>), admissible
+fillings (Definition <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:filling" data-reference-type="ref"
+data-reference="bp-def:filling">39.4.3</a>). From
+Definition <a href="20261126T030300--the-data__workbook.html#def:data" data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a>: <span
+class="math inline">\(b\ge1000\)</span>, <span
+class="math inline">\(b^{10}\le p_i\le b^{11}\)</span>, <span
+class="math inline">\(M=p_0p_1\)</span>, and <span
+class="math inline">\(\varrho+1=m/2&lt;b\)</span> (Problem <a
+href="20261126T030300--the-data__workbook.html#pr:chain" data-reference-type="ref"
+data-reference="da-pr:chain">36.3.1</a> and the definition of
+<span class="math inline">\(\varrho\)</span> after Problem <a
+href="20261126T030300--the-data__workbook.html#pr:signs" data-reference-type="ref"
+data-reference="da-pr:signs">36.3.4</a>); <span
+class="math inline">\(kf\ge40\)</span> (Chapter <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#chap"
+data-reference-type="ref" data-reference="m2-chap">43</a>).
+Hermitian forms are linear in the first variable; <span
+class="math inline">\(\lVert\cdot\rVert\)</span> is the Euclidean norm
+of the entries; <span class="math inline">\(k&#39;\ge1\)</span> is an
+integer (primed, since <span class="math inline">\(k\)</span> belongs to
+the data).</p>
+<p>This sheet serves the second moment in the proof of Theorem <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#thm:B" data-reference-type="ref"
+data-reference="bp-thm:B">39.4.2</a> of Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap"
+data-reference-type="ref" data-reference="bp-chap">39</a>,
+<em>Theorem B: enough forms</em>. Chapter <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#chap"
+data-reference-type="ref" data-reference="m2-chap">43</a> states
+two bounds. Theorem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:link-bound"
+data-reference-type="ref"
+data-reference="m2-thm:link-bound">43.3.1</a> bounds the
+sum of the squared norms of the blocks of truncated amplitudes for the
+terms of nonzero discriminant, taken separately for each link, each pair
+of classes and each reduction in the specified set. Theorem <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:cut" data-reference-type="ref"
+data-reference="m2-thm:cut">43.3.2</a> bounds the square root of
+the full second moment of the terms off the Bessel subgroup over sets
+that avoid the scalar cosets. There the amplitude sums in each block
+agree with those of <span class="math inline">\(\Gamma^*\)</span> by
+Theorem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:survivors" data-reference-type="ref"
+data-reference="m2-thm:survivors">43.2.1</a>. What are they
+made of? For a stable set of remaining terms, the norm of a block of
+truncated amplitudes is at most <span class="math inline">\(\nu\)</span>
+times the sum of the <em>sizes</em> of its near representatives. For two
+terms with cell ranks over one block with agreeing reduction, the
+<em>congruence saving</em> comes from the bound for the discriminant of
+their common lattice in terms of their <em>calibres</em>, which enter
+the sizes inversely. For pairs of near representatives of fixed corank
+and bounded discriminant, the <em>count</em> bounds the sum of the
+inverse <span class="math inline">\(k\)</span>-th powers of the
+discriminants. For the data, we derive both bounds of Chapter <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#chap" data-reference-type="ref"
+data-reference="m2-chap">43</a> using the size, congruence
+saving, count and tail estimates of <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, together with the
+stability and summation properties of the pieces in §<a href="#sec:back"
+data-reference-type="ref" data-reference="sec:back">44.5</a>.</p>
+<h1 id="sec:one-place">§44.1. The size at one place</h1>
+<p>The next four problems compute, at one place, a weighted
+Cauchy–Schwarz inequality, the mean of a lattice sum, and a determinant
+integral.</p>
+<div id="pr:schur" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:schur&quot;]">
+<p><strong>Problem 44.1.1</strong>. For finitely many <span
+class="math inline">\(x_j,y_j\ge0\)</span> and <span
+class="math inline">\(v_j&gt;0\)</span>, <span
+class="math inline">\((\sum_jx_jy_j)^2\le(\sum_jx_j^2/v_j)(\sum_jy_j^2v_j)\)</span>.
+For <span class="math inline">\(x=(1,2)\)</span>, <span
+class="math inline">\(y=(3,1)\)</span>, <span
+class="math inline">\(v=(2,\tfrac12)\)</span>: <span
+class="math inline">\(25\le\tfrac{17}2\cdot\tfrac{37}2=\tfrac{629}4\)</span>.</p>
+</div>
+<div id="pr:mean" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:mean&quot;]">
+<p><strong>Problem 44.1.2</strong>. Let <span
+class="math inline">\(L\subset{\mathbb{C}}^{k&#39;}\)</span> be a
+lattice of rank <span class="math inline">\(2k&#39;\)</span> and <span
+class="math inline">\(\mathsf h\ge0\)</span> integrable. The mean, for
+the Haar probability measure on <span
+class="math inline">\({\mathbb{C}}^{k&#39;}/L\)</span>, of <span
+class="math inline">\(\sum_{v\in L}\mathsf h(a+v)\)</span> is <span
+class="math inline">\(\int\mathsf h/\operatorname{covol}(L)\)</span>.
+For <span class="math inline">\(\mathsf h(y)=(1+\lvert
+y\rvert^2)^{-k&#39;-1}\)</span> it is <span
+class="math inline">\(\pi^{k&#39;}/(k&#39;!\operatorname{covol}(L))\)</span>;
+for <span
+class="math inline">\(L=(2+\mathrm{i}){\mathbb{Z}}[\mathrm{i}]^2\)</span>
+it is <span class="math inline">\(\pi^2/50\approx0.197\)</span>.</p>
+</div>
+<div id="pr:covolume" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:covolume&quot;]">
+<p><strong>Problem 44.1.3</strong>. A lattice of rank <span
+class="math inline">\(n&#39;\)</span> in <span
+class="math inline">\(\mathbb R^{n&#39;}\)</span> whose inner products
+are integers has covolume at least <span
+class="math inline">\(1\)</span>.</p>
+</div>
+<div id="pr:hua-row" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:hua-row&quot;]">
+<p><strong>Problem 44.1.4</strong>. Let <span
+class="math inline">\(\alpha\in{\mathbb{C}}^\times\)</span>, <span
+class="math inline">\(y_0\in{\mathbb{C}}^{k&#39;}\)</span> a row, <span
+class="math inline">\(A\)</span> a positive definite hermitian matrix of
+size <span class="math inline">\(k&#39;\)</span>, and <span
+class="math inline">\(v:=\alpha y+y_0\)</span> for rows <span
+class="math inline">\(y\in{\mathbb{C}}^{k&#39;}\)</span>. Then <span
+class="math display">\[\int_{{\mathbb{C}}^{k&#39;}}\det(A+v^*v)^{-k&#39;-1}\,dy=\lvert\alpha\rvert^{-2k&#39;}(\det
+A)^{-k&#39;}\,\frac{\pi^{k&#39;}}{k&#39;!}.\]</span> For <span
+class="math inline">\(k&#39;=7\)</span>, <span
+class="math inline">\(\alpha=2\)</span>, <span
+class="math inline">\(A=\operatorname{diag}(3,1,\dots,1)\)</span> the
+value is <span
+class="math inline">\(\pi^7/(7!\,2^{14}3^7)\approx1.672\cdot10^{-8}\)</span>.</p>
+</div>
+<p>For <span class="math inline">\(i&#39;\)</span> rows Hua’s bound
+holds: if <span class="math inline">\(k&#39;\ge7\)</span>, <span
+class="math inline">\(\alpha\)</span> is an invertible complex <span
+class="math inline">\(i&#39;\times i&#39;\)</span> matrix, <span
+class="math inline">\(y_0\)</span> a complex <span
+class="math inline">\(i&#39;\times k&#39;\)</span> matrix and <span
+class="math inline">\(A\)</span> positive definite of size <span
+class="math inline">\(k&#39;\)</span>, then <span
+class="math inline">\(\int\lvert\det(A+v^*v)\rvert^{-k&#39;-i&#39;}\,dy\le\lvert\det\alpha\rvert^{-2k&#39;}(\det
+A)^{-k&#39;}\)</span> with <span class="math inline">\(v:=\alpha
+y+y_0\)</span>, the integral over the complex <span
+class="math inline">\(i&#39;\times k&#39;\)</span> matrices <span
+class="math inline">\(y\)</span>. <em>Status</em>: classical; see <span
+class="citation" data-cites="Hua">[<a href="#ref-Hua">Hua</a>]</span>. For
+one row, Problem <a href="#pr:hua-row" data-reference-type="ref"
+data-reference="pr:hua-row">44.1.4</a> gives the exact integral for every
+<span class="math inline">\(k&#39;\ge1\)</span>; its constant <span
+class="math inline">\(\pi^{k&#39;}/k&#39;!\)</span> is at most <span
+class="math inline">\(1\)</span> for <span
+class="math inline">\(k&#39;\ge7\)</span> (Problem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#pr:hua"
+data-reference-type="ref"
+data-reference="m2-pr:hua">43.3.5</a>).</p>
+<h1 id="sec:size">§44.2. The size of a term</h1>
+<p>Throughout, <span class="math inline">\(F\)</span> and <span
+class="math inline">\(E\)</span> are the fields of an admissible
+filling, with <span class="math inline">\(E\)</span> containing a
+primitive <span class="math inline">\(5040\)</span>-th root of unity;
+the data are such a filling. For a term <span
+class="math inline">\(\gamma\)</span> and classes <span
+class="math inline">\(c,c&#39;\)</span>, write <span
+class="math inline">\(\tilde\gamma:=h_c^{-1}\gamma_fh_{c&#39;}\)</span>;
+<span class="math inline">\(\gamma\)</span> lies over the <em>block</em>
+<span class="math inline">\((c,s,c&#39;)\)</span> if <span
+class="math inline">\(\tilde\gamma\)</span> is integral with reduction
+<span class="math inline">\(s\)</span>.</p>
+<div id="def:stable" class="definition">
+<p><strong>Definition 44.2.1</strong>. A set <span
+class="math inline">\(\mathfrak S\)</span> of terms is <em>stable</em>
+if <span class="math inline">\(u^{-1}\gamma u&#39;\in\mathfrak
+S\iff\gamma\in\mathfrak S\)</span> for all <span
+class="math inline">\(u,u&#39;\in{\mathcal{U}}(F)\)</span>. An element
+<span class="math inline">\(s\in\bar G\)</span> <em>agrees</em> if the
+character of <span class="math inline">\({\mathcal{U}}(\mathbb
+A_{F,f})\)</span> of the definition of <span
+class="math inline">\(\Gamma^*\)</span> in Chapter <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#chap"
+data-reference-type="ref" data-reference="m2-chap">43</a> takes
+the same value at any two integral <span
+class="math inline">\(u,u&#39;\)</span> in it whose reductions satisfy
+<span class="math inline">\(\bar us=s\bar u&#39;\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html">Chapter 43</a></div><!-- used-in:end -->
+</div>
+<div id="def:cell" class="definition">
+<p><strong>Definition 44.2.2</strong>. A term <span
+class="math inline">\(\gamma\)</span> has <em>cell rank</em> <span
+class="math inline">\(j\in\{0,\dots,\varrho+1\}\)</span> if (i) for some
+<span class="math inline">\(\zeta\in E\)</span> with <span
+class="math inline">\(\zeta\bar\zeta=1\)</span> and every index <span
+class="math inline">\(a\)</span> with <span
+class="math inline">\(j&lt;a\le\varrho+1\)</span>, some vector <span
+class="math inline">\(\sum_{b\le a}x_bv_b=\gamma\sum_{b\le
+a}y_bv_b\)</span> has <span class="math inline">\(x_a=\zeta\)</span>,
+<span class="math inline">\(y_a=1\)</span>; (ii) <span
+class="math inline">\(\langle\gamma\rangle_j\ne0\)</span>; (iii) <span
+class="math inline">\(j=\varrho+1\)</span> if and only if <span
+class="math inline">\(\operatorname{disc}(\gamma)\ne0\)</span>. This
+rank, when it exists, is unique <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>,
+<code>BorderedDeterminant.lean</code>, l. 550]</span>. Write it as <span
+class="math inline">\(\operatorname{cr}(\gamma)\)</span>.</p>
+</div>
+<div id="def:near" class="definition">
+<p><strong>Definition 44.2.3</strong>. Let <span
+class="math inline">\({\mathcal{U}}^0_c\)</span> be the group of the
+<span class="math inline">\(u\in{\mathcal{U}}(F)\)</span> that fix every
+<em>member of the Bessel tuple</em> and have <span
+class="math inline">\(h_c^{-1}u_fh_c\in K_M\)</span>. The set <span
+class="math inline">\(\mathrm{Rep}(\mathfrak S;c,s,c&#39;)\)</span> of
+<em>near representatives</em> of <span class="math inline">\(\mathfrak
+S\)</span> over <span class="math inline">\((c,s,c&#39;)\)</span>
+consists of the <span class="math inline">\(\gamma\in\mathfrak
+S\)</span> over <span class="math inline">\((c,s,c&#39;)\)</span> such
+that <span class="math inline">\(s\)</span> agrees, <span
+class="math inline">\(\gamma\)</span> has a cell rank, <span
+class="math inline">\(\gamma\)</span> is the chosen representative of
+its double coset <span
+class="math inline">\({\mathcal{U}}^0_c\gamma\,{\mathcal{U}}^0_{c&#39;}\)</span>
+<span class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>,
+<code>BorderedDeterminant.lean</code>, l. 455]</span>, and <span
+class="math inline">\(\gamma\)</span> is <em>near</em>: some archimedean
+point <span class="math inline">\(y\)</span> has <span
+class="math inline">\(y\)</span> and <span
+class="math inline">\(\gamma_\infty^{-1}y\)</span> boxed. Use the domain
+<span class="math inline">\(D_0\)</span> of <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>, <code>Box.lean</code>, ll. 145,
+200]</span>, a measurable set of representatives of the tuples <span
+class="math inline">\((\mathsf w_\tau)_\tau\)</span> of complex numbers
+modulo the diagonal image of <span class="math inline">\(M\mathcal
+O_E\)</span>, with <span class="math inline">\(\lvert\mathsf
+w_\tau\rvert\le b^{26}\)</span> on <span
+class="math inline">\(D_0\)</span>; a point <span
+class="math inline">\(y\)</span> is <em>boxed</em> if its Bessel length
+(Theorem <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#thm:bessel-system" data-reference-type="ref"
+data-reference="m1-thm:bessel-system">40.3.1</a>(d)) is
+at most <span class="math inline">\(b^{6(\varrho+1)+2}\)</span> at every
+infinite place and each entry above the diagonal of its Gram–Schmidt
+matrix in the rational Bessel tuple, as a tuple over the infinite
+places, lies in <span class="math inline">\(D_0\)</span> <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>,
+<code>Setup.lean</code>, ll. 398–423]</span>. A <em>pair of near
+representatives</em> over <span class="math inline">\(c,c&#39;\)</span>
+is a pair <span class="math inline">\((\gamma,\gamma&#39;)\)</span> in
+<span
+class="math inline">\(\mathrm{Rep}(U(Y_0)(F);c,s,c&#39;)^2\)</span> for
+some <span class="math inline">\(s\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html">Chapter 43</a></div><!-- used-in:end -->
+</div>
+<div id="def:calibre" class="definition">
+<p><strong>Definition 44.2.4</strong>. Let <span
+class="math inline">\(\gamma\)</span> lie over a block and have cell
+rank <span class="math inline">\(\operatorname{cr}\)</span>. Let <span
+class="math inline">\(\hat{\mathcal O}_E\)</span> be the ring of
+integral finite adeles of <span class="math inline">\(E\)</span>. The
+<em>pairing matrix</em> of <span
+class="math inline">\(\tilde\gamma\)</span> has entries given by the
+<em>Bessel pairings</em> <span class="math inline">\(h(\tilde\gamma
+v_b,v_a)\)</span>. Let <span class="math inline">\(I(\gamma)\)</span> be
+the index, in the <span class="math inline">\(\hat{\mathcal
+O}_E\)</span>-module spanned by rows <span
+class="math inline">\(a=1,\dots,\varrho\)</span> of this matrix, of the
+submodule spanned by its first <span
+class="math inline">\(\min(\varrho,\operatorname{cr})\)</span> rows, and
+<span class="math inline">\(I&#39;(\gamma)\)</span> the same index for
+<span class="math inline">\(\tilde\gamma^{-1}\)</span>; both are
+positive <span class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>,
+<code>LinkLattice.lean</code>, ll. 457, 464]</span> and equal <span
+class="math inline">\(1\)</span> if <span
+class="math inline">\(\operatorname{cr}\ge\varrho\)</span>, when all
+<span class="math inline">\(\varrho\)</span> rows are taken. Define the
+<em>calibre</em> of <span class="math inline">\(\gamma\)</span> by <span
+class="math display">\[\operatorname{cal}(\gamma):=M^{2f\min(\varrho,\operatorname{cr})}\,\frac{\max\bigl(N^f\lvert\operatorname{Nm}_{E/\mathbb
+Q}\langle\gamma\rangle_{\operatorname{cr}}\rvert/N^{2f(\operatorname{cr}-\varrho)_+},\
+\prod_\tau\lvert\tau(\operatorname{disc}\gamma)\rvert\bigr)}{I(\gamma)\,I&#39;(\gamma)},\]</span>
+where <span class="math inline">\(\tau\)</span> runs over the <span
+class="math inline">\(f\)</span> embeddings of the CM type. For this
+formula see <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>, <code>Data.lean</code>, l. 74 and
+<code>BorderedDeterminant.lean</code>, l. 768]</span>. The pairing
+matrices used in <span class="math inline">\(I(\gamma)\)</span> and
+<span class="math inline">\(I&#39;(\gamma)\)</span> are those of <span
+class="math inline">\(\gamma\)</span> and <span
+class="math inline">\(\gamma^{-1}\)</span> read in the finite adeles
+<span class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>,
+<code>Terms.lean</code>, l. 450]</span>. Thus <span
+class="math inline">\(\operatorname{cal}(\gamma)\)</span> is independent
+of <span class="math inline">\(c,c&#39;\)</span>.</p>
+</div>
+<div id="def:size" class="definition">
+<p><strong>Definition 44.2.5</strong>. The <em>tail scale</em> is <span
+class="math inline">\(\mathrm{ts}:=b^{kf/4}\)</span> and the <em>pair
+scale</em> <span class="math inline">\(\mathrm{pc}:=\#\bar R_0\cdot
+n_{\mathrm{cl}}/N^{kf}\)</span>, with <span
+class="math inline">\(n_{\mathrm{cl}}\)</span> the number of classes.
+The <em>cell moment</em> <span
+class="math inline">\(D_{\mathrm{cell}}(\gamma)\)</span> is <span
+class="math inline">\(D_{\mathrm{main}}\)</span> if <span
+class="math inline">\(\operatorname{cr}(\gamma)=\varrho+1\)</span> and
+<span class="math inline">\(D_{\mathrm{id}}/\mathrm{ts}^{16}\)</span>
+otherwise, and the <em>size</em> of <span
+class="math inline">\(\gamma\)</span> is <span
+class="math inline">\(\operatorname{sz}(\gamma):=\mathrm{ts}^2\bigl(D_{\mathrm{cell}}(\gamma)/(\mathrm{pc}\cdot\operatorname{cal}(\gamma)^k)\bigr)^{1/2}\)</span>.</p>
+</div>
+<div id="thm:size" class="theorem">
+<p><strong>Theorem 44.2.1</strong> (size). <em>For a stable <span
+class="math inline">\(\mathfrak S\subseteq\Gamma^*\)</span>, all classes
+<span class="math inline">\(c,c&#39;\)</span> and all <span
+class="math inline">\(s\in\bar G\)</span>, <span
+class="math display">\[\lVert\mathrm{Amp}^\flat(\mathfrak
+S;c,s,c&#39;)\rVert\le\nu\sum_{\gamma\in\mathrm{Rep}(\mathfrak
+S;c,s,c&#39;)}\operatorname{sz}(\gamma),\]</span> a sum of nonnegative
+terms, possibly infinite.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html">Chapter 43</a></div><!-- used-in:end -->
+</div>
+<p><em>Status</em>: read from the proof; not proved here. For the Schur
+estimate on a double coset, see <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>, <code>SchurOrbit.lean</code>,
+l. 963]</span>.</p>
+<h1 id="sec:gain">§44.3. Congruence saving and count</h1>
+<div id="pr:det-cs" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:det-cs&quot;]">
+<p><strong>Problem 44.3.1</strong>. For <span
+class="math inline">\(x_1,\dots,x_i,y_1,\dots,y_i\in{\mathbb{C}}^{n&#39;}\)</span>,
+<span class="math display">\[\lvert\det(\langle
+x_a,y_b\rangle)\rvert^2\le\det(\langle x_a,x_b\rangle)\det(\langle
+y_a,y_b\rangle).\]</span> If all <span class="math inline">\(\langle
+x_a,y_b\rangle\)</span> lie in <span
+class="math inline">\(M&#39;{\mathbb{Z}}[\mathrm{i}]\)</span> for an
+integer <span class="math inline">\(M&#39;\ge1\)</span> and the
+determinant is not <span class="math inline">\(0\)</span>, the product
+of the two Gram determinants is at least <span
+class="math inline">\(M&#39;^{2i}\)</span>.</p>
+</div>
+<p>The congruence saving uses the fact that two terms over one block
+have the same reduction.</p>
+<div id="pr:congruence" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:congruence&quot;]">
+<p><strong>Problem 44.3.2</strong>. Let <span
+class="math inline">\(M&#39;\ge1\)</span> be an integer, <span
+class="math inline">\(\zeta_1\in\mathbb Q(\mathrm{i})\)</span>, <span
+class="math inline">\(\zeta_1\bar\zeta_1=1\)</span>, <span
+class="math inline">\(\zeta_1\ne1\)</span>, and let <span
+class="math inline">\(D&#39;\ge1\)</span> be an integer with <span
+class="math inline">\(D&#39;(1-\zeta_1)\in
+M&#39;{\mathbb{Z}}[\mathrm{i}]\)</span>. Then <span
+class="math inline">\(D&#39;\ge M&#39;/2\)</span>. For <span
+class="math inline">\(\zeta_1=(-12+5\mathrm{i})/13\)</span>, <span
+class="math inline">\(M&#39;=5\)</span>, <span
+class="math inline">\(D&#39;=13\)</span>: <span
+class="math inline">\(13(1-\zeta_1)=5(5-\mathrm{i})\)</span>, <span
+class="math inline">\(\lvert5-\mathrm{i}\rvert^2=26\)</span>, and <span
+class="math inline">\(\lvert1-\zeta_1\rvert\approx1.961\le2\)</span>.</p>
+</div>
+<p>Over <span class="math inline">\({\mathbb{Z}}[\mathrm{i}]\)</span>
+let <span class="math inline">\(h:=\operatorname{diag}(1,-5)\)</span>
+and <span
+class="math inline">\(\gamma:=\left(\begin{smallmatrix}g_1&amp;5g_2\\g_2&amp;g_1\end{smallmatrix}\right)\)</span>
+with <span
+class="math inline">\(g_1+g_2\sqrt5=(9+4\sqrt5)^3\)</span>.</p>
+<div id="pr:meet" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:meet&quot;]">
+<p><strong>Problem 44.3.3</strong>. <span
+class="math inline">\(g_1+g_2\sqrt5=2889+1292\sqrt5\)</span>; <span
+class="math inline">\(\gamma\)</span> is an isometry of <span
+class="math inline">\(h\)</span> and <span
+class="math inline">\(\gamma\equiv-1\bmod17\)</span>; modulo each of the
+primes <span class="math inline">\(4\pm\mathrm{i}\)</span> above <span
+class="math inline">\(17\)</span> it fixes the line of <span
+class="math inline">\(e_2\)</span>. The determinant <span
+class="math inline">\(\det(e_2,\gamma e_2)=-6460\)</span> lies in both
+primes; its norm <span
+class="math inline">\(6460^2=289\cdot144400\)</span> is divisible by
+<span class="math inline">\(17\cdot17\)</span>, while <span
+class="math inline">\(6460\equiv102\bmod289\)</span>.</p>
+</div>
+<p>In Problem <a href="#pr:meet" data-reference-type="ref"
+data-reference="pr:meet">44.3.3</a> the two places above <span
+class="math inline">\(17\)</span> at which the line meets its image
+contribute <span class="math inline">\(17\cdot17\)</span> to the norm of
+the determinant, not to the determinant.</p>
+<div id="def:common" class="definition">
+<p><strong>Definition 44.3.1</strong>. Let <span
+class="math inline">\(\gamma,\gamma&#39;\)</span> lie over one block
+<span class="math inline">\((c,s,c&#39;)\)</span>, and let <span
+class="math inline">\(\mathrm{Lat}_c\)</span> be the image under <span
+class="math inline">\(h_c\)</span> of the lattice spanned by the lattice
+basis. The <em>common link</em> <span
+class="math inline">\(X_0(\gamma,\gamma&#39;)\subseteq X_0\)</span> is
+the space of the <span class="math inline">\(x\in X_0\)</span> for which
+some <span class="math inline">\(y\in X_0\)</span> has <span
+class="math inline">\((x,y)\in\operatorname{lk}\gamma\cap\operatorname{lk}\gamma&#39;\)</span>.
+Lattices are taken in the finite adelic points <span
+class="math inline">\(V(\mathbb A_{E,f})\)</span> of <span
+class="math inline">\(E\)</span>-spaces <span
+class="math inline">\(V\)</span>, and products in the lattice
+coordinates of <span class="math inline">\(c\)</span>. The <em>term
+lattice</em> <span class="math inline">\(L_\gamma\)</span> is the set of
+<span class="math inline">\(x\in\mathrm{Lat}_c\cap X_0(\mathbb
+A_{E,f})\)</span> whose pairings with the image of the Bessel tuple
+under <span class="math inline">\(\tilde\gamma\)</span> are <span
+class="math inline">\(M\)</span> times the products of some vector of
+<span
+class="math inline">\(\mathrm{Lat}_c\cap(Ev_1+\dots+Ev_\varrho)(\mathbb
+A_{E,f})\)</span> with that image. The <em>common lattice</em> is <span
+class="math inline">\(L_{\gamma\gamma&#39;}:=X_0(\gamma,\gamma&#39;)(\mathbb
+A_{E,f})\cap L_\gamma\cap L_{\gamma&#39;}\)</span>. If it is spanned
+over <span class="math inline">\(\hat{\mathcal O}_E\)</span> by the
+<span class="math inline">\(\delta_0:=\dim
+X_0(\gamma,\gamma&#39;)\)</span> columns of a matrix <span
+class="math inline">\(\mathsf Q=\mathsf x\mathsf u\)</span>, where <span
+class="math inline">\(\mathsf x\)</span> consists of <span
+class="math inline">\(\delta_0\)</span> linearly independent vectors of
+<span class="math inline">\(X_0(\gamma,\gamma&#39;)\)</span> and <span
+class="math inline">\(\mathsf u\)</span> is an invertible <span
+class="math inline">\(\delta_0\times\delta_0\)</span> matrix of finite
+adeles, its <em>discriminant</em> <span
+class="math inline">\(\operatorname{dsc}(\gamma,\gamma&#39;)\)</span> is
+the square root of the inverse of the factor by which multiplication by
+<span class="math inline">\(\det(\mathsf Q^*\mathsf Q)\)</span> scales
+Haar measure on the finite adeles, in orthonormal coordinates of <span
+class="math inline">\(X_0\)</span>; otherwise <span
+class="math inline">\(\operatorname{dsc}(\gamma,\gamma&#39;):=0\)</span>.
+The <em>corank</em> is <span
+class="math inline">\(\operatorname{crk}(\gamma,\gamma&#39;):=k-\dim
+X_0(\gamma,\gamma&#39;)\)</span>, and the <em>link corank</em> is <span
+class="math inline">\(\operatorname{lcr}(\gamma,\gamma&#39;):=k+1-\dim(\operatorname{lk}\gamma\cap\operatorname{lk}\gamma&#39;)\)</span>,
+which vanishes if and only if <span
+class="math inline">\(\operatorname{lk}\gamma=\operatorname{lk}\gamma&#39;\)</span>.
+Two terms are in the <em>same link class</em> if both discriminants are
+nonzero and their links are equal.</p>
+</div>
+<div id="thm:gain" class="theorem">
+<p><strong>Theorem 44.3.1</strong> (congruence saving). <em>Let <span
+class="math inline">\(\gamma,\gamma&#39;\)</span> have cell ranks and
+lie over one block <span class="math inline">\((c,s,c&#39;)\)</span>
+with <span class="math inline">\(s\)</span> agreeing; put <span
+class="math inline">\(i:=\operatorname{lcr}(\gamma,\gamma&#39;)\)</span>,
+<span
+class="math inline">\(\ell:=\operatorname{crk}(\gamma,\gamma&#39;)\)</span>.</em></p>
+<ol>
+<li><p><em>For every integer <span class="math inline">\(t_0\)</span>
+with <span class="math inline">\(0\le
+t_0\le\operatorname{mt}(s)\)</span>, let <span
+class="math inline">\(X:=t_0\)</span> if <span
+class="math inline">\(i=0\)</span> and <span
+class="math inline">\(\operatorname{cr}(\gamma)=\varrho+1\)</span>, and
+<span class="math inline">\(X:=1\)</span> otherwise. Then <span
+class="math inline">\((\operatorname{dsc}\cdot
+X)^2\le(2/M)^{2if}\operatorname{cal}(\gamma)\operatorname{cal}(\gamma&#39;)\)</span>.</em></p></li>
+<li><p><em><span class="math inline">\(\ell\le
+i+(\operatorname{cr}(\gamma)-\varrho)_+\)</span>.</em></p></li>
+<li><p><em>If <span class="math inline">\(i=0\)</span>, then <span
+class="math inline">\(\operatorname{disc}(\gamma)=0\)</span> if and only
+if <span
+class="math inline">\(\operatorname{disc}(\gamma&#39;)=0\)</span>.</em></p></li>
+<li><p><em><span class="math inline">\(\operatorname{dsc}\ge1\)</span>;
+and if <span class="math inline">\((\gamma,\gamma&#39;)\)</span> is a
+pair of near representatives, then <span
+class="math inline">\(\ell\le(\varrho+1)^3\)</span> and <span
+class="math inline">\(\operatorname{dsc}\le
+b^{(\varrho+1)^3f}\)</span>.</em></p></li>
+</ol>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html">Chapter 39</a>; <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html">Chapter 43</a></div><!-- used-in:end -->
+</div>
+<div id="thm:count" class="theorem">
+<p><strong>Theorem 44.3.2</strong> (count). <em>For every integer <span
+class="math inline">\(0\le\ell\le(\varrho+1)^3\)</span>, the sum of
+<span
+class="math inline">\(\operatorname{dsc}(\gamma,\gamma&#39;)^{-k}\)</span>
+over all classes <span class="math inline">\(c,c&#39;\)</span> and the
+pairs of near representatives over <span
+class="math inline">\(c,c&#39;\)</span> of corank <span
+class="math inline">\(\ell\)</span> with <span
+class="math inline">\(\operatorname{dsc}\le b^{(\varrho+1)^3f}\)</span>
+is at most <span
+class="math inline">\(\mathrm{ts}^{\ell+2}\mathrm{pc}\)</span>.</em></p>
+</div>
+<p><em>Status</em>: both read from the proof; not proved here.
+Problems <a href="#pr:det-cs" data-reference-type="ref"
+data-reference="pr:det-cs">44.3.1</a>–<a href="#pr:meet"
+data-reference-type="ref" data-reference="pr:meet">44.3.3</a> show over <span
+class="math inline">\({\mathbb{Z}}[\mathrm{i}]\)</span>, as Problem <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#pr:columns" data-reference-type="ref"
+data-reference="m2-pr:columns">43.3.2</a> does over <span
+class="math inline">\({\mathbb{Z}}\)</span>, how a congruence modulo the
+level and a meeting place make a nonzero determinant large. For a term
+<span class="math inline">\(\gamma\)</span> with a cell rank over a
+block with <span class="math inline">\(s\)</span> agreeing, <span
+class="math inline">\(\operatorname{cal}(\gamma)\ge1\)</span>.</p>
+<h1 id="sec:pairs">§44.4. Pairs</h1>
+<p>In this section <span class="math inline">\(\eta&gt;0\)</span>, <span
+class="math inline">\(D\)</span> and <span
+class="math inline">\(B\ge0\)</span> are real numbers, <span
+class="math inline">\((\gamma,\gamma&#39;)\)</span> is a pair of near
+representatives over <span class="math inline">\(c,c&#39;\)</span>,
+<span
+class="math inline">\(i:=\operatorname{lcr}(\gamma,\gamma&#39;)\)</span>
+and <span
+class="math inline">\(\ell:=\operatorname{crk}(\gamma,\gamma&#39;)\)</span>.</p>
+<div id="pr:pair-size" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:pair-size&quot;]">
+<p><strong>Problem 44.4.1</strong>. Recall <span
+class="math inline">\(\operatorname{dsc}\ge1\)</span> and <span
+class="math inline">\(\operatorname{cal}\ge1\)</span>. If <span
+class="math inline">\((\operatorname{dsc}\cdot\eta)^2\le\operatorname{cal}(\gamma)\operatorname{cal}(\gamma&#39;)\)</span>
+and <span
+class="math inline">\(D_{\mathrm{cell}}(\gamma),D_{\mathrm{cell}}(\gamma&#39;)\le
+D\)</span>, then <span
+class="math inline">\(\operatorname{sz}(\gamma)\operatorname{sz}(\gamma&#39;)\le\mathrm{ts}^4D/(\mathrm{pc}\,\eta^k\operatorname{dsc}^k)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:rule">Problem 44.4.2</a>, <a href="#pr:same-class">Problem 44.4.5</a>; <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html">Chapter 43</a></div><!-- used-in:end -->
+</div>
+<div id="pr:rule" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:rule&quot;]">
+<p><strong>Problem 44.4.2</strong>. For the data and all classes <span
+class="math inline">\(c,c&#39;\)</span>, let <span
+class="math inline">\(\mathcal Q_{c,c&#39;}\)</span> be a set of pairs
+of near representatives over <span
+class="math inline">\(c,c&#39;\)</span>, and suppose that every <span
+class="math inline">\((\gamma,\gamma&#39;)\in\mathcal
+Q_{c,c&#39;}\)</span> admits <span class="math inline">\(\eta,D\)</span>
+as in Problem <a href="#pr:pair-size" data-reference-type="ref"
+data-reference="pr:pair-size">44.4.1</a> with <span
+class="math inline">\(\mathrm{ts}^{\ell+6}D/\eta^k\le B\)</span>. Then
+<span
+class="math inline">\(\sum_{c,c&#39;}\sum_{(\gamma,\gamma&#39;)\in\mathcal
+Q_{c,c&#39;}}\operatorname{sz}(\gamma)\operatorname{sz}(\gamma&#39;)\le\mathrm{ts}\cdot
+B\)</span>.</p>
+</div>
+<div id="pr:different-links" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:different-links&quot;]">
+<p><strong>Problem 44.4.3</strong>. For the data, <span
+class="math inline">\(D_{\mathrm{cell}}\le D_{\mathrm{main}}\)</span>.
+If <span class="math inline">\(i\ge1\)</span> and <span
+class="math inline">\(\ell\le i+1\)</span>, then <span
+class="math inline">\(\mathrm{ts}^{\ell+6}D_{\mathrm{main}}(M/2)^{-ifk}\le\mathrm{ts}^{-10}D_{\mathrm{id}}\)</span>.
+At <span class="math inline">\(i=1\)</span>, <span
+class="math inline">\(\ell=2\)</span> the left side is at most <span
+class="math inline">\(b^{-35kf/9}D_{\mathrm{id}}\)</span>, the right
+side <span
+class="math inline">\(b^{-10kf/4}D_{\mathrm{id}}\)</span>.</p>
+</div>
+<div id="pr:zero-disc" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:zero-disc&quot;]">
+<p><strong>Problem 44.4.4</strong>. If <span
+class="math inline">\(\operatorname{lk}\gamma=\operatorname{lk}\gamma&#39;\)</span>
+and <span class="math inline">\(\gamma,\gamma&#39;\)</span> are not in
+the same link class, then <span
+class="math inline">\(\operatorname{disc}\gamma=\operatorname{disc}\gamma&#39;=0\)</span>,
+<span class="math inline">\(\ell=0\)</span>, and <span
+class="math inline">\(\eta=1\)</span>, <span
+class="math inline">\(D=D_{\mathrm{id}}/\mathrm{ts}^{16}\)</span> give
+<span
+class="math inline">\(\mathrm{ts}^{\ell+6}D/\eta^k=\mathrm{ts}^{-10}D_{\mathrm{id}}\)</span>.</p>
+</div>
+<div id="pr:same-class" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:same-class&quot;]">
+<p><strong>Problem 44.4.5</strong>. If <span
+class="math inline">\(\gamma,\gamma&#39;\)</span> are in the same link
+class over <span class="math inline">\((c,s,c&#39;)\)</span> and <span
+class="math inline">\(1\le z_0\le\operatorname{mt}(s)\)</span> is an
+integer, then <span class="math inline">\(\ell\le1\)</span>, and <span
+class="math inline">\(\eta=z_0\)</span>, <span
+class="math inline">\(D=D_{\mathrm{main}}\)</span> satisfy Problem <a
+href="#pr:pair-size" data-reference-type="ref"
+data-reference="pr:pair-size">44.4.1</a> with <span
+class="math inline">\(\mathrm{ts}\cdot\mathrm{ts}^{\ell+6}D_{\mathrm{main}}/z_0^k\le(b^{2f}/z_0)^kD_{\mathrm{main}}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html">Chapter 43</a></div><!-- used-in:end -->
+</div>
+<p>Problems <a href="#pr:rule" data-reference-type="ref"
+data-reference="pr:rule">44.4.2</a>–<a href="#pr:same-class"
+data-reference-type="ref" data-reference="pr:same-class">44.4.5</a> with
+Theorem <a href="#thm:gain" data-reference-type="ref"
+data-reference="thm:gain">44.3.1</a> prove the following.</p>
+<div id="thm:pairs" class="theorem">
+<p><strong>Theorem 44.4.1</strong> (pairs). <em>For the data:</em></p>
+<ol>
+<li><p><em>the sum of <span
+class="math inline">\(\operatorname{sz}(\gamma)\operatorname{sz}(\gamma&#39;)\)</span>
+over all classes <span class="math inline">\(c,c&#39;\)</span> and all
+pairs of near representatives over <span
+class="math inline">\(c,c&#39;\)</span> that are not in the same link
+class is at most <span
+class="math inline">\(b^{-kf}D_{\mathrm{id}}\)</span>;</em></p></li>
+<li><p><em>for every integer <span
+class="math inline">\(z_0\ge1\)</span>, the same sum over the pairs in
+the same link class that lie over some <span
+class="math inline">\((c,s,c&#39;)\)</span> with <span
+class="math inline">\(z_0\le\operatorname{mt}(s)\)</span> is at most
+<span
+class="math inline">\((b^{2f}/z_0)^kD_{\mathrm{main}}\)</span>.</em></p></li>
+</ol>
+</div>
+<h1 id="sec:back">§44.5. The bounds of Chapter <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#chap"
+data-reference-type="ref" data-reference="m2-chap">43</a></h1>
+<p>Partition <span class="math inline">\(\Gamma^*\)</span> into
+<em>pieces</em> by labeling each term of nonzero discriminant by its
+link and giving all terms of discriminant <span
+class="math inline">\(0\)</span> one further label. We use the stability
+of each piece before restricting to a block <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>, <code>TermStructure.lean</code>,
+l. 843 and <code>Sum.lean</code>, l. 512]</span>. In each block the
+amplitude sum is the sum of the amplitude sums of the pieces <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>,
+<code>Sum.lean</code>, l. 498 and <code>Size.lean</code>,
+l. 709]</span>.</p>
+<div id="pr:toy-pieces" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:toy-pieces&quot;]">
+<p><strong>Problem 44.5.1</strong>. Four amplitudes <span
+class="math inline">\(2,-1,3,1\)</span> with labels <span
+class="math inline">\(\Lambda,\Lambda,\Lambda&#39;,\varnothing\)</span>,
+where <span class="math inline">\(\Lambda\ne\Lambda&#39;\)</span> are
+links and <span class="math inline">\(\varnothing\)</span> marks
+discriminant <span class="math inline">\(0\)</span>: the square of their
+sum is <span class="math inline">\(25\)</span>; the squares of the sums
+of the pieces <span class="math inline">\(\Lambda\)</span>, <span
+class="math inline">\(\Lambda&#39;\)</span> add to <span
+class="math inline">\(1+9=10\)</span>; the products <span
+class="math inline">\(\lvert a\rvert\lvert a&#39;\rvert\)</span> over
+the ordered pairs <span class="math inline">\((a,a&#39;)\)</span> of
+amplitudes with different labels, or both labelled <span
+class="math inline">\(\varnothing\)</span> (the amplitude <span
+class="math inline">\(1\)</span> with itself), add to <span
+class="math inline">\(31\)</span>; and <span
+class="math inline">\(25\le10+31\)</span>.</p>
+</div>
+<div id="pr:pieces" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:pieces&quot;]">
+<p><strong>Problem 44.5.2</strong>. For all <span
+class="math inline">\(c,s,c&#39;\)</span>, <span
+class="math inline">\(\lVert\mathrm{Amp}^\flat(\Gamma^*;c,s,c&#39;)\rVert^2\)</span>
+is at most <span
+class="math inline">\(\sum_\Lambda\lVert\mathrm{Amp}^\flat(\Gamma^*\cap\{\operatorname{disc}\ne0,\
+\operatorname{lk}=\Lambda\};c,s,c&#39;)\rVert^2\)</span> plus <span
+class="math inline">\(\nu^2\)</span> times the sum of <span
+class="math inline">\(\operatorname{sz}(\gamma)\operatorname{sz}(\gamma&#39;)\)</span>
+over the pairs in <span
+class="math inline">\(\mathrm{Rep}(\Gamma^*;c,s,c&#39;)^2\)</span> that
+are not in the same link class.</p>
+</div>
+<div id="pr:cut-moment" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:cut-moment&quot;]">
+<p><strong>Problem 44.5.3</strong>. For the data, let <span
+class="math inline">\(\mathcal B\subseteq\bar G\)</span> and <span
+class="math inline">\(C_1\ge0\)</span>. If the link second moment of
+<span
+class="math inline">\(\{\gamma:\operatorname{disc}(\gamma)\ne0\}\)</span>
+over <span class="math inline">\(\mathcal B\)</span> is at most <span
+class="math inline">\(C_1\nu^2\)</span>, then the second moment of <span
+class="math inline">\(\Gamma^*\)</span> over <span
+class="math inline">\(\mathcal B\)</span> formed with the Bessel
+truncation is at most <span
+class="math inline">\(C_1+b^{-kf}D_{\mathrm{id}}\)</span>.</p>
+</div>
+<div id="pr:link-bound" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:link-bound&quot;]">
+<p><strong>Problem 44.5.4</strong>. For the data, let <span
+class="math inline">\(z_0\ge1\)</span> be an integer and <span
+class="math inline">\(\mathcal B\subseteq\bar G\)</span> with <span
+class="math inline">\(z_0\le\operatorname{mt}(s)\)</span> for every
+<span class="math inline">\(s\in\mathcal B\)</span>. Then the link
+second moment of <span
+class="math inline">\(\{\gamma:\operatorname{disc}(\gamma)\ne0\}\)</span>
+over <span class="math inline">\(\mathcal B\)</span> is at most <span
+class="math inline">\((b^{2f}/z_0)^kD_{\mathrm{main}}\,\nu^2\)</span>,
+which is Theorem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:link-bound" data-reference-type="ref"
+data-reference="m2-thm:link-bound">43.3.1</a> for the
+data.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html">Chapter 43</a></div><!-- used-in:end -->
+</div>
+<div id="thm:tail" class="theorem">
+<p><strong>Theorem 44.5.1</strong> (the tail). <em>For every set <span
+class="math inline">\(\mathfrak S\)</span> of terms and every <span
+class="math inline">\(\mathcal B\subseteq\bar G\)</span>, the second
+moment over <span class="math inline">\(\mathcal B\)</span> of the
+differences <span class="math inline">\(\mathrm{Amp}(\mathfrak
+S;c,s,c&#39;)-\mathrm{Amp}^\flat(\mathfrak S;c,s,c&#39;)\)</span> is at
+most <span
+class="math inline">\(b^{-40}D_{\mathrm{id}}\)</span>.</em></p>
+</div>
+<p><em>Status</em>: read from the proof; not proved here.</p>
+<div id="pr:cut" class="problem" data-progress-ids="[&quot;20261126T080300--size-gain-and-count-the-remaining-terms__workbook.tex#pr:cut&quot;]">
+<p><strong>Problem 44.5.5</strong>. For the data, let <span
+class="math inline">\(\mathcal B\)</span> avoid the scalar cosets and
+<span class="math inline">\(C_0\ge0\)</span>, and let the link second
+moment of <span
+class="math inline">\(\{\gamma:\operatorname{disc}(\gamma)\ne0\}\)</span>
+over <span class="math inline">\(\mathcal B\)</span> be at most <span
+class="math inline">\(C_0\nu^2\)</span>. Then the second moment of <span
+class="math inline">\(U(Y_0)(F)\smallsetminus R(F)\)</span> over <span
+class="math inline">\(\mathcal B\)</span> has square root at most <span
+class="math inline">\(\sqrt{C_0+b^{-kf}D_{\mathrm{id}}}+b^{-20}\sqrt{D_{\mathrm{id}}}\le\sqrt{C_0}+b^{-15}\sqrt{D_{\mathrm{id}}}\)</span>.
+The bound by <span
+class="math inline">\(\sqrt{C_0}+b^{-15}\sqrt{D_{\mathrm{id}}}\)</span>
+is Theorem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:cut" data-reference-type="ref"
+data-reference="m2-thm:cut">43.3.2</a> for the data.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html">Chapter 43</a></div><!-- used-in:end -->
+</div>
+<h4 id="what-has-been-proved.">What has been proved.</h4>
+<p>Theorem <a href="#thm:pairs" data-reference-type="ref"
+data-reference="thm:pairs">44.4.1</a>, and from it the two bounds of
+Chapter <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#chap" data-reference-type="ref"
+data-reference="m2-chap">43</a>, Theorems <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:link-bound" data-reference-type="ref"
+data-reference="m2-thm:link-bound">43.3.1</a> and <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:cut" data-reference-type="ref"
+data-reference="m2-thm:cut">43.3.2</a> (Problems <a
+href="#pr:link-bound" data-reference-type="ref"
+data-reference="pr:link-bound">44.5.4</a> and <a href="#pr:cut"
+data-reference-type="ref" data-reference="pr:cut">44.5.5</a>), for the data.
+Taken as given: Theorems <a href="#thm:size" data-reference-type="ref"
+data-reference="thm:size">44.2.1</a>, <a href="#thm:gain"
+data-reference-type="ref" data-reference="thm:gain">44.3.1</a>, <a
+href="#thm:count" data-reference-type="ref"
+data-reference="thm:count">44.3.2</a> and <a href="#thm:tail"
+data-reference-type="ref" data-reference="thm:tail">44.5.1</a>, read from the
+proof; Hua’s integral (§<a href="#sec:one-place"
+data-reference-type="ref" data-reference="sec:one-place">44.1</a>);
+Theorem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:survivors" data-reference-type="ref"
+data-reference="m2-thm:survivors">43.2.1</a>; the two
+inequalities between <span
+class="math inline">\(D_{\mathrm{id}}\)</span> and <span
+class="math inline">\(D_{\mathrm{main}}\)</span>; and stability and
+summation by pieces (§<a href="#sec:back" data-reference-type="ref"
+data-reference="sec:back">44.5</a>).</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. In <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, the following
+declarations are in the namespace <code>New.Filling</code>. For
+Theorem <a href="#thm:size" data-reference-type="ref"
+data-reference="thm:size">44.2.1</a> see
+<code>enorm_amplitudeSum_le_tsum_termSize</code>. Theorem <a
+href="#thm:gain" data-reference-type="ref"
+data-reference="thm:gain">44.3.1</a> specializes
+<code>pairDiscriminant_sq_le</code> (a),
+<code>le_finrank_commonLink_add</code> (b),
+<code>termDisc_eq_zero_iff_of_link_eq</code> (c), and
+<code>one_le_pairDiscriminant</code> and
+<code>IsNearPairOverAgreeingBlock.</code><code>corank_le_and_pairDiscriminant_le</code>
+(d). For Theorems <a href="#thm:count" data-reference-type="ref"
+data-reference="thm:count">44.3.2</a> and <a href="#thm:tail"
+data-reference-type="ref" data-reference="thm:tail">44.5.1</a> see
+<code>sum_pairDiscriminant_inv_le</code> and
+<code>secondMoment_sub_cut_le</code>, respectively. Theorem <a
+href="#thm:pairs" data-reference-type="ref"
+data-reference="thm:pairs">44.4.1</a>(a), (b) specializes
+<code>sum_termSize_mul_not_inSameLinkClass_le</code> and
+<code>sum_termSize_mul_inSameLinkClass_le</code> to the data.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secone-place">§<a href="#sec:one-place"
+data-reference-type="ref" data-reference="sec:one-place">44.1</a></h2>
+<dl>
+<dt><a href="#pr:schur" data-reference-type="ref"
+data-reference="pr:schur">44.1.1</a></dt>
+<dd>
+<p>Cauchy–Schwarz for <span
+class="math inline">\(x_j/\sqrt{v_j}\)</span> and <span
+class="math inline">\(y_j\sqrt{v_j}\)</span>.</p>
+</dd>
+<dt><a href="#pr:mean" data-reference-type="ref"
+data-reference="pr:mean">44.1.2</a></dt>
+<dd>
+<p>Unfold the sum over <span class="math inline">\(L\)</span> against
+the integral over a fundamental domain; then polar coordinates
+(Problem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#pr:hua" data-reference-type="ref"
+data-reference="m2-pr:hua">43.3.5</a>). <span
+class="math inline">\({\mathbb{Z}}[\mathrm{i}]\)</span> has covolume
+<span class="math inline">\(1\)</span> in <span
+class="math inline">\({\mathbb{C}}\)</span>.</p>
+</dd>
+<dt><a href="#pr:covolume" data-reference-type="ref"
+data-reference="pr:covolume">44.1.3</a></dt>
+<dd>
+<p>The square of the covolume is a Gram determinant.</p>
+</dd>
+<dt><a href="#pr:hua-row" data-reference-type="ref"
+data-reference="pr:hua-row">44.1.4</a></dt>
+<dd>
+<p><span class="math inline">\(\det(A+v^*v)=\det
+A\,(1+vA^{-1}v^*)\)</span>; substitute <span
+class="math inline">\(v=\alpha y+y_0\)</span>, then <span
+class="math inline">\(v=wA^{1/2}\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secgain">§<a href="#sec:gain"
+data-reference-type="ref" data-reference="sec:gain">44.3</a></h2>
+<dl>
+<dt><a href="#pr:det-cs" data-reference-type="ref"
+data-reference="pr:det-cs">44.3.1</a></dt>
+<dd>
+<p>The Gram matrix of <span
+class="math inline">\(x_1,\dots,x_i,y_1,\dots,y_i\)</span> is positive
+semidefinite; or project the <span class="math inline">\(y_b\)</span> to
+the span of the <span class="math inline">\(x_a\)</span>.</p>
+</dd>
+<dt><a href="#pr:congruence" data-reference-type="ref"
+data-reference="pr:congruence">44.3.2</a></dt>
+<dd>
+<p>A nonzero element of <span
+class="math inline">\(M&#39;{\mathbb{Z}}[\mathrm{i}]\)</span> has
+absolute value at least <span class="math inline">\(M&#39;\)</span>.</p>
+</dd>
+<dt><a href="#pr:meet" data-reference-type="ref"
+data-reference="pr:meet">44.3.3</a></dt>
+<dd>
+<p>Factor <span class="math inline">\(6460\)</span> and <span
+class="math inline">\(17\)</span> in <span
+class="math inline">\({\mathbb{Z}}[\mathrm{i}]\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secpairs">§<a href="#sec:pairs"
+data-reference-type="ref" data-reference="sec:pairs">44.4</a></h2>
+<dl>
+<dt><a href="#pr:pair-size" data-reference-type="ref"
+data-reference="pr:pair-size">44.4.1</a></dt>
+<dd>
+<p>Multiply the squares of the two sizes. For <span
+class="math inline">\(\operatorname{cal}\ge1\)</span>, use Theorem <a
+href="#thm:gain" data-reference-type="ref"
+data-reference="thm:gain">44.3.1</a>(a), (d) with <span
+class="math inline">\(\gamma&#39;=\gamma\)</span> and <span
+class="math inline">\(t_0=1\)</span>.</p>
+</dd>
+<dt><a href="#pr:rule" data-reference-type="ref"
+data-reference="pr:rule">44.4.2</a></dt>
+<dd>
+<p>Sort the pairs by corank. For the data <span
+class="math inline">\((\varrho+1)^3+1\le\mathrm{ts}\)</span>.</p>
+</dd>
+<dt><a href="#pr:different-links" data-reference-type="ref"
+data-reference="pr:different-links">44.4.3</a></dt>
+<dd>
+<p>Reserve one factor <span class="math inline">\((2/M)^{kf}\)</span>
+for <span class="math inline">\(D_{\mathrm{main}}\)</span>. How large
+can <span class="math inline">\(\mathrm{ts}(2/M)^{kf}\)</span> be?</p>
+</dd>
+<dt><a href="#pr:zero-disc" data-reference-type="ref"
+data-reference="pr:zero-disc">44.4.4</a></dt>
+<dd>
+<p>Theorem <a href="#thm:gain" data-reference-type="ref"
+data-reference="thm:gain">44.3.1</a>(a) with <span
+class="math inline">\(t_0=1\)</span>, (b), (c), and Definition <a
+href="#def:cell" data-reference-type="ref"
+data-reference="def:cell">44.2.2</a>(iii).</p>
+</dd>
+<dt><a href="#pr:same-class" data-reference-type="ref"
+data-reference="pr:same-class">44.4.5</a></dt>
+<dd>
+<p>Theorem <a href="#thm:gain" data-reference-type="ref"
+data-reference="thm:gain">44.3.1</a>(a), (b) with <span
+class="math inline">\(t_0=z_0\)</span>; <span
+class="math inline">\(\mathrm{ts}^4=b^{kf}\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secback">§<a href="#sec:back"
+data-reference-type="ref" data-reference="sec:back">44.5</a></h2>
+<dl>
+<dt><a href="#pr:pieces" data-reference-type="ref"
+data-reference="pr:pieces">44.5.2</a></dt>
+<dd>
+<p>Apply Theorem <a href="#thm:size" data-reference-type="ref"
+data-reference="thm:size">44.2.1</a> to the pieces. Which squares must be
+kept in the expansion?</p>
+</dd>
+<dt><a href="#pr:cut-moment" data-reference-type="ref"
+data-reference="pr:cut-moment">44.5.3</a></dt>
+<dd>
+<p>Problem <a href="#pr:pieces" data-reference-type="ref"
+data-reference="pr:pieces">44.5.2</a>; a term over <span
+class="math inline">\(c,c&#39;\)</span> determines its reduction <span
+class="math inline">\(s\)</span>.</p>
+</dd>
+<dt><a href="#pr:link-bound" data-reference-type="ref"
+data-reference="pr:link-bound">44.5.4</a></dt>
+<dd>
+<p>Theorem <a href="#thm:size" data-reference-type="ref"
+data-reference="thm:size">44.2.1</a> for one link, then Theorem <a
+href="#thm:pairs" data-reference-type="ref"
+data-reference="thm:pairs">44.4.1</a>(b).</p>
+</dd>
+<dt><a href="#pr:cut" data-reference-type="ref"
+data-reference="pr:cut">44.5.5</a></dt>
+<dd>
+<p>Theorem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:survivors" data-reference-type="ref"
+data-reference="m2-thm:survivors">43.2.1</a>, Minkowski’s
+inequality for the array of blocks, Theorem <a href="#thm:tail"
+data-reference-type="ref" data-reference="thm:tail">44.5.1</a> and Problem <a
+href="#pr:cut-moment" data-reference-type="ref"
+data-reference="pr:cut-moment">44.5.3</a>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Hua"><span class="bib-label">[Hua]</span> L.-K. Hua, <em>Harmonic Analysis of Functions of Several Complex Variables in the Classical Domains</em>, Transl. Math. Monographs <strong>6</strong>, Amer. Math. Soc., Providence, 1963.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

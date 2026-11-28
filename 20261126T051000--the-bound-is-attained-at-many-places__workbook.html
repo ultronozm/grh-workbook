@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-vXrl8MF75/Dj3CXtIuT4hkUhrTYAyj/711UuLpvYKBo=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>The bound is attained at many places</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","N":"\\mathbb{N}","ii":"\\mathrm{i}","Oc":"\\mathcal{O}","sll":"\\operatorname{sl}","val":"\\operatorname{val}","lv":"\\operatorname{lv}","Aut":"\\operatorname{Aut}","Hom":"\\operatorname{Hom}","sfp":"s_{\\mathrm{fin},p}","stot":"s^{\\mathrm{tot}}_{\\mathrm{fin},p}","cvac":"c_{\\mathrm{vac}}","catt":"c_{\\mathrm{att}}","cjet":"c_{\\mathrm{jet}}","cper":"c_{\\mathrm{per}}","Jet":"\\mathrm{Jet}","Th":"\\mathrm{Th}","tth":"\\mathrm{th}","thfr":"\\mathrm{th}_{\\mathrm{fr}}","hb":"\\mathbf h","oo":"\\mathfrak o","tl":"\\texttt"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="78">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T051000--the-bound-is-attained-at-many-places__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 17:44:10
+      <a href="20261126T051000--the-bound-is-attained-at-many-places__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T051000--the-bound-is-attained-at-many-places__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T051000--the-bound-is-attained-at-many-places__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">The bound is attained at many places</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:lemniscate" id="toc-sec:lemniscate">§78.1. One curve, one partner</a></li>
+<li><a href="#sec:partners" id="toc-sec:partners">§78.2. What the partners take away</a></li>
+<li><a href="#sec:six" id="toc-sec:six">§78.3. Six copies along an isotropic vector</a></li>
+<li><a href="#sec:near" id="toc-sec:near">§78.4. Near pairs</a></li>
+<li><a href="#sec:twelve" id="toc-sec:twelve">§78.5. Twelve copies and the theorem</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#seclemniscate" id="toc-seclemniscate">§78.1</a></li>
+<li><a href="#secpartners" id="toc-secpartners">§78.2</a></li>
+<li><a href="#secsix" id="toc-secsix">§78.3</a></li>
+<li><a href="#secnear" id="toc-secnear">§78.4</a></li>
+<li><a href="#sectwelve" id="toc-sectwelve">§78.5</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Chapter <a href="20261126T030200--the-bound-is-attained__workbook.html#chap" data-reference-type="ref"
+data-reference="ba-chap">19</a>: the least valuation <span
+class="math inline">\(\mu(n)\)</span> on the lemniscate, Theorems <a
+href="20261126T030200--the-bound-is-attained__workbook.html#thm:rate" data-reference-type="ref"
+data-reference="ba-thm:rate">19.2.1</a> and <a
+href="20261126T030200--the-bound-is-attained__workbook.html#thm:katz" data-reference-type="ref"
+data-reference="ba-thm:katz">19.3.1</a> with the series <span
+class="math inline">\(y(z)\)</span> and the ring <span
+class="math inline">\(\mathfrak o[[y]]\)</span> of Section <a
+href="20261126T030200--the-bound-is-attained__workbook.html#sec:general" data-reference-type="ref"
+data-reference="ba-sec:general">19.3</a>, and Problems <a
+href="20261126T030200--the-bound-is-attained__workbook.html#pr:monomial" data-reference-type="ref"
+data-reference="ba-pr:monomial">19.1.1</a>, <a
+href="20261126T030200--the-bound-is-attained__workbook.html#pr:gamma-cases" data-reference-type="ref"
+data-reference="ba-pr:gamma-cases">19.3.1</a>, <a
+href="20261126T030200--the-bound-is-attained__workbook.html#pr:many-variables" data-reference-type="ref"
+data-reference="ba-pr:many-variables">19.3.2</a>, <a
+href="20261126T030200--the-bound-is-attained__workbook.html#pr:prime-sum-rate" data-reference-type="ref"
+data-reference="ba-pr:prime-sum-rate">19.4.1</a>, <a
+href="20261126T030200--the-bound-is-attained__workbook.html#pr:product" data-reference-type="ref"
+data-reference="ba-pr:product">19.4.2</a> and <a
+href="20261126T030200--the-bound-is-attained__workbook.html#pr:near-pairs" data-reference-type="ref"
+data-reference="ba-pr:near-pairs">19.4.3</a>. The moments
+<span class="math inline">\(t(a,w)\)</span> of Section <a
+href="20261124T214500--supersingular-theta-divisibility__workbook.html#sec:moments" data-reference-type="ref"
+data-reference="st-sec:moments">15.1</a> and Theorem <a
+href="20261124T214600--the-isotropic-plane__workbook.html#thm:main" data-reference-type="ref"
+data-reference="ip-thm:main">16.3.1</a>. The data (Definition <a
+href="20261126T030300--the-data__workbook.html#def:data" data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a>, the constant <span
+class="math inline">\(v_0\)</span> of Section <a href="20261126T030300--the-data__workbook.html#sec:data"
+data-reference-type="ref"
+data-reference="da-sec:data">36.3</a>), the integral vacuum
+(Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:vacuum" data-reference-type="ref"
+data-reference="ob-sec:vacuum">37.8</a>), the local prime
+sums <span class="math inline">\(s_{\mathrm{fin},p}\)</span>, the
+numbers <span class="math inline">\(c_p\)</span> and the sets <span
+class="math inline">\(I_p\)</span> (Section <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#sec:gain"
+data-reference-type="ref"
+data-reference="dl-sec:gain">57.1</a>), and the jet series of a
+datum with its scale <span
+class="math inline">\(c_{\mathrm{jet}}\)</span> (Definition <a
+href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#def:jet-series" data-reference-type="ref"
+data-reference="d2-def:jet-series">59.4.3</a>). Lagrange’s
+four-square theorem; the ultrametric inequality in <span
+class="math inline">\(\mathbb{C}_p\)</span>, whose valuation <span
+class="math inline">\(\operatorname{val}\)</span> has <span
+class="math inline">\(\operatorname{val}(p) = 1\)</span>.</p>
+<p>Chapter <a href="20261126T030800--the-cost-of-one-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="col-chap">74</a> bounds the cost of one lift
+using the test forms of Chapter <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#chap"
+data-reference-type="ref" data-reference="l5-chap">79</a>. At a
+prime <span class="math inline">\(p\)</span> prime to the norm of the
+twist, a test form uses a Taylor coefficient on twelve copies of the
+variables; multiplied by <span
+class="math inline">\(c_{\mathrm{vac}}^{12}\prod_\tau\lambda(\tau)!\)</span>
+and divided by one <span class="math inline">\(c_{\mathrm{att}}\)</span>
+independent of <span class="math inline">\(p\)</span>, it must have
+valuation at most the divisibility <span
+class="math inline">\(s^{\mathrm{tot}}_{\mathrm{fin},p}\)</span>
+predicted by the prime sum. How can one normalization serve all primes,
+when the partners <span class="math inline">\([-p^e]\tau\)</span> of a
+place (Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>) lower the prediction?</p>
+<h1 id="sec:lemniscate">§78.1. One curve, one partner</h1>
+<p>Recall <span class="math inline">\(\mu(n) \le \gamma_p n\)</span>,
+<span class="math inline">\(\gamma_p = p/(p^2-1)\)</span>, for <span
+class="math inline">\(p \equiv 3 \pmod 4\)</span> (Theorem <a
+href="20261126T030200--the-bound-is-attained__workbook.html#thm:rate" data-reference-type="ref"
+data-reference="ba-thm:rate">19.2.1</a>).</p>
+<p>For <span class="math inline">\(p \equiv 3 \pmod 4\)</span>, <span
+class="math inline">\(w \ge 0\)</span> and <span class="math inline">\(G
+\in \mathbb{Z}_p[\mathrm{i}][[X_1, X_2]]\)</span> with <span
+class="math inline">\(X_1 = \operatorname{sl}s\)</span>, <span
+class="math inline">\(X_2 = \operatorname{sl}t\)</span>, the valuation
+of <span class="math inline">\(\partial_s^{pw}\partial_t^w
+G(0,0)\)</span> is at least <span class="math inline">\(\mu(pw) +
+\mu(w)\)</span> (Problem <a href="20261126T030200--the-bound-is-attained__workbook.html#pr:product"
+data-reference-type="ref"
+data-reference="ba-pr:product">19.4.2</a>). A non-integral
+series does better.</p>
+<div id="pr:coupling-exp" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:coupling-exp&quot;]">
+<p><strong>Problem 78.1.1</strong>. <span
+class="math inline">\(\partial_s^{pw}\partial_t^{w}
+e^{s^pt/p}\big|_{(0,0)} = (pw)!/p^w\)</span>, of valuation <span
+class="math inline">\(v_p(w!)\)</span>. For <span
+class="math inline">\(p = 3\)</span>, <span class="math inline">\(w =
+2\)</span> this is <span class="math inline">\(80\)</span>, a unit,
+while for every <span class="math inline">\(G \in
+\mathbb{Z}_3[\mathrm{i}][[X_1, X_2]]\)</span>, with <span
+class="math inline">\(X_1 = \operatorname{sl}s\)</span>, <span
+class="math inline">\(X_2 = \operatorname{sl}t\)</span>, the valuation
+of <span class="math inline">\(\partial_s^6\partial_t^2 G(0,0)\)</span>
+is at least <span class="math inline">\(2\)</span>.</p>
+</div>
+<p>For a prime <span class="math inline">\(p \equiv 3 \pmod 8\)</span>
+and integers <span class="math inline">\(a, w \ge 0\)</span>, Theorem <a
+href="20261124T214600--the-isotropic-plane__workbook.html#thm:main" data-reference-type="ref"
+data-reference="ip-thm:main">16.3.1</a> gives in particular <span
+class="math inline">\(v_p(t(a,w)) \ge \sum_{i \ge 1,\ i \text{ odd}}
+(\lfloor a/p^i\rfloor - w)_+\)</span> for the moments of Section <a
+href="20261124T214500--supersingular-theta-divisibility__workbook.html#sec:moments" data-reference-type="ref"
+data-reference="st-sec:moments">15.1</a>, where <span
+class="math inline">\(w\)</span> is the order of the derivative in the
+partner direction.</p>
+<div id="pr:one-partner" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:one-partner&quot;]">
+<p><strong>Problem 78.1.2</strong>. <span
+class="math inline">\(v_{11}(t(27,1)) = v_{11}(t(38,2)) =
+v_{11}(t(49,3)) = 1\)</span>, and in each case the bound of Theorem <a
+href="20261124T214600--the-isotropic-plane__workbook.html#thm:main" data-reference-type="ref"
+data-reference="ip-thm:main">16.3.1</a> at <span
+class="math inline">\(p = 11\)</span> is <span
+class="math inline">\(1\)</span>: in these three cases the theta
+function itself attains the bound.</p>
+</div>
+<div id="pr:not-attained" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:not-attained&quot;]">
+<p><strong>Problem 78.1.3</strong>. At <span class="math inline">\(p =
+3\)</span>: <span class="math inline">\(v_3(t(a,1)) = 6, 6, 9\)</span>
+for <span class="math inline">\(a = 11, 19, 27\)</span>, while the bound
+of Theorem <a href="20261124T214600--the-isotropic-plane__workbook.html#thm:main" data-reference-type="ref"
+data-reference="ip-thm:main">16.3.1</a> is <span
+class="math inline">\(2, 5, 8\)</span>.</p>
+</div>
+<p>So a fixed theta function can miss. For each <span
+class="math inline">\(p\)</span> and <span
+class="math inline">\(\eta\)</span> the proof chooses twelve sections,
+one on each copy of the variables <span
+class="math inline">\((z_\tau)_{\tau\in\Phi}\)</span>.</p>
+<h1 id="sec:partners">§78.2. What the partners take away</h1>
+<p>From now on we use the data (Definition <a href="20261126T030300--the-data__workbook.html#def:data"
+data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a>). Fix a prime <span
+class="math inline">\(p\)</span> and a ring homomorphism <span
+class="math inline">\(\eta\colon\mathbb{C}\to\mathbb{C}_p\)</span>. Then
+<span class="math inline">\(c_p\)</span>, <span
+class="math inline">\(I_p\)</span> and the local prime sum <span
+class="math inline">\(s_{\mathrm{fin},p}(y,\sigma) = c_p \sum_{e \in
+I_p} (y/p^e - \kappa([-p^e]\sigma))_+\)</span> are those of Section <a
+href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#sec:gain" data-reference-type="ref"
+data-reference="dl-sec:gain">57.1</a>. Let <span
+class="math inline">\(\gamma_p := c_p\sum_{e \in I_p} p^{-e}\)</span>
+(values in Problem <a href="20261126T030200--the-bound-is-attained__workbook.html#pr:gamma-cases"
+data-reference-type="ref"
+data-reference="ba-pr:gamma-cases">19.3.1</a>). The
+<em>total local prime sum</em> is <span id="eq:stot"
+class="math display">\[\begin{equation}
+\label{eq:stot}\tag{1}
+  s^{\mathrm{tot}}_{\mathrm{fin},p}:= \sum_{\tau \in \Phi}
+s_{\mathrm{fin},p}(\kappa(\tau), \tau) .
+\end{equation}\]</span> By Problem <a href="20261126T030200--the-bound-is-attained__workbook.html#pr:prime-sum-rate"
+data-reference-type="ref"
+data-reference="ba-pr:prime-sum-rate">19.4.1</a>, <span
+class="math inline">\(s^{\mathrm{tot}}_{\mathrm{fin},p}\le
+\gamma_p\sum_\tau \kappa(\tau)\)</span>. The difference is what the
+partners take away.</p>
+<div id="pr:partners" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:partners&quot;]">
+<p><strong>Problem 78.2.1</strong>. <span class="math inline">\(\gamma_p
+\sum_{\tau} \kappa(\tau) - s^{\mathrm{tot}}_{\mathrm{fin},p}= c_p
+\sum_{\tau \in \Phi} \sum_{e \in I_p} \min\bigl(\kappa(\tau)/p^e,\
+\kappa([-p^e]\tau)\bigr)\)</span>.</p>
+</div>
+<p>At an inert prime the partners enter the theta function through
+couplings. The proof uses a fixed curve: the lattice <span
+class="math inline">\(\Lambda = \Omega_0\mathcal{O}_K\)</span>, with
+<span class="math inline">\(\Omega_0\)</span> as in Definition <a
+href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#def:jet-series" data-reference-type="ref"
+data-reference="d2-def:jet-series">59.4.3</a>, with the
+point <span class="math inline">\(t\)</span> of Section <a
+href="20261126T030200--the-bound-is-attained__workbook.html#sec:general" data-reference-type="ref"
+data-reference="ba-sec:general">19.3</a>, written <span
+class="math inline">\(t_0\)</span> here, and <span
+class="math inline">\(a_1\)</span> and the series <span
+class="math inline">\(y\)</span> as there; let <span
+class="math inline">\(\operatorname{area}(\Lambda)\)</span> be the area
+of <span class="math inline">\(\mathbb{C}/\Lambda\)</span>. Let <span
+class="math inline">\(\sigma_\Lambda\)</span> be the odd entire function
+with <span class="math inline">\(\sigma_\Lambda&#39;(0) = 1\)</span> and
+<span class="math inline">\(\sigma_\Lambda(z + l) = \epsilon_l
+\exp\bigl(\pi(\bar l z + \lvert
+l\rvert^2/2)/\operatorname{area}(\Lambda)\bigr)\sigma_\Lambda(z)\)</span>
+for <span class="math inline">\(l \in \Lambda\)</span>, where <span
+class="math inline">\(\epsilon_l = 1\)</span> on <span
+class="math inline">\(2\Lambda\)</span> and <span
+class="math inline">\(-1\)</span> elsewhere. In this sheet let <span
+class="math display">\[\mathrm{th}(z) := e^{-\pi z\bar
+t_0/\operatorname{area}(\Lambda)}\, \frac{\sigma_\Lambda(z +
+t_0)}{\sigma_\Lambda(t_0)} ,\]</span> We read its Taylor series in <span
+class="math inline">\(\mathbb{C}_p\)</span> through <span
+class="math inline">\(\eta\)</span>. For linear forms <span
+class="math inline">\(\mu_i\)</span> on <span
+class="math inline">\(\mathbb{C}_p^{\Phi}\)</span> and integers <span
+class="math inline">\(c_i \ge 0\)</span> (<span
+class="math inline">\(i\)</span> in a finite set) put <span
+class="math inline">\(\mathrm{th}_{\mathrm{fr}}(z) := \prod_i
+\mathrm{th}(\mu_i z)^{c_i}\)</span>, and for odd <span
+class="math inline">\(e\)</span> let <span
+class="math inline">\(\Gamma_e := \sum_{\tau} z_\tau^{p^e}
+z_{[-p^e]\tau}\)</span> be the coupling of each place with its
+partner.</p>
+<h4 id="normal-form.">Normal form.</h4>
+<p>Let <span class="math inline">\(p\)</span> be inert in <span
+class="math inline">\(K\)</span>, and let <span
+class="math inline">\((w_i,c_i)_i\)</span> be a tight frame of length
+<span class="math inline">\(M\)</span> with forms <span
+class="math inline">\(\mu_i\)</span> (Definition <a href="#def:twelve"
+data-reference-type="ref" data-reference="def:twelve">78.3.1</a> below), so
+that <span class="math inline">\(\mathrm{th}_{\mathrm{fr}}\)</span> is
+formed with the frame’s own integers <span
+class="math inline">\(c_i\)</span>. The proof shows that there are <span
+class="math inline">\(\varpi \in \mathbb{C}_p\)</span> with <span
+class="math inline">\(\operatorname{val}\varpi = 1/(p^2-1)\)</span>,
+integral <span class="math inline">\(\mathfrak l_{e,j}\)</span> (<span
+class="math inline">\(e\)</span> odd, <span class="math inline">\(j \ge
+0\)</span>) with <span class="math inline">\(\mathfrak l_{e,0}\)</span>
+a unit, and an integral series <span class="math inline">\(W\)</span> in
+the <span class="math inline">\(z_\tau\)</span>, such that <span
+class="math display">\[\mathrm{th}_{\mathrm{fr}}(\varpi z) = W(z)
+\exp\Bigl(\frac{\varpi^{p+1}}{p} \sum_{e\ \mathrm{odd}} \sum_{j \ge 0}
+\mathfrak l_{e,j}\, \Gamma_e^{\,p^j}\Bigr) .\]</span> <em>Status</em>:
+read from the proof.</p>
+<div id="pr:coupled-pair" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:coupled-pair&quot;]">
+<p><strong>Problem 78.2.2</strong>. A two-variable model: <span
+class="math inline">\(K = \mathbb{Q}(\sqrt{-7})\)</span>, <span
+class="math inline">\(p = 13\)</span>, variables <span
+class="math inline">\(z_1, z_2\)</span>, <span
+class="math inline">\(\operatorname{val}\varpi = 1/168\)</span> and
+<span class="math inline">\(\mathfrak l_{1,0}\)</span> a unit. Then
+<span class="math inline">\(13\)</span> is inert in <span
+class="math inline">\(K\)</span>, <span
+class="math inline">\(\operatorname{val}(\varpi^{14}/13) =
+-11/12\)</span>, and the coefficient of <span
+class="math inline">\(z_1^{13}z_2\)</span> in <span
+class="math inline">\((\varpi^{14}/13)\mathfrak
+l_{1,0}(z_1/\varpi)^{13}(z_2/\varpi)\)</span> is <span
+class="math inline">\(\mathfrak l_{1,0}/13\)</span>, of valuation <span
+class="math inline">\(-1\)</span>; times <span
+class="math inline">\(13!\,1!\)</span> it has valuation <span
+class="math inline">\(0\)</span>, whereas the rate of one variable in
+degree <span class="math inline">\(14\)</span> is <span
+class="math inline">\(\gamma_{13}\cdot 14 = 13/12\)</span>.</p>
+</div>
+<h1 id="sec:six">§78.3. Six copies along an isotropic vector</h1>
+<div id="def:twelve" class="definition">
+<p><strong>Definition 78.3.1</strong>. We define a <em>tight frame</em> of
+length <span class="math inline">\(M\)</span> to consist of elements
+<span class="math inline">\(w_i \in E\)</span> and integers <span
+class="math inline">\(c_i \ge 0\)</span>, <span
+class="math inline">\(i\)</span> in a finite set, with <span
+class="math inline">\(\sum_i c_i\,\tau&#39;(w_i)\overline{\tau(w_i)} =
+M\delta_{\tau&#39;\tau}\)</span> for <span class="math inline">\(\tau,
+\tau&#39; \in \Phi\)</span>, each <span
+class="math inline">\(w_i\)</span> lying in the lattice <span
+class="math inline">\(\mathfrak a_0 := E \cap
+\alpha_0\hat{\mathcal{O}}_E\)</span>, <span
+class="math inline">\(\alpha_0\)</span> the finite idele of the <em>Weil
+data</em> fixed with <span class="math inline">\(E\)</span> in the
+proof. At <span class="math inline">\(\eta\)</span> its forms are <span
+class="math inline">\(\mu_i(z) :=
+\sum_{\tau\in\Phi}\eta\bigl(c_{\mathrm{per}}\overline{\tau(w_i)}\bigr)z_\tau\)</span>,
+where <span class="math inline">\(c_{\mathrm{per}}\)</span> is the
+period factor of Definition <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#def:jet-series"
+data-reference-type="ref"
+data-reference="d2-def:jet-series">59.4.3</a> (not the
+<span class="math inline">\(\Omega\)</span> of Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>). The <em>twelve copies</em> are
+the variables <span class="math inline">\(z_{\tau,i}\)</span>, <span
+class="math inline">\(\tau \in \Phi\)</span>, <span
+class="math inline">\(1 \le i \le 12\)</span>, one coordinate of <span
+class="math inline">\(\operatorname{Hom}(E, E^{12})\)</span> at each
+infinite place and each of the twelve basis vectors; a multi-index on
+them is written <span class="math inline">\(\mathbf h=
+(h_{\tau,i})\)</span>, and <span class="math inline">\(n\)</span> copies
+are the variables <span class="math inline">\(z_{\tau,i}\)</span> with
+<span class="math inline">\(i \le n\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:root-frame">Problem 78.3.1</a></div><!-- used-in:end -->
+</div>
+<h4 id="tight-frames.">Tight frames.</h4>
+<p>There is a tight frame of length <span
+class="math inline">\(M\)</span> with <span class="math inline">\(c_i
+\ge 6fb\)</span> for every frame index <span
+class="math inline">\(i\)</span> such that for every prime <span
+class="math inline">\(p\)</span> and every <span
+class="math inline">\(\eta\colon\mathbb{C}\to\mathbb{C}_p\)</span> some
+form <span class="math inline">\(\mu_{i_0}\)</span> has all its
+coefficients units. <em>Status</em>: read from the proof. Fix one; write
+<span class="math inline">\(\mathfrak o\)</span> for the valuation ring
+of <span class="math inline">\(\mathbb{C}_p\)</span>, and <span
+class="math inline">\(\mathfrak o[[y_{\mathrm{fr}}]]\)</span> for the
+ring of series <span class="math inline">\(G\bigl((y(\mu_i
+z))_i\bigr)\)</span>, <span class="math inline">\(G\)</span> a power
+series over <span class="math inline">\(\mathfrak o\)</span> in one
+variable for each <span class="math inline">\(i\)</span>.</p>
+<div id="pr:root-frame" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:root-frame&quot;]">
+<p><strong>Problem 78.3.1</strong>. For a primitive <span
+class="math inline">\(Q\)</span>-th root of unity <span
+class="math inline">\(\zeta\)</span> and embeddings <span
+class="math inline">\(\tau, \tau&#39;\)</span> of <span
+class="math inline">\(\mathbb{Q}(\zeta)\)</span>, <span
+class="math inline">\(\sum_{j&lt;Q}\tau&#39;(\zeta^j)\overline{\tau(\zeta^j)}
+= Q\delta_{\tau&#39;\tau}\)</span>, as in Definition <a
+href="#def:twelve" data-reference-type="ref"
+data-reference="def:twelve">78.3.1</a> with <span class="math inline">\(c_i =
+1\)</span>. For <span class="math inline">\(Q = 3\)</span>, <span
+class="math inline">\(v_j := (\zeta^j, \zeta^{2j})\)</span>: <span
+class="math inline">\(\sum_j v_jv_j^* = 3\cdot 1_2\)</span>.</p>
+</div>
+<div id="def:lv" class="definition">
+<p><strong>Definition 78.3.2</strong>. Let <span class="math inline">\(n \in
+\mathbb{N}\)</span>, <span class="math inline">\(\nu\)</span> a
+multi-index on <span class="math inline">\(\Phi\)</span> and <span
+class="math inline">\(\rho \in \mathbb R\)</span>. We write <span
+class="math inline">\(\operatorname{lv}_n(\nu) \le \rho\)</span> if
+there are <span class="math inline">\(H_1, \dots, H_n \in \mathfrak
+o[[y_{\mathrm{fr}}]]\)</span> and multi-indices <span
+class="math inline">\(\nu_1 + \dots + \nu_n = \nu\)</span> with <span
+class="math inline">\(\sum_{i=1}^n
+\operatorname{val}\bigl([z^{\nu_i}](H_i\,\mathrm{th}_{\mathrm{fr}})\bigr)
+\le \rho\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:monomial-witness">Problem 78.5.2</a></div><!-- used-in:end -->
+</div>
+<p>The next problems use six scalings to make the product of the theta
+factors a unit of <span class="math inline">\(\mathfrak
+o[[y_{\mathrm{fr}}]]\)</span>.</p>
+<h4 id="isotropic-scalings.">Isotropic scalings.</h4>
+<p>Write <span class="math inline">\(\mathrm{th}= \exp(-g)\)</span> with
+<span class="math inline">\(g(0) = 0\)</span>. For every <span
+class="math inline">\(\delta \in \mathbb{Z}_p\)</span> the series <span
+class="math inline">\(\exp\bigl(\delta^2 g(z) - g(\delta
+z)\bigr)\)</span> lies in <span class="math inline">\(\mathfrak
+o[[y]]\)</span>. <em>Status</em>: read from the proof. For <span
+class="math inline">\(0 \ne \alpha \in \mathcal{O}_K\)</span>,
+multiplication by <span class="math inline">\(\alpha\)</span> is an
+isogeny of degree <span class="math inline">\(\alpha\bar\alpha\)</span>
+of <span class="math inline">\(\mathbb{C}/\Lambda\)</span> (complex
+multiplication; Silverman, <em>Advanced Topics in the Arithmetic of
+Elliptic Curves</em>, Ch. II). For every <span
+class="math inline">\(\alpha \in \mathcal{O}_K\)</span> the proof shows
+<span class="math inline">\(\mathrm{th}(\alpha z) =
+\mathrm{th}(z)^{\alpha\bar\alpha}v\)</span> with <span
+class="math inline">\(v \in \mathfrak o[[y]]\)</span>, that is, <span
+class="math inline">\(\exp(\alpha\bar\alpha g(z) - g(\alpha z)) \in
+\mathfrak o[[y]]\)</span>; it then passes to <span
+class="math inline">\(p\)</span>-adic limits of the pairs <span
+class="math inline">\((\alpha, \alpha\bar\alpha)\)</span>, among which
+are the pairs <span class="math inline">\((\delta, \delta^2)\)</span>,
+<span class="math inline">\(\delta \in \mathbb{Z}_p\)</span>.</p>
+<div id="pr:isotropic" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:isotropic&quot;]">
+<p><strong>Problem 78.3.2</strong>. <span class="math inline">\(1 + 70^2 =
+29\cdot 13^2\)</span>; <span class="math inline">\((1, 70, 0, 0, 0,
+0)\)</span> is isotropic modulo <span
+class="math inline">\(13^2\)</span>; there is <span
+class="math inline">\(\delta_2 \in \mathbb{Z}_{13}\)</span> with <span
+class="math inline">\(\delta_2 \equiv 70 \pmod{169}\)</span> and <span
+class="math inline">\(\delta_2^2 = -1\)</span>. For every prime <span
+class="math inline">\(p\)</span> there are <span
+class="math inline">\(\delta_2, \dots, \delta_5 \in
+\mathbb{Z}_p\)</span> such that <span class="math inline">\(\delta :=
+(1, \delta_2, \delta_3, \delta_4, \delta_5, 0)\)</span> has <span
+class="math inline">\(\sum_{i=1}^6 \delta_i^2 = 0\)</span>.</p>
+</div>
+<div id="pr:unit-inverse" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:unit-inverse&quot;]">
+<p><strong>Problem 78.3.3</strong>. If <span class="math inline">\(\delta \in
+\mathbb{Z}_p^6\)</span> and <span class="math inline">\(\sum_i\delta_i^2
+= 0\)</span>, then <span
+class="math inline">\(\prod_{i}\mathrm{th}(\delta_i z)\)</span> lies in
+<span class="math inline">\(\mathfrak o[[y]]\)</span> with constant term
+<span class="math inline">\(1\)</span>, and <span
+class="math inline">\(\prod_i \mathrm{th}_{\mathrm{fr}}(\delta_i
+z)\)</span> is a unit of <span class="math inline">\(\mathfrak
+o[[y_{\mathrm{fr}}]]\)</span>.</p>
+</div>
+<p>Use the unscaled model of Section <a href="20261126T080600--frames-and-couplings-the-normal-form-at-all-places__workbook.html#sec:check"
+data-reference-type="ref"
+data-reference="j2-sec:check">61.3</a>. Its one-variable
+series is <span class="math inline">\(\mathrm{th}_0=\exp(-g_0)\)</span>,
+and <span
+class="math inline">\(t_{\mathrm{for}}(u):=\wp_0&#39;(u)/14=u+O(u^3)\)</span>
+is its formal parameter. Write <span
+class="math inline">\(T(z_1,z_2)\)</span> for the two-place product
+there.</p>
+<div id="pr:isotropic-three" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:isotropic-three&quot;]">
+<p><strong>Problem 78.3.4</strong>. At <span
+class="math inline">\(p=3\)</span>, let <span
+class="math inline">\(\delta_3^2=-2\)</span> with <span
+class="math inline">\(\delta_3\equiv4\pmod 9\)</span>. The vector <span
+class="math inline">\((1,1,\delta_3,0,0,0)\)</span> is isotropic. In the
+coordinate <span class="math inline">\(u\)</span> its product is <span
+class="math display">\[\mathrm{th}_0(u)^2\mathrm{th}_0(\delta_3 u)
+    =1-\tfrac72 u^4+\tfrac{49}{20}u^6+\tfrac7{32}u^8+O(u^{10}).\]</span>
+By machine the coefficients in <span
+class="math inline">\(t_{\mathrm{for}}\)</span> are <span
+class="math inline">\(3\)</span>-integral through degree <span
+class="math inline">\(43\)</span>, while <span
+class="math inline">\([u^4]\mathrm{th}_0=-1/12\)</span>.</p>
+</div>
+<div id="pr:isotropic-five" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:isotropic-five&quot;]">
+<p><strong>Problem 78.3.5</strong>. At <span
+class="math inline">\(p=5\)</span>, the model product <span
+class="math inline">\(T\)</span> has <span
+class="math inline">\(\partial_1^6 T(0)=0\)</span>. Let <span
+class="math inline">\(\delta_2^2=-1\)</span> with <span
+class="math inline">\(\delta_2\equiv7\pmod{25}\)</span>. Then <span
+class="math inline">\(U(z):=T(z)T(\delta_2 z)\)</span> is <span
+class="math inline">\(5\)</span>-integral through degree eight and its
+terms of degree four are <span
+class="math inline">\(-\tfrac7{24}(z_1^4+z_2^4)-\tfrac74
+z_1^2z_2^2\)</span>. Set <span
+class="math inline">\(H(z):=t_{\mathrm{for}}(\mu_1(z))^2\)</span>, where
+<span class="math inline">\(\mu_1(z)=(z_1+z_2)/2\)</span>. The prime
+<span class="math inline">\(5\)</span> is inert in the CM field of the
+model, so its rate is <span
+class="math inline">\(5/(5^2-1)=5/24\)</span>. Then <span
+class="math inline">\(\operatorname{val}(6![z_1^6]H)=1\le
+6\cdot(5/24)=5/4\)</span>. In the coefficient expansion of <span
+class="math inline">\(H=(H/U)U\)</span>, the products contributing to
+<span class="math inline">\([z_1^6]H\)</span> from the splittings <span
+class="math inline">\(6=2+4\)</span> and <span
+class="math inline">\(6=6+0\)</span> both have valuation <span
+class="math inline">\(0\le 5/4-\operatorname{val}(6!)=1/4\)</span>.</p>
+</div>
+<div id="pr:six-unit" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:six-unit&quot;]">
+<p><strong>Problem 78.3.6</strong>. If <span
+class="math inline">\(\mu_{i_0}\)</span> has unit coefficients, then
+<span class="math inline">\(\operatorname{lv}_6(\nu) \le
+\gamma_p\lvert\nu\rvert -
+\sum_{\tau}\operatorname{val}(\nu_\tau!)\)</span> for every <span
+class="math inline">\(\nu\)</span>.</p>
+</div>
+<p>Two more six-copy bounds are read from the proof. At an inert prime
+<span class="math inline">\(p\)</span>, integral combinations of the
+forms give each coordinate times a unit, and then <span
+class="math inline">\(\operatorname{lv}_6(\nu) \le 0\)</span> for every
+<span class="math inline">\(\nu\)</span>. At an inert prime <span
+class="math inline">\(p &gt; 2\)</span>, from the normal form: let <span
+class="math inline">\(\Phi_0 \subseteq \Phi\)</span>, odd positive
+integers <span class="math inline">\(e_\tau\)</span> for <span
+class="math inline">\(\tau \in \Phi_0\)</span> such that no <span
+class="math inline">\((\tau_1, e&#39;)\)</span> with <span
+class="math inline">\(\tau_1 \in \Phi_0\)</span>, <span
+class="math inline">\(e&#39; \le e_\tau\)</span> an odd positive integer
+and <span class="math inline">\((\tau_1,e&#39;) \ne
+(\tau,e_\tau)\)</span> has <span
+class="math inline">\([-p^{e&#39;}]\tau_1 = [-p^{e_\tau}]\tau\)</span>,
+integers <span class="math inline">\(j_\tau \ge 0\)</span>, <span
+class="math inline">\(\nu&#39; := \sum_{\tau\in\Phi_0}
+p^{e_\tau}j_\tau[\tau]\)</span>, <span
+class="math inline">\(\nu&#39;&#39; := \sum_{\tau\in\Phi_0}
+j_\tau[[-p^{e_\tau}]\tau]\)</span> and <span class="math inline">\(J :=
+\sum_{\tau\in\Phi_0} j_\tau\)</span>; then <span
+class="math display">\[\operatorname{lv}_6(\nu&#39; + \nu&#39;&#39;) \le
+\frac{J}{p-1} - J - \frac{\lvert\nu&#39; + \nu&#39;&#39;\rvert}{p^2-1} -
+\operatorname{val}(\nu&#39;&#39;!) ,\]</span> where <span
+class="math inline">\([\tau]\)</span> is the multi-index with a single
+<span class="math inline">\(1\)</span> at <span
+class="math inline">\(\tau\)</span> and <span
+class="math inline">\(\nu&#39;&#39;! := \prod_\tau
+\nu&#39;&#39;_\tau!\)</span>.</p>
+<h1 id="sec:near">§78.4. Near pairs</h1>
+<p>We now describe the pairs used at non-split primes <span
+class="math inline">\(p \le k\)</span>. Let <span
+class="math inline">\(l_0(s)\)</span> be as in Definition <a
+href="20261126T030300--the-data__workbook.html#def:data" data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a>.</p>
+<div id="def:near" class="definition">
+<p><strong>Definition 78.4.1</strong>. Let <span
+class="math inline">\(p\)</span> be a prime. Call a pair <span
+class="math inline">\((\tau, e)\)</span> with <span
+class="math inline">\(\tau \in \Phi\)</span> <em>near</em> at <span
+class="math inline">\(p\)</span> if <span class="math inline">\(e \in
+I_p\)</span>, <span class="math inline">\(2e &lt; l_0(s)\)</span>, <span
+class="math inline">\(\tau \in \Phi_b\)</span> and <span
+class="math inline">\([-p^e]\tau \in \Phi_b\)</span>; its <em>start</em>
+is <span class="math inline">\(\tau\)</span> and its <em>end</em> is
+<span class="math inline">\([-p^e]\tau\)</span>.</p>
+</div>
+<p>A model: the group <span
+class="math inline">\((\mathbb{Z}/13)^\times\)</span> in place of <span
+class="math inline">\(\Phi\)</span>, <span class="math inline">\(p =
+3\)</span> treated as inert, the cutoff <span class="math inline">\(2e
+&lt; 3\)</span>, and the heavy set <span class="math inline">\(\{1,
+10\}\)</span> in place of <span
+class="math inline">\(\Phi_b\)</span>.</p>
+<div id="pr:model-edges" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:model-edges&quot;]">
+<p><strong>Problem 78.4.1</strong>. The iterates of <span
+class="math inline">\([-3]\)</span> of orders <span
+class="math inline">\(0\)</span> to <span
+class="math inline">\(4\)</span> from <span
+class="math inline">\(1\)</span> and from <span
+class="math inline">\(10\)</span> are <span class="math inline">\((1,
+10, 9, 12, 3)\)</span> and <span class="math inline">\((10, 9, 12, 3,
+4)\)</span>; the only near pair is <span class="math inline">\((1,
+1)\)</span>, with end <span class="math inline">\(10\)</span>.</p>
+</div>
+<div id="pr:model-sum" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:model-sum&quot;]">
+<p><strong>Problem 78.4.2</strong>. With weight <span
+class="math inline">\(27\)</span> on <span class="math inline">\(\{1,
+10\}\)</span> and <span class="math inline">\(1\)</span> elsewhere,
+<span class="math inline">\(\sum_{\tau}\sum_{e\ \mathrm{odd}}
+(\kappa(\tau)/3^e - \kappa([-3^e]\tau))_+ = 8\)</span>, the only nonzero
+term being <span class="math inline">\(\tau = 10\)</span>, <span
+class="math inline">\(e = 1\)</span>; the near pair <span
+class="math inline">\((1,1)\)</span> contributes <span
+class="math inline">\(0\)</span>.</p>
+</div>
+<div id="pr:near-unique" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:near-unique&quot;]">
+<p><strong>Problem 78.4.3</strong>. Let <span class="math inline">\(p \le
+k\)</span> be a prime with <span class="math inline">\(\chi_K(p) \ne
+1\)</span>. (a) Two distinct near pairs at <span
+class="math inline">\(p\)</span> have distinct starts and distinct ends,
+and the end of a near pair is never the start of one. (b) If <span
+class="math inline">\(p = d\)</span>, there are no near pairs. Hence the
+near pairs at a prime <span class="math inline">\(p \le k\)</span>
+satisfy the hypothesis on <span class="math inline">\(\Phi_0\)</span> in
+Section <a href="#sec:six" data-reference-type="ref"
+data-reference="sec:six">78.3</a>.</p>
+</div>
+<h1 id="sec:twelve">§78.5. Twelve copies and the theorem</h1>
+<p>On twelve copies the proof combines the two kinds of six-copy bounds:
+at a split prime, Problem <a href="#pr:six-unit"
+data-reference-type="ref" data-reference="pr:six-unit">78.3.6</a> on six
+copies and the constant coefficient in degree zero on the other six; at
+an inert <span class="math inline">\(p &gt; k\)</span>, every place
+coupled with its partner for <span class="math inline">\(e = 1\)</span>
+on six copies and the span bound on six; at a non-split <span
+class="math inline">\(p \le k\)</span>, the near pairs on six copies and
+Problem <a href="#pr:six-unit" data-reference-type="ref"
+data-reference="pr:six-unit">78.3.6</a> on six. For <span
+class="math inline">\(\lambda\colon\Phi\to\mathbb{N}\)</span> let <span
+class="math inline">\(u := \lceil 6b/k\rceil\)</span> and <span
+class="math display">\[\Pi_\tau := \prod_{i=1}^{u}\bigl((\lambda(\tau) -
+u)_+ + i\bigr),\]</span> a product of <span
+class="math inline">\(u\)</span> consecutive integers (in this sheet
+<span class="math inline">\(\Pi_\tau\)</span> is this product, not the
+set <span class="math inline">\(\Pi\)</span> of small non-split primes);
+the reserved <span class="math inline">\(u\)</span> pays for the
+rounding. The proof shows: if <span class="math inline">\(\kappa(\tau)
+\le \lambda(\tau) \le \kappa(\tau) + x^{42}\)</span> for every <span
+class="math inline">\(\tau\)</span>, then at every prime <span
+class="math inline">\(p\)</span> and every <span
+class="math inline">\(\eta\)</span> <span
+class="math display">\[\operatorname{lv}_{12}(\lambda) \le
+s^{\mathrm{tot}}_{\mathrm{fin},p}+ 2\sum_\tau
+\operatorname{val}(\Pi_\tau) - \sum_\tau
+\operatorname{val}(\lambda(\tau)!) .\]</span> <em>Status</em>: read from
+the proof. The loss added to <span
+class="math inline">\(s^{\mathrm{tot}}_{\mathrm{fin},p}-
+\sum_\tau\operatorname{val}(\lambda(\tau)!)\)</span> is zero at split
+primes, <span
+class="math inline">\(\sum_\tau\operatorname{val}(\Pi_\tau)\)</span> at
+non-split <span class="math inline">\(p \le k\)</span>, and <span
+class="math inline">\(2\sum_\tau\operatorname{val}(\Pi_\tau)\)</span> at
+inert <span class="math inline">\(p &gt; k\)</span>.</p>
+<div id="pr:loss-product" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:loss-product&quot;]">
+<p><strong>Problem 78.5.1</strong>. <span
+class="math inline">\(12\cdot13\cdot14\cdot15 = 32760\)</span> has <span
+class="math inline">\(v_{13} = 1\)</span>. A product of <span
+class="math inline">\(u\)</span> consecutive integers has <span
+class="math inline">\(v_p \ge \lfloor u/p\rfloor\)</span>.</p>
+</div>
+<div id="pr:monomial-witness" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:monomial-witness&quot;]">
+<p><strong>Problem 78.5.2</strong>. If <span
+class="math inline">\(\operatorname{lv}_n(\nu) \le \rho\)</span>, then
+the <span class="math inline">\(H_j\)</span> in Definition <a
+href="#def:lv" data-reference-type="ref" data-reference="def:lv">78.3.2</a>
+may be taken to be monomials <span class="math inline">\(\prod_i y(\mu_i
+z)^{e_{j,i}}\)</span> with <span class="math inline">\(\sum_i e_{j,i}
+\le \lvert\nu\rvert\)</span>.</p>
+</div>
+<p>Let <span class="math inline">\(\mathfrak m\)</span> be any modulus
+of <span class="math inline">\(E\)</span> (Definition <a
+href="20261126T050600--the-exchange-identity__workbook.html#def:modulus" data-reference-type="ref"
+data-reference="c3-def:modulus">71.2.1</a>) with underlying
+ideal <span class="math inline">\((\pi_M)\)</span>. For <span
+class="math inline">\(y_0 \in (\mathcal{O}_E/\mathfrak m)^{12}\)</span>,
+let <span class="math inline">\(\mathrm{Th}_{y_0}\)</span> be the theta
+function (the <span class="math inline">\(\mathrm{th}_\varphi\)</span>
+of Definition <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#def:jet-series" data-reference-type="ref"
+data-reference="d2-def:jet-series">59.4.3</a>; in this
+sheet <span class="math inline">\(\mathrm{th}\)</span> is the theta
+function of the curve) of the datum on <span
+class="math inline">\(\operatorname{Hom}(E, E^{12})\)</span> with the
+Gaussian at infinity, the indicator of <span
+class="math inline">\(y_0\)</span> at the places dividing <span
+class="math inline">\(\mathfrak m\)</span>, and the vacuum at the other
+finite places. For a vector <span class="math inline">\(F\)</span> on
+<span class="math inline">\(\operatorname{Hom}(E,E^{12})\)</span> write
+<span class="math inline">\(\mathrm{Jet}(F)\)</span> for its jet series
+at scale <span class="math inline">\(\pi_Mc_{\mathrm{jet}}\)</span>; for
+<span class="math inline">\(F\)</span> with the Gaussian at infinity, as
+the datum of <span class="math inline">\(y_0\)</span>, this is the
+Taylor series at <span class="math inline">\(0\)</span>, in the twelve
+copies, of <span class="math inline">\(z \mapsto
+\mathrm{Th}_F(\pi_Mc_{\mathrm{jet}}z)\)</span>, as in Definition <a
+href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#def:jet-series" data-reference-type="ref"
+data-reference="d2-def:jet-series">59.4.3</a>. Write <span
+class="math inline">\(\mathrm{Jet}_{y_0}\)</span> for this series for
+the datum of <span class="math inline">\(y_0\)</span>. Two facts are
+read from the proof. First, if <span class="math inline">\(3e_{j,i} \le
+c_i\)</span> for all copies <span class="math inline">\(j \le
+12\)</span> and all frame indices <span
+class="math inline">\(i\)</span>, the product over the twelve copies of
+the series <span class="math inline">\(\prod_i y(\mu_i
+z)^{e_{j,i}}\,\mathrm{th}(\mu_i z)^{c_i}\)</span> is <span
+class="math inline">\(\eta\)</span> applied to <span
+class="math inline">\(\mathrm{Jet}(F)\)</span> for a vector <span
+class="math inline">\(F\)</span> on <span
+class="math inline">\(\operatorname{Hom}(E, E^{12})\)</span> whose
+values at finite arguments are integral at <span
+class="math inline">\(\eta\)</span> and whose theta function is entire
+and fixed by the signed translations along <span
+class="math inline">\(\pi_M\mathfrak a_0^{12}\)</span>, with <span
+class="math inline">\(\mathfrak a_0\)</span> as in Definition <a
+href="#def:twelve" data-reference-type="ref"
+data-reference="def:twelve">78.3.1</a>. Second, for such <span
+class="math inline">\(F\)</span>, finite Fourier inversion writes <span
+class="math inline">\(M^{12f}F\)</span> as a finite sum <span
+class="math inline">\(\sum_j c_j\cdot(\text{translate of the
+vacuum})\)</span> such that <span
+class="math inline">\(\lvert\eta(c_jv_*)\rvert \le 1\)</span> for every
+value <span class="math inline">\(v_*\)</span> of the vacuum at a finite
+argument, and each translate is a sum over <span
+class="math inline">\(y_0\)</span> of roots of unity times the datum of
+<span class="math inline">\(y_0\)</span>. <em>Status</em>: both are read
+from the proof; for algebraic theta functions see <span class="citation"
+data-cites="BK">[<a href="#ref-BK">BK</a>]</span>. Here the integral vacuum
+of <span class="math inline">\(\operatorname{Hom}(E,E^{12})\)</span> is
+<span class="math inline">\(c_{\mathrm{vac}}^{12}\)</span> times the
+vacuum (Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:vacuum" data-reference-type="ref"
+data-reference="ob-sec:vacuum">37.8</a>). Also read from the
+proof: every conjugate under <span
+class="math inline">\(\operatorname{Aut}(\mathbb{C})\)</span> of a value
+of the integral vacuum of <span
+class="math inline">\(\operatorname{Hom}(E, E^{12})\)</span> at a finite
+argument has absolute value at most <span
+class="math inline">\(\exp(v_0q_1^2)^{12}\)</span>.</p>
+<div id="pr:one-column" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:one-column&quot;]">
+<p><strong>Problem 78.5.3</strong>. Let <span class="math inline">\(y_1,
+\dots, y_N \in \mathbb{C}_p\)</span>, <span class="math inline">\(c_1,
+\dots, c_N\)</span> with <span class="math inline">\(\lvert c_i\rvert
+\le 1\)</span>, and <span class="math inline">\(\lvert\sum_i
+c_iy_i\rvert \ge \epsilon_0 &gt; 0\)</span>. Then <span
+class="math inline">\(\lvert y_i\rvert \ge \epsilon_0\)</span> for some
+<span class="math inline">\(i\)</span>. For any modulus <span
+class="math inline">\(\mathfrak m\)</span> of <span
+class="math inline">\(E\)</span> with underlying ideal <span
+class="math inline">\((\pi_M)\)</span>, let <span
+class="math inline">\(c_*\)</span> be any value of the integral vacuum
+of <span class="math inline">\(\operatorname{Hom}(E,E^{12})\)</span> at
+a finite argument (with <span
+class="math inline">\(\operatorname{val}(0) = +\infty\)</span>). If
+<span class="math inline">\(\operatorname{lv}_{12}(\lambda) \le
+\rho\)</span> and <span class="math inline">\(c_i \ge
+3\lvert\lambda\rvert\)</span> for all <span
+class="math inline">\(i\)</span>, there are <span
+class="math inline">\(\mathbf h\)</span> with <span
+class="math inline">\(\sum_i h_{\tau,i} = \lambda(\tau)\)</span> and
+<span class="math inline">\(y_0\)</span> with <span
+class="math inline">\(\operatorname{val}\eta\bigl(c_{\mathrm{vac}}^{12}[z^{\mathbf
+h}]\mathrm{Jet}_{y_0}\bigr) \le \rho +
+\operatorname{val}\eta(M^{12f}c_*)\)</span>.</p>
+</div>
+<p>Fix a nonzero value <span class="math inline">\(c_*\)</span> of the
+integral vacuum of <span class="math inline">\(\operatorname{Hom}(E,
+E^{12})\)</span> at a finite argument, before any prime is chosen, and
+put <span class="math inline">\(c_{\mathrm{att}}:=
+M^{12f}\,c_*\prod_\tau \Pi_\tau^2\)</span>. If <span
+class="math inline">\(\lambda(\tau) \le \kappa(\tau) + x^{42}\)</span>
+for every <span class="math inline">\(\tau\)</span>, then <span
+class="math inline">\(\lvert\lambda\rvert \le f(b + x^{42}) \le
+2fb\)</span>, so <span class="math inline">\(c_i \ge 6fb \ge
+3\lvert\lambda\rvert\)</span>.</p>
+<div id="pr:c-att" class="problem" data-progress-ids="[&quot;20261126T051000--the-bound-is-attained-at-many-places__workbook.tex#pr:c-att&quot;]">
+<p><strong>Problem 78.5.4</strong>. If <span
+class="math inline">\(\lambda(\tau) \le \kappa(\tau) + x^{42}\)</span>
+for every <span class="math inline">\(\tau\)</span>, then for every
+<span class="math inline">\(\sigma \in
+\operatorname{Aut}(\mathbb{C})\)</span> <span
+class="math display">\[\log\lvert\sigma(c_{\mathrm{att}})\rvert \le
+12f\log M + 2fu\log(2b + u) + 12v_0q_1^2 \le \frac{fmb}{k}
+.\]</span></p>
+</div>
+<p>Problems <a href="#pr:monomial-witness" data-reference-type="ref"
+data-reference="pr:monomial-witness">78.5.2</a>, <a href="#pr:one-column"
+data-reference-type="ref" data-reference="pr:one-column">78.5.3</a> and <a
+href="#pr:c-att" data-reference-type="ref"
+data-reference="pr:c-att">78.5.4</a>, with the bound on twelve copies (to
+which Problems <a href="#pr:partners" data-reference-type="ref"
+data-reference="pr:partners">78.2.1</a>, <a href="#pr:six-unit"
+data-reference-type="ref" data-reference="pr:six-unit">78.3.6</a>, <a
+href="#pr:near-unique" data-reference-type="ref"
+data-reference="pr:near-unique">78.4.3</a> and <a href="#pr:loss-product"
+data-reference-type="ref" data-reference="pr:loss-product">78.5.1</a>
+contribute), the tight frame and the two facts on theta functions, prove
+the following theorem.</p>
+<div id="thm:attained" class="theorem">
+<p><strong>Theorem 78.5.1</strong>. <em>Let <span
+class="math inline">\(\lambda\colon\Phi\to\mathbb{N}\)</span> satisfy
+<span class="math inline">\(\kappa(\tau) \le \lambda(\tau) \le
+\kappa(\tau) + x^{42}\)</span> for every <span
+class="math inline">\(\tau\)</span>. There is <span
+class="math inline">\(c_{\mathrm{att}}\in \mathbb{C}\)</span>, <span
+class="math inline">\(c_{\mathrm{att}}\ne 0\)</span>, with <span
+class="math inline">\(\lvert\sigma(c_{\mathrm{att}})\rvert \le
+\exp(fmb/k)\)</span> for every <span class="math inline">\(\sigma \in
+\operatorname{Aut}(\mathbb{C})\)</span>, such that for every modulus
+<span class="math inline">\(\mathfrak m\)</span> of <span
+class="math inline">\(E\)</span> (Definition <a href="20261126T050600--the-exchange-identity__workbook.html#def:modulus"
+data-reference-type="ref"
+data-reference="c3-def:modulus">71.2.1</a>) with underlying
+ideal <span class="math inline">\((\pi_M)\)</span>, every prime <span
+class="math inline">\(p\)</span>, and every ring homomorphism <span
+class="math inline">\(\eta\colon\mathbb{C}\to\mathbb{C}_p\)</span>,
+there are a multi-index <span class="math inline">\(\mathbf h=
+(h_{\tau,i})\)</span> on the twelve copies with <span
+class="math inline">\(\sum_{i} h_{\tau,i} = \lambda(\tau)\)</span> for
+every <span class="math inline">\(\tau\)</span>, and a class <span
+class="math inline">\(y_0 \in (\mathcal{O}_E/\mathfrak m)^{12}\)</span>,
+with <span
+class="math display">\[\operatorname{val}\,\eta\Bigl(c_{\mathrm{vac}}^{12}\,c_{\mathrm{att}}^{-1}\prod_{\tau\in\Phi}\lambda(\tau)!\cdot[z^{\mathbf
+h}]\,\mathrm{Jet}_{y_0}\Bigr) \le
+s^{\mathrm{tot}}_{\mathrm{fin},p}.\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030200--the-bound-is-attained__workbook.html">Chapter 19</a>; <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html">Chapter 79</a></div><!-- used-in:end -->
+</div>
+<p>For fixed <span class="math inline">\(\lambda\)</span> the same
+multiplier <span class="math inline">\(c_{\mathrm{att}}\)</span> works
+for all the indicated <span class="math inline">\(\mathfrak m\)</span>,
+<span class="math inline">\(p\)</span> and <span
+class="math inline">\(\eta\)</span>. The witnesses <span
+class="math inline">\(\mathbf h\)</span> and <span
+class="math inline">\(y_0\)</span> may depend on all three. Chapter <a
+href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#chap" data-reference-type="ref"
+data-reference="l5-chap">79</a> applies the theorem with <span
+class="math inline">\(\lambda\)</span> the row <span
+class="math inline">\(\lambda_P\)</span> of a critical pair main for
+<span class="math inline">\(j\)</span> (Definitions <a
+href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html#def:row" data-reference-type="ref"
+data-reference="l3-def:row">77.2.1</a> and <a href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html#def:main"
+data-reference-type="ref"
+data-reference="l3-def:main">77.4.1</a>), which satisfies the
+hypothesis by Problem <a href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html#pr:row-range"
+data-reference-type="ref"
+data-reference="l3-pr:row-range">77.4.2</a>.</p>
+<p>Taken as given: the normal form, the isotropic scalings, the tight
+frame, the six-copy span and coupling bounds, the twelve-copy bound, the
+vacuum bound and the two facts on theta functions. The next sheet needs
+Theorem <a href="#thm:attained" data-reference-type="ref"
+data-reference="thm:attained">78.5.1</a> and <a href="#eq:stot"
+data-reference-type="eqref" data-reference="eq:stot">(1)</a>.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>
+(<code>BoundAttained.lean</code>), Theorem <a href="#thm:attained"
+data-reference-type="ref" data-reference="thm:attained">78.5.1</a> is
+<code>Data.exists_rpow_neg_localPrimeSumTotal_le_norm_coeff</code>,
+stated with norms, <span
+class="math inline">\(\mathrm{Jet}_{y_0}\)</span> being
+<code>twelveTaylor</code> of <code>indicatorDatum</code> and <span
+class="math inline">\(s^{\mathrm{tot}}_{\mathrm{fin},p}\)</span>
+<code>Data.localPrimeSumTotal</code>. Definitions <a href="#def:lv"
+data-reference-type="ref" data-reference="def:lv">78.3.2</a>, <a
+href="#def:near" data-reference-type="ref"
+data-reference="def:near">78.4.1</a>, normal form, isotropic scalings, tight
+frame, span and coupling bounds, twelve copies, vacuum bound:
+<code>CMLattice.LeastValLE</code>, <code>Data.IsNearPair</code>,
+<code>Data.exists_hasNormalForm_resolutionForms</code>,
+<code>CMLattice.expSubst_sub_rescale_mem</code>,
+<code>Data.exists_isTightFrame</code>,
+<code>Data.leastValLE_six_zero_of_inert</code>,
+<code>CMLattice.leastValLE_partnerDegree_of_isCouplingFamily</code>,
+<code>Data.leastValLE_twelve</code>,
+<code>Parameters.norm_ringEquiv_intVacuum_le</code>. The first fact on
+theta functions is
+<code>Data.exists_integral_isThetaFunction_twelveTaylor_eq</code>; the
+second is the Fourier expansion
+(<code>Space.exists_fourier_coefficients</code>) in the proof of
+<code>Data.exists_norm_le_norm_indicatorDatum</code>. Problem <a
+href="#pr:one-column" data-reference-type="ref"
+data-reference="pr:one-column">78.5.3</a>, second part, is
+<code>Data.exists_le_norm_coeff_indicatorDatum</code>; it and Theorem <a
+href="#thm:attained" data-reference-type="ref"
+data-reference="thm:attained">78.5.1</a> are stated for every modulus with
+underlying ideal <span class="math inline">\((\pi_M)\)</span>. In the
+theorem this quantifier follows the choice of <span
+class="math inline">\(c_{\mathrm{att}}\)</span> and precedes the choice
+of <span class="math inline">\(p\)</span> and <span
+class="math inline">\(\eta\)</span>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="seclemniscate">§<a href="#sec:lemniscate"
+data-reference-type="ref" data-reference="sec:lemniscate">78.1</a></h2>
+<dl>
+<dt><a href="#pr:coupling-exp" data-reference-type="ref"
+data-reference="pr:coupling-exp">78.1.1</a></dt>
+<dd>
+<p>Expand the exponential; for the integral series use Problem <a
+href="20261126T030200--the-bound-is-attained__workbook.html#pr:product" data-reference-type="ref"
+data-reference="ba-pr:product">19.4.2</a> and <span
+class="math inline">\(\mu(6) \ge E_3(6)\)</span>.</p>
+</dd>
+<dt><a href="#pr:one-partner" data-reference-type="ref"
+data-reference="pr:one-partner">78.1.2</a></dt>
+<dd>
+<p>By machine: the series of <span class="math inline">\(F =
+\sigma^2\wp\)</span> through degree <span
+class="math inline">\(52\)</span> from <span class="math inline">\(\wp =
+\operatorname{sl}^{-2}\)</span> and <span
+class="math inline">\((\log\sigma)&#39;&#39; = -\wp\)</span> (Section <a
+href="20261124T214500--supersingular-theta-divisibility__workbook.html#sec:moments" data-reference-type="ref"
+data-reference="st-sec:moments">15.1</a>), then <span
+class="math inline">\(F(s+t)F(\zeta(s-t))\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secpartners">§<a href="#sec:partners"
+data-reference-type="ref" data-reference="sec:partners">78.2</a></h2>
+<dl>
+<dt><a href="#pr:partners" data-reference-type="ref"
+data-reference="pr:partners">78.2.1</a></dt>
+<dd>
+<p>Compare term by term.</p>
+</dd>
+<dt><a href="#pr:coupled-pair" data-reference-type="ref"
+data-reference="pr:coupled-pair">78.2.2</a></dt>
+<dd>
+<p>Euler’s criterion.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secsix">§<a href="#sec:six"
+data-reference-type="ref" data-reference="sec:six">78.3</a></h2>
+<dl>
+<dt><a href="#pr:isotropic" data-reference-type="ref"
+data-reference="pr:isotropic">78.3.2</a></dt>
+<dd>
+<p>Hensel’s lemma at <span class="math inline">\(13\)</span>; for
+general <span class="math inline">\(p\)</span>, Lagrange’s theorem and
+the compactness of <span
+class="math inline">\(\mathbb{Z}_p^4\)</span>.</p>
+</dd>
+<dt><a href="#pr:unit-inverse" data-reference-type="ref"
+data-reference="pr:unit-inverse">78.3.3</a></dt>
+<dd>
+<p>Invert the one-variable product in <span
+class="math inline">\(\mathfrak o[[y]]\)</span>, then substitute the
+forms.</p>
+</dd>
+<dt><a href="#pr:isotropic-three" data-reference-type="ref"
+data-reference="pr:isotropic-three">78.3.4</a></dt>
+<dd>
+<p>In degree <span class="math inline">\(2k\)</span> the logarithm of
+the product is <span
+class="math inline">\(-(2+(-2)^k)[u^{2k}]g_0\)</span>. Revert the series
+<span class="math inline">\(t_{\mathrm{for}}(u)\)</span> for the
+integrality check.</p>
+</dd>
+<dt><a href="#pr:isotropic-five" data-reference-type="ref"
+data-reference="pr:isotropic-five">78.3.5</a></dt>
+<dd>
+<p>Restrict to <span class="math inline">\(z_2=0\)</span>. Group <span
+class="math inline">\(T(z)T(\delta_2 z)\)</span> as <span
+class="math inline">\(U(z)\)</span> and read the coefficient products
+from <span class="math inline">\(H/U\)</span> and <span
+class="math inline">\(U\)</span>.</p>
+</dd>
+<dt><a href="#pr:six-unit" data-reference-type="ref"
+data-reference="pr:six-unit">78.3.6</a></dt>
+<dd>
+<p>Theorem <a href="20261126T030200--the-bound-is-attained__workbook.html#thm:katz" data-reference-type="ref"
+data-reference="ba-thm:katz">19.3.1</a> in total degree <span
+class="math inline">\(\lvert\nu\rvert\)</span> along <span
+class="math inline">\(\mu_{i_0}\)</span>, then specialize the six copies
+along an isotropic vector with first entry <span
+class="math inline">\(1\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secnear">§<a href="#sec:near"
+data-reference-type="ref" data-reference="sec:near">78.4</a></h2>
+<dl>
+<dt><a href="#pr:near-unique" data-reference-type="ref"
+data-reference="pr:near-unique">78.4.3</a></dt>
+<dd>
+<p>Start with (b): <span class="math inline">\(\Phi_b\)</span> lies in
+one class modulo <span class="math inline">\(q_0\)</span>; compute <span
+class="math inline">\(d^e\)</span> modulo <span
+class="math inline">\(q_0\)</span>, using <span class="math inline">\(d
+\equiv q_0/2 - 1\)</span> and <span class="math inline">\(4 \mid
+q_0\)</span>. For (a) at an inert prime, Problem <a
+href="20261126T030200--the-bound-is-attained__workbook.html#pr:near-pairs" data-reference-type="ref"
+data-reference="ba-pr:near-pairs">19.4.3</a> for <span
+class="math inline">\(\Phi\)</span>, <span
+class="math inline">\([-p]\)</span>, <span
+class="math inline">\(\Phi_b\)</span>, <span class="math inline">\(L =
+l_0(s)\)</span>, the sparsity in Definition <a href="20261126T030300--the-data__workbook.html#def:data"
+data-reference-type="ref" data-reference="da-def:data">36.3.1</a>
+and Problem <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#pr:qone-split" data-reference-type="ref"
+data-reference="dl-pr:qone-split">57.1.1</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="sectwelve">§<a href="#sec:twelve"
+data-reference-type="ref" data-reference="sec:twelve">78.5</a></h2>
+<dl>
+<dt><a href="#pr:monomial-witness" data-reference-type="ref"
+data-reference="pr:monomial-witness">78.5.2</a></dt>
+<dd>
+<p>As in Problem <a href="20261126T030200--the-bound-is-attained__workbook.html#pr:monomial" data-reference-type="ref"
+data-reference="ba-pr:monomial">19.1.1</a>: truncate, and use
+the ultrametric inequality.</p>
+</dd>
+<dt><a href="#pr:one-column" data-reference-type="ref"
+data-reference="pr:one-column">78.5.3</a></dt>
+<dd>
+<p>Separate the case <span class="math inline">\(c_* = 0\)</span>.
+Otherwise apply the first part to the Fourier expansion multiplied by
+the vacuum value <span
+class="math inline">\(c_*/c_{\mathrm{vac}}^{12}\)</span>, then to the
+expansion of a translate over the <span
+class="math inline">\(y_0\)</span>; Problem <a
+href="#pr:monomial-witness" data-reference-type="ref"
+data-reference="pr:monomial-witness">78.5.2</a> for the exponents.</p>
+</dd>
+<dt><a href="#pr:c-att" data-reference-type="ref"
+data-reference="pr:c-att">78.5.4</a></dt>
+<dd>
+<p>Bound each factor of <span class="math inline">\(\Pi_\tau\)</span> by
+<span class="math inline">\(2b + u\)</span>, and <span
+class="math inline">\(\lvert\sigma(c_*)\rvert\)</span> by the bound
+stated before Problem <a href="#pr:one-column" data-reference-type="ref"
+data-reference="pr:one-column">78.5.3</a>; for the last inequality use <span
+class="math inline">\(M \le b^{22}\)</span>, <span
+class="math inline">\(k \le r\)</span> and the size conditions of
+Definition <a href="20261126T030300--the-data__workbook.html#def:data" data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-BK"><span class="bib-label">[BK]</span> K. Bannai, S. Kobayashi, Algebraic theta functions and the <span class="math inline">\(p\)</span>-adic interpolation of Eisenstein–Kronecker numbers, <em>Duke Math. J.</em> <strong>153</strong> (2010), 229–295.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-SVWog0s4VbTDcoJgBsxd9EdaMlbDpEZNh9t8O/S3rIA=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Free levels and short bases</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","R":"\\mathbb{R}","C":"\\mathbb{C}","Oc":"\\mathcal{O}","Oh":"\\hat{\\mathcal{O}}","Aut":"\\operatorname{Aut}","tr":"\\operatorname{tr}","Sym":"\\operatorname{Sym}","B":"\\mathsf{B}","csb":"c_{\\mathrm{sb}}","fl":"\\mathrm{fl}","Ko":"K^\\circ","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="50">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T080100--free-levels-and-short-bases__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 08:30:58
+      <a href="20261126T080100--free-levels-and-short-bases__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T080100--free-levels-and-short-bases__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T080100--free-levels-and-short-bases__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Free levels and short bases</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:free" id="toc-sec:free">§50.1. Free levels</a></li>
+<li><a href="#sec:short" id="toc-sec:short">§50.2. Short bases</a></li>
+<li><a href="#sec:eval" id="toc-sec:eval">§50.3. Evaluation vectors and short forms</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secfree" id="toc-secfree">§50.1</a></li>
+<li><a href="#secshort" id="toc-secshort">§50.2</a></li>
+<li><a href="#seceval" id="toc-seceval">§50.3</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Hermitian lattices over the integers of a CM field, finite adeles,
+the different and the trace form of a number field. Lattices in <span
+class="math inline">\(\mathbb{R}^m\)</span> and their duals. Weyl
+modules of <span class="math inline">\(\mathrm{GL}_n\)</span> at the
+level of highest weights. From Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap"
+data-reference-type="ref" data-reference="ob-chap">37</a>: the
+standard lattice stabilizer <span
+class="math inline">\(K^\circ(V)\)</span> (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces" data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a>), the principal level
+(Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:forms" data-reference-type="ref"
+data-reference="ob-sec:forms">37.4</a>), the gauge and
+integrality at a ring homomorphism <span
+class="math inline">\(\eta\colon\mathbb{C}\to\mathbb{C}_p\)</span>
+(Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:gauge" data-reference-type="ref"
+data-reference="ob-def:gauge">37.5.1</a>), the source forms
+<span class="math inline">\(S\)</span> (Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:source"
+data-reference-type="ref"
+data-reference="ob-sec:source">37.5</a>) and the target
+lattice (Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:target-lattice"
+data-reference-type="ref"
+data-reference="ob-def:target-lattice">37.11.1</a>).
+From Chapter <a href="20261126T030600--theorem-a-short-forms__workbook.html#chap" data-reference-type="ref"
+data-reference="ta-chap">49</a>: <span
+class="math inline">\(Z\)</span>-short forms (Section <a
+href="20261126T030600--theorem-a-short-forms__workbook.html#sec:theorem-a" data-reference-type="ref"
+data-reference="ta-sec:theorem-a">49.3</a>). From
+Chapter <a href="20261125T002000--definite-theta-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dt-chap">21</a>: the Hermitian <span
+class="math inline">\(\mathbb{Z}[i]\)</span>-lattice <span
+class="math inline">\(\mathbb{Z}[i]^n\)</span> is alone in its genus for
+<span class="math inline">\(n\le4\)</span> (Problem <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:class-one" data-reference-type="ref"
+data-reference="dt-pr:class-one">21.1.4</a>). From Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>: the data. Pairing conditions of
+twisted lattices: Chapter <a href="20261126T030100--a-twist-for-each-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="at-chap">6</a>, Section <a href="20261126T030100--a-twist-for-each-prime__workbook.html#sec:toy"
+data-reference-type="ref"
+data-reference="at-sec:toy">6.1</a>.</p>
+<p>Input 1 of Theorem <a href="20261126T030600--theorem-a-short-forms__workbook.html#thm:A" data-reference-type="ref"
+data-reference="ta-thm:A">49.3.2</a> (Chapter <a href="20261126T030600--theorem-a-short-forms__workbook.html#chap"
+data-reference-type="ref" data-reference="ta-chap">49</a>) rests
+on one statement: the <span
+class="math inline">\(4^{-f}e^U\)</span>-short source forms span <span
+class="math inline">\(S\)</span>, with <span
+class="math inline">\(U\)</span> as in Section <a href="20261126T030300--the-data__workbook.html#sec:amounts"
+data-reference-type="ref"
+data-reference="da-sec:amounts">36.4</a>. Why should short
+forms span at all? If the group <span
+class="math inline">\(\Gamma\)</span> of rational unitary matrices acts
+freely on the cosets <span class="math inline">\(gK\)</span> of the
+level <span class="math inline">\(K\)</span>, a form is determined by
+its values at representatives of the double classes, and those values
+may be prescribed arbitrarily. It is then enough to find, at each point
+<span class="math inline">\(g\)</span>, a basis of the Weyl module
+consisting of vectors that are integral at <span
+class="math inline">\(g\)</span> and short at every conjugate.
+Section <a href="#sec:free" data-reference-type="ref"
+data-reference="sec:free">50.1</a> treats such levels, Section <a
+href="#sec:short" data-reference-type="ref"
+data-reference="sec:short">50.2</a> uses transference to find short <span
+class="math inline">\(E\)</span>-bases of <span
+class="math inline">\(E^n\)</span> in the lattice of <span
+class="math inline">\(g\)</span>, and Section <a href="#sec:eval"
+data-reference-type="ref" data-reference="sec:eval">50.3</a> turns them
+into short vectors of a Weyl module.</p>
+<h1 id="sec:free">§50.1. Free levels</h1>
+<p>Let <span class="math inline">\(E\)</span> be a CM field with a CM
+type, <span class="math inline">\(f\)</span> its number of infinite
+places <span class="math inline">\(\tau\)</span>, <span
+class="math inline">\(\Phi_\tau\)</span> the chosen embeddings, <span
+class="math inline">\(z\mapsto\bar z\)</span> complex conjugation, <span
+class="math inline">\(\hat{\mathcal{O}}\)</span> the integral finite
+adeles. For <span class="math inline">\(n\ge1\)</span>, <span
+class="math inline">\(G_f\)</span> is the finite adelic unitary group of
+the standard definite form <span class="math inline">\(\sum_i\bar
+x_iy_i\)</span> on <span class="math inline">\(E^n\)</span>, <span
+class="math inline">\(\Gamma\)</span> its group of rational points, and
+<span class="math inline">\(K^\circ=
+G_f\cap\mathrm{GL}_n(\hat{\mathcal{O}})\)</span> the stabilizer of <span
+class="math inline">\(\hat{\mathcal{O}}^n\)</span>, as in Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces" data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a>. A <em>level</em> is
+a subgroup <span class="math inline">\(K\subseteq K^\circ\)</span>
+containing a neighbourhood of the identity; its <em>classes</em> are the
+finitely many double cosets <span class="math inline">\(\Gamma
+gK\)</span>. For a nonzero ideal <span class="math inline">\(\mathfrak
+a\)</span> of <span class="math inline">\(\mathcal{O}_E\)</span>, <span
+class="math inline">\(K^\circ(\mathfrak a)\)</span> consists of the
+elements of <span class="math inline">\(K^\circ\)</span> that reduce to
+<span class="math inline">\(1\)</span> modulo <span
+class="math inline">\(\mathfrak a\)</span>.</p>
+<p>A <em>weight</em> <span
+class="math inline">\(\kappa=(\kappa_\tau)\)</span> is a dominant weight
+<span
+class="math inline">\(\kappa_{\tau,1}\ge\dots\ge\kappa_{\tau,n}\)</span>
+of <span class="math inline">\(\mathrm{GL}_n\)</span> at each <span
+class="math inline">\(\tau\)</span>; put <span
+class="math inline">\(\lvert\kappa\rvert_{&lt;n}:=\sum_\tau\sum_i(\kappa_{\tau,i}-\kappa_{\tau,n})\)</span>.
+Its Weyl module <span class="math inline">\(W_\kappa\)</span>
+(Section <a href="#sec:eval" data-reference-type="ref"
+data-reference="sec:eval">50.3</a>) carries the action <span
+class="math inline">\(\rho_\kappa\)</span> of <span
+class="math inline">\(\prod_\tau\mathrm{GL}_n\)</span>, the gauge of
+Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:gauge" data-reference-type="ref"
+data-reference="ob-def:gauge">37.5.1</a>, and the Weyl squared
+norm <span class="math inline">\(\lvert\cdot\rvert^2\)</span>, invariant
+under <span class="math inline">\(\prod_\tau U(n)\)</span>. A form of
+weight <span class="math inline">\(\kappa\)</span> and level <span
+class="math inline">\(K\)</span> is a function <span
+class="math inline">\(F\colon G_f\to W_\kappa\)</span> with <span
+class="math inline">\(F(\gamma gk)=\gamma F(g)\)</span> for <span
+class="math inline">\(\gamma\in\Gamma\)</span>, <span
+class="math inline">\(k\in K\)</span>, where <span
+class="math inline">\(\gamma\)</span> acts by <span
+class="math inline">\(\rho_\kappa((\Phi_\tau(\bar\gamma))_\tau)\)</span>,
+with conjugation and each embedding applied entrywise, as for the source
+forms (Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:source" data-reference-type="ref"
+data-reference="ob-sec:source">37.5</a>).</p>
+<div id="def:free" class="definition">
+<p><strong>Definition 50.1.1</strong>. A level <span
+class="math inline">\(K\)</span> is <em>free</em> if <span
+class="math inline">\(\Gamma\cap gKg^{-1}=\{1\}\)</span> for every <span
+class="math inline">\(g\in G_f\)</span>.</p>
+</div>
+<div id="pr:units" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:units&quot;]">
+<p><strong>Problem 50.1.2</strong>. <span
+class="math inline">\(U(2)(\mathbb{Z}[i])\)</span> consists of the <span
+class="math inline">\(32\)</span> monomial matrices whose nonzero
+entries belong to <span class="math inline">\(\{\pm1,\pm i\}\)</span>;
+<span class="math inline">\(16\)</span> of them are <span
+class="math inline">\(\equiv1\bmod(1+i)\)</span>, and only <span
+class="math inline">\(1\)</span> is <span
+class="math inline">\(\equiv1\bmod(2+i)\)</span>. Hence on <span
+class="math inline">\(\mathbb{Z}[i]^2\)</span> the level <span
+class="math inline">\(K^\circ(1+i)\)</span> is not free and <span
+class="math inline">\(K^\circ(2+i)\)</span> is free.</p>
+</div>
+<div id="pr:minkowski" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:minkowski&quot;]">
+<p><strong>Problem 50.1.3</strong>. Let <span class="math inline">\(\mathfrak
+a=w_1\cdots w_s\)</span> be a product of distinct finite places with
+<span class="math inline">\(N\mathfrak
+a&gt;(2n)^{[E:\mathbb{Q}]}\)</span>. If <span
+class="math inline">\(\gamma\in\Gamma\)</span>, <span
+class="math inline">\(g\in G_f\)</span> and <span
+class="math inline">\(g^{-1}\gamma g\in K^\circ(\mathfrak a)\)</span>,
+then <span class="math inline">\(\operatorname{tr}\gamma-n\in\mathfrak
+a\)</span>, every conjugate of <span
+class="math inline">\(\operatorname{tr}\gamma-n\)</span> has absolute
+value at most <span class="math inline">\(2n\)</span>, and <span
+class="math inline">\(\gamma=1\)</span>. For <span
+class="math inline">\(\mathbb{Q}(i)\)</span>, <span
+class="math inline">\(n=2\)</span>, <span
+class="math inline">\(\mathfrak a=(2+i)\)</span> one has <span
+class="math inline">\(N\mathfrak a=5&lt;16\)</span>: the criterion is
+sufficient only.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:free">Problem 50.1.4</a></div><!-- used-in:end -->
+</div>
+<p>This is a form of Minkowski’s lemma on torsion in congruence
+subgroups <span class="citation"
+data-cites="Se">[<a href="#ref-Se">Se</a>]</span>.</p>
+<div id="pr:free" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:free&quot;]">
+<p><strong>Problem 50.1.4</strong>. A level contained in <span
+class="math inline">\(K^\circ(\mathfrak a)\)</span>, with <span
+class="math inline">\(\mathfrak a\)</span> as in Problem <a
+href="#pr:minkowski" data-reference-type="ref"
+data-reference="pr:minkowski">50.1.3</a>, is free. For the data and <span
+class="math inline">\(n\le4n_m\)</span>, the product of the <span
+class="math inline">\(f\)</span> chosen places above <span
+class="math inline">\(p_0\)</span> is such an <span
+class="math inline">\(\mathfrak a\)</span>; hence every level of rank
+<span class="math inline">\(n\le4n_m\)</span> whose elements reduce to
+<span class="math inline">\(1\)</span> at the chosen places is free,
+among them the level of the source forms and the levels of the targets
+of the lower chains.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T040100--spaces-forms-and-twists__workbook.html">Chapter 37</a>; <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html">Chapter 39</a>; <a href="20261126T080200--the-good-part-and-the-ramified-forms__workbook.html">Chapter 51</a></div><!-- used-in:end -->
+</div>
+<div id="pr:dim-free" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:dim-free&quot;]">
+<p><strong>Problem 50.1.5</strong>. Let <span
+class="math inline">\(K\)</span> be free, with class representatives
+<span class="math inline">\(g_c\)</span>. Then <span
+class="math inline">\(F\mapsto(F(g_c))_c\)</span> is an isomorphism from
+the forms of weight <span class="math inline">\(\kappa\)</span> and
+level <span class="math inline">\(K\)</span> onto <span
+class="math inline">\(\bigoplus_cW_\kappa\)</span>; their dimension is
+<span class="math inline">\(\#\{\text{classes}\}\cdot\dim
+W_\kappa&gt;0\)</span>. If <span class="math inline">\(K&#39;\subseteq
+K\)</span> are free, <span class="math inline">\(K&#39;\)</span> has
+<span class="math inline">\([K:K&#39;]\)</span> times as many classes as
+<span class="math inline">\(K\)</span>. On <span
+class="math inline">\(\mathbb{Z}[i]^2\)</span>, <span
+class="math inline">\(K^\circ(2+i)\)</span> has <span
+class="math inline">\(15\)</span> classes.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html">Chapter 39</a>; <a href="20261126T080200--the-good-part-and-the-ramified-forms__workbook.html">Chapter 51</a></div><!-- used-in:end -->
+</div>
+<div id="def:delta" class="definition">
+<p><strong>Definition 50.1.6</strong>. For <span class="math inline">\(x\in
+G_f\)</span> and <span class="math inline">\(v\in W_\kappa\)</span>,
+define the <em>delta form</em> of level <span
+class="math inline">\(K\)</span> by <span
+class="math inline">\(\varphi_{x,v}(y):=\sum\gamma^{-1}v\)</span>, the
+sum over the <span class="math inline">\(\gamma\in\Gamma\)</span> with
+<span class="math inline">\(x^{-1}\gamma y\in K\)</span>.</p>
+</div>
+<div id="pr:delta" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:delta&quot;]">
+<p><strong>Problem 50.1.7</strong>. At a free level the sum defining <span
+class="math inline">\(\varphi_{x,v}(y)\)</span> has at most one term;
+<span class="math inline">\(\varphi_{x,v}\)</span> is the form with
+value <span class="math inline">\(v\)</span> at <span
+class="math inline">\(x\)</span> that vanishes off <span
+class="math inline">\(\Gamma xK\)</span>. At every <span
+class="math inline">\(y\in\Gamma xK\)</span>, the gauge of <span
+class="math inline">\(\varphi_{x,v}(y)\)</span> at <span
+class="math inline">\(y\)</span> equals that of <span
+class="math inline">\(v\)</span> at <span
+class="math inline">\(x\)</span>, for every <span
+class="math inline">\(\eta\)</span>, and <span
+class="math inline">\(\lvert\sigma\varphi_{x,v}(y)\rvert^2=\lvert\sigma
+v\rvert^2\)</span> for every <span
+class="math inline">\(\sigma\in\operatorname{Aut}(\mathbb{C})\)</span>.</p>
+</div>
+<div id="pr:full-level" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:full-level&quot;]">
+<p><strong>Problem 50.1.8</strong>. At the level <span
+class="math inline">\(K^\circ\)</span> of <span
+class="math inline">\(\mathbb{Z}[i]^2\)</span> (not free), write <span
+class="math inline">\(\operatorname{Sym}^d\)</span> as forms of degree
+<span class="math inline">\(d\)</span> in <span
+class="math inline">\(e_1,e_2\)</span>. Then <span
+class="math inline">\(\sum_\gamma\gamma^{-1}e_1^4=16(e_1^4+e_2^4)\)</span>
+and <span class="math inline">\(\sum_\gamma\gamma^{-1}e_1^2=0\)</span>,
+the sums over <span class="math inline">\(U(2)(\mathbb{Z}[i])\)</span>.
+The forms of level <span class="math inline">\(K^\circ\)</span> and
+weight <span class="math inline">\(\operatorname{Sym}^4\)</span> form a
+line, and those of weight <span
+class="math inline">\(\operatorname{Sym}^2\)</span> are <span
+class="math inline">\(0\)</span>.</p>
+</div>
+<p>For forms <span class="math inline">\(F,F&#39;\)</span> of the same
+weight and level <span class="math inline">\(K\)</span> put <span
+class="math inline">\(\langle F,F&#39;\rangle:=\sum_c\#(\Gamma\cap
+g_cKg_c^{-1})^{-1}\langle F(g_c),F&#39;(g_c)\rangle_W\)</span>, with the
+Weyl inner product, conjugate-linear in the first argument. We use one
+fact read from the proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>: if <span
+class="math inline">\(u\)</span> has gauge at most <span
+class="math inline">\(1\)</span> at <span
+class="math inline">\(g\)</span> for <span
+class="math inline">\(\eta\circ(z\mapsto\bar z)\)</span> and <span
+class="math inline">\(v\)</span> has gauge at most <span
+class="math inline">\(1\)</span> at <span
+class="math inline">\(g\)</span> for <span
+class="math inline">\(\eta\)</span>, then <span
+class="math inline">\(\lvert\eta\langle u,v\rangle_W\rvert\le1\)</span>.
+<em>Status</em>: read from the proof; not proved here.</p>
+<div id="pr:pairing" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:pairing&quot;]">
+<p><strong>Problem 50.1.9</strong>. At a free level, <span
+class="math inline">\(\langle F,F&#39;\rangle=\sum_c\langle
+F(g_c),F&#39;(g_c)\rangle_W\)</span>. If <span
+class="math inline">\(F\)</span> is integral at <span
+class="math inline">\(\bar\iota\)</span> and <span
+class="math inline">\(F&#39;\)</span> at <span
+class="math inline">\(\iota\)</span>, then <span
+class="math inline">\(\langle
+F,F&#39;\rangle\in\mathcal{O}_\iota\)</span>. The same conclusions hold
+for two forms transforming on the right under the same character <span
+class="math inline">\(\chi\)</span> of <span
+class="math inline">\(K\)</span> with <span
+class="math inline">\(\lvert\chi\rvert=1\)</span>. Hence the target
+lattice satisfies the pairing condition of a twisted lattice (Chapter <a
+href="20261126T030100--a-twist-for-each-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="at-chap">6</a>, Section <a href="20261126T030100--a-twist-for-each-prime__workbook.html#sec:toy"
+data-reference-type="ref"
+data-reference="at-sec:toy">6.1</a>).</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T040100--spaces-forms-and-twists__workbook.html">Chapter 37</a></div><!-- used-in:end -->
+</div>
+<h1 id="sec:short">§50.2. Short bases</h1>
+<p>For <span class="math inline">\(g\in G_f\)</span> let <span
+class="math inline">\(\Lambda(g):=E^n\cap g\hat{\mathcal{O}}^n\)</span>,
+and for <span class="math inline">\(y\in E^n\)</span> let <span
+class="math inline">\(\lvert
+y\rvert^2:=\sum_\tau\sum_i\lvert\Phi_\tau(y_i)\rvert^2\)</span>. Through
+<span class="math inline">\(y\mapsto(\Phi_\tau(y_i))_{\tau,i}\)</span>,
+<span class="math inline">\(\Lambda(g)\)</span> is a lattice of rank
+<span class="math inline">\(2fn\)</span> in <span
+class="math inline">\(\mathbb{C}^{fn}=\mathbb{R}^{2fn}\)</span>, with
+the inner product <span class="math inline">\(\operatorname{Re}\sum\bar
+x_jy_j\)</span>. Fix a positive integer <span
+class="math inline">\(N&#39;\)</span> in the different of <span
+class="math inline">\(E\)</span>.</p>
+<div id="pr:first-min" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:first-min&quot;]">
+<p><strong>Problem 50.2.1</strong>. Every nonzero <span
+class="math inline">\(y\in\Lambda(g)\)</span> has <span
+class="math inline">\(\lvert y\rvert\ge1\)</span>. For <span
+class="math inline">\(E=\mathbb{Q}(i)\)</span>, <span
+class="math inline">\(n=1\)</span> and <span
+class="math inline">\(g\)</span> with components <span
+class="math inline">\(5\)</span> and <span
+class="math inline">\(5^{-1}\)</span> at <span
+class="math inline">\(2+i\)</span> and <span
+class="math inline">\(2-i\)</span> and <span
+class="math inline">\(1\)</span> elsewhere, <span
+class="math inline">\(\Lambda(g)=\frac{2+i}{2-i}\mathbb{Z}[i]\)</span>,
+and the bound is attained.</p>
+</div>
+<div id="pr:dual" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:dual&quot;]">
+<p><strong>Problem 50.2.2</strong>. Let <span
+class="math inline">\(\mathfrak D_E\)</span> be the different of <span
+class="math inline">\(E\)</span>. The dual of <span
+class="math inline">\(\Lambda(g)\)</span> for the trace pairing <span
+class="math inline">\((a,\xi)\mapsto\operatorname{tr}_{E/\mathbb{Q}}(a^*\xi)\)</span>
+on <span class="math inline">\(E^n\)</span> is <span
+class="math inline">\(\mathfrak D_E^{-1}\Lambda(g)\)</span>. The
+Euclidean dual of <span
+class="math inline">\((2/N&#39;)\Lambda(g)\)</span> is <span
+class="math inline">\(N&#39;\mathfrak D_E^{-1}\Lambda(g)\)</span>, and
+no nonzero vector of this dual is shorter than <span
+class="math inline">\(1\)</span>. For <span
+class="math inline">\(E=\mathbb{Q}(i)\)</span> one may take <span
+class="math inline">\(N&#39;=2\)</span>.</p>
+</div>
+<p><em>Transference.</em> Let <span
+class="math inline">\(\Lambda\subset\mathbb{R}^m\)</span> be a lattice
+whose dual has no nonzero vector shorter than <span
+class="math inline">\(r_0&gt;0\)</span>. Then every point of <span
+class="math inline">\(\mathbb{R}^m\)</span> lies within <span
+class="math inline">\(m^2/r_0\)</span> of <span
+class="math inline">\(\Lambda\)</span>. Banaszczyk <span
+class="citation" data-cites="Ba">[<a href="#ref-Ba">Ba</a>]</span> proves
+the bound <span class="math inline">\(m/(2r_0)\)</span>; bounds of this
+shape go back to <span class="citation"
+data-cites="LLS">[<a href="#ref-LLS">LLS</a>]</span>. <em>Status</em>:
+classical.</p>
+<div id="pr:transference-example" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:transference-example&quot;]">
+<p><strong>Problem 50.2.3</strong>. For <span
+class="math inline">\(\Lambda=\mathbb{Z}(1,0)+\mathbb{Z}(0,10)\)</span>
+the shortest nonzero dual vector has length <span
+class="math inline">\(1/10\)</span>, and the largest distance of a point
+from <span class="math inline">\(\Lambda\)</span> is <span
+class="math inline">\(\sqrt{101}/2=5.02\ldots\le40\)</span>.</p>
+</div>
+<div id="pr:cover-span" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:cover-span&quot;]">
+<p><strong>Problem 50.2.4</strong>. If every point of <span
+class="math inline">\(\mathbb{R}^m\)</span> lies within <span
+class="math inline">\(r&gt;0\)</span> of a set <span
+class="math inline">\(\mathcal S\)</span>, the vectors of <span
+class="math inline">\(\mathcal S\)</span> of length at most <span
+class="math inline">\(3r\)</span> span <span
+class="math inline">\(\mathbb{R}^m\)</span>.</p>
+</div>
+<div id="def:short-basis" class="definition">
+<p><strong>Definition 50.2.5</strong>. Put <span
+class="math inline">\(c_{\mathrm{sb}}:=6N&#39;(fn)^2\)</span>. A
+<em>short basis</em> at <span class="math inline">\(g\)</span> is a
+matrix <span
+class="math inline">\(\mathsf{B}(g)\in\mathrm{GL}_n(E)\)</span> such
+that <span class="math inline">\(g^{-1}\mathsf{B}(g)\)</span> has
+entries in <span class="math inline">\(\hat{\mathcal{O}}\)</span> and
+<span class="math inline">\(\lvert\phi(\mathsf{B}(g)_{ij})\rvert\le
+c_{\mathrm{sb}}\)</span> for all <span
+class="math inline">\(i,j\)</span> and every embedding <span
+class="math inline">\(\phi\colon E\to\mathbb{C}\)</span>.</p>
+</div>
+<div id="pr:short-basis" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:short-basis&quot;]">
+<p><strong>Problem 50.2.6</strong>. Every <span class="math inline">\(g\in
+G_f\)</span> has a short basis. For <span
+class="math inline">\(\mathbb{Q}(i)\)</span>, <span
+class="math inline">\(n=2\)</span>, <span
+class="math inline">\(N&#39;=2\)</span>: <span
+class="math inline">\(c_{\mathrm{sb}}=48\)</span>.</p>
+</div>
+<div id="pr:approx" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:approx&quot;]">
+<p><strong>Problem 50.2.7</strong>. For every finite adele <span
+class="math inline">\(y\)</span> of <span
+class="math inline">\(E\)</span> there is <span
+class="math inline">\(a\in E\)</span> with <span
+class="math inline">\(y-a\in\hat{\mathcal{O}}\)</span> and <span
+class="math inline">\(\lvert\phi(a)\rvert\le(2f)^2N&#39;\)</span> for
+every embedding <span class="math inline">\(\phi\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:invariant">Problem 50.2.9</a></div><!-- used-in:end -->
+</div>
+<div id="pr:same-gram" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:same-gram&quot;]">
+<p><strong>Problem 50.2.8</strong>. Let <span
+class="math inline">\(Y,Y&#39;\in\mathrm{GL}_n(E)\)</span> have <span
+class="math inline">\(Y&#39;^*Y&#39;=Y^*Y\)</span>, and let <span
+class="math inline">\(g,g&#39;\in G_f\)</span> be such that <span
+class="math inline">\((g&#39;^{-1}Y&#39;)(g^{-1}Y)^{-1}\)</span> has
+entries in <span class="math inline">\(\hat{\mathcal{O}}\)</span>. Then
+<span class="math inline">\(\Gamma gK^\circ=\Gamma
+g&#39;K^\circ\)</span>.</p>
+</div>
+<div id="pr:invariant" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:invariant&quot;]">
+<p><strong>Problem 50.2.9</strong>. Let <span
+class="math inline">\(\mathsf{B}=\mathsf{B}(g)\)</span>, <span
+class="math inline">\(A=g^{-1}\mathsf{B}\)</span>, and let <span
+class="math inline">\(\mathsf X\in M_n(E)\)</span> have <span
+class="math inline">\(A^{-1}-\mathsf X\)</span> integral and <span
+class="math inline">\(\lvert\phi(\mathsf X_{ij})\rvert\le
+(2f)^2N&#39;\)</span> for every embedding <span
+class="math inline">\(\phi\)</span> and all <span
+class="math inline">\(i,j\)</span>, as in Problem <a href="#pr:approx"
+data-reference-type="ref" data-reference="pr:approx">50.2.7</a>. Put <span
+class="math inline">\(G:=\mathsf{B}^*\mathsf{B}\)</span>. The entries of
+<span class="math inline">\(G\)</span> and <span
+class="math inline">\(G\mathsf X\)</span> are algebraic integers whose
+conjugates have absolute value at most <span
+class="math inline">\(c_{\mathrm{sb}}^3\)</span>, and the pair <span
+class="math inline">\((G,G\mathsf X)\)</span> determines the class <span
+class="math inline">\(\Gamma gK^\circ\)</span>.</p>
+</div>
+<div id="pr:count-integers" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:count-integers&quot;]">
+<p><strong>Problem 50.2.10</strong>. For <span
+class="math inline">\(C\ge0\)</span>, at most <span
+class="math inline">\((1+2C)^{2f}\)</span> algebraic integers of <span
+class="math inline">\(E\)</span> have all conjugates of absolute value
+at most <span class="math inline">\(C\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:short-basis" data-reference-type="ref"
+data-reference="pr:short-basis">50.2.6</a>–<a href="#pr:count-integers"
+data-reference-type="ref" data-reference="pr:count-integers">50.2.10</a>
+prove the following.</p>
+<div id="thm:class-count" class="theorem">
+<p><strong>Theorem 50.2.11</strong>. <em>Let <span
+class="math inline">\(E\)</span> be a CM field with <span
+class="math inline">\(f\)</span> infinite places, <span
+class="math inline">\(N&#39;\)</span> a positive integer in its
+different, and <span
+class="math inline">\(c_{\mathrm{sb}}=6N&#39;(fn)^2\)</span>. The
+standard definite space of rank <span class="math inline">\(n\)</span>
+has at most <span
+class="math inline">\((1+2c_{\mathrm{sb}}^3)^{4fn^2}\)</span> classes
+<span class="math inline">\(\Gamma\backslash
+G_f/K^\circ\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T050300--the-size-of-the-composite-lift__workbook.html">Chapter 66</a></div><!-- used-in:end -->
+</div>
+<p>For <span class="math inline">\(\mathbb{Q}(i)\)</span>, <span
+class="math inline">\(n=1\)</span>, <span
+class="math inline">\(N&#39;=2\)</span> the bound is <span
+class="math inline">\(3457^4\)</span>, and there is one class.
+Chapter <a href="20261126T050300--the-size-of-the-composite-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="d6-chap">66</a> uses this count for the data.</p>
+<h1 id="sec:eval">§50.3. Evaluation vectors and short forms</h1>
+<p>Fix <span class="math inline">\(\tau\)</span> and write <span
+class="math inline">\(\lambda=\kappa_\tau-\kappa_{\tau,n}(1,\dots,1)\)</span>,
+a partition whose columns have height <span
+class="math inline">\(h&lt;n\)</span>. For a filling <span
+class="math inline">\(T\)</span> of the diagram of <span
+class="math inline">\(\lambda\)</span> by <span
+class="math inline">\(\{1,\dots,n\}\)</span> and an <span
+class="math inline">\(n\times n\)</span> matrix <span
+class="math inline">\(y\)</span>, let <span
+class="math inline">\(b_T(y)\)</span> be the product, over the columns
+<span class="math inline">\((i_1,\dots,i_h)\)</span> of <span
+class="math inline">\(T\)</span> read from top to bottom, of <span
+class="math inline">\(\det(y_{i_a,b})_{1\le a,b\le h}\)</span>. The
+products <span class="math inline">\(b_T\)</span> span a space <span
+class="math inline">\(\nabla_\lambda\)</span> of polynomials, and those
+with <span class="math inline">\(T\)</span> semistandard form a <span
+class="math inline">\(\mathbb{Z}\)</span>-basis of the <span
+class="math inline">\(\mathbb{Z}\)</span>-span of all the <span
+class="math inline">\(b_T\)</span> <span class="citation"
+data-cites="DEP">[<a href="#ref-DEP">DEP</a>]</span>, <span class="citation"
+data-cites="Fu">[<a href="#ref-Fu">Fu</a>]</span>; <em>Status</em>:
+classical. We take <span
+class="math inline">\(W_\kappa:=(\bigotimes_\tau\nabla_{\lambda_\tau})^*\)</span>,
+with coordinates dual to the products <span
+class="math inline">\(b_T:=\prod_\tau b_{T_\tau}(y_\tau)\)</span> over
+the families of semistandard <span
+class="math inline">\(T_\tau\)</span>. Changing the integral basis
+multiplies the coordinates by a matrix in <span
+class="math inline">\(\mathrm{GL}_{\dim W_\kappa}(\mathbb{Z})\)</span>,
+which preserves the <span class="math inline">\(p\)</span>-adic supremum
+norm and hence the gauge.</p>
+<div id="def:minors" class="definition">
+<p><strong>Definition 50.3.1</strong>. For a family <span
+class="math inline">\(y=(y_\tau)\)</span> of complex <span
+class="math inline">\(n\times n\)</span> matrices, the <em>evaluation
+vector</em> <span class="math inline">\(\mathrm{fl}_\kappa(y)\in
+W_\kappa\)</span> is <span class="math inline">\(F\mapsto F(y)\)</span>;
+its coordinates are the <span class="math inline">\(b_T(y)\)</span>.</p>
+</div>
+<p>The action is <span
+class="math inline">\(\rho_\kappa(A)\mathrm{fl}_\kappa(y)=\prod_\tau\det(A_\tau)^{\kappa_{\tau,n}}\mathrm{fl}_\kappa((A_\tau
+y_\tau)_\tau)\)</span>. The restriction of <span
+class="math inline">\(W_\kappa\)</span> to <span
+class="math inline">\(\prod_\tau U(n)\)</span> is irreducible, so its
+invariant positive definite hermitian form <span
+class="math inline">\(H\)</span> is unique up to a positive factor. We
+normalize <span
+class="math inline">\(H(\mathrm{fl}_\kappa(1),\mathrm{fl}_\kappa(1))=1\)</span>;
+the Weyl squared norm is <span class="math inline">\(\lvert
+v\rvert^2=H(v,v)\)</span>. For <span class="math inline">\(\mathsf
+X\in\mathrm{GL}_n(E)\)</span> and a ring map <span
+class="math inline">\(j\colon\mathbb{C}\to L\)</span> to a field, <span
+class="math inline">\(\mathsf X^{(\tau)}\)</span> is the entrywise image
+of <span class="math inline">\(\mathsf X\)</span> under <span
+class="math inline">\(u\mapsto j(\Phi_\tau(\bar u))\)</span>. For <span
+class="math inline">\(\mathsf X\in\mathrm{GL}_n(\mathbb
+A_{E,f})\)</span> and <span
+class="math inline">\(j\colon\mathbb{C}\to\mathbb{C}_p\)</span>, take
+the component of <span class="math inline">\(\mathsf X\)</span> at the
+finite place induced by this embedding of <span
+class="math inline">\(E\)</span> and apply the continuous extension to
+the completion, as in Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:gauge"
+data-reference-type="ref"
+data-reference="ob-def:gauge">37.5.1</a>.</p>
+<div id="pr:sym2" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:sym2&quot;]">
+<p><strong>Problem 50.3.2</strong>. For <span
+class="math inline">\(n=2\)</span>, <span
+class="math inline">\(f=1\)</span>, <span
+class="math inline">\(\kappa=(2,0)\)</span>, the coordinates of <span
+class="math inline">\(\mathrm{fl}_\kappa(y)\)</span> are <span
+class="math inline">\(y_{11}^2,y_{11}y_{21},y_{21}^2\)</span>, and the
+vectors at matrices with first columns <span
+class="math inline">\((1,1)\)</span>, <span
+class="math inline">\((1,-1)\)</span>, <span
+class="math inline">\((1,i)\)</span> have determinant <span
+class="math inline">\(4\)</span>.</p>
+</div>
+<div id="pr:eval-span" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:eval-span&quot;]">
+<p><strong>Problem 50.3.3</strong>. The vectors <span
+class="math inline">\(\mathrm{fl}_\kappa(y)\)</span>, with all entries
+of all <span class="math inline">\(y_\tau\)</span> roots of unity, span
+<span class="math inline">\(W_\kappa\)</span>.</p>
+</div>
+<div id="pr:eval-short" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:eval-short&quot;]">
+<p><strong>Problem 50.3.4</strong>. Fix short bases, and read <span
+class="math inline">\(\mathsf X^{(\tau)}\)</span> with <span
+class="math inline">\(j\)</span> the identity. For <span
+class="math inline">\(\tau\)</span> let <span
+class="math inline">\(\mathsf{B}_\tau:=\mathsf{B}(g^{\kappa_{\tau,n}})\)</span>
+be the short basis at the point <span
+class="math inline">\(g^{\kappa_{\tau,n}}\in G_f\)</span> (not a power
+of <span class="math inline">\(\mathsf{B}(g)\)</span>). For <span
+class="math inline">\(y\)</span> with root-of-unity entries put <span
+class="math inline">\(v_y:=\prod_\tau\det(\mathsf{B}_\tau^{(\tau)})\cdot\mathrm{fl}_\kappa\bigl((\mathsf{B}(g)^{(\tau)}y_\tau)_\tau\bigr)\)</span>.</p>
+<ol>
+<li><p><span class="math inline">\(v_y\)</span> has gauge at most <span
+class="math inline">\(1\)</span> at <span
+class="math inline">\(g\)</span> for every <span
+class="math inline">\(\eta\colon\mathbb{C}\to\mathbb{C}_p\)</span> and
+every <span class="math inline">\(p\)</span>.</p></li>
+<li><p><span class="math inline">\(\lvert\sigma v_y\rvert^2\le
+c_{\mathrm{sb}}^{6(nf+\lvert\kappa\rvert_{&lt;n})}\)</span> for every
+<span
+class="math inline">\(\sigma\in\operatorname{Aut}(\mathbb{C})\)</span>.</p></li>
+</ol>
+</div>
+<div id="pr:data-bound" class="problem" data-progress-ids="[&quot;20261126T080100--free-levels-and-short-bases__workbook.tex#pr:data-bound&quot;]">
+<p><strong>Problem 50.3.5</strong>. For the data, <span
+class="math inline">\(N&#39;=q_1d\)</span> lies in the different of
+<span class="math inline">\(E\)</span>, and with <span
+class="math inline">\(n=k\)</span>, <span
+class="math inline">\(4^fc_{\mathrm{sb}}^{6(kf+fa)}\le e^U\)</span>.</p>
+</div>
+<p>The following theorem gives the short-spanning bound for a free level
+and its specialization to <span class="math inline">\(S\)</span>.</p>
+<div id="thm:short-span" class="theorem">
+<p><strong>Theorem 50.3.6</strong>. <em></em></p>
+<ol>
+<li><p><em>Let <span class="math inline">\(K\subseteq K^\circ\)</span>
+be a free level, <span class="math inline">\(\kappa\)</span> a weight
+and <span class="math inline">\(Z\ge
+c_{\mathrm{sb}}^{6(nf+\lvert\kappa\rvert_{&lt;n})}\)</span>. The <span
+class="math inline">\(Z\)</span>-short forms of weight <span
+class="math inline">\(\kappa\)</span> and level <span
+class="math inline">\(K\)</span> span the complex space of all forms of
+that weight and level.</em></p></li>
+<li><p><em>For data, the <span
+class="math inline">\(4^{-f}e^U\)</span>-short forms in <span
+class="math inline">\(S\)</span> span <span
+class="math inline">\(S\)</span>.</em></p></li>
+</ol>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030600--theorem-a-short-forms__workbook.html">Chapter 49</a>; <a href="20261126T080200--the-good-part-and-the-ramified-forms__workbook.html">Chapter 51</a></div><!-- used-in:end -->
+</div>
+<p>Problems <a href="#pr:dim-free" data-reference-type="ref"
+data-reference="pr:dim-free">50.1.5</a>, <a href="#pr:delta"
+data-reference-type="ref" data-reference="pr:delta">50.1.7</a>, <a
+href="#pr:short-basis" data-reference-type="ref"
+data-reference="pr:short-basis">50.2.6</a>, <a href="#pr:eval-span"
+data-reference-type="ref" data-reference="pr:eval-span">50.3.3</a> and <a
+href="#pr:eval-short" data-reference-type="ref"
+data-reference="pr:eval-short">50.3.4</a> prove Theorem <a
+href="#thm:short-span" data-reference-type="ref"
+data-reference="thm:short-span">50.3.6</a>(a). Problems <a href="#pr:free"
+data-reference-type="ref" data-reference="pr:free">50.1.4</a> and <a
+href="#pr:data-bound" data-reference-type="ref"
+data-reference="pr:data-bound">50.3.5</a> give its specialization in (b),
+which Chapter <a href="20261126T030600--theorem-a-short-forms__workbook.html#chap" data-reference-type="ref"
+data-reference="ta-chap">49</a> uses to derive input 1 of
+Theorem <a href="20261126T030600--theorem-a-short-forms__workbook.html#thm:A" data-reference-type="ref"
+data-reference="ta-thm:A">49.3.2</a>. Problem <a href="#pr:pairing"
+data-reference-type="ref" data-reference="pr:pairing">50.1.9</a> gives the
+pairing condition of Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:target-lattice"
+data-reference-type="ref"
+data-reference="ob-def:target-lattice">37.11.1</a>.
+Taken as given: transference <span class="citation"
+data-cites="Ba">[<a href="#ref-Ba">Ba</a>]</span>; the basis of products of
+minors <span class="citation"
+data-cites="DEP">[<a href="#ref-DEP">DEP</a>]</span>, <span class="citation"
+data-cites="Fu">[<a href="#ref-Fu">Fu</a>]</span>; the Weyl module with its
+normalized invariant form; the integrality of the Weyl pairing, read
+from <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>; one class in the genus of
+<span class="math inline">\(\mathbb{Z}[i]^n\)</span> for <span
+class="math inline">\(1\le n\le4\)</span> (Problem <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:class-one" data-reference-type="ref"
+data-reference="dt-pr:class-one">21.1.4</a>).</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. In the proof <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span> (prefix
+<code>New.</code> omitted), Theorem <a href="#thm:short-span"
+data-reference-type="ref" data-reference="thm:short-span">50.3.6</a>(a) is
+<code>span_isShort_eq_top</code> with <span
+class="math inline">\(M=nf+\lvert\kappa\rvert_{&lt;n}\)</span> (the
+declaration allows every natural number <span class="math inline">\(M\ge
+nf+\lvert\kappa\rvert_{&lt;n}\)</span> with <span
+class="math inline">\(c_{\mathrm{sb}}^{6M}\le Z\)</span>), and (b) is
+<code>Data.span_isShort_eq_top</code>. For fields with at least two
+infinite places the first assertion of Problem <a href="#pr:free"
+data-reference-type="ref" data-reference="pr:free">50.1.4</a> follows from
+<code>Variety.classAut_eq_bot</code>; Problem <a href="#pr:minkowski"
+data-reference-type="ref" data-reference="pr:minkowski">50.1.3</a> gives the
+trace argument also for one infinite place. For the data, take <span
+class="math inline">\(i=0\)</span> in
+<code>Data.classAut_eq_bot_of_le_levelOf_chosenPlace</code>.
+Definition <a href="#def:short-basis" data-reference-type="ref"
+data-reference="def:short-basis">50.2.5</a> records the conditions on the
+matrix in <code>Space.exists_short_basis_stdSpace</code>, and Problem <a
+href="#pr:short-basis" data-reference-type="ref"
+data-reference="pr:short-basis">50.2.6</a> is its case of positive rank;
+transference is the lattice case of
+<code>weak_transference_covering_radius</code>; Theorem <a
+href="#thm:class-count" data-reference-type="ref"
+data-reference="thm:class-count">50.2.11</a> is the case of positive rank of
+<code>Space.card_stdClasses_le</code>; the pairing fact before
+Problem <a href="#pr:pairing" data-reference-type="ref"
+data-reference="pr:pairing">50.1.9</a> is
+<code>gramForm_mem_embValRing</code>. For the Weyl module see
+<code>weylEval</code> and <code>weylNormSq</code>.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secfree">§<a href="#sec:free"
+data-reference-type="ref" data-reference="sec:free">50.1</a></h2>
+<dl>
+<dt><a href="#pr:units" data-reference-type="ref"
+data-reference="pr:units">50.1.2</a></dt>
+<dd>
+<p>Which columns of length <span class="math inline">\(1\)</span> are
+possible? For the assertion about all cosets, use Problem <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:class-one" data-reference-type="ref"
+data-reference="dt-pr:class-one">21.1.4</a>.</p>
+</dd>
+<dt><a href="#pr:minkowski" data-reference-type="ref"
+data-reference="pr:minkowski">50.1.3</a></dt>
+<dd>
+<p>Compare the finite-place congruences on <span
+class="math inline">\(\operatorname{tr}\gamma-n\)</span> with its
+archimedean bounds. When can <span class="math inline">\(n\)</span>
+eigenvalues of modulus <span class="math inline">\(1\)</span> have sum
+<span class="math inline">\(n\)</span>?</p>
+</dd>
+<dt><a href="#pr:free" data-reference-type="ref"
+data-reference="pr:free">50.1.4</a></dt>
+<dd>
+<p>Compare <span class="math inline">\(p_0\ge b^{10}\)</span> with <span
+class="math inline">\((8n_m)^2\)</span>, using <span
+class="math inline">\(n_m=r+1+5rm\)</span> and the scale bounds in
+Definition <a href="20261126T030300--the-data__workbook.html#def:data" data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a> and Problems <a
+href="20261126T030300--the-data__workbook.html#pr:chain" data-reference-type="ref"
+data-reference="da-pr:chain">36.3.1</a> and <a
+href="20261126T030300--the-data__workbook.html#pr:m-big" data-reference-type="ref"
+data-reference="da-pr:m-big">36.3.2</a>.</p>
+</dd>
+<dt><a href="#pr:dim-free" data-reference-type="ref"
+data-reference="pr:dim-free">50.1.5</a></dt>
+<dd>
+<p>Compare two expressions for the same point as <span
+class="math inline">\(\gamma g_ck\)</span>. For <span
+class="math inline">\(K&#39;\)</span>, count the fibre over a class of
+<span class="math inline">\(K\)</span>. For the numerical example, use
+the splitting of <span class="math inline">\(5\)</span> and Problem <a
+href="#pr:units" data-reference-type="ref"
+data-reference="pr:units">50.1.2</a>.</p>
+</dd>
+<dt><a href="#pr:delta" data-reference-type="ref"
+data-reference="pr:delta">50.1.7</a></dt>
+<dd>
+<p>If <span class="math inline">\(\gamma,\gamma&#39;\)</span> both
+occur, <span class="math inline">\(\gamma&#39;\gamma^{-1}\in\Gamma\cap
+xKx^{-1}\)</span>. <span class="math inline">\(K^\circ\)</span>
+preserves gauges; rational unitary matrices act unitarily at every
+embedding.</p>
+</dd>
+<dt><a href="#pr:full-level" data-reference-type="ref"
+data-reference="pr:full-level">50.1.8</a></dt>
+<dd>
+<p><span class="math inline">\(\gamma^{-1}e_1\)</span> is a unit
+multiple of <span class="math inline">\(e_1\)</span> or <span
+class="math inline">\(e_2\)</span>. The value at <span
+class="math inline">\(1\)</span> is invariant under <span
+class="math inline">\(U(2)(\mathbb{Z}[i])\)</span>.</p>
+</dd>
+<dt><a href="#pr:pairing" data-reference-type="ref"
+data-reference="pr:pairing">50.1.9</a></dt>
+<dd>
+<p>Examine one summand at a class representative. How does it change
+when the representative changes?</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secshort">§<a href="#sec:short"
+data-reference-type="ref" data-reference="sec:short">50.2</a></h2>
+<dl>
+<dt><a href="#pr:first-min" data-reference-type="ref"
+data-reference="pr:first-min">50.2.1</a></dt>
+<dd>
+<p><span class="math inline">\(y^*y\)</span> is an algebraic integer:
+compare it with <span
+class="math inline">\((g^{-1}y)^*(g^{-1}y)\)</span>. Its conjugates are
+at most <span class="math inline">\(\lvert y\rvert^2\)</span>.</p>
+</dd>
+<dt><a href="#pr:dual" data-reference-type="ref"
+data-reference="pr:dual">50.2.2</a></dt>
+<dd>
+<p>Write <span
+class="math inline">\(E_\mathbb{R}=E\otimes_\mathbb{Q}\mathbb{R}\)</span>.
+For <span class="math inline">\(a\in E_\mathbb{R}^n\)</span> and <span
+class="math inline">\(\xi\in\Lambda(g)\)</span>, <span
+class="math inline">\(\operatorname{Re}\langle
+a,(2/N&#39;)\xi\rangle=\operatorname{tr}_{E_\mathbb{R}/\mathbb{R}}(a^*\xi)/N&#39;\)</span>.
+To find the trace dual of <span
+class="math inline">\(\Lambda(g)\)</span>, start with <span
+class="math inline">\(\mathcal{O}_E^n\)</span> and localize at a
+rational prime <span class="math inline">\(p\)</span>; the tuple <span
+class="math inline">\(g_p=(g_v)_{v\mid p}\)</span> is an isometry over
+<span
+class="math inline">\(E\otimes_\mathbb{Q}\mathbb{Q}_p\)</span>.</p>
+</dd>
+<dt><a href="#pr:cover-span" data-reference-type="ref"
+data-reference="pr:cover-span">50.2.4</a></dt>
+<dd>
+<p>Consider a vector of length <span class="math inline">\(2r\)</span>
+orthogonal to the span of the short vectors.</p>
+</dd>
+<dt><a href="#pr:short-basis" data-reference-type="ref"
+data-reference="pr:short-basis">50.2.6</a></dt>
+<dd>
+<p>Apply transference to the scaled lattice in Problem <a
+href="#pr:dual" data-reference-type="ref"
+data-reference="pr:dual">50.2.2</a>. What does real spanning in Problem <a
+href="#pr:cover-span" data-reference-type="ref"
+data-reference="pr:cover-span">50.2.4</a> imply about the <span
+class="math inline">\(E\)</span>-span?</p>
+</dd>
+<dt><a href="#pr:approx" data-reference-type="ref"
+data-reference="pr:approx">50.2.7</a></dt>
+<dd>
+<p><span class="math inline">\(E+\hat{\mathcal{O}}\)</span> is all
+finite adeles; then Problem <a href="#pr:dual" data-reference-type="ref"
+data-reference="pr:dual">50.2.2</a> for <span
+class="math inline">\(n=1\)</span>, <span
+class="math inline">\(g=1\)</span>.</p>
+</dd>
+<dt><a href="#pr:same-gram" data-reference-type="ref"
+data-reference="pr:same-gram">50.2.8</a></dt>
+<dd>
+<p><span class="math inline">\(\gamma=YY&#39;^{-1}\)</span> is unitary;
+write <span class="math inline">\(g=\gamma g&#39;k\)</span>.</p>
+</dd>
+<dt><a href="#pr:invariant" data-reference-type="ref"
+data-reference="pr:invariant">50.2.9</a></dt>
+<dd>
+<p>Express the Gram matrix using <span class="math inline">\(A\)</span>.
+For the size estimate, compare <span
+class="math inline">\(n^2(2f)^2N&#39;\)</span> with <span
+class="math inline">\(c_{\mathrm{sb}}\)</span>. If two choices give the
+same pair, what does equality of the second matrices tell you about
+<span class="math inline">\(\mathsf X\)</span>? How do the two
+approximation congruences give the integrality hypothesis of Problem <a
+href="#pr:same-gram" data-reference-type="ref"
+data-reference="pr:same-gram">50.2.8</a>?</p>
+</dd>
+<dt><a href="#pr:count-integers" data-reference-type="ref"
+data-reference="pr:count-integers">50.2.10</a></dt>
+<dd>
+<p>Around each point of <span
+class="math inline">\(\mathbb{C}^f\)</span> coming from one of these
+integers, take a product of discs of radius <span
+class="math inline">\(1/2\)</span>. Can two such products have
+intersecting interiors?</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="seceval">§<a href="#sec:eval"
+data-reference-type="ref" data-reference="sec:eval">50.3</a></h2>
+<dl>
+<dt><a href="#pr:eval-span" data-reference-type="ref"
+data-reference="pr:eval-span">50.3.3</a></dt>
+<dd>
+<p>Which polynomial corresponds to a linear functional that annihilates
+all these evaluations?</p>
+</dd>
+<dt><a href="#pr:eval-short" data-reference-type="ref"
+data-reference="pr:eval-short">50.3.4</a></dt>
+<dd>
+<p>(a) At <span class="math inline">\(\eta\)</span>, compare the
+determinant factor with that of the integral matrix <span
+class="math inline">\(g^{-\kappa_{\tau,n}}\mathsf{B}_\tau\)</span> under
+the same embedding. (b) After applying <span
+class="math inline">\(\sigma\)</span>, use Hadamard’s inequality on the
+determinants and a QR decomposition of each <span
+class="math inline">\(z_\tau=\sigma(\mathsf{B}(g)^{(\tau)}y_\tau)\)</span>.
+If <span class="math inline">\(z_\tau=Q_\tau R_\tau\)</span> with <span
+class="math inline">\(Q_\tau\)</span> unitary and <span
+class="math inline">\(R_\tau\)</span> upper triangular, which flag
+minors of <span class="math inline">\(R_\tau\)</span> can be
+nonzero?</p>
+</dd>
+<dt><a href="#pr:data-bound" data-reference-type="ref"
+data-reference="pr:data-bound">50.3.5</a></dt>
+<dd>
+<p><span
+class="math inline">\(E\subseteq\mathbb{Q}(\zeta_{q_1d})\)</span>, whose
+different divides <span class="math inline">\(q_1d\)</span>. Then <span
+class="math inline">\(f\le q_1\le b\)</span>, <span
+class="math inline">\(q_1d\le b\)</span>, <span
+class="math inline">\(k\le r\le a&lt;b^2\)</span> (Definition <a
+href="20261126T030300--the-data__workbook.html#def:data" data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a> and Problems <a
+href="20261126T030300--the-data__workbook.html#pr:chain" data-reference-type="ref"
+data-reference="da-pr:chain">36.3.1</a> and <a
+href="20261126T030300--the-data__workbook.html#pr:m-big" data-reference-type="ref"
+data-reference="da-pr:m-big">36.3.2</a>) and <span
+class="math inline">\(\log b\ge 10\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Ba"><span class="bib-label">[Ba]</span> W. Banaszczyk, <em>New bounds in some transference theorems in the geometry of numbers</em>, Math. Ann. <strong>296</strong> (1993), 625–635.</p>
+<p id="ref-DEP"><span class="bib-label">[DEP]</span> C. De Concini, D. Eisenbud and C. Procesi, <em>Young diagrams and determinantal varieties</em>, Invent. Math. <strong>56</strong> (1980), 129–165.</p>
+<p id="ref-Fu"><span class="bib-label">[Fu]</span> W. Fulton, <em>Young Tableaux</em>, London Math. Soc. Student Texts 35, Cambridge University Press, 1997.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-LLS"><span class="bib-label">[LLS]</span> J. C. Lagarias, H. W. Lenstra and C. P. Schnorr, <em>Korkin–Zolotarev bases and successive minima of a lattice and its reciprocal lattice</em>, Combinatorica <strong>10</strong> (1990), 333–348.</p>
+<p id="ref-Se"><span class="bib-label">[Se]</span> J.-P. Serre, <em>Bounds for the orders of the finite subgroups of <span class="math inline">\(G(k)\)</span></em>, in <em>Group Representation Theory</em>, EPFL Press, 2007; arXiv:1011.0346.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-gEKix2U/C14CLz+7ARZ9m3icQQ4gynC1Zo1ce081bTA=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Transferring a Bessel period through a theta lift</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","C":"\\mathbb{C}","F":"\\mathbb{F}","A":"\\mathbb{A}","ii":"\\mathrm{i}","Uc":"\\mathcal{U}","Wc":"\\mathcal{W}","Cc":"\\mathcal{C}","Sc":"\\mathcal{S}","WW":"\\mathbb{W}","st":"\\mathrm{st}","CT":"\\mathrm{CT}","Heis":"\\mathrm{Heis}","Stab":"\\operatorname{Stab}","Hom":"\\operatorname{Hom}","tr":"\\operatorname{tr}","Tr":"\\operatorname{Tr}","len":"\\operatorname{len}","rep":"\\mathrm{rep}","tl":["\\texttt{#1}",1],"glsrc":["\\href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/#1\\#L#2}{#3}",3]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="53">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 08:30:58
+      <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Transferring a Bessel period through a theta lift</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:plane" id="toc-sec:plane">§53.1. Theta against a character on a plane over \(\mathbb{F}_3\)</a></li>
+<li><a href="#sec:strings" id="toc-sec:strings">§53.2. Strings, grades and the string map</a></li>
+<li><a href="#sec:survival" id="toc-sec:survival">§53.3. The survival test</a></li>
+<li><a href="#sec:transfer" id="toc-sec:transfer">§53.4. Constant terms and the transfer</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secplane" id="toc-secplane">§53.1</a></li>
+<li><a href="#secstrings" id="toc-secstrings">§53.2</a></li>
+<li><a href="#secsurvival" id="toc-secsurvival">§53.3</a></li>
+<li><a href="#sectransfer" id="toc-sectransfer">§53.4</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Hermitian forms over fields; Witt’s extension theorem <span
+class="citation" data-cites="Sch">[<a href="#ref-Sch">Sch</a>]</span>. From
+Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">39</a>: the Bessel subgroup <span
+class="math inline">\(R=\mathcal{U}\rtimes U(X)\)</span> and an example
+of its character (Section <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:subgroup"
+data-reference-type="ref"
+data-reference="bp-sec:subgroup">39.1</a>, Problems <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#pr:lambda" data-reference-type="ref"
+data-reference="bp-pr:lambda">39.1.1</a> and <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#pr:normalize" data-reference-type="ref"
+data-reference="bp-pr:normalize">39.1.2</a>), and the finite
+unfolding of Problem <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#pr:unfold" data-reference-type="ref"
+data-reference="bp-pr:unfold">39.2.1</a>. From Chapter <a
+href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#chap" data-reference-type="ref"
+data-reference="ps-chap">10</a>: the unfolding of Problem <a
+href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#pr:unfold" data-reference-type="ref"
+data-reference="ps-pr:unfold">10.1.1</a>. From Chapter <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#chap" data-reference-type="ref"
+data-reference="tn-chap">23</a>: Problem <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:adjoint"
+data-reference-type="ref"
+data-reference="tn-pr:adjoint">23.1.5</a> and Section <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#sec:seesaw" data-reference-type="ref"
+data-reference="tn-sec:seesaw">23.4</a>. From Chapter <a
+href="20261126T030400--the-seesaw-identity__workbook.html#chap" data-reference-type="ref"
+data-reference="ss-chap">52</a>: Theorem <a href="20261126T030400--the-seesaw-identity__workbook.html#thm:seesaw"
+data-reference-type="ref"
+data-reference="ss-thm:seesaw">52.4.1</a> and Problem <a
+href="20261126T030400--the-seesaw-identity__workbook.html#pr:transpose" data-reference-type="ref"
+data-reference="ss-pr:transpose">52.2.4</a>. The Weil
+representation of a unitary dual pair and the Heisenberg representation
+under it, at the level of their definitions <span class="citation"
+data-cites="We">[<a href="#ref-We">We</a>]</span>, <span class="citation"
+data-cites="Ku">[<a href="#ref-Ku">Ku</a>]</span>. Matrices act on columns;
+the matrix of a map <span class="math inline">\(V\to V&#39;\)</span> has
+its rows indexed by the basis of <span
+class="math inline">\(V&#39;\)</span>. In this sheet <span
+class="math inline">\(b\)</span>, <span
+class="math inline">\(d\)</span>, <span class="math inline">\(s\)</span>
+are local letters (not the scale, the prime and the tower exponent).</p>
+<p>The proof of Theorem <a href="20261126T030400--the-seesaw-identity__workbook.html#thm:seesaw"
+data-reference-type="ref"
+data-reference="ss-thm:seesaw">52.4.1</a> pairs both sides with
+a form on the last space of the lower chain and moves the lifts onto
+that form by transposition, as in Problem <a href="20261126T030400--the-seesaw-identity__workbook.html#pr:transpose"
+data-reference-type="ref"
+data-reference="ss-pr:transpose">52.2.4</a>; what is left is
+a Bessel period of a theta function, integrated against the form. How
+does such a period pass through one theta lift? For the weights <span
+class="math inline">\(0\)</span>, the theta function expands in constant
+terms indexed by the classes of rational maps <span
+class="math inline">\(V\to V&#39;\)</span> modulo maps of degree <span
+class="math inline">\(\ge0\)</span> (degrees are defined in Section <a
+href="#sec:strings" data-reference-type="ref"
+data-reference="sec:strings">53.2</a>, and the expansion is stated in
+Section <a href="#sec:transfer" data-reference-type="ref"
+data-reference="sec:transfer">53.4</a>). In the period against a Bessel
+function only the <span
+class="math inline">\(U(V&#39;)(F)\)</span>-translates of the set of
+classes agreeing with the string map (Definition <a
+href="#def:stringmap" data-reference-type="ref"
+data-reference="def:stringmap">53.2.3</a>) contribute; the rational Bessel
+subgroup of the second space preserves this set, and each translate
+contributes one value of the transferred function. We first see the
+mechanism over <span class="math inline">\(\mathbb{F}_3\)</span> and
+<span class="math inline">\(\mathbb{F}_9\)</span>.</p>
+<h1 id="sec:plane">§53.1. Theta against a character on a plane over <span
+class="math inline">\(\mathbb{F}_3\)</span></h1>
+<p>Let <span class="math inline">\(Q(v)=v_1^2+v_2^2\)</span> on <span
+class="math inline">\(\mathbb{F}_3^2\)</span>, let <span
+class="math inline">\(\zeta_3:=e^{2\pi\mathrm{i}/3}\)</span>, and for a
+function <span
+class="math inline">\(\phi\colon\mathbb{F}_3^2\to\mathbb{C}\)</span> and
+<span class="math inline">\(b\in\mathbb{F}_3\)</span> put <span
+class="math inline">\((n(b)\phi)(v):=\zeta_3^{bQ(v)}\phi(v)\)</span> and
+<span class="math inline">\(\theta(\phi):=\sum_v\phi(v)\)</span>. The
+operators <span class="math inline">\(n(b)\)</span> commute with <span
+class="math inline">\((h\phi)(v):=\phi(h^{-1}v)\)</span> for <span
+class="math inline">\(h\)</span> in the orthogonal group <span
+class="math inline">\(O(Q)\)</span>. In this section <span
+class="math inline">\(\phi(v):=1+[v_1]+2[v_2]\)</span>, with <span
+class="math inline">\([\,\cdot\,]\in\{0,1,2\}\)</span> the least
+residue.</p>
+<div id="pr:buckets" class="problem" data-progress-ids="[&quot;20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex#pr:buckets&quot;]">
+<p><strong>Problem 53.1.1</strong>. The sums <span
+class="math inline">\(\sum_{Q(v)=1+j}\phi(v)\)</span> are <span
+class="math inline">\(13\)</span>, <span
+class="math inline">\(22\)</span>, <span
+class="math inline">\(1\)</span> for <span
+class="math inline">\(j=0,1,2\)</span>.</p>
+</div>
+<div id="pr:coefficient" class="problem" data-progress-ids="[&quot;20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex#pr:coefficient&quot;]">
+<p><strong>Problem 53.1.2</strong>. For every <span
+class="math inline">\(\phi\)</span>, <span
+class="math inline">\(\frac13\sum_{b\in\mathbb{F}_3}\zeta_3^{-b}\,\theta(n(b)\phi)=\sum_{Q(v)=1}\phi(v)\)</span>.
+For the <span class="math inline">\(\phi\)</span> above it is <span
+class="math inline">\(13\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:plane-unfold">Problem 53.1.4</a></div><!-- used-in:end -->
+</div>
+<p>The left side is a period of <span
+class="math inline">\(b\mapsto\theta(n(b)\phi)\)</span> against a
+character; only the <span class="math inline">\(v\)</span> with <span
+class="math inline">\(Q(v)=1\)</span> survive it.</p>
+<div id="pr:plane-orbit" class="problem" data-progress-ids="[&quot;20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex#pr:plane-orbit&quot;]">
+<p><strong>Problem 53.1.3</strong>. <span class="math inline">\(O(Q)\)</span>
+has <span class="math inline">\(8\)</span> elements, the stabilizer of
+<span class="math inline">\(v_0:=(1,0)\)</span> has <span
+class="math inline">\(2\)</span>, and the orbit of <span
+class="math inline">\(v_0\)</span> is <span
+class="math inline">\(\{(\pm1,0),(0,\pm1)\}=\{Q=1\}\)</span>.</p>
+</div>
+<div id="pr:plane-unfold" class="problem" data-progress-ids="[&quot;20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex#pr:plane-unfold&quot;]">
+<p><strong>Problem 53.1.4</strong>. Let <span
+class="math inline">\(\mathrm{cf}(\phi)\)</span> be the coefficient of
+Problem <a href="#pr:coefficient" data-reference-type="ref"
+data-reference="pr:coefficient">53.1.2</a> and <span
+class="math inline">\(\operatorname{Stab}\)</span> the stabilizer of
+<span class="math inline">\(v_0\)</span>. For <span
+class="math inline">\(h\in O(Q)\)</span>, <span
+class="math inline">\(\mathrm{cf}(h\phi)=\sum_{q\in
+O(Q)/\operatorname{Stab}}\phi(h^{-1}qv_0)\)</span>; for <span
+class="math inline">\(h=1\)</span> this is <span
+class="math inline">\(\frac12\sum_{\gamma\in O(Q)}\phi(\gamma
+v_0)=13\)</span>. For every function <span
+class="math inline">\(z\)</span> on <span
+class="math inline">\(O(Q)\)</span>, <span
+class="math display">\[\sum_{h\in
+O(Q)}z(h)\,\mathrm{cf}(h\phi)=\sum_{h\in
+O(Q)}\Bigl(\frac{1}{\lvert\operatorname{Stab}\rvert}\sum_{\gamma\in
+O(Q)}z(\gamma h)\Bigr)\phi(h^{-1}v_0).\]</span></p>
+</div>
+<p>At fixed <span class="math inline">\(h\)</span>, the coefficient
+<span class="math inline">\(\mathrm{cf}(h\phi)\)</span> is the sum over
+<span class="math inline">\(O(Q)/\operatorname{Stab}\)</span> of the
+function <span class="math inline">\(k\mapsto\phi(k^{-1}v_0)\)</span>
+evaluated at <span class="math inline">\(k=q^{-1}h\)</span>; this is the
+finite model of the transfer. In the adelic period the unipotent group
+can be nonabelian, and the proof uses two choices of weights.</p>
+<h1 id="sec:strings">§53.2. Strings, grades and the string map</h1>
+<p>For the matrix definitions and the finite examples, let <span
+class="math inline">\(E\)</span> be a field with an involution <span
+class="math inline">\(x\mapsto\bar x\)</span> and fixed field <span
+class="math inline">\(F\)</span>, and let <span
+class="math inline">\(N\in F^\times\)</span>; all bases are finite.</p>
+<div id="def:string" class="definition">
+<p><strong>Definition 53.2.1</strong>. A <em>space with a string</em> for
+<span class="math inline">\(N\)</span> is a hermitian space <span
+class="math inline">\(V\)</span> over <span
+class="math inline">\(E\)</span> with a basis consisting of an
+orthonormal basis of a subspace <span class="math inline">\(X\)</span>
+and vectors <span class="math inline">\(f_0,\dots,f_{s-1}\)</span>
+orthogonal to <span class="math inline">\(X\)</span>, and with a
+constant <span class="math inline">\(c_V\in F^\times\)</span>, such that
+<span class="math inline">\(f_i\)</span> pairs only with <span
+class="math inline">\(f_{s-1-i}\)</span>, to <span
+class="math inline">\(1\)</span>, or to <span
+class="math inline">\(-N\)</span> if <span
+class="math inline">\(i=s-1-i\)</span>. We write <span
+class="math inline">\(J_V\)</span> for the Gram matrix. <span
+class="math inline">\(X\)</span> is the <em>definite part</em>, <span
+class="math inline">\(f_0,\dots,f_{s-1}\)</span> is the <em>string</em>,
+and <span class="math inline">\(\operatorname{len}V:=s\)</span> is its
+<em>length</em>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051300--two-lifts-at-a-time__workbook.html">Chapter 54</a></div><!-- used-in:end -->
+</div>
+<div id="def:degree" class="definition">
+<p><strong>Definition 53.2.2</strong>. The <em>grade</em> of a vector of the
+basis of <span class="math inline">\(X\)</span> is <span
+class="math inline">\(0\)</span>, and that of <span
+class="math inline">\(f_i\)</span> is <span
+class="math inline">\(s-1-2i\)</span>. Let <span
+class="math inline">\(V&#39;\)</span> be a second space with a string,
+and let <span class="math inline">\(d\)</span> be integer weights on the
+basis of <span class="math inline">\(V&#39;\)</span>. For basis vectors
+<span class="math inline">\(e\)</span> of <span
+class="math inline">\(V\)</span> and <span
+class="math inline">\(e&#39;\)</span> of <span
+class="math inline">\(V&#39;\)</span>, the entry of a map <span
+class="math inline">\(w\colon V\to V&#39;\)</span> in the row of <span
+class="math inline">\(e&#39;\)</span> and the column of <span
+class="math inline">\(e\)</span> has <em>degree</em> <span
+class="math inline">\(d(e&#39;)-\operatorname{grade}(e)\)</span>, and
+<span class="math inline">\(w\)</span> has degree <span
+class="math inline">\(\ge i\)</span> if all its entries of degree <span
+class="math inline">\(&lt;i\)</span> vanish. For maps <span
+class="math inline">\(V\to V\)</span> the weights are the grades.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html">Chapter 55</a></div><!-- used-in:end -->
+</div>
+<p>For the shape of Section <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:subgroup"
+data-reference-type="ref"
+data-reference="bp-sec:subgroup">39.1</a> the string is
+<span
+class="math inline">\(v_1,\dots,v_\varrho,z,v&#39;_\varrho,\dots,v&#39;_1\)</span>;
+<span class="math inline">\(\mathcal{U}\)</span> is the group of unitary
+<span class="math inline">\(n\)</span> with <span
+class="math inline">\(n-1\)</span> raising grades, and <span
+class="math inline">\(R\)</span> that of the unitary <span
+class="math inline">\(g\)</span> with <span
+class="math inline">\(gf_i-f_i\)</span> in the span of the string
+vectors of larger grade for every <span
+class="math inline">\(f_i\)</span> of grade <span
+class="math inline">\(\ge0\)</span>. In the adelic setting of the proof
+these conditions define <span
+class="math inline">\(\mathcal{U}(\mathbb{A}_F)\)</span> and <span
+class="math inline">\(R(\mathbb{A}_F)\)</span> in the string basis. We
+use the same matrix conditions over finite fields.</p>
+<div id="def:stringmap" class="definition">
+<p><strong>Definition 53.2.3</strong>. Let <span
+class="math inline">\(\operatorname{len}V&#39;=\operatorname{len}V-1\)</span>,
+or <span
+class="math inline">\(\operatorname{len}V=\operatorname{len}V&#39;=0\)</span>.
+The <em>string map</em> <span class="math inline">\(\mathrm{st}\colon
+V\to V&#39;\)</span> kills the definite part and sends <span
+class="math inline">\(f_i\)</span> to <span
+class="math inline">\(f&#39;_i\)</span> times a scalar, and to <span
+class="math inline">\(0\)</span> if <span
+class="math inline">\(V&#39;\)</span> has no vector <span
+class="math inline">\(f&#39;_i\)</span>. If <span
+class="math inline">\(\operatorname{len}V\)</span> is odd, the scalar is
+<span class="math inline">\(1,\ -Nc_V,\ c_V\)</span> for <span
+class="math inline">\(f_i\)</span> of positive, zero, negative grade; if
+<span class="math inline">\(\operatorname{len}V\)</span> is even, it is
+<span class="math inline">\(c_V,\ 1\)</span> for positive, negative
+grade. For a map <span class="math inline">\(w\colon V\to
+V&#39;\)</span> put <span class="math inline">\(w^*:=J_V^{-1}\bar
+w^{t}J_{V&#39;}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html">Chapter 39</a>; <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html">Chapter 55</a></div><!-- used-in:end -->
+</div>
+<p>For the grades of <span class="math inline">\(V\)</span> and <span
+class="math inline">\(V&#39;\)</span> the string map has degree <span
+class="math inline">\(\ge-1\)</span>; in the chain of the data it is
+<span class="math inline">\(\mathrm{st}_j\colon Y_{j-1}\to
+Y_j\)</span>.</p>
+<p><em>The hook.</em> In the finite examples of this section and the
+next, <span
+class="math inline">\(E=\mathbb{F}_9=\mathbb{F}_3[\mathrm{i}]\)</span>
+with <span class="math inline">\(\mathrm{i}^2=-1\)</span> and <span
+class="math inline">\(\bar{\mathrm{i}}=-\mathrm{i}\)</span>, <span
+class="math inline">\(N=1\)</span>, and <span
+class="math inline">\(V\)</span>, <span
+class="math inline">\(V&#39;\)</span> have no definite part, strings of
+lengths <span class="math inline">\(3\)</span> and <span
+class="math inline">\(2\)</span>, and constants <span
+class="math inline">\(c_V=c_{V&#39;}=1\)</span>: <span
+class="math inline">\(J_V=\operatorname{antidiag}(1,-1,1)\)</span>,
+<span
+class="math inline">\(J_{V&#39;}=\operatorname{antidiag}(1,1)\)</span>,
+the grades are <span class="math inline">\(2,0,-2\)</span> on <span
+class="math inline">\(V\)</span> and <span
+class="math inline">\(1,-1\)</span> on <span
+class="math inline">\(V&#39;\)</span>, and <span
+class="math inline">\(\mathrm{st}=\left(\begin{smallmatrix}1&amp;0&amp;0\\0&amp;-1&amp;0\end{smallmatrix}\right)\)</span>.</p>
+<div id="pr:hook-unipotent" class="problem" data-progress-ids="[&quot;20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex#pr:hook-unipotent&quot;]">
+<p><strong>Problem 53.2.1</strong>. The unitary upper unitriangular matrices
+for <span class="math inline">\(J_V\)</span> are the <span
+class="math inline">\(27\)</span> matrices <span
+class="math inline">\(u=\left(\begin{smallmatrix}1&amp;a&amp;b\\0&amp;1&amp;\bar
+a\\0&amp;0&amp;1\end{smallmatrix}\right)\)</span> with <span
+class="math inline">\(b+\bar b=a\bar a\)</span>. They form <span
+class="math inline">\(\mathcal{U}\)</span>, and <span
+class="math inline">\(u-1\)</span> has degree <span
+class="math inline">\(\ge2\)</span> for each of them.</p>
+</div>
+<div id="pr:hook-phase" class="problem" data-progress-ids="[&quot;20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex#pr:hook-phase&quot;]">
+<p><strong>Problem 53.2.2</strong>. <span
+class="math inline">\(\operatorname{tr}(\mathrm{st}^*\mathrm{st}\,u)=a-\bar
+a\)</span>, and for <span class="math inline">\(w=(v,0,0)\)</span> with
+first column <span class="math inline">\(v\in\mathbb{F}_9^2\)</span>,
+<span class="math inline">\(\operatorname{tr}(w^*wu)=(\bar
+v^{t}J_{V&#39;}v)\,b\)</span>.</p>
+</div>
+<h1 id="sec:survival">§53.3. The survival test</h1>
+<p>Over the adeles, let <span class="math inline">\(E\)</span> be a CM
+field with the CM type and Weil data of <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, <span
+class="math inline">\(F\)</span> its maximal totally real subfield and
+<span class="math inline">\(\mathbb{A}_E\)</span> its adeles; <span
+class="math inline">\(\psi_E\)</span> is the standard additive character
+of <span class="math inline">\(\mathbb{A}_E/E\)</span>, and <span
+class="math inline">\(j_E\in E^\times\)</span>, with <span
+class="math inline">\(\bar j_E=-j_E\)</span>, is the element given by
+the Weil data. In the proof the character used on the unitary <span
+class="math inline">\(n\)</span> with <span
+class="math inline">\(n-1\)</span> of degree <span
+class="math inline">\(\ge2\)</span> is <span
+class="math inline">\(\psi_\mathcal{U}(n)=\psi_E\bigl(\tfrac12j_E\operatorname{tr}(\mathrm{st}^*\mathrm{st}\,n)\bigr)\)</span>;
+the matrix <span class="math inline">\(\mathrm{st}^*\mathrm{st}\)</span>
+is the shift of the string of <span class="math inline">\(V\)</span> and
+depends on <span class="math inline">\(c_V\)</span>, and <span
+class="math inline">\(\psi_\mathcal{U}(nn&#39;)=\psi_\mathcal{U}(n)\psi_\mathcal{U}(n&#39;)\)</span>
+for two such <span class="math inline">\(n,n&#39;\)</span>. Over <span
+class="math inline">\(\mathbb{F}_9\)</span> we use the same formulas
+with <span
+class="math inline">\(\psi_E(x)=\zeta_3^{\operatorname{Tr}_{\mathbb{F}_9/\mathbb{F}_3}x}\)</span>
+and <span class="math inline">\(j_E=\mathrm{i}\)</span> (and <span
+class="math inline">\(\frac12=-1\)</span> in <span
+class="math inline">\(\mathbb{F}_3\)</span>), and <span
+class="math inline">\(u\)</span> runs over <span
+class="math inline">\(\mathcal{U}(\mathbb{F}_3)\)</span>.</p>
+<div id="def:survive" class="definition">
+<p><strong>Definition 53.3.1</strong>. Let <span
+class="math inline">\(d\)</span> be weights on the basis of <span
+class="math inline">\(V&#39;\)</span>. A rational map <span
+class="math inline">\(w\colon V\to V&#39;\)</span> <em>survives</em> for
+<span class="math inline">\(d\)</span> if <span
+class="math display">\[\psi_E\bigl(\tfrac12j_E\operatorname{tr}(\mathrm{st}^*\mathrm{st}\,u)\bigr)=\psi_E\bigl(\tfrac12j_E\operatorname{tr}(w^*w\,u)\bigr)\]</span>
+for every <span
+class="math inline">\(u\in\mathcal{U}(\mathbb{A}_F)\)</span> such that
+<span class="math inline">\(u-1\)</span> has degree <span
+class="math inline">\(\ge2\)</span> and <span
+class="math inline">\(w(u-1)\)</span> has degree <span
+class="math inline">\(\ge1\)</span> for the weights <span
+class="math inline">\(d\)</span>. A map <span
+class="math inline">\(w\)</span> <em>agrees with</em> <span
+class="math inline">\(\mathrm{st}\)</span> if <span
+class="math inline">\(w\)</span> and <span
+class="math inline">\(\mathrm{st}\)</span> have the same entry in the
+row of <span class="math inline">\(e&#39;\)</span> and the column of
+<span class="math inline">\(e\)</span> whenever <span
+class="math inline">\(\operatorname{grade}(e)&gt;0\)</span> and <span
+class="math inline">\(\operatorname{grade}(e&#39;)&lt;\operatorname{grade}(e)\)</span>.</p>
+</div>
+<p>The test is applied to classes of rational maps modulo the maps of
+degree <span class="math inline">\(\ge0\)</span>, through a chosen
+representative of each class; a class is determined by the entries of
+negative degree. For the weights <span class="math inline">\(0\)</span>
+these are the columns of positive grade.</p>
+<div id="pr:hook-survivors" class="problem" data-progress-ids="[&quot;20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex#pr:hook-survivors&quot;]">
+<p><strong>Problem 53.3.1</strong>. In the hook, take the weights <span
+class="math inline">\((0,0)\)</span>. The classes are represented by the
+<span class="math inline">\(81\)</span> maps <span
+class="math inline">\(w=(v,0,0)\)</span>, and exactly <span
+class="math inline">\(32\)</span> of them survive: the <span
+class="math inline">\(v\ne0\)</span> with <span
+class="math inline">\(\bar v^{t}J_{V&#39;}v=0\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:hook-orbit">Problem 53.3.2</a></div><!-- used-in:end -->
+</div>
+<div id="pr:hook-orbit" class="problem" data-progress-ids="[&quot;20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex#pr:hook-orbit&quot;]">
+<p><strong>Problem 53.3.2</strong>. The unitary group <span
+class="math inline">\(U(V&#39;)(\mathbb{F}_3)=\{g\in\mathrm{GL}_2(\mathbb{F}_9):\bar
+g^{t}J_{V&#39;}g=J_{V&#39;}\}\)</span> has <span
+class="math inline">\(96\)</span> elements, and their first columns are
+the <span class="math inline">\(32\)</span> surviving vectors of
+Problem <a href="#pr:hook-survivors" data-reference-type="ref"
+data-reference="pr:hook-survivors">53.3.1</a>. The stabilizer of <span
+class="math inline">\((1,0)^{t}\)</span> has order <span
+class="math inline">\(3\)</span> and is the Bessel subgroup <span
+class="math inline">\(R&#39;\)</span> of <span
+class="math inline">\(V&#39;\)</span>.</p>
+</div>
+<div id="pr:hook-second" class="problem" data-progress-ids="[&quot;20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex#pr:hook-second&quot;]">
+<p><strong>Problem 53.3.3</strong>. Take the weights <span
+class="math inline">\((1,-1)\)</span>, the grades of <span
+class="math inline">\(V&#39;\)</span>. The classes that agree with <span
+class="math inline">\(\mathrm{st}\)</span> are represented by the nine
+maps <span
+class="math inline">\(\left(\begin{smallmatrix}1&amp;0&amp;0\\0&amp;c&amp;0\end{smallmatrix}\right)\)</span>,
+<span class="math inline">\(c\in\mathbb{F}_9\)</span>, and exactly <span
+class="math inline">\(c=-1\)</span> survives: the class of <span
+class="math inline">\(\mathrm{st}\)</span>.</p>
+</div>
+<p>The hook illustrates the two choices of weights in the proof. For the
+weights <span class="math inline">\(0\)</span> the survivors are the
+translates by <span
+class="math inline">\(U(V&#39;)(\mathbb{F}_3)\)</span> of the one class
+that agrees with <span class="math inline">\(\mathrm{st}\)</span>, <span
+class="math inline">\(v=(1,0)^{t}\)</span>, in bijection with <span
+class="math inline">\(U(V&#39;)(\mathbb{F}_3)/R&#39;\)</span> (<span
+class="math inline">\(96/3=32\)</span>); for the grades of <span
+class="math inline">\(V&#39;\)</span> only the class of <span
+class="math inline">\(\mathrm{st}\)</span> survives among the agreeing
+classes. Here is a finite model of how a failing map is killed.</p>
+<div id="pr:twisted-mean" class="problem" data-progress-ids="[&quot;20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex#pr:twisted-mean&quot;]">
+<p><strong>Problem 53.3.4</strong>. Let <span
+class="math inline">\(H\)</span> be a finite group and <span
+class="math inline">\(\mathfrak f\colon H\to\mathbb{C}\)</span> a
+function with <span class="math inline">\(\mathfrak f(ux)=\zeta\mathfrak
+f(x)\)</span> for all <span class="math inline">\(x\)</span>, for one
+<span class="math inline">\(u\in H\)</span> and one <span
+class="math inline">\(\zeta\ne1\)</span>. Then <span
+class="math inline">\(\sum_{x\in H}\mathfrak f(x)=0\)</span>. If <span
+class="math inline">\(\mathfrak f\)</span> is also left invariant under
+a subgroup <span class="math inline">\(S\)</span>, then <span
+class="math inline">\(\sum_{x\in S\backslash H}\mathfrak
+f(x)=0\)</span>.</p>
+</div>
+<h1 id="sec:transfer">§53.4. Constant terms and the transfer</h1>
+<p>Let <span class="math inline">\(V\)</span>, <span
+class="math inline">\(V&#39;\)</span> be spaces with strings for the
+same <span class="math inline">\(N\)</span> over <span
+class="math inline">\(E\)</span>, with <span
+class="math inline">\(\operatorname{len}V&#39;=\operatorname{len}V-1\)</span>
+or <span
+class="math inline">\(\operatorname{len}V=\operatorname{len}V&#39;=0\)</span>,
+each with an adelic frame (Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces"
+data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a>) in which its Gram
+matrix is the same diagonal matrix of signs at every infinite place and
+the identity at the finite places; matrices are written in the bases of
+Definition <a href="#def:string" data-reference-type="ref"
+data-reference="def:string">53.2.1</a>. Let <span
+class="math inline">\(R\)</span>, <span
+class="math inline">\(R&#39;\)</span> be the Bessel subgroups. Write
+<span class="math inline">\(\mathbb{A}=\mathbb{A}_F\)</span> for the
+groups and <span class="math inline">\(\mathbb{A}_E\)</span> for the
+matrices. Put <span class="math inline">\([R]:=R(F)\backslash
+R(\mathbb{A})\)</span> and <span
+class="math inline">\([U(V&#39;)]:=U(V&#39;)(F)\backslash
+U(V&#39;)(\mathbb{A})\)</span>, with the quotient measures of fixed Haar
+measures; <span class="math inline">\([R]\)</span> is compact. Let <span
+class="math inline">\(\mathbb{W}:=\operatorname{Hom}(V,V&#39;)\)</span>,
+with the pairing <span
+class="math inline">\((y,y&#39;)\mapsto\operatorname{tr}(y&#39;^*y)\)</span>.
+For each finite index set fix a continuous unitary character of the
+norm-one adeles of <span class="math inline">\(E\)</span> trivial on the
+norm-one elements of <span class="math inline">\(E\)</span>; for the
+index sets of the bases of <span class="math inline">\(V\)</span> and
+<span class="math inline">\(V&#39;\)</span> these give the Weil
+representation <span class="math inline">\(\omega\)</span> of <span
+class="math inline">\(U(V)(\mathbb{A})\times
+U(V&#39;)(\mathbb{A})\)</span> on the Banach space <span
+class="math inline">\(\mathcal{S}\)</span> of data of <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span> (see
+<span class="citation" data-cites="We">[<a href="#ref-We">We</a>]</span>,
+<span class="citation" data-cites="Ku">[<a href="#ref-Ku">Ku</a>]</span>),
+with the Heisenberg operators <span
+class="math inline">\(\mathrm{Heis}(y)\)</span>, <span
+class="math inline">\(y\in\mathbb{W}(\mathbb{A}_E)\)</span>, and the
+theta functional <span
+class="math inline">\(\theta\colon\mathcal{S}\to\mathbb{C}\)</span>. We
+use: <span
+class="math inline">\(\omega(g,h)\mathrm{Heis}(y)\omega(g,h)^{-1}=\mathrm{Heis}(hyg^{-1})\)</span>;
+<span
+class="math inline">\(\theta\circ\omega(\gamma,\gamma&#39;)=\theta\)</span>
+for rational <span class="math inline">\(\gamma,\gamma&#39;\)</span>;
+<span
+class="math inline">\(y\mapsto\theta(\mathrm{Heis}(y)\phi)\)</span> is
+invariant under rational translations on every rational subspace of
+<span class="math inline">\(\mathbb{W}\)</span> on which the pairing
+vanishes. <em>Status</em>: classical.</p>
+<p>Let <span class="math inline">\(d\)</span> be weights on the basis of
+<span class="math inline">\(V&#39;\)</span> that change sign under the
+involution of the basis fixing the definite part and exchanging <span
+class="math inline">\(f&#39;_i\)</span> and <span
+class="math inline">\(f&#39;_{s&#39;-1-i}\)</span> (<span
+class="math inline">\(s&#39;=\operatorname{len}V&#39;\)</span>), for
+instance <span class="math inline">\(d=0\)</span> or the grading, and
+let <span class="math inline">\(\mathbb{W}^d_{&gt;0}\)</span> be the
+maps whose entries of degree <span class="math inline">\(\le0\)</span>
+vanish. The pairing vanishes on <span
+class="math inline">\(\mathbb{W}^d_{&gt;0}\)</span>. A map <span
+class="math inline">\(V&#39;\to V&#39;\)</span> has degree <span
+class="math inline">\(\ge0\)</span> for <span
+class="math inline">\(d\)</span> if its entry in the row of <span
+class="math inline">\(e&#39;\)</span> and column of <span
+class="math inline">\(e&#39;&#39;\)</span> vanishes whenever <span
+class="math inline">\(d(e&#39;)&lt;d(e&#39;&#39;)\)</span>.</p>
+<div id="def:ct" class="definition">
+<p><strong>Definition 53.4.1</strong>. For a datum <span
+class="math inline">\(\phi\)</span> and a map <span
+class="math inline">\(w\in\mathbb{W}(\mathbb{A}_E)\)</span>, define the
+<em>constant term</em> of <span class="math inline">\(\phi\)</span> at
+<span class="math inline">\(w\)</span> by the mean <span
+class="math display">\[\mathrm{CT}^d_w(\phi):=\int_{\mathbb{W}^d_{&gt;0}(E)\backslash\mathbb{W}^d_{&gt;0}(\mathbb{A}_E)}\theta\bigl(\mathrm{Heis}(y)\mathrm{Heis}(w)\phi\bigr)\,dy\]</span>
+for the probability Haar measure. We write <span
+class="math inline">\(\mathrm{CT}_w:=\mathrm{CT}^d_w\)</span> when <span
+class="math inline">\(d\)</span> is the grading of <span
+class="math inline">\(V&#39;\)</span>.</p>
+</div>
+<p>In the proof, for rational <span class="math inline">\(w\)</span>,
+<span class="math inline">\(\mathrm{CT}^d_w\)</span> depends only on
+<span class="math inline">\(w\)</span> modulo rational maps of degree
+<span class="math inline">\(\ge0\)</span>. For the fixed spaces and
+weights <span class="math inline">\(d\)</span> there is a constant <span
+class="math inline">\(C_d\ge0\)</span> such that for every datum <span
+class="math inline">\(\phi\)</span>, <span
+class="math display">\[\theta(\phi)=\sum_w\mathrm{CT}^d_w(\phi),\qquad
+\sum_w\lvert\mathrm{CT}^d_w(\phi)\rvert\le C_d\lVert
+\phi\rVert,\]</span> the sums over the classes of rational maps modulo
+maps of degree <span class="math inline">\(\ge0\)</span>, with the norm
+of <span class="math inline">\(\mathcal{S}\)</span>. This is the Fourier
+expansion along <span
+class="math inline">\(\mathbb{W}^d_{&gt;0}\)</span> in a mixed model;
+compare <span class="citation"
+data-cites="We">[<a href="#ref-We">We</a>]</span>. <em>Status</em>:
+classical; the norm estimate is used in the form proved in the
+argument.</p>
+<div id="def:transfer" class="definition">
+<p><strong>Definition 53.4.2</strong>. Let <span
+class="math inline">\(\phi\in\mathcal{S}\)</span>, and let <span
+class="math inline">\(\mathcal{W}\)</span> be a continuous function on
+<span class="math inline">\(R(\mathbb{A})\)</span>, left invariant under
+<span class="math inline">\(R(F)\)</span>, with <span
+class="math inline">\(\mathcal{W}(nr)=\psi_\mathcal{U}(n)\mathcal{W}(r)\)</span>
+for all <span class="math inline">\(n\in R(\mathbb{A})\)</span> such
+that <span class="math inline">\(n-1\)</span> has degree <span
+class="math inline">\(\ge2\)</span>. Define the <em>transfer</em> of
+<span class="math inline">\(\mathcal{W}\)</span> on <span
+class="math inline">\(U(V&#39;)(\mathbb{A})\)</span> by <span
+class="math display">\[\mathcal{W}&#39;(h):=\int_{[R]}\mathcal{W}(r)\,\mathrm{CT}_\mathrm{st}\bigl(\omega(r,h)\phi\bigr)\,dr
+.\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#thm:transfer">Theorem 53.4.1</a>; <a href="20261126T051300--two-lifts-at-a-time__workbook.html">Chapter 54</a>; <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html">Chapter 55</a></div><!-- used-in:end -->
+</div>
+<p>In the proof <span class="math inline">\(\mathcal{W}&#39;\)</span> is
+continuous and left <span
+class="math inline">\(R&#39;(F)\)</span>-invariant. For each class <span
+class="math inline">\(w\)</span> choose a rational representative <span
+class="math inline">\(\tilde w\)</span>, and put <span
+class="math inline">\(\mathcal
+Q^d_w(h,r):=\mathcal{W}(r)\,\mathrm{CT}^d_{\tilde
+w}(\omega(r,h)\phi)\)</span>; a class survives, or agrees with <span
+class="math inline">\(\mathrm{st}\)</span>, if <span
+class="math inline">\(\tilde w\)</span> does. In the proof, each <span
+class="math inline">\(\mathcal Q^d_w\)</span> is jointly continuous in
+<span class="math inline">\((h,r)\)</span>, and there is a constant
+<span class="math inline">\(A_d\ge0\)</span> such that <span
+class="math inline">\(\sum_{w\in\Sigma}\lvert\mathcal
+Q^d_w(h,r)\rvert\le A_d\lVert\omega(1,\delta h)\rVert\)</span> for every
+<span class="math inline">\(h\in U(V&#39;)(\mathbb{A})\)</span>, <span
+class="math inline">\(r\in R(\mathbb{A})\)</span>, set <span
+class="math inline">\(\Sigma\)</span> of classes and <span
+class="math inline">\(\delta\in U(V&#39;)(F)\)</span> of degree <span
+class="math inline">\(\ge0\)</span> for <span
+class="math inline">\(d\)</span>; and if <span
+class="math inline">\(u\in R(\mathbb{A})\)</span>, <span
+class="math inline">\(u-1\)</span> has degree <span
+class="math inline">\(\ge2\)</span> and <span
+class="math inline">\(\tilde w(u-1)\)</span> has degree <span
+class="math inline">\(\ge1\)</span>, then <span
+class="math display">\[\mathcal
+Q^d_w(h,ur)=\frac{\psi_E\bigl(\frac12j_E\operatorname{tr}(\mathrm{st}^*\mathrm{st}\,u)\bigr)}{\psi_E\bigl(\frac12j_E\operatorname{tr}(\tilde
+w^*\tilde w\,u)\bigr)}\,\mathcal Q^d_w(h,r).\]</span> The ratio is <span
+class="math inline">\(1\)</span> for all such <span
+class="math inline">\(u\)</span> exactly when <span
+class="math inline">\(\tilde w\)</span> survives.</p>
+<div id="pr:covariance" class="problem" data-progress-ids="[&quot;20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex#pr:covariance&quot;]">
+<p><strong>Problem 53.4.1</strong>. Let <span
+class="math inline">\(\gamma\in R(F)\)</span> and <span
+class="math inline">\(\gamma&#39;\in U(V&#39;)(F)\)</span>, and let
+<span class="math inline">\(\gamma&#39;\)</span> have degree <span
+class="math inline">\(\ge0\)</span> for the weights <span
+class="math inline">\(d\)</span> (no condition when <span
+class="math inline">\(d=0\)</span>). Then <span
+class="math inline">\(\mathcal
+Q^d_{\gamma&#39;w\gamma^{-1}}(\gamma&#39;h,\gamma r)=\mathcal
+Q^d_w(h,r)\)</span>.</p>
+</div>
+<p>We use special cases of two facts on discrete groups. Let <span
+class="math inline">\(G\)</span> be a second-countable locally compact
+Hausdorff group with a left Haar measure, <span
+class="math inline">\(\Gamma\subset G\)</span> a discrete subgroup
+acting on a countable set <span class="math inline">\(\mathcal
+X\)</span>, quotients by discrete subgroups carrying the induced
+measures, and <span class="math inline">\(\mathfrak k_{\mathfrak
+x}\)</span> (<span class="math inline">\(\mathfrak x\in\mathcal
+X\)</span>) measurable functions on <span
+class="math inline">\(G\)</span> with <span
+class="math inline">\(\mathfrak k_{\gamma\mathfrak x}(\gamma
+g)=\mathfrak k_{\mathfrak x}(g)\)</span>. If <span
+class="math inline">\(\sum_{\mathfrak x}\lvert\mathfrak k_{\mathfrak
+x}\rvert\)</span> is integrable on <span
+class="math inline">\(\Gamma\backslash G\)</span>, then <span
+class="math inline">\(\mathfrak k_{\mathfrak x}\)</span> is integrable
+on <span class="math inline">\(\operatorname{Stab}_\Gamma(\mathfrak
+x)\backslash G\)</span> and <span
+class="math inline">\(\int_{\Gamma\backslash G}\sum_{\mathfrak
+x&#39;\in\Gamma\mathfrak x}\mathfrak k_{\mathfrak
+x&#39;}=\int_{\operatorname{Stab}_\Gamma(\mathfrak x)\backslash
+G}\mathfrak k_{\mathfrak x}\)</span> <span class="citation"
+data-cites="Bou">[<a href="#ref-Bou">Bou</a>]</span>. And if <span
+class="math inline">\(\mathfrak f\)</span> is continuous, integrable on
+<span class="math inline">\(\Gamma\backslash G\)</span> and left <span
+class="math inline">\(\Gamma\)</span>-invariant, with <span
+class="math inline">\(\mathfrak f(ug)=\zeta\mathfrak f(g)\)</span> for
+all <span class="math inline">\(g\)</span>, one <span
+class="math inline">\(u\in G\)</span> and one <span
+class="math inline">\(\zeta\ne1\)</span> of modulus one, then <span
+class="math inline">\(\int_{\Gamma\backslash G}\mathfrak f=0\)</span>;
+Problem <a href="#pr:twisted-mean" data-reference-type="ref"
+data-reference="pr:twisted-mean">53.3.4</a> is the finite case.
+<em>Status</em>: the first is classical; for the second we use the
+scalar, integrable case of the twisted-integral lemma in the proof.</p>
+<div id="pr:orbit-zero" class="problem" data-progress-ids="[&quot;20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex#pr:orbit-zero&quot;]">
+<p><strong>Problem 53.4.2</strong>. Let <span
+class="math inline">\(d\)</span> be <span
+class="math inline">\(0\)</span> or the grading of <span
+class="math inline">\(V&#39;\)</span>, and let the class <span
+class="math inline">\(w\)</span> fail the test for <span
+class="math inline">\(d\)</span>. Then for every <span
+class="math inline">\(h\)</span>, <span
+class="math inline">\(\int_{[R]}\sum_{w&#39;\in w R(F)}\mathcal
+Q^d_{w&#39;}(h,r)\,dr=0\)</span>.</p>
+</div>
+<p>Let <span class="math inline">\(w_+\)</span> and <span
+class="math inline">\(\mathrm{st}_+\)</span> be the matrices of the
+columns of positive grade of <span class="math inline">\(w\)</span> and
+of <span class="math inline">\(\mathrm{st}\)</span>. In the proof, if a
+rational <span class="math inline">\(w\)</span> survives for <span
+class="math inline">\(d=0\)</span>, then <span
+class="math inline">\(w_+\)</span> has linearly independent columns and
+<span class="math inline">\(\bar
+w_+^{t}J_{V&#39;}w_+=\bar{\mathrm{st}}_+^{t}J_{V&#39;}\mathrm{st}_+\)</span>;
+Problem <a href="#pr:hook-survivors" data-reference-type="ref"
+data-reference="pr:hook-survivors">53.3.1</a> illustrates this. Witt’s
+theorem: if <span class="math inline">\(w_1,w_2\)</span> are matrices
+over <span class="math inline">\(E\)</span> of the same shape, with
+linearly independent columns and <span class="math inline">\(\bar
+w_1^{t}Jw_1=\bar w_2^{t}Jw_2\)</span> for a nondegenerate hermitian
+<span class="math inline">\(J\)</span>, then <span
+class="math inline">\(gw_1=w_2\)</span> for some invertible square <span
+class="math inline">\(g\)</span> over <span
+class="math inline">\(E\)</span> with <span class="math inline">\(\bar
+g^{t}Jg=J\)</span> <span class="citation"
+data-cites="Sch">[<a href="#ref-Sch">Sch</a>]</span>. <em>Status</em>:
+classical.</p>
+<div id="pr:witt" class="problem" data-progress-ids="[&quot;20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex#pr:witt&quot;]">
+<p><strong>Problem 53.4.3</strong>. Let <span
+class="math inline">\(w\)</span> be a rational map with <span
+class="math inline">\(w_+\)</span> of linearly independent columns and
+<span class="math inline">\(\bar
+w_+^{t}J_{V&#39;}w_+=\bar{\mathrm{st}}_+^{t}J_{V&#39;}\mathrm{st}_+\)</span>.
+Then <span class="math inline">\(\gamma&#39;w\)</span> agrees with <span
+class="math inline">\(\mathrm{st}\)</span> for some <span
+class="math inline">\(\gamma&#39;\in U(V&#39;)(F)\)</span>.</p>
+</div>
+<p>Let <span class="math inline">\(\mathcal{C}\)</span> be the set of
+classes for the weights <span class="math inline">\(0\)</span> that
+agree with <span class="math inline">\(\mathrm{st}\)</span>. In the
+proof, if <span class="math inline">\(w\)</span> agrees with <span
+class="math inline">\(\mathrm{st}\)</span>, <span
+class="math inline">\(\gamma\in R(\mathbb{A})\)</span> and <span
+class="math inline">\(\gamma&#39;\in U(V&#39;)(\mathbb{A})\)</span>,
+then <span class="math inline">\(\gamma&#39;w\gamma\)</span> agrees with
+<span class="math inline">\(\mathrm{st}\)</span> if and only if <span
+class="math inline">\(\gamma&#39;\in R&#39;(\mathbb{A})\)</span>; in
+particular <span class="math inline">\(\mathcal{C}\)</span> is stable
+under <span class="math inline">\(w\mapsto w\gamma\)</span>, <span
+class="math inline">\(\gamma\in R(F)\)</span>. Problem <a
+href="#pr:hook-orbit" data-reference-type="ref"
+data-reference="pr:hook-orbit">53.3.2</a> illustrates this.</p>
+<div id="pr:block" class="problem" data-progress-ids="[&quot;20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex#pr:block&quot;]">
+<p><strong>Problem 53.4.4</strong>. Let a group <span
+class="math inline">\(H\)</span> act on a set <span
+class="math inline">\(\mathcal X\)</span>, let <span
+class="math inline">\(S\subseteq H\)</span> be a subgroup and <span
+class="math inline">\(\mathcal{C}\subseteq\mathcal X\)</span> a subset
+such that for <span class="math inline">\(\mathfrak
+x\in\mathcal{C}\)</span>, <span class="math inline">\(g\mathfrak
+x\in\mathcal{C}\)</span> if and only if <span class="math inline">\(g\in
+S\)</span>. Then <span class="math inline">\((q,\mathfrak x)\mapsto
+q_\mathrm{rep}\mathfrak x\)</span>, for any choice of representatives
+<span class="math inline">\(q_\mathrm{rep}\)</span>, is a bijection from
+<span class="math inline">\((H/S)\times\mathcal{C}\)</span> onto the
+union of the translates of <span
+class="math inline">\(\mathcal{C}\)</span>.</p>
+</div>
+<p>The second selection takes place inside the period: in the proof, for
+every <span class="math inline">\(h\)</span>, <span
+class="math display">\[\int_{[R]}\sum_{w\in\mathcal{C}}\mathcal
+Q^0_w(h,r)\,dr=\mathcal{W}&#39;(h).\]</span> For each datum, the sum of
+the constant terms over <span class="math inline">\(\mathcal{C}\)</span>
+equals the sum over the classes agreeing with <span
+class="math inline">\(\mathrm{st}\)</span> for the grading of <span
+class="math inline">\(V&#39;\)</span>; every surviving representative of
+one of those lies in the class of <span
+class="math inline">\(\mathrm{st}\)</span>; <span
+class="math inline">\(\mathrm{st}\)</span> survives, and <span
+class="math inline">\(R(F)\)</span> fixes its class. Problem <a
+href="#pr:hook-second" data-reference-type="ref"
+data-reference="pr:hook-second">53.3.3</a> illustrates this.</p>
+<div id="pr:period-sum" class="problem" data-progress-ids="[&quot;20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex#pr:period-sum&quot;]">
+<p><strong>Problem 53.4.5</strong>. For every <span
+class="math inline">\(h\in U(V&#39;)(\mathbb{A})\)</span>, the series on
+the right converges absolutely and <span
+class="math display">\[\int_{[R]}\mathcal{W}(r)\,\theta\bigl(\omega(r,h)\phi\bigr)\,dr=\sum_{q\in
+U(V&#39;)(F)/R&#39;(F)}\mathcal{W}&#39;(q_\mathrm{rep}^{-1}h).\]</span></p>
+</div>
+<div id="pr:unfold" class="problem" data-progress-ids="[&quot;20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.tex#pr:unfold&quot;]">
+<p><strong>Problem 53.4.6</strong>. Let <span
+class="math inline">\(\Gamma&#39;\subseteq\Gamma\)</span> be discrete
+subgroups of <span class="math inline">\(G\)</span> as above, <span
+class="math inline">\(\mathfrak f\)</span> a continuous left <span
+class="math inline">\(\Gamma&#39;\)</span>-invariant function and <span
+class="math inline">\(z\)</span> a continuous left <span
+class="math inline">\(\Gamma\)</span>-invariant function on <span
+class="math inline">\(G\)</span>, with <span
+class="math inline">\(\sum_{q\in\Gamma/\Gamma&#39;}\lvert\mathfrak
+f(q_\mathrm{rep}^{-1}h)z(h)\rvert\)</span> integrable on <span
+class="math inline">\(\Gamma\backslash G\)</span>. Then <span
+class="math inline">\(\mathfrak fz\)</span> is integrable on <span
+class="math inline">\(\Gamma&#39;\backslash G\)</span> and <span
+class="math display">\[\int_{\Gamma\backslash
+G}\sum_{q\in\Gamma/\Gamma&#39;}\bigl(\mathfrak
+f(q_\mathrm{rep}^{-1}h)\,z(h)\bigr)\,dh=\int_{\Gamma&#39;\backslash
+G}\mathfrak f(h)z(h)\,dh .\]</span></p>
+</div>
+<p>The height of <span class="math inline">\(h\in
+U(V&#39;)(\mathbb{A})\)</span> is the reciprocal of the first minimum
+(the length of a shortest nonzero lattice vector), cut off at <span
+class="math inline">\(1\)</span>, of the lattice of the space moved by
+<span class="math inline">\(h\)</span>. In the proof, for every <span
+class="math inline">\(g_0\)</span> and every large integer <span
+class="math inline">\(e\)</span>, each <span
+class="math inline">\(h\)</span> has a <span
+class="math inline">\(\gamma&#39;\in U(V&#39;)(F)\)</span> with <span
+class="math inline">\(\lVert\omega(g_0,\gamma&#39;h)\rVert\le2^e\)</span>
+times the <span class="math inline">\(e\)</span>-th power of the height
+of <span class="math inline">\(h\)</span>; we use <span
+class="math inline">\(g_0=1\)</span>. This growth estimate is proved by
+reduction theory; compare <span class="citation"
+data-cites="KR">[<a href="#ref-KR">KR</a>]</span>. A function <span
+class="math inline">\(z\)</span> on <span
+class="math inline">\(U(V&#39;)(\mathbb{A})\)</span> is
+<em>automorphic</em> if it is continuous, left invariant under <span
+class="math inline">\(U(V&#39;)(F)\)</span> and invariant under right
+translation by a neighbourhood of <span class="math inline">\(1\)</span>
+in the finite adelic group, and <em>rapidly decreasing</em> if for every
+integer <span class="math inline">\(b\ge0\)</span>, <span
+class="math inline">\(\lvert z(h)\rvert\)</span> times the <span
+class="math inline">\(b\)</span>-th power of the height of <span
+class="math inline">\(h\)</span> is bounded. For each rapidly decreasing
+<span class="math inline">\(z\)</span>, in the proof, <span
+class="math inline">\(\sum_{w\in\Sigma}\lvert\mathcal
+Q^0_w(h,r)z(h)\rvert\le C&#39;\)</span> for one constant <span
+class="math inline">\(C&#39;\)</span>, every <span
+class="math inline">\(h\)</span>, <span class="math inline">\(r\)</span>
+and every set <span class="math inline">\(\Sigma\)</span> of classes,
+and <span
+class="math inline">\(\sum_q\lvert\mathcal{W}&#39;(q_\mathrm{rep}^{-1}h)z(h)\rvert\le
+C&#39;\operatorname{vol}[R]\)</span>, and <span
+class="math inline">\([U(V&#39;)]\)</span> has finite volume.
+Problems <a href="#pr:covariance" data-reference-type="ref"
+data-reference="pr:covariance">53.4.1</a>–<a href="#pr:unfold"
+data-reference-type="ref" data-reference="pr:unfold">53.4.6</a>, with the
+facts stated in this section, prove the following.</p>
+<div id="thm:transfer" class="theorem">
+<p><strong>Theorem 53.4.1</strong>. <em>With <span
+class="math inline">\(E\)</span>, the frames, <span
+class="math inline">\(\omega\)</span> and <span
+class="math inline">\(\mathcal{S}\)</span> as in this section, let <span
+class="math inline">\(V\)</span>, <span
+class="math inline">\(V&#39;\)</span> be hermitian spaces over <span
+class="math inline">\(E\)</span>, each the orthogonal sum of a definite
+part and a string for the same <span class="math inline">\(N\)</span>,
+with <span
+class="math inline">\(\operatorname{len}V&#39;=\operatorname{len}V-1\)</span>
+or <span
+class="math inline">\(\operatorname{len}V=\operatorname{len}V&#39;=0\)</span>;
+let <span class="math inline">\(R\)</span>, <span
+class="math inline">\(R&#39;\)</span> be their Bessel subgroups and
+<span class="math inline">\(\mathrm{st}\)</span> the string map. Let
+<span class="math inline">\(\phi\in\mathcal{S}\)</span>, <span
+class="math inline">\(\mathcal{W}\)</span> be as in Definition <a
+href="#def:transfer" data-reference-type="ref"
+data-reference="def:transfer">53.4.2</a>, and <span
+class="math inline">\(z\)</span> be an automorphic, rapidly decreasing
+function on <span class="math inline">\(U(V&#39;)(\mathbb{A})\)</span>.
+Then <span class="math inline">\(\mathcal{W}&#39;z\)</span> is
+integrable on <span class="math inline">\(R&#39;(F)\backslash
+U(V&#39;)(\mathbb{A})\)</span> and <span
+class="math display">\[\int_{[R]}\mathcal{W}(r)\int_{[U(V&#39;)]}\theta\bigl(\omega(r,h)\phi\bigr)\,z(h)\,dh\,dr=\int_{R&#39;(F)\backslash
+U(V&#39;)(\mathbb{A})}\mathcal{W}&#39;(h)\,z(h)\,dh .\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a>; <a href="20261126T051300--two-lifts-at-a-time__workbook.html">Chapter 54</a></div><!-- used-in:end -->
+</div>
+<h4 id="what-has-been-proved.">What has been proved.</h4>
+<p>A Bessel period of a theta function, paired with a form on <span
+class="math inline">\(V&#39;\)</span>, is the integral of the transfer
+against the form over <span class="math inline">\(R&#39;(F)\backslash
+U(V&#39;)(\mathbb{A})\)</span>. Used as given: the facts on <span
+class="math inline">\(\omega\)</span>, <span
+class="math inline">\(\mathrm{Heis}\)</span> and <span
+class="math inline">\(\theta\)</span> stated at the start of Section <a
+href="#sec:transfer" data-reference-type="ref"
+data-reference="sec:transfer">53.4</a>, the expansion of <span
+class="math inline">\(\theta\)</span>, the statements marked “in the
+proof”, Witt’s theorem and the facts on discrete groups. If <span
+class="math inline">\(c_V=c_{V&#39;}\)</span>, then in the proof, for
+each <span class="math inline">\(h\)</span>, the function <span
+class="math inline">\(r&#39;\mapsto\mathcal{W}&#39;(r&#39;h)\)</span> on
+<span class="math inline">\(R&#39;(\mathbb{A})\)</span> satisfies the
+hypothesis on <span class="math inline">\(\mathcal{W}\)</span> for <span
+class="math inline">\(V&#39;\)</span>: the transfer is again a Bessel
+function, on a string of length <span
+class="math inline">\(\max(\operatorname{len}V-1,0)\)</span>. Along the
+lower chain <span class="math inline">\(Y_0,\dots,Y_m\)</span> the
+string of <span class="math inline">\(Y_j\)</span> has length <span
+class="math inline">\(m-1-j\)</span> for <span
+class="math inline">\(j&lt;m\)</span>, and that of <span
+class="math inline">\(Y_m\)</span> has length <span
+class="math inline">\(0\)</span>; in the proof the gradings of the <span
+class="math inline">\(Y_j\)</span>, <span
+class="math inline">\(j&lt;m\)</span>, have one common constant, and
+that of <span class="math inline">\(Y_m\)</span> has constant <span
+class="math inline">\(1\)</span>.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. Theorem <a href="#thm:transfer"
+data-reference-type="ref" data-reference="thm:transfer">53.4.1</a> is
+<code>New.Grading.integral_besselGroup_unfold</code> in the Lean proof
+<span class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>.
+The adelic definitions specialize <code>New.Grading</code>,
+<code>stringMap</code>, <code>constTerm</code>, <code>unfoldStep</code>,
+<code>Survives</code> and <code>HasDegreeGe</code>; the finite examples
+use the same matrix formulas. The expansion of <span
+class="math inline">\(\theta\)</span> is <code>hasSum_constTerm</code>,
+the matrix form of Witt’s theorem is <code>New.witt</code>, and the
+growth estimate is
+<code>eventually_exists_norm_omega_le_mul_height_pow</code>. The
+statements marked “in the proof” are at these places of <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, commit
+<code>72fead1</code>: <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/Grading.lean#L134-L184">the
+descriptions of <span class="math inline">\(\mathcal{U}\)</span> and
+<span class="math inline">\(R\)</span></a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/BesselIntegral.lean#L133">compactness
+of <span class="math inline">\([R]\)</span></a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/Equivariant.lean#L215-L238">the
+character <span class="math inline">\(\psi_\mathcal{U}\)</span></a> and
+<a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/Grading.lean#L875"><span
+class="math inline">\(\mathrm{st}^*\mathrm{st}\)</span></a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/Grading.lean#L809">the
+degree of <span class="math inline">\(\mathrm{st}\)</span></a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/ConstantTerm.lean#L419-L452">class
+independence of <span
+class="math inline">\(\mathrm{CT}^d_w\)</span></a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/ConstantTerm.lean#L852-L880">continuity
+and invariance of <span
+class="math inline">\(\mathcal{W}&#39;\)</span></a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/Unfolding.lean#L136-L242">the
+terms <span class="math inline">\(\mathcal Q^d_w\)</span></a> and <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/ConstantTerm.lean#L800-L823">their
+phase law</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/BesselIntegral.lean#L722-L821">the
+Gram condition</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/BesselIntegral.lean#L645-L678">preservation
+of agreement</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/Unfolding.lean#L370-L398">the
+second selection</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/Unfolding.lean#L459-L510">the
+two estimates</a> and <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Adelic/Reduction/FiniteVolume.lean#L772">the
+finite volume</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/ConstantTerm.lean#L887-L912">the
+case <span class="math inline">\(c_V=c_{V&#39;}\)</span></a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/EdgePairEvaluation.lean#L1140-L1162">the
+chain gradings</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/SeesawIdentity.lean#L197-L223">the
+transposition</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Adelic/QuotientMeasure/IwasawaUnfolding.lean#L302-L316">the
+orbit fact</a> and <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Adelic/QuotientMeasure/UnfoldingInStages.lean#L362-L393">the
+twisted integral</a>. See also the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/UpperBound/Seesaw/UnfoldingStages.lean#L688-L705">period
+at a chain step</a>, the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/Unfolding.lean#L346-L366">selection
+at zero weights</a>, and the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/Unfolding.lean#L435-L454">sum
+over the translates</a>. The conventions are those for <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Adelic/Unitary/Defs.lean#L498-L506">the
+adelic frame</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Adelic/Adeles/AdditiveCharacter.lean#L153-L160">the
+standard additive character</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Construction/WeilData.lean#L69-L89">the
+Weil data</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/ClassField/HeckeCharacter/Basic.lean#L61-L74">the
+norm-one characters</a>, and <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Construction/AdelicRepresentation.lean#L241-L250">the
+space of data</a>. For the action and the trace phase see <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/DualPair/WeilAction.lean#L761-L777">the
+twisted action and its bicharacter</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/ConstantTerm.lean#L102-L111">Heisenberg
+covariance</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/DualPair/WeilAction.lean#L616-L623">rational
+invariance of the theta kernel</a>, and <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/ConstantTerm.lean#L423-L435">rational
+Heisenberg translation</a>. The function hypotheses are <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Periods/Equivariant.lean#L273-L284">Bessel
+equivariance</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Adelic/AutomorphicForms/Basic.lean#L102-L111">automorphy</a>,
+and <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Adelic/Reduction/FirstMinimumShortBases.lean#L281-L298">the
+height and rapid decay</a>.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secplane">§<a href="#sec:plane"
+data-reference-type="ref" data-reference="sec:plane">53.1</a></h2>
+<dl>
+<dt><a href="#pr:coefficient" data-reference-type="ref"
+data-reference="pr:coefficient">53.1.2</a></dt>
+<dd>
+<p>Exchange the two sums and use <span
+class="math inline">\(\sum_b\zeta_3^{b(Q(v)-1)}\)</span>.</p>
+</dd>
+<dt><a href="#pr:plane-orbit" data-reference-type="ref"
+data-reference="pr:plane-orbit">53.1.3</a></dt>
+<dd>
+<p><span class="math inline">\(-1\)</span> is not a square in <span
+class="math inline">\(\mathbb{F}_3\)</span>, so <span
+class="math inline">\(Q\)</span> is anisotropic.</p>
+</dd>
+<dt><a href="#pr:plane-unfold" data-reference-type="ref"
+data-reference="pr:plane-unfold">53.1.4</a></dt>
+<dd>
+<p>Problems <a href="#pr:coefficient" data-reference-type="ref"
+data-reference="pr:coefficient">53.1.2</a> and <a href="#pr:plane-orbit"
+data-reference-type="ref" data-reference="pr:plane-orbit">53.1.3</a>;
+substitute <span class="math inline">\(h\mapsto\gamma h\)</span>, as in
+Problem <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#pr:unfold" data-reference-type="ref"
+data-reference="bp-pr:unfold">39.2.1</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secstrings">§<a href="#sec:strings"
+data-reference-type="ref" data-reference="sec:strings">53.2</a></h2>
+<dl>
+<dt><a href="#pr:hook-unipotent" data-reference-type="ref"
+data-reference="pr:hook-unipotent">53.2.1</a></dt>
+<dd>
+<p>Expand <span class="math inline">\(\bar u^{t}J_Vu=J_V\)</span> entry
+by entry.</p>
+</dd>
+<dt><a href="#pr:hook-phase" data-reference-type="ref"
+data-reference="pr:hook-phase">53.2.2</a></dt>
+<dd>
+<p>Compute the shift <span
+class="math inline">\(\mathrm{st}^*\mathrm{st}\)</span> on the string
+basis.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secsurvival">§<a href="#sec:survival"
+data-reference-type="ref" data-reference="sec:survival">53.3</a></h2>
+<dl>
+<dt><a href="#pr:hook-survivors" data-reference-type="ref"
+data-reference="pr:hook-survivors">53.3.1</a></dt>
+<dd>
+<p>Which <span class="math inline">\(u\)</span> are admissible for <span
+class="math inline">\(v=0\)</span>, and which for <span
+class="math inline">\(v\ne0\)</span>? Then Problem <a
+href="#pr:hook-phase" data-reference-type="ref"
+data-reference="pr:hook-phase">53.2.2</a>.</p>
+</dd>
+<dt><a href="#pr:hook-orbit" data-reference-type="ref"
+data-reference="pr:hook-orbit">53.3.2</a></dt>
+<dd>
+<p>Count first, then second columns. The Bessel subgroup of a string of
+length two fixes <span class="math inline">\(f&#39;_0\)</span>.</p>
+</dd>
+<dt><a href="#pr:hook-second" data-reference-type="ref"
+data-reference="pr:hook-second">53.3.3</a></dt>
+<dd>
+<p>Compare the entries used for agreement with those of negative degree;
+then compute the two phases.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="sectransfer">§<a href="#sec:transfer"
+data-reference-type="ref" data-reference="sec:transfer">53.4</a></h2>
+<dl>
+<dt><a href="#pr:covariance" data-reference-type="ref"
+data-reference="pr:covariance">53.4.1</a></dt>
+<dd>
+<p>Move <span class="math inline">\(\omega(\gamma,\gamma&#39;)\)</span>
+to the left through the Heisenberg operators, then substitute <span
+class="math inline">\(y\mapsto\gamma&#39;y\gamma^{-1}\)</span> in the
+mean. An element of <span class="math inline">\(R(\mathbb{A})\)</span>
+preserves the span of the basis vectors of grade <span
+class="math inline">\(\ge i\)</span> for each <span
+class="math inline">\(i\)</span>, so it does not lower grades (use
+unitarity for the grades <span class="math inline">\(&lt;0\)</span> and
+for the definite part).</p>
+</dd>
+<dt><a href="#pr:orbit-zero" data-reference-type="ref"
+data-reference="pr:orbit-zero">53.4.2</a></dt>
+<dd>
+<p>Unfold the orbit with <span
+class="math inline">\(\Gamma=R(F)\)</span> and Problem <a
+href="#pr:covariance" data-reference-type="ref"
+data-reference="pr:covariance">53.4.1</a>; on the stabilizer quotient use
+the vanishing of twisted integrals.</p>
+</dd>
+<dt><a href="#pr:witt" data-reference-type="ref"
+data-reference="pr:witt">53.4.3</a></dt>
+<dd>
+<p>Witt’s theorem in <span class="math inline">\(V&#39;\)</span>, for
+the columns of positive grade.</p>
+</dd>
+<dt><a href="#pr:period-sum" data-reference-type="ref"
+data-reference="pr:period-sum">53.4.5</a></dt>
+<dd>
+<p>Expand <span class="math inline">\(\theta\)</span> for the weights
+<span class="math inline">\(0\)</span>, and sort the classes into the
+translates of <span class="math inline">\(\mathcal{C}\)</span> and the
+rest.</p>
+</dd>
+<dt><a href="#pr:unfold" data-reference-type="ref"
+data-reference="pr:unfold">53.4.6</a></dt>
+<dd>
+<p>The orbit fact for <span class="math inline">\(\Gamma\)</span> acting
+on <span class="math inline">\(\Gamma/\Gamma&#39;\)</span>; compare
+Problem <a href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#pr:unfold" data-reference-type="ref"
+data-reference="ps-pr:unfold">10.1.1</a>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Bou"><span class="bib-label">[Bou]</span> N. Bourbaki, <em>Intégration</em>, Chapitres 7 et 8, Hermann, Paris, 1963.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-KR"><span class="bib-label">[KR]</span> S. S. Kudla and S. Rallis, <em>A regularized Siegel–Weil formula: the first term identity</em>, Ann. of Math. <strong>140</strong> (1994), 1–80.</p>
+<p id="ref-Ku"><span class="bib-label">[Ku]</span> S. S. Kudla, <em>Splitting metaplectic covers of dual reductive pairs</em>, Israel J. Math. <strong>87</strong> (1994), 361–401.</p>
+<p id="ref-Sch"><span class="bib-label">[Sch]</span> W. Scharlau, <em>Quadratic and Hermitian Forms</em>, Grundlehren Math. Wiss. 270, Springer, 1985.</p>
+<p id="ref-We"><span class="bib-label">[We]</span> A. Weil, <em>Sur certains groupes d’opérateurs unitaires</em>, Acta Math. <strong>111</strong> (1964), 143–211.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

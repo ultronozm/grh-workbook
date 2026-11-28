@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-GfnZTuKe0/sa5fnqzeEZHwPWIqMO0E6Xluic8dgB9nU=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Inert primes and the choice of d</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","R":"\\mathbb{R}","Re":"\\operatorname{Re}","Im":"\\operatorname{Im}","tl":["\\texttt{#1}",1],"leg":["\\bigl(\\tfrac{#1}{#2}\\bigr)",2],"Bx":"\\mathcal{B}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="2">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261125T001100--inert-primes-and-estimate-b__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-26 19:19:35
+      <a href="20261125T001100--inert-primes-and-estimate-b__workbook.tex" class="my-link">tex</a>
+      <a href="20261125T001100--inert-primes-and-estimate-b__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261125T001100--inert-primes-and-estimate-b__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Inert primes and the choice of <span
+class="math inline">\(d\)</span> <a class="stable-tag" href="tag/2239.html" title="Stable tag: cite as Tag 2239">Tag 2239</a></h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:inert" id="toc-sec:inert">§2.1. Inert primes and a quadratic character</a></li>
+<li><a href="#sec:choice" id="toc-sec:choice">§2.2. The choice of \(d\)</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secinert" id="toc-secinert">§2.1</a></li>
+<li><a href="#secchoice" id="toc-secchoice">§2.2</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Chapter <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#chap" data-reference-type="ref"
+data-reference="zr-chap">1</a>, <em>From zeros to a one-sided
+bound</em>, Sections <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#sec:ramp" data-reference-type="ref"
+data-reference="zr-sec:ramp">1.1</a>, <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#sec:landau"
+data-reference-type="ref"
+data-reference="zr-sec:landau">1.2</a> and <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#sec:dirichlet" data-reference-type="ref"
+data-reference="zr-sec:dirichlet">1.4</a>: the functions
+<span class="math inline">\(G\)</span> and <span
+class="math inline">\(G_\chi\)</span> of its equations <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:G" data-reference-type="eqref"
+data-reference="zr-eq:G">(1)</a> and <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:Gchi"
+data-reference-type="eqref"
+data-reference="zr-eq:Gchi">(3)</a>, the transform <span
+class="math inline">\(F\)</span> of <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:F"
+data-reference-type="eqref" data-reference="zr-eq:F">(2)</a>,
+Landau’s theorem and the argument of Problem <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#pr:real-zero"
+data-reference-type="ref"
+data-reference="zr-pr:real-zero">1.2.4</a>. Quadratic
+reciprocity with its supplements <span class="citation"
+data-cites="SeA">[<a href="#ref-SeA">SeA</a>, Ch. I, §3]</span>, the Jacobi
+symbol and its reciprocity law <span class="citation"
+data-cites="IR">[<a href="#ref-IR">IR</a>, Ch. 5]</span>, and the splitting
+of primes in an imaginary quadratic field <span class="citation"
+data-cites="Ne">[<a href="#ref-Ne">Ne</a>, Ch. I, §8]</span>. From Davenport
+<span class="citation" data-cites="Dav">[<a href="#ref-Dav">Dav</a>]</span>:
+Dirichlet’s theorem in the form that <span class="math inline">\(\sum
+\log p/p\)</span> over the primes of an invertible class diverges
+(Ch. 4), primitive characters (Ch. 5), the theta functions of a
+primitive character and their transformation formula (Ch. 9), and the
+Pólya–Vinogradov inequality (Ch. 23). The three-lines theorem <span
+class="citation" data-cites="Ru">[<a href="#ref-Ru">Ru</a>,
+Ch. 12]</span>.</p>
+<p>The criterion of Theorem <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#thm:dirichlet"
+data-reference-type="ref"
+data-reference="zr-thm:dirichlet">1.4.1</a> assumes a
+one-sided bound for a remainder of a sum with coefficients <span
+class="math inline">\(\Lambda(n)(1 - \chi_d(n))\)</span> over the <span
+class="math inline">\(n \equiv 1 \pmod{q_0}\)</span>. We first study the
+unrestricted sum with these coefficients, which are supported on odd
+powers of primes inert in an imaginary quadratic field and on powers of
+the ramified prime. How does its centered value compare with <span
+class="math inline">\(G\)</span>, and what information does it give
+about the zeros of <span class="math inline">\(\zeta\)</span>?</p>
+<h1 id="sec:inert">§2.1. Inert primes and a quadratic character <a class="stable-tag" href="tag/223A.html" title="Stable tag: cite as Tag 223A">Tag 223A</a></h1>
+<p>Let <span class="math inline">\(d \equiv 3 \pmod 4\)</span> be a
+prime, let <span class="math inline">\(K :=
+\mathbb{Q}(\sqrt{-d})\)</span>, and let <span
+class="math inline">\(\chi_d(n) := \bigl(\frac{n}{d}\bigr)\)</span> be
+the Legendre symbol.</p>
+<div id="pr:kronecker" class="problem" data-progress-ids="[&quot;223B&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:kronecker&quot;]"><a class="stable-tag" href="tag/223B.html" title="Stable tag: cite as Tag 223B">Tag 223B</a>
+<p><strong>Problem 2.1.1</strong>. (i) For every prime <span
+class="math inline">\(p\)</span>, <span
+class="math inline">\(\chi_d(p)\)</span> is <span
+class="math inline">\(1\)</span>, <span
+class="math inline">\(-1\)</span> or <span
+class="math inline">\(0\)</span> according as <span
+class="math inline">\(p\)</span> splits, is inert, or ramifies in <span
+class="math inline">\(K\)</span>. (ii) For a prime power <span
+class="math inline">\(r = p^h\)</span>, <span class="math inline">\(1 -
+\chi_d(r)\)</span> is <span class="math inline">\(2\)</span> if <span
+class="math inline">\(p\)</span> is inert and <span
+class="math inline">\(h\)</span> is odd, <span
+class="math inline">\(1\)</span> if <span class="math inline">\(p =
+d\)</span>, and <span class="math inline">\(0\)</span> otherwise.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T013700--pairings-on-a-formal-group-of-height-two__workbook.html">Chapter 17</a>; <a href="20261126T030300--the-data__workbook.html">Chapter 36</a></div><!-- used-in:end -->
+</div>
+<p>The ramp sum over odd powers of inert primes, with weight <span
+class="math inline">\(2\)</span>, and over powers of <span
+class="math inline">\(d\)</span>, with weight <span
+class="math inline">\(1\)</span>, is therefore <span
+class="math display">\[S_d(x) := \sum_r \Lambda(r) \bigl(1 -
+\chi_d(r)\bigr) \Bigl(\frac{x}{r} - 1\Bigr)_+ .\]</span> For a primitive
+nonprincipal character <span class="math inline">\(\chi\)</span> let
+<span class="math inline">\(\Psi_\chi(t) := \sum_{n \le t} \Lambda(n)
+\chi(n)\)</span>, and let <span class="math inline">\(c_\chi\)</span>
+and <span class="math inline">\(G_\chi\)</span> be as in <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:Gchi" data-reference-type="eqref"
+data-reference="zr-eq:Gchi">(3)</a>.</p>
+<div id="pr:Gchi-min" class="problem" data-progress-ids="[&quot;223C&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:Gchi-min&quot;]"><a class="stable-tag" href="tag/223C.html" title="Stable tag: cite as Tag 223C">Tag 223C</a>
+<p><strong>Problem 2.1.2</strong>. <span class="math inline">\(G_\chi(x) =
+-\sum_n \Lambda(n) \chi(n) \min(1, x/n) = -x \int_x^\infty \Psi_\chi(t)
+\, t^{-2} \, d t\)</span>.</p>
+</div>
+<div id="pr:G-minus" class="problem" data-progress-ids="[&quot;223D&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:G-minus&quot;]"><a class="stable-tag" href="tag/223D.html" title="Stable tag: cite as Tag 223D">Tag 223D</a>
+<p><strong>Problem 2.1.3</strong>. <span class="math inline">\(S_d(x) - x
+\log x + (1 + \gamma - c_{\chi_d}) x = G(x) -
+G_{\chi_d}(x)\)</span>.</p>
+</div>
+<p>An upper bound for <span class="math inline">\(S_d\)</span> minus its
+main term is thus an upper bound for <span class="math inline">\(G -
+G_{\chi_d}\)</span>, not for <span class="math inline">\(G\)</span>. How
+much does such a bound say about the zeros of <span
+class="math inline">\(\zeta\)</span>?</p>
+<div id="pr:fixed-d" class="problem" data-progress-ids="[&quot;223E&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:fixed-d&quot;]"><a class="stable-tag" href="tag/223E.html" title="Stable tag: cite as Tag 223E">Tag 223E</a>
+<p><strong>Problem 2.1.4</strong>. Let <span class="math inline">\(0 &lt;
+\theta &lt; 1\)</span>. Suppose that <span class="math inline">\(L(s,
+\chi_d)\)</span> has no real zero in <span
+class="math inline">\((\theta, 1)\)</span>, and that <span
+class="math inline">\(G(x) - G_{\chi_d}(x) \le x^\theta\)</span> for all
+large <span class="math inline">\(x\)</span>. Then every zero of <span
+class="math inline">\(\zeta(s)\)</span> or of <span
+class="math inline">\(L(s, \chi_d)\)</span> in <span
+class="math inline">\(\operatorname{Re}s &gt; \theta\)</span> is a zero
+of both, with the same multiplicity.</p>
+</div>
+<p>Problem <a href="#pr:fixed-d" data-reference-type="ref"
+data-reference="pr:fixed-d">2.1.4</a> leaves the possibility of a shared
+zero of equal multiplicity. We next consider a region free of zeros of
+<span class="math inline">\(L(s, \chi_d)\)</span>. For <span
+class="math inline">\(\beta, t_0 \in \mathbb{R}\)</span> let <span
+class="math display">\[\mathcal{B}(\beta, t_0) := \{ s \in \mathbb{C}:
+\operatorname{Re}s \ge \beta,\ \lvert \operatorname{Im}s \rvert \le t_0
+\},\]</span> which is empty for <span class="math inline">\(t_0 &lt;
+0\)</span> and unbounded to the right otherwise.</p>
+<div id="pr:box-d" class="problem" data-progress-ids="[&quot;22Z9&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:box-d&quot;]"><a class="stable-tag" href="tag/22Z9.html" title="Stable tag: cite as Tag 22Z9">Tag 22Z9</a>
+<p><strong>Problem 2.1.5</strong>. Let <span class="math inline">\(0 &lt;
+\theta &lt; \beta\)</span> and <span class="math inline">\(t_0 \ge
+0\)</span>. Suppose that <span class="math inline">\(L(s, \chi_d) \ne
+0\)</span> on <span class="math inline">\(\mathcal{B}(\beta,
+t_0)\)</span>, and that <span class="math inline">\(G(x) - G_{\chi_d}(x)
+\le x^\theta\)</span> for all large <span
+class="math inline">\(x\)</span>. Then <span
+class="math inline">\(\zeta\)</span> has no zero in <span
+class="math inline">\(\mathcal{B}(\beta, t_0)\)</span>.</p>
+</div>
+<p>Fix <span class="math inline">\(\theta &gt; 0\)</span>. If the bound
+<span class="math inline">\(G - G_{\chi_d} \le x^\theta\)</span> holds
+for every prime <span class="math inline">\(d\)</span> of some class,
+and every box <span class="math inline">\(\mathcal{B}(\beta,
+t_0)\)</span> with <span class="math inline">\(\beta &gt;
+\theta\)</span> is free of zeros of <span class="math inline">\(L(s,
+\chi_d)\)</span> for at least one <span class="math inline">\(d\)</span>
+of the class, then <span class="math inline">\(\zeta\)</span> has no
+zero in <span class="math inline">\(\operatorname{Re}s &gt;
+\theta\)</span>. The choice of <span class="math inline">\(d\)</span>
+depends on the box. Section <a href="#sec:choice"
+data-reference-type="ref" data-reference="sec:choice">2.2</a> shows that
+the box is free of zeros of <span class="math inline">\(L(s,
+\chi_d)\)</span> for some prime <span class="math inline">\(d \equiv 7
+\pmod 8\)</span> when <span class="math inline">\(\theta \ge
+\frac12\)</span>. This class is used for the following reason.</p>
+<div id="pr:congruences" class="problem" data-progress-ids="[&quot;223F&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:congruences&quot;]"><a class="stable-tag" href="tag/223F.html" title="Stable tag: cite as Tag 223F">Tag 223F</a>
+<p><strong>Problem 2.1.6</strong>. Let <span class="math inline">\(d \equiv
+7 \pmod 8\)</span>. Then <span class="math inline">\(\chi_d(2) =
+1\)</span> and <span class="math inline">\(\chi_d(-1) = -1\)</span>.
+Hence <span class="math inline">\(2\)</span> splits in <span
+class="math inline">\(K\)</span>, <span class="math inline">\(1 -
+\chi_d(r)\)</span> vanishes at every power of <span
+class="math inline">\(2\)</span>, and <span
+class="math inline">\(\chi_d\)</span> is an odd character.</p>
+</div>
+<p>In the proof the weight is restricted further, to prime powers <span
+class="math inline">\(n \equiv 1 \pmod{q_0}\)</span>, and the characters
+that occur are all <span class="math inline">\(\psi\)</span> modulo
+<span class="math inline">\(q_0\)</span> and their twists <span
+class="math inline">\(\psi\chi_d\)</span>. Its criterion, Theorem <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#thm:dirichlet" data-reference-type="ref"
+data-reference="zr-thm:dirichlet">1.4.1</a>, takes <span
+class="math inline">\(q_0\)</span> a positive multiple of <span
+class="math inline">\(8\)</span>, a nonnegative integer <span
+class="math inline">\(d_0 \equiv 7 \pmod 8\)</span> prime to <span
+class="math inline">\(q_0\)</span>, and <span
+class="math inline">\(\beta &gt; \frac12\)</span>, and assumes, for
+every prime <span class="math inline">\(d \equiv d_0
+\pmod{q_0}\)</span>, that the remainder <span
+class="math inline">\(R_{d, q_0}(x)\)</span> of <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:R"
+data-reference-type="eqref" data-reference="zr-eq:R">(4)</a> is at
+most <span class="math inline">\(x^{\beta - 1}\)</span> for all
+sufficiently large <span class="math inline">\(x\)</span>. Given <span
+class="math inline">\(\rho \ne 1\)</span> with <span
+class="math inline">\(\operatorname{Re}\rho &gt; \beta\)</span>, its
+proof uses one such <span class="math inline">\(d\)</span>, given by
+Theorem <a href="#thm:choice" data-reference-type="ref"
+data-reference="thm:choice">2.2.2</a> below at the same <span
+class="math inline">\(\beta\)</span>, with <span class="math inline">\(N
+= q_0\)</span>, <span class="math inline">\(a = d_0\)</span> and <span
+class="math inline">\(t_0 = \lvert \operatorname{Im}\rho
+\rvert\)</span>.</p>
+<h1 id="sec:choice">§2.2. The choice of <span
+class="math inline">\(d\)</span> <a class="stable-tag" href="tag/22ZA.html" title="Stable tag: cite as Tag 22ZA">Tag 22ZA</a></h1>
+<p>Is there a prime <span class="math inline">\(d \equiv 7 \pmod
+8\)</span> for which <span class="math inline">\(L(s, \chi_d)\)</span>
+has no zero in a given box <span
+class="math inline">\(\mathcal{B}(\beta, t_0)\)</span> with <span
+class="math inline">\(\beta &gt; \frac12\)</span>? Problem <a
+href="#pr:count-d" data-reference-type="ref"
+data-reference="pr:count-d">2.2.13</a> bounds the number of exceptional
+primes <span class="math inline">\(d \equiv 7 \pmod 8\)</span> up to
+<span class="math inline">\(X\)</span>. The quantity that detects a zero
+is built from theta series.</p>
+<p>For <span class="math inline">\(j \in \{0, 1\}\)</span> let <span
+class="math inline">\(w_j(z) := z^j e^{-\pi z^2}\)</span> for <span
+class="math inline">\(z \in \mathbb{R}\)</span>, and let <span
+class="math display">\[\Gamma_j(s) := \int_0^\infty w_j(z)\, z^{s} \,
+\frac{d z}{z} \qquad (\operatorname{Re}s &gt; 0) .\]</span> For a
+sequence <span class="math inline">\(c \colon \mathbb{Z}_{\ge 1} \to
+\mathbb{C}\)</span> with <span class="math inline">\(\lvert c(n) \rvert
+\le 1\)</span> let <span class="math display">\[\Theta_c(u) := u^{1/2}
+\sum_{n \ge 1} c(n)\, w_j(n u) \qquad (u &gt; 0),\]</span> and write
+<span class="math inline">\(c\mu\)</span> for the sequence <span
+class="math inline">\(n \mapsto c(n)\mu(n)\)</span>, with <span
+class="math inline">\(\mu\)</span> the Möbius function. The index <span
+class="math inline">\(j\)</span> is fixed in each argument and is
+dropped from <span class="math inline">\(\Theta_c\)</span>. A Dirichlet
+character <span class="math inline">\(\chi\)</span> modulo <span
+class="math inline">\(q\)</span> is a sequence of this kind, and has
+<em>parity <span class="math inline">\(j\)</span></em> if <span
+class="math inline">\(\chi(-1) = (-1)^j\)</span>.</p>
+<div id="pr:gamma" class="problem" data-progress-ids="[&quot;22ZB&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:gamma&quot;]"><a class="stable-tag" href="tag/22ZB.html" title="Stable tag: cite as Tag 22ZB">Tag 22ZB</a>
+<p><strong>Problem 2.2.1</strong>. <span class="math inline">\(\Gamma_j(s) =
+\frac12 \pi^{-(s+j)/2}\, \Gamma\bigl(\frac{s+j}{2}\bigr)\)</span> for
+<span class="math inline">\(\operatorname{Re}s &gt; 0\)</span>. In
+particular <span class="math inline">\(\Gamma_1(1) =
+1/(2\pi)\)</span>.</p>
+</div>
+<div id="pr:theta-mellin" class="problem" data-progress-ids="[&quot;22ZC&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:theta-mellin&quot;]"><a class="stable-tag" href="tag/22ZC.html" title="Stable tag: cite as Tag 22ZC">Tag 22ZC</a>
+<p><strong>Problem 2.2.2</strong>. (i) Let <span
+class="math inline">\(\chi\)</span> be a nonprincipal character modulo
+<span class="math inline">\(q\)</span> of parity <span
+class="math inline">\(j\)</span>. For <span
+class="math inline">\(\operatorname{Re}s &gt; 0\)</span> the integral
+<span class="math inline">\(\int_0^\infty \Theta_\chi(u)\, u^{s - 1/2}\,
+du/u\)</span> converges absolutely and equals <span
+class="math inline">\(\Gamma_j(s) L(s, \chi)\)</span>. For <span
+class="math inline">\(\chi = \chi_7\)</span>, <span
+class="math inline">\(j = 1\)</span> and <span class="math inline">\(s =
+1\)</span> its value is <span class="math inline">\(1/(2\sqrt 7) =
+0.18898\ldots\)</span> (ii) For every character <span
+class="math inline">\(\chi\)</span> and <span
+class="math inline">\(\operatorname{Re}s &gt; 1\)</span>, <span
+class="math inline">\(\int_0^\infty \Theta_{\chi\mu}(u)\, u^{s - 1/2}\,
+du/u = \Gamma_j(s)/L(s, \chi)\)</span>.</p>
+</div>
+<div id="pr:theta-fe" class="problem" data-progress-ids="[&quot;22ZD&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:theta-fe&quot;]"><a class="stable-tag" href="tag/22ZD.html" title="Stable tag: cite as Tag 22ZD">Tag 22ZD</a>
+<p><strong>Problem 2.2.3</strong>. Let <span
+class="math inline">\(\chi\)</span> be a primitive nonprincipal
+character modulo <span class="math inline">\(q\)</span> of parity <span
+class="math inline">\(j\)</span>. Then <span
+class="math inline">\(\lvert \Theta_\chi(1/(q u)) \rvert = \lvert
+\Theta_\chi(u) \rvert\)</span> for <span class="math inline">\(u &gt;
+0\)</span>. Hence the integrals of <span class="math inline">\(\lvert
+\Theta_\chi(u) \rvert\, du/u\)</span> over <span class="math inline">\(u
+&lt; q^{-1/2}\)</span> and over <span class="math inline">\(u &gt;
+q^{-1/2}\)</span> are equal.</p>
+</div>
+<p>For <span class="math inline">\(T &gt; 0\)</span> define the <em>tail
+integral</em> of a sequence <span class="math inline">\(c\)</span> and
+the <em>mollifier</em> of a character <span
+class="math inline">\(\chi\)</span>: <span class="math display">\[J(c,
+T) := \int_{1/T}^\infty \bigl( \lvert \Theta_c(u) \rvert + \lvert
+\Theta_{c\mu}(u) \rvert \bigr) \frac{du}{u},
+  \qquad
+  \mathcal{M}_T(s) := \int_{1/T}^\infty \Theta_{\chi\mu}(u)\, u^{s -
+1/2} \, \frac{du}{u} .\]</span> By Problem <a href="#pr:theta-mellin"
+data-reference-type="ref" data-reference="pr:theta-mellin">2.2.2</a>(ii),
+for <span class="math inline">\(\operatorname{Re}s &gt; 1\)</span>,
+<span class="math inline">\(\mathcal{M}_T(s)\)</span> is the integral
+for <span class="math inline">\(\Gamma_j(s)/L(s, \chi)\)</span> cut at
+<span class="math inline">\(u = 1/T\)</span>. For <span
+class="math inline">\(\operatorname{Re}z &gt; 0\)</span> where <span
+class="math inline">\(L(z, \chi)\)</span> is finite, let <span
+class="math inline">\(\Phi(z) := \Gamma_j(z) L(z, \chi) \mathcal{M}_T(z)
+- \Gamma_j(z)^2\)</span>.</p>
+<div id="pr:mollifier" class="problem" data-progress-ids="[&quot;22ZE&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:mollifier&quot;]"><a class="stable-tag" href="tag/22ZE.html" title="Stable tag: cite as Tag 22ZE">Tag 22ZE</a>
+<p><strong>Problem 2.2.4</strong>. (i) <span class="math inline">\(\sum_{n
+\ge 1} \lvert w_j(n u) \rvert \le 3 e^{-u}/u\)</span> for <span
+class="math inline">\(u &gt; 0\)</span>. (ii) For every character <span
+class="math inline">\(\chi\)</span>, every <span class="math inline">\(T
+&gt; 0\)</span> and <span class="math inline">\(\operatorname{Re}z =
+2\)</span>: <span class="math inline">\(\lvert \Gamma_j(z)/L(z, \chi) -
+\mathcal{M}_T(z) \rvert \le 3/T\)</span> and <span
+class="math inline">\(\lvert \Gamma_j(z) L(z, \chi) \rvert \le
+3\)</span>, so <span class="math inline">\(\lvert \Phi(z) \rvert \le
+9/T\)</span>.</p>
+</div>
+<div id="pr:half-line" class="problem" data-progress-ids="[&quot;22ZF&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:half-line&quot;]"><a class="stable-tag" href="tag/22ZF.html" title="Stable tag: cite as Tag 22ZF">Tag 22ZF</a>
+<p><strong>Problem 2.2.5</strong>. Let <span
+class="math inline">\(\chi\)</span> be a primitive nonprincipal
+character modulo <span class="math inline">\(q\)</span> of parity <span
+class="math inline">\(j\)</span>, and <span class="math inline">\(T &gt;
+0\)</span> with <span class="math inline">\(q \le T^2\)</span>. On <span
+class="math inline">\(\operatorname{Re}z = \frac12\)</span>: <span
+class="math inline">\(\lvert \Gamma_j(z) L(z, \chi) \rvert \le 2 J(\chi,
+T)\)</span> and <span class="math inline">\(\lvert \mathcal{M}_T(z)
+\rvert \le J(\chi, T)\)</span>.</p>
+</div>
+<div id="pr:three-lines" class="problem" data-progress-ids="[&quot;22ZG&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:three-lines&quot;]"><a class="stable-tag" href="tag/22ZG.html" title="Stable tag: cite as Tag 22ZG">Tag 22ZG</a>
+<p><strong>Problem 2.2.6</strong>. There is a constant <span
+class="math inline">\(C_j\)</span> with the following property. Let
+<span class="math inline">\(\delta &gt; 0\)</span> and <span
+class="math inline">\(T &gt; 0\)</span>, and let <span
+class="math inline">\(\chi\)</span> be a primitive nonprincipal
+character modulo <span class="math inline">\(q\)</span> of parity <span
+class="math inline">\(j\)</span>, with <span class="math inline">\(q \le
+T^2\)</span> and <span class="math inline">\(J(\chi, T) \le
+T^{2\delta}\)</span>. If <span class="math inline">\(L(s, \chi) =
+0\)</span> and <span class="math inline">\(\frac12 + 9\delta \le
+\operatorname{Re}s \le 1\)</span>, then <span
+class="math inline">\(\lvert \Gamma_j(s) \rvert^2 \le C_j
+T^{-2\delta}\)</span>.</p>
+</div>
+<div id="pr:zero-forces" class="problem" data-progress-ids="[&quot;22ZH&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:zero-forces&quot;]"><a class="stable-tag" href="tag/22ZH.html" title="Stable tag: cite as Tag 22ZH">Tag 22ZH</a>
+<p><strong>Problem 2.2.7</strong>. Let <span class="math inline">\(\delta
+&gt; 0\)</span> and <span class="math inline">\(t_0 \in
+\mathbb{R}\)</span>. For all <span class="math inline">\(T\)</span>
+large in terms of <span class="math inline">\(\delta\)</span> and <span
+class="math inline">\(t_0\)</span> the following holds for every <span
+class="math inline">\(q\)</span> and every primitive nonprincipal
+character <span class="math inline">\(\chi\)</span> modulo <span
+class="math inline">\(q\)</span> of parity <span
+class="math inline">\(j\)</span> with <span class="math inline">\(q \le
+T^2\)</span>: if <span class="math inline">\(L(s, \chi)\)</span>
+vanishes somewhere on <span class="math inline">\(\mathcal{B}(\frac12 +
+9\delta, t_0)\)</span>, then <span class="math inline">\(J(\chi, T) &gt;
+T^{2\delta}\)</span>.</p>
+</div>
+<p>A zero in the box therefore forces a large tail integral. It remains
+to show that the tail integrals of the characters <span
+class="math inline">\(\chi_d\)</span> are small on average over <span
+class="math inline">\(d\)</span>. Write <span
+class="math inline">\(n^\circ := n/2^{v_2(n)}\)</span> for the odd part
+of <span class="math inline">\(n \ge 1\)</span>, and <span
+class="math inline">\(\bigl(\tfrac{b}{m}\bigr)\)</span> for the Jacobi
+symbol, <span class="math inline">\(m \ge 1\)</span> odd.</p>
+<div id="pr:recip-d" class="problem" data-progress-ids="[&quot;22ZJ&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:recip-d&quot;]"><a class="stable-tag" href="tag/22ZJ.html" title="Stable tag: cite as Tag 22ZJ">Tag 22ZJ</a>
+<p><strong>Problem 2.2.8</strong>. Let <span class="math inline">\(d \equiv
+7 \pmod 8\)</span> be prime. For every <span class="math inline">\(n \ge
+1\)</span>, <span class="math inline">\(\bigl(\tfrac{n}{d}\bigr) =
+\bigl(\tfrac{-d}{n^\circ}\bigr)\)</span>. For instance <span
+class="math inline">\(\bigl(\tfrac{12}{7}\bigr) =
+\bigl(\tfrac{-7}{3}\bigr) = -1\)</span>.</p>
+</div>
+<p>For a sequence <span class="math inline">\(\alpha\)</span> with <span
+class="math inline">\(\lvert \alpha(n) \rvert \le 1\)</span> and <span
+class="math inline">\(v \ge 1\)</span> let <span
+class="math inline">\(c_v(n) := \alpha(n)
+\bigl(\tfrac{-v}{n^\circ}\bigr)\)</span>. The mean over <span
+class="math inline">\(1 \le v \le T^2\)</span> below runs over all
+integers <span class="math inline">\(v\)</span>. The Pólya–Vinogradov
+inequality <span class="citation"
+data-cites="Dav">[<a href="#ref-Dav">Dav</a>, Ch. 23]</span> states that
+<span class="math inline">\(\lvert \sum_{v \le X} \omega(v) \rvert \le C
+\sqrt{m} \log m\)</span> for every nonprincipal character <span
+class="math inline">\(\omega\)</span> modulo <span
+class="math inline">\(m \ge 2\)</span> and every <span
+class="math inline">\(X\)</span>, with <span
+class="math inline">\(C\)</span> absolute.</p>
+<div id="pr:pv-jacobi" class="problem" data-progress-ids="[&quot;22ZK&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:pv-jacobi&quot;]"><a class="stable-tag" href="tag/22ZK.html" title="Stable tag: cite as Tag 22ZK">Tag 22ZK</a>
+<p><strong>Problem 2.2.9</strong>. Let <span class="math inline">\(\delta
+&gt; 0\)</span> and <span class="math inline">\(n \ge 1\)</span>, and
+suppose that <span class="math inline">\(n^\circ\)</span> is not a
+square. Then <span class="math inline">\(v \mapsto
+\bigl(\tfrac{-v}{n^\circ}\bigr)\)</span> is <span
+class="math inline">\(\pm 1\)</span> times a nonprincipal character
+modulo <span class="math inline">\(n^\circ\)</span>, and <span
+class="math inline">\(\bigl\lvert \sum_{1 \le v \le X}
+\bigl(\tfrac{-v}{n^\circ}\bigr) \bigr\rvert \le C_\delta\, n^{1/2 +
+\delta/2}\)</span> for every <span class="math inline">\(X\)</span>,
+with <span class="math inline">\(C_\delta\)</span> depending only on
+<span class="math inline">\(\delta\)</span>.</p>
+</div>
+<div id="pr:square-pairs" class="problem" data-progress-ids="[&quot;22ZL&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:square-pairs&quot;]"><a class="stable-tag" href="tag/22ZL.html" title="Stable tag: cite as Tag 22ZL">Tag 22ZL</a>
+<p><strong>Problem 2.2.10</strong>. Let <span class="math inline">\(\delta
+&gt; 0\)</span>. For <span class="math inline">\(u &gt; 0\)</span>,
+<span class="math inline">\(\sum \lvert w_j(n u)\, w_j(n&#39; u) \rvert
+\le C_\delta\, u^{-1 - 2\delta}\)</span>, the sum over the pairs <span
+class="math inline">\(n, n&#39; \ge 1\)</span> with <span
+class="math inline">\((n n&#39;)^\circ\)</span> a square.</p>
+</div>
+<div id="pr:mean-square" class="problem" data-progress-ids="[&quot;22ZM&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:mean-square&quot;]"><a class="stable-tag" href="tag/22ZM.html" title="Stable tag: cite as Tag 22ZM">Tag 22ZM</a>
+<p><strong>Problem 2.2.11</strong>. Let <span class="math inline">\(\delta
+&gt; 0\)</span>, <span class="math inline">\(T &gt; 0\)</span> and <span
+class="math inline">\(u \ge 1/T\)</span>. Then <span
+class="math inline">\(\sum_{1 \le v \le T^2} \lvert \Theta_{c_v}(u)
+\rvert^2 \le C_\delta\, T^2 u^{-2\delta}\)</span>, with <span
+class="math inline">\(C_\delta\)</span> depending only on <span
+class="math inline">\(\delta\)</span> and <span
+class="math inline">\(j\)</span>, not on <span
+class="math inline">\(\alpha\)</span>, <span
+class="math inline">\(T\)</span> or <span
+class="math inline">\(u\)</span>.</p>
+</div>
+<div id="pr:sum-J" class="problem" data-progress-ids="[&quot;22ZN&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:sum-J&quot;]"><a class="stable-tag" href="tag/22ZN.html" title="Stable tag: cite as Tag 22ZN">Tag 22ZN</a>
+<p><strong>Problem 2.2.12</strong>. Let <span class="math inline">\(\delta
+&gt; 0\)</span>. For <span class="math inline">\(T &gt; 0\)</span> and
+every <span class="math inline">\(\alpha\)</span> with <span
+class="math inline">\(\lvert \alpha(n) \rvert \le 1\)</span>, <span
+class="math inline">\(\sum_{1 \le v \le T^2} J(c_v, T) \le C_\delta\,
+T^{2 + \delta}\)</span>, with <span
+class="math inline">\(C_\delta\)</span> depending only on <span
+class="math inline">\(\delta\)</span> and <span
+class="math inline">\(j\)</span>.</p>
+</div>
+<p>We return to the primes. For a prime <span class="math inline">\(d
+\equiv 7 \pmod 8\)</span>, <span class="math inline">\(\chi_d\)</span>
+is nonprincipal modulo the prime <span class="math inline">\(d\)</span>,
+hence primitive, and Problem <a href="#pr:congruences"
+data-reference-type="ref" data-reference="pr:congruences">2.1.6</a> gives
+its odd parity.</p>
+<div id="pr:count-d" class="problem" data-progress-ids="[&quot;22ZP&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:count-d&quot;]"><a class="stable-tag" href="tag/22ZP.html" title="Stable tag: cite as Tag 22ZP">Tag 22ZP</a>
+<p><strong>Problem 2.2.13</strong>. Let <span class="math inline">\(\delta
+&gt; 0\)</span> and <span class="math inline">\(t_0 \ge 0\)</span>. For
+all large <span class="math inline">\(X\)</span>, at most <span
+class="math inline">\(C X^{1 - \delta/2}\)</span> primes <span
+class="math inline">\(d \le X\)</span> with <span
+class="math inline">\(d \equiv 7 \pmod 8\)</span> have a zero of <span
+class="math inline">\(L(s, \chi_d)\)</span> on <span
+class="math inline">\(\mathcal{B}(\frac12 + 9\delta, t_0)\)</span>; here
+<span class="math inline">\(C\)</span> depends on <span
+class="math inline">\(\delta\)</span> and <span
+class="math inline">\(t_0\)</span>.</p>
+</div>
+<div id="pr:some-good" class="problem" data-progress-ids="[&quot;22ZQ&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:some-good&quot;]"><a class="stable-tag" href="tag/22ZQ.html" title="Stable tag: cite as Tag 22ZQ">Tag 22ZQ</a>
+<p><strong>Problem 2.2.14</strong>. For every <span
+class="math inline">\(\beta &gt; \frac12\)</span> and <span
+class="math inline">\(t_0 \ge 0\)</span> there are infinitely many
+primes <span class="math inline">\(d \equiv 7 \pmod 8\)</span> with
+<span class="math inline">\(L(s, \chi_d) \ne 0\)</span> on <span
+class="math inline">\(\mathcal{B}(\beta, t_0)\)</span>.</p>
+</div>
+<p>Problem <a href="#pr:count-d" data-reference-type="ref"
+data-reference="pr:count-d">2.2.13</a> gives a power saving of <span
+class="math inline">\(X^{-\delta/2}\)</span> relative to the trivial
+bound <span class="math inline">\(X\)</span>. Density estimates for
+quadratic twists far stronger than Problem <a href="#pr:count-d"
+data-reference-type="ref" data-reference="pr:count-d">2.2.13</a> are known;
+they rest on mean values of real character sums <span class="citation"
+data-cites="Ju">[<a href="#ref-Ju">Ju</a>]</span>, <span class="citation"
+data-cites="HB">[<a href="#ref-HB">HB</a>]</span>.</p>
+<p>Now let <span class="math inline">\(\xi\)</span> run over the
+characters modulo <span class="math inline">\(N = q_0\)</span>, as at
+the end of Section <a href="#sec:inert" data-reference-type="ref"
+data-reference="sec:inert">2.1</a>. Here <span
+class="math inline">\(\xi\chi_d\)</span> denotes the character <span
+class="math inline">\(n \mapsto \xi(n)\bigl(\tfrac{n}{d}\bigr)\)</span>
+modulo <span class="math inline">\(Nd\)</span>; for an odd prime <span
+class="math inline">\(d \nmid N\)</span> it is not principal, so <span
+class="math inline">\(L(s, \xi\chi_d)\)</span> is entire. The smallest
+case is <span class="math inline">\(N = 8\)</span> and the class <span
+class="math inline">\(a = 7\)</span>.</p>
+<div id="pr:level-8" class="problem" data-progress-ids="[&quot;22ZR&quot;,&quot;20261125T001100--inert-primes-and-estimate-b__workbook.tex#pr:level-8&quot;]"><a class="stable-tag" href="tag/22ZR.html" title="Stable tag: cite as Tag 22ZR">Tag 22ZR</a>
+<p><strong>Problem 2.2.15</strong>. Let <span class="math inline">\(d \equiv
+7 \pmod 8\)</span> be prime, <span class="math inline">\(\xi\)</span> a
+character modulo <span class="math inline">\(8\)</span>, and <span
+class="math inline">\(\xi^*\)</span> the primitive character inducing
+<span class="math inline">\(\xi\)</span>, of conductor <span
+class="math inline">\(f \in \{1, 4, 8\}\)</span>. Then <span
+class="math inline">\(\xi^*\chi_d\)</span> is primitive modulo <span
+class="math inline">\(fd\)</span>; <span class="math inline">\(L(s,
+\xi\chi_d) = (1 - 2^{-s}) L(s, \chi_d)\)</span> if <span
+class="math inline">\(\xi\)</span> is principal, and <span
+class="math inline">\(L(s, \xi\chi_d) = L(s, \xi^*\chi_d)\)</span>
+otherwise. Hence for <span class="math inline">\(\beta &gt; 0\)</span>
+the four twists have no zero on <span
+class="math inline">\(\mathcal{B}(\beta, t_0)\)</span> exactly when the
+four <span class="math inline">\(L(s, \xi^*\chi_d)\)</span> have
+none.</p>
+</div>
+<p>For <span class="math inline">\(d = 7\)</span>, each of the four
+<span class="math inline">\(L(s, \xi\chi_7)\)</span> has positive real
+part on <span class="math inline">\(3/4 \le \operatorname{Re}s \le
+1\)</span>, <span class="math inline">\(\lvert \operatorname{Im}s \rvert
+\le 1/10\)</span>, and has no zero in <span
+class="math inline">\(\mathcal{B}(3/4, 1/10)\)</span>; this is a finite
+computation.</p>
+<p>For general <span class="math inline">\(N\)</span>, a character <span
+class="math inline">\(\xi\)</span> modulo <span
+class="math inline">\(N\)</span> is induced by a primitive character
+<span class="math inline">\(\xi^*\)</span> of conductor <span
+class="math inline">\(M \mid N\)</span>. For a prime <span
+class="math inline">\(d \equiv 7 \pmod 8\)</span> with <span
+class="math inline">\(d \nmid N\)</span>, the twist <span
+class="math inline">\(\xi^*\chi_d\)</span> is primitive modulo <span
+class="math inline">\(Md\)</span> and has parity opposite to that of
+<span class="math inline">\(\xi^*\)</span>. The functions <span
+class="math inline">\(L(s, \xi\chi_d)\)</span> and <span
+class="math inline">\(L(s, \xi^*\chi_d)\)</span> have the same zeros in
+<span class="math inline">\(\operatorname{Re}s &gt; 0\)</span>, since
+the Euler factors removed on passing to level <span
+class="math inline">\(Nd\)</span> are nonzero there. The following
+theorems give the exceptional count and the simultaneous choice of <span
+class="math inline">\(d\)</span>.</p>
+<div id="thm:density" class="theorem"><a class="stable-tag" href="tag/22ZS.html" title="Stable tag: cite as Tag 22ZS">Tag 22ZS</a>
+<p><strong>Theorem 2.2.1</strong>. <em>Let <span class="math inline">\(N \ge
+1\)</span>, <span class="math inline">\(\delta &gt; 0\)</span> and <span
+class="math inline">\(t_0 \in \mathbb{R}\)</span>, and let <span
+class="math inline">\(a \in \mathbb{Z}/N\mathbb{Z}\)</span> be a class
+such that every prime <span class="math inline">\(p \equiv a \pmod
+N\)</span> satisfies <span class="math inline">\(p \equiv 7 \pmod
+8\)</span> and <span class="math inline">\(\gcd(N, p) = 1\)</span>. Call
+a prime <span class="math inline">\(d \equiv a \pmod N\)</span>
+<em>bad</em> if for some character <span
+class="math inline">\(\xi\)</span> modulo <span
+class="math inline">\(N\)</span> the function <span
+class="math inline">\(L(s, \xi\chi_d)\)</span> vanishes at some <span
+class="math inline">\(s\)</span> with <span
+class="math inline">\(\operatorname{Re}s \ge \frac12 + 9\delta\)</span>
+and <span class="math inline">\(\lvert \operatorname{Im}s \rvert \le
+t_0\)</span>. Then the number of bad primes <span
+class="math inline">\(d \le X\)</span> is <span
+class="math inline">\(O(X^{1 - \delta/2})\)</span> as <span
+class="math inline">\(X \to \infty\)</span> through the positive
+integers.</em></p>
+</div>
+<div id="thm:choice" class="theorem"><a class="stable-tag" href="tag/22ZT.html" title="Stable tag: cite as Tag 22ZT">Tag 22ZT</a>
+<p><strong>Theorem 2.2.2</strong>. <em>Let <span class="math inline">\(N \ge
+1\)</span>, <span class="math inline">\(\beta &gt; \frac12\)</span> and
+<span class="math inline">\(t_0 \in \mathbb{R}\)</span>, and let <span
+class="math inline">\(a\)</span> be a unit of <span
+class="math inline">\(\mathbb{Z}/N\mathbb{Z}\)</span> such that every
+prime <span class="math inline">\(p \equiv a \pmod N\)</span> satisfies
+<span class="math inline">\(p \equiv 7 \pmod 8\)</span> and <span
+class="math inline">\(\gcd(N, p) = 1\)</span>. Then there is a prime
+<span class="math inline">\(d \equiv a \pmod N\)</span> such that for
+every character <span class="math inline">\(\xi\)</span> modulo <span
+class="math inline">\(N\)</span> and every <span class="math inline">\(s
+\in \mathbb{C}\)</span> with <span
+class="math inline">\(\operatorname{Re}s \ge \beta\)</span> and <span
+class="math inline">\(\lvert \operatorname{Im}s \rvert \le t_0\)</span>,
+<span class="math inline">\(L(s, \xi\chi_d) \ne 0\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T001000--zeros-to-ramp-sums__workbook.html">Chapter 1</a></div><!-- used-in:end -->
+</div>
+<p>The hypothesis on the class holds when <span class="math inline">\(8
+\mid N\)</span> and <span class="math inline">\(a \equiv 7 \pmod
+8\)</span> is a unit; for <span class="math inline">\(1 \le N &lt;
+8\)</span> it holds for no unit class. One <span
+class="math inline">\(d\)</span> serves all characters <span
+class="math inline">\(\xi\)</span> and all points of the box at once,
+and the characters <span class="math inline">\(\xi\)</span> and the
+class <span class="math inline">\(a\)</span> have the same modulus <span
+class="math inline">\(N\)</span>.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. In the readable edition of the
+Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, the file
+<code>grh/src/Lib/Analytic/QuadraticTwist.lean</code> contains
+<code>New.zero_density_quadTwist</code> (Theorem <a href="#thm:density"
+data-reference-type="ref" data-reference="thm:density">2.2.1</a>) and
+<code>New.exists_entireL_quadTwist_ne_zero</code> (Theorem <a
+href="#thm:choice" data-reference-type="ref"
+data-reference="thm:choice">2.2.2</a>). The latter states its conclusion for
+<code>New.entireL</code>; the chosen <span
+class="math inline">\(d\)</span> is odd and prime to <span
+class="math inline">\(N\)</span>, so <code>New.quadTwist_ne_one</code>
+and the definition of <code>New.entireL</code> identify this function
+with <span class="math inline">\(L(\,\cdot\,, \xi\chi_d)\)</span>.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secinert">§<a href="#sec:inert"
+data-reference-type="ref" data-reference="sec:inert">2.1</a></h2>
+<dl>
+<dt><a href="#pr:kronecker" data-reference-type="ref"
+data-reference="pr:kronecker">2.1.1</a></dt>
+<dd>
+<p>For odd <span class="math inline">\(p \ne d\)</span> compare <span
+class="math inline">\(\bigl(\frac{-d}{p}\bigr)\)</span> with <span
+class="math inline">\(\bigl(\frac{p}{d}\bigr)\)</span> by reciprocity.
+For <span class="math inline">\(p = 2\)</span> use <span
+class="math inline">\(\mathcal{O}_K = \mathbb{Z}[(1 +
+\sqrt{-d})/2]\)</span>.</p>
+</dd>
+<dt><a href="#pr:Gchi-min" data-reference-type="ref"
+data-reference="pr:Gchi-min">2.1.2</a></dt>
+<dd>
+<p>Use <span class="math inline">\(\sum_n \Lambda(n)\chi(n)/n =
+-c_\chi\)</span>, convergent by the prime number theorem for <span
+class="math inline">\(\chi\)</span>.</p>
+</dd>
+<dt><a href="#pr:G-minus" data-reference-type="ref"
+data-reference="pr:G-minus">2.1.3</a></dt>
+<dd>
+<p>Write <span class="math inline">\(S_d\)</span> as the ramp sum with
+coefficient <span class="math inline">\(1\)</span> minus the one with
+coefficient <span class="math inline">\(\chi_d\)</span>, and use <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:G" data-reference-type="eqref"
+data-reference="zr-eq:G">(1)</a> and <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:Gchi"
+data-reference-type="eqref"
+data-reference="zr-eq:Gchi">(3)</a>.</p>
+</dd>
+<dt><a href="#pr:fixed-d" data-reference-type="ref"
+data-reference="pr:fixed-d">2.1.4</a></dt>
+<dd>
+<p>The Mellin transform of <span class="math inline">\(G -
+G_{\chi_d}\)</span> is <span class="math inline">\(F(s) +
+\frac{L&#39;}{L}(s, \chi_d)/(s(s-1)) - c_{\chi_d}/(s-1)\)</span>, with
+<span class="math inline">\(F\)</span> as in <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:F"
+data-reference-type="eqref" data-reference="zr-eq:F">(2)</a>.
+Follow Problem <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#pr:real-zero" data-reference-type="ref"
+data-reference="zr-pr:real-zero">1.2.4</a>: a real zero of
+<span class="math inline">\(\zeta\)</span> gives the residue sign of
+that problem, but a real zero of <span class="math inline">\(L(s,
+\chi_d)\)</span> gives the opposite sign.</p>
+</dd>
+<dt><a href="#pr:box-d" data-reference-type="ref"
+data-reference="pr:box-d">2.1.5</a></dt>
+<dd>
+<p>As in Problem <a href="#pr:fixed-d" data-reference-type="ref"
+data-reference="pr:fixed-d">2.1.4</a>, with <span class="math inline">\(A(x)
+:= x^\theta - G(x) + G_{\chi_d}(x)\)</span>. Show that the abscissa
+<span class="math inline">\(\sigma_c\)</span> is less than <span
+class="math inline">\(\beta\)</span>: a real singularity <span
+class="math inline">\(\sigma_c \ge \beta\)</span> would be a real zero
+of <span class="math inline">\(\zeta\)</span> that is not a zero of
+<span class="math inline">\(L(s, \chi_d)\)</span>.</p>
+</dd>
+<dt><a href="#pr:congruences" data-reference-type="ref"
+data-reference="pr:congruences">2.1.6</a></dt>
+<dd>
+<p>The supplementary laws.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secchoice">§<a href="#sec:choice"
+data-reference-type="ref" data-reference="sec:choice">2.2</a></h2>
+<dl>
+<dt><a href="#pr:theta-mellin" data-reference-type="ref"
+data-reference="pr:theta-mellin">2.2.2</a></dt>
+<dd>
+<p>Integrate term by term where the sum converges absolutely. For (i)
+with <span class="math inline">\(0 &lt; \operatorname{Re}s \le
+1\)</span>, bound <span class="math inline">\(\sum_n \chi(n)
+w_j(nu)\)</span> for small <span class="math inline">\(u\)</span> by
+partial summation, using that the partial sums of <span
+class="math inline">\(\chi\)</span> are bounded. For the value, <span
+class="math inline">\(L(1, \chi_7) = \pi/\sqrt 7\)</span> by the class
+number formula.</p>
+</dd>
+<dt><a href="#pr:theta-fe" data-reference-type="ref"
+data-reference="pr:theta-fe">2.2.3</a></dt>
+<dd>
+<p>The transformation formula for the theta function of a primitive
+character <span class="citation"
+data-cites="Dav">[<a href="#ref-Dav">Dav</a>, Ch. 9]</span>; then substitute
+<span class="math inline">\(u \mapsto 1/(qu)\)</span>.</p>
+</dd>
+<dt><a href="#pr:mollifier" data-reference-type="ref"
+data-reference="pr:mollifier">2.2.4</a></dt>
+<dd>
+<p>(i) Compare the sum with an integral; <span
+class="math inline">\(w_j\)</span> is unimodal on <span
+class="math inline">\((0, \infty)\)</span>. (ii) The difference is the
+integral over <span class="math inline">\(0 &lt; u \le 1/T\)</span>; use
+(i) on both integrals.</p>
+</dd>
+<dt><a href="#pr:half-line" data-reference-type="ref"
+data-reference="pr:half-line">2.2.5</a></dt>
+<dd>
+<p>On <span class="math inline">\(\operatorname{Re}z = \frac12\)</span>
+the factor <span class="math inline">\(u^{z - 1/2}\)</span> has modulus
+<span class="math inline">\(1\)</span>. Use Problem <a
+href="#pr:theta-fe" data-reference-type="ref"
+data-reference="pr:theta-fe">2.2.3</a> and <span
+class="math inline">\(q^{-1/2} \ge 1/T\)</span>.</p>
+</dd>
+<dt><a href="#pr:three-lines" data-reference-type="ref"
+data-reference="pr:three-lines">2.2.6</a></dt>
+<dd>
+<p>Evaluate <span class="math inline">\(\Phi\)</span> at the given zero
+<span class="math inline">\(s\)</span>. Apply the three-lines theorem to
+<span class="math inline">\(\Phi\)</span> on <span
+class="math inline">\(\frac12 \le \operatorname{Re}z \le 2\)</span>,
+with Problems <a href="#pr:mollifier" data-reference-type="ref"
+data-reference="pr:mollifier">2.2.4</a> and <a href="#pr:half-line"
+data-reference-type="ref" data-reference="pr:half-line">2.2.5</a> on the
+two edges. The weight of the right edge at <span
+class="math inline">\(\operatorname{Re}s\)</span> is <span
+class="math inline">\((\operatorname{Re}s - \frac12)/\frac32 \ge
+6\delta\)</span>.</p>
+</dd>
+<dt><a href="#pr:zero-forces" data-reference-type="ref"
+data-reference="pr:zero-forces">2.2.7</a></dt>
+<dd>
+<p>For <span class="math inline">\(t_0 &lt; 0\)</span> the box is empty.
+For <span class="math inline">\(t_0 \ge 0\)</span>, use <span
+class="math inline">\(L(s, \chi) \ne 0\)</span> for <span
+class="math inline">\(\operatorname{Re}s \ge 1\)</span> and the positive
+minimum of <span class="math inline">\(\lvert \Gamma_j \rvert\)</span>
+on the compact rectangle <span class="math inline">\(\frac12 \le
+\operatorname{Re}s \le 1\)</span>, <span class="math inline">\(\lvert
+\operatorname{Im}s \rvert \le t_0\)</span>.</p>
+</dd>
+<dt><a href="#pr:recip-d" data-reference-type="ref"
+data-reference="pr:recip-d">2.2.8</a></dt>
+<dd>
+<p>Factor <span class="math inline">\(n = 2^k n^\circ\)</span>, use
+<span class="math inline">\(\bigl(\tfrac{2}{d}\bigr) = 1\)</span>, and
+apply reciprocity for the Jacobi symbol with <span
+class="math inline">\(d \equiv 3 \pmod 4\)</span>.</p>
+</dd>
+<dt><a href="#pr:pv-jacobi" data-reference-type="ref"
+data-reference="pr:pv-jacobi">2.2.9</a></dt>
+<dd>
+<p><span class="math inline">\(\bigl(\tfrac{-v}{m}\bigr) =
+\bigl(\tfrac{-1}{m}\bigr)\bigl(\tfrac{v}{m}\bigr)\)</span>. For
+nontriviality choose <span class="math inline">\(v\)</span> by the
+Chinese remainder theorem at a prime dividing <span
+class="math inline">\(m\)</span> to an odd power.</p>
+</dd>
+<dt><a href="#pr:square-pairs" data-reference-type="ref"
+data-reference="pr:square-pairs">2.2.10</a></dt>
+<dd>
+<p>Write <span class="math inline">\(n = 2^a g k^2\)</span> and <span
+class="math inline">\(n&#39; = 2^b g k&#39;^2\)</span> with <span
+class="math inline">\(g\)</span> odd and squarefree; the terms with
+<span class="math inline">\(n\)</span> or <span
+class="math inline">\(n&#39;\)</span> much larger than <span
+class="math inline">\(1/u\)</span> are negligible.</p>
+</dd>
+<dt><a href="#pr:mean-square" data-reference-type="ref"
+data-reference="pr:mean-square">2.2.11</a></dt>
+<dd>
+<p>Expand the square, so that the inner sum over <span
+class="math inline">\(v\)</span> is <span class="math inline">\(\sum_v
+\bigl(\tfrac{-v}{(nn&#39;)^\circ}\bigr)\)</span>. Bound it by <span
+class="math inline">\(T^2\)</span> for the pairs of Problem <a
+href="#pr:square-pairs" data-reference-type="ref"
+data-reference="pr:square-pairs">2.2.10</a> and by Problem <a
+href="#pr:pv-jacobi" data-reference-type="ref"
+data-reference="pr:pv-jacobi">2.2.9</a> for the others, and use <span
+class="math inline">\(u^{-2} \le T^2\)</span>.</p>
+</dd>
+<dt><a href="#pr:sum-J" data-reference-type="ref"
+data-reference="pr:sum-J">2.2.12</a></dt>
+<dd>
+<p>Cauchy–Schwarz over <span class="math inline">\(v\)</span>,
+Problem <a href="#pr:mean-square" data-reference-type="ref"
+data-reference="pr:mean-square">2.2.11</a> for <span
+class="math inline">\(\alpha\)</span> and for <span
+class="math inline">\(\alpha\mu\)</span>, then integrate over <span
+class="math inline">\(u &gt; 1/T\)</span>.</p>
+</dd>
+<dt><a href="#pr:count-d" data-reference-type="ref"
+data-reference="pr:count-d">2.2.13</a></dt>
+<dd>
+<p>Use Problem <a href="#pr:recip-d" data-reference-type="ref"
+data-reference="pr:recip-d">2.2.8</a> with <span
+class="math inline">\(\alpha = 1\)</span>. Take <span
+class="math inline">\(T = \sqrt X\)</span>, and compare Problems <a
+href="#pr:zero-forces" data-reference-type="ref"
+data-reference="pr:zero-forces">2.2.7</a> and <a href="#pr:sum-J"
+data-reference-type="ref" data-reference="pr:sum-J">2.2.12</a>.</p>
+</dd>
+<dt><a href="#pr:some-good" data-reference-type="ref"
+data-reference="pr:some-good">2.2.14</a></dt>
+<dd>
+<p>Reduce to <span class="math inline">\(\beta &lt; 1\)</span> and put
+<span class="math inline">\(\delta := (\beta - \frac12)/9\)</span>. If
+all large primes of the class were bad, partial summation and Problem <a
+href="#pr:count-d" data-reference-type="ref"
+data-reference="pr:count-d">2.2.13</a> would make <span
+class="math inline">\(\sum \log p/p\)</span> over the class
+converge.</p>
+</dd>
+<dt><a href="#pr:level-8" data-reference-type="ref"
+data-reference="pr:level-8">2.2.15</a></dt>
+<dd>
+<p><span class="math inline">\(\chi_d(2) = 1\)</span>. The characters
+<span class="math inline">\(\xi^*\)</span> and <span
+class="math inline">\(\chi_d\)</span> have coprime conductors, and <span
+class="math inline">\(\xi^*\chi_d(n) = 0\)</span> for even <span
+class="math inline">\(n\)</span> when <span class="math inline">\(f &gt;
+1\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Dav"><span class="bib-label">[Dav]</span> H. Davenport, <em>Multiplicative Number Theory</em>, 3rd ed., revised by H. L. Montgomery, Grad. Texts in Math. <strong>74</strong>, Springer, 2000.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-HB"><span class="bib-label">[HB]</span> D. R. Heath-Brown, <em>A mean value estimate for real character sums</em>, Acta Arith. <strong>72</strong> (1995), 235–275.</p>
+<p id="ref-IR"><span class="bib-label">[IR]</span> K. Ireland and M. Rosen, <em>A Classical Introduction to Modern Number Theory</em>, 2nd ed., Grad. Texts in Math. <strong>84</strong>, Springer, 1990.</p>
+<p id="ref-Ju"><span class="bib-label">[Ju]</span> M. Jutila, <em>On mean values of Dirichlet polynomials with real characters</em>, Acta Arith. <strong>27</strong> (1975), 191–198.</p>
+<p id="ref-Ne"><span class="bib-label">[Ne]</span> J. Neukirch, <em>Algebraic Number Theory</em>, Grundlehren Math. Wiss. <strong>322</strong>, Springer, 1999.</p>
+<p id="ref-Ru"><span class="bib-label">[Ru]</span> W. Rudin, <em>Real and Complex Analysis</em>, 3rd ed., McGraw–Hill, 1987.</p>
+<p id="ref-SeA"><span class="bib-label">[SeA]</span> J.-P. Serre, <em>A Course in Arithmetic</em>, Grad. Texts in Math. <strong>7</strong>, Springer, 1973.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-H2buyv/jMI9zQlt0sB8qwcaBq/BayvoadB5dNX9Ro3w=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Tied primes</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","F":"\\mathbb{F}","Oc":"\\mathcal{O}","ord":"\\mathrm{ord}","rk":"\\operatorname{rk}","len":"\\operatorname{len}","Fr":"\\mathrm{Fr}","sla":"\\mathrm{sl}","ev":"\\mathrm{ev}","Rel":"\\mathrm{Rel}","Mir":"\\mathrm{Mir}","tot":"\\mathrm{tot}","cyc":"\\chi_{\\mathrm{cyc}}","Kc":"\\mathcal{K}","Xc":"\\mathcal{X}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="88">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T060700--tied-primes__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-27 01:16:56
+      <a href="20261126T060700--tied-primes__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T060700--tied-primes__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T060700--tied-primes__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Tied primes</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:prime" id="toc-sec:prime">§88.1. A prime with a character</a></li>
+<li><a href="#sec:adding" id="toc-sec:adding">§88.2. Adding a prime</a></li>
+<li><a href="#sec:count" id="toc-sec:count">§88.3. The count</a></li>
+<li><a href="#sec:mirror" id="toc-sec:mirror">§88.4. The mirror</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#section-secprime"
+id="toc-section-secprime">Section 88.1</a></li>
+<li><a href="#section-secadding"
+id="toc-section-secadding">Section 88.2</a></li>
+<li><a href="#section-seccount"
+id="toc-section-seccount">Section 88.3</a></li>
+<li><a href="#section-secmirror"
+id="toc-section-secmirror">Section 88.4</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>From Chapter <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#chap" data-reference-type="ref"
+data-reference="w2-chap">87</a>: Definitions <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:chi" data-reference-type="ref"
+data-reference="w2-def:chi">87.2.1</a>, <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:selmer-datum" data-reference-type="ref"
+data-reference="w2-def:selmer-datum">87.3.1</a> and <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:tied" data-reference-type="ref"
+data-reference="w2-def:tied">87.3.4</a>, Problem <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#pr:normalize" data-reference-type="ref"
+data-reference="w2-pr:normalize">87.2.3</a>, and <span
+class="math inline">\(g^{+} = g\)</span>, <span
+class="math inline">\(g^{-} = (g^c)^{-1}\)</span>. Section <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#sec:statement" data-reference-type="ref"
+data-reference="dp-sec:statement">80.1</a>: <span
+class="math inline">\(G_E\)</span>, <span
+class="math inline">\(g^c\)</span>, <span
+class="math inline">\(\chi_{\mathrm{cyc}}\)</span>, tame generators,
+coefficient rings. Cocycles, inertia and Frobenius <span
+class="citation" data-cites="SLF">[<a href="#ref-SLF">SLF</a>, Ch. I, IV,
+VII]</span>; Kummer theory <span class="citation"
+data-cites="Ne">[<a href="#ref-Ne">Ne</a>, Ch. IV, §3]</span>; ideles and
+the Artin map <span class="citation"
+data-cites="Ne">[<a href="#ref-Ne">Ne</a>, Ch. VI]</span>; lengths.</p>
+<p>The twisting theorem of Chapter <a href="20261126T031000--twists-with-few-congruences__workbook.html#chap"
+data-reference-type="ref" data-reference="tw-chap">85</a> uses
+the polynomial input of Chapter <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#chap"
+data-reference-type="ref" data-reference="w2-chap">87</a>, which
+takes as given the bounded tied primes (Section <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#sec:data"
+data-reference-type="ref"
+data-reference="w2-sec:data">87.3</a>): boundedly many
+auxiliary primes, with ties, bound each tied Selmer length by <span
+class="math inline">\(\mathrm{glob} + \mathrm{plc}\)</span>. Why is the
+number of primes bounded independently of the level <span
+class="math inline">\(\ell^{h_1}\)</span> of their characters? One
+minimizes the sum of the tied lengths over data and levels, then
+compares a tied module with a module of relations.</p>
+<p>Throughout, <span class="math inline">\(E\)</span>, <span
+class="math inline">\(\Sigma_0\)</span>, <span
+class="math inline">\(g_0\)</span> are as in Section <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#sec:universal" data-reference-type="ref"
+data-reference="w2-sec:universal">87.2</a>; <span
+class="math inline">\(T_{\mathrm{Sel},1}, \dots,
+T_{\mathrm{Sel},n}\)</span> are Selmer data for <span
+class="math inline">\((\Sigma_0, g_0)\)</span> over a coefficient ring
+<span class="math inline">\(\mathcal{O}\)</span> with uniformizer <span
+class="math inline">\(\pi\)</span>, all using the same fixed place above
+each finite place of <span class="math inline">\(E\)</span>. In this
+sheet they are written <span class="math inline">\(T_1, \dots,
+T_n\)</span>, and <span class="math inline">\(T\)</span> stands for any
+one of them; the target forms do not occur. <span
+class="math inline">\(\gamma = \gamma(T)\)</span> and <span
+class="math inline">\(\lambda\)</span> are the inertia element and
+scalar of a datum, and <span
+class="math inline">\(\operatorname{len}\)</span> is <span
+class="math inline">\(\mathcal{O}\)</span>-length. For <span
+class="math inline">\(0 \ne a \in \mathcal{O}\)</span>, <span
+class="math inline">\(\bar T_a = T/aT\)</span> as in Definition <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:selmer-datum" data-reference-type="ref"
+data-reference="w2-def:selmer-datum">87.3.1</a> and <span
+class="math inline">\(\bar T_a^{*} := \mathrm{Hom}_{\mathbb{Z}}(\bar
+T_a, \mathbb{Q}/\mathbb{Z})\)</span>, with <span
+class="math inline">\(\mathcal{O}\)</span> acting by precomposition. We
+fix integers <span class="math inline">\(c \ge 0\)</span>, <span
+class="math inline">\(h_1 &gt; c\)</span> and a neighbourhood <span
+class="math inline">\(W\)</span> of <span
+class="math inline">\(g_0\)</span>; <span
+class="math inline">\(\pi^{ce_{\mathcal{O}}}\mathcal{O}=
+\ell^c\mathcal{O}\)</span>. For tied primes <span
+class="math inline">\(Q\)</span> (Definition <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:tied"
+data-reference-type="ref"
+data-reference="w2-def:tied">87.3.4</a>) and <span
+class="math inline">\(0 \ne a \mid \ell^c\)</span>, <span
+class="math inline">\(Z_Q(T_i, a)\)</span> is the tied module of <span
+class="math inline">\(T_i\)</span> at level <span
+class="math inline">\(a\)</span>. Commutators are <span
+class="math inline">\([g, h] := ghg^{-1}h^{-1}\)</span>.</p>
+<h1 id="sec:prime">§88.1. A prime with a character</h1>
+<p>In the examples of this section <span class="math inline">\(E =
+\mathbb{Q}(i)\)</span>, <span class="math inline">\(\ell = 3\)</span>. A
+character for <span class="math inline">\(\{w\}\)</span> to <span
+class="math inline">\(\mathbb{Z}/3^{h_1}\)</span> with value <span
+class="math inline">\(1\)</span> at <span
+class="math inline">\(s_w\)</span> needs <span
+class="math inline">\(3^{h_1} \mid \#k_w - 1\)</span> and a surjective
+logarithm on <span class="math inline">\(k_w^\times\)</span> killing the
+residues of <span class="math inline">\(i\)</span>, <span
+class="math inline">\(3\)</span>.</p>
+<div id="pr:sixty-one" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:sixty-one&quot;]">
+<p><strong>Problem 88.1.1</strong>. <span class="upright">(a)</span> For
+<span class="math inline">\(h_1 = 1\)</span>: the least prime <span
+class="math inline">\(p \equiv 1 \pmod{12}\)</span> with <span
+class="math inline">\(3^{(p-1)/3} \equiv 1 \pmod p\)</span> is <span
+class="math inline">\(61 = (6+5i)(6-5i)\)</span>; modulo <span
+class="math inline">\(w = (6+5i)\)</span>, <span
+class="math inline">\(2\)</span> is a primitive root, <span
+class="math inline">\(i \equiv 11 = 2^{15}\)</span>, <span
+class="math inline">\(3 \equiv 2^{6}\)</span>, and both are cubes. <span
+class="upright">(b)</span> For <span class="math inline">\(h_1 =
+2\)</span>: the least prime <span class="math inline">\(p \equiv 1
+\pmod{36}\)</span> with <span class="math inline">\(3^{(p-1)/9} \equiv 1
+\pmod p\)</span> is <span class="math inline">\(1621\)</span>; modulo
+<span class="math inline">\(w = (39 - 10i)\)</span>, <span
+class="math inline">\(i \equiv 166 = 2^{405}\)</span>, <span
+class="math inline">\(3 \equiv 2^{1548}\)</span>, and both are ninth
+powers.</p>
+</div>
+<div id="pr:kummer" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:kummer&quot;]">
+<p><strong>Problem 88.1.2</strong>. Let <span
+class="math inline">\(w\)</span> be a finite place of a number field
+<span class="math inline">\(E\)</span> with <span
+class="math inline">\(\#k_w = 1 + \ell^{h_1}k&#39;\)</span>, and <span
+class="math inline">\(T&#39;\)</span> a finite set of finite places,
+<span class="math inline">\(w \notin T&#39;\)</span>, such that every
+finite idele is a principal idele times an idele that is a unit at every
+place outside <span class="math inline">\(T&#39;\)</span>. Suppose every
+element of <span class="math inline">\(E^\times\)</span> that is a unit
+outside <span class="math inline">\(T&#39;\)</span> is an <span
+class="math inline">\(\ell^{h_1}\)</span>-th power modulo <span
+class="math inline">\(w\)</span>, and let <span
+class="math inline">\(\log \colon k_w^\times \to
+\mathbb{Z}/\ell^{h_1}\)</span> be a surjective homomorphism. There is
+exactly one homomorphism <span class="math inline">\(\omega\)</span>
+from the finite ideles to <span
+class="math inline">\(\mathbb{Z}/\ell^{h_1}\)</span>, trivial on <span
+class="math inline">\(E^\times\)</span>, with <span
+class="math inline">\(\omega(x) = \log(x_w \bmod w)\)</span> for every
+idele <span class="math inline">\(x\)</span> that is a unit at each
+place outside <span class="math inline">\(T&#39;\)</span>; it is
+continuous.</p>
+</div>
+<p>Let <span class="math inline">\(E\)</span> be CM, <span
+class="math inline">\(w \ne \bar w\)</span> of prime norm, <span
+class="math inline">\(w \nmid \ell\)</span>, and <span
+class="math inline">\(T&#39;\)</span> contain the places above <span
+class="math inline">\(\ell\)</span>. Then <span
+class="math inline">\(\lg_w(\mathrm{Art}\,x) := \omega(x/\bar
+x)\)</span> defines a character for <span
+class="math inline">\(\{w\}\)</span>, by reciprocity <span
+class="citation" data-cites="Ne">[<a href="#ref-Ne">Ne</a>, Ch. VI]</span>;
+normalize <span class="math inline">\(\log\)</span> so that <span
+class="math inline">\(\lg_w(s_w) = 1\)</span>. With the Artin map of
+Definition <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:aux-twist" data-reference-type="ref"
+data-reference="dp-def:aux-twist">80.1.5</a>, at a principal
+place <span class="math inline">\(v = (\pi_v) \ne w, \bar w\)</span> its
+value at an arithmetic Frobenius element is <span
+class="math inline">\(\log(\pi_v/\bar\pi_v \bmod w)\)</span>.</p>
+<div id="pr:frobenius-value" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:frobenius-value&quot;]">
+<p><strong>Problem 88.1.3</strong>. Keep <span class="math inline">\(\ell =
+3\)</span>, <span class="math inline">\(h_1 = 1\)</span>, <span
+class="math inline">\(w = (6+5i)\)</span> and the primitive root <span
+class="math inline">\(2\)</span>. <span class="math inline">\(3^{24}
+\equiv 1 \pmod{73}\)</span>, <span class="math inline">\(73 =
+(8+3i)(8-3i)\)</span>; modulo <span class="math inline">\(w\)</span>,
+<span class="math inline">\((8+3i)/(8-3i) \equiv 2^{40}\)</span> and
+<span class="math inline">\((8-3i)/(8+3i) \equiv 2^{20}\)</span>. The
+values of <span class="math inline">\(\lg_w\)</span> at arithmetic
+Frobenius elements at the two primes above <span
+class="math inline">\(73\)</span> are <span
+class="math inline">\(1\)</span> and <span
+class="math inline">\(-1\)</span>, in some order.</p>
+</div>
+<p><em>Chebotarev’s theorem, existence form</em> (black box (i)). Let
+<span class="math inline">\(W&#39; \subseteq G_E\)</span> be nonempty
+and a neighbourhood of each of its points, and <span
+class="math inline">\(S\)</span> a finite set of finite places. There
+are a place <span class="math inline">\(v \notin S\)</span> of prime
+norm and a place <span class="math inline">\(P\)</span> of <span
+class="math inline">\(\bar{\mathbb{Q}}\)</span> above <span
+class="math inline">\(v\)</span> such that some arithmetic Frobenius
+element at <span class="math inline">\(P\)</span> lies in <span
+class="math inline">\(W&#39;\)</span>, and every arithmetic Frobenius
+element at <span class="math inline">\(P\)</span> lies in <span
+class="math inline">\(W&#39;\)</span>. <em>Status</em>: Theorem <a
+href="20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.html#thm:chebotarev" data-reference-type="ref"
+data-reference="bg-thm:chebotarev">33.3.1</a>.</p>
+<div id="pr:correct" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:correct&quot;]">
+<p><strong>Problem 88.1.4</strong>. Let <span
+class="math inline">\(\mathrm{Fr}\)</span> be an arithmetic Frobenius
+element at a place <span class="math inline">\(P\)</span> above <span
+class="math inline">\(w\)</span>, <span
+class="math inline">\(s_w\)</span> its tame generator, <span
+class="math inline">\(\lg_w\)</span> a homomorphism to <span
+class="math inline">\(\mathbb{Z}/\ell^{h_1}\)</span> with <span
+class="math inline">\(\lg_w(s_w) = 1\)</span>, and <span
+class="math inline">\(e&#39; \in \mathbb{Z}\)</span> with <span
+class="math inline">\(e&#39; \bmod \ell^{h_1} =
+\lg_w(\mathrm{Fr})\)</span>. Then <span
+class="math inline">\(\mathrm{Fr}\, s_w^{-e&#39;}\)</span> is an
+arithmetic Frobenius element at <span class="math inline">\(P\)</span>
+with <span class="math inline">\(\lg_w(\mathrm{Fr}\, s_w^{-e&#39;}) =
+0\)</span>.</p>
+</div>
+<p>We use the following positive-level form of the construction of
+auxiliary primes in <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>. <em>Auxiliary
+primes.</em> Let <span class="math inline">\(S\)</span>, <span
+class="math inline">\(R\)</span> be finite sets of finite places, <span
+class="math inline">\(g\)</span> an element of the normal subgroup
+generated by the inertia groups above the places of <span
+class="math inline">\(R\)</span> outside <span class="math inline">\(S
+\cup \bar S\)</span> and not above <span
+class="math inline">\(\ell\)</span>, and <span
+class="math inline">\(\mathcal{X}\)</span> a neighbourhood of <span
+class="math inline">\(g\)</span>. For every integer <span
+class="math inline">\(h_1 \ge 1\)</span> there are a place <span
+class="math inline">\(v \notin R \cup \bar R \cup S \cup \bar
+S\)</span>, <span class="math inline">\(v \nmid \ell\)</span>, of prime
+norm with <span class="math inline">\(\bar v \ne v\)</span> and <span
+class="math inline">\(\#k_v \equiv 1 \pmod{\ell^{h_1}}\)</span>; a place
+above <span class="math inline">\(v\)</span> with its tame generator
+<span class="math inline">\(s_v\)</span>; an arithmetic Frobenius
+element <span class="math inline">\(\mathrm{Fr}_v \in
+\mathcal{X}\)</span> there; and a locally constant homomorphism <span
+class="math inline">\(\lg_v \colon G_E \to
+\mathbb{Z}/\ell^{h_1}\)</span> with <span
+class="math inline">\(\lg_v(s_v) = 1\)</span>, <span
+class="math inline">\(\lg_v(\mathrm{Fr}_v) = 0\)</span>, coming by <span
+class="math inline">\(x \mapsto x/\bar x\)</span> from a character of
+the finite ideles trivial on <span
+class="math inline">\(E^\times\)</span> and on the ideles that are units
+outside <span class="math inline">\(S \cup \bar S\)</span> and the
+places above <span class="math inline">\(\ell\)</span> and congruent to
+<span class="math inline">\(1\)</span> at <span
+class="math inline">\(v\)</span>.</p>
+<p>The auxiliary-prime statement gives a <em>first prime</em>: for every
+<span class="math inline">\(h_1 &gt; c\)</span>, tied primes <span
+class="math inline">\(Q = \{w_*\}\)</span> for <span
+class="math inline">\(c\)</span>, <span
+class="math inline">\(W\)</span>, with all slopes <span
+class="math inline">\(0\)</span>.</p>
+<h1 id="sec:adding">§88.2. Adding a prime</h1>
+<div id="def:candidate" class="definition">
+<p><strong>Definition 88.2.1</strong>. Let <span
+class="math inline">\(Q\)</span> be tied primes at level <span
+class="math inline">\(\ell^{h_1}\)</span>, for <span
+class="math inline">\(c\)</span> and <span
+class="math inline">\(W\)</span>, with first prime <span
+class="math inline">\(w_*\)</span>. We define a <em>candidate for row
+<span class="math inline">\(i\)</span></em> to consist of a place <span
+class="math inline">\(v\)</span> and a choice of data at <span
+class="math inline">\(v\)</span>. The norm of <span
+class="math inline">\(v\)</span> is prime, <span
+class="math inline">\(v\ne\bar v\)</span>, <span
+class="math inline">\(v,\bar v\notin\Sigma_0\cup Q\)</span>, <span
+class="math inline">\(v\)</span> does not lie above the rational prime
+<span class="math inline">\(\#k_{w_*}\)</span>, and <span
+class="math inline">\(\#k_v\equiv1\pmod{\ell^{h_1}}\)</span>. The data
+consist of a place above <span class="math inline">\(v\)</span>, its
+tame generator <span class="math inline">\(s_v\)</span>, an arithmetic
+Frobenius element <span class="math inline">\(\mathrm{Fr}_v\)</span>
+there, and a locally constant homomorphism <span
+class="math inline">\(\lg_v\colon G_E\to\mathbb{Z}/\ell^{h_1}\)</span>
+with <span class="math inline">\(\lg_v(s_v)=1\)</span> and <span
+class="math inline">\(\lg_v(\mathrm{Fr}_v)=0\)</span>. For each <span
+class="math inline">\(D\subseteq(Q\smallsetminus\{w_*\})\cup\{u:u\mid\ell\}\)</span>,
+there must be a character <span class="math inline">\(\theta_D\)</span>
+of the finite ideles to <span
+class="math inline">\(\mathbb{Z}/\ell^{h_1}\)</span>, trivial on <span
+class="math inline">\(E^\times\)</span> and on the ideles that are units
+outside <span class="math inline">\(D\cup\bar D\)</span> and congruent
+to <span class="math inline">\(1\)</span> at <span
+class="math inline">\(v\)</span>, such that <span
+class="math inline">\(\lg_v(\mathrm{Art}\,x)=\theta_D(x/\bar x)\)</span>
+for every finite idele <span class="math inline">\(x\)</span>. Finally,
+<span class="math inline">\(\lg_w(\mathrm{Fr}_v)\)</span> is <span
+class="math inline">\(1\)</span> for <span
+class="math inline">\(w=w_*\)</span> and <span
+class="math inline">\(0\)</span> for the other <span
+class="math inline">\(w\in Q\)</span>, and <span
+class="math inline">\(T_i(\mathrm{Fr}_v^{\pm})\equiv1\pmod{\ell^c}\)</span>.
+We denote a candidate with its data by <span
+class="math inline">\(v\)</span>. For <span class="math inline">\(0 \ne
+a \mid \ell^c\)</span>, <span class="math inline">\(Z^v_Q(T_j,
+a)\)</span> is defined as <span class="math inline">\(Z_Q(T_j,
+a)\)</span> but with ramification allowed also at <span
+class="math inline">\(v\)</span> and <span class="math inline">\(\bar
+v\)</span>, and no tie there.</p>
+</div>
+<p><em>Tame local cocycles</em> (black box (iii)). Let <span
+class="math inline">\(v \nmid \ell\)</span> be a place at which <span
+class="math inline">\(T\)</span> is unramified, <span
+class="math inline">\(P\)</span> a place of <span
+class="math inline">\(\bar{\mathbb{Q}}\)</span> above <span
+class="math inline">\(v\)</span>, and <span class="math inline">\(s \in
+I_P\)</span> an element whose image topologically generates the tame
+quotient of the inertia group <span class="math inline">\(I_P\)</span>.
+A locally constant cocycle <span class="math inline">\(z \colon G_E \to
+\bar T_a\)</span> with <span class="math inline">\(z(s) = 0\)</span>
+vanishes on every inertia group above <span
+class="math inline">\(v\)</span>; if moreover <span
+class="math inline">\(z(F) = 0\)</span> for an element <span
+class="math inline">\(F\)</span> of the decomposition group <span
+class="math inline">\(G_P\)</span> mapping to a topological generator of
+<span class="math inline">\(G_P/I_P\)</span>, then <span
+class="math inline">\(z = 0\)</span> on <span
+class="math inline">\(G_P\)</span>. <em>Status</em>: classical; the tame
+quotient is procyclic <span class="citation"
+data-cites="SLF">[<a href="#ref-SLF">SLF</a>, Ch. IV, §2]</span>. If <span
+class="math inline">\(T\)</span> is unramified also at <span
+class="math inline">\(\bar v\)</span>, the criterion there uses <span
+class="math inline">\(s_v^{-}\)</span> and <span
+class="math inline">\(\mathrm{Fr}_v^{-}\)</span>; both hypotheses hold
+for a candidate.</p>
+<div id="def:evaluations" class="definition">
+<p><strong>Definition 88.2.2</strong>. For a candidate <span
+class="math inline">\(v\)</span>: <span
+class="math inline">\(\mathrm{ev}_s(z) := (z(s_v^{+}),
+z(s_v^{-}))\)</span> and <span
+class="math inline">\(\mathrm{ev}_{\mathrm{Fr}}(z) :=
+(z(\mathrm{Fr}_v^{+}), z(\mathrm{Fr}_v^{-}))\)</span>, in <span
+class="math inline">\(\bar T_a^{\,2}\)</span>.</p>
+</div>
+<div id="pr:old" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:old&quot;]">
+<p><strong>Problem 88.2.1</strong>. Let <span
+class="math inline">\(v\)</span> be a candidate for row <span
+class="math inline">\(i\)</span>. <span class="upright">(a)</span> <span
+class="math inline">\(Q \cup \{v\}\)</span>, with any <span
+class="math inline">\(\mathrm{sl}_i(v) \in \mathcal{O}\)</span> and
+<span class="math inline">\(\mathrm{sl}_j(v) = 0\)</span> for <span
+class="math inline">\(j \ne i\)</span>, is tied primes with first prime
+<span class="math inline">\(w_*\)</span>. <span
+class="upright">(b)</span> On <span class="math inline">\(Z^v_Q(T_j,
+a)\)</span>, <span class="math inline">\(\ker \mathrm{ev}_s = Z_Q(T_j,
+a)\)</span>. <span class="upright">(c)</span> The tied module of <span
+class="math inline">\(T_i\)</span> for <span class="math inline">\(Q
+\cup \{v\}\)</span> is <span class="math inline">\(Z^v_Q(T_i, a) \cap
+\ker(\mathrm{ev}_s -
+\mathrm{sl}_i(v)\mathrm{ev}_{\mathrm{Fr}})\)</span>, and that of <span
+class="math inline">\(T_j\)</span>, <span class="math inline">\(j \ne
+i\)</span>, is <span class="math inline">\(Z_Q(T_j, a)\)</span>. <span
+class="upright">(d)</span> If all slopes of row <span
+class="math inline">\(j\)</span> are <span
+class="math inline">\(0\)</span>, every member of <span
+class="math inline">\(Z_Q(T_j, a)\)</span> is unramified outside <span
+class="math inline">\(\Sigma(T_j)\)</span>.</p>
+</div>
+<div id="pr:tilt-example" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:tilt-example&quot;]">
+<p><strong>Problem 88.2.2</strong>. On <span class="math inline">\(C =
+\mathbb{F}_5^2\)</span> let <span
+class="math inline">\(\mathrm{ev}_s(u_1, u_2) = (u_1, 0)\)</span> and
+<span class="math inline">\(\mathrm{ev}_{\mathrm{Fr}}(u_1, u_2) = (2u_1,
+u_2)\)</span>. Then <span
+class="math inline">\(\#\ker(\alpha\,\mathrm{ev}_s -
+\mathrm{ev}_{\mathrm{Fr}}) = 1, 1, 5, 1, 1\)</span> for <span
+class="math inline">\(\alpha = 0, \dots, 4\)</span>; the old module
+<span class="math inline">\(\ker \mathrm{ev}_s\)</span> has <span
+class="math inline">\(5\)</span> elements, and <span
+class="math inline">\(\ker \mathrm{ev}_s \cap
+\mathrm{ev}_{\mathrm{Fr}}^{-1}(\mathrm{ev}_s C) = \{0\}\)</span>.</p>
+</div>
+<div id="pr:tilting" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:tilting&quot;]">
+<p><strong>Problem 88.2.3</strong>. Let <span
+class="math inline">\(C\)</span> be an <span
+class="math inline">\(\mathcal{O}\)</span>-module of finite length and
+<span class="math inline">\(\mathrm{ev}_s, \mathrm{ev}_{\mathrm{Fr}}
+\colon C \to (\mathcal{O}/\pi^k)^{n&#39;}\)</span> linear. Outside at
+most <span class="math inline">\(n&#39;\)</span> residue classes of
+<span class="math inline">\(\alpha \in \mathcal{O}\)</span> modulo <span
+class="math inline">\(\pi\)</span>, <span
+class="math display">\[\operatorname{len}\ker(\alpha\,\mathrm{ev}_s -
+\mathrm{ev}_{\mathrm{Fr}}) \le \operatorname{len}\bigl(\ker
+\mathrm{ev}_s \cap \mathrm{ev}_{\mathrm{Fr}}^{-1}(\mathrm{ev}_s
+C)\bigr).\]</span></p>
+</div>
+<p>Locally constant cocycles of <span class="math inline">\(G_E\)</span>
+in a finite module, unramified outside a fixed finite set, are finitely
+many <span class="citation" data-cites="NSW">[<a href="#ref-NSW">NSW</a>,
+Thm. 8.3.20]</span>; so these modules have finite length. Define <span
+class="math inline">\(\mathrm{tot}(Q) := \sum_{j=1}^n
+\sum_{k=1}^{ce_{\mathcal{O}}} \operatorname{len}Z_Q(T_j,
+\pi^k)\)</span>, and <span
+class="math inline">\(\mathrm{tot}_\varnothing\)</span> as the same sum
+for the modules of locally constant cocycles unramified outside <span
+class="math inline">\(\Sigma(T_j)\)</span>, with the local relations and
+<span class="math inline">\(z(\gamma(T_j)) = 0\)</span>.</p>
+<div id="pr:decrease" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:decrease&quot;]">
+<p><strong>Problem 88.2.4</strong>. Assume <span
+class="math inline">\(2\operatorname{rk}T_i \cdot ce_{\mathcal{O}} + 1
+&lt; \#k_{\mathcal{O}}\)</span>. Let <span
+class="math inline">\(v\)</span> be a candidate for row <span
+class="math inline">\(i\)</span> with <span
+class="math inline">\(\mathrm{ev}_{\mathrm{Fr}}(z) \notin \mathrm{ev}_s
+Z^v_Q(T_i, \pi^k)\)</span> for some <span class="math inline">\(1 \le k
+\le ce_{\mathcal{O}}\)</span> and <span class="math inline">\(z \in
+Z_Q(T_i, \pi^k)\)</span>. For some unit <span
+class="math inline">\(\alpha\)</span>, the tied primes <span
+class="math inline">\(Q \cup \{v\}\)</span> with <span
+class="math inline">\(\mathrm{sl}_i(v) = \alpha^{-1}\)</span> and <span
+class="math inline">\(\mathrm{sl}_j(v) = 0\)</span> for <span
+class="math inline">\(j \ne i\)</span> have <span
+class="math inline">\(\mathrm{tot}(Q \cup \{v\}) &lt;
+\mathrm{tot}(Q)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:minimum">Problem 88.2.5</a>; <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a></div><!-- used-in:end -->
+</div>
+<div id="pr:minimum" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:minimum&quot;]">
+<p><strong>Problem 88.2.5</strong>. Assume the inequality of Problem <a
+href="#pr:decrease" data-reference-type="ref"
+data-reference="pr:decrease">88.2.4</a> for every <span
+class="math inline">\(i\)</span>, and fix a first prime <span
+class="math inline">\(w_*\)</span>. Among all tied primes (sets, data
+and slopes) with first prime <span class="math inline">\(w_*\)</span>
+and <span class="math inline">\(\#Q + \mathrm{tot}(Q) \le 1 +
+\mathrm{tot}(\{w_*\})\)</span>, take one with <span
+class="math inline">\(\mathrm{tot}(Q)\)</span> least. Then <span
+class="math inline">\(\#Q \le 1 + \mathrm{tot}_\varnothing\)</span>,
+independent of <span class="math inline">\(h_1\)</span>, <span
+class="math inline">\(w_*\)</span>; and <span
+class="math inline">\(\mathrm{ev}_{\mathrm{Fr}} Z_Q(T_i, \pi^k)
+\subseteq \mathrm{ev}_s Z^v_Q(T_i, \pi^k)\)</span> for every <span
+class="math inline">\(i\)</span>, every <span class="math inline">\(1
+\le k \le ce_{\mathcal{O}}\)</span> and every candidate <span
+class="math inline">\(v\)</span> for row <span
+class="math inline">\(i\)</span>.</p>
+</div>
+<h1 id="sec:count">§88.3. The count</h1>
+<div id="pr:primitive" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:primitive&quot;]">
+<p><strong>Problem 88.3.1</strong>. Let <span class="math inline">\(k \le
+ce_{\mathcal{O}}\)</span> be least with <span
+class="math inline">\(\pi^k Z_Q(T, \ell^c) = 0\)</span>. Multiplication
+by <span class="math inline">\(\pi^{ce_{\mathcal{O}} - k}\)</span>
+induces an isomorphism <span class="math inline">\(Z_Q(T, \pi^k) \simeq
+Z_Q(T, \ell^c)\)</span>, and if <span class="math inline">\(k \ge
+1\)</span>, some value of some member of <span
+class="math inline">\(Z_Q(T, \pi^k)\)</span> has a unit coordinate.</p>
+</div>
+<p><em>The setting of the count.</em> Let <span
+class="math inline">\(V\)</span> be a finite discrete <span
+class="math inline">\(\mathcal{O}\)</span>-module killed by <span
+class="math inline">\(\ell^{h_1}\)</span> with a continuous <span
+class="math inline">\(\mathcal{O}\)</span>-linear action of <span
+class="math inline">\(G_E\)</span>, <span class="math inline">\(V^{*} :=
+\mathrm{Hom}_{\mathbb{Z}}(V, \mathbb{Q}/\mathbb{Z})\)</span>, <span
+class="math inline">\(G&#39;\)</span> a normal subgroup of finite index,
+closed, fixing <span class="math inline">\(V\)</span> and <span
+class="math inline">\(\mu_{\ell^{h_1}}\)</span>, and <span
+class="math inline">\(\Sigma&#39;\)</span> a finite set of finite places
+outside which <span class="math inline">\(V\)</span> is unramified. At
+each <span class="math inline">\(v \in \Sigma&#39;\)</span> fix a place
+of <span class="math inline">\(\bar{\mathbb{Q}}\)</span> and an <span
+class="math inline">\(\mathcal{O}\)</span>-module <span
+class="math inline">\(A_v\)</span> of continuous cocycles on its
+decomposition group containing the coboundaries. For a set <span
+class="math inline">\(R\)</span> of places, <span
+class="math inline">\(Z(R)\)</span> is the module of locally constant
+cocycles <span class="math inline">\(G_E \to V\)</span>, unramified
+outside <span class="math inline">\(\Sigma&#39; \cup R\)</span>, with
+restriction in <span class="math inline">\(A_v\)</span> at each <span
+class="math inline">\(v \in \Sigma&#39;\)</span>; <span
+class="math inline">\(f_E\)</span> is the number of infinite places of
+<span class="math inline">\(E\)</span>.</p>
+<div id="def:relations" class="definition">
+<p><strong>Definition 88.3.1</strong>. For a finite set <span
+class="math inline">\(\Sigma&#39;&#39;\)</span> of finite places, <span
+class="math inline">\(\mathrm{Rel}(\Sigma&#39;&#39;)\)</span> is the
+<span class="math inline">\(\mathcal{O}\)</span>-module of locally
+constant <span class="math inline">\(y \colon G_E \to V^{*}\)</span>,
+zero off <span class="math inline">\(G&#39;\)</span>, additive on <span
+class="math inline">\(G&#39;\)</span>, zero on the inertia groups above
+the places outside <span
+class="math inline">\(\Sigma&#39;&#39;\)</span>, with <span
+class="math inline">\(y(gug^{-1}) = \chi_{\mathrm{cyc}}(g)\,y(u) \circ
+g^{-1}\)</span> for <span class="math inline">\(g \in G_E\)</span>,
+<span class="math inline">\(u \in G&#39;\)</span> (<span
+class="math inline">\(\chi_{\mathrm{cyc}}\)</span> read modulo <span
+class="math inline">\(\ell^{h_1}\)</span>), and such that <span
+class="math inline">\(\sum_j y(\mathrm{Fr}_j)(z(s_j)) = 0\)</span> for
+every finite family of distinct places <span class="math inline">\(v_j
+\notin \Sigma&#39;&#39;\)</span>, places above them with arithmetic
+Frobenius elements <span class="math inline">\(\mathrm{Fr}_j \in
+G&#39;\)</span> and elements <span class="math inline">\(s_j\)</span> of
+their inertia groups with <span class="math inline">\(s_j(r_j)/r_j =
+\zeta\)</span> for some <span class="math inline">\(r_j\)</span> with
+<span class="math inline">\(r_j^{\ell^{h_1}} \in E^\times\)</span> of
+valuation <span class="math inline">\(1\)</span> at <span
+class="math inline">\(v_j\)</span>, <span
+class="math inline">\(\zeta\)</span> one fixed primitive <span
+class="math inline">\(\ell^{h_1}\)</span>-th root of unity; and every
+<span class="math inline">\(z \in Z(\{v_j\})\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.html">Chapter 33</a>: <a href="20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.html#pr:restrict">Problem 33.4.4</a>, <a href="20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.html#pr:local-sum">Problem 33.4.5</a>, <a href="20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.html#pr:count">Problem 33.4.6</a></div><!-- used-in:end -->
+</div>
+<p><em>The Greenberg–Wiles count</em> (black box (ii)). Let <span
+class="math inline">\(E\)</span> be totally complex, <span
+class="math inline">\(\sigma \in G_E\)</span> fix <span
+class="math inline">\(\mu_{\ell^\infty}\)</span>, with <span
+class="math inline">\([\sigma, g] \in G&#39;\)</span> for all <span
+class="math inline">\(g\)</span> and no nonzero fixed vector in <span
+class="math inline">\(V\)</span>, and let <span class="math inline">\(p
+\ge 1\)</span> be an integer prime to <span
+class="math inline">\(\ell\)</span>, divisible by no place of <span
+class="math inline">\(\Sigma&#39;\)</span>, with the inertia groups
+above the primes dividing <span class="math inline">\(p\)</span>
+contained in <span class="math inline">\(G&#39;\)</span>. There is a
+finite <span class="math inline">\(\Sigma&#39;&#39; \supseteq
+\Sigma&#39;\)</span> containing no place above a prime dividing <span
+class="math inline">\(p\)</span> with <span
+class="math display">\[\#Z(\varnothing)\cdot (\#V)^{\#\Sigma&#39; + f_E}
+\le \#\mathrm{Rel}(\Sigma&#39;&#39;)\cdot \#V \cdot \prod_{v \in
+\Sigma&#39;} \#A_v .\]</span> <em>Status</em>: Problem <a
+href="20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.html#pr:count" data-reference-type="ref"
+data-reference="bg-pr:count">33.4.6</a> derives this inequality
+from the formula of Greenberg and Wiles (Theorem <a href="20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.html#thm:gw"
+data-reference-type="ref" data-reference="bg-thm:gw">33.1.3</a>)
+with <span
+class="math inline">\(\Sigma&#39;&#39;=\Sigma&#39;\cup\{v\mid\ell\}\)</span>.</p>
+<p><em>The tied setting.</em> For <span class="math inline">\(T =
+T_i\)</span>, tied primes <span class="math inline">\(Q\)</span> and
+<span class="math inline">\(a = \pi^k\)</span>, <span
+class="math inline">\(1 \le k \le ce_{\mathcal{O}}\)</span>: <span
+class="math inline">\(V = \bar T_a\)</span>; <span
+class="math inline">\(G&#39;\)</span> is the kernel of the action on
+<span class="math inline">\(T/\ell^cT\)</span> and on <span
+class="math inline">\(\mu_{\ell^{h_1}}\)</span>; <span
+class="math inline">\(\Sigma&#39; := \Sigma(T) \cup Q&#39; \cup \bar
+Q&#39;\)</span> with <span class="math inline">\(Q&#39; := Q
+\smallsetminus \{w_*\}\)</span>; at <span class="math inline">\(v \in
+\Sigma(T)\)</span> use the fixed place above <span
+class="math inline">\(v\)</span>, at <span class="math inline">\(w \in
+Q&#39;\)</span> that of <span class="math inline">\(s_w\)</span>, at
+<span class="math inline">\(\bar w\)</span> its conjugate; <span
+class="math inline">\(A_v\)</span> is the module of restrictions of the
+locally constant cocycles <span class="math inline">\(G_E \to \bar
+T_a\)</span> with the local relations of <span
+class="math inline">\(T\)</span> and the ties at <span
+class="math inline">\(Q\)</span>. Read from the proof <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>: <span
+class="math inline">\(\sum_{v \mid \ell} \operatorname{len}A_v \le
+(\#\{v \mid \ell\} + f_E)\operatorname{len}\bar T_a\)</span>, and <span
+class="math inline">\(\operatorname{len}A_v \le \operatorname{len}\bar
+T_a\)</span> plus the local term at <span
+class="math inline">\(v\)</span> of Definition <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:selmer-datum" data-reference-type="ref"
+data-reference="w2-def:selmer-datum">87.3.1</a>, for
+<span class="math inline">\(v \in \Sigma(T)\)</span> prime to <span
+class="math inline">\(\ell\)</span>. Also read from the proof: <em>let
+<span class="math inline">\(\Sigma&#39;&#39;\)</span> be finite with
+<span class="math inline">\(w_*, \bar w_* \notin
+\Sigma&#39;&#39;\)</span>; if <span class="math inline">\(v\)</span> is
+a candidate for row <span class="math inline">\(i\)</span> with <span
+class="math inline">\(v, \bar v \notin \Sigma&#39;&#39;\)</span> and
+<span class="math inline">\(\mathrm{Fr}_v, \mathrm{Fr}_v^c \in
+G&#39;\)</span>, then for <span class="math inline">\(y \in
+\mathrm{Rel}(\Sigma&#39;&#39;)\)</span>, <span
+class="math inline">\(z&#39; \in Z^v_Q(T_i, a)\)</span> and <span
+class="math inline">\(a&#39; \in \mathcal{O}\)</span></em> <span
+class="math display">\[y(\mathrm{Fr}_v)(a&#39;z&#39;(s_v)) +
+y(\mathrm{Fr}_v^c)(a&#39;z&#39;(s_v^{-})) = 0 .\]</span></p>
+<div id="pr:coboundaries" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:coboundaries&quot;]">
+<p><strong>Problem 88.3.2</strong>. <span class="upright">(a)</span> <span
+class="math inline">\(Z_Q(T, a) \subseteq Z(\varnothing) \cap \ker(z
+\mapsto z(\gamma))\)</span>. <span class="upright">(b)</span> The
+coboundaries lie in <span class="math inline">\(Z(\varnothing)\)</span>,
+and evaluation at <span class="math inline">\(\gamma\)</span> maps them
+onto <span class="math inline">\(\bar T_a\)</span>. <span
+class="upright">(c)</span> <span
+class="math inline">\(\operatorname{len}Z(\varnothing) \ge
+\operatorname{len}\bar T_a + \operatorname{len}Z_Q(T, a)\)</span>.</p>
+</div>
+<div id="pr:count-example" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:count-example&quot;]">
+<p><strong>Problem 88.3.3</strong>. Let <span class="math inline">\(E =
+\mathbb{Q}(\sqrt{-5})\)</span>, <span class="math inline">\(L =
+\mathbb{Q}(i, \sqrt 5) = E(i)\)</span>, <span class="math inline">\(\ell
+= 3\)</span>, <span class="math inline">\(\mathcal{O}=
+\mathbb{Z}_3\)</span>, and let <span class="math inline">\(G_E\)</span>
+act on <span class="math inline">\(V = \mathbb{F}_3\)</span> through
+<span class="math inline">\(\mathrm{Gal}(L/E) = \{1, \delta\}\)</span>
+by the sign. <span class="upright">(a)</span> The discriminants of <span
+class="math inline">\(E\)</span>, <span class="math inline">\(L\)</span>
+are <span class="math inline">\(-20\)</span>, <span
+class="math inline">\(400\)</span> and the class numbers <span
+class="math inline">\(2\)</span>, <span
+class="math inline">\(1\)</span>; <span
+class="math inline">\(L/E\)</span> is unramified at every finite place,
+and the locally constant cocycles <span class="math inline">\(G_E \to
+V\)</span> unramified at every finite place are exactly the <span
+class="math inline">\(3\)</span> coboundaries. <span
+class="upright">(b)</span> There is <span class="math inline">\(\sigma
+\in G_E\)</span> restricting to <span
+class="math inline">\(\delta\)</span> and fixing <span
+class="math inline">\(\mu_{3^\infty}\)</span>; with <span
+class="math inline">\(G&#39; = G_{L(\sqrt{-3})}\)</span>, <span
+class="math inline">\(p = 7\)</span>, <span class="math inline">\(h_1 =
+1\)</span>, <span class="math inline">\(\Sigma&#39; =
+\varnothing\)</span>, the count gives a finite <span
+class="math inline">\(\Sigma&#39;&#39;\)</span> with <span
+class="math inline">\(3 \cdot 3 \le \#\mathrm{Rel}(\Sigma&#39;&#39;)
+\cdot 3\)</span>.</p>
+</div>
+<div id="pr:cancel" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:cancel&quot;]">
+<p><strong>Problem 88.3.4</strong>. In the tied setting, the count with
+<span class="math inline">\(\sigma = \gamma\)</span> and <span
+class="math inline">\(p = \#k_{w_*}\)</span> gives a finite <span
+class="math inline">\(\Sigma&#39;&#39; \supseteq \Sigma&#39;\)</span>
+containing no place above <span class="math inline">\(p\)</span>, in
+particular neither <span class="math inline">\(w_*\)</span> nor <span
+class="math inline">\(\bar w_*\)</span>, with <span
+class="math inline">\(\operatorname{len}Z_Q(T, a) \le
+\operatorname{len}\mathrm{Rel}(\Sigma&#39;&#39;) +
+\mathrm{plc}(T)\)</span>.</p>
+</div>
+<h1 id="sec:mirror">§88.4. The mirror</h1>
+<div id="def:commutators" class="definition">
+<p><strong>Definition 88.4.1</strong>. <span
+class="math inline">\(\mathcal{K}= \mathcal{K}(T)\)</span> is the
+subgroup of <span class="math inline">\(G_E\)</span> generated by the
+commutators <span class="math inline">\([g, \gamma]\)</span> and <span
+class="math inline">\([g, \gamma^c]\)</span>, <span
+class="math inline">\(g \in G_E\)</span>.</p>
+</div>
+<div id="pr:commutator" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:commutator&quot;]">
+<p><strong>Problem 88.4.1</strong>. Let <span class="math inline">\(z \colon
+G_E \to \bar T_a\)</span> be a cocycle with <span
+class="math inline">\(z(\gamma) = 0\)</span>. <span
+class="upright">(a)</span> <span class="math inline">\(z([g, \gamma]) =
+(1 - \lambda)z(g)\)</span>. <span class="upright">(b)</span> <span
+class="math inline">\(\mathcal{K}\)</span> is normal and stable under
+<span class="math inline">\(g \mapsto g^c\)</span>, acts trivially on
+<span class="math inline">\(T\)</span>, lies in <span
+class="math inline">\(G&#39;\)</span>, and <span
+class="math inline">\(z(ghg^{-1}) = g\,z(h)\)</span> for <span
+class="math inline">\(h \in \mathcal{K}\)</span>. <span
+class="upright">(c)</span> If some value of <span
+class="math inline">\(z\)</span> has a unit coordinate, <span
+class="math inline">\(z(\mathcal{K})\)</span> spans <span
+class="math inline">\(\bar T_a\)</span> over <span
+class="math inline">\(\mathcal{O}\)</span>.</p>
+</div>
+<div id="def:mirror" class="definition">
+<p><strong>Definition 88.4.2</strong>. For <span class="math inline">\(z
+\colon G_E \to \bar T_a\)</span>, <span class="math inline">\(y \colon
+G_E \to \bar T_a^{*}\)</span> and <span class="math inline">\(a&#39; \in
+\mathcal{O}\)</span>, define the <em>mirror form</em> by <span
+class="math inline">\(\mathrm{Mir}_{a&#39;}(h, h&#39;) :=
+y(h&#39;)(a&#39;z(h)) - y(h^c)(a&#39;z(h&#39;^c))\)</span>, with values
+in <span class="math inline">\(\mathbb{Q}/\mathbb{Z}\)</span>.</p>
+</div>
+<p>From the statement on auxiliary primes the proof obtains, for tied
+primes <span class="math inline">\(Q\)</span>, a row <span
+class="math inline">\(i\)</span>, <span class="math inline">\(h \in
+\mathcal{K}(T_i)\)</span>, a finite set <span
+class="math inline">\(R\)</span> and a neighbourhood <span
+class="math inline">\(\mathcal{X}\)</span> of <span
+class="math inline">\(s_{w_*}h\)</span>: <em>a candidate <span
+class="math inline">\(v\)</span> for row <span
+class="math inline">\(i\)</span> with <span class="math inline">\(v,
+\bar v \notin R\)</span> and <span class="math inline">\(\mathrm{Fr}_v
+\in \mathcal{X}\)</span></em> (read from the proof <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>).</p>
+<div id="pr:diagonal" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:diagonal&quot;]">
+<p><strong>Problem 88.4.2</strong>. Let <span class="math inline">\(z \in
+Z_Q(T_i, \pi^k)\)</span> with <span
+class="math inline">\(\mathrm{ev}_{\mathrm{Fr}}(z) \in \mathrm{ev}_s
+Z^v_Q(T_i, \pi^k)\)</span> for every candidate <span
+class="math inline">\(v\)</span> for row <span
+class="math inline">\(i\)</span>, and <span class="math inline">\(y \in
+\mathrm{Rel}(\Sigma&#39;&#39;)\)</span> with <span
+class="math inline">\(w_*, \bar w_* \notin \Sigma&#39;&#39;\)</span>.
+Then <span class="math inline">\(\mathrm{Mir}_{a&#39;}(h, h) =
+0\)</span> for all <span class="math inline">\(h \in
+\mathcal{K}(T_i)\)</span> and <span class="math inline">\(a&#39; \in
+\mathcal{O}\)</span>.</p>
+</div>
+<div id="pr:polarize" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:polarize&quot;]">
+<p><strong>Problem 88.4.3</strong>. Let <span
+class="math inline">\(z\)</span> be a cocycle with <span
+class="math inline">\(z(\gamma) = 0\)</span>, <span
+class="math inline">\(y \in \mathrm{Rel}(\Sigma&#39;&#39;)\)</span>, and
+suppose <span class="math inline">\(\mathrm{Mir}_{a&#39;}(h, h) =
+0\)</span> for all <span class="math inline">\(h \in
+\mathcal{K}\)</span> and <span class="math inline">\(a&#39; \in
+\mathcal{O}\)</span>. <span class="upright">(a)</span> <span
+class="math inline">\(\mathrm{Mir}_{a&#39;}(h, h&#39;) +
+\mathrm{Mir}_{a&#39;}(h&#39;, h) = 0\)</span> for <span
+class="math inline">\(h, h&#39; \in \mathcal{K}\)</span>. <span
+class="upright">(b)</span> For <span class="math inline">\(h \in
+\mathcal{K}\)</span>, <span class="math inline">\(h&#39; \in
+G_E\)</span>: <span class="math inline">\(\mathrm{Mir}_{a&#39;}(\gamma
+h\gamma^{-1}, h&#39;) = \mathrm{Mir}_{\lambda a&#39;}(h,
+h&#39;)\)</span> and <span class="math inline">\(\mathrm{Mir}_{\lambda
+a&#39;}(h&#39;, \gamma h\gamma^{-1}) = \mathrm{Mir}_{a&#39;}(h&#39;,
+h)\)</span>. <span class="upright">(c)</span> <span
+class="math inline">\(\mathrm{Mir}_{a&#39;} = 0\)</span> on <span
+class="math inline">\(\mathcal{K}\times \mathcal{K}\)</span> for every
+<span class="math inline">\(a&#39;\)</span>.</p>
+</div>
+<div id="pr:mirror-example" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:mirror-example&quot;]">
+<p><strong>Problem 88.4.4</strong>. In the model group <span
+class="math inline">\(\mathbb{F}_5^2\)</span> with <span
+class="math inline">\((u_1, u_2)^c = (u_2, u_1)\)</span> and <span
+class="math inline">\(z(u) = u_1\)</span>, the linear <span
+class="math inline">\(y_0(u) = Au_1 + Bu_2\)</span> with <span
+class="math inline">\(y_0(h)z(h) = y_0(h^c)z(h^c)\)</span> for all <span
+class="math inline">\(h\)</span> are exactly those with <span
+class="math inline">\(A = 0\)</span>; then <span
+class="math inline">\(y_0(h^c) = B\,z(h)\)</span>.</p>
+</div>
+<div id="pr:inject" class="problem" data-progress-ids="[&quot;20261126T060700--tied-primes__workbook.tex#pr:inject&quot;]">
+<p><strong>Problem 88.4.5</strong>. Fix a cocycle <span
+class="math inline">\(z \colon G_E \to \bar T_a\)</span> such that <span
+class="math inline">\(z(\mathcal{K})\)</span> spans <span
+class="math inline">\(\bar T_a\)</span>, and assume that for every <span
+class="math inline">\(y \in \mathrm{Rel}(\Sigma&#39;&#39;)\)</span> the
+mirror form of <span class="math inline">\(z, y\)</span> vanishes on
+<span class="math inline">\(\mathcal{K}\times \mathcal{K}\)</span> for
+every <span class="math inline">\(a&#39;\)</span>. <span
+class="upright">(a)</span> For each <span
+class="math inline">\(y\)</span> there is a unique <span
+class="math inline">\(\mathcal{O}\)</span>-linear <span
+class="math inline">\(\eta_y \colon \bar T_a \to \bar T_a^{*}\)</span>
+with <span class="math inline">\(\eta_y(z(h)) = y(h^c)\)</span> for
+<span class="math inline">\(h \in \mathcal{K}\)</span>. <span
+class="upright">(b)</span> <span class="math inline">\(\eta_y\)</span>
+is <span class="math inline">\(G_E\)</span>-equivariant into <span
+class="math inline">\(\bar T_a^{*c}\)</span> of Definition <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:selmer-datum" data-reference-type="ref"
+data-reference="w2-def:selmer-datum">87.3.1</a>. <span
+class="upright">(c)</span> <span class="math inline">\(y \mapsto
+\eta_y\)</span> is <span
+class="math inline">\(\mathcal{O}\)</span>-linear and injective, and
+<span
+class="math inline">\(\operatorname{len}\mathrm{Rel}(\Sigma&#39;&#39;)
+\le \mathrm{glob}(T)\)</span>.</p>
+</div>
+<div id="thm:tied" class="theorem">
+<p><strong>Theorem 88.4.1</strong> (tied primes). <em>Let <span
+class="math inline">\(T_{\mathrm{Sel},1}, \dots,
+T_{\mathrm{Sel},n}\)</span> be Selmer data for <span
+class="math inline">\((\Sigma_0, g_0)\)</span> over <span
+class="math inline">\(\mathcal{O}\)</span>, <span
+class="math inline">\(c \ge 0\)</span> an integer with <span
+class="math inline">\(2\operatorname{rk}T_{\mathrm{Sel},i}\,\mathrm{ord}_{\mathcal{O}}(\ell^{c})
++ 1 &lt; \#k_{\mathcal{O}}\)</span> for all <span
+class="math inline">\(i\)</span>, and <span
+class="math inline">\(W\)</span> a neighbourhood of <span
+class="math inline">\(g_0\)</span> in <span
+class="math inline">\(G_E\)</span>. There is a nonnegative integer <span
+class="math inline">\(n_Q\)</span> such that for every integer <span
+class="math inline">\(h_1 &gt; c\)</span> there are tied primes at level
+<span class="math inline">\(\ell^{h_1}\)</span>, for <span
+class="math inline">\(c\)</span> and <span
+class="math inline">\(W\)</span>, with <span class="math inline">\(\#Q
+\le n_Q\)</span>, for which the tied module of each <span
+class="math inline">\(T_{\mathrm{Sel},i}\)</span> at level <span
+class="math inline">\(\ell^{c}\)</span> has <span
+class="math inline">\(\mathcal{O}\)</span>-length at most <span
+class="math inline">\(\mathrm{glob}(T_{\mathrm{Sel},i}) +
+\mathrm{plc}(T_{\mathrm{Sel},i})\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html">Chapter 87</a>; <a href="20261126T081200--a-measure-for-hecke-values__workbook.html">Chapter 89</a></div><!-- used-in:end -->
+</div>
+<p>Problems <a href="#pr:minimum" data-reference-type="ref"
+data-reference="pr:minimum">88.2.5</a>, <a href="#pr:primitive"
+data-reference-type="ref" data-reference="pr:primitive">88.3.1</a>, <a
+href="#pr:cancel" data-reference-type="ref"
+data-reference="pr:cancel">88.3.4</a>, <a href="#pr:commutator"
+data-reference-type="ref" data-reference="pr:commutator">88.4.1</a>, <a
+href="#pr:diagonal" data-reference-type="ref"
+data-reference="pr:diagonal">88.4.2</a>, <a href="#pr:polarize"
+data-reference-type="ref" data-reference="pr:polarize">88.4.3</a> and <a
+href="#pr:inject" data-reference-type="ref"
+data-reference="pr:inject">88.4.5</a> prove Theorem <a href="#thm:tied"
+data-reference-type="ref" data-reference="thm:tied">88.4.1</a>, with <span
+class="math inline">\(n_Q = 1 + \mathrm{tot}_\varnothing\)</span>. Taken
+as given: (i), (ii), (iii), reciprocity, finiteness of cocycles; and,
+read from the proof, the auxiliary primes of Section <a
+href="#sec:prime" data-reference-type="ref"
+data-reference="sec:prime">88.1</a>, the local bounds and the identity for
+a conjugate pair in the tied setting, and the candidates near <span
+class="math inline">\(s_{w_*}h\)</span> of Section <a href="#sec:mirror"
+data-reference-type="ref" data-reference="sec:mirror">88.4</a>. It gives
+the bounded tied primes of Section <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#sec:data"
+data-reference-type="ref" data-reference="w2-sec:data">87.3</a>
+when <span class="math inline">\(\Sigma_0\)</span> contains the places
+above <span class="math inline">\(\ell\)</span>, as for the twisting
+theorem of Chapter <a href="20261126T031000--twists-with-few-congruences__workbook.html#chap" data-reference-type="ref"
+data-reference="tw-chap">85</a>.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span> (<code>grh/src/</code>;
+names beginning with <code>SelmerDatum.</code> are in
+<code>New.Selmer</code>), Theorem <a href="#thm:tied"
+data-reference-type="ref" data-reference="thm:tied">88.4.1</a> is the case of
+<code>New.Selmer.exists_isTiedPrimes_card_le_and_length_le</code>
+(<code>New/Congruences/Selmer/Descent.lean</code>) for the coefficient
+rings of Section <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#sec:statement" data-reference-type="ref"
+data-reference="dp-sec:statement">80.1</a> and <span
+class="math inline">\(\Sigma_0\)</span> containing the places above
+<span class="math inline">\(\ell\)</span>; Problem <a href="#pr:tilting"
+data-reference-type="ref" data-reference="pr:tilting">88.2.3</a> is the case
+of <code>New.Selmer.tilting</code>. Definition <a href="#def:candidate"
+data-reference-type="ref" data-reference="def:candidate">88.2.1</a> is the
+trivial-action-modulo-<span class="math inline">\(\ell^c\)</span> case
+of <code>New.Selmer.IsNewAuxiliaryPrime</code>; <span
+class="math inline">\(\mathcal{K}\)</span> is
+<code>SelmerDatum.sahGroup</code>; the mirror form is
+<code>SelmerDatum.mirrorForm</code>. The statement on auxiliary primes
+is taken from the proof of
+<code>New.Selmer.exists_isAuxPrimeDataAt</code>, and its use before
+Problem <a href="#pr:diagonal" data-reference-type="ref"
+data-reference="pr:diagonal">88.4.2</a> is
+<code>SelmerDatum.exists_isNewAuxiliaryPrime</code>. (ii) applies
+<code>New.RelationSetting.exists_card_cocycles_le</code> with <span
+class="math inline">\(m = \ell^{h_1}\)</span>; the tied setting, its
+local bounds and Problem <a href="#pr:cancel" data-reference-type="ref"
+data-reference="pr:cancel">88.3.4</a> follow the proof of
+<code>SelmerDatum.exists_length_tiedSelmer_le</code>; the identity for a
+conjugate pair is
+<code>SelmerDatum.dualSelmer_frob_add_conj_frob_eq_zero</code>. Other
+steps are in the proofs in <code>Descent.lean</code>,
+<code>Count.lean</code>, <code>Mirror.lean</code>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="section-secprime">Section <a
+href="#sec:prime" data-reference-type="ref"
+data-reference="sec:prime">88.1</a></h2>
+<dl>
+<dt><a href="#pr:sixty-one" data-reference-type="ref"
+data-reference="pr:sixty-one">88.1.1</a></dt>
+<dd>
+<p>Check <span class="math inline">\(13\)</span>, <span
+class="math inline">\(37\)</span>.</p>
+</dd>
+<dt><a href="#pr:frobenius-value" data-reference-type="ref"
+data-reference="pr:frobenius-value">88.1.3</a></dt>
+<dd>
+<p><span class="math inline">\(i \equiv 11 \pmod w\)</span>.</p>
+</dd>
+<dt><a href="#pr:correct" data-reference-type="ref"
+data-reference="pr:correct">88.1.4</a></dt>
+<dd>
+<p><span class="math inline">\(s_w\)</span> lies in the inertia group.
+First prime: <span class="math inline">\(S = \varnothing\)</span>, <span
+class="math inline">\(g = g_0\)</span>, <span
+class="math inline">\(\mathcal{X}= W\)</span>, <span
+class="math inline">\(R \supseteq\)</span> places over primes under
+<span class="math inline">\(\Sigma_0\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="section-secadding">Section <a
+href="#sec:adding" data-reference-type="ref"
+data-reference="sec:adding">88.2</a></h2>
+<dl>
+<dt><a href="#pr:old" data-reference-type="ref"
+data-reference="pr:old">88.2.1</a></dt>
+<dd>
+<p>For (a), the character of <span class="math inline">\(v\)</span> is
+trivial on <span class="math inline">\(E_w^\times\)</span> for <span
+class="math inline">\(w \in Q \smallsetminus \{w_*\}\)</span>. For (b),
+(c), (iii) at <span class="math inline">\(v\)</span>, <span
+class="math inline">\(\bar v\)</span>; for (d), at each <span
+class="math inline">\(w \in Q\)</span> and <span
+class="math inline">\(\bar w\)</span>.</p>
+</dd>
+<dt><a href="#pr:tilting" data-reference-type="ref"
+data-reference="pr:tilting">88.2.3</a></dt>
+<dd>
+<p>Let <span class="math inline">\(C&#39;\)</span> be the sum of the
+kernels, <span class="math inline">\(\Lambda \subseteq
+\mathcal{O}^{n&#39;}\)</span> the preimage of <span
+class="math inline">\(\mathrm{ev}_s C&#39;\)</span>; lift maps with
+source the free <span class="math inline">\(\Lambda\)</span>, and use a
+characteristic polynomial modulo <span
+class="math inline">\(\pi\)</span>.</p>
+</dd>
+<dt><a href="#pr:decrease" data-reference-type="ref"
+data-reference="pr:decrease">88.2.4</a></dt>
+<dd>
+<p>Problem <a href="#pr:tilting" data-reference-type="ref"
+data-reference="pr:tilting">88.2.3</a> at every level, <span
+class="math inline">\(n&#39; = 2\operatorname{rk}T_i\)</span>;
+Problem <a href="#pr:old" data-reference-type="ref"
+data-reference="pr:old">88.2.1</a>; for <a href="#pr:minimum"
+data-reference-type="ref" data-reference="pr:minimum">88.2.5</a>, <a
+href="#pr:old" data-reference-type="ref"
+data-reference="pr:old">88.2.1</a> (d).</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="section-seccount">Section <a
+href="#sec:count" data-reference-type="ref"
+data-reference="sec:count">88.3</a></h2>
+<dl>
+<dt><a href="#pr:primitive" data-reference-type="ref"
+data-reference="pr:primitive">88.3.1</a></dt>
+<dd>
+<p>The <span class="math inline">\(\pi^k\)</span>-torsion of <span
+class="math inline">\(\mathcal{O}/\ell^c\)</span>.</p>
+</dd>
+<dt><a href="#pr:coboundaries" data-reference-type="ref"
+data-reference="pr:coboundaries">88.3.2</a></dt>
+<dd>
+<p>The slope at <span class="math inline">\(w_*\)</span> is <span
+class="math inline">\(0\)</span>; Problem <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#pr:normalize"
+data-reference-type="ref"
+data-reference="w2-pr:normalize">87.2.3</a>.</p>
+</dd>
+<dt><a href="#pr:count-example" data-reference-type="ref"
+data-reference="pr:count-example">88.3.3</a></dt>
+<dd>
+<p>For (a), an unramified cocycle restricts to a homomorphism of <span
+class="math inline">\(G_L\)</span>. For (b), the quadratic subextension
+of <span class="math inline">\(E(\mu_{3^\infty})/E\)</span> is <span
+class="math inline">\(E(\sqrt{-3})\)</span>.</p>
+</dd>
+<dt><a href="#pr:cancel" data-reference-type="ref"
+data-reference="pr:cancel">88.3.4</a></dt>
+<dd>
+<p>Check the hypotheses of (ii); at a tied place the tie and (iii)
+inject <span class="math inline">\(A_v\)</span> into <span
+class="math inline">\(\bar T_a\)</span> by the value at a Frobenius
+element.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="section-secmirror">Section <a
+href="#sec:mirror" data-reference-type="ref"
+data-reference="sec:mirror">88.4</a></h2>
+<dl>
+<dt><a href="#pr:commutator" data-reference-type="ref"
+data-reference="pr:commutator">88.4.1</a></dt>
+<dd>
+<p>For (c), reduce modulo <span class="math inline">\(\pi\)</span>; use
+(a) and that the <span class="math inline">\(T(g)\)</span> span.</p>
+</dd>
+<dt><a href="#pr:diagonal" data-reference-type="ref"
+data-reference="pr:diagonal">88.4.2</a></dt>
+<dd>
+<p>Compare with <span class="math inline">\(\mathrm{Mir}_{a&#39;}(g,
+g)\)</span>, <span class="math inline">\(g = s_{w_*}h\)</span>; use a
+candidate outside <span class="math inline">\(\Sigma&#39;&#39;\)</span>
+near <span class="math inline">\(g\)</span> and the conjugate-pair
+identity.</p>
+</dd>
+<dt><a href="#pr:polarize" data-reference-type="ref"
+data-reference="pr:polarize">88.4.3</a></dt>
+<dd>
+<p>Expand <span class="math inline">\(\mathrm{Mir}(hh&#39;,
+hh&#39;)\)</span>; for (c) use (a), (b); <span
+class="math inline">\(\lambda\)</span>, <span
+class="math inline">\(\lambda^2 - 1\)</span> are units.</p>
+</dd>
+<dt><a href="#pr:inject" data-reference-type="ref"
+data-reference="pr:inject">88.4.5</a></dt>
+<dd>
+<p>For (c), <span class="math inline">\(g = [g, \gamma]\cdot\gamma
+g\gamma^{-1}\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-DDT"><span class="bib-label">[DDT]</span> H. Darmon, F. Diamond and R. Taylor, <em>Fermat’s Last Theorem</em>, Current Developments in Mathematics <strong>1995</strong> (1995), no. 1, 1–154.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Ne"><span class="bib-label">[Ne]</span> J. Neukirch, <em>Algebraic Number Theory</em>, Grundlehren Math. Wiss. 322, Springer, 1999.</p>
+<p id="ref-NSW"><span class="bib-label">[NSW]</span> J. Neukirch, A. Schmidt and K. Wingberg, <em>Cohomology of Number Fields</em>, 2nd ed., Grundlehren Math. Wiss. 323, Springer, 2008.</p>
+<p id="ref-SLF"><span class="bib-label">[SLF]</span> J.-P. Serre, <em>Local Fields</em>, Grad. Texts in Math. 67, Springer, 1979.</p>
+<p id="ref-Wi"><span class="bib-label">[Wi]</span> A. Wiles, <em>Modular elliptic curves and Fermat’s Last Theorem</em>, Ann. of Math. <strong>141</strong> (1995), 443–551.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

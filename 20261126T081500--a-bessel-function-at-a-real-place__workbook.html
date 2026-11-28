@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-0RLYFBjdE4AkTHkGx3HQAFDFAcJXHEDT/+c2vbsyiE4=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>A Bessel function at a real place</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"C":"\\mathbb C","R":"\\mathbb R","ii":"\\mathrm i","Uc":"\\mathcal U","cf":"\\mathsf c","Per":"\\mathrm{Per}","diag":"\\operatorname{diag}","tr":"\\operatorname{tr}","vol":"\\operatorname{vol}","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="42">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T081500--a-bessel-function-at-a-real-place__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 09:42:12
+      <a href="20261126T081500--a-bessel-function-at-a-real-place__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T081500--a-bessel-function-at-a-real-place__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T081500--a-bessel-function-at-a-real-place__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">A Bessel function at a real place <a class="stable-tag" href="tag/23D7.html" title="Stable tag: cite as Tag 23D7">Tag 23D7</a></h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:half-plane" id="toc-sec:half-plane">§42.1. The half-plane</a></li>
+<li><a href="#sec:positions" id="toc-sec:positions">§42.2. A circle and a flag</a></li>
+<li><a href="#sec:period" id="toc-sec:period">§42.3. The period bound for the data</a></li>
+<li><a href="#sec:norm" id="toc-sec:norm">§42.4. Norm and correlation</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<p>The real Bessel functions in Theorem <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#thm:bessel-system"
+data-reference-type="ref"
+data-reference="m1-thm:bessel-system">40.3.1</a> supply
+the local factors in the Gram operators for Theorem <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#thm:B"
+data-reference-type="ref" data-reference="bp-thm:B">39.4.2</a>. The
+proof averages a matrix coefficient over the Bessel subgroup, using a
+position at which the average is large enough to normalize. The
+half-plane and two unitary groups give models for choosing the position.
+The period determines the squared norm and the correlation of the
+average.</p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Use Chapter <a href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#chap" data-reference-type="ref"
+data-reference="ps-chap">10</a> for the half-plane and
+Chapters <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>, <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap"
+data-reference-type="ref" data-reference="ob-chap">37</a> and <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">39</a> for the data, weights and Bessel
+subgroup, including the <em>Bessel tuple</em> <span
+class="math inline">\((v_1,\dots,v_\varrho,z)\)</span> of Section <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:subgroup" data-reference-type="ref"
+data-reference="bp-sec:subgroup">39.1</a>. Assume the
+discrete-series facts of Chapter <a href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.html#chap"
+data-reference-type="ref" data-reference="bd-chap">41</a> and
+Schur’s lemma <span class="citation"
+data-cites="Se">[<a href="#ref-Se">Se</a>]</span>. Inner products are linear
+in the first variable, as in Chapter <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#chap"
+data-reference-type="ref" data-reference="m1-chap">40</a>.</p>
+<h1 id="sec:half-plane">§42.1. The half-plane <a class="stable-tag" href="tag/23D8.html" title="Stable tag: cite as Tag 23D8">Tag 23D8</a></h1>
+<p>The first model recovers the seed of a holomorphic Poincaré series
+from a matrix coefficient. Use integers <span
+class="math inline">\(k\ge2\)</span> and <span
+class="math inline">\(m\ge1\)</span> for the weight and index in this
+section. On the upper half-plane let <span
+class="math inline">\(e(z)=\exp(2\pi\mathrm iz)\)</span> and <span
+class="math inline">\(j(g,z)=g_{21}z+g_{22}\)</span> for <span
+class="math inline">\(g\in\mathrm{SL}_2(\mathbb R)\)</span> acting by
+fractional linear transformations. Write <span
+class="math display">\[n(w)=\begin{pmatrix}1&amp;w\\0&amp;1\end{pmatrix},\qquad
+a(y)=\operatorname{diag}(\sqrt y,1/\sqrt y),\qquad
+N_{\mathbb R}=\{n(w):w\in\mathbb R\}.\]</span> The representation <span
+class="math inline">\((\pi_k(g)f)(z)=j(g^{-1},z)^{-k}f(g^{-1}z)\)</span>
+and its unit kernel vector <span class="math inline">\(v_{\mathrm
+i}\)</span> are as in Chapter <a href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#chap"
+data-reference-type="ref" data-reference="ps-chap">10</a>, with
+the slash action on <span class="math inline">\(\mathrm{SL}_2(\mathbb
+R)\)</span>. Use the conjugate coefficient <span
+class="math inline">\(\mathsf c(g)=\langle v_{\mathrm
+i},\pi_k(g)v_{\mathrm i}\rangle\)</span> and formal degree <span
+class="math inline">\(d=(k-1)/(4\pi)\)</span> for <span
+class="math inline">\(dw\,dy/y^2\)</span> times stabilizer probability
+(Problem <a href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#pr:formal-degree" data-reference-type="ref"
+data-reference="ps-pr:formal-degree">10.5.5</a>).</p>
+<div id="pr:half-coeff" class="problem" data-progress-ids="[&quot;23D9&quot;,&quot;20261126T081500--a-bessel-function-at-a-real-place__workbook.tex#pr:half-coeff&quot;]"><a class="stable-tag" href="tag/23D9.html" title="Stable tag: cite as Tag 23D9">Tag 23D9</a>
+<p><strong>Problem 42.1.1</strong>. For <span
+class="math inline">\(w\in\mathbb R\)</span> and <span
+class="math inline">\(y&gt;0\)</span>, <span
+class="math display">\[\mathsf c(n(w)a(y))=y^{k/2}\bigl((1+y-\mathrm
+iw)/2\bigr)^{-k}.\]</span> Also <span class="math inline">\(\mathsf
+c(1)=1\)</span> and <span class="math inline">\(\mathsf
+c(g^{-1})=\overline{\mathsf c(g)}\)</span>.</p>
+</div>
+<p>Fix <span class="math inline">\(y_0&gt;0\)</span> and use <span
+class="math inline">\(y_*=a(y_0)\)</span> as the position. Average
+against the inverse of the character <span
+class="math inline">\(n(w)\mapsto e(mw)\)</span> of <span
+class="math inline">\(N_{\mathbb R}\)</span>, writing <span
+class="math inline">\(n(-w)\)</span> as the integration variable. <span
+class="math display">\[W_{y_*}(g)=\int_{\mathbb R}\mathsf
+c(y_*^{-1}n(-w)g)e(mw)\,dw .\]</span></p>
+<div id="pr:half-integral" class="problem" data-progress-ids="[&quot;23DA&quot;,&quot;20261126T081500--a-bessel-function-at-a-real-place__workbook.tex#pr:half-integral&quot;]"><a class="stable-tag" href="tag/23DA.html" title="Stable tag: cite as Tag 23DA">Tag 23DA</a>
+<p><strong>Problem 42.1.2</strong>. At <span
+class="math inline">\(g=a(y)\)</span> the average is <span
+class="math display">\[\frac{(4\pi)^k(yy_0)^{k/2}m^{k-1}}{(k-1)!}
+       e^{-2\pi m(y+y_0)} .\]</span> Check by machine that at <span
+class="math inline">\((k,m,y_0,y)=(4,1,0.3,0.5)\)</span> the value is
+<span class="math inline">\(0.613576\)</span> to six decimal places.</p>
+</div>
+<div id="pr:seed" class="problem" data-progress-ids="[&quot;23DB&quot;,&quot;20261126T081500--a-bessel-function-at-a-real-place__workbook.tex#pr:seed&quot;]"><a class="stable-tag" href="tag/23DB.html" title="Stable tag: cite as Tag 23DB">Tag 23DB</a>
+<p><strong>Problem 42.1.3</strong>. For arbitrary <span
+class="math inline">\(g\)</span>, the average is <span
+class="math inline">\(e(m\,g\mathrm i)j(g,\mathrm i)^{-k}\)</span> times
+<span class="math inline">\((4\pi)^k y_0^{k/2}m^{k-1}e^{-2\pi
+my_0}/(k-1)!\)</span>.</p>
+</div>
+<p>Write <span class="math inline">\(P(s)=W_{y_*}(y_*)/y_0\)</span>,
+where <span class="math inline">\(s=4\pi my_0\)</span>. The next problem
+relates the period to the squared norm on <span
+class="math inline">\(N_{\mathbb R}\backslash\mathrm{SL}_2(\mathbb
+R)\)</span>.</p>
+<div id="pr:half-norm" class="problem" data-progress-ids="[&quot;23DC&quot;,&quot;20261126T081500--a-bessel-function-at-a-real-place__workbook.tex#pr:half-norm&quot;]"><a class="stable-tag" href="tag/23DC.html" title="Stable tag: cite as Tag 23DC">Tag 23DC</a>
+<p><strong>Problem 42.1.4</strong>. One has <span
+class="math inline">\(d\int_0^\infty
+|W_{y_*}(a(y))|^2\,dy/y^2=W_{y_*}(y_*)\)</span>, with common value about
+<span class="math inline">\(0.776107\)</span> when <span
+class="math inline">\((k,m,y_0)=(4,1,0.3)\)</span>. The set <span
+class="math inline">\(\{w: |w|/y_0\le1\}\)</span> has volume <span
+class="math inline">\(2y_0\)</span>, and <span
+class="math display">\[P(s)=\frac{4\pi
+s^{k-1}e^{-s}}{(k-1)!}&gt;0.\]</span> At <span
+class="math inline">\(s=1\)</span> check <span
+class="math inline">\(P(1)\approx1.16\cdot10^{-7}\)</span> for <span
+class="math inline">\(k=12\)</span> and <span
+class="math inline">\(4.95\cdot10^{-156}\)</span> for <span
+class="math inline">\(k=100\)</span>.</p>
+</div>
+<p>The next problems estimate the period at a position where the phase
+is stationary.</p>
+<div id="pr:stationary" class="problem" data-progress-ids="[&quot;23DD&quot;,&quot;20261126T081500--a-bessel-function-at-a-real-place__workbook.tex#pr:stationary&quot;]"><a class="stable-tag" href="tag/23DD.html" title="Stable tag: cite as Tag 23DD">Tag 23DD</a>
+<p><strong>Problem 42.1.5</strong>. At <span
+class="math inline">\(g=y_*\)</span>, the integrand in the coordinate
+<span class="math inline">\(u=w/(2y_0)\)</span> is <span
+class="math inline">\(Z(u)=(1+\mathrm iu)^{-k}e^{\mathrm is u}\)</span>.
+Its continuous argument vanishing at <span
+class="math inline">\(u=0\)</span> has derivative zero there exactly
+when <span class="math inline">\(s=k\)</span>. At that position, <span
+class="math display">\[|Z(u)|=(1+u^2)^{-k/2},\qquad |\arg Z(u)|\le
+k|u|^3/3 .\]</span></p>
+</div>
+<div id="pr:stirling" class="problem" data-progress-ids="[&quot;23DE&quot;,&quot;20261126T081500--a-bessel-function-at-a-real-place__workbook.tex#pr:stirling&quot;]"><a class="stable-tag" href="tag/23DE.html" title="Stable tag: cite as Tag 23DE">Tag 23DE</a>
+<p><strong>Problem 42.1.6</strong>. At <span
+class="math inline">\(s=k\)</span> one has <span
+class="math inline">\(P(k)=4\pi k^k e^{-k}/k!\)</span> and <span
+class="math inline">\(2y_0\le\sqrt{k}\,W_{y_*}(y_*)\)</span>. Check that
+<span class="math inline">\(P(k)/\sqrt{8\pi/k}\)</span> is approximately
+<span class="math inline">\(0.9595,0.9794,0.99308,0.999167\)</span> for
+<span class="math inline">\(k=2,4,12,100\)</span>, respectively.</p>
+</div>
+<div id="pr:cone" class="problem" data-progress-ids="[&quot;23DF&quot;,&quot;20261126T081500--a-bessel-function-at-a-real-place__workbook.tex#pr:cone&quot;]"><a class="stable-tag" href="tag/23DF.html" title="Stable tag: cite as Tag 23DF">Tag 23DF</a>
+<p><strong>Problem 42.1.7</strong>. At <span
+class="math inline">\(s=k\)</span>, write <span
+class="math inline">\(d_k=k^{-1/3}\)</span>. On <span
+class="math inline">\(|u|\le d_k\)</span> one has <span
+class="math inline">\(|Z(u)|\le2\operatorname{Re}Z(u)\)</span>, and
+<span class="math inline">\(Z(-u)=\overline{Z(u)}\)</span>. Deduce <span
+class="math display">\[\int_{\mathbb R} Z(u)\,du\ \ge\
+\tfrac12\int_{|u|\le d_k}|Z(u)|\,du-\int_{|u|&gt;d_k}|Z(u)|\,du
+.\]</span> Check both sides by machine. For <span
+class="math inline">\(k=12\)</span> they are about <span
+class="math inline">\(0.71859\)</span> and <span
+class="math inline">\(0.18324\)</span>, and for <span
+class="math inline">\(k=100\)</span> they are <span
+class="math inline">\(0.25045\)</span> and <span
+class="math inline">\(0.11321\)</span>. For <span
+class="math inline">\(k=4\)</span> the right side is about <span
+class="math inline">\(-0.0511\)</span>.</p>
+</div>
+<div id="pr:tail" class="problem" data-progress-ids="[&quot;23DG&quot;,&quot;20261126T081500--a-bessel-function-at-a-real-place__workbook.tex#pr:tail&quot;]"><a class="stable-tag" href="tag/23DG.html" title="Stable tag: cite as Tag 23DG">Tag 23DG</a>
+<p><strong>Problem 42.1.8</strong>. The coefficient has <span
+class="math inline">\(|\mathsf c(a(e^{2t}))|=\cosh(t)^{-k}\)</span>,
+about <span class="math inline">\(0.60703\)</span> at <span
+class="math inline">\(k=100,t=0.1\)</span>, while <span
+class="math inline">\(e^{-kt^2/2}\approx0.60653\)</span>. The measure
+<span class="math inline">\(|W_{y_*}(a(y))|^2\,dy/y^2\)</span> has
+density proportional to <span class="math inline">\(y^{k-2}e^{-4\pi
+my}\)</span>. At <span class="math inline">\(s=k\)</span> and <span
+class="math inline">\(k=12\)</span>, the shares of its mass on <span
+class="math inline">\(y&gt;4y_0\)</span> and <span
+class="math inline">\(y&lt;y_0/4\)</span> are about <span
+class="math inline">\(3.2\cdot10^{-11}\)</span> and <span
+class="math inline">\(2.9\cdot10^{-4}\)</span>.</p>
+</div>
+<h1 id="sec:positions">§42.2. A circle and a flag <a class="stable-tag" href="tag/23DH.html" title="Stable tag: cite as Tag 23DH">Tag 23DH</a></h1>
+<p>On the half-plane changing a height matches the phase derivatives at
+the identity. For <span class="math inline">\(G=U(1,1)\)</span>
+preserving <span
+class="math inline">\(J=\operatorname{diag}(1,-1)\)</span>, the change
+is a conjugation of the circle <span
+class="math inline">\(R=\{\operatorname{diag}(w,1):|w|=1\}\)</span>. Use
+probability measure <span class="math inline">\(dw\)</span> on the
+circle. In this model <span class="math inline">\(\mathsf a\ge1\)</span>
+and <span class="math inline">\(\mathsf N\ge2\)</span> are integers, and
+the coefficient formula of Theorem <a href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.html#thm:fj"
+data-reference-type="ref" data-reference="bd-thm:fj">41.3</a>
+gives <span class="math inline">\(\mathsf c(g)=\det(g)^{-\mathsf
+a}g_{22}^{-\mathsf N}\)</span> for lowest <span
+class="math inline">\(K\)</span>-type <span
+class="math inline">\((-\mathsf a,-\mathsf a-\mathsf N)\)</span>. Pair
+the coefficient against <span class="math inline">\(w^{t_0}\)</span>
+with <span class="math inline">\(t_0\)</span> a nonnegative integer. For
+columns write <span class="math inline">\(I^\dagger=I^*J\)</span>.</p>
+<div id="pr:circle-period" class="problem" data-progress-ids="[&quot;23DJ&quot;,&quot;20261126T081500--a-bessel-function-at-a-real-place__workbook.tex#pr:circle-period&quot;]"><a class="stable-tag" href="tag/23DJ.html" title="Stable tag: cite as Tag 23DJ">Tag 23DJ</a>
+<p><strong>Problem 42.2.1</strong>. The period at the identity vanishes. For
+a real <span class="math inline">\(\mathsf b\ge0\)</span>, let <span
+class="math inline">\(I_0=(\sqrt{1+\mathsf b},\sqrt{\mathsf
+b})^T\)</span> and use the inverse of the real boost with first column
+<span class="math inline">\(I_0\)</span> as the position. The conjugated
+circle is <span
+class="math inline">\(g(w)=1+(w-1)I_0I_0^\dagger\)</span>, with <span
+class="math inline">\(\det g(w)=w\)</span> and <span
+class="math inline">\(g(w)_{22}=1+\mathsf b-\mathsf b w\)</span>. For
+<span class="math inline">\(j=\mathsf a+t_0\)</span>, <span
+class="math display">\[\int_{|w|=1}\mathsf c(g(w))w^{-t_0}\,dw
+=\binom{\mathsf N+j-1}{j}\frac{\mathsf b^j}{(1+\mathsf b)^{\mathsf N+j}}
+.\]</span> For <span class="math inline">\((\mathsf a,\mathsf
+N,t_0)=(2,3,0)\)</span> the periods at <span
+class="math inline">\(\mathsf b=1/3,2/3,1\)</span> are <span
+class="math inline">\(81/512,648/3125,3/16\)</span>; for <span
+class="math inline">\((2,3,1)\)</span> the last two are <span
+class="math inline">\(432/3125,5/32\)</span>.</p>
+</div>
+<div id="pr:circle" class="problem" data-progress-ids="[&quot;23DK&quot;,&quot;20261126T081500--a-bessel-function-at-a-real-place__workbook.tex#pr:circle&quot;]"><a class="stable-tag" href="tag/23DK.html" title="Stable tag: cite as Tag 23DK">Tag 23DK</a>
+<p><strong>Problem 42.2.2</strong>. The period is largest at <span
+class="math inline">\(\mathsf b=j/\mathsf N\)</span>, equivalently when
+<span class="math inline">\(I_0^\dagger D I_0=t_0\)</span> for <span
+class="math inline">\(D=\operatorname{diag}(-\mathsf a,-\mathsf
+a-\mathsf N)\)</span>. The same equation says that the argument of <span
+class="math inline">\(\mathsf c(g(e^{\mathrm i\theta}))e^{-\mathrm
+it_0\theta}\)</span> is stationary at <span
+class="math inline">\(\theta=0\)</span>. As <span
+class="math inline">\(j,\mathsf N\)</span> tend to infinity in fixed
+ratio the maximum is asymptotic to <span class="math inline">\((2\pi
+j(j+\mathsf N)/\mathsf N)^{-1/2}\)</span>. For <span
+class="math inline">\((j,\mathsf N)=(2,3),(20,30),(200,300)\)</span> the
+ratios to the asymptotic value are <span
+class="math inline">\(0.94897,0.99474,0.99947\)</span> to five decimal
+places.</p>
+</div>
+<p>The compression <span class="math inline">\(I_0^\dagger D
+I_0\)</span> is the weight seen on the embedded line. For the role of
+such weight restrictions in the orbit method, see Nelson and Venkatesh
+<span class="citation"
+data-cites="NV">[<a href="#ref-NV">NV</a>]</span>.</p>
+<p>In <span class="math inline">\(U(2,2)\)</span> the position also
+involves an isotropic line. Use <span
+class="math inline">\(J=\operatorname{diag}(1,-1,1,-1)\)</span> and the
+same adjoint notation. In this model let <span
+class="math inline">\((\mu_i)=(-1,-2,-3,-4)\)</span>, <span
+class="math inline">\(p(z)=\prod_i(z-\mu_i)\)</span>, <span
+class="math inline">\(q(z)=z\)</span> (the smaller weight is <span
+class="math inline">\(0\)</span>), and <span
+class="math inline">\(D=\operatorname{diag}(\mu_i)\)</span>. For a
+polynomial <span class="math inline">\(F\)</span> write <span
+class="math inline">\([F]_i=F(\mu_i)|p&#39;(\mu_i)q(\mu_i)|^{-1/2}\)</span>.</p>
+<div id="pr:flag" class="problem" data-progress-ids="[&quot;23DL&quot;,&quot;20261126T081500--a-bessel-function-at-a-real-place__workbook.tex#pr:flag&quot;]"><a class="stable-tag" href="tag/23DL.html" title="Stable tag: cite as Tag 23DL">Tag 23DL</a>
+<p><strong>Problem 42.2.3</strong>. One has <span
+class="math inline">\((p&#39;(\mu_i))=(6,-2,2,-6)\)</span>. For <span
+class="math inline">\(v_0=[z]\)</span>, <span
+class="math inline">\(v_1=[z^2]\)</span> and <span
+class="math inline">\(I_0=\sqrt{24}[1]\)</span>, the matrix of pairings
+in that order is <span
+class="math inline">\(\operatorname{diag}(0,-1,1)\)</span>, and <span
+class="math display">\[Dv_0=v_1,\qquad DI_0=\sqrt{24}v_0,\qquad
+I_0^\dagger DI_0=0 .\]</span></p>
+</div>
+<div id="pr:flag-phase" class="problem" data-progress-ids="[&quot;23DM&quot;,&quot;20261126T081500--a-bessel-function-at-a-real-place__workbook.tex#pr:flag-phase&quot;]"><a class="stable-tag" href="tag/23DM.html" title="Stable tag: cite as Tag 23DM">Tag 23DM</a>
+<p><strong>Problem 42.2.4</strong>. Let <span
+class="math inline">\(Y=-\mathrm
+i(v_0v_1^\dagger+v_1v_0^\dagger)\)</span>. Then <span
+class="math inline">\(Y^3=0\)</span> and <span
+class="math inline">\(g(t)=1+tY+t^2Y^2/2\)</span>, <span
+class="math inline">\(t\in\mathbb R\)</span>, is a one-parameter
+subgroup of <span class="math inline">\(U(2,2)\)</span> fixing <span
+class="math inline">\(v_0\)</span> and <span
+class="math inline">\(I_0\)</span>. It has <span
+class="math inline">\(g(t)v_1=v_1+\mathrm it v_0\)</span>, <span
+class="math inline">\(\operatorname{tr}(g(t)-1)=0\)</span>, and <span
+class="math inline">\(\operatorname{tr}(D(g(t)-1))=2\mathrm it\)</span>,
+giving <span class="math inline">\(0.2\mathrm i\)</span> at <span
+class="math inline">\(t=0.1\)</span>.</p>
+</div>
+<h1 id="sec:period">§42.3. The period bound for the data <a class="stable-tag" href="tag/23DN.html" title="Stable tag: cite as Tag 23DN">Tag 23DN</a></h1>
+<p>The general period bound gives a position at a real place of the
+data. The model calculations illustrate phase cancellation at small
+weights. The bound for the data uses much larger gaps.</p>
+<p>Fix a place <span class="math inline">\(\tau\)</span>. Write <span
+class="math inline">\(G=G_\tau=U(Y_0)_\tau\)</span>, <span
+class="math inline">\(H=U(X_0)_\tau\)</span>, and <span
+class="math inline">\(R=\mathcal U_\tau\rtimes H\)</span> as in
+Section <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:subgroup" data-reference-type="ref"
+data-reference="bp-sec:subgroup">39.1</a>. The <em>sign
+basis</em> is obtained from the rescaled basis by a Euclidean-unitary
+change that diagonalizes the form in the order of the signs for the
+parameter <span class="math inline">\(2\varsigma_\tau\)</span>. Use
+<span class="math inline">\(ds=du\,dh\)</span> with <span
+class="math inline">\(dh\)</span> Haar probability. In the rescaled
+basis, <span class="math inline">\(du\)</span> is Lebesgue measure on
+the entries in row <span class="math inline">\(v_a\)</span> and columns
+<span class="math inline">\(v_b,v&#39;_b\)</span> for <span
+class="math inline">\(b&gt;a\)</span>, and on the entries in that row in
+the <span class="math inline">\(X_0\)</span> columns and column <span
+class="math inline">\(z\)</span>, together with the imaginary part of
+the entry in column <span class="math inline">\(v&#39;_a\)</span>. The
+measure <span class="math inline">\(du\)</span> is used in the covolume
+of Definition <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:scaled" data-reference-type="ref"
+data-reference="bp-def:scaled">39.4.1</a>. Use <span
+class="math inline">\(dg\)</span> as in Theorem <a href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.html#thm:degree"
+data-reference-type="ref"
+data-reference="bd-thm:degree">41.2</a> and <span
+class="math inline">\(dy\)</span> on <span
+class="math inline">\(\mathcal U_\tau\backslash G\)</span> determined by
+<span class="math inline">\(du,dg\)</span>.</p>
+<p>The character from Section <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:poincare"
+data-reference-type="ref"
+data-reference="bp-sec:poincare">39.2</a> is <span
+class="math inline">\(\exp(\sigma_R-\overline{\sigma_R})\)</span> at
+<span class="math inline">\(\tau\)</span>, where <span
+class="math inline">\(\sigma_R\)</span> is the sum of the entries just
+above the diagonal on the rescaled Bessel tuple. With the chosen complex
+embedding at <span class="math inline">\(\tau\)</span>, the <span
+class="math inline">\(j\)</span>-th <em>member of the Bessel tuple</em>
+is multiplied by <span
+class="math inline">\(\bigl(M\tau(\delta_E)/(2\pi\mathrm
+i)\bigr)^{\varrho+1-j}/\sqrt N\)</span>. The character therefore uses
+<span class="math inline">\(\sigma_R=2\pi\mathrm
+i\lambda(u)/(M\tau(\delta_E))\)</span>, with <span
+class="math inline">\(\lambda(u)\)</span> the lattice-basis sum of
+Section <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:subgroup" data-reference-type="ref"
+data-reference="bp-sec:subgroup">39.1</a> evaluated at the
+real place.</p>
+<p>Let <span class="math inline">\(\pi_l\)</span> have doubled
+Harish-Chandra parameter <span
+class="math inline">\(l=2\varsigma_\tau\)</span> in the sign basis. For
+a unit highest-weight vector <span class="math inline">\(u_\tau\)</span>
+in the lowest <span class="math inline">\(K\)</span>-type, take <span
+class="math inline">\(\mathsf
+c_\tau(y)=\langle\pi_l(y)u_\tau,u_\tau\rangle\)</span> in that basis,
+with formal degree <span class="math inline">\(d_\tau\)</span>
+(Theorems <a href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.html#thm:ds" data-reference-type="ref"
+data-reference="bd-thm:ds">41.1</a> and <a href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.html#thm:degree"
+data-reference-type="ref"
+data-reference="bd-thm:degree">41.2</a>). Take the
+irreducible unitary representation <span
+class="math inline">\(\sigma_\tau\)</span> of <span
+class="math inline">\(H\)</span> on <span class="math inline">\(\mathbb
+C^{I_\tau}\)</span> with the source highest weight given by the diagram
+of Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:diagram" data-reference-type="ref"
+data-reference="ob-def:diagram">37.2.1</a>, and let <span
+class="math inline">\(v\)</span> be a unit highest-weight vector. Write
+<span class="math inline">\(\pi(uh)=\psi_{\mathcal
+U}(u)\sigma_\tau(h)\)</span>.</p>
+<div id="def:average" class="definition"><a class="stable-tag" href="tag/23DP.html" title="Stable tag: cite as Tag 23DP">Tag 23DP</a>
+<p><strong>Definition 42.3.1</strong>. For a position <span
+class="math inline">\(y_*\in G\)</span>, the <em>Bessel average</em> at
+<span class="math inline">\(v\)</span> is <span
+class="math display">\[W_{y_*,v}(y)=\int_R\mathsf
+c_\tau(y_*^{-1}sy)\,\pi(s)^{-1}v\,ds .\]</span> The integral converges
+absolutely for the data, uniformly in the sense that the integral of the
+norm is bounded as <span class="math inline">\(y\)</span> varies. This
+convergence estimate is read from the proof.</p>
+</div>
+<div id="def:period" class="definition"><a class="stable-tag" href="tag/23DQ.html" title="Stable tag: cite as Tag 23DQ">Tag 23DQ</a>
+<p><strong>Definition 42.3.2</strong>. The period at <span
+class="math inline">\(y_*\)</span> is <span
+class="math inline">\(\mathrm{Per}(y_*)=\langle
+W_{y_*,v}(y_*),v\rangle\)</span>, the integral of <span
+class="math inline">\(\mathsf
+c_\tau(y_*^{-1}sy_*)\overline{\langle\pi(s)v,v\rangle}\)</span> over
+<span class="math inline">\(R\)</span>. Write <span
+class="math display">\[V_1(y_*)=\operatorname{vol}_R\{s:\|y_*^{-1}sy_*-1\|\le1\},\]</span>
+using the operator norm in the sign basis. The <em>Bessel length</em> of
+<span class="math inline">\(y\)</span> is <span
+class="math inline">\(\inf_{s\in R}(\|sy\|+1)\)</span>, with the
+operator norm in the rescaled basis.</p>
+</div>
+<div id="thm:period" class="theorem"><a class="stable-tag" href="tag/23DR.html" title="Stable tag: cite as Tag 23DR">Tag 23DR</a>
+<p><strong>Theorem 42.3.1</strong> (Lower bound for the period). <em>For the
+data, at each <span class="math inline">\(\tau\)</span> there is <span
+class="math inline">\(y_*\in G_\tau\)</span> of Bessel length at most
+<span class="math inline">\(b^{5n}\)</span>, <span
+class="math inline">\(n=\varrho+1\)</span>, with <span
+class="math inline">\(V_1(y_*)\le
+b^{60(r+k)^2}|\mathrm{Per}(y_*)|\)</span>. Here <span
+class="math inline">\(r,k\)</span> are the ranks of <span
+class="math inline">\(Y_0,X_0\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:norm-identity">Problem 42.4.3</a>; <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html">Chapter 40</a>; <a href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.html">Chapter 41</a></div><!-- used-in:end -->
+</div>
+<p><em>Status</em>. Read from the proof; not proved here. At the
+position used in the proof, <span
+class="math inline">\(g=y_*^{-1}sy_*\)</span>, for <span
+class="math inline">\(s\in R\)</span>, sends each member of the
+translated Bessel tuple <span
+class="math inline">\((y_*^{-1}v_1,\dots,y_*^{-1}v_\varrho,y_*^{-1}z)\)</span>
+to itself plus a combination of earlier vectors. Let <span
+class="math inline">\(h\)</span> be the compact projection of <span
+class="math inline">\(s\)</span>. Let <span
+class="math inline">\(D_l\)</span> be the diagonal matrix of the highest
+weight of the lowest <span class="math inline">\(K\)</span>-type of
+<span class="math inline">\(\pi_l\)</span> in the sign basis, and <span
+class="math inline">\(D_u\)</span> that of the highest weight of <span
+class="math inline">\(\sigma_\tau\)</span> in the standard basis of
+<span class="math inline">\(X_0\)</span>. In these coordinates, <span
+class="math inline">\(\operatorname{tr}(D_l(g-1))-\operatorname{tr}(D_u(h-1))=\sigma_R-\overline{\sigma_R}\)</span>,
+where the sum <span class="math inline">\(\sigma_R\)</span> is additive
+under multiplication in <span class="math inline">\(R\)</span>. Write
+<span class="math inline">\(F(s)\)</span> for the period integrand of
+Definition <a href="#def:period" data-reference-type="ref"
+data-reference="def:period">42.3.2</a>. The counterpart of Problem <a
+href="#pr:cone" data-reference-type="ref" data-reference="pr:cone">42.1.7</a>
+is <span class="math display">\[|F(s)|\le2\operatorname{Re}F(s)+
+  6b^{-150(r+k)^2}(2/\|g\oplus h\|)^{9(r+k)^2},\]</span> with the last
+power integrable on <span class="math inline">\(R\)</span>. The norm of
+<span class="math inline">\(g\oplus h\)</span> is the operator norm on
+the direct sum.</p>
+<h1 id="sec:norm">§42.4. Norm and correlation <a class="stable-tag" href="tag/23DS.html" title="Stable tag: cite as Tag 23DS">Tag 23DS</a></h1>
+<p>The following calculations relate the period to the norm and
+correlation. Take a locally compact unimodular group <span
+class="math inline">\(G\)</span> and a closed unimodular subgroup <span
+class="math inline">\(R=\mathcal U\rtimes H\)</span>, with <span
+class="math inline">\(\mathcal U\)</span> closed and unimodular and
+<span class="math inline">\(H\)</span> compact. Use Haar measures <span
+class="math inline">\(du,dg\)</span>, <span
+class="math inline">\(ds=du\,dh\)</span> with <span
+class="math inline">\(dh\)</span> of mass one, and the quotient measure
+<span class="math inline">\(dy\)</span> on <span
+class="math inline">\(\mathcal U\backslash G\)</span> determined by
+<span class="math inline">\(du,dg\)</span>. In the average use a
+continuous unitary representation <span
+class="math inline">\(\pi\)</span> of <span
+class="math inline">\(R\)</span> on a finite-dimensional space <span
+class="math inline">\(V\)</span>, with <span
+class="math inline">\(\mathcal U\)</span> acting by scalars, and a unit
+vector <span class="math inline">\(v\in V\)</span>. Replace <span
+class="math inline">\(\mathsf c_\tau\)</span> by a normalized
+unit-vector coefficient <span class="math inline">\(\mathsf c\)</span>
+in <span class="math inline">\(L^1(G)\)</span> of a square-integrable
+irreducible representation of formal degree <span
+class="math inline">\(d_\tau\)</span>. Schur orthogonality, as in
+Theorem <a href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.html#thm:schur" data-reference-type="ref"
+data-reference="bd-thm:schur">41.2</a> for the real unitary
+case, gives <span class="math display">\[d_\tau\int_G \mathsf c(g_0 a
+g)\overline{\mathsf c(a)}\,da=\mathsf c(g_0)\mathsf c(g).\]</span>
+Assume <span class="math inline">\(\sup_y\int_R|\mathsf
+c(y_*^{-1}sy)|\,ds&lt;\infty\)</span>. For the data the proof supplies
+this bound and <span class="math inline">\(\mathsf c_\tau\in
+L^1(G)\)</span>, using the coefficient decay of Theorem <a
+href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.html#thm:decay" data-reference-type="ref"
+data-reference="bd-thm:decay">41.4</a>. Write <span
+class="math inline">\(W=W_{y_*,v}\)</span>, with norms on <span
+class="math inline">\(\mathcal U\backslash G\)</span>.</p>
+<div id="pr:equivariance" class="problem" data-progress-ids="[&quot;23DT&quot;,&quot;20261126T081500--a-bessel-function-at-a-real-place__workbook.tex#pr:equivariance&quot;]"><a class="stable-tag" href="tag/23DT.html" title="Stable tag: cite as Tag 23DT">Tag 23DT</a>
+<p><strong>Problem 42.4.1</strong>. For <span class="math inline">\(s\in
+R\)</span>, <span class="math inline">\(W(sy)=\pi(s)W(y)\)</span>. Also
+<span class="math inline">\(W\)</span> is bounded and in <span
+class="math inline">\(L^1\cap L^2\)</span> on the quotient, in the sense
+that its norm is bounded and belongs to both spaces.</p>
+</div>
+<div id="pr:reproduce" class="problem" data-progress-ids="[&quot;23DU&quot;,&quot;20261126T081500--a-bessel-function-at-a-real-place__workbook.tex#pr:reproduce&quot;]"><a class="stable-tag" href="tag/23DU.html" title="Stable tag: cite as Tag 23DU">Tag 23DU</a>
+<p><strong>Problem 42.4.2</strong>. One has <span
+class="math inline">\(d_\tau\int_G\mathsf
+c(a^{-1})W(ya)\,da=W(y)\)</span>, and <span
+class="math inline">\(W\)</span> is continuous.</p>
+</div>
+<div id="pr:norm-identity" class="problem" data-progress-ids="[&quot;23DV&quot;,&quot;20261126T081500--a-bessel-function-at-a-real-place__workbook.tex#pr:norm-identity&quot;]"><a class="stable-tag" href="tag/23DV.html" title="Stable tag: cite as Tag 23DV">Tag 23DV</a>
+<p><strong>Problem 42.4.3</strong>. One has <span
+class="math inline">\(d_\tau\|W\|_2^2=\mathrm{Per}(y_*)\)</span>. In
+particular the period is real and nonnegative, and <span
+class="math inline">\(W\ne0\)</span> at the position of Theorem <a
+href="#thm:period" data-reference-type="ref"
+data-reference="thm:period">42.3.1</a>.</p>
+</div>
+<div id="pr:coefficient" class="problem" data-progress-ids="[&quot;23DW&quot;,&quot;20261126T081500--a-bessel-function-at-a-real-place__workbook.tex#pr:coefficient&quot;]"><a class="stable-tag" href="tag/23DW.html" title="Stable tag: cite as Tag 23DW">Tag 23DW</a>
+<p><strong>Problem 42.4.4</strong>. The correlation <span
+class="math inline">\(g\mapsto\int_{\mathcal U\backslash G}\langle
+W(y),W(yg)\rangle\,dy\)</span> equals <span
+class="math inline">\(\overline{\mathsf c(g)}\|W\|_2^2\)</span>, and its
+squared <span class="math inline">\(L^2(G)\)</span> norm is <span
+class="math inline">\(\|W\|_2^4/d_\tau\)</span>. If <span
+class="math inline">\(H\)</span> acts irreducibly on <span
+class="math inline">\(V\)</span>, the coordinate products in an
+orthonormal basis satisfy <span class="math inline">\(\int_{\mathcal
+U\backslash G}W_i\overline{W_j}\,dy=\delta_{ij}\|W\|_2^2/\dim
+V\)</span>. Check that the half-plane correlation for <span
+class="math inline">\(\|W\|_2=1,\ k=4,\ m=1,\ g=a(2)\)</span> has
+modulus <span class="math inline">\(64/81\)</span>.</p>
+</div>
+<p>Scale the average to <span
+class="math inline">\(\|W_\tau\|_2^2=\#I_\tau\)</span>. The problems
+give the transformation law, orthonormality and squared correlation of
+Theorem <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#thm:bessel-system" data-reference-type="ref"
+data-reference="m1-thm:bessel-system">40.3.1</a>(a)–(c)
+for <span class="math inline">\(W_\tau\)</span>. The <em>Bessel
+truncation</em> <span class="math inline">\(W_\tau^\flat\)</span> is the
+product of <span class="math inline">\(W_\tau\)</span> and the cutoff in
+Bessel length that is <span class="math inline">\(1\)</span> up to half
+the radius <span class="math inline">\(b^{6n+2}\)</span>, decreases
+linearly to <span class="math inline">\(0\)</span> at the radius and is
+<span class="math inline">\(0\)</span> thereafter. The length is left
+<span class="math inline">\(R\)</span>-invariant.</p>
+<p>We used the discrete-series facts of Chapter <a href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.html#chap"
+data-reference-type="ref" data-reference="bd-chap">41</a>,
+absolute convergence, the period bound and the phase and cone estimates.
+The Bessel truncation and its tail bound in Theorem <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#thm:bessel-system" data-reference-type="ref"
+data-reference="m1-thm:bessel-system">40.3.1</a>(d) and
+the common decay majorant for the Gram-operator estimates are read from
+the proof.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. The period bound in <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span> is
+<code>IsSteep.exists_stationary_point</code> as used in
+<code>Data.exists_besselSystem</code>. The cone bound uses
+<code>IsLaplaceDatum.laplace_method</code>. For the data, the average,
+convergence and reproduction are
+<code>DiscreteSeries.besselAverage</code>,
+<code>integrable_besselIntegrand</code> and
+<code>convolve_besselAverage</code>. The data’s norm identity is
+<code>formalDegree_mul_integral_norm_sq_besselAverage</code> with
+inner-product slots reversed. The data’s squared correlation and
+normalized coordinate pairings are
+<code>IsBesselFunction.lintegral_enorm_sq_integral_inner_translate</code>
+and <code>BesselSystem.orthonormal</code>.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<dl>
+<dt><a href="#pr:half-coeff" data-reference-type="ref"
+data-reference="pr:half-coeff">42.1.1</a>, <a href="#pr:seed"
+data-reference-type="ref" data-reference="pr:seed">42.1.3</a></dt>
+<dd>
+<p>Kernel covariance and evaluation at <span
+class="math inline">\(\mathrm i\)</span>.</p>
+</dd>
+<dt><a href="#pr:half-integral" data-reference-type="ref"
+data-reference="pr:half-integral">42.1.2</a></dt>
+<dd>
+<p>Conjugate Problem <a href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#pr:lipschitz"
+data-reference-type="ref"
+data-reference="ps-pr:lipschitz">10.2.2</a>. Use SageMath
+quadrature.</p>
+</dd>
+<dt><a href="#pr:half-norm" data-reference-type="ref"
+data-reference="pr:half-norm">42.1.4</a>, <a href="#pr:tail"
+data-reference-type="ref" data-reference="pr:tail">42.1.8</a></dt>
+<dd>
+<p>The gamma integral, with scale <span class="math inline">\(4\pi
+m\)</span>.</p>
+</dd>
+<dt><a href="#pr:stirling" data-reference-type="ref"
+data-reference="pr:stirling">42.1.6</a></dt>
+<dd>
+<p>Stirling’s upper bound with remainder.</p>
+</dd>
+<dt><a href="#pr:cone" data-reference-type="ref"
+data-reference="pr:cone">42.1.7</a></dt>
+<dd>
+<p>Use SageMath quadrature of <span class="math inline">\(|Z|\)</span>
+and the formula for <span class="math inline">\(P(k)\)</span>.</p>
+</dd>
+<dt><a href="#pr:circle-period" data-reference-type="ref"
+data-reference="pr:circle-period">42.2.1</a>, <a href="#pr:circle"
+data-reference-type="ref" data-reference="pr:circle">42.2.2</a></dt>
+<dd>
+<p>The binomial series and Stirling’s formula.</p>
+</dd>
+<dt><a href="#pr:flag" data-reference-type="ref"
+data-reference="pr:flag">42.2.3</a></dt>
+<dd>
+<p>Use partial fractions or Lagrange interpolation at the nodes of <span
+class="math inline">\(pq\)</span>.</p>
+</dd>
+<dt><a href="#pr:flag-phase" data-reference-type="ref"
+data-reference="pr:flag-phase">42.2.4</a></dt>
+<dd>
+<p>Use <span class="math inline">\(Y^\dagger=-Y\)</span> and the
+pairings in Problem <a href="#pr:flag" data-reference-type="ref"
+data-reference="pr:flag">42.2.3</a>.</p>
+</dd>
+<dt><a href="#pr:equivariance" data-reference-type="ref"
+data-reference="pr:equivariance">42.4.1</a>, <a href="#pr:reproduce"
+data-reference-type="ref" data-reference="pr:reproduce">42.4.2</a></dt>
+<dd>
+<p>Haar invariance, unfolding and continuity of <span
+class="math inline">\(L^1\)</span> translations.</p>
+</dd>
+<dt><a href="#pr:norm-identity" data-reference-type="ref"
+data-reference="pr:norm-identity">42.4.3</a>, <a href="#pr:coefficient"
+data-reference-type="ref" data-reference="pr:coefficient">42.4.4</a></dt>
+<dd>
+<p>Use unfolding and the Schur identities.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-NV"><span class="bib-label">[NV]</span> P. D. Nelson and A. Venkatesh, <em>The orbit method and analysis of automorphic forms</em>, Acta Math. <strong>226</strong> (2021), 1–209.</p>
+<p id="ref-Se"><span class="bib-label">[Se]</span> J.-P. Serre, <em>Linear Representations of Finite Groups</em>, Springer, 1977.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

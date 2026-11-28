@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-r0FxvYBUJ+B3qG3xGgCuSP0GELzD6czNT3mjsj+MLWg=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Theorem B: enough forms</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"{\\mathbb{Z}}","Q":"{\\mathbb{Q}}","R":"\\mathbb R","C":"{\\mathbb{C}}","A":"\\mathbb A","Oc":"\\mathcal O","Ac":"\\mathcal A","Uc":"{\\mathcal{U}}","Xc":"\\mathcal X","Yc":"\\mathcal Y","Kc":"\\mathcal K","Pc":"\\mathcal P","Wc":"\\mathcal W","cMc":"\\mathcal M","Gb":"\\bar G","Rb":"\\bar R_0","be":"\\mathbf e","Tr":"\\operatorname{Tr}","Sym":"\\operatorname{Sym}","diag":"\\operatorname{diag}","vol":"\\operatorname{vol}","Per":"\\operatorname{Per}","Cl":"\\mathrm{Cl}","Sr":"S_{\\mathrm{ram}}","rB":"\\rho_{\\mathrm{Bes}}","Amp":"\\mathrm{Amp}","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="39">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 09:42:12
+      <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Theorem B: enough forms</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:subgroup" id="toc-sec:subgroup">§39.1. The Bessel subgroup</a></li>
+<li><a href="#sec:poincare" id="toc-sec:poincare">§39.2. Poincaré series</a></li>
+<li><a href="#sec:smallest" id="toc-sec:smallest">§39.3. The smallest case</a></li>
+<li><a href="#sec:gram" id="toc-sec:gram">§39.4. Translates of one Poincaré map</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secsubgroup" id="toc-secsubgroup">§39.1</a></li>
+<li><a href="#secpoincare" id="toc-secpoincare">§39.2</a></li>
+<li><a href="#secsmallest" id="toc-secsmallest">§39.3</a></li>
+<li><a href="#secgram" id="toc-secgram">§39.4</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>From Chapter <a href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#chap" data-reference-type="ref"
+data-reference="ps-chap">10</a>: Poincaré series on <span
+class="math inline">\(\mathrm{SL}_2({\mathbb{Z}})\)</span>, the
+unfolding of Problem <a href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#pr:unfold" data-reference-type="ref"
+data-reference="ps-pr:unfold">10.1.1</a>, Problem <a
+href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#pr:k12" data-reference-type="ref"
+data-reference="ps-pr:k12">10.1.3</a>, and the main term of the
+dimension (Section <a href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#sec:dim" data-reference-type="ref"
+data-reference="ps-sec:dim">10.5</a>). From Chapter <a
+href="20261125T002000--definite-theta-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dt-chap">21</a>: class sets, the groups <span
+class="math inline">\(\Gamma_L\)</span>, forms and their norm
+(Section <a href="20261125T002000--definite-theta-lifts__workbook.html#sec:forms" data-reference-type="ref"
+data-reference="dt-sec:forms">21.3</a>), Problems <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:aut" data-reference-type="ref"
+data-reference="dt-pr:aut">21.1.2</a>, <a href="20261125T002000--definite-theta-lifts__workbook.html#pr:class-one"
+data-reference-type="ref"
+data-reference="dt-pr:class-one">21.1.4</a>, <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:sym-norm" data-reference-type="ref"
+data-reference="dt-pr:sym-norm">21.3.2</a> and <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:forms-2" data-reference-type="ref"
+data-reference="dt-pr:forms-2">21.3.5</a>, and the mass of rank
+two, written here <span
+class="math inline">\(\mathrm{mass}_2=1/32\)</span>. From Chapter <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#chap" data-reference-type="ref"
+data-reference="tn-chap">23</a>: the period of Section <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#sec:seesaw" data-reference-type="ref"
+data-reference="tn-sec:seesaw">23.4</a>. From Chapter <a
+href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#chap" data-reference-type="ref"
+data-reference="rl-chap">9</a>: Hilbert–Schmidt norms,
+Problems <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#pr:translate-gram" data-reference-type="ref"
+data-reference="rl-pr:translate-gram">9.2.2</a>, <a
+href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#pr:moment-min" data-reference-type="ref"
+data-reference="rl-pr:moment-min">9.2.5</a> and <a
+href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#pr:near-isom" data-reference-type="ref"
+data-reference="rl-pr:near-isom">9.3.1</a>, near isometries,
+and Theorems <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#thm:spread" data-reference-type="ref"
+data-reference="rl-thm:spread">9.3.1</a> and <a
+href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#thm:few" data-reference-type="ref"
+data-reference="rl-thm:few">9.4.1</a>. From Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>: the data, and the spaces and
+forms of Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a> (<span
+class="math inline">\(Y_0\)</span>, <span
+class="math inline">\(X_0\)</span>, the chosen places <span
+class="math inline">\(\mathcal M\)</span>, the group <span
+class="math inline">\(\bar G\)</span>, the idempotent <span
+class="math inline">\(e_0\)</span>, the forms <span
+class="math inline">\(H(Y_0)\)</span>, the target <span
+class="math inline">\(T\)</span> of dimension <span
+class="math inline">\(d_T\)</span>, the source <span
+class="math inline">\(S\supseteq S_{\mathrm{ram}}\)</span> of dimension
+<span class="math inline">\(D_X\)</span>, and the operators <span
+class="math inline">\(T_w\)</span>). The Bessel periods of Gan, Gross
+and Prasad <span class="citation"
+data-cites="GGP">[<a href="#ref-GGP">GGP</a>]</span>, at the level of the
+definition. Finite volume <span class="citation"
+data-cites="Bo63">[<a href="#ref-Bo63">Bo63</a>]</span> and rapid decay of
+cusp forms <span class="citation"
+data-cites="BoPC">[<a href="#ref-BoPC">BoPC</a>]</span>. Norms of linear maps
+are Hilbert–Schmidt norms, <span class="math inline">\(\lVert
+L\rVert^2=\operatorname{Tr}(L^*L)\)</span>, and <span
+class="math inline">\(\log\)</span> is the natural logarithm. For the
+unfolding used in the second moment, see Chapter <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#chap"
+data-reference-type="ref" data-reference="m1-chap">40</a>.</p>
+<p>In Chapter <a href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#chap" data-reference-type="ref"
+data-reference="ps-chap">10</a> a Fourier coefficient of a cusp
+form is, up to an explicit factor, its inner product with a Poincaré
+series, and Petersson’s formula expands the inner products of two
+Poincaré series. In the proof, a Poincaré map represents Bessel periods
+on a unitary group, and the Gram operators between it and its translates
+by a finite group have an expansion in integrals indexed by rational
+points. After projection to the good forms and restriction to the
+ramified source, a finite set of translates spans almost all of the
+target (Theorem <a href="#thm:B" data-reference-type="ref"
+data-reference="thm:B">39.4.2</a>). The estimates behind this are developed
+in Chapters <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#chap" data-reference-type="ref"
+data-reference="m1-chap">40</a>–<a href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html#chap"
+data-reference-type="ref" data-reference="m5-chap">48</a>. How
+does the Gram operator group into double cosets in a finite example, and
+what does a second moment over translates give? Hermitian forms <span
+class="math inline">\(h\)</span> and inner products are linear in the
+first variable; Chapter <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#chap" data-reference-type="ref"
+data-reference="rl-chap">9</a> uses the other convention, and
+the statements recalled from it do not depend on the choice.</p>
+<h1 id="sec:subgroup">§39.1. The Bessel subgroup</h1>
+<p>Let <span class="math inline">\(E/F\)</span> be a CM extension, <span
+class="math inline">\(\psi_F\)</span> a nontrivial character of <span
+class="math inline">\(F\backslash\mathbb A_F\)</span>, and let <span
+class="math inline">\(V\)</span> be a hermitian space over <span
+class="math inline">\(E\)</span> of rank <span
+class="math inline">\(r\)</span> with a decomposition <span
+class="math display">\[V=Ev_1\oplus\dots\oplus Ev_\varrho\oplus X\oplus
+Ez\oplus Ev&#39;_1\oplus\dots\oplus Ev&#39;_\varrho ,\]</span> where
+<span class="math inline">\(h(v_a,v_c)=h(v&#39;_a,v&#39;_c)=0\)</span>,
+<span class="math inline">\(h(v_a,v&#39;_c)=\delta_{ac}\)</span>, the
+space <span class="math inline">\(X\)</span> of rank <span
+class="math inline">\(k\)</span> is orthogonal to the <span
+class="math inline">\(v_a\)</span>, <span
+class="math inline">\(v&#39;_a\)</span> and <span
+class="math inline">\(z\)</span>, and <span
+class="math inline">\(z\)</span> is orthogonal to every <span
+class="math inline">\(v_a\)</span> and <span
+class="math inline">\(v&#39;_a\)</span>, with <span
+class="math inline">\(h(z,z)=-N\)</span> for a prime <span
+class="math inline">\(N\)</span>. So <span
+class="math inline">\(r=2\varrho+k+1\)</span>. This is the shape of
+<span class="math inline">\(Y_0\)</span> in Chapter <a href="20261126T030300--the-data__workbook.html#chap"
+data-reference-type="ref" data-reference="da-chap">36</a>, with
+<span class="math inline">\(\varrho=m/2-1\)</span>, <span
+class="math inline">\(X=X_0\)</span>, and <span
+class="math inline">\(N\)</span> the prime of the data.</p>
+<p>Let <span class="math inline">\({\mathcal{U}}\)</span> be the group
+of <span class="math inline">\(n\in U(V)\)</span> such that <span
+class="math inline">\((n-1)v_a\)</span> lies in the span of <span
+class="math inline">\(v_1,\dots,v_{a-1}\)</span> for every <span
+class="math inline">\(a\)</span>, and <span
+class="math inline">\((n-1)y\)</span> lies in the span of <span
+class="math inline">\(v_1,\dots,v_\varrho\)</span> for every <span
+class="math inline">\(y\)</span> orthogonal to all <span
+class="math inline">\(v_a\)</span>. In the displayed blocks the
+stabilizer of the isotropic flag <span class="math inline">\(Ev_1\subset
+Ev_1+Ev_2\subset\cdots\)</span> is block upper triangular, and <span
+class="math inline">\({\mathcal{U}}\)</span> is its subgroup with
+identity diagonal blocks, the unipotent radical. Embed <span
+class="math inline">\(U(X)\)</span> in <span
+class="math inline">\(U(V)\)</span> as the pointwise stabilizer of the
+<span class="math inline">\(v_a\)</span>, the <span
+class="math inline">\(v&#39;_a\)</span> and <span
+class="math inline">\(z\)</span>. Put <span
+class="math inline">\(v_{\varrho+1}:=z\)</span> and call the ordered
+tuple <span class="math inline">\((v_1,\dots,v_{\varrho+1})\)</span> the
+<em>Bessel tuple</em>. For <span class="math inline">\(n\in
+{\mathcal{U}}\)</span>, write <span
+class="math display">\[\lambda(n):=\sum_{a=1}^\varrho
+h(nv_{a+1},v&#39;_a),\qquad
+\psi_{{\mathcal{U}}}(n):=\psi_F\bigl(\operatorname{Tr}_{E/F}\lambda(n)\bigr).\]</span>
+Define the <em>Bessel subgroup</em> by <span
+class="math inline">\(R:={\mathcal{U}}\rtimes U(X)\)</span>. For
+scalar-valued automorphic forms <span class="math inline">\(y\)</span>
+on <span class="math inline">\(U(V)\)</span> and <span
+class="math inline">\(\phi\)</span> on <span
+class="math inline">\(U(X)\)</span> for which the integral converges
+absolutely, the Bessel period integrates <span
+class="math inline">\(y\)</span> against <span
+class="math inline">\(\overline{\psi_{{\mathcal{U}}}}\)</span> over
+<span class="math inline">\({\mathcal{U}}(F)\backslash
+{\mathcal{U}}(\mathbb A_F)\)</span>, and the result against <span
+class="math inline">\(\bar\phi\)</span> over <span
+class="math inline">\(U(X)(F)\backslash U(X)(\mathbb A_F)\)</span> <span
+class="citation" data-cites="GGP">[<a href="#ref-GGP">GGP</a>]</span>. For
+<span class="math inline">\(\varrho=0\)</span> the group <span
+class="math inline">\({\mathcal{U}}\)</span> is trivial, and the Bessel
+period is the restriction period along <span
+class="math inline">\(U(X)\subset U(X\perp Ez)\)</span>.</p>
+<div id="pr:lambda" class="problem" data-progress-ids="[&quot;20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.tex#pr:lambda&quot;]">
+<p><strong>Problem 39.1.1</strong>. For <span class="math inline">\(n\in
+{\mathcal{U}}\)</span>, <span class="math inline">\(\lambda(n)\)</span>
+is the sum over <span class="math inline">\(a\le \varrho\)</span> of the
+coefficient of <span class="math inline">\(v_a\)</span> in <span
+class="math inline">\(nv_{a+1}\)</span>. The map <span
+class="math inline">\(\lambda\colon {\mathcal{U}}\to E\)</span> is a
+homomorphism, and <span
+class="math inline">\(\lambda(gng^{-1})=\lambda(n)\)</span> for <span
+class="math inline">\(g\in U(X)\)</span>. Hence <span
+class="math inline">\(\psi_{{\mathcal{U}}}\)</span> is a character of
+<span class="math inline">\({\mathcal{U}}(\mathbb A_F)\)</span>, trivial
+on <span class="math inline">\({\mathcal{U}}(F)\)</span> and fixed by
+<span class="math inline">\(U(X)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html">Chapter 53</a></div><!-- used-in:end -->
+</div>
+<div id="pr:normalize" class="problem" data-progress-ids="[&quot;20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.tex#pr:normalize&quot;]">
+<p><strong>Problem 39.1.2</strong>. <span class="math inline">\(U(X)\)</span>
+normalizes <span class="math inline">\({\mathcal{U}}\)</span>, and <span
+class="math inline">\(U(X)\cap {\mathcal{U}}=\{1\}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html">Chapter 53</a></div><!-- used-in:end -->
+</div>
+<div id="pr:dimN" class="problem" data-progress-ids="[&quot;20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.tex#pr:dimN&quot;]">
+<p><strong>Problem 39.1.3</strong>. As an algebraic group over <span
+class="math inline">\(F\)</span>, <span
+class="math inline">\({\mathcal{U}}\)</span> has dimension <span
+class="math inline">\(\varrho(r+k)=2\varrho(r-2\varrho)+\varrho^2+\varrho(\varrho-1)\)</span>.
+For <span class="math inline">\((\varrho,k)=(1,0)\)</span> it is the
+three-dimensional unipotent radical of a Borel subgroup of <span
+class="math inline">\(U(V)\)</span>, <span
+class="math inline">\(V\)</span> of rank <span
+class="math inline">\(3\)</span>.</p>
+</div>
+<h1 id="sec:poincare">§39.2. Poincaré series</h1>
+<p>The Poincaré series of the proof plays the role of that of Chapter <a
+href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#chap" data-reference-type="ref"
+data-reference="ps-chap">10</a>: the Bessel subgroup replaces
+<span class="math inline">\(\Gamma_\infty\)</span> in the period, and a
+Bessel function replaces <span class="math inline">\(e(mz)\)</span>.
+Take <span class="math inline">\(V=Y_0\)</span>, <span
+class="math inline">\(X=X_0\)</span> and <span
+class="math inline">\(G:=U(Y_0)\)</span>, with the forms <span
+class="math inline">\(H(Y_0)\)</span>, a finite-dimensional space with
+the Petersson inner product, and the source forms <span
+class="math inline">\(S\)</span>, as in Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap"
+data-reference-type="ref" data-reference="ob-chap">37</a>. On the
+Bessel subgroup of the data the proof fixes a generic character <span
+class="math inline">\(\psi_{{\mathcal{U}}}\)</span> and a quotient
+measure. The character is <span
+class="math inline">\(\psi_{{\mathcal{U}}}(n)=\psi_E\bigl(\tfrac12j_E\operatorname{tr}(\mathrm{st}^*\mathrm{st}\,n)\bigr)\)</span>,
+with <span class="math inline">\(\psi_E\)</span> the standard additive
+character of <span class="math inline">\(\mathbb A_E/E\)</span>, <span
+class="math inline">\(j_E\)</span> the element given by the Weil data
+(paragraph <em>Fillings</em> below) and <span
+class="math inline">\(\mathrm{st}\colon Y_0\to Y_1\)</span> the string
+map of Definition <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html#def:stringmap" data-reference-type="ref"
+data-reference="s1-def:stringmap">53.2.3</a> for <span
+class="math inline">\(c_{Y_0}=-(j_EM\delta_E)^{-1}\)</span>, where <span
+class="math inline">\(M=p_0p_1\)</span> is the product of the level
+primes and <span class="math inline">\(\delta_E\)</span> is the chosen
+generator of the different (paragraph <em>Fillings</em>), as in
+Section <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html#sec:survival" data-reference-type="ref"
+data-reference="s1-sec:survival">53.3</a> of Chapter <a
+href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="s1-chap">53</a>; like the character of Section <a
+href="#sec:subgroup" data-reference-type="ref"
+data-reference="sec:subgroup">39.1</a>, it is read off the entries of <span
+class="math inline">\(n\)</span> just above the diagonal of the string.
+At a real place <span class="math inline">\(\tau\)</span>, the local
+factor of this character is <span
+class="math inline">\(\exp(\sigma_R-\overline{\sigma_R})\)</span>, where
+<span class="math inline">\(\sigma_R\)</span> is the sum of the entries
+just above the diagonal on the Bessel tuple after rescaling it at <span
+class="math inline">\(\tau\)</span> (Section <a href="20261126T081500--a-bessel-function-at-a-real-place__workbook.html#sec:period"
+data-reference-type="ref"
+data-reference="b1-sec:period">42.3</a>).</p>
+<div id="def:poincare" class="definition">
+<p><strong>Definition 39.2.1</strong> (Poincaré maps). Let <span
+class="math inline">\(\lambda\)</span> be a linear form on the values of
+the source forms and <span class="math inline">\(g\)</span> a point of
+the archimedean unitary group of <span
+class="math inline">\(Y_0\)</span>. (From here on <span
+class="math inline">\(\lambda\)</span> is such a linear form; the
+homomorphism <span class="math inline">\(\lambda\colon{\mathcal{U}}\to
+E\)</span> of Section <a href="#sec:subgroup" data-reference-type="ref"
+data-reference="sec:subgroup">39.1</a> enters only through <span
+class="math inline">\(\psi_{{\mathcal{U}}}\)</span>.) For <span
+class="math inline">\(\varphi\in S\)</span>, the <em>Bessel function of
+<span class="math inline">\(\varphi\)</span> formed with <span
+class="math inline">\(\lambda\)</span></em> is <span
+class="math inline">\(\mathcal
+W_{\lambda,\varphi}(nh):=\psi_{{\mathcal{U}}}(n)\,\lambda\bigl(h_\infty^{-1}\varphi(h_f)\bigr)\)</span>
+for <span class="math inline">\(n\in {\mathcal{U}}(\mathbb A_F)\)</span>
+and <span class="math inline">\(h\in U(X_0)(\mathbb A_F)\)</span>, where
+<span class="math inline">\(h_\infty^{-1}\)</span> acts on the values.
+By the Riesz representation theorem there is a unique <span
+class="math inline">\(\mathcal P_{g,\lambda}\varphi\in H(Y_0)\)</span>
+with <span class="math display">\[\langle \mathcal
+P_{g,\lambda}\varphi,y\rangle=\int_{R(F)\backslash R(\mathbb
+A_F)}\mathcal W_{\lambda,\varphi}(x)\,\overline{y(xg)}\,dx\qquad(y\in
+H(Y_0)).\]</span> The linear map <span class="math inline">\(\mathcal
+P_{g,\lambda}\colon S\to H(Y_0)\)</span> is the <em>Poincaré map</em> of
+<span class="math inline">\((g,\lambda)\)</span>: it represents a Bessel
+period of <span class="math inline">\(\varphi\)</span>, linear in <span
+class="math inline">\(\varphi\)</span> and conjugate-linear in <span
+class="math inline">\(y\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a>: <a href="20261126T030400--the-seesaw-identity__workbook.html#def:lower">Definition 52.4.1</a>; <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html">Chapter 55</a></div><!-- used-in:end -->
+</div>
+<p>The proof shows that <span class="math inline">\((g,\lambda)\)</span>
+can be chosen so that <span class="math inline">\(\mathcal
+P_{g,\lambda}\varphi\)</span> is the series described below for every
+<span class="math inline">\(\varphi\)</span>. Write <span
+class="math inline">\(\mathcal P\)</span> for the map of this pair.</p>
+<p>At each infinite place <span class="math inline">\(\tau\)</span>, the
+Bessel system of Theorem <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#thm:bessel-system"
+data-reference-type="ref"
+data-reference="m1-thm:bessel-system">40.3.1</a>
+includes a full vector-valued function <span
+class="math inline">\(W_\tau\)</span>, its <em>Bessel truncation</em>
+<span class="math inline">\(W_\tau^\flat\)</span> by length (part (d)),
+and a positive degree constant <span
+class="math inline">\(d_\tau\)</span>. The series here uses the full
+functions. The Poincaré series for <span class="math inline">\(\mathcal
+P\varphi\)</span> is the sum over <span class="math inline">\(\gamma\in
+G(F)\)</span> of the translates of a seed made of each coordinate of the
+archimedean Bessel function, multiplied by a cutoff at the infinite
+places and by the indicator of a translate of the level at the finite
+places, one for each class; the coefficients are the Bessel coordinates
+of the values of a central translate of <span
+class="math inline">\(\varphi\)</span> at class representatives.</p>
+<p>At a fixed level on a definite group with one class, the forms are
+the vectors invariant under a finite group, and the series becomes a
+finite sum. Let <span class="math inline">\(\Gamma\)</span> be a finite
+group acting unitarily on a space <span
+class="math inline">\(V_\pi\)</span>, and let the forms on <span
+class="math inline">\(G\)</span> be the vectors <span
+class="math inline">\(V_\pi^\Gamma\)</span>, with <span
+class="math inline">\(\lVert\psi\rVert^2:=\lvert\Gamma\rvert^{-1}\lVert\psi\rVert_{V_\pi}^2\)</span>,
+as in Chapter <a href="20261125T002000--definite-theta-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dt-chap">21</a> for one class. Let <span
+class="math inline">\(\Gamma_X\subset\Gamma\)</span> be a subgroup,
+<span class="math inline">\(W\)</span> a unitary representation of <span
+class="math inline">\(\Gamma_X\)</span>, and <span
+class="math inline">\(\jmath\colon W\to V_\pi\)</span> a <span
+class="math inline">\(\Gamma_X\)</span>-equivariant linear map with
+<span
+class="math inline">\(\lVert\jmath\xi\rVert_{V_\pi}^2=c_0\lVert\xi\rVert_W^2\)</span>
+for a constant <span class="math inline">\(c_0&gt;0\)</span>. The forms
+on <span class="math inline">\(X\)</span> are <span
+class="math inline">\(W^{\Gamma_X}\)</span>, with <span
+class="math inline">\(\lVert\xi\rVert^2:=\lvert\Gamma_X\rvert^{-1}\lVert\xi\rVert_W^2\)</span>.
+For <span class="math inline">\(\psi\in V_\pi^\Gamma\)</span> and <span
+class="math inline">\(\xi\in W^{\Gamma_X}\)</span> put <span
+class="math display">\[\operatorname{Per}(\psi,\xi):=\lvert\Gamma_X\rvert^{-1}\langle\psi,\jmath\xi\rangle_{V_\pi},\qquad
+P\xi:=\sum_{\gamma\in\Gamma/\Gamma_X}\gamma\,\jmath\xi .\]</span></p>
+<div id="pr:unfold" class="problem" data-progress-ids="[&quot;20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.tex#pr:unfold&quot;]">
+<p><strong>Problem 39.2.1</strong>. <span class="math inline">\(P\xi\)</span>
+is well defined and lies in <span
+class="math inline">\(V_\pi^\Gamma\)</span>, and <span
+class="math inline">\(\langle\psi,P\xi\rangle=\operatorname{Per}(\psi,\xi)\)</span>
+for every <span class="math inline">\(\psi\in V_\pi^\Gamma\)</span>,
+where the left side is the inner product of forms.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a>; <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html">Chapter 53</a></div><!-- used-in:end -->
+</div>
+<div id="pr:adjoint" class="problem" data-progress-ids="[&quot;20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.tex#pr:adjoint&quot;]">
+<p><strong>Problem 39.2.2</strong>. The adjoint of <span
+class="math inline">\(P\colon W^{\Gamma_X}\to V_\pi^\Gamma\)</span> for
+the two norms of forms is <span
+class="math inline">\(P^*\psi=\jmath^*\psi\)</span>, where <span
+class="math inline">\(\jmath^*\)</span> is the adjoint for the inner
+products of <span class="math inline">\(W\)</span> and <span
+class="math inline">\(V_\pi\)</span>. In particular <span
+class="math inline">\(P\ne0\)</span> if and only if <span
+class="math inline">\(\operatorname{Per}(\psi,\xi)\ne0\)</span> for some
+<span class="math inline">\(\psi\)</span> and <span
+class="math inline">\(\xi\)</span>.</p>
+</div>
+<div id="pr:expansion" class="problem" data-progress-ids="[&quot;20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.tex#pr:expansion&quot;]">
+<p><strong>Problem 39.2.3</strong>. Let <span
+class="math inline">\((W&#39;,\jmath&#39;)\)</span> be a second pair as
+above, with Poincaré map <span class="math inline">\(P&#39;\)</span>.
+For <span class="math inline">\(\xi\in W^{\Gamma_X}\)</span> and <span
+class="math inline">\(\xi&#39;\in W&#39;^{\Gamma_X}\)</span>, <span
+class="math display">\[\langle
+P\xi,P&#39;\xi&#39;\rangle=\sum_{\delta\in\Gamma_X\backslash\Gamma/\Gamma_X}\frac{\langle\delta\,\jmath\xi,\jmath&#39;\xi&#39;\rangle_{V_\pi}}{\lvert\Gamma_X\cap\delta\Gamma_X\delta^{-1}\rvert}
+,\]</span> and if <span
+class="math inline">\((W&#39;,\jmath&#39;)=(W,\jmath)\)</span> the term
+of <span class="math inline">\(\delta=1\)</span> is <span
+class="math inline">\(c_0\langle\xi,\xi&#39;\rangle\)</span>, the inner
+product of forms.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:gram-toy">Problem 39.3.2</a>; <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html">Chapter 40</a></div><!-- used-in:end -->
+</div>
+<p>So <span class="math inline">\(\mathcal K:=c_0^{-1}P^*P\)</span> is
+the identity plus a sum over the nontrivial double cosets. This is the
+finite form of Petersson’s formula, Theorem <a href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#thm:petersson"
+data-reference-type="ref"
+data-reference="ps-thm:petersson">10.2.1</a>, where the
+double cosets <span
+class="math inline">\(\Gamma_\infty\backslash\Gamma/\Gamma_\infty\)</span>
+give the Kloosterman terms.</p>
+<h1 id="sec:smallest">§39.3. The smallest case</h1>
+<p>Take <span class="math inline">\(\mathcal O={\mathbb{Z}}[\mathrm
+i]\)</span>, <span class="math inline">\(\Gamma:=\Gamma_{I_2}\)</span>,
+of order <span class="math inline">\(32\)</span> by Problem <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:aut" data-reference-type="ref"
+data-reference="dt-pr:aut">21.1.2</a>, and <span
+class="math inline">\(\mathrm{Cl}_2=\{I_2\}\)</span> by Problem <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:class-one" data-reference-type="ref"
+data-reference="dt-pr:class-one">21.1.4</a>. Let <span
+class="math inline">\(\mathbf e_1,\mathbf e_2\)</span> be the standard
+basis of <span class="math inline">\({\mathbb{C}}^2\)</span>, <span
+class="math inline">\(z:=\mathbf e_2\)</span> and <span
+class="math inline">\(X:=\mathcal O\mathbf e_1\)</span>; here <span
+class="math inline">\(h(z,z)=1\)</span>, since everything is definite.
+The stabilizer of <span class="math inline">\(z\)</span> is <span
+class="math inline">\(\Gamma_X=\{\operatorname{diag}(u,1):u\in\mu_4\}\)</span>.
+In this section, as in Chapter <a href="20261125T002000--definite-theta-lifts__workbook.html#chap"
+data-reference-type="ref" data-reference="dt-chap">21</a>, <span
+class="math inline">\(a\ge0\)</span> is the degree of a symmetric power
+(not the scale of Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>), and <span
+class="math inline">\(0\le j,j&#39;\le a\)</span> are integers. Let
+<span
+class="math inline">\(V_\pi:=\operatorname{Sym}^a({\mathbb{C}}^2)\)</span>,
+<span class="math inline">\(W:=\operatorname{Sym}^j({\mathbb{C}}\mathbf
+e_1)\)</span> and <span class="math inline">\(\jmath(\xi):=\xi\,\mathbf
+e_2^{a-j}\)</span>. When <span class="math inline">\(4\mid j\)</span>
+and <span class="math inline">\(4\mid a-j\)</span>, <span
+class="math inline">\(\operatorname{Per}\)</span> is the period <span
+class="math inline">\(P(\psi,\xi)\)</span> of Section <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#sec:seesaw" data-reference-type="ref"
+data-reference="tn-sec:seesaw">23.4</a>, and Problem <a
+href="#pr:unfold" data-reference-type="ref"
+data-reference="pr:unfold">39.2.1</a> says that it is the inner product with
+<span class="math inline">\(P\xi\)</span>. For <span
+class="math inline">\(4\mid j\)</span> let <span
+class="math inline">\(\xi_j\in W^{\Gamma_X}\)</span> be the form with
+value <span class="math inline">\(\mathbf e_1^j\)</span>.</p>
+<div id="pr:Pj" class="problem" data-progress-ids="[&quot;20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.tex#pr:Pj&quot;]">
+<p><strong>Problem 39.3.1</strong>. Let <span class="math inline">\(4\mid
+j\)</span>. Then <span class="math inline">\(P\xi_j=4\bigl(\mathbf
+e_1^j\mathbf e_2^{a-j}+\mathbf e_1^{a-j}\mathbf e_2^j\bigr)\)</span> if
+<span class="math inline">\(4\mid a\)</span>, and <span
+class="math inline">\(P\xi_j=0\)</span> otherwise. For <span
+class="math inline">\(a=8\)</span>: <span
+class="math inline">\(P\xi_0=4(\mathbf e_1^8+\mathbf e_2^8)\)</span> and
+<span class="math inline">\(P\xi_4=8\mathbf e_1^4\mathbf
+e_2^4\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a></div><!-- used-in:end -->
+</div>
+<div id="pr:gram-toy" class="problem" data-progress-ids="[&quot;20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.tex#pr:gram-toy&quot;]">
+<p><strong>Problem 39.3.2</strong>. Here <span
+class="math inline">\(c_0=\binom aj^{-1}\)</span>. Let <span
+class="math inline">\(4\mid a\)</span> and <span
+class="math inline">\(4\mid j,j&#39;\)</span>, and put <span
+class="math inline">\(\mathcal
+K_{jj&#39;}:=\bigl(c_0(j)c_0(j&#39;)\bigr)^{-1/2}\langle
+P\xi_j,P\xi_{j&#39;}\rangle/(\lVert\xi_j\rVert\lVert\xi_{j&#39;}\rVert)\)</span>.
+Then <span class="math display">\[\mathcal
+K_{jj&#39;}=4\bigl(\delta_{jj&#39;}+\delta_{j&#39;,a-j}\bigr).\]</span>
+In the expansion of Problem <a href="#pr:expansion"
+data-reference-type="ref" data-reference="pr:expansion">39.2.3</a> the
+identity class contributes <span
+class="math inline">\(\delta_{jj&#39;}\)</span> to <span
+class="math inline">\(\mathcal K_{jj&#39;}\)</span>, the three classes
+<span class="math inline">\(\operatorname{diag}(1,u)\)</span> with <span
+class="math inline">\(u\ne1\)</span> together contribute <span
+class="math inline">\(3\delta_{jj&#39;}\)</span>, and the antidiagonal
+class contributes <span
+class="math inline">\(4\delta_{j&#39;,a-j}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html">Chapter 40</a>: <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:toy-fails">Problem 40.1.7</a></div><!-- used-in:end -->
+</div>
+<div id="pr:basis" class="problem" data-progress-ids="[&quot;20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.tex#pr:basis&quot;]">
+<p><strong>Problem 39.3.3</strong>. Let <span class="math inline">\(4\mid
+a\)</span>. The forms <span class="math inline">\(P\xi_j\)</span> with
+<span class="math inline">\(4\mid j\)</span> and <span
+class="math inline">\(2j\le a\)</span> are an orthogonal basis of <span
+class="math inline">\(\mathcal A_{(a)}(2)\)</span>, their number is
+<span class="math inline">\(\lfloor a/8\rfloor+1\)</span>, and <span
+class="math inline">\(P\xi_{a-j}=P\xi_j\)</span>.</p>
+</div>
+<p>Here different indices can give the same series; in Problem <a
+href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#pr:k12" data-reference-type="ref"
+data-reference="ps-pr:k12">10.1.3</a> two Poincaré series are
+proportional.</p>
+<p>So for <span class="math inline">\(4\mid a\)</span> the series <span
+class="math inline">\(P\xi_j\)</span> with <span
+class="math inline">\(4\mid j\)</span> and <span
+class="math inline">\(0\le2j&lt;a\)</span> are orthogonal and span a
+subspace of codimension at most one, and <span
+class="math inline">\(\dim\mathcal A_{(a)}(2)=\lfloor
+a/8\rfloor+1\)</span> exceeds <span
+class="math inline">\(D^*:=4\,\mathrm{mass}_2\dim\operatorname{Sym}^a({\mathbb{C}}^2)=(a+1)/8\)</span>
+by at most <span class="math inline">\(7/8\)</span>, as <span
+class="math inline">\(\dim S_k\)</span> is <span
+class="math inline">\((k-1)/12\)</span> up to a bounded error for even
+<span class="math inline">\(k\ge4\)</span> in Problem <a
+href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#pr:dim" data-reference-type="ref"
+data-reference="ps-pr:dim">10.5.2</a>. But their diagonal Gram
+entries are <span class="math inline">\(4\)</span>, not <span
+class="math inline">\(1\)</span>: the elements <span
+class="math inline">\(\operatorname{diag}(1,u)\)</span> with <span
+class="math inline">\(u\ne1\)</span>, which preserve the line <span
+class="math inline">\(Ez\)</span> without fixing <span
+class="math inline">\(z\)</span>, each contribute as much as the
+identity. The toy has nothing to average over. (Problems <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:toy-fails" data-reference-type="ref"
+data-reference="m1-pr:toy-fails">40.1.7</a> and <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:level-toy" data-reference-type="ref"
+data-reference="m1-pr:level-toy">40.1.6</a> make this
+precise.) In the proof a finite level group acts on the forms of
+principal level and translates one Poincaré map.</p>
+<h1 id="sec:gram">§39.4. Translates of one Poincaré map</h1>
+<p>The proof gives three estimates for the scaled Poincaré map of the
+data: a second moment over the finite group (Theorem <a
+href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.html#thm:second-moment" data-reference-type="ref"
+data-reference="m4-thm:second-moment">47.3.1</a>), the
+near isometry of its projection to the good forms (Theorem <a
+href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html#thm:good" data-reference-type="ref"
+data-reference="m5-thm:good">48.2.2</a>), and an upper bound for
+the dimension of the target (Theorem <a href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html#thm:count"
+data-reference-type="ref"
+data-reference="m5-thm:count">48.3.1</a>). We apply the two
+translate theorems of Chapter <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#chap"
+data-reference-type="ref" data-reference="rl-chap">9</a> to
+obtain Theorem <a href="#thm:spread" data-reference-type="ref"
+data-reference="thm:spread">39.4.1</a> and, using also the dimension bound
+for <span class="math inline">\(S_{\mathrm{ram}}\)</span>, Theorem <a
+href="#thm:B" data-reference-type="ref" data-reference="thm:B">39.4.2</a>.
+How small can the second moment of the Gram operators between a Poincaré
+map and its translates be, and how does its upper bound combine with
+near isometry of the projected map to give a spanning estimate?</p>
+<p>Let <span class="math inline">\(\mathcal X\)</span> and <span
+class="math inline">\(\mathcal Y\)</span> be finite-dimensional complex
+inner product spaces, let <span class="math inline">\(\rho\)</span> be a
+unitary representation of a finite group <span
+class="math inline">\(\bar G\)</span> on <span
+class="math inline">\(\mathcal Y\)</span>, and let <span
+class="math inline">\(\mathcal P^\circ\colon\mathcal X\to\mathcal
+Y\)</span> be linear. Put <span class="math inline">\(\mathcal
+K_s:=\mathcal P^{\circ*}\rho(s)\mathcal
+P^\circ\in\operatorname{End}\mathcal X\)</span> for <span
+class="math inline">\(s\in\bar G\)</span>; it is the <em>Gram
+operator</em> between <span class="math inline">\(\mathcal
+P^\circ\)</span> and its translate <span
+class="math inline">\(\rho(s)\mathcal P^\circ\)</span>. Recall two facts
+from Chapter <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#chap" data-reference-type="ref"
+data-reference="rl-chap">9</a>. By Problem <a
+href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#pr:translate-gram" data-reference-type="ref"
+data-reference="rl-pr:translate-gram">9.2.2</a>, <span
+class="math inline">\(\operatorname{Tr}\bigl((\rho(s)\mathcal
+P^\circ\mathcal P^{\circ*}\rho(s)^{-1})(\rho(t)\mathcal P^\circ\mathcal
+P^{\circ*}\rho(t)^{-1})\bigr)=\lVert\mathcal
+K_{s^{-1}t}\rVert^2\)</span>, so <span
+class="math inline">\(s\mapsto\lVert\mathcal K_s\rVert^2\)</span> is of
+<em>positive type</em>: there are vectors <span
+class="math inline">\(u_s\)</span>, <span class="math inline">\(s\in\bar
+G\)</span>, of an inner product space with <span
+class="math inline">\(\langle u_s,u_t\rangle=\lVert\mathcal
+K_{s^{-1}t}\rVert^2\)</span>. By Problem <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#pr:moment-min"
+data-reference-type="ref"
+data-reference="rl-pr:moment-min">9.2.5</a>, if <span
+class="math inline">\(p\)</span> is the orthogonal projection onto a
+<span class="math inline">\(\bar G\)</span>-stable subspace <span
+class="math inline">\(\mathcal Y_0\)</span> and <span
+class="math inline">\(p\mathcal P^\circ\)</span> is an isometry, then
+<span class="math inline">\(\dim\mathcal Y_0\sum_{s\in\bar
+G}\lVert\mathcal K_s\rVert^2\ge\#\bar G\,(\dim\mathcal X)^2\)</span>.
+Chapter <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#chap" data-reference-type="ref"
+data-reference="m1-chap">40</a> computes the Gram operators of a
+Poincaré map on a finite group: there the lower bound is attained when
+the weight is irreducible (Problems <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:induced"
+data-reference-type="ref"
+data-reference="m1-pr:induced">40.1.4</a> and <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:schur-equality" data-reference-type="ref"
+data-reference="m1-pr:schur-equality">40.2.1</a>), and
+the translates by a subgroup act on the source through a representation,
+as <span class="math inline">\(\bar R_0\)</span> does below.</p>
+<div id="def:scaled" class="definition">
+<p><strong>Definition 39.4.1</strong> (the scaled Poincaré map). We use <span
+class="math inline">\(\mathcal M=\mathcal M_0\cup\mathcal M_1\)</span>,
+<span class="math inline">\(\bar G=\bar G_0\times\bar G_1\)</span>,
+<span class="math inline">\(\rho\)</span> on <span
+class="math inline">\(H(Y_0)\)</span>, <span
+class="math inline">\(e_0\)</span>, <span
+class="math inline">\(T=e_0H(Y_0)\)</span>, <span
+class="math inline">\(d_T\)</span>, <span
+class="math inline">\(S\supseteq S_{\mathrm{ram}}\)</span> and <span
+class="math inline">\(D_X=\dim S\)</span> as in Chapter <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>; for the data, <span
+class="math inline">\(b\ge1000\)</span>. A finite adelic element of
+<span class="math inline">\(U(Y_0)\)</span> is <em>integral</em> if its
+matrix in the lattice basis of the proof, to which the vectors <span
+class="math inline">\(v_a\)</span>, <span
+class="math inline">\(z\)</span>, <span
+class="math inline">\(v&#39;_a\)</span> of Section <a
+href="#sec:subgroup" data-reference-type="ref"
+data-reference="sec:subgroup">39.1</a> belong, is integral at every finite
+place; its <em>reduction</em> is then the family of its residues at the
+places <span class="math inline">\(w\in\mathcal M\)</span>, an element
+of <span class="math inline">\(\bar G\)</span>. The integral elements
+with reduction <span class="math inline">\(1\)</span> form the principal
+level <span class="math inline">\(K_M\)</span>. In <span
+class="math inline">\(\operatorname{vol}(K_M)\)</span> we take the
+volume of the corresponding principal level in orthonormal local bases,
+for the Haar measure giving the stabilizer of the standard lattice
+volume <span class="math inline">\(1\)</span>. The <em>classes</em>
+<span class="math inline">\(c\)</span> are the double cosets of the
+finite adelic points of <span class="math inline">\(U(X_0)\)</span> by
+the rational points and the level of the source forms; each has a
+representative <span class="math inline">\(h_c\)</span>, viewed in <span
+class="math inline">\(U(Y_0)\)</span>. A <em>Bessel coordinate</em>
+<span class="math inline">\(i=(i_\tau)_\tau\)</span> is a tuple of
+coordinates of the archimedean Bessel functions, one at each infinite
+place. The <em>coordinate space</em> has an orthonormal basis <span
+class="math inline">\(e_{c,i}\)</span> indexed by the pairs of a class
+and a Bessel coordinate. Define the coefficient map <span
+class="math inline">\(C\)</span> of the series in Section <a
+href="#sec:poincare" data-reference-type="ref"
+data-reference="sec:poincare">39.2</a> by translating a source form by the
+fixed central element and evaluating it at the class representatives in
+Bessel coordinates. The proof shows that <span
+class="math inline">\(C\)</span> is an isomorphism. Give <span
+class="math inline">\(S\)</span> the inner product transported by <span
+class="math inline">\(C\)</span>. Let <span
+class="math inline">\(\nu&gt;0\)</span> be the covolume, for the product
+of the local Bessel Haar measures on the real unipotent group, of the
+lattice of <span class="math inline">\(n\in{\mathcal{U}}(F)\)</span>
+with <span class="math inline">\(h_c^{-1}n_fh_c\in K_M\)</span>. The
+covolume calculation in the proof gives the same <span
+class="math inline">\(\nu\)</span> for every class. Define the
+<em>scaled Poincaré map</em> and its <em>Gram operators</em> by <span
+class="math display">\[\mathcal
+P^\circ:=(\operatorname{vol}(K_M)\,\nu)^{-1/2}\,\mathcal P\circ
+C^{-1},\qquad \mathcal K_s:=\mathcal P^{\circ*}\rho(s)\mathcal
+P^\circ\quad(s\in\bar G),\]</span> a map from the coordinate space to
+<span class="math inline">\(H(Y_0)\)</span> and operators on the
+coordinate space. Further, <span class="math inline">\(G_\infty\)</span>
+is the product over the infinite places of the real groups of <span
+class="math inline">\(Y_0\)</span>, in the rescaled bases of the proof,
+and <span class="math inline">\(dy\)</span> is the product of the local
+Haar measures in the compact-dual normalization of Section <a
+href="20261126T081500--a-bessel-function-at-a-real-place__workbook.html#sec:period" data-reference-type="ref"
+data-reference="b1-sec:period">42.3</a>; <span
+class="math inline">\(\gamma_\infty\)</span> and <span
+class="math inline">\(\gamma_f\)</span> are the components of a rational
+<span class="math inline">\(\gamma\in U(Y_0)(F)\)</span> in <span
+class="math inline">\(G_\infty\)</span> and in the finite adelic group;
+<span class="math inline">\(\deg\)</span> is the product over the
+infinite places of the degree constants of the Bessel systems, which for
+the data are the formal degrees, and <span
+class="math inline">\(\mathrm{mass}_r\)</span> is the mass <span
+class="math inline">\(\sum1/\#\mathrm{Aut}\)</span> of the genus of the
+standard lattice of rank <span class="math inline">\(r\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html">Chapter 40</a>; <a href="20261126T081500--a-bessel-function-at-a-real-place__workbook.html">Chapter 42</a>; <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html">Chapter 43</a>; <a href="20261126T080300--size-gain-and-count-the-remaining-terms__workbook.html">Chapter 44</a>; <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html">Chapter 45</a>; <a href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.html">Chapter 47</a> <details><summary>and 1 more</summary><div><a href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html">Chapter 48</a></div></details></div><!-- used-in:end -->
+</div>
+<div id="def:bessel-rep" class="definition">
+<p><strong>Definition 39.4.2</strong> (the Bessel representation). Let <span
+class="math inline">\(\bar R_0\subseteq\bar G\)</span> be the group of
+reductions of the integral points of the finite adelic Bessel subgroup.
+For <span class="math inline">\(s\in\bar G\)</span>, <span
+class="math inline">\(\rho_{\mathrm{Bes}}(s)\)</span> is the operator on
+the coordinate space whose <span
+class="math inline">\(((c,i),(c&#39;,i&#39;))\)</span> entry is the
+complex conjugate of <span class="math inline">\(\nu^{-1}\)</span> times
+the sum, over the <span class="math inline">\(\gamma\in R(F)\)</span>
+with <span class="math inline">\(h_c^{-1}\gamma_fh_{c&#39;}\)</span>
+integral of reduction <span class="math inline">\(s\)</span>, of the
+integrals <span
+class="math display">\[\int_{G_\infty}u_c(y)\,u_{c&#39;}(\gamma_\infty^{-1}y)\,W_i(y)\,\overline{W_{i&#39;}(\gamma_\infty^{-1}y)}\,dy
+.\]</span> Here <span class="math inline">\(u_c\)</span> is the class
+cutoff and <span class="math inline">\(W\)</span> the full Bessel
+function; both are made precise in Chapter <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#chap"
+data-reference-type="ref" data-reference="m1-chap">40</a>
+(Theorem <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#thm:bessel-system" data-reference-type="ref"
+data-reference="m1-thm:bessel-system">40.3.1</a> and
+Definition <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#def:amplitude" data-reference-type="ref"
+data-reference="m1-def:amplitude">40.3.1</a>), in whose
+notation the entry is the complex conjugate of <span
+class="math inline">\(\nu^{-1}\mathrm{Amp}(R(F);c,s,c&#39;)_{ii&#39;}\)</span>.
+The proof shows that <span
+class="math inline">\(\rho_{\mathrm{Bes}}(s)=0\)</span> for <span
+class="math inline">\(s\notin\bar R_0\)</span> and that <span
+class="math inline">\(\rho_{\mathrm{Bes}}\)</span> is a unitary
+representation of <span class="math inline">\(\bar R_0\)</span> on the
+coordinate space.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html">Chapter 40</a>; <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html">Chapter 43</a>; <a href="20261126T080300--size-gain-and-count-the-remaining-terms__workbook.html">Chapter 44</a>; <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html">Chapter 45</a>; <a href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.html">Chapter 47</a>; <a href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html">Chapter 48</a></div><!-- used-in:end -->
+</div>
+<p>The same sums taken over all <span class="math inline">\(\gamma\in
+U(Y_0)(F)\)</span> give the entries of <span
+class="math inline">\(\mathcal K_s\)</span>: this is the block identity,
+Theorem <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#thm:blocks" data-reference-type="ref"
+data-reference="m1-thm:blocks">40.3.2</a>, the analogue of
+Problem <a href="#pr:expansion" data-reference-type="ref"
+data-reference="pr:expansion">39.2.3</a>. The proof derives from it that
+<span class="math inline">\(\mathcal K_{st}=\mathcal
+K_s\rho_{\mathrm{Bes}}(t)\)</span> for <span
+class="math inline">\(s\in\bar G\)</span> and <span
+class="math inline">\(t\in\bar R_0\)</span> (read from the proof; not
+proved here); this gives <span class="math inline">\(\rho(t)\mathcal
+P^\circ=\mathcal P^\circ\rho_{\mathrm{Bes}}(t)\)</span> for <span
+class="math inline">\(t\in\bar R_0\)</span> (Problem <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:intertwine" data-reference-type="ref"
+data-reference="m1-pr:intertwine">40.4.1</a>).</p>
+<h4 id="fillings.">Fillings.</h4>
+<p>The strip bound, the second-moment bound and the near-isometry
+estimate for a pair of projectors have versions for admissible fillings
+(Definition <a href="#def:filling" data-reference-type="ref"
+data-reference="def:filling">39.4.3</a>).</p>
+<div id="def:filling" class="definition">
+<p><strong>Definition 39.4.3</strong> (fillings). Among the data of a
+<em>filling</em> are a CM field <span class="math inline">\(E\)</span>
+with a CM type, the ranks <span class="math inline">\(\varrho\)</span>
+and <span class="math inline">\(k\)</span> of Section <a
+href="#sec:subgroup" data-reference-type="ref"
+data-reference="sec:subgroup">39.1</a> with <span
+class="math inline">\(X_0\)</span> standard definite, a prime <span
+class="math inline">\(N\)</span> and an integral finite idele <span
+class="math inline">\(\pi\)</span> with <span
+class="math inline">\(\pi\bar\pi=N\)</span>, a purely imaginary
+generator <span class="math inline">\(\delta_E\)</span> of the different
+of <span class="math inline">\(E\)</span>, and a real <span
+class="math inline">\(b\ge1000\)</span>. The two level primes <span
+class="math inline">\(p_i\)</span> differ from <span
+class="math inline">\(N\)</span>, and above each there are <span
+class="math inline">\(f\)</span> chosen places of norm <span
+class="math inline">\(p_i\)</span>, where <span
+class="math inline">\(f\)</span> is the number of infinite places of
+<span class="math inline">\(E\)</span>. The chosen places are distinct
+and no conjugate of a chosen place is chosen. The filling includes a
+level in <span class="math inline">\(U(X_0)\)</span> with trivial class
+stabilizers, a Bessel system at each infinite place, and further
+arithmetic and size conditions. It is <em>admissible</em> if it
+satisfies the standing hypotheses of the proof. For a filling, <span
+class="math inline">\(\bar G\)</span>, the classes, the coordinate
+space, <span class="math inline">\(\bar R_0\)</span>, <span
+class="math inline">\(\rho_{\mathrm{Bes}}\)</span>, <span
+class="math inline">\(\deg\)</span> and <span
+class="math inline">\(\mathrm{mass}_r\)</span> are defined using its
+groups and Bessel systems, <span class="math inline">\(D_X\)</span> is
+the dimension of its coordinate space, and <span
+class="math inline">\(\nu\)</span> is a positive number attached to it.
+Let <span class="math inline">\(\rho\)</span> be a representation of
+<span class="math inline">\(\bar G\)</span> on a complex inner product
+space <span class="math inline">\(\mathcal Y\)</span>. A linear map
+<span class="math inline">\(P\)</span> from the coordinate space to
+<span class="math inline">\(\mathcal Y\)</span> <em>satisfies the block
+identity</em> if <span class="math inline">\(\langle
+Pe_{c,i},\rho(s)Pe_{c&#39;,i&#39;}\rangle=\nu^{-1}\mathrm{Amp}(U(F);c,s,c&#39;)_{ii&#39;}\)</span>
+for every <span class="math inline">\(s\in\bar G\)</span>, all classes
+<span class="math inline">\(c,c&#39;\)</span> and all Bessel coordinates
+<span class="math inline">\(i,i&#39;\)</span>, where <span
+class="math inline">\(U(F)\)</span> is the group of rational points of
+the unitary group of the filling and the amplitude sums are those of
+Definition <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#def:amplitude" data-reference-type="ref"
+data-reference="m1-def:amplitude">40.3.1</a>, formed for the
+filling. The estimates below take <span class="math inline">\(\mathcal
+Y\)</span> finite-dimensional. <em>Weil data</em> require <span
+class="math inline">\(E\)</span> to contain a primitive <span
+class="math inline">\(5040\)</span>-th root of unity, and consist of a
+splitting character, a purely imaginary element <span
+class="math inline">\(j_E\)</span> and a finite idele, subject to
+further conditions.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html">Chapter 43</a>; <a href="20261126T080300--size-gain-and-count-the-remaining-terms__workbook.html">Chapter 44</a>; <a href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.html">Chapter 47</a>; <a href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html">Chapter 48</a></div><!-- used-in:end -->
+</div>
+<p>The proof verifies that the data give an admissible filling and
+constructs Weil data for its field. For every filling, <span
+class="math inline">\(\rho_{\mathrm{Bes}}(s)=0\)</span> for <span
+class="math inline">\(s\notin\bar R_0\)</span>. For an admissible
+filling over a field containing a primitive <span
+class="math inline">\(5040\)</span>-th root of unity, <span
+class="math inline">\(\nu\)</span> is the common covolume in
+Definition <a href="#def:scaled" data-reference-type="ref"
+data-reference="def:scaled">39.4.1</a> and the restriction of <span
+class="math inline">\(\rho_{\mathrm{Bes}}\)</span> to <span
+class="math inline">\(\bar R_0\)</span> is a unitary representation. The
+hypotheses for the estimates are given in Chapters <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#chap"
+data-reference-type="ref" data-reference="m2-chap">43</a>–<a
+href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html#chap" data-reference-type="ref"
+data-reference="m5-chap">48</a>; the reader may take the data
+throughout.</p>
+<p>The second moment over the whole group is Theorem <a
+href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.html#thm:second-moment" data-reference-type="ref"
+data-reference="m4-thm:second-moment">47.3.1</a>: with
+<span
+class="math inline">\(D_{\mathrm{main}}=D_X^2/(\deg\cdot\mathrm{mass}_r)\)</span>
+(Definition <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#def:two-sizes" data-reference-type="ref"
+data-reference="m1-def:two-sizes">40.3.2</a>), <span
+class="math display">\[\sum_{s\in\bar G}\lVert\mathcal
+K_s\rVert^2\le(1+9b^{-4})\,D_{\mathrm{main}} .\]</span> Chapter <a
+href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.html#chap" data-reference-type="ref"
+data-reference="m4-chap">47</a> proves the whole-group bound
+using the link bound (Definition <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:link"
+data-reference-type="ref" data-reference="m2-def:link">43.2.3</a>
+and Theorem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:link-bound" data-reference-type="ref"
+data-reference="m2-thm:link-bound">43.3.1</a>), the
+<em>truncation bound</em> (Theorem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:cut"
+data-reference-type="ref" data-reference="m2-thm:cut">43.3.2</a>,
+which passes from the link second moment formed with the <span
+class="math inline">\(W_\tau^\flat\)</span> to the full second moment),
+and a sieve over ratios of successive leading minors of the <em>pairing
+matrix</em>, whose entries are the <em>Bessel pairings</em> <span
+class="math inline">\(h(\gamma v_b,v_a)\)</span> for a rational term
+<span class="math inline">\(\gamma\)</span> (Definition <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:frame" data-reference-type="ref"
+data-reference="m2-def:frame">43.2.1</a>). In the proof <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>,
+<code>Filling.sieve</code> gives the sieve,
+<code>Filling.linkSecondMoment_le_of_le_meetNorm</code> gives the link
+bound, and <code>Filling.sqrt_secondMoment_compl_besselS_le</code> gives
+the truncation bound. For the data, Chapter <a href="20261126T080300--size-gain-and-count-the-remaining-terms__workbook.html#chap"
+data-reference-type="ref" data-reference="m8-chap">44</a> derives
+the link and truncation bounds from the size, count and tail estimates
+and the <em>congruence saving</em> from congruences between terms over
+the same block (Theorem <a href="20261126T080300--size-gain-and-count-the-remaining-terms__workbook.html#thm:gain" data-reference-type="ref"
+data-reference="m8-thm:gain">44.3.1</a>). Chapter <a
+href="20261126T080400--the-sieve-over-the-entries__workbook.html#chap" data-reference-type="ref"
+data-reference="m6-chap">46</a> derives the sieve recurrence for
+pairs of tuples with a common last entry. To bound the Gram operators
+near the Bessel subgroup, Chapter <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#chap"
+data-reference-type="ref" data-reference="m2-chap">43</a> uses
+its bound for links at meeting reductions and its truncation bound
+(Theorems <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:link-bound" data-reference-type="ref"
+data-reference="m2-thm:link-bound">43.3.1</a> and <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:cut" data-reference-type="ref"
+data-reference="m2-thm:cut">43.3.2</a>). For <span
+class="math inline">\(j=0,1\)</span>, the sum of <span
+class="math inline">\(\lVert\mathcal
+K_s-\rho_{\mathrm{Bes}}(s)\rVert^2\)</span> over the <span
+class="math inline">\(s\in\bar G\)</span> whose component in <span
+class="math inline">\(\bar G_j\)</span> equals that of an element of
+<span class="math inline">\(\bar R_0\)</span> is at most <span
+class="math inline">\(b^{-12}\,\#\bar R_0\,D_X\)</span> (Theorem <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:strip" data-reference-type="ref"
+data-reference="m2-thm:strip">43.3.3</a>); hence <span
+class="math inline">\(\lVert\mathcal P^{\circ*}\mathcal
+P^\circ-1\rVert^2\le b^{-12}D_X\)</span> and <span
+class="math inline">\(\lVert\mathcal K_1\rVert^2\le2D_X\)</span>
+(Problem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#pr:near-one-data" data-reference-type="ref"
+data-reference="m2-pr:near-one-data">43.3.9</a>). For
+<span class="math inline">\(a\ge4\)</span> divisible by <span
+class="math inline">\(4\)</span>, the first estimate fails in the toy of
+Section <a href="#sec:smallest" data-reference-type="ref"
+data-reference="sec:smallest">39.3</a> with the source of Problem <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:toy-fails" data-reference-type="ref"
+data-reference="m1-pr:toy-fails">40.1.7</a>. In the finite
+model at principal level of Problem <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:level-toy"
+data-reference-type="ref"
+data-reference="m1-pr:level-toy">40.1.6</a>, the Gram
+operator at <span class="math inline">\(1\)</span> is the identity.</p>
+<p>The second moment is to be compared with the target. By Theorem <a
+href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html#thm:count" data-reference-type="ref"
+data-reference="m5-thm:count">48.3.1</a>, <span
+class="math display">\[d_T\le\#\bar G\cdot\deg\cdot\mathrm{mass}_r
+.\]</span> Its proof compares the good forms on <span
+class="math inline">\(Y_0\)</span> with those on the definite space
+<span class="math inline">\(W_m\)</span>, which have the same dimension
+by Corollary <a href="20261126T050500--equal-multiplicities__workbook.html#cor:equal" data-reference-type="ref"
+data-reference="c2-cor:equal">70.4.1</a> of Chapter <a
+href="20261126T050500--equal-multiplicities__workbook.html#chap" data-reference-type="ref"
+data-reference="c2-chap">70</a> (Part IX); there the principal
+level is free, and the forms of the chosen weight have dimension exactly
+<span class="math inline">\(\#\bar
+G\cdot\mathrm{mass}_r\cdot\deg\)</span>. Section <a href="#sec:smallest"
+data-reference-type="ref" data-reference="sec:smallest">39.3</a> shows the
+correction at a level with stabilizers. With Theorem <a
+href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.html#thm:second-moment" data-reference-type="ref"
+data-reference="m4-thm:second-moment">47.3.1</a> this
+gives (Problem <a href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html#pr:spread-hyp" data-reference-type="ref"
+data-reference="m5-pr:spread-hyp">48.3.6</a>) <span
+class="math display">\[d_T\sum_{s\in\bar G}\lVert\mathcal
+K_s\rVert^2\le\#\bar G\,(1+9b^{-4})\,D_X^2 ,\]</span> <span
+class="math inline">\(1+9b^{-4}\)</span> times the lower bound of
+Problem <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#pr:moment-min" data-reference-type="ref"
+data-reference="rl-pr:moment-min">9.2.5</a> for an exactly
+isometric projected map, with <span class="math inline">\(\mathcal
+Y_0=T\)</span>.</p>
+<h4 id="good-forms.">Good forms.</h4>
+<p>Recall from Chapter <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#chap" data-reference-type="ref"
+data-reference="rl-chap">9</a> that <span
+class="math inline">\(L\colon\mathcal X\to\mathcal Y\)</span> is a near
+isometry with error <span class="math inline">\(\varepsilon\)</span> if
+<span class="math inline">\(\dim Z-\varepsilon\dim\mathcal X\le\lVert
+L\,\mathrm{pr}_Z\rVert^2\)</span> for every subspace <span
+class="math inline">\(Z\subset\mathcal X\)</span>, where <span
+class="math inline">\(\mathrm{pr}_Z\)</span> is the orthogonal
+projection onto <span class="math inline">\(Z\)</span>, and that by
+Problem <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#pr:near-isom" data-reference-type="ref"
+data-reference="rl-pr:near-isom">9.3.1</a> this holds if
+<span class="math inline">\(\varepsilon\ge0\)</span> and <span
+class="math inline">\(\lVert L^*L-1\rVert^2\le\varepsilon^2\dim\mathcal
+X\)</span>. By Theorem <a href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html#thm:good" data-reference-type="ref"
+data-reference="m5-thm:good">48.2.2</a>, <span
+class="math inline">\(e_0\mathcal P^\circ\)</span> is a near isometry
+with error <span class="math inline">\(5b^{-4}\)</span>: <span
+class="math display">\[\lVert e_0\mathcal
+P^\circ\,\mathrm{pr}_Z\rVert^2\ge\dim Z-5b^{-4}D_X\qquad\text{for every
+subspace \(Z\) of the coordinate space.}\]</span> Its proof writes the
+action of <span class="math inline">\(e_0\)</span> as a product of two
+commuting projections, one for each level prime. For each prime the
+removed part is estimated using a trace against <span
+class="math inline">\(\rho_{\mathrm{Bes}}\)</span> and a remainder
+controlled by the strip estimate.</p>
+<h4 id="few-translates.">Few translates.</h4>
+<p>Recall Theorems <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#thm:spread" data-reference-type="ref"
+data-reference="rl-thm:spread">9.3.1</a> and <a
+href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#thm:few" data-reference-type="ref"
+data-reference="rl-thm:few">9.4.1</a>. <em>One translate</em>:
+let <span class="math inline">\(\rho\)</span> be unitary, <span
+class="math inline">\(p\)</span> the orthogonal projection onto a <span
+class="math inline">\(\bar G\)</span>-stable subspace <span
+class="math inline">\(\mathcal Y_0\)</span>, <span
+class="math inline">\(\varepsilon\ge0\)</span>, <span
+class="math inline">\(p\mathcal P^\circ\)</span> a near isometry with
+error <span class="math inline">\(\varepsilon\)</span>, and <span
+class="math inline">\(\dim\mathcal Y_0\sum_s\lVert\mathcal
+K_s\rVert^2\le\#\bar G\,(1+\varepsilon)(\dim\mathcal X)^2\)</span>. Then
+for every subspace <span class="math inline">\(\mathcal F\subset\mathcal
+Y_0\)</span>, with <span class="math inline">\(\omega:=\dim\mathcal
+F/\dim\mathcal Y_0\)</span> if <span class="math inline">\(\mathcal
+Y_0\ne0\)</span> and <span class="math inline">\(\omega:=0\)</span>
+otherwise, some <span class="math inline">\(s\in\bar G\)</span> has
+<span class="math inline">\(\dim\{x\in\mathcal X:p\rho(s)\mathcal
+P^\circ x\in\mathcal
+F\}\le\bigl(\frac{1+\omega}2+\frac32\varepsilon\bigr)\dim\mathcal
+X\)</span>. <em>Few translates</em>: let <span
+class="math inline">\((B_s\colon\mathcal X\to\mathcal Y_0)_{s\in\mathcal
+I}\)</span> be a family of linear maps between finite-dimensional
+complex spaces, indexed by a set <span class="math inline">\(\mathcal
+I\)</span>, with <span class="math inline">\(\mathcal X\ne0\ne\mathcal
+Y_0\)</span> and <span
+class="math inline">\(0&lt;\varepsilon&lt;1/16\)</span>, such that for
+every subspace <span class="math inline">\(\mathcal F\subset\mathcal
+Y_0\)</span> some <span class="math inline">\(s\)</span> has <span
+class="math inline">\(\dim B_s^{-1}(\mathcal
+F)\le\bigl(\frac{1+\omega}2+\frac32\varepsilon\bigr)\dim\mathcal
+X\)</span>. Then there is a finite set <span
+class="math inline">\(J\subset\mathcal I\)</span> with <span
+class="math display">\[\#J\cdot\dim\mathcal
+X\le\tfrac52\bigl(1+\log\tfrac1{16\varepsilon}\bigr)\dim\mathcal
+Y_0,\qquad
+\dim\sum_{s\in J}B_s(\mathcal X)\ge(1-16\varepsilon)\dim\mathcal Y_0
+.\]</span></p>
+<div id="pr:constants" class="problem" data-progress-ids="[&quot;20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.tex#pr:constants&quot;]">
+<p><strong>Problem 39.4.1</strong>. Let <span
+class="math inline">\(\varepsilon:=(8b^2)^{-1}\)</span>. (a) If <span
+class="math inline">\(b\ge9\)</span>, then <span
+class="math inline">\(5b^{-4}\le\varepsilon\)</span> and <span
+class="math inline">\(9b^{-4}\le\varepsilon\)</span>. (b) If <span
+class="math inline">\(b^2\ge2\)</span>, then <span
+class="math inline">\(16\varepsilon=2b^{-2}\)</span> and <span
+class="math inline">\(\frac52\bigl(1+\log(b^2/2)\bigr)\le5\log(1+2b^2)\)</span>;
+if <span class="math inline">\(b^2&gt;2\)</span>, then <span
+class="math inline">\(0&lt;\varepsilon&lt;1/16\)</span>.</p>
+</div>
+<p>By Problem <a href="#pr:constants" data-reference-type="ref"
+data-reference="pr:constants">39.4.1</a>(a), Theorems <a href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html#thm:good"
+data-reference-type="ref"
+data-reference="m5-thm:good">48.2.2</a>, <a
+href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.html#thm:second-moment" data-reference-type="ref"
+data-reference="m4-thm:second-moment">47.3.1</a> and <a
+href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html#thm:count" data-reference-type="ref"
+data-reference="m5-thm:count">48.3.1</a> give the hypotheses of
+the one-translate theorem with <span
+class="math inline">\(\varepsilon=(8b^2)^{-1}\)</span> and <span
+class="math inline">\(\mathcal Y_0=T\)</span>. Nonzero scalars and the
+isomorphism <span class="math inline">\(C\)</span> do not change the
+dimensions of preimages.</p>
+<div id="thm:spread" class="theorem">
+<p><strong>Theorem 39.4.1</strong> (one translate). <em>For every subspace
+<span class="math inline">\(\mathcal F\subset T\)</span>, with <span
+class="math inline">\(\omega:=\dim\mathcal F/d_T\)</span> (and <span
+class="math inline">\(\omega:=0\)</span> if <span
+class="math inline">\(d_T=0\)</span>), there is <span
+class="math inline">\(s\in\bar G\)</span> such that the preimage of
+<span class="math inline">\(\mathcal F\)</span> under <span
+class="math inline">\(e_0\rho(s)\mathcal P\colon S\to T\)</span> has
+dimension at most <span
+class="math inline">\(\bigl(\frac{1+\omega}2+\frac32(8b^2)^{-1}\bigr)D_X\)</span>.</em></p>
+</div>
+<h4 id="ramified-forms.">Ramified forms.</h4>
+<p>Theorem A of Chapter <a href="20261126T030600--theorem-a-short-forms__workbook.html#chap" data-reference-type="ref"
+data-reference="ta-chap">49</a> concerns the ramified source
+forms <span class="math inline">\(S_{\mathrm{ram}}\)</span>, defined
+with the operators <span class="math inline">\(T_w\)</span>, <span
+class="math inline">\(w\mid\pi_N\)</span>, in Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap"
+data-reference-type="ref" data-reference="ob-chap">37</a>; there
+are <span class="math inline">\(f\)</span> such places, and <span
+class="math inline">\(T_w^{N-1}=1\)</span>. The source level is free, so
+<span class="math inline">\(D_X&gt;0\)</span> (Problems <a
+href="20261126T080100--free-levels-and-short-bases__workbook.html#pr:free" data-reference-type="ref"
+data-reference="a1-pr:free">50.1.4</a> and <a
+href="20261126T080100--free-levels-and-short-bases__workbook.html#pr:dim-free" data-reference-type="ref"
+data-reference="a1-pr:dim-free">50.1.5</a>). Theorem <a
+href="20261126T080200--the-good-part-and-the-ramified-forms__workbook.html#thm:ramified-dim" data-reference-type="ref"
+data-reference="a2-thm:ramified-dim">51.3.1</a> gives
+<span class="math inline">\(\dim
+S_{\mathrm{ram}}\ge(1-f/(N-1))D_X\)</span> and <span
+class="math inline">\(f/(N-1)\le b^{-8}\)</span>.</p>
+<div id="pr:ramified" class="problem" data-progress-ids="[&quot;20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.tex#pr:ramified&quot;]">
+<p><strong>Problem 39.4.2</strong>. For each <span
+class="math inline">\(w\mid\pi_N\)</span>, <span
+class="math inline">\((N-1)^{-1}\sum_{i=0}^{N-2}T_w^i\)</span> is the
+projection of <span class="math inline">\(S\)</span> onto the fixed
+vectors of <span class="math inline">\(T_w\)</span> along its other
+eigenspaces, and <span
+class="math inline">\(\ker\sum_{i=0}^{N-2}T_w^i\)</span> is the sum of
+the eigenspaces of <span class="math inline">\(T_w\)</span> for
+eigenvalues <span class="math inline">\(\ne1\)</span>.</p>
+</div>
+<div id="pr:restrict" class="problem" data-progress-ids="[&quot;20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.tex#pr:restrict&quot;]">
+<p><strong>Problem 39.4.3</strong>. For linear maps <span
+class="math inline">\(B_s\colon\mathcal X\to\mathcal Y\)</span>, a
+finite set <span class="math inline">\(J\)</span> of indices and a
+subspace <span class="math inline">\(Z\subset\mathcal X\)</span>, <span
+class="math inline">\(\dim\sum_{s\in J}B_s(\mathcal X)\le\dim\sum_{s\in
+J}B_s(Z)+\#J\,(\dim\mathcal X-\dim Z)\)</span>.</p>
+</div>
+<div id="pr:loss" class="problem" data-progress-ids="[&quot;20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.tex#pr:loss&quot;]">
+<p><strong>Problem 39.4.4</strong>. For <span
+class="math inline">\(b\ge2\)</span>, <span
+class="math inline">\(5b^{-8}\log(1+2b^2)\le2b^{-2}\)</span>. Hence if
+<span class="math inline">\(\#J\cdot D_X\le5d_T\log(1+2b^2)\)</span> and
+<span class="math inline">\(\dim
+S_{\mathrm{ram}}\ge(1-b^{-8})D_X\)</span>, then <span
+class="math inline">\(\#J\,(D_X-\dim
+S_{\mathrm{ram}})\le2b^{-2}d_T\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T080200--the-good-part-and-the-ramified-forms__workbook.html">Chapter 51</a></div><!-- used-in:end -->
+</div>
+<p>The target is not zero, since the source is not zero and <span
+class="math inline">\(e_0\mathcal P^\circ\)</span> is a near isometry
+with error less than <span class="math inline">\(1\)</span>. Theorem <a
+href="#thm:spread" data-reference-type="ref"
+data-reference="thm:spread">39.4.1</a>, the few-translates theorem with
+Problem <a href="#pr:constants" data-reference-type="ref"
+data-reference="pr:constants">39.4.1</a>(b), and Problems <a
+href="#pr:restrict" data-reference-type="ref"
+data-reference="pr:restrict">39.4.3</a> and <a href="#pr:loss"
+data-reference-type="ref" data-reference="pr:loss">39.4.4</a> prove the
+following.</p>
+<div id="thm:B" class="theorem">
+<p><strong>Theorem 39.4.2</strong> (Theorem B). <em>For all data of
+Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>, <span
+class="math inline">\(d_T&gt;0\)</span>, and there is a finite set <span
+class="math inline">\(J\subseteq\bar G\)</span> with <span
+class="math display">\[\#J\cdot\dim
+S_{\mathrm{ram}}\le5\,d_T\log(1+2b^2)\qquad\text{and}\qquad(1-4b^{-2})\,d_T\le\dim\sum_{s\in
+J}e_0\rho(s)\mathcal P(S_{\mathrm{ram}}).\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html">Chapter 9</a>; <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.html">Chapter 38</a>; <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html">Chapter 40</a>; <a href="20261126T081500--a-bessel-function-at-a-real-place__workbook.html">Chapter 42</a>; <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html">Chapter 43</a>; <a href="20261126T080300--size-gain-and-count-the-remaining-terms__workbook.html">Chapter 44</a> <details><summary>and 2 more</summary><div><a href="20261126T080200--the-good-part-and-the-ramified-forms__workbook.html">Chapter 51</a>; <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a></div></details></div><!-- used-in:end -->
+</div>
+<p>These maps <span class="math inline">\(e_0\rho(s)\mathcal P\)</span>
+on <span class="math inline">\(S_{\mathrm{ram}}\)</span> have the same
+ranges as the maps <span class="math inline">\(A_s\)</span> of
+Chapter <a href="20261126T030600--theorem-a-short-forms__workbook.html#chap" data-reference-type="ref"
+data-reference="ta-chap">49</a>, which differ from them by the
+scalar <span class="math inline">\(c_Bc_{\mathrm{ss}}^{-1}\#\bar
+G\)</span>, nonzero because <span
+class="math inline">\(c_{\mathrm{ss}}\ne0\)</span> (Theorem <a
+href="20261126T030400--the-seesaw-identity__workbook.html#thm:seesaw" data-reference-type="ref"
+data-reference="ss-thm:seesaw">52.4.1</a>) and <span
+class="math inline">\(c_B\)</span> is a product of powers of primes
+(Definition <a href="20261126T030600--theorem-a-short-forms__workbook.html#def:normalized" data-reference-type="ref"
+data-reference="ta-def:normalized">49.3.1</a>). Before
+restriction to <span class="math inline">\(S_{\mathrm{ram}}\)</span> the
+missing dimension is at most <span
+class="math inline">\(2b^{-2}d_T\)</span>; the restriction costs at most
+a further <span class="math inline">\(2b^{-2}d_T\)</span>. Theorem <a
+href="#thm:B" data-reference-type="ref" data-reference="thm:B">39.4.2</a>
+supplies the spanning estimate used, with Theorems A and C, in
+Chapter <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.html#chap" data-reference-type="ref"
+data-reference="mi-chap">38</a>.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. In the Lean proof <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, the
+period map is <code>Data.poincareAt</code>, with
+<code>inner_poincareAt</code>. The chosen map is
+<code>Data.poincare</code> and the scaled map is
+<code>Data.scaledPoincare</code>. The block identity is
+<code>Data.hasAmplitudeBlocks_scaledPoincare</code>, and the Bessel
+representation is <code>Filling.besselTranslate</code>. The
+one-translate and spanning statements follow from
+<code>Data.isSpread_goodPoincare</code> and
+<code>Data.enough_forms</code>, using
+<code>Data.range_normalizedPoincare</code>. Target positivity is
+<code>Data.targetDim_pos</code>.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secsubgroup">§<a href="#sec:subgroup"
+data-reference-type="ref" data-reference="sec:subgroup">39.1</a></h2>
+<dl>
+<dt><a href="#pr:lambda" data-reference-type="ref"
+data-reference="pr:lambda">39.1.1</a></dt>
+<dd>
+<p>Write <span class="math inline">\(nv_{a+1}=v_{a+1}+\sum_{c\le
+a}x_c(n)v_c\)</span>, and compute the coefficients of <span
+class="math inline">\(nn&#39;v_{a+1}\)</span>; an element of <span
+class="math inline">\(U(X)\)</span> fixes every <span
+class="math inline">\(v_c\)</span> and <span
+class="math inline">\(z\)</span>.</p>
+</dd>
+<dt><a href="#pr:normalize" data-reference-type="ref"
+data-reference="pr:normalize">39.1.2</a></dt>
+<dd>
+<p>An element of <span class="math inline">\(U(X)\)</span> preserves the
+span of the <span class="math inline">\(v_a\)</span> and its orthogonal
+complement.</p>
+</dd>
+<dt><a href="#pr:dimN" data-reference-type="ref"
+data-reference="pr:dimN">39.1.3</a></dt>
+<dd>
+<p>First the unipotent radical of the stabilizer of <span
+class="math inline">\(Ev_1+\dots+Ev_\varrho\)</span>: <span
+class="math inline">\(2\varrho(r-2\varrho)\)</span> dimensions from maps
+between the quotient, the middle and the isotropic subspace, and <span
+class="math inline">\(\varrho^2\)</span> from a skew-hermitian matrix
+over <span class="math inline">\(E\)</span>. Then the unipotent radical
+of a Borel subgroup of <span
+class="math inline">\(\mathrm{GL}_\varrho(E)\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secpoincare">§<a href="#sec:poincare"
+data-reference-type="ref" data-reference="sec:poincare">39.2</a></h2>
+<dl>
+<dt><a href="#pr:unfold" data-reference-type="ref"
+data-reference="pr:unfold">39.2.1</a></dt>
+<dd>
+<p><span class="math inline">\(\jmath\xi\)</span> is fixed by <span
+class="math inline">\(\Gamma_X\)</span>, and <span
+class="math inline">\(\langle\psi,\gamma
+v\rangle=\langle\gamma^{-1}\psi,v\rangle\)</span>.</p>
+</dd>
+<dt><a href="#pr:adjoint" data-reference-type="ref"
+data-reference="pr:adjoint">39.2.2</a></dt>
+<dd>
+<p>Problem <a href="#pr:unfold" data-reference-type="ref"
+data-reference="pr:unfold">39.2.1</a>.</p>
+</dd>
+<dt><a href="#pr:expansion" data-reference-type="ref"
+data-reference="pr:expansion">39.2.3</a></dt>
+<dd>
+<p>Apply Problem <a href="#pr:unfold" data-reference-type="ref"
+data-reference="pr:unfold">39.2.1</a> with <span
+class="math inline">\(\psi=P\xi\)</span>, and group the cosets <span
+class="math inline">\(\gamma\Gamma_X\)</span> by double cosets.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secsmallest">§<a href="#sec:smallest"
+data-reference-type="ref" data-reference="sec:smallest">39.3</a></h2>
+<dl>
+<dt><a href="#pr:Pj" data-reference-type="ref"
+data-reference="pr:Pj">39.3.1</a></dt>
+<dd>
+<p>Representatives of <span
+class="math inline">\(\Gamma/\Gamma_X\)</span>: <span
+class="math inline">\(\operatorname{diag}(1,u)\)</span> and <span
+class="math inline">\(\begin{pmatrix}0&amp;u\\1&amp;0\end{pmatrix}\)</span>;
+sum the powers of <span class="math inline">\(u\)</span>.</p>
+</dd>
+<dt><a href="#pr:gram-toy" data-reference-type="ref"
+data-reference="pr:gram-toy">39.3.2</a></dt>
+<dd>
+<p>Problem <a href="20261125T002000--definite-theta-lifts__workbook.html#pr:sym-norm" data-reference-type="ref"
+data-reference="dt-pr:sym-norm">21.3.2</a> for <span
+class="math inline">\(c_0\)</span>; then Problem <a href="#pr:expansion"
+data-reference-type="ref" data-reference="pr:expansion">39.2.3</a>, the
+double cosets being those of <span
+class="math inline">\(\operatorname{diag}(1,u)\)</span>, <span
+class="math inline">\(u\in\mu_4\)</span>, and of the antidiagonal
+matrices.</p>
+</dd>
+<dt><a href="#pr:basis" data-reference-type="ref"
+data-reference="pr:basis">39.3.3</a></dt>
+<dd>
+<p>Problem <a href="20261125T002000--definite-theta-lifts__workbook.html#pr:forms-2" data-reference-type="ref"
+data-reference="dt-pr:forms-2">21.3.5</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secgram">§<a href="#sec:gram"
+data-reference-type="ref" data-reference="sec:gram">39.4</a></h2>
+<dl>
+<dt><a href="#pr:constants" data-reference-type="ref"
+data-reference="pr:constants">39.4.1</a></dt>
+<dd>
+<p>For (b), <span class="math inline">\(\log(1+2b^2)\ge1\)</span> and
+<span class="math inline">\(b^2/2\le1+2b^2\)</span>.</p>
+</dd>
+<dt><a href="#pr:ramified" data-reference-type="ref"
+data-reference="pr:ramified">39.4.2</a></dt>
+<dd>
+<p><span class="math inline">\(T_w\)</span> is diagonalizable.</p>
+</dd>
+<dt><a href="#pr:restrict" data-reference-type="ref"
+data-reference="pr:restrict">39.4.3</a></dt>
+<dd>
+<p>Choose a complement of <span class="math inline">\(Z\)</span> in
+<span class="math inline">\(\mathcal X\)</span>.</p>
+</dd>
+<dt><a href="#pr:loss" data-reference-type="ref"
+data-reference="pr:loss">39.4.4</a></dt>
+<dd>
+<p><span class="math inline">\(\log(1+2b^2)\le2b^2\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Bo63"><span class="bib-label">[Bo63]</span> A. Borel, <em>Some finiteness properties of adele groups over number fields</em>, Publ. Math. IHÉS <strong>16</strong> (1963), 5–30.</p>
+<p id="ref-BoPC"><span class="bib-label">[BoPC]</span> A. Borel, <em>Automorphic forms on reductive groups</em>, in <em>Automorphic Forms and Applications</em>, IAS/Park City Math. Ser. 12, Amer. Math. Soc., 2007.</p>
+<p id="ref-GGP"><span class="bib-label">[GGP]</span> W. T. Gan, B. H. Gross and D. Prasad, <em>Symplectic local root numbers, central critical <span class="math inline">\(L\)</span>-values, and restriction problems in the representation theory of classical groups</em>, Astérisque <strong>346</strong> (2012), 1–109.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

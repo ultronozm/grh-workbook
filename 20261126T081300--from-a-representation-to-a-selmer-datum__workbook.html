@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-r86H6POLDAbjp4O3k9sZExMHq2614HCSHAex1Yqf2Us=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>From a representation to a Selmer datum</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb Z","Q":"\\mathbb Q","F":"\\mathbb F","C":"\\mathbb C","Oc":"\\mathcal O","TS":"T_{\\mathrm{Sel}}","cyc":"\\chi_{\\mathrm{cyc}}","bd":"\\mathrm{bd}","val":"\\operatorname{val}","ord":"\\operatorname{ord}","len":"\\operatorname{len}","rk":"\\operatorname{rk}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="90">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-27 02:20:30
+      <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">From a representation to a Selmer datum <a class="stable-tag" href="tag/23BU.html" title="Stable tag: cite as Tag 23BU">Tag 23BU</a></h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:rank-one" id="toc-sec:rank-one">§90.1. Rank-one calculations</a></li>
+<li><a href="#sec:bounds" id="toc-sec:bounds">§90.2. The three terms of a datum</a></li>
+<li><a href="#sec:datum" id="toc-sec:datum">§90.3. The local conditions and the lattice</a></li>
+<li><a href="#sec:twists" id="toc-sec:twists">§90.4. One character for all bounds</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<p>The small-twists theorem gives a single character whose first <span
+class="math inline">\(m\)</span> powers bound the normalized Selmer
+lengths and the valuations of the Stickelberger system evaluations. To
+use the small-twists theorem in the proof of Theorem <a
+href="20261126T031000--twists-with-few-congruences__workbook.html#thm:twisting" data-reference-type="ref"
+data-reference="tw-thm:twisting">85.1.2</a>, we need to
+supply Selmer data for the representations and a bound for each datum.
+We compute the global term in rank one, bound the three terms for a
+general lattice, then combine the Selmer data with the systems of the
+Hecke ratios.</p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Use the data of Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>, the chosen places, tame
+characters and critical pairs of Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap"
+data-reference-type="ref" data-reference="ob-chap">37</a>, and
+the main-summand-like condition, auxiliary twists and Selmer bound of
+Definitions <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:main-summand-like"
+data-reference-type="ref"
+data-reference="dp-def:main-summand-like">80.1.7</a>,
+<a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:aux-twist" data-reference-type="ref"
+data-reference="dp-def:aux-twist">80.1.5</a> and <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:selmer-bound" data-reference-type="ref"
+data-reference="dp-def:selmer-bound">80.1.9</a>. Use the
+Selmer datum, its three terms, characters for <span
+class="math inline">\(Q\)</span> and torsion levels from Chapter <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#chap" data-reference-type="ref"
+data-reference="w2-chap">87</a>, and the crystalline cocycles and
+their rank from Chapter <a href="20261126T080800--black-box-crystalline-lattices-and-the-condition-above-l__workbook.html#chap" data-reference-type="ref"
+data-reference="bk-chap">34</a>. We use Theorems <a
+href="20261126T031000--twists-with-few-congruences__workbook.html#thm:small" data-reference-type="ref"
+data-reference="tw-thm:small">85.1.1</a> and <a
+href="20261126T081200--a-measure-for-hecke-values__workbook.html#thm:pair-system" data-reference-type="ref"
+data-reference="w4-thm:pair-system">89.3.1</a>. For local
+reciprocity we use that local units map onto the abelianized inertia
+image, in either Frobenius convention. The inverse avatar uses the
+convention of Definition <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:aux-twist"
+data-reference-type="ref"
+data-reference="dp-def:aux-twist">80.1.5</a>. We use
+elementary divisors over a discrete valuation ring <span
+class="citation" data-cites="La">[<a href="#ref-La">La</a>]</span>. Write
+<span class="math inline">\(\operatorname{len}_{\mathcal O}\)</span> for
+ordinary module length and <span class="math inline">\(e_{\mathcal
+O}=\operatorname{ord}_{\mathcal O}(\ell)\)</span>, so normalized length
+is ordinary length divided by <span class="math inline">\(e_{\mathcal
+O}\)</span>. Use <span class="math inline">\(G_E\)</span>, <span
+class="math inline">\(g^c\)</span>, the cyclotomic character <span
+class="math inline">\(\chi_{\mathrm{cyc}}\)</span> and coefficient rings
+as in Section <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#sec:statement" data-reference-type="ref"
+data-reference="dp-sec:statement">80.1</a>, with <span
+class="math inline">\(\operatorname{ord}_{\mathcal
+O}(0)=+\infty\)</span>.</p>
+<h1 id="sec:rank-one">§90.1. Rank-one calculations <a class="stable-tag" href="tag/23BV.html" title="Stable tag: cite as Tag 23BV">Tag 23BV</a></h1>
+<p>The first three problems measure how long a character and its
+conjugate dual agree modulo powers of <span
+class="math inline">\(3\)</span>. For the rank-one calculation let <span
+class="math inline">\(E\)</span> be any CM field, let <span
+class="math inline">\(\ell=3\)</span>, and let <span
+class="math inline">\(\mathcal O\)</span> contain <span
+class="math inline">\(\mathbb Z_3[\mathrm i]\)</span>. Give the rank-one
+lattice <span class="math inline">\(\mathcal O\)</span> the action of a
+continuous character <span class="math inline">\(\chi\colon
+G_E\to\mathcal O^\times\)</span>.</p>
+<div id="pr:rank-one-dual" class="problem" data-progress-ids="[&quot;23BW&quot;,&quot;20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex#pr:rank-one-dual&quot;]"><a class="stable-tag" href="tag/23BW.html" title="Stable tag: cite as Tag 23BW">Tag 23BW</a>
+<p><strong>Problem 90.1.1</strong>. For <span class="math inline">\(0\ne
+a\in\mathcal O\)</span>, use the conjugate additive dual of
+Definition <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:selmer-datum" data-reference-type="ref"
+data-reference="w2-def:selmer-datum">87.3.1</a>. After
+choosing an <span class="math inline">\(\mathcal O\)</span>-linear
+identification of the additive dual of <span
+class="math inline">\(\mathcal O/a\mathcal O\)</span> with <span
+class="math inline">\(\mathcal O/a\mathcal O\)</span>, the equivariant
+maps to the conjugate dual correspond to the elements of <span
+class="math inline">\(\mathcal O/a\mathcal O\)</span> killed by every
+difference <span
+class="math display">\[\chi(g)-\chi_{\mathrm{cyc}}(g^c)\chi((g^c)^{-1}),\qquad
+g\in G_E.\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:rank-one-length">Problem 90.1.2</a></div><!-- used-in:end -->
+</div>
+<div id="pr:rank-one-length" class="problem" data-progress-ids="[&quot;23BX&quot;,&quot;20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex#pr:rank-one-length&quot;]"><a class="stable-tag" href="tag/23BX.html" title="Stable tag: cite as Tag 23BX">Tag 23BX</a>
+<p><strong>Problem 90.1.2</strong>. Let <span class="math inline">\(j_0\ge
+1\)</span> be an integer and suppose <span
+class="math inline">\(\chi(g^c)\chi(g)=\chi_{\mathrm{cyc}}(g)^{-(j_0-1)}\)</span>
+for every <span class="math inline">\(g\in G_E\)</span>. The supremum,
+over <span class="math inline">\(0\ne a\in\mathcal O\)</span>, of the
+normalized lengths of the modules in Problem <a href="#pr:rank-one-dual"
+data-reference-type="ref" data-reference="pr:rank-one-dual">90.1.1</a> is
+<span class="math inline">\(\min_{g\in
+G_E}\operatorname{val}_3(\chi_{\mathrm{cyc}}(g)^{j_0}-1)\)</span>, with
+<span
+class="math inline">\(\operatorname{val}_3(0)=+\infty\)</span>.</p>
+</div>
+<div id="pr:rank-one-values" class="problem" data-progress-ids="[&quot;23BY&quot;,&quot;20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex#pr:rank-one-values&quot;]"><a class="stable-tag" href="tag/23BY.html" title="Stable tag: cite as Tag 23BY">Tag 23BY</a>
+<p><strong>Problem 90.1.3</strong>. For <span
+class="math inline">\(j_0=1,2,3,4,6\)</span>, show that the minimum of
+<span class="math inline">\(\operatorname{val}_3(u^{j_0}-1)\)</span>
+over <span class="math inline">\(u\in\mathbb Z_3^\times\)</span> is
+respectively <span class="math inline">\(0,1,0,1,2\)</span>. At <span
+class="math inline">\(u=7\)</span> the values are <span
+class="math inline">\(1,1,2,1,2\)</span>, and at <span
+class="math inline">\(u=19\)</span> they are <span
+class="math inline">\(2,2,3,2,3\)</span>.</p>
+</div>
+<p>Problem <a href="#pr:rank-one-values" data-reference-type="ref"
+data-reference="pr:rank-one-values">90.1.3</a> computes the minimum in
+Problem <a href="#pr:rank-one-length" data-reference-type="ref"
+data-reference="pr:rank-one-length">90.1.2</a> when <span
+class="math inline">\(\chi_{\mathrm{cyc}}(G_E)=\mathbb
+Z_3^\times\)</span>. The cyclotomic minimum is of the same form as the
+number <span class="math inline">\(\nu_\ell\)</span> in Zhang’s account
+of the Selmer bound for finite-order twists <span class="citation"
+data-cites="Zh">[<a href="#ref-Zh">Zh</a>]</span>.</p>
+<p>The next two problems measure the length of a module of rank-one
+cocycles over <span class="math inline">\(\mathbb Q_7\)</span>. We use
+the classical presentation of the tame quotient by a generator <span
+class="math inline">\(s\)</span> of tame inertia and an arithmetic
+Frobenius lift <span class="math inline">\(\mathrm{Fr}\)</span>, with
+relation <span
+class="math inline">\(\mathrm{Fr}\,s=s^q\,\mathrm{Fr}\)</span>, where
+<span class="math inline">\(q\)</span> is the residue-field size <span
+class="citation" data-cites="SLF">[<a href="#ref-SLF">SLF</a>]</span>. In
+residue characteristic <span class="math inline">\(p\)</span>, wild
+inertia is pro-<span class="math inline">\(p\)</span> and the finite
+quotients of tame inertia have order prime to <span
+class="math inline">\(p\)</span>.</p>
+<div id="pr:tame-model" class="problem" data-progress-ids="[&quot;23BZ&quot;,&quot;20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex#pr:tame-model&quot;]"><a class="stable-tag" href="tag/23BZ.html" title="Stable tag: cite as Tag 23BZ">Tag 23BZ</a>
+<p><strong>Problem 90.1.4</strong>. Over <span class="math inline">\(\mathbb
+Q_7\)</span> take the rank-one module <span
+class="math inline">\(\mathbb Z/9\mathbb Z\)</span>, with wild inertia
+acting trivially, <span class="math inline">\(s\)</span> acting by <span
+class="math inline">\(4\)</span> and <span
+class="math inline">\(\mathrm{Fr}\)</span> by <span
+class="math inline">\(u\in\{1,4,7\}\)</span>. The pairs <span
+class="math inline">\((z(s),z(\mathrm{Fr}))\)</span> of continuous
+cocycle values are exactly the solutions of <span
+class="math display">\[(1-4^7)z(\mathrm{Fr})=(1+4+\cdots+4^6-u)z(s)
+  \quad\text{in }\mathbb Z/9\mathbb Z.\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:tame-count">Problem 90.1.5</a></div><!-- used-in:end -->
+</div>
+<div id="pr:tame-count" class="problem" data-progress-ids="[&quot;23C2&quot;,&quot;20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex#pr:tame-count&quot;]"><a class="stable-tag" href="tag/23C2.html" title="Stable tag: cite as Tag 23C2">Tag 23C2</a>
+<p><strong>Problem 90.1.5</strong>. For each <span
+class="math inline">\(u\)</span> in Problem <a href="#pr:tame-model"
+data-reference-type="ref" data-reference="pr:tame-model">90.1.4</a> there are
+<span class="math inline">\(27\)</span> pairs, giving length <span
+class="math inline">\(3=2+\operatorname{val}_3(4-1)\)</span> over <span
+class="math inline">\(\mathbb Z_3\)</span>.</p>
+</div>
+<p>The next problem bounds the length of the restrictions of global
+cocycles to a decomposition group.</p>
+<div id="pr:local-bound" class="problem" data-progress-ids="[&quot;23C3&quot;,&quot;20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex#pr:local-bound&quot;]"><a class="stable-tag" href="tag/23C3.html" title="Stable tag: cite as Tag 23C3">Tag 23C3</a>
+<p><strong>Problem 90.1.6</strong>. For any prime <span
+class="math inline">\(\ell\)</span>, let <span
+class="math inline">\(L\)</span> be an <span
+class="math inline">\(\mathcal O\)</span>-lattice with continuous <span
+class="math inline">\(G_E\)</span>-action. Fix a finite place <span
+class="math inline">\(v\nmid\ell\)</span> of residue characteristic
+<span class="math inline">\(p\)</span> and a decomposition group <span
+class="math inline">\(G_v\)</span> at <span
+class="math inline">\(v\)</span>. Suppose some positive integer <span
+class="math inline">\(n_v\)</span> prime to <span
+class="math inline">\(p\)</span> satisfies <span
+class="math inline">\(L(h^{n_v})=1\)</span> for all inertia elements
+<span class="math inline">\(h\)</span> in <span
+class="math inline">\(G_v\)</span>, where <span
+class="math inline">\(L(g)\)</span> denotes the matrix of the action.
+Suppose also that <span class="math inline">\(L(h)=1\)</span> for every
+inertia element <span class="math inline">\(h\)</span> in some
+neighborhood of <span class="math inline">\(1\)</span> in <span
+class="math inline">\(G_v\)</span>. For <span class="math inline">\(0\ne
+a\in\mathcal O\)</span> let <span class="math inline">\(C_v(a)\)</span>
+be the module of restrictions to <span
+class="math inline">\(G_v\)</span> of locally constant global cocycles
+with coefficients in <span class="math inline">\(L/aL\)</span>. For
+every inertia element <span class="math inline">\(\delta\)</span> in
+<span class="math inline">\(G_v\)</span>, prove <span
+class="math display">\[\begin{align}
+    \operatorname{len}_{\mathcal O} C_v(a)&amp;\le
+\operatorname{len}_{\mathcal O}(L/aL)+\operatorname{len}_{\mathcal
+O}\ker\bigl(L(\delta)-1\mid L/aL\bigr)\\
+     &amp;\le \operatorname{len}_{\mathcal
+O}(L/aL)+\operatorname{ord}_{\mathcal O}\det\bigl(L(\delta)-1\bigr).
+  \end{align}\]</span></p>
+</div>
+<div id="pr:scalar-model" class="problem" data-progress-ids="[&quot;23C4&quot;,&quot;20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex#pr:scalar-model&quot;]"><a class="stable-tag" href="tag/23C4.html" title="Stable tag: cite as Tag 23C4">Tag 23C4</a>
+<p><strong>Problem 90.1.7</strong>. For multiplication by <span
+class="math inline">\(6\)</span> on <span class="math inline">\((\mathbb
+Z/9\mathbb Z)^2\)</span>, the kernel has <span
+class="math inline">\(9\)</span> elements and length <span
+class="math inline">\(2=2\operatorname{val}_3(6)\)</span> over <span
+class="math inline">\(\mathbb Z_3\)</span>.</p>
+</div>
+<h1 id="sec:bounds">§90.2. The three terms of a datum <a class="stable-tag" href="tag/23C5.html" title="Stable tag: cite as Tag 23C5">Tag 23C5</a></h1>
+<p>We now bound the global term, the sum of the local terms over the
+places dividing <span class="math inline">\(M\)</span> prime to <span
+class="math inline">\(\ell\)</span>, and the two determinant valuations
+that make up the inertia term.</p>
+<div id="pr:glob" class="problem" data-progress-ids="[&quot;23C6&quot;,&quot;20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex#pr:glob&quot;]"><a class="stable-tag" href="tag/23C6.html" title="Stable tag: cite as Tag 23C6">Tag 23C6</a>
+<p><strong>Problem 90.2.1</strong>. Let <span
+class="math inline">\(L\)</span> be a Galois lattice of positive rank
+<span class="math inline">\(r&#39;\)</span> whose action matrices span
+<span class="math inline">\(\operatorname{End}_{\mathcal O}(L)\)</span>.
+Suppose <span class="math inline">\(g\)</span> and <span
+class="math inline">\((g^c)^{-1}\)</span> act by scalars <span
+class="math inline">\(\alpha\)</span> and <span
+class="math inline">\(\alpha&#39;\)</span>. For each <span
+class="math inline">\(0\ne a\in\mathcal O\)</span>, on the equivariant
+maps <span class="math inline">\(L/aL\to (L/aL)^{*c}\)</span> of
+Definition <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:selmer-datum" data-reference-type="ref"
+data-reference="w2-def:selmer-datum">87.3.1</a>,
+evaluation at a basis vector is injective, and every map is killed by
+<span
+class="math inline">\(\alpha-\chi_{\mathrm{cyc}}(g^c)\alpha&#39;\)</span>.
+Deduce that the supremum defining the global term is at most <span
+class="math inline">\(r&#39;\operatorname{ord}_{\mathcal
+O}(\alpha-\chi_{\mathrm{cyc}}(g^c)\alpha&#39;)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:global-budget">Problem 90.2.2</a></div><!-- used-in:end -->
+</div>
+<p>Fix <span class="math inline">\(\iota\colon\mathbb
+C\simeq\overline{\mathbb Q}_\ell\)</span> and a main-summand-like <span
+class="math inline">\(R\)</span> of rank <span
+class="math inline">\(r&#39;\)</span> for <span
+class="math inline">\((t&#39;,\mathrm{HT})\)</span>. In the next
+problems take a lattice <span class="math inline">\(L\)</span> of <span
+class="math inline">\(R\)</span> over a coefficient ring large enough
+for clause (e) of Definition <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:main-summand-like"
+data-reference-type="ref"
+data-reference="dp-def:main-summand-like">80.1.7</a>.
+Take <span class="math inline">\(w_0\in\mathcal M\)</span> with <span
+class="math inline">\(w_0\nmid\ell\)</span>, and take <span
+class="math inline">\(\Sigma_0\)</span> to be the places dividing <span
+class="math inline">\(\ell MN\)</span>, with <span
+class="math inline">\(g_0=s_{w_0}\)</span> the tame generator at the
+fixed place above <span class="math inline">\(w_0\)</span>. Use the
+three terms of Definition <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:selmer-datum"
+data-reference-type="ref"
+data-reference="w2-def:selmer-datum">87.3.1</a> for <span
+class="math inline">\(L\)</span> with <span
+class="math inline">\(\Sigma(T_{\mathrm{Sel}})\)</span> the places
+dividing <span class="math inline">\(\ell M\)</span>. As in Chapter <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dp-chap">80</a>, <span
+class="math inline">\(n_\ell=\operatorname{val}_\ell(\mathcal
+N)\)</span>.</p>
+<div id="pr:global-budget" class="problem" data-progress-ids="[&quot;23C7&quot;,&quot;20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex#pr:global-budget&quot;]"><a class="stable-tag" href="tag/23C7.html" title="Stable tag: cite as Tag 23C7">Tag 23C7</a>
+<p><strong>Problem 90.2.2</strong>. If <span class="math inline">\(g\)</span>
+acts by <span class="math inline">\(\alpha\)</span> on <span
+class="math inline">\(L\)</span>, show that <span
+class="math inline">\((g^c)^{-1}\)</span> acts by <span
+class="math inline">\(\chi_{\mathrm{cyc}}(g)^{\max(t&#39;-1,0)}\alpha\)</span>.
+For such a <span class="math inline">\(g\)</span> with <span
+class="math inline">\(\chi_{\mathrm{cyc}}(g)=p_i^{r&#39;}\)</span> for
+some <span class="math inline">\(i\in\{0,1\}\)</span>, show that the
+scalar difference in Problem <a href="#pr:glob"
+data-reference-type="ref" data-reference="pr:glob">90.2.1</a> is <span
+class="math inline">\(\alpha(1-p_i^{r&#39;(\max(t&#39;-1,0)+1)})\)</span>.
+Prove that <span class="math inline">\(\mathrm{glob}/e_{\mathcal O}\le
+r&#39;n_\ell\)</span>.</p>
+</div>
+<div id="pr:place-budget" class="problem" data-progress-ids="[&quot;23C8&quot;,&quot;20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex#pr:place-budget&quot;]"><a class="stable-tag" href="tag/23C8.html" title="Stable tag: cite as Tag 23C8">Tag 23C8</a>
+<p><strong>Problem 90.2.3</strong>. At most <span
+class="math inline">\(4f\)</span> places divide <span
+class="math inline">\(M\)</span>, and <span
+class="math inline">\(\mathrm{plc}/e_{\mathcal O}\le
+4fr&#39;n_\ell\)</span>.</p>
+</div>
+<div id="pr:inertia-budget" class="problem" data-progress-ids="[&quot;23C9&quot;,&quot;20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex#pr:inertia-budget&quot;]"><a class="stable-tag" href="tag/23C9.html" title="Stable tag: cite as Tag 23C9">Tag 23C9</a>
+<p><strong>Problem 90.2.4</strong>. Show that the normalized determinant
+valuations at <span class="math inline">\(g_0\)</span> and <span
+class="math inline">\((g_0^c)^{-1}\)</span> in the definition of <span
+class="math inline">\(\mathrm{inr}\)</span> are each at most <span
+class="math inline">\(r&#39;n_\ell\)</span>. Deduce <span
+class="math inline">\(\mathrm{inr}/e_{\mathcal O}\le
+2r&#39;n_\ell\)</span> and <span
+class="math inline">\((\mathrm{glob}+\mathrm{plc}+\mathrm{inr})/e_{\mathcal
+O}\le(4f+3)r&#39;n_\ell\)</span>.</p>
+</div>
+<h1 id="sec:datum">§90.3. The local conditions and the lattice <a class="stable-tag" href="tag/23CA.html" title="Stable tag: cite as Tag 23CA">Tag 23CA</a></h1>
+<p>The remaining conditions for a Selmer datum are a scalar inertia
+action and a bound on the ranks of the crystalline cocycles.</p>
+<div id="pr:scalar" class="problem" data-progress-ids="[&quot;23CB&quot;,&quot;20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex#pr:scalar&quot;]"><a class="stable-tag" href="tag/23CB.html" title="Stable tag: cite as Tag 23CB">Tag 23CB</a>
+<p><strong>Problem 90.3.1</strong>. Show that some inertia element at a
+place dividing <span class="math inline">\(M\)</span> prime to <span
+class="math inline">\(\ell\)</span> acts on <span
+class="math inline">\(L\)</span> by a scalar <span
+class="math inline">\(\lambda\)</span> with <span
+class="math inline">\(\lambda^2-1\in\mathcal O^\times\)</span>, and that
+its conjugate inverse acts by the same scalar. To test the square-unit
+condition at <span class="math inline">\(\ell=3\)</span>, show that no
+unit whose residue belongs to <span class="math inline">\(\mathbb
+F_3^\times\)</span> satisfies <span
+class="math inline">\(\lambda^2-1\in\mathcal O^\times\)</span>, and that
+<span class="math inline">\(\mathrm i\)</span> satisfies the condition
+in <span class="math inline">\(\mathbb Z_3[\mathrm i]\)</span>.</p>
+</div>
+<p>For a lattice in <span class="math inline">\(R\)</span>, the
+coefficient-ring form of the crystalline rank formula (Theorem <a
+href="20261126T080800--black-box-crystalline-lattices-and-the-condition-above-l__workbook.html#thm:rank" data-reference-type="ref"
+data-reference="bk-thm:rank">34.1.1</a>) uses the labeled jumps
+of clause (b). At <span class="math inline">\(w\mid\ell\)</span>, the
+finitely generated <span class="math inline">\(\mathcal
+O\)</span>-module <span class="math inline">\(\mathcal
+Z_w=Z_f(L|_{G_w})\)</span> has rank <span
+class="math display">\[r&#39;+\sum_{\sigma\mapsto
+w}\#\{u\in\mathrm{HT}_\sigma:u&lt;0\},\]</span> counting multiplicities.
+Here <span class="math inline">\(\sigma:E\hookrightarrow\mathbb
+C\)</span> runs over the embeddings inducing <span
+class="math inline">\(w\)</span> through <span
+class="math inline">\(\iota\)</span>, and <span
+class="math inline">\(G_w\)</span> is the fixed decomposition group at
+<span class="math inline">\(w\)</span>. <em>Status</em>: the labeled
+formula is read from the proof; not proved here.</p>
+<div id="pr:rank" class="problem" data-progress-ids="[&quot;23CC&quot;,&quot;20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex#pr:rank&quot;]"><a class="stable-tag" href="tag/23CC.html" title="Stable tag: cite as Tag 23CC">Tag 23CC</a>
+<p><strong>Problem 90.3.2</strong>. Show that <span
+class="math inline">\(\sum_{w\mid\ell}(\operatorname{rk}_{\mathcal
+O}\mathcal Z_w-r&#39;)\le fr&#39;\)</span>. With <span
+class="math inline">\(\mathcal Z_w\)</span> as the modules of local
+cocycles, check the conditions of Definition <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:selmer-datum" data-reference-type="ref"
+data-reference="w2-def:selmer-datum">87.3.1</a> for <span
+class="math inline">\(L\)</span>.</p>
+</div>
+<p>A continuous <span class="math inline">\(\ell\)</span>-adic
+representation of <span class="math inline">\(G_E\)</span> over <span
+class="math inline">\(\overline{\mathbb Q}_\ell\)</span> has a lattice
+over every sufficiently large coefficient ring, meaning every
+coefficient ring containing one fixed ring. <em>Status</em>: read from
+the proof; not proved here.</p>
+<p>Problems <a href="#pr:global-budget" data-reference-type="ref"
+data-reference="pr:global-budget">90.2.2</a>–<a href="#pr:rank"
+data-reference-type="ref" data-reference="pr:rank">90.3.2</a>, with
+existence of lattices, prove the following.</p>
+<div id="thm:datum" class="theorem"><a class="stable-tag" href="tag/23CD.html" title="Stable tag: cite as Tag 23CD">Tag 23CD</a>
+<p><strong>Theorem 90.3.1</strong>. <em>Let <span
+class="math inline">\(R\)</span> be main-summand-like of rank <span
+class="math inline">\(r&#39;\)</span> and <span
+class="math inline">\(w_0\in\mathcal M\)</span> be prime to <span
+class="math inline">\(\ell\)</span>. For all sufficiently large <span
+class="math inline">\(\mathcal O\)</span>, some lattice of <span
+class="math inline">\(R\)</span> over <span
+class="math inline">\(\mathcal O\)</span> carries a Selmer datum <span
+class="math inline">\(T_{\mathrm{Sel}}\)</span> for <span
+class="math inline">\((\Sigma_0,s_{w_0})\)</span>, where <span
+class="math inline">\(\Sigma_0\)</span> consists of the places dividing
+<span class="math inline">\(\ell MN\)</span>. The set <span
+class="math inline">\(\Sigma(T_{\mathrm{Sel}})\)</span> consists of the
+places dividing <span class="math inline">\(\ell M\)</span>, the local
+relations are those of the crystalline cocycles, and <span
+class="math inline">\(\mathrm{bd}(T_{\mathrm{Sel}})\le
+(4f+3)r&#39;n_\ell\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:torsion">Problem 90.4.1</a>; <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a>: <a href="20261126T031000--twists-with-few-congruences__workbook.html#pr:selmer-input">Problem 85.1.6</a></div><!-- used-in:end -->
+</div>
+<h1 id="sec:twists">§90.4. One character for all bounds <a class="stable-tag" href="tag/23CE.html" title="Stable tag: cite as Tag 23CE">Tag 23CE</a></h1>
+<p>To apply the small-twists theorem at a common torsion level, choose
+<span class="math inline">\(w_0\)</span> above one of <span
+class="math inline">\(p_0,p_1\)</span> different from <span
+class="math inline">\(\ell\)</span>. The set of chosen places above each
+<span class="math inline">\(p_i\)</span> is nonempty and their
+residue-field sizes are <span class="math inline">\(p_i\)</span>
+(Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chosen" data-reference-type="ref"
+data-reference="ob-sec:chosen">37.1</a>). Use the same <span
+class="math inline">\(\Sigma_0\)</span> and <span
+class="math inline">\(g_0\)</span> for the representations and the
+systems of Theorem <a href="20261126T081200--a-measure-for-hecke-values__workbook.html#thm:pair-system"
+data-reference-type="ref"
+data-reference="w4-thm:pair-system">89.3.1</a>. There are
+finitely many critical pairs (see the hint for Problem <a
+href="#pr:assemble" data-reference-type="ref"
+data-reference="pr:assemble">90.4.2</a>).</p>
+<div id="pr:torsion" class="problem" data-progress-ids="[&quot;23CF&quot;,&quot;20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex#pr:torsion&quot;]"><a class="stable-tag" href="tag/23CF.html" title="Stable tag: cite as Tag 23CF">Tag 23CF</a>
+<p><strong>Problem 90.4.1</strong>. Given a finite family of
+main-summand-like representations, show that there is one coefficient
+ring over which each representation has a lattice with a datum as in
+Theorem <a href="#thm:datum" data-reference-type="ref"
+data-reference="thm:datum">90.3.1</a>, and that <span
+class="math inline">\(c_{\mathrm{tor}}=(4f+3)rn_\ell+2\)</span> is a
+torsion level for the family of data. In the numerical model <span
+class="math inline">\(\ell=3\)</span>, <span
+class="math inline">\(r=e_{\mathcal O}=1\)</span> and <span
+class="math inline">\(c_{\mathrm{tor}}=2\)</span>, the residue-field
+inequality asks for more than <span class="math inline">\(5\)</span>
+elements.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:assemble">Problem 90.4.2</a>; Chapter 85: <a href="20261126T031000--twists-with-few-congruences__workbook.html#pr:selmer-input">Problem 85.1.6</a></div><!-- used-in:end -->
+</div>
+<p>Two facts connect the character and length bounds of Theorem <a
+href="20261126T031000--twists-with-few-congruences__workbook.html#thm:small" data-reference-type="ref"
+data-reference="tw-thm:small">85.1.1</a> to the twists used in
+Theorem <a href="20261126T031000--twists-with-few-congruences__workbook.html#thm:twisting" data-reference-type="ref"
+data-reference="tw-thm:twisting">85.1.2</a>.</p>
+<ul>
+<li><p><em>The return from Galois characters to tame characters.</em>
+For <span class="math inline">\(Q\)</span> admissible for <span
+class="math inline">\(\Sigma_0\)</span>, every character for <span
+class="math inline">\(Q\)</span> is the inverse avatar of a weight-zero
+tame character of modulus <span class="math inline">\(Q\)</span>.
+<em>Status</em>: read from the proof; not proved here.</p></li>
+<li><p><em>Transport of crystalline relations.</em> Let <span
+class="math inline">\(\mathcal O&#39;\supseteq\mathcal O\)</span> be
+coefficient rings and let a character over <span
+class="math inline">\(\mathcal O&#39;\)</span> be trivial on the fixed
+decomposition groups above <span class="math inline">\(\ell\)</span>.
+Every crystalline relation on an <span class="math inline">\(\mathcal
+O\)</span>-lattice, with coefficients mapped to <span
+class="math inline">\(\mathcal O&#39;\)</span>, holds on the integral
+crystalline cocycles of the extended, twisted lattice. <em>Status</em>:
+read from the proof; not proved here.</p></li>
+</ul>
+<p>The last two problems compare the two Selmer modules and account for
+the loss in passing from a system to a ratio. Write <span
+class="math inline">\(\mathrm{tw}_\ell=(4f+3)rn_\ell+2^{-\ell}\)</span>
+as in Definition <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:clearing-bound"
+data-reference-type="ref"
+data-reference="dp-def:clearing-bound">80.1.1</a>.</p>
+<div id="pr:assemble" class="problem" data-progress-ids="[&quot;23CG&quot;,&quot;20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex#pr:assemble&quot;]"><a class="stable-tag" href="tag/23CG.html" title="Stable tag: cite as Tag 23CG">Tag 23CG</a>
+<p><strong>Problem 90.4.2</strong>. Let <span
+class="math inline">\(Q\)</span> and <span
+class="math inline">\(\chi\)</span> be given by Theorem <a
+href="20261126T031000--twists-with-few-congruences__workbook.html#thm:small" data-reference-type="ref"
+data-reference="tw-thm:small">85.1.1</a> for <span
+class="math inline">\(\varepsilon=2^{-\ell}\)</span>, the data of
+Problem <a href="#pr:torsion" data-reference-type="ref"
+data-reference="pr:torsion">90.4.1</a> and the systems for all ramified
+critical pairs and signs. Show that <span
+class="math inline">\(\chi\)</span> is the inverse avatar of a tame
+character <span class="math inline">\(\vartheta\)</span> of modulus
+<span class="math inline">\(Q\)</span>, and that for <span
+class="math inline">\(1\le j\le m\)</span>, <span
+class="math inline">\(\vartheta^j\)</span> ramifies at every <span
+class="math inline">\(w\in Q\)</span> and has inverse avatar <span
+class="math inline">\(\chi^j\)</span>. For each datum, each such <span
+class="math inline">\(j\)</span> and each sufficiently large coefficient
+ring <span class="math inline">\(\mathcal O&#39;\)</span>, take <span
+class="math inline">\(L_{\mathrm{tw}}\)</span> to be the datum’s lattice
+extended to <span class="math inline">\(\mathcal O&#39;\)</span> and
+twisted by <span class="math inline">\(\chi^j\)</span>. Show that <span
+class="math inline">\(\mathrm{Sel}(L_{\mathrm{tw}},\gamma(T_{\mathrm{Sel}}))\)</span>
+of Definition <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:selmer-bound" data-reference-type="ref"
+data-reference="dp-def:selmer-bound">80.1.9</a> is a
+submodule of the module of Definition <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:twisted-length"
+data-reference-type="ref"
+data-reference="w2-def:twisted-length">87.3.2</a> for
+the same datum and twist. Deduce clause 2 of Theorem <a
+href="20261126T031000--twists-with-few-congruences__workbook.html#thm:twisting" data-reference-type="ref"
+data-reference="tw-thm:twisting">85.1.2</a>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:twisting">Problem 90.4.3</a>; <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a></div><!-- used-in:end -->
+</div>
+<div id="pr:twisting" class="problem" data-progress-ids="[&quot;23CH&quot;,&quot;20261126T081300--from-a-representation-to-a-selmer-datum__workbook.tex#pr:twisting&quot;]"><a class="stable-tag" href="tag/23CH.html" title="Stable tag: cite as Tag 23CH">Tag 23CH</a>
+<p><strong>Problem 90.4.3</strong>. Prove <span
+class="math inline">\(4\operatorname{val}_\ell(\#k_{w_0}-1)\le(4f+3)rn_\ell\)</span>.
+Show that <span class="math inline">\(\vartheta\)</span> from Problem <a
+href="#pr:assemble" data-reference-type="ref"
+data-reference="pr:assemble">90.4.2</a> is an <span
+class="math inline">\(m\)</span>-fold twist as in Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:twists" data-reference-type="ref"
+data-reference="ob-sec:twists">37.6</a> and that each power
+<span class="math inline">\(\vartheta^j\)</span> for <span
+class="math inline">\(1\le j\le m\)</span> is auxiliary with
+ramification at most <span class="math inline">\(2^{-\ell}\)</span>.
+Show that each ratio valuation in clause 3 of Theorem <a
+href="20261126T031000--twists-with-few-congruences__workbook.html#thm:twisting" data-reference-type="ref"
+data-reference="tw-thm:twisting">85.1.2</a> is at most <span
+class="math inline">\(4\operatorname{val}_\ell(\#k_{w_0}-1)+2^{-\ell}\)</span>.
+Deduce clauses 1 and 3 of that theorem.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a></div><!-- used-in:end -->
+</div>
+<h4 id="taken-as-given.">Taken as given.</h4>
+<p>We used the tame presentation, elementary divisors, the labeled
+crystalline rank formula, existence of lattices, the return from Galois
+characters to tame characters and transport of crystalline relations.
+The small-twists theorem and the systems of the ratios supply the two
+inputs to Problems <a href="#pr:assemble" data-reference-type="ref"
+data-reference="pr:assemble">90.4.2</a> and <a href="#pr:twisting"
+data-reference-type="ref" data-reference="pr:twisting">90.4.3</a>, which
+finish the deduction of Theorem <a href="20261126T031000--twists-with-few-congruences__workbook.html#thm:twisting"
+data-reference-type="ref"
+data-reference="tw-thm:twisting">85.1.2</a>.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. In <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, Theorem <a
+href="#thm:datum" data-reference-type="ref"
+data-reference="thm:datum">90.3.1</a> is
+<code>IsMainSummandLike.eventually_exists_selmerDatum</code>. The global
+bound uses <code>congruenceTerm_le</code> and
+<code>IsMainSummandLike.conjGal_inv_eq_smul_one</code>. Lattice
+existence is <code>eventually_exists_isLatticeIn</code> and the labeled
+rank formula is <code>finrank_crysCocycles_eq_add_neg_jumps</code>. The
+assembly uses <code>exists_selmerData_isTorsionLevel</code>,
+<code>exists_tameChar_invAvatar_eq</code>,
+<code>mapRel_crysRelations_subset</code> in
+<code>exists_mFoldTwist_hasDivisibleSelmerLengthLe</code>. See also
+<code>exists_stickelbergerSystem_ellVal_ratio_le</code>.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<p>Use the hints for the steps involving the tame relation, the trace
+pairing and the comparison after twisting.</p>
+<dl>
+<dt><a href="#pr:tame-model" data-reference-type="ref"
+data-reference="pr:tame-model">90.1.4</a></dt>
+<dd>
+<p>Express the cocycle condition as a homomorphism to the group of
+affine maps over <span class="math inline">\(\mathbb Z/9\mathbb
+Z\)</span>.</p>
+</dd>
+<dt><a href="#pr:local-bound" data-reference-type="ref"
+data-reference="pr:local-bound">90.1.6</a></dt>
+<dd>
+<p>Use the tame presentation and elementary divisors.</p>
+</dd>
+<dt><a href="#pr:glob" data-reference-type="ref"
+data-reference="pr:glob">90.2.1</a></dt>
+<dd>
+<p>Use the matrix units and the additivity of length.</p>
+</dd>
+<dt><a href="#pr:global-budget" data-reference-type="ref"
+data-reference="pr:global-budget">90.2.2</a></dt>
+<dd>
+<p>Test the scalar identity against <span
+class="math inline">\(L(h)\)</span> in the trace pairing. For the
+valuation use the order of the general linear group in Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chosen" data-reference-type="ref"
+data-reference="ob-sec:chosen">37.1</a>.</p>
+</dd>
+<dt><a href="#pr:scalar" data-reference-type="ref"
+data-reference="pr:scalar">90.3.1</a></dt>
+<dd>
+<p>Use clause (f) and the cyclotomic character on inertia away from
+<span class="math inline">\(\ell\)</span>.</p>
+</dd>
+<dt><a href="#pr:torsion" data-reference-type="ref"
+data-reference="pr:torsion">90.4.1</a></dt>
+<dd>
+<p>Compare the two inequalities in Definition <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:torsion-level" data-reference-type="ref"
+data-reference="w2-def:torsion-level">87.3.3</a> as the
+residue degree grows.</p>
+</dd>
+<dt><a href="#pr:assemble" data-reference-type="ref"
+data-reference="pr:assemble">90.4.2</a></dt>
+<dd>
+<p>For finiteness, fix the weight, tame part and <span
+class="math inline">\(z\)</span>. Use <span
+class="math inline">\(y\mapsto y/\bar y\)</span> from the ideal class
+group to <span class="math inline">\(\mathrm{Cl}_\varnothing\)</span> of
+Section <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#sec:systems" data-reference-type="ref"
+data-reference="w2-sec:systems">87.5</a>. For the local
+conditions use the Artin formula on local units and on ideles supported
+above <span class="math inline">\(\ell\)</span>.</p>
+</dd>
+<dt><a href="#pr:twisting" data-reference-type="ref"
+data-reference="pr:twisting">90.4.3</a></dt>
+<dd>
+<p>Use the implication of Problem <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#pr:ratio-from-system"
+data-reference-type="ref"
+data-reference="w2-pr:ratio-from-system">87.5.5</a>.
+For the ramification bound, restrict the sum in the small-twists theorem
+to <span class="math inline">\(Q\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-La"><span class="bib-label">[La]</span> S. Lang, <em>Algebra</em>, 3rd ed., Grad. Texts in Math. 211, Springer, 2002.</p>
+<p id="ref-SLF"><span class="bib-label">[SLF]</span> J.-P. Serre, <em>Local Fields</em>, Grad. Texts in Math. 67, Springer, 1979.</p>
+<p id="ref-Zh"><span class="bib-label">[Zh]</span> R. Zhang, <em>A preliminary note on Alpöge’s proposed proof of the generalized Riemann hypothesis</em>, Hexagon v2, <a href="https://hexagonmath.org/pdf/2611.00809v2" class="uri">https://hexagonmath.org/pdf/2611.00809v2</a>.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

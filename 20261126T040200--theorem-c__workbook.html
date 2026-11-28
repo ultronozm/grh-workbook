@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-b5Sb1RuVXJCsQffsHX8c9xLpUgrokU+uBjAkSBWb5Eo=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Theorem C</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"{\\mathbb{Z}}","Q":"{\\mathbb{Q}}","R":"\\mathbb R","C":"{\\mathbb{C}}","Oc":"\\mathcal O","Lc":"\\mathfrak L","main":"h_{\\mathrm{main}}","rem":"\\mathrm{rem}","hdir":"h_{\\mathrm{dir}}","hgt":"\\operatorname{ht}","Gram":"\\operatorname{Gram}","lean":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="67">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T040200--theorem-c__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 08:30:58
+      <a href="20261126T040200--theorem-c__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T040200--theorem-c__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T040200--theorem-c__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Theorem C</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:toy" id="toc-sec:toy">§67.1. The comparison in a lattice</a></li>
+<li><a href="#sec:thmC" id="toc-sec:thmC">§67.2. Theorem C</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#sectoy" id="toc-sectoy">§67.1</a></li>
+<li><a href="#secthmc" id="toc-secthmc">§67.2</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Hadamard’s and Fischer’s inequalities for positive definite Hermitian
+matrices <span class="citation"
+data-cites="HJ">[<a href="#ref-HJ">HJ</a>]</span>. From Chapter <a
+href="20261125T000000--slope-method__workbook.html#chap" data-reference-type="ref"
+data-reference="sd-chap">5</a> heights, covolume and Problem <a
+href="20261125T000000--slope-method__workbook.html#pr:height-mul" data-reference-type="ref"
+data-reference="sd-pr:height-mul">5.3.2</a>; from
+Chapter <a href="20261126T030100--a-twist-for-each-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="at-chap">6</a> the theorem on a twist for each
+prime; from Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a> the data and Problem <a
+href="20261126T030300--the-data__workbook.html#pr:main" data-reference-type="ref"
+data-reference="da-pr:main">36.4.6</a>; from Chapter <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a> the objects and the target
+lattice; the auxiliary forms and the turn ratios (Sections <a
+href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#sec:aux" data-reference-type="ref"
+data-reference="c5-sec:aux">73.4</a> and <a
+href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#sec:one-turn" data-reference-type="ref"
+data-reference="c5-sec:one-turn">73.2</a>); the
+factorization of the chain determinant and the bound for small ratios
+(Chapter <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#chap" data-reference-type="ref"
+data-reference="dch-chap">68</a>); the cost of one lift
+(Theorem <a href="20261126T030800--the-cost-of-one-lift__workbook.html#thm:main" data-reference-type="ref"
+data-reference="col-thm:main">74.2.1</a>); families with small
+ratios and regular families (Definitions <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:small-ratios"
+data-reference-type="ref"
+data-reference="l5-def:small-ratios">79.1.2</a> and <a
+href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:regular" data-reference-type="ref"
+data-reference="l5-def:regular">79.1.3</a>); the denominator
+budget (Definition <a href="20261126T030300--the-data__workbook.html#def:budget" data-reference-type="ref"
+data-reference="da-def:budget">36.4.1</a>); and the existence
+of a regular family (Theorem <a href="20261126T031000--twists-with-few-congruences__workbook.html#thm:regular"
+data-reference-type="ref"
+data-reference="tw-thm:regular">85.2.1</a>). Section <a
+href="#sec:toy" data-reference-type="ref" data-reference="sec:toy">67.1</a>
+uses no earlier chapter.</p>
+<p>Theorem C gives the lower bound used in Chapter <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.html#chap"
+data-reference-type="ref" data-reference="mi-chap">38</a>,
+<em>The main inequality</em>, for the covolume plus twice the index of a
+linearly independent family of target forms spanning almost all of the
+target. For each prime <span class="math inline">\(\ell\)</span> and
+each field isomorphism <span
+class="math inline">\(\iota\colon{\mathbb{C}}\to\overline{{\mathbb{Q}}}_\ell\)</span>,
+the proof chooses a twist <span
+class="math inline">\(\theta_\iota\)</span>. It compares the chain Gram
+determinant at the trivial twist with its value at <span
+class="math inline">\(\theta_\iota\)</span>, using a height bound for
+the family of ratios for each single lift. We first compare index and
+Gram determinant in a lattice, then state and prove Theorem C in the
+form used in the proof. This chapter heads Part IX; the chapters that
+follow it develop its inputs.</p>
+<h1 id="sec:toy">§67.1. The comparison in a lattice</h1>
+<p>Let <span class="math inline">\(N \ge 1\)</span> be an integer, and
+give <span class="math inline">\({\mathbb{C}}^d\)</span> the Hermitian
+form <span class="math inline">\(\langle v, w \rangle := N\, \bar
+v^{\mathsf T} w\)</span>. For <span class="math inline">\(y_1, \dots,
+y_n \in {\mathbb{Q}}^d\)</span> write <span
+class="math inline">\(\operatorname{Gram}(y) := \det(\langle y_i, y_j
+\rangle)_{i,j \le n}\)</span>, and let <span class="math inline">\(H :=
+\log N\)</span>.</p>
+<div id="pr:toy-int" class="problem" data-progress-ids="[&quot;20261126T040200--theorem-c__workbook.tex#pr:toy-int&quot;]">
+<p><strong>Problem 67.1.1</strong>. If <span class="math inline">\(y_1,
+\dots, y_d \in {\mathbb{Z}}^d\)</span> are linearly independent, then
+<span class="math inline">\(\operatorname{Gram}(y) \ge N^d\)</span>, so
+<span class="math inline">\(\log \operatorname{Gram}(y) \ge dH\)</span>.
+For <span class="math inline">\(N = 5\)</span>, <span
+class="math inline">\(y_1 = (1, 2)\)</span>, <span
+class="math inline">\(y_2 = (2, -1)\)</span> one has <span
+class="math inline">\(\operatorname{Gram}(y) = 625\)</span>.</p>
+</div>
+<div id="pr:toy-index" class="problem" data-progress-ids="[&quot;20261126T040200--theorem-c__workbook.tex#pr:toy-index&quot;]">
+<p><strong>Problem 67.1.2</strong>. Let <span class="math inline">\(y_1,
+\dots, y_d \in {\mathbb{Q}}^d\)</span> be linearly independent, and let
+<span class="math inline">\(u \in M_d({\mathbb{Z}})\)</span> with <span
+class="math inline">\(\det u \ne 0\)</span> be such that <span
+class="math inline">\(\sum_k u_{ik} y_k \in {\mathbb{Z}}^d\)</span> for
+every <span class="math inline">\(i\)</span>. If <span
+class="math inline">\(\log \operatorname{Gram}(y) \le c\)</span> and
+<span class="math inline">\(\log\lvert\det u\rvert \le \delta\)</span>,
+then <span class="math inline">\(c + 2\delta \ge dH\)</span>. For <span
+class="math inline">\(N = 5\)</span>, <span class="math inline">\(y_1 =
+(\tfrac12, 1)\)</span>, <span class="math inline">\(y_2 = (0,
+\tfrac13)\)</span>, <span class="math inline">\(u = \mathrm{diag}(2,
+3)\)</span>, <span class="math inline">\(c = \log
+\operatorname{Gram}(y)\)</span> and <span class="math inline">\(\delta =
+\log 6\)</span> there is equality.</p>
+</div>
+<p>Now let the family be shorter than the dimension. Suppose it is
+completed to a basis by vectors of bounded length.</p>
+<div id="pr:toy-complete" class="problem" data-progress-ids="[&quot;20261126T040200--theorem-c__workbook.tex#pr:toy-complete&quot;]">
+<p><strong>Problem 67.1.3</strong>. Let <span class="math inline">\(y_1,
+\dots, y_n\)</span> and <span class="math inline">\(z_1, \dots,
+z_{n&#39;}\)</span> in <span
+class="math inline">\({\mathbb{Z}}^d\)</span> together form a basis of
+<span class="math inline">\({\mathbb{Q}}^d\)</span>, with <span
+class="math inline">\(\langle z_i, z_i \rangle \le e^{\beta}\)</span>
+for every <span class="math inline">\(i\)</span>. Then <span
+class="math inline">\(\log \operatorname{Gram}(y) + n&#39;\beta \ge
+dH\)</span>. For <span class="math inline">\(d = 3\)</span>, <span
+class="math inline">\(N = 2\)</span>, <span class="math inline">\(y_1 =
+(1, 1, 0)\)</span>, <span class="math inline">\(y_2 = (0, 1,
+1)\)</span>, <span class="math inline">\(z_1 = (1, 0, 0)\)</span>: <span
+class="math inline">\(\operatorname{Gram}(y) = 12\)</span>, <span
+class="math inline">\(\operatorname{Gram}(y, z) = 8\)</span>, and <span
+class="math inline">\(8 \le 12 \cdot 2\)</span>.</p>
+</div>
+<div id="pr:toy-steinitz" class="problem" data-progress-ids="[&quot;20261126T040200--theorem-c__workbook.tex#pr:toy-steinitz&quot;]">
+<p><strong>Problem 67.1.4</strong>. Every linearly independent family <span
+class="math inline">\(y_1, \dots, y_n \in {\mathbb{Z}}^d\)</span> is
+completed to a basis of <span
+class="math inline">\({\mathbb{Q}}^d\)</span> by <span
+class="math inline">\(d - n\)</span> of the standard basis vectors.
+Hence <span class="math inline">\(\log \operatorname{Gram}(y) \ge
+nH\)</span>.</p>
+</div>
+<p>In Section <a href="#sec:thmC" data-reference-type="ref"
+data-reference="sec:thmC">67.2</a> the main amount (Section <a
+href="20261126T030300--the-data__workbook.html#sec:amounts" data-reference-type="ref"
+data-reference="da-sec:amounts">36.4</a>) enters through the
+height of the family <span class="math inline">\(\iota \mapsto
+Z(1)/Z(\theta_\iota)\)</span>, where the twist <span
+class="math inline">\(\theta_\iota\)</span> is chosen for each pair
+<span class="math inline">\((\ell, \iota)\)</span> (Problem <a
+href="#pr:volume" data-reference-type="ref"
+data-reference="pr:volume">67.2.5</a>).</p>
+<h1 id="sec:thmC">§67.2. Theorem C</h1>
+<p>We use the parameters <span class="math inline">\(q_0,d\)</span> and
+the data of Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>, and the objects and notation of
+Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>: the target forms <span
+class="math inline">\(T\)</span>, of dimension <span
+class="math inline">\(d_T\)</span>; the set <span
+class="math inline">\(\mathrm{Tw}\)</span> of <span
+class="math inline">\(m\)</span>-fold twists <span
+class="math inline">\(\vartheta\)</span>, with the trivial twist <span
+class="math inline">\(1\)</span> and the norm <span
+class="math inline">\(\mathrm{Nm}\,Q_\vartheta\)</span> of the modulus;
+the lower chain <span class="math inline">\(\Theta_\vartheta\)</span>;
+the Gram determinants <span class="math inline">\(Z(\vartheta)\)</span>
+of the chain and <span class="math inline">\(Z_j(\vartheta)\)</span> of
+the <span class="math inline">\(j\)</span>th single lift at <span
+class="math inline">\(\vartheta^j\)</span>; and families of twists <span
+class="math inline">\(\theta = (\theta_\iota)\)</span>, one twist for
+each <span class="math inline">\(\iota \mid \ell\)</span>. For <span
+class="math inline">\(1 \le i &lt; j \le m\)</span>, the ratios <span
+class="math inline">\(\rho_{ij}(\vartheta)\)</span> of Definition <a
+href="20261126T050700--squares-and-the-triangle__workbook.html#def:rho" data-reference-type="ref"
+data-reference="c4-def:rho">72.3.2</a> occur in inputs (c) and
+(d). For <span class="math inline">\(0 \le i,j &lt; m\)</span>, the turn
+ratios <span class="math inline">\(\rho&#39;_{ij}(\vartheta)\)</span> of
+Definition <a href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#def:turn-ratio" data-reference-type="ref"
+data-reference="c5-def:turn-ratio">73.2.1</a> occur in (a)
+and (d). Both are products, over <span class="math inline">\(1 \le z \le
+t\)</span>, of ratios of absolute values of Hecke <span
+class="math inline">\(L\)</span>-values. Among the conditions on the
+data, the scales <span class="math inline">\(x &lt; x_1 &lt; b\)</span>
+are integers with <span class="math display">\[(\log b)^{100} \le x ,
+\qquad x^{10^6} \le x_1 , \qquad x_1^{10^6} \le b , \qquad (\log x_1)^6
+\le \log b , \qquad \log\log b \ge 10^{12} ,\]</span> the last
+inequality following from <span
+class="math inline">\(10^{12}C\le\log\log b\)</span> and <span
+class="math inline">\(C\ge1\)</span>, with <span
+class="math inline">\(C\)</span> as in Chapter <a href="20261126T030300--the-data__workbook.html#chap"
+data-reference-type="ref" data-reference="da-chap">36</a>,
+Section <a href="20261126T030300--the-data__workbook.html#sec:data" data-reference-type="ref"
+data-reference="da-sec:data">36.3</a>. Further <span
+class="math inline">\(a = xb\)</span>, <span class="math inline">\(\sqrt
+x \le m \le 2\sqrt x\)</span>, <span class="math inline">\(x^5 \le r \le
+3x^5\)</span>, <span class="math inline">\(k = r + 1 - m\)</span>, <span
+class="math inline">\(t = 5r\)</span> and <span class="math inline">\(f
+\ge 1\)</span>. With <span class="math inline">\(U = fa\log^3 b\)</span>
+write <span class="math inline">\(F := U\log b\)</span>. The main amount
+is <span class="math inline">\(h_{\mathrm{main}}=
+mk\,h_{\mathrm{dir}}\)</span>, and <span
+class="math inline">\(h_{\mathrm{main}}\ge 0\)</span> by Problem <a
+href="20261126T030300--the-data__workbook.html#pr:main" data-reference-type="ref"
+data-reference="da-pr:main">36.4.6</a>. Heights of families <span
+class="math inline">\(\iota \mapsto u_\iota\)</span> are those of
+Chapter <a href="20261125T000000--slope-method__workbook.html#chap" data-reference-type="ref"
+data-reference="sd-chap">5</a>, Section <a
+href="20261125T000000--slope-method__workbook.html#sec:heights" data-reference-type="ref"
+data-reference="sd-sec:heights">5.3</a>; we write <span
+class="math inline">\(\operatorname{ht}(u) \le c\)</span>.</p>
+<p><em>The target lattice.</em> The target lattice on <span
+class="math inline">\(T\)</span>, with twists <span
+class="math inline">\(\mathrm{Tw}\)</span>, the lifts <span
+class="math inline">\(\Theta_\vartheta\)</span>, injective by Problem <a
+href="20261126T050700--squares-and-the-triangle__workbook.html#pr:theta-injective" data-reference-type="ref"
+data-reference="c4-pr:theta-injective">72.4.3</a>, the
+twists allowed at <span class="math inline">\(\ell\)</span>, the
+lattices <span class="math inline">\(\mathfrak
+L_{\vartheta,\iota}\)</span>, the squared lengths <span
+class="math inline">\(\lVert v \rVert_\sigma^2\)</span> of the <span
+class="math inline">\(\sigma\)</span>-conjugated coordinate vectors of
+<span class="math inline">\(\Theta_1 v\)</span>, and index and covolume
+of a family in <span class="math inline">\(T\)</span>, is that of
+Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:target-lattice" data-reference-type="ref"
+data-reference="ob-def:target-lattice">37.11.1</a>; its
+volume at <span class="math inline">\(\vartheta\)</span> is <span
+class="math inline">\(Z(\vartheta)\)</span>.</p>
+<p>Theorem <a href="20261126T030100--a-twist-for-each-prime__workbook.html#thm:twist" data-reference-type="ref"
+data-reference="at-thm:twist">6.2.1</a>, for this lattice,
+reads as follows. Let <span class="math inline">\(y_1, \dots, y_n, z_1,
+\dots, z_{n&#39;}\)</span> be a basis of <span
+class="math inline">\(T\)</span>, where <span
+class="math inline">\(y\)</span> has covolume at most <span
+class="math inline">\(c\)</span> and index at most <span
+class="math inline">\(\delta\)</span>; let <span
+class="math inline">\(\theta\)</span> be a family of twists with <span
+class="math inline">\(\theta_\iota\)</span> allowed at <span
+class="math inline">\(\ell\)</span>, and <span
+class="math inline">\(\gamma \colon \mathrm{Tw} \to
+{\mathbb{C}}^\times\)</span>; suppose (i) <span
+class="math inline">\(\gamma(\vartheta)\Theta_\vartheta z_i \in
+\mathfrak L_{\vartheta,\iota}\)</span> for every <span
+class="math inline">\(i\)</span>, every <span
+class="math inline">\(\iota \mid \ell\)</span> and every <span
+class="math inline">\(\vartheta\)</span> allowed at <span
+class="math inline">\(\ell\)</span>; (ii) <span
+class="math inline">\(\lVert z_i \rVert_\sigma^2 \le
+e^{c_{\mathrm{short}}}\)</span> for every <span
+class="math inline">\(i\)</span> and <span
+class="math inline">\(\sigma\)</span>; (iii) <span
+class="math inline">\(\operatorname{ht}(\lvert\gamma(\theta_\iota)\rvert^{-2})
+\le c_{\mathrm{den}}\)</span>; (iv) <span
+class="math inline">\(\operatorname{ht}(Z(1)/Z(\theta_\iota)) \le
+c_{\mathrm{vol}}\)</span>. Then <span id="eq:twist"
+class="math display">\[\begin{equation}
+\label{eq:twist}\tag{1}
+  0 \le c + 2\delta + n&#39;(c_{\mathrm{short}} + c_{\mathrm{den}}) +
+c_{\mathrm{vol}} .
+\end{equation}\]</span></p>
+<p>Four inputs supply the hypotheses of the twist inequality. (a)
+<em>Auxiliary forms</em> (Theorem <a href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#thm:aux"
+data-reference-type="ref" data-reference="c5-thm:aux">73.4.1</a>).
+There are an integer <span class="math inline">\(e_\gamma\)</span> and a
+function <span class="math inline">\(\gamma \colon \mathrm{Tw} \to
+{\mathbb{C}}\)</span>, with <span
+class="math inline">\(\gamma(\vartheta) \ne 0\)</span> for every <span
+class="math inline">\(\vartheta\)</span>, <span
+class="math inline">\(\gamma(1) = 1\)</span> and <span
+class="math inline">\(\lvert\gamma(\vartheta)\rvert =
+(\mathrm{Nm}\,Q_\vartheta)^{e_\gamma/2}\prod_{0 \le i, j &lt; m}
+\rho&#39;_{ij}(\vartheta)\)</span> for <span
+class="math inline">\(\vartheta \in \mathrm{Tw}\)</span>, such that
+<span class="math inline">\(T\)</span> is spanned over <span
+class="math inline">\({\mathbb{C}}\)</span> by the forms that are
+auxiliary for <span class="math inline">\(\gamma\)</span> (Definition <a
+href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html#def:aux" data-reference-type="ref"
+data-reference="c5-def:aux">73.4.1</a>): the <span
+class="math inline">\(z \in T\)</span> with <span
+class="math inline">\(\gamma(\vartheta)\Theta_\vartheta z \in \mathfrak
+L_{\vartheta,\iota}\)</span> for every <span class="math inline">\(\iota
+\mid \ell\)</span> and every <span
+class="math inline">\(\vartheta\)</span> with <span
+class="math inline">\(\gcd(\ell, \mathrm{Nm}\,Q_\vartheta) = 1\)</span>,
+and with <span class="math inline">\(\lVert z \rVert_\sigma^2 \le
+\exp(2x_1^2b^2)\)</span> for every <span
+class="math inline">\(\sigma\)</span>. (b) <em>Single lifts.</em> By
+Theorem <a href="20261126T031000--twists-with-few-congruences__workbook.html#thm:regular" data-reference-type="ref"
+data-reference="tw-thm:regular">85.2.1</a> there is a regular
+family <span class="math inline">\(\theta\)</span> (Definition <a
+href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:regular" data-reference-type="ref"
+data-reference="l5-def:regular">79.1.3</a>); it has small
+ratios (Definition <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:small-ratios"
+data-reference-type="ref"
+data-reference="l5-def:small-ratios">79.1.2</a>), so each
+<span class="math inline">\(\theta_\iota\)</span> is allowed at <span
+class="math inline">\(\ell\)</span>; and by Theorem <a
+href="20261126T030800--the-cost-of-one-lift__workbook.html#thm:main" data-reference-type="ref"
+data-reference="col-thm:main">74.2.1</a>, <span
+class="math inline">\(\operatorname{ht}(Z_j(1)/Z_j(\theta_\iota)) \le
+d_T k(B\log b - h_{\mathrm{dir}})\)</span> for <span
+class="math inline">\(1 \le j \le m\)</span>, with <span
+class="math inline">\(B = U/(mk)\)</span> the budget of Definition <a
+href="20261126T030300--the-data__workbook.html#def:budget" data-reference-type="ref"
+data-reference="da-def:budget">36.4.1</a>. (c)
+<em>Factorization</em> (Theorem <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#thm:main"
+data-reference-type="ref"
+data-reference="dch-thm:main">68.4.1</a>). There is an integer
+<span class="math inline">\(e_Z\)</span> such that for every <span
+class="math inline">\(\vartheta \in \mathrm{Tw}\)</span> <span
+class="math display">\[\frac{Z(\vartheta)}{Z(1)} = \Bigl(
+(\mathrm{Nm}\,Q_\vartheta)^{e_Z/2} \prod_{1 \le i &lt; j \le m}
+\rho_{ij}(\vartheta) \Bigr)^{d_T} \prod_{j=1}^m
+\frac{Z_j(\vartheta)}{Z_j(1)} .\]</span> (d) <em>Small ratios</em>
+(Theorem <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#thm:small-ratios" data-reference-type="ref"
+data-reference="dch-thm:small-ratios">68.5.1</a>). If
+<span class="math inline">\(\theta\)</span> has small ratios, then for
+every integer <span class="math inline">\(e\)</span> both families <span
+class="math inline">\(\bigl((\mathrm{Nm}\,Q_{\theta_\iota})^{e/2}\prod_{0
+\le i,j &lt; m} \rho&#39;_{ij}(\theta_\iota)\bigr)^{-1}\)</span> and
+<span
+class="math inline">\(\bigl((\mathrm{Nm}\,Q_{\theta_\iota})^{e/2}\prod_{1
+\le i &lt; j \le m} \rho_{ij}(\theta_\iota)\bigr)^{-1}\)</span> have
+height at most <span class="math inline">\(m^2tx_1\)</span>.</p>
+<div id="pr:single" class="problem" data-progress-ids="[&quot;20261126T040200--theorem-c__workbook.tex#pr:single&quot;]">
+<p><strong>Problem 67.2.1</strong>. <span class="math inline">\(d_T k(B\log b
+- h_{\mathrm{dir}}) = d_T(F/m - kh_{\mathrm{dir}})\)</span>.</p>
+</div>
+<div id="pr:scales" class="problem" data-progress-ids="[&quot;20261126T040200--theorem-c__workbook.tex#pr:scales&quot;]">
+<p><strong>Problem 67.2.2</strong>. The data satisfy <span
+class="math inline">\(2m^2tx_1 \le b\)</span>, <span
+class="math inline">\(4(2x_1^2 + b^{-1}) \le b\)</span>, <span
+class="math inline">\(b \le F\)</span> and <span
+class="math inline">\(4/b^2 \le 1/2\)</span>.</p>
+</div>
+<div id="pr:completion" class="problem" data-progress-ids="[&quot;20261126T040200--theorem-c__workbook.tex#pr:completion&quot;]">
+<p><strong>Problem 67.2.3</strong>. If <span class="math inline">\(n \ge (1 -
+4/b^2)d_T\)</span> and <span class="math inline">\(d_T = n +
+n&#39;\)</span>, then <span class="math inline">\(n&#39;(2x_1^2b^2 + b)
+\le d_T b\)</span>.</p>
+</div>
+<p>So the allowance for one completing auxiliary form is <span
+class="math inline">\(2x_1^2b^2 + b\)</span>, and the total allowance
+for the <span class="math inline">\(n&#39;\)</span> completing forms is
+at most <span class="math inline">\(d_T b\)</span>.</p>
+<div id="pr:denom" class="problem" data-progress-ids="[&quot;20261126T040200--theorem-c__workbook.tex#pr:denom&quot;]">
+<p><strong>Problem 67.2.4</strong>. For <span
+class="math inline">\(\gamma\)</span> as in (a) and <span
+class="math inline">\(\theta\)</span> as in (b), <span
+class="math inline">\(\operatorname{ht}(\lvert\gamma(\theta_\iota)\rvert^{-2})
+\le b\)</span>.</p>
+</div>
+<div id="pr:volume" class="problem" data-progress-ids="[&quot;20261126T040200--theorem-c__workbook.tex#pr:volume&quot;]">
+<p><strong>Problem 67.2.5</strong>. For <span
+class="math inline">\(\theta\)</span> as in (b), <span
+class="math inline">\(\operatorname{ht}(Z(1)/Z(\theta_\iota)) \le d_T(b
++ F - h_{\mathrm{main}})\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.html">Chapter 38</a></div><!-- used-in:end -->
+</div>
+<div id="pr:C" class="problem" data-progress-ids="[&quot;20261126T040200--theorem-c__workbook.tex#pr:C&quot;]">
+<p><strong>Problem 67.2.6</strong>. Let <span class="math inline">\(y_1,
+\dots, y_n \in T\)</span> be linearly independent, with <span
+class="math inline">\(n \ge (1 - 4/b^2)d_T\)</span>, covolume at most
+<span class="math inline">\(c\)</span> and index at most <span
+class="math inline">\(\delta\)</span>. Then <span
+class="math inline">\(T\)</span> has a basis <span
+class="math inline">\(y_1, \dots, y_n, z_1, \dots, z_{n&#39;}\)</span>
+with each <span class="math inline">\(z_i\)</span> as in (a), and <span
+class="math inline">\(c + 2\delta \ge d_T(h_{\mathrm{main}}-
+3F)\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:single" data-reference-type="ref"
+data-reference="pr:single">67.2.1</a>–<a href="#pr:C"
+data-reference-type="ref" data-reference="pr:C">67.2.6</a> prove the
+following.</p>
+<div id="thm:C" class="theorem">
+<p><strong>Theorem 67.2.1</strong> (Theorem C). <em>Let <span
+class="math inline">\(y_1, \dots, y_n\)</span> be linearly independent
+target forms with <span class="math inline">\((1 - 4/b^2)d_T \le
+n\)</span>, of index at most <span class="math inline">\(\delta\)</span>
+and covolume at most <span class="math inline">\(c\)</span>. Then <span
+class="math display">\[d_T(h_{\mathrm{main}}- 3fa\log^4 b) \le c +
+2\delta .\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.html">Chapter 38</a>; <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a></div><!-- used-in:end -->
+</div>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, Theorem <a href="#thm:C"
+data-reference-type="ref" data-reference="thm:C">67.2.1</a> is
+<code>New.Data.integral_forms_long</code>, in
+<code>grh/src/New/Determinant/Twist/LongForms.lean</code>. The proof of
+<code>New.Data.exists_hasSmallRatios_heightLe_liftDeterminant_div</code>
+in that file obtains the regular family and the bounds in (b) from
+<code>New.exists_isRegularFamily</code> and
+<code>New.Data.heightLe_liftDeterminant_ratio</code>. The theorem
+concludes that there is a family with small ratios for which <span
+class="math inline">\(\operatorname{ht}(Z_j(1)/Z_j(\theta_\iota)) \le
+d_T(F/m-kh_{\mathrm{dir}})\)</span> for every <span
+class="math inline">\(1 \le j \le m\)</span>. The comparison <a
+href="#eq:twist" data-reference-type="eqref"
+data-reference="eq:twist">(1)</a> specializes
+<code>New.TwistedLattice.covolume_add_index_nonneg</code>, in
+<code>grh/src/New/Reduction/Lattices/TwistedLattice.lean</code>, to the
+target lattice. Problem <a href="#pr:completion"
+data-reference-type="ref" data-reference="pr:completion">67.2.3</a> is
+<code>New.Data.mul_completion_cost_le</code>. Problem <a
+href="#pr:volume" data-reference-type="ref"
+data-reference="pr:volume">67.2.5</a> applies
+<code>New.Data.heightLe_chainDeterminant_one_div</code> to the family
+of (b). The bounds of Problem <a href="#pr:scales"
+data-reference-type="ref" data-reference="pr:scales">67.2.2</a> are instances
+of <code>New.Data.le_of_hasLogBound</code>. Problems <a href="#pr:denom"
+data-reference-type="ref" data-reference="pr:denom">67.2.4</a> and <a
+href="#pr:C" data-reference-type="ref" data-reference="pr:C">67.2.6</a> are
+steps in the proof of <code>New.Data.integral_forms_long</code>, the
+basis of Problem <a href="#pr:C" data-reference-type="ref"
+data-reference="pr:C">67.2.6</a> coming from
+<code>New.exists_extend_basis_of_span_eq_top</code>. Theorem <a
+href="#thm:C" data-reference-type="ref" data-reference="thm:C">67.2.1</a> is
+applied in the proof of <code>New.star_inequality</code>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="sectoy">§<a href="#sec:toy"
+data-reference-type="ref" data-reference="sec:toy">67.1</a></h2>
+<dl>
+<dt><a href="#pr:toy-int" data-reference-type="ref"
+data-reference="pr:toy-int">67.1.1</a></dt>
+<dd>
+<p><span class="math inline">\((\langle y_i, y_j \rangle) = N\, Y
+Y^{\mathsf T}\)</span> for the matrix <span
+class="math inline">\(Y\)</span> with rows <span
+class="math inline">\(y_i\)</span>, and <span class="math inline">\(\det
+Y\)</span> is a nonzero integer.</p>
+</dd>
+<dt><a href="#pr:toy-index" data-reference-type="ref"
+data-reference="pr:toy-index">67.1.2</a></dt>
+<dd>
+<p>Problem <a href="#pr:toy-int" data-reference-type="ref"
+data-reference="pr:toy-int">67.1.1</a> for the rows of <span
+class="math inline">\(uY\)</span>.</p>
+</dd>
+<dt><a href="#pr:toy-complete" data-reference-type="ref"
+data-reference="pr:toy-complete">67.1.3</a></dt>
+<dd>
+<p>Fischer’s inequality for the Gram matrix of <span
+class="math inline">\((y, z)\)</span>, Hadamard’s for <span
+class="math inline">\(\operatorname{Gram}(z)\)</span>, then Problem <a
+href="#pr:toy-int" data-reference-type="ref"
+data-reference="pr:toy-int">67.1.1</a>.</p>
+</dd>
+<dt><a href="#pr:toy-steinitz" data-reference-type="ref"
+data-reference="pr:toy-steinitz">67.1.4</a></dt>
+<dd>
+<p>Steinitz exchange and Problem <a href="#pr:toy-complete"
+data-reference-type="ref" data-reference="pr:toy-complete">67.1.3</a>; each
+standard basis vector has squared length <span
+class="math inline">\(N\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secthmc">§<a href="#sec:thmC"
+data-reference-type="ref" data-reference="sec:thmC">67.2</a></h2>
+<dl>
+<dt><a href="#pr:single" data-reference-type="ref"
+data-reference="pr:single">67.2.1</a></dt>
+<dd>
+<p><span class="math inline">\(B\log b = U\log b/(mk) =
+F/(mk)\)</span>.</p>
+</dd>
+<dt><a href="#pr:scales" data-reference-type="ref"
+data-reference="pr:scales">67.2.2</a></dt>
+<dd>
+<p><span class="math inline">\(m^2 \le 4x\)</span>, <span
+class="math inline">\(t \le 15x^5\)</span> and <span
+class="math inline">\(x \ge 2\)</span>.</p>
+</dd>
+<dt><a href="#pr:completion" data-reference-type="ref"
+data-reference="pr:completion">67.2.3</a></dt>
+<dd>
+<p><span class="math inline">\(n&#39; \le 4d_T/b^2\)</span>.</p>
+</dd>
+<dt><a href="#pr:denom" data-reference-type="ref"
+data-reference="pr:denom">67.2.4</a></dt>
+<dd>
+<p>Input (d), Problem <a href="20261125T000000--slope-method__workbook.html#pr:height-mul"
+data-reference-type="ref"
+data-reference="sd-pr:height-mul">5.3.2</a> and Problem <a
+href="#pr:scales" data-reference-type="ref"
+data-reference="pr:scales">67.2.2</a>.</p>
+</dd>
+<dt><a href="#pr:volume" data-reference-type="ref"
+data-reference="pr:volume">67.2.5</a></dt>
+<dd>
+<p>Invert (c); bound the scalar by (d) and the single lifts by (b) and
+Problem <a href="#pr:single" data-reference-type="ref"
+data-reference="pr:single">67.2.1</a>, and add by Problem <a
+href="20261125T000000--slope-method__workbook.html#pr:height-mul" data-reference-type="ref"
+data-reference="sd-pr:height-mul">5.3.2</a>.</p>
+</dd>
+<dt><a href="#pr:C" data-reference-type="ref"
+data-reference="pr:C">67.2.6</a></dt>
+<dd>
+<p>Apply <a href="#eq:twist" data-reference-type="eqref"
+data-reference="eq:twist">(1)</a> with <span
+class="math inline">\(c_{\mathrm{short}} = 2x_1^2b^2\)</span>, <span
+class="math inline">\(c_{\mathrm{den}} = b\)</span> and <span
+class="math inline">\(c_{\mathrm{vol}} = d_T(b + F -
+h_{\mathrm{main}})\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-HJ"><span class="bib-label">[HJ]</span> R. A. Horn and C. R. Johnson, <em>Matrix Analysis</em>, 2nd ed., Cambridge Univ. Press, 2013.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

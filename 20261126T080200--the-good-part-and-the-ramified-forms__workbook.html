@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-ePz7yAKwVcft6mmcf6uaHV2Nn1idSzQij6JzXI+vcHQ=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>The good part and the ramified forms</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","R":"\\mathbb{R}","C":"\\mathbb{C}","F":"\\mathbb{F}","Gb":"\\bar G","Sram":"S_{\\mathrm{ram}}","Aut":"\\operatorname{Aut}","diag":"\\operatorname{diag}","ps":"\\mathsf p_s","Av":"\\mathrm{Av}","Nc":"\\mathcal N","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="51">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T080200--the-good-part-and-the-ramified-forms__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-27 17:44:27
+      <a href="20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T080200--the-good-part-and-the-ramified-forms__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">The good part and the ramified forms</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:idempotents" id="toc-sec:idempotents">§51.1. Central idempotents</a></li>
+<li><a href="#sec:good" id="toc-sec:good">§51.2. The good translate</a></li>
+<li><a href="#sec:ramified" id="toc-sec:ramified">§51.3. The ramified forms</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secidempotents" id="toc-secidempotents">§51.1</a></li>
+<li><a href="#secgood" id="toc-secgood">§51.2</a></li>
+<li><a href="#secramified" id="toc-secramified">§51.3</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Characters of finite groups: orthogonality, the central idempotents
+of the group algebra and integrality of character values <span
+class="citation" data-cites="Se">[<a href="#ref-Se">Se</a>]</span>. From
+Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>: the data (Definition <a
+href="20261126T030300--the-data__workbook.html#def:data" data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a>) and Problems <a
+href="20261126T030300--the-data__workbook.html#pr:degree" data-reference-type="ref"
+data-reference="da-pr:degree">36.2.2</a>, <a href="20261126T030300--the-data__workbook.html#pr:T"
+data-reference-type="ref" data-reference="da-pr:T">36.3.3</a>, <a
+href="20261126T030300--the-data__workbook.html#pr:m-big" data-reference-type="ref"
+data-reference="da-pr:m-big">36.3.2</a> and <a href="20261126T030300--the-data__workbook.html#pr:MN"
+data-reference-type="ref" data-reference="da-pr:MN">36.5.4</a>. From
+Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>: the chosen places <span
+class="math inline">\(\mathcal M\)</span>, the group <span
+class="math inline">\(\bar G\)</span>, the idempotent <span
+class="math inline">\(e_0\)</span> and the order <span
+class="math inline">\(\mathcal N\)</span> (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chosen" data-reference-type="ref"
+data-reference="ob-sec:chosen">37.1</a>); the action <span
+class="math inline">\(\rho\)</span> of <span class="math inline">\(\bar
+G\)</span> on the principal forms <span
+class="math inline">\(H(Y_0)\)</span> and the target <span
+class="math inline">\(T = e_0H(Y_0)\)</span> (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:forms" data-reference-type="ref"
+data-reference="ob-sec:forms">37.4</a>); framed spaces
+(Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces" data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a>); the gauge
+(Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:gauge" data-reference-type="ref"
+data-reference="ob-def:gauge">37.5.1</a>); the source forms
+<span class="math inline">\(S\)</span>, <span class="math inline">\(D_X
+= \dim S\)</span>, the operators <span
+class="math inline">\(T_w\)</span>, the scalars <span
+class="math inline">\(z_w\)</span> and <span
+class="math inline">\(S_{\mathrm{ram}}\)</span> (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:source" data-reference-type="ref"
+data-reference="ob-sec:source">37.5</a>); tame characters and
+the lower chain <span class="math inline">\(\Theta_\xi\)</span>
+(Sections <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:twists" data-reference-type="ref"
+data-reference="ob-sec:twists">37.6</a> and <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chain" data-reference-type="ref"
+data-reference="ob-sec:chain">37.9</a>, Definition <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#def:final-level" data-reference-type="ref"
+data-reference="ob-def:final-level">37.9.1</a>). From
+Chapter <a href="20261126T030400--the-seesaw-identity__workbook.html#chap" data-reference-type="ref"
+data-reference="ss-chap">52</a>: the source level <span
+class="math inline">\(K^X_0\)</span> and Problem <a
+href="20261126T030400--the-seesaw-identity__workbook.html#pr:ram-image" data-reference-type="ref"
+data-reference="ss-pr:ram-image">52.5.3</a>. From Chapter <a
+href="20261126T030600--theorem-a-short-forms__workbook.html#chap" data-reference-type="ref"
+data-reference="ta-chap">49</a>: the norm <span
+class="math inline">\(\lVert\cdot\rVert_\sigma\)</span> and the inputs
+listed in Section <a href="20261126T030600--theorem-a-short-forms__workbook.html#sec:theorem-a" data-reference-type="ref"
+data-reference="ta-sec:theorem-a">49.3</a>. From
+Chapter <a href="20261126T050300--the-size-of-the-composite-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="d6-chap">66</a>: the class count. From Chapter <a
+href="20261126T080100--free-levels-and-short-bases__workbook.html#chap" data-reference-type="ref"
+data-reference="a1-chap">50</a>: free levels and their forms.</p>
+<p>Theorem <a href="20261126T030600--theorem-a-short-forms__workbook.html#thm:A" data-reference-type="ref"
+data-reference="ta-thm:A">49.3.2</a> of Chapter <a href="20261126T030600--theorem-a-short-forms__workbook.html#chap"
+data-reference-type="ref" data-reference="ta-chap">49</a> uses
+two inputs that this chapter proves. The normalized translates of
+Theorem A apply <span class="math inline">\(\#\bar
+G\,\rho(e_0)\rho(s)\)</span> to principal forms. Why does the factor
+<span class="math inline">\(\#\bar G\)</span> suffice for integrality,
+and how much can the operator enlarge norms? And the ramified source
+forms are cut out by <span class="math inline">\(f\)</span> conditions,
+one at each prime <span class="math inline">\(w \mid \pi_N\)</span>: how
+large is <span class="math inline">\(S_{\mathrm{ram}}\)</span>? The
+answers are input 3 (Theorem <a href="#thm:good-part"
+data-reference-type="ref" data-reference="thm:good-part">51.2.2</a>) and
+input 5 (Theorem <a href="#thm:ramified-dim" data-reference-type="ref"
+data-reference="thm:ramified-dim">51.3.1</a>). For the first we use the
+compatibility of the lower chain with translations, read from the proof,
+and the class count of Chapter <a href="20261126T050300--the-size-of-the-composite-lift__workbook.html#chap"
+data-reference-type="ref" data-reference="d6-chap">66</a>; for
+the second, free levels.</p>
+<h1 id="sec:idempotents">§51.1. Central idempotents</h1>
+<p>In this section <span class="math inline">\(G\)</span> is a finite
+group, and an element <span class="math inline">\(e = \sum_u
+e(u)\,u\)</span> of <span class="math inline">\(\mathbb{C}[G]\)</span>
+has coefficients <span class="math inline">\(e(u)\)</span>. The central
+idempotents are the sums of the idempotents <span
+class="math inline">\((\dim\mathsf V/\#G)\sum_u
+\operatorname{tr}(u^{-1}\mid\mathsf V)\,u\)</span> of distinct
+irreducible representations <span class="math inline">\(\mathsf
+V\)</span> <span class="citation"
+data-cites="Se">[<a href="#ref-Se">Se</a>]</span>. Let <span
+class="math inline">\(S_3\)</span> act on <span
+class="math inline">\(\mathbb{C}^3\)</span> by permuting coordinates,
+let <span class="math inline">\(\mathbb{C}^3_0 \subset
+\mathbb{C}^3\)</span> be the plane of vectors with coordinate sum zero,
+and let <span class="math inline">\(e\)</span> be the idempotent of
+<span class="math inline">\(\mathbb{C}^3_0\)</span>. It is a central
+idempotent, not the <span class="math inline">\(e_0\)</span> of any
+data.</p>
+<div id="pr:s3" class="problem" data-progress-ids="[&quot;20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex#pr:s3&quot;]">
+<p><strong>Problem 51.1.1</strong>. <span class="math inline">\(6e\)</span>
+has coefficient <span class="math inline">\(4\)</span> at the identity,
+<span class="math inline">\(0\)</span> at the transpositions and <span
+class="math inline">\(-2\)</span> at the <span
+class="math inline">\(3\)</span>-cycles. One has <span
+class="math inline">\(e(1, 0, 0) = (\tfrac23, -\tfrac13,
+-\tfrac13)\)</span> and <span class="math inline">\(6e(1, 0, 0) = (4,
+-2, -2)\)</span>, of squared length <span
+class="math inline">\(24\)</span>. The largest <span
+class="math inline">\(3\)</span>-adic absolute value of a coefficient of
+<span class="math inline">\(e\)</span> is <span
+class="math inline">\(3\)</span>; that of <span
+class="math inline">\(6e\)</span> is <span
+class="math inline">\(1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:character">Problem 51.1.2</a>, <a href="#pr:pointwise">Problem 51.2.4</a></div><!-- used-in:end -->
+</div>
+<div id="pr:character" class="problem" data-progress-ids="[&quot;20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex#pr:character&quot;]">
+<p><strong>Problem 51.1.2</strong>. For a central idempotent <span
+class="math inline">\(e\)</span> of <span
+class="math inline">\(\mathbb{C}[G]\)</span>, the function <span
+class="math inline">\(u \mapsto \#G\,e(u)\)</span> is the character of a
+representation of <span class="math inline">\(G\)</span> of dimension at
+most <span class="math inline">\(\#G\)</span>. In Problem <a
+href="#pr:s3" data-reference-type="ref" data-reference="pr:s3">51.1.1</a> it
+is the character of <span class="math inline">\(\mathbb{C}^3_0 \oplus
+\mathbb{C}^3_0\)</span>, of dimension <span
+class="math inline">\(4\)</span>.</p>
+</div>
+<div id="pr:coeff-bounds" class="problem" data-progress-ids="[&quot;20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex#pr:coeff-bounds&quot;]">
+<p><strong>Problem 51.1.3</strong>. Let <span
+class="math inline">\(e\)</span> be a central idempotent of <span
+class="math inline">\(\mathbb{C}[G]\)</span> and <span
+class="math inline">\(u \in G\)</span>. Then <span
+class="math inline">\(\lvert\eta(\#G\,e(u))\rvert_p \le 1\)</span> for
+every prime <span class="math inline">\(p\)</span> and every ring
+homomorphism <span
+class="math inline">\(\eta\colon\mathbb{C}\to\mathbb{C}_p\)</span>, and
+<span class="math inline">\(\lvert\sigma(e(u))\rvert \le 1\)</span> for
+every <span class="math inline">\(\sigma \in
+\operatorname{Aut}(\mathbb{C})\)</span>.</p>
+</div>
+<h1 id="sec:good">§51.2. The good translate</h1>
+<div id="def:good-translate" class="definition">
+<p><strong>Definition 51.2.1</strong>. For <span class="math inline">\(s \in
+\bar G\)</span> define the <em>good translate</em> to be the linear map
+<span class="math inline">\(\mathsf p_s:= \#\bar
+G\,\rho(e_0)\rho(s)\colon H(Y_0) \to T\)</span>.</p>
+</div>
+<p>By Definition <a href="20261126T030600--theorem-a-short-forms__workbook.html#def:normalized" data-reference-type="ref"
+data-reference="ta-def:normalized">49.3.1</a>, the
+normalized translate satisfies <span class="math inline">\(A_s\varphi =
+c_B\,c_{\mathrm{ss}}^{-1}\,\mathsf p_s(\mathcal P\varphi)\)</span> for
+every <span class="math inline">\(\varphi \in S_{\mathrm{ram}}\)</span>.
+The proof relates the lower chain of <span class="math inline">\(\mathsf
+p_sz\)</span> to that of <span class="math inline">\(z\)</span> through
+the action of <span class="math inline">\(\bar G\)</span>. For a tame
+character <span class="math inline">\(\xi\)</span> and <span
+class="math inline">\(s \in \bar G\)</span> it fixes an element <span
+class="math inline">\(\tilde s_\xi\)</span> of <span
+class="math inline">\(K^\circ(Y_m)\)</span> that reduces to <span
+class="math inline">\(\operatorname{diag}(s_w, 1)\)</span> at each
+chosen place <span class="math inline">\(w\)</span>, where <span
+class="math inline">\(s = (s_w)_{w \in \mathcal M}\)</span>, and to
+<span class="math inline">\(1\)</span> at every <span
+class="math inline">\(w \in Q_\xi\)</span>, and shows that for all <span
+class="math inline">\(y \in H(Y_0)\)</span> and <span
+class="math inline">\(g \in G_f(Y_m)\)</span> <span
+class="math display">\[\Theta_\xi(\rho(s)y)(g) = (\Theta_\xi
+y)(g\,\tilde s_\xi) .\]</span> <em>Status</em>: read from the proof
+<span class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>. In
+this chapter <span class="math inline">\(u\)</span> denotes an element
+of <span class="math inline">\(\bar G\)</span>, and for every element of
+<span class="math inline">\(\bar G\)</span>, such as <span
+class="math inline">\(us\)</span>, the element fixed in this way is
+written with a tilde and the subscript <span
+class="math inline">\(\xi\)</span>.</p>
+<div id="pr:expansion" class="problem" data-progress-ids="[&quot;20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex#pr:expansion&quot;]">
+<p><strong>Problem 51.2.1</strong>. For every tame character <span
+class="math inline">\(\xi\)</span>, <span class="math inline">\(z \in
+H(Y_0)\)</span>, <span class="math inline">\(s \in \bar G\)</span> and
+<span class="math inline">\(g \in G_f(Y_m)\)</span>, <span
+class="math display">\[(\Theta_\xi\,\mathsf p_sz)(g) = \sum_{u \in \bar
+G} \#\bar G\,e_0(u)\,(\Theta_\xi z)(g\,\widetilde{us}_\xi)
+.\]</span></p>
+</div>
+<p>Integrality is measured by the gauge. We use the following classical
+fact. <em>Integral Weyl modules.</em> The Weyl module of a highest
+weight has a basis, dual to the products of minors indexed by
+semistandard tableaux, in which an invertible matrix <span
+class="math inline">\(h\)</span> with entries in a commutative ring
+<span class="math inline">\(A\)</span> and <span
+class="math inline">\(\det h \in A^\times\)</span> acts by a matrix with
+entries in <span class="math inline">\(A\)</span> <span class="citation"
+data-cites="DEP">[<a href="#ref-DEP">DEP</a>]</span>, <span class="citation"
+data-cites="Fu">[<a href="#ref-Fu">Fu</a>]</span>. <em>Status</em>:
+classical. The proof takes the coordinates of Definition <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#def:gauge" data-reference-type="ref"
+data-reference="ob-def:gauge">37.5.1</a> dual to a chosen
+integral basis of products of minors, in which the action of such
+matrices is again integral <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>.</p>
+<div id="pr:gauge" class="problem" data-progress-ids="[&quot;20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex#pr:gauge&quot;]">
+<p><strong>Problem 51.2.2</strong>. Fix a prime <span
+class="math inline">\(p\)</span>, a ring homomorphism <span
+class="math inline">\(\eta\colon \mathbb{C}\to \mathbb{C}_p\)</span>, a
+framed space <span class="math inline">\(V\)</span> and a point <span
+class="math inline">\(g\)</span> of its finite adelic group. For Weyl
+vectors <span class="math inline">\(\omega, \omega&#39;\)</span> and
+<span class="math inline">\(\lambda \in \mathbb{C}\)</span>: <span
+class="math inline">\(\lVert\lambda\omega\rVert_g =
+\lvert\eta(\lambda)\rvert_p\lVert\omega\rVert_g\)</span>, <span
+class="math inline">\(\lVert\omega + \omega&#39;\rVert_g \le
+\max(\lVert\omega\rVert_g, \lVert\omega&#39;\rVert_g)\)</span>, and
+<span class="math inline">\(\lVert\omega\rVert_{gh} =
+\lVert\omega\rVert_g\)</span> for every <span class="math inline">\(h
+\in K^\circ(V)\)</span>.</p>
+</div>
+<div id="pr:good-integral" class="problem" data-progress-ids="[&quot;20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex#pr:good-integral&quot;]">
+<p><strong>Problem 51.2.3</strong>. Let <span
+class="math inline">\(p\)</span> be a prime, <span
+class="math inline">\(\eta\colon\mathbb{C}\to\mathbb{C}_p\)</span> a
+ring homomorphism, <span class="math inline">\(\xi\)</span> a tame
+character, <span class="math inline">\(\lambda \in \mathbb{C}\)</span>,
+<span class="math inline">\(z \in H(Y_0)\)</span> and <span
+class="math inline">\(s \in \bar G\)</span>. If <span
+class="math inline">\(\lambda\,\Theta_\xi z\)</span> is integral at
+<span class="math inline">\(\eta\)</span>, so is <span
+class="math inline">\(\lambda\,\Theta_\xi\,\mathsf p_sz\)</span>.</p>
+</div>
+<p>In Problem <a href="#pr:s3" data-reference-type="ref"
+data-reference="pr:s3">51.1.1</a> the denominator <span
+class="math inline">\(3\)</span> of <span
+class="math inline">\(e\)</span> is cleared by <span
+class="math inline">\(\#G = 6\)</span>: this is the role of the factor
+<span class="math inline">\(\#\bar G\)</span>. The price is paid in
+size.</p>
+<div id="pr:pointwise" class="problem" data-progress-ids="[&quot;20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex#pr:pointwise&quot;]">
+<p><strong>Problem 51.2.4</strong>. Let <span class="math inline">\(z \in
+H(Y_0)\)</span>, <span class="math inline">\(s \in \bar G\)</span>,
+<span class="math inline">\(\sigma \in
+\operatorname{Aut}(\mathbb{C})\)</span> and <span
+class="math inline">\(c \in \mathbb{R}\)</span>. If <span
+class="math inline">\(\lvert\sigma(\Theta_1 z)(g)\rvert^2 \le
+e^c\)</span> for every <span class="math inline">\(g \in
+G_f(Y_m)\)</span>, then <span
+class="math inline">\(\lvert\sigma(\Theta_1\,\mathsf p_sz)(g)\rvert^2
+\le (\#\bar G)^4e^c\)</span> for every <span
+class="math inline">\(g\)</span>. In the model of Problem <a
+href="#pr:s3" data-reference-type="ref" data-reference="pr:s3">51.1.1</a>,
+with the identity in place of <span
+class="math inline">\(\Theta_1\)</span>, <span class="math inline">\(z =
+(1, 0, 0)\)</span> and <span class="math inline">\(c = 0\)</span>, for
+every <span class="math inline">\(s \in S_3\)</span> the coordinates of
+<span class="math inline">\(6e\,s(1, 0, 0)\)</span> have absolute value
+at most <span class="math inline">\(\sum_u \lvert 6e(u)\rvert = 8 \le
+(\#G)^2 = 36\)</span>, and the largest is <span
+class="math inline">\(4\)</span>.</p>
+</div>
+<p>Recall from Chapter <a href="20261126T050300--the-size-of-the-composite-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="d6-chap">66</a> the class count, read from the
+proof: for the data, let <span class="math inline">\(G_f\)</span> be the
+finite adelic unitary group of the standard definite hermitian space of
+rank at most <span class="math inline">\(n_m\)</span> and <span
+class="math inline">\(\Gamma\)</span> its rational points; if a level
+<span class="math inline">\(K\)</span> contains the principal congruence
+subgroup of <span class="math inline">\(\pi_M\pi_N\)</span>, then <span
+class="math inline">\(\#(\Gamma\backslash G_f/K) \le
+e^{x^{30}}\)</span>.</p>
+<div id="pr:count" class="problem" data-progress-ids="[&quot;20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex#pr:count&quot;]">
+<p><strong>Problem 51.2.5</strong>. The final level <span
+class="math inline">\(K_{\mathrm{last}}(1)\)</span> of Definition <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#def:final-level" data-reference-type="ref"
+data-reference="ob-def:final-level">37.9.1</a> contains
+the principal congruence subgroup of <span
+class="math inline">\(\pi_M\pi_N\)</span> in <span
+class="math inline">\(K^\circ(Y_m)\)</span>, and <span
+class="math inline">\(Y_m\)</span> has rank at most <span
+class="math inline">\(n_m\)</span>. Hence, for <span
+class="math inline">\(y \in H(Y_0)\)</span>, <span
+class="math inline">\(\sigma \in \operatorname{Aut}(\mathbb{C})\)</span>
+and <span class="math inline">\(c \in \mathbb{R}\)</span>: if <span
+class="math inline">\(\lvert\sigma(\Theta_1 y)(g)\rvert^2 \le
+e^c\)</span> for all <span class="math inline">\(g \in
+G_f(Y_m)\)</span>, then <span class="math inline">\(\lVert\Theta_1
+y\rVert_\sigma^2 \le e^{x^{30} + c}\)</span>.</p>
+</div>
+<div id="pr:group-size" class="problem" data-progress-ids="[&quot;20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex#pr:group-size&quot;]">
+<p><strong>Problem 51.2.6</strong>. <span class="math inline">\(\#\bar
+G\)</span> divides <span class="math inline">\(\mathcal N\)</span>, and
+<span class="math inline">\(x^{30} + 4\log\mathcal N\le
+x^{99}\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:pointwise" data-reference-type="ref"
+data-reference="pr:pointwise">51.2.4</a>–<a href="#pr:group-size"
+data-reference-type="ref" data-reference="pr:group-size">51.2.6</a> give the
+first estimate and Problems <a href="#pr:expansion"
+data-reference-type="ref" data-reference="pr:expansion">51.2.1</a>–<a
+href="#pr:good-integral" data-reference-type="ref"
+data-reference="pr:good-integral">51.2.3</a> the second. This is input 3 of
+Section <a href="20261126T030600--theorem-a-short-forms__workbook.html#sec:theorem-a" data-reference-type="ref"
+data-reference="ta-sec:theorem-a">49.3</a>, word for word
+(<span class="math inline">\(\#\bar G\,\rho(e_0)\rho(s)z = \mathsf
+p_sz\)</span>).</p>
+<div id="thm:good-part" class="theorem">
+<p><strong>Theorem 51.2.2</strong> (the good part). <em>Let <span
+class="math inline">\(z \in H(Y_0)\)</span> and <span
+class="math inline">\(s \in \bar G\)</span>. If <span
+class="math inline">\(\lvert\sigma(\Theta_1 z)(g)\rvert^2 \le
+e^c\)</span> for all <span class="math inline">\(g \in
+G_f(Y_m)\)</span>, with <span class="math inline">\(c \in
+\mathbb{R}\)</span> and a fixed <span class="math inline">\(\sigma \in
+\operatorname{Aut}(\mathbb{C})\)</span>, then <span
+class="math display">\[\lVert\Theta_1(\#\bar
+G\,\rho(e_0)\rho(s)z)\rVert_\sigma^2 \le e^{x^{99} + c}.\]</span> For
+every prime <span class="math inline">\(p\)</span>, every ring
+homomorphism <span class="math inline">\(\eta\colon \mathbb{C}\to
+\mathbb{C}_p\)</span>, every tame character <span
+class="math inline">\(\xi\)</span> and every <span
+class="math inline">\(\lambda \in \mathbb{C}\)</span>, if <span
+class="math inline">\(\lambda\,\Theta_\xi z\)</span> is integral at
+<span class="math inline">\(\eta\)</span>, so is <span
+class="math inline">\(\lambda\,\Theta_\xi(\#\bar
+G\,\rho(e_0)\rho(s)z)\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030600--theorem-a-short-forms__workbook.html">Chapter 49</a></div><!-- used-in:end -->
+</div>
+<h1 id="sec:ramified">§51.3. The ramified forms</h1>
+<p>For <span class="math inline">\(w \mid \pi_N\)</span> put <span
+class="math inline">\(\mathrm{Av}_w := \sum_{i=0}^{N-2}T_w^i\)</span>
+(in this chapter). Then <span class="math inline">\(S_{\mathrm{ram}}=
+\bigcap_w \ker\mathrm{Av}_w\)</span>, and by Problem <a
+href="20261126T030400--the-seesaw-identity__workbook.html#pr:ram-image" data-reference-type="ref"
+data-reference="ss-pr:ram-image">52.5.3</a>, <span
+class="math inline">\(S_{\mathrm{ram}}\)</span> is the image of <span
+class="math inline">\(\prod_{w \mid \pi_N}(1 - T_w)\)</span>. We first
+count dimensions in two finite models, in which the source is replaced
+by the functions on a finite set and <span
+class="math inline">\(T_w\)</span> by translations.</p>
+<div id="pr:fp-instance" class="problem" data-progress-ids="[&quot;20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex#pr:fp-instance&quot;]">
+<p><strong>Problem 51.3.1</strong>. Let <span
+class="math inline">\(F_1\)</span> be the operator <span
+class="math inline">\((F_1v)(y) = v(2y)\)</span> on complex-valued
+functions <span class="math inline">\(v\)</span> on <span
+class="math inline">\(\mathbb{F}_5^\times\)</span>, so <span
+class="math inline">\(F_1^4 = 1\)</span>. Then <span
+class="math inline">\(\ker(1 + F_1 + F_1^2 + F_1^3)\)</span> is the
+space of vectors of coordinate sum zero, it equals <span
+class="math inline">\(\operatorname{im}(1 - F_1)\)</span>, and its
+dimension is <span class="math inline">\(3 = (1 - \tfrac14)\cdot
+4\)</span>; the fixed vectors of <span
+class="math inline">\(F_1\)</span> are the constants. Moreover, for
+<span class="math inline">\(F\)</span> in a ring with identity and an
+integer <span class="math inline">\(n \ge 0\)</span>, <span
+class="math inline">\(n - \sum_{i&lt;n}F^i = (1 -
+F)\sum_{i&lt;n}\sum_{j&lt;i}F^j\)</span>; for <span
+class="math inline">\(n = 4\)</span> the last factor is <span
+class="math inline">\(3 + 2F + F^2\)</span>.</p>
+</div>
+<div id="pr:z4-instance" class="problem" data-progress-ids="[&quot;20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex#pr:z4-instance&quot;]">
+<p><strong>Problem 51.3.2</strong>. On complex-valued functions on <span
+class="math inline">\((\mathbb{Z}/4)^2\)</span> let <span
+class="math inline">\(F_1, F_2\)</span> be the translations by <span
+class="math inline">\((1, 0)\)</span> and <span
+class="math inline">\((0, 1)\)</span>. Then <span
+class="math inline">\(\bigcap_k\ker(1 + F_k + F_k^2 + F_k^3)\)</span>
+has dimension <span class="math inline">\(9\)</span>, <span
+class="math inline">\(\ker(1 - F_1)\)</span> has dimension <span
+class="math inline">\(4\)</span>, and <span
+class="math inline">\(\ker\bigl((1 - F_1)(1 - F_2)\bigr)\)</span> has
+dimension <span class="math inline">\(7 \le 4 + 4\)</span>. With two
+operators in place of the <span class="math inline">\(f\)</span> places
+and order <span class="math inline">\(4\)</span> in place of <span
+class="math inline">\(N - 1\)</span>, the bound <span
+class="math inline">\((1 - f/(N - 1))D_X\)</span> of Theorem <a
+href="#thm:ramified-dim" data-reference-type="ref"
+data-reference="thm:ramified-dim">51.3.1</a> becomes <span
+class="math inline">\((1 - \tfrac24)\cdot16 = 8 \le 9\)</span>.</p>
+</div>
+<div id="pr:kernel-sum" class="problem" data-progress-ids="[&quot;20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex#pr:kernel-sum&quot;]">
+<p><strong>Problem 51.3.3</strong>. For endomorphisms <span
+class="math inline">\(F, F&#39;\)</span> of a finite-dimensional vector
+space, <span class="math inline">\(\dim\ker FF&#39; \le \dim\ker F +
+\dim\ker F&#39;\)</span>.</p>
+</div>
+<p>Write <span class="math inline">\(K^X_0\langle z_w\rangle\)</span>
+for the subgroup generated by <span class="math inline">\(K^X_0\)</span>
+and the scalar matrix <span class="math inline">\(z_w\)</span>.</p>
+<div id="pr:order" class="problem" data-progress-ids="[&quot;20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex#pr:order&quot;]">
+<p><strong>Problem 51.3.4</strong>. Let <span class="math inline">\(w \mid
+\pi_N\)</span> and <span class="math inline">\(i \in \mathbb{Z}_{\ge
+0}\)</span>. The scalar <span class="math inline">\(z_w^i\)</span> lies
+in <span class="math inline">\(K^X_0\)</span> if and only if <span
+class="math inline">\(N - 1\)</span> divides <span
+class="math inline">\(i\)</span>. Hence <span
+class="math inline">\(T_w^{N-1} = 1\)</span> on <span
+class="math inline">\(S\)</span>, and <span
+class="math inline">\([K^X_0\langle z_w\rangle : K^X_0] = N -
+1\)</span>. Formally, for <span class="math inline">\(N = 5\)</span> (no
+data have <span class="math inline">\(N = 5\)</span>) and <span
+class="math inline">\(z_w\)</span> reducing to <span
+class="math inline">\(2\)</span> at <span
+class="math inline">\(w\)</span>, the least <span
+class="math inline">\(i \ge 1\)</span> with <span
+class="math inline">\(z_w^i \in K^X_0\)</span> is <span
+class="math inline">\(4\)</span>.</p>
+</div>
+<p>For the standard definite hermitian spaces over <span
+class="math inline">\(E\)</span>, recall from Chapter <a href="20261126T080100--free-levels-and-short-bases__workbook.html#chap"
+data-reference-type="ref" data-reference="a1-chap">50</a> that a
+level <span class="math inline">\(K\)</span> is <em>free</em> if <span
+class="math inline">\(\Gamma \cap gKg^{-1} = 1\)</span> for every finite
+adelic <span class="math inline">\(g\)</span>, <span
+class="math inline">\(\Gamma\)</span> the rational points; that, for the
+data, every level of rank at most <span
+class="math inline">\(4n_m\)</span> contained in the integral matrices
+that reduce to the identity at every <span class="math inline">\(w \in
+\mathcal M\)</span> is free (Problem <a href="20261126T080100--free-levels-and-short-bases__workbook.html#pr:free"
+data-reference-type="ref" data-reference="a1-pr:free">50.1.4</a>);
+and that for free levels <span class="math inline">\(K \subseteq
+K&#39;\)</span> the forms of level <span
+class="math inline">\(K\)</span> of a given weight have <span
+class="math inline">\([K&#39; : K]\)</span> times the dimension of those
+of level <span class="math inline">\(K&#39;\)</span> (Problem <a
+href="20261126T080100--free-levels-and-short-bases__workbook.html#pr:dim-free" data-reference-type="ref"
+data-reference="a1-pr:dim-free">50.1.5</a>).</p>
+<div id="pr:fixed-dim" class="problem" data-progress-ids="[&quot;20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex#pr:fixed-dim&quot;]">
+<p><strong>Problem 51.3.5</strong>. For <span class="math inline">\(w \mid
+\pi_N\)</span>, the source forms fixed by <span
+class="math inline">\(T_w\)</span> are exactly the forms of the weight
+of <span class="math inline">\(S\)</span> and level <span
+class="math inline">\(K^X_0\langle z_w\rangle\)</span>; this level and
+<span class="math inline">\(K^X_0\)</span> are free; and <span
+class="math inline">\(\dim\ker(1 - T_w) = D_X/(N - 1)\)</span>.</p>
+</div>
+<div id="pr:ram-dim" class="problem" data-progress-ids="[&quot;20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex#pr:ram-dim&quot;]">
+<p><strong>Problem 51.3.6</strong>. <span
+class="math inline">\(\dim\ker\prod_{w \mid \pi_N}(1 - T_w) \le fD_X/(N
+- 1)\)</span>, and <span class="math inline">\(\dim S_{\mathrm{ram}}\ge
+(1 - f/(N - 1))D_X\)</span>.</p>
+</div>
+<div id="pr:f-N" class="problem" data-progress-ids="[&quot;20261126T080200--the-good-part-and-the-ramified-forms__workbook.tex#pr:f-N&quot;]">
+<p><strong>Problem 51.3.7</strong>. For data, <span class="math inline">\(f
+\le b\)</span> and <span class="math inline">\(N - 1 \ge b^9\)</span>;
+hence <span class="math inline">\(f/(N - 1) \le b^{-8}\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:order" data-reference-type="ref"
+data-reference="pr:order">51.3.4</a>–<a href="#pr:f-N"
+data-reference-type="ref" data-reference="pr:f-N">51.3.7</a>, with
+Problem <a href="#pr:kernel-sum" data-reference-type="ref"
+data-reference="pr:kernel-sum">51.3.3</a>, prove input 5 of Section <a
+href="20261126T030600--theorem-a-short-forms__workbook.html#sec:theorem-a" data-reference-type="ref"
+data-reference="ta-sec:theorem-a">49.3</a>.</p>
+<div id="thm:ramified-dim" class="theorem">
+<p><strong>Theorem 51.3.1</strong> (the ramified forms). <em><span
+class="math inline">\(\dim S_{\mathrm{ram}}\ge (1 - f/(N -
+1))D_X\)</span>, and <span class="math inline">\(f/(N - 1) \le
+b^{-8}\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:z4-instance">Problem 51.3.2</a>; <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html">Chapter 39</a>; <a href="20261126T030600--theorem-a-short-forms__workbook.html">Chapter 49</a></div><!-- used-in:end -->
+</div>
+<p>In the proof of Theorem <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#thm:B" data-reference-type="ref"
+data-reference="bp-thm:B">39.4.2</a>, the chosen finite set <span
+class="math inline">\(J \subseteq \bar G\)</span> satisfies <span
+class="math inline">\(\#J\,D_X \le 5d_T\log(1 + 2b^2)\)</span>, where
+<span class="math inline">\(d_T = \dim_\mathbb{C}T\)</span>; for this
+<span class="math inline">\(J\)</span>, Theorem <a
+href="#thm:ramified-dim" data-reference-type="ref"
+data-reference="thm:ramified-dim">51.3.1</a> and Problem <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#pr:loss" data-reference-type="ref"
+data-reference="bp-pr:loss">39.4.4</a> give <span
+class="math inline">\(\#J\,(D_X - \dim S_{\mathrm{ram}}) \le
+2b^{-2}d_T\)</span>.</p>
+<p>We have proved Theorem A’s inputs 3 and 5. Taken as given: the
+compatibility of the lower chain with the action of <span
+class="math inline">\(\bar G\)</span> (read from the proof), the
+integral Weyl modules (classical), the class count of Chapter <a
+href="20261126T050300--the-size-of-the-composite-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="d6-chap">66</a> (read from the proof), and the
+freeness of the levels and the dimension of forms at free levels
+(Chapter <a href="20261126T080100--free-levels-and-short-bases__workbook.html#chap" data-reference-type="ref"
+data-reference="a1-chap">50</a>). Input 1 of Theorem A, that the
+<span class="math inline">\(e^U\)</span>-short forms in <span
+class="math inline">\(S_{\mathrm{ram}}\)</span> span <span
+class="math inline">\(S_{\mathrm{ram}}\)</span>, is deduced in
+Problem <a href="20261126T030600--theorem-a-short-forms__workbook.html#pr:ramify-short" data-reference-type="ref"
+data-reference="ta-pr:ramify-short">49.3.2</a> from the
+statement that the <span class="math inline">\(4^{-f}e^U\)</span>-short
+forms in <span class="math inline">\(S\)</span> span <span
+class="math inline">\(S\)</span>, which Chapter <a href="20261126T080100--free-levels-and-short-bases__workbook.html#chap"
+data-reference-type="ref" data-reference="a1-chap">50</a> proves
+(Theorem <a href="20261126T080100--free-levels-and-short-bases__workbook.html#thm:short-span" data-reference-type="ref"
+data-reference="a1-thm:short-span">50.3.6</a>).</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span> (prefix
+<code>New.Data.</code> omitted): Definition <a
+href="#def:good-translate" data-reference-type="ref"
+data-reference="def:good-translate">51.2.1</a> is
+<code>goodProjTranslate</code>; the statement read in Section <a
+href="#sec:good" data-reference-type="ref"
+data-reference="sec:good">51.2</a> is <code>lowerChain_principalRep</code>;
+the coordinates used in the gauge are indexed by
+<code>New.WeylIndexFamily</code>. For the entries of the Weyl action
+matrix, see <code>New.weylRep_entry_mem</code>. The class count recalled
+from Chapter <a href="20261126T050300--the-size-of-the-composite-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="d6-chap">66</a> is the level case of
+<code>card_stdClasses_le_exp</code>, which allows any subgroup
+containing the specified principal congruence subgroup. Theorem <a
+href="#thm:good-part" data-reference-type="ref"
+data-reference="thm:good-part">51.2.2</a> is
+<code>normSqAt_goodProjTranslate_le</code> with
+<code>goodProjTranslate_mem_integralForms</code>. The proof bounds the
+fixed space only from above, <span class="math inline">\(\dim\ker(1 -
+T_w) \le D_X/(N - 1)\)</span>
+(<code>finrank_ker_one_sub_scalingGenerator_le</code>); the equalities
+of Problems <a href="#pr:order" data-reference-type="ref"
+data-reference="pr:order">51.3.4</a> and <a href="#pr:fixed-dim"
+data-reference-type="ref" data-reference="pr:fixed-dim">51.3.5</a> are
+derived here. Theorem <a href="#thm:ramified-dim"
+data-reference-type="ref" data-reference="thm:ramified-dim">51.3.1</a> is
+<code>le_finrank_ramifiedSourceForms</code> with
+<code>f_div_N_sub_one_le</code>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secidempotents">§<a href="#sec:idempotents"
+data-reference-type="ref" data-reference="sec:idempotents">51.1</a></h2>
+<dl>
+<dt><a href="#pr:s3" data-reference-type="ref"
+data-reference="pr:s3">51.1.1</a></dt>
+<dd>
+<p>The character of <span class="math inline">\(\mathbb{C}^3_0\)</span>
+is <span class="math inline">\(2, 0, -1\)</span> on the three classes,
+and <span class="math inline">\(e\)</span> acts on <span
+class="math inline">\(\mathbb{C}^3 = \mathbb{C}(1,1,1) \oplus
+\mathbb{C}^3_0\)</span> as the projection onto <span
+class="math inline">\(\mathbb{C}^3_0\)</span>.</p>
+</dd>
+<dt><a href="#pr:character" data-reference-type="ref"
+data-reference="pr:character">51.1.2</a></dt>
+<dd>
+<p>Write <span class="math inline">\(e\)</span> as a sum of idempotents
+of irreducible representations; which representation has character <span
+class="math inline">\(\dim\mathsf
+V\cdot\operatorname{tr}(u^{-1}\mid\mathsf V)\)</span>? Count dimensions
+with <span class="math inline">\(\sum_{\mathsf V}(\dim\mathsf V)^2 =
+\#G\)</span>.</p>
+</dd>
+<dt><a href="#pr:coeff-bounds" data-reference-type="ref"
+data-reference="pr:coeff-bounds">51.1.3</a></dt>
+<dd>
+<p>Character values are sums of roots of unity, and <span
+class="math inline">\(\lvert\operatorname{tr}(u\mid\mathsf V)\rvert \le
+\dim\mathsf V\)</span>. Applying <span
+class="math inline">\(\sigma\)</span> to the coefficients of <span
+class="math inline">\(e\)</span> gives a central idempotent.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secgood">§<a href="#sec:good"
+data-reference-type="ref" data-reference="sec:good">51.2</a></h2>
+<dl>
+<dt><a href="#pr:expansion" data-reference-type="ref"
+data-reference="pr:expansion">51.2.1</a></dt>
+<dd>
+<p>Expand <span class="math inline">\(\rho(e_0)\rho(s) = \sum_u
+e_0(u)\rho(us)\)</span> and use linearity of <span
+class="math inline">\(\Theta_\xi\)</span>.</p>
+</dd>
+<dt><a href="#pr:gauge" data-reference-type="ref"
+data-reference="pr:gauge">51.2.2</a></dt>
+<dd>
+<p><span class="math inline">\((gh)^{-1} = h^{-1}g^{-1}\)</span>, and
+<span class="math inline">\(h\)</span>, <span
+class="math inline">\(h^{-1}\)</span> are integral at every finite
+place; use the integral Weyl modules.</p>
+</dd>
+<dt><a href="#pr:good-integral" data-reference-type="ref"
+data-reference="pr:good-integral">51.2.3</a></dt>
+<dd>
+<p>Problems <a href="#pr:expansion" data-reference-type="ref"
+data-reference="pr:expansion">51.2.1</a>, <a href="#pr:coeff-bounds"
+data-reference-type="ref" data-reference="pr:coeff-bounds">51.1.3</a> and <a
+href="#pr:gauge" data-reference-type="ref"
+data-reference="pr:gauge">51.2.2</a> at the points <span
+class="math inline">\(g\)</span> and <span
+class="math inline">\(g\,\widetilde{us}_\xi\)</span>.</p>
+</dd>
+<dt><a href="#pr:pointwise" data-reference-type="ref"
+data-reference="pr:pointwise">51.2.4</a></dt>
+<dd>
+<p>The triangle inequality for the Weyl norm, and Problem <a
+href="#pr:coeff-bounds" data-reference-type="ref"
+data-reference="pr:coeff-bounds">51.1.3</a> for <span
+class="math inline">\(\sigma(e_0(u))\)</span>.</p>
+</dd>
+<dt><a href="#pr:count" data-reference-type="ref"
+data-reference="pr:count">51.2.5</a></dt>
+<dd>
+<p>At <span class="math inline">\(w \in \mathcal M\)</span>, <span
+class="math inline">\(w\)</span> divides <span
+class="math inline">\(\pi_M\)</span>; <span class="math inline">\(Q_1 =
+\varnothing\)</span>. Each class has weight at most <span
+class="math inline">\(1\)</span>.</p>
+</dd>
+<dt><a href="#pr:group-size" data-reference-type="ref"
+data-reference="pr:group-size">51.2.6</a></dt>
+<dd>
+<p><span class="math inline">\(g \mapsto \operatorname{diag}(g,
+1)\)</span> embeds <span
+class="math inline">\(\mathrm{GL}_r(k_w)\)</span> in <span
+class="math inline">\(\mathrm{GL}_{rt}(k_w)\)</span>. Problem <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#pr:group-order" data-reference-type="ref"
+data-reference="ob-pr:group-order">37.1.1</a>, and <span
+class="math inline">\(x \ge 2\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secramified">§<a href="#sec:ramified"
+data-reference-type="ref" data-reference="sec:ramified">51.3</a></h2>
+<dl>
+<dt><a href="#pr:fp-instance" data-reference-type="ref"
+data-reference="pr:fp-instance">51.3.1</a></dt>
+<dd>
+<p>Fixed vectors are the functions on the orbits. Multiplication by
+<span class="math inline">\(2\)</span> permutes <span
+class="math inline">\(\mathbb{F}_5^\times\)</span> in one cycle. For the
+identity, <span class="math inline">\(\sum_{j&lt;i}F^j\)</span> times
+<span class="math inline">\(1 - F\)</span> telescopes.</p>
+</dd>
+<dt><a href="#pr:z4-instance" data-reference-type="ref"
+data-reference="pr:z4-instance">51.3.2</a></dt>
+<dd>
+<p>Functions on <span class="math inline">\((\mathbb{Z}/4)^2\)</span>
+are <span class="math inline">\(\mathbb{C}^4 \otimes
+\mathbb{C}^4\)</span>, and <span class="math inline">\(F_1, F_2\)</span>
+act on one factor each; compute <span
+class="math inline">\(\operatorname{rank}\bigl((1 - F_1)(1 -
+F_2)\bigr)\)</span>. Which functions are fixed by both translations?</p>
+</dd>
+<dt><a href="#pr:kernel-sum" data-reference-type="ref"
+data-reference="pr:kernel-sum">51.3.3</a></dt>
+<dd>
+<p>Apply rank and nullity to the restriction of <span
+class="math inline">\(F&#39;\)</span> to <span
+class="math inline">\(\ker(FF&#39;)\)</span>.</p>
+</dd>
+<dt><a href="#pr:order" data-reference-type="ref"
+data-reference="pr:order">51.3.4</a></dt>
+<dd>
+<p>The chosen <span class="math inline">\(z_w\)</span> is an integral
+unit and equals <span class="math inline">\(1\)</span> off <span
+class="math inline">\(w, \bar w\)</span>. Which last-row congruence for
+<span class="math inline">\(z_w^i\)</span> remains at the places
+dividing <span class="math inline">\(\pi_N\)</span>? Scalars are
+central, so <span class="math inline">\(K^X_0\langle z_w\rangle\)</span>
+is the union of the cosets <span
+class="math inline">\(z_w^iK^X_0\)</span>.</p>
+</dd>
+<dt><a href="#pr:fixed-dim" data-reference-type="ref"
+data-reference="pr:fixed-dim">51.3.5</a></dt>
+<dd>
+<p>A form fixed by <span class="math inline">\(K^X_0\)</span> and by
+<span class="math inline">\(z_w\)</span> is fixed by the group they
+generate; <span class="math inline">\(z_w\)</span> is <span
+class="math inline">\(1\)</span> at <span class="math inline">\(\mathcal
+M\)</span>, and <span class="math inline">\(X_0\)</span> has rank <span
+class="math inline">\(k \le n_m\)</span>. Then Problem <a
+href="#pr:order" data-reference-type="ref"
+data-reference="pr:order">51.3.4</a>.</p>
+</dd>
+<dt><a href="#pr:ram-dim" data-reference-type="ref"
+data-reference="pr:ram-dim">51.3.6</a></dt>
+<dd>
+<p>Problems <a href="#pr:kernel-sum" data-reference-type="ref"
+data-reference="pr:kernel-sum">51.3.3</a> and <a href="#pr:fixed-dim"
+data-reference-type="ref" data-reference="pr:fixed-dim">51.3.5</a>, the
+count of the <span class="math inline">\(w\)</span> in Problem <a
+href="20261126T030600--theorem-a-short-forms__workbook.html#pr:ramify-short" data-reference-type="ref"
+data-reference="ta-pr:ramify-short">49.3.2</a>, and rank
+and nullity for <span class="math inline">\(\prod_w(1 -
+T_w)\)</span>.</p>
+</dd>
+<dt><a href="#pr:f-N" data-reference-type="ref"
+data-reference="pr:f-N">51.3.7</a></dt>
+<dd>
+<p><span class="math inline">\(f = T(s)\varphi(q_0)\)</span>, <span
+class="math inline">\(\varphi(q_0) \le q_0 \le C\)</span>, and <span
+class="math inline">\(x^{10^{12}} \le b\)</span>; for <span
+class="math inline">\(N\)</span>, Problems <a href="20261126T030300--the-data__workbook.html#pr:MN"
+data-reference-type="ref" data-reference="da-pr:MN">36.5.4</a>
+and <a href="20261126T030300--the-data__workbook.html#pr:m-big" data-reference-type="ref"
+data-reference="da-pr:m-big">36.3.2</a>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-DEP"><span class="bib-label">[DEP]</span> C. De Concini, D. Eisenbud and C. Procesi, <em>Young diagrams and determinantal varieties</em>, Invent. Math. <strong>56</strong> (1980), 129–165.</p>
+<p id="ref-Fu"><span class="bib-label">[Fu]</span> W. Fulton, <em>Young Tableaux</em>, London Math. Soc. Student Texts 35, Cambridge Univ. Press, 1997.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Se"><span class="bib-label">[Se]</span> J.-P. Serre, <em>Linear Representations of Finite Groups</em>, Grad. Texts in Math. 42, Springer, 1977.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Hc}{\mathcal{H}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\im}{\operatorname{im}}
+\newcommand{\HS}{\mathrm{HS}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\tl}[1]{\texttt{#1}}
+\title{Few translates span}
+
+\paragraph{Prerequisites.}
+Finite-dimensional complex inner product spaces: adjoints, orthogonal projections, the spectral theorem for self-adjoint maps, and the trace.  No earlier chapter is used.
+
+In the proof, Theorem~B bounds how many translates of a map between spaces of automorphic forms are needed for their images to span almost all of the target.  The translates are indexed by a finite group.  When do a few translates of one map span?  Section~\ref{sec:gram} bounds the rank of a sum of images from below by a second moment.  The rest of the chapter turns a second moment over the group into a choice of few translates, by Cauchy--Schwarz and a greedy choice.  All spaces are finite-dimensional, and inner products are linear in the second variable.
+
+\section{Gram matrices}\label{sec:gram}
+
+For a linear map \(A\) between inner product spaces, \(\lVert A \rVert_\HS^2 := \tr(A^*A)\) is the squared Hilbert--Schmidt norm.  Let \(\Hc\) be a complex inner product space of dimension \(D' > 0\).  Let \(B_i \colon X_i \to \Hc\), \(i \in I\), be a finite family of linear maps from inner product spaces of dimensions \(r_i\), with \(R := \sum_i r_i > 0\), let \(\gamma_i > 0\), and let \(K_i := \gamma_i B_i^* B_i\) and \(Q := \sum_i \gamma_i B_i B_i^*\).  Let \(X := \bigoplus_i X_i\) and \(\Phi \colon X \to \Hc\), \(\Phi((x_i)_i) := \sum_i \sqrt{\gamma_i} B_i x_i\), so that \(Q = \Phi\Phi^*\).  Define the \emph{Gram matrix} of the family by \(G := \Phi^*\Phi\).  Its blocks are \(G_{ij} = \sqrt{\gamma_i\gamma_j}\, B_i^* B_j \colon X_j \to X_i\), and \(G_{ii} = K_i\).  When every \(X_i\) is a line spanned by a unit vector \(\xi_i\), \(G\) is the Gram matrix of the vectors \(\sqrt{\gamma_i} B_i \xi_i\).
+
+\begin{problem}\label{pr:rank-trace}
+If \(Q \ne 0\), then \(\rank Q \ge (\tr Q)^2/\tr Q^2\), with equality exactly when \(Q\) is a multiple of an orthogonal projection.
+\end{problem}
+% End problem: 234A
+
+\begin{problem}\label{pr:image}
+\(Q(\Hc) = \sum_i B_i(X_i)\).
+\end{problem}
+% End problem: 22A7
+
+\begin{problem}\label{pr:gram}
+\(Q\) and \(G\) have the same nonzero eigenvalues, with multiplicities.  Hence \(\tr Q = \sum_i \tr K_i\) and \(\tr Q^2 = \sum_{i,j} \lVert G_{ij} \rVert_\HS^2\).
+\end{problem}
+% End problem: 22A8
+
+Problems~\ref{pr:rank-trace}--\ref{pr:gram} prove the following.
+
+\begin{theorem}\label{thm:gram}
+If some \(B_i\) is nonzero, then
+\[
+  \dim \sum_i B_i(X_i) \ge \frac{\bigl( \sum_i \tr K_i \bigr)^2}{\sum_{i,j} \lVert G_{ij} \rVert_\HS^2} .
+\]
+\end{theorem}
+
+For lines this is a form of Welch's bound \cite{We}.  Unlike the left side, the right side changes little when the \(B_i\) are perturbed.
+
+\begin{problem}\label{pr:two-lines}
+Let \(v, w \in \C^2\) be unit vectors, \(X_1 = X_2 = \C\), \(B_1(1) = v\), \(B_2(1) = w\) and \(\gamma_1 = \gamma_2 = 1\).  The right side of Theorem~\ref{thm:gram} is \(2/(1 + \lvert \langle v, w \rangle \rvert^2)\).
+\end{problem}
+% End problem: 22AA
+
+So two nearly parallel lines count as about one direction.  In the proof a finite group acts on the target of one map \(B\).  The moment hypothesis bounds the dimension of the projected target times the sum of the squared overlaps \(\lVert B^*\rho(s)B \rVert_\HS^2\) over all group elements, including the identity (Theorem~\ref{thm:spread} below).
+
+\section{Translates and the second moment}\label{sec:translates}
+
+From now on \(S\) and \(T\) are finite-dimensional complex inner product spaces, \(\Gamma\) is a finite group, and \(\rho\) is a representation of \(\Gamma\) on \(T\) with \(\langle \rho(s)x, \rho(s)y \rangle = \langle x, y \rangle\) for all \(s \in \Gamma\) and \(x, y \in T\).  Let \(B \colon S \to T\) be linear.  For a subspace \(W \subseteq T\) let \(P_W\) be the orthogonal projection of \(T\) onto \(W\), as a map \(T \to T\).  We define the \emph{second moment} of \(B\) to be \(\sum_{s \in \Gamma} \lVert B^*\rho(s)B \rVert_\HS^2\).  Write \(\langle A, A' \rangle_\HS := \tr(A^*A')\) for linear maps \(A, A'\) with the same source and target.
+
+\begin{problem}\label{pr:hs}
+For every orthonormal basis \((e_k)\) of \(S\) and all \(A, A' \colon S \to T\), \(\langle A, A' \rangle_\HS = \sum_k \langle Ae_k, A'e_k \rangle\).  For every subspace \(W \subseteq T\), \(\lVert P_W \rVert_\HS^2 = \dim W\) and \(\lVert P_W A \rVert_\HS^2 = \langle P_W, AA^* \rangle_\HS\).
+\end{problem}
+% End problem: 234C
+
+Consider the family of all translates, \(I = \Gamma\), \(X_s = S\), \(B_s = \rho(s)B\) and \(\gamma_s = 1\), in the notation of Section~\ref{sec:gram}.
+
+\begin{problem}\label{pr:translate-gram}
+\(G_{st} = B^*\rho(s^{-1}t)B\), and \(\langle \rho(s)BB^*\rho(s)^*, \rho(t)BB^*\rho(t)^* \rangle_\HS = \lVert B^*\rho(s^{-1}t)B \rVert_\HS^2\).  Hence
+\[
+  \Bigl\lVert \sum_{s \in \Gamma} \rho(s)BB^*\rho(s)^* \Bigr\rVert_\HS^2 = \sum_{s, t \in \Gamma} \lVert G_{st} \rVert_\HS^2 = \#\Gamma \sum_{s \in \Gamma} \lVert B^*\rho(s)B \rVert_\HS^2 .
+\]
+\end{problem}
+% End problem: 234D
+
+\begin{problem}\label{pr:all-translates}
+Let \(S \ne 0\), let \(B\) be an isometry, and let \(\varepsilon \ge 0\).  If \(\dim T \cdot \sum_s \lVert B^*\rho(s)B \rVert_\HS^2 \le \#\Gamma\,(1 + \varepsilon)(\dim S)^2\), then the images \(\rho(s)B(S)\), \(s \in \Gamma\), together span a subspace of dimension at least \(\dim T/(1 + \varepsilon)\).
+\end{problem}
+% End problem: 234E
+
+Problem~\ref{pr:all-translates} uses all \(\#\Gamma\) translates.  For \(0<\varepsilon<1/16\), Theorem~\ref{thm:few} will give a span of at least \((1-16\varepsilon)\dim T\) dimensions in this setting, using at most \(\frac52(1+\log(1/(16\varepsilon)))\dim T/\dim S\) translates.  The first step is a bound for one subspace at a time.
+
+\begin{problem}\label{pr:cs}
+For every subspace \(W \subseteq T\),
+\[
+  \Bigl( \sum_{s \in \Gamma} \lVert P_W\rho(s)B \rVert_\HS^2 \Bigr)^2 \le \dim W \cdot \#\Gamma \sum_{s \in \Gamma} \lVert B^*\rho(s)B \rVert_\HS^2 .
+\]
+\end{problem}
+% End problem: 234F
+
+An isometry condition on the projected map gives a lower bound for the second moment.  Let \(p \colon T \to T\) be a linear map with \(p^2 = p\) and \(p^* = p\), commuting with every \(\rho(s)\), and let \(T_0 := \im p\).
+
+\begin{problem}\label{pr:moment-min}
+\(T_0\) and \(T_0^\perp\) are stable under \(\Gamma\), and \(p = P_{T_0}\).  If \(pB\) is an isometry, then \(\#\Gamma\,(\dim S)^2 \le \dim T_0 \cdot \sum_s \lVert B^*\rho(s)B \rVert_\HS^2\).
+\end{problem}
+% End problem: 234G
+
+When \(pB\) is an isometry and \(T_0\ne0\), Problem~\ref{pr:moment-min} says that the mean of \(\lVert B^*\rho(s)B \rVert_\HS^2\) over \(s \in \Gamma\) is at least \((\dim S)^2/\dim T_0\).  The hypothesis below requires it to be at most \(1+\varepsilon\) times this value.
+
+\section{One translate}\label{sec:spread}
+
+Let \(A \colon S \to T\) be linear and \(\varepsilon \in \R\).  We say that \(A\) is a \emph{near isometry with error \(\varepsilon\)} if \(\dim U - \varepsilon \dim S \le \lVert A P_U \rVert_\HS^2\) for every subspace \(U \subseteq S\), where now \(P_U \colon S \to S\) is the orthogonal projection onto \(U\).  This is a lower bound in mean square only.
+
+\begin{problem}\label{pr:near-isom}
+If \(\varepsilon \ge 0\) and \(\lVert A^*A - 1 \rVert_\HS^2 \le \varepsilon^2 \dim S\), then \(A\) is a near isometry with error \(\varepsilon\).
+\end{problem}
+% End problem: 234J
+
+Let \(\Theta\) be a set, let \(V\) and \(Y\) be finite-dimensional complex vector spaces, and let \(C_\theta \colon V \to Y\), \(\theta \in \Theta\), be linear maps.  For \(\eta \in \R\), we say that the family \((C_\theta)\) \emph{spreads with error \(\eta\)} if for every subspace \(F \subseteq Y\), with \(\alpha := \dim F/\dim Y\) (and \(\alpha := 0\) if \(Y = 0\)), there is \(\theta \in \Theta\) with
+\[
+  \dim C_\theta^{-1}(F) \le \Bigl( \frac{1 + \alpha}{2} + \eta \Bigr) \dim V .
+\]
+The index \(\theta\) may depend on \(F\).
+
+Now return to Section~\ref{sec:translates}, and let \(C_s := p\rho(s)B\), viewed as a map \(S \to T_0\).  Assume that \(\varepsilon \ge 0\), that \(pB\) is a near isometry with error \(\varepsilon\), and that
+\begin{equation}\label{eq:moment}
+  \dim T_0 \cdot \sum_{s \in \Gamma} \lVert B^*\rho(s)B \rVert_\HS^2 \le \#\Gamma\,(1 + \varepsilon)(\dim S)^2 .
+\end{equation}
+Let \(W \subseteq T_0\) be a subspace and let \(\alpha := \dim W/\dim T_0\), with \(\alpha := 0\) if \(T_0=0\).
+
+\begin{problem}\label{pr:one-translate}
+Some \(s \in \Gamma\) has \(\lVert P_W\rho(s)B \rVert_\HS^2 \le \frac12(1 + \alpha + \varepsilon)\dim S\).
+\end{problem}
+% End problem: 234K
+
+\begin{problem}\label{pr:preimage}
+For every \(s \in \Gamma\), let \(U := C_s^{-1}(W) \subseteq S\).  Then \(\lVert pBP_U \rVert_\HS^2 \le \lVert P_W\rho(s)B \rVert_\HS^2\).  For \(s\) as in Problem~\ref{pr:one-translate}, \(\dim U \le \bigl(\frac{1+\alpha}{2} + \frac32\varepsilon\bigr)\dim S\).
+\end{problem}
+% End problem: 234L
+
+Problems~\ref{pr:cs}, \ref{pr:one-translate} and~\ref{pr:preimage} prove the following, which is a step of the proof.
+
+\begin{theorem}\label{thm:spread}
+Let \(S\) and \(T\) be finite-dimensional complex inner product spaces, \(\Gamma\) a finite group, and \(\rho\) a representation of \(\Gamma\) on \(T\) with \(\langle \rho(s)x, \rho(s)y \rangle = \langle x, y \rangle\) for all \(s \in \Gamma\) and \(x, y \in T\).  Let \(p \colon T \to T\) be linear with \(p^2 = p\), \(p^* = p\) and \(p\rho(s) = \rho(s)p\) for every \(s \in \Gamma\).  Let \(B \colon S \to T\) be linear and \(\varepsilon \in \R\), with \(\varepsilon \ge 0\), such that \(pB\) is a near isometry with error \(\varepsilon\) and~\eqref{eq:moment} holds with \(T_0 := \im p\).  Then the maps \(p\rho(s)B \colon S \to T_0\), \(s \in \Gamma\), spread with error \(\frac32\varepsilon\).
+\end{theorem}
+
+Here \(T_0 = 0\) and \(\varepsilon = 0\) are allowed.
+
+\section{The greedy choice}\label{sec:greedy}
+
+Return to maps \(C_\theta \colon V \to Y\), \(\theta \in \Theta\), as in Section~\ref{sec:spread}.  For a subspace \(F \subseteq Y\) let \(c(F) := \dim Y - \dim F\) be its codimension.  In Problems~\ref{pr:greedy-step}--\ref{pr:rate} assume that \(\dim Y > 0\), that \(0 < \varepsilon < 1/16\), and that the family spreads with error \(\frac32\varepsilon\), and put \(c_0 := 2\dim V/(5\dim Y)\).
+
+\begin{problem}\label{pr:rank-add}
+For every linear \(A \colon V \to Y\) and every subspace \(F \subseteq Y\), \(\dim(F + A(V)) + \dim A^{-1}(F) = \dim F + \dim V\).
+\end{problem}
+% End problem: 234P
+
+\begin{problem}\label{pr:greedy-step}
+If \(c(F) > 16\varepsilon\dim Y\), then some \(\theta\) has \(c(F + C_\theta(V)) \le (1 - c_0)\,c(F)\).
+\end{problem}
+% End problem: 234Q
+
+\begin{problem}\label{pr:greedy-iterate}
+For every integer \(\ell \ge 0\) there is a set \(t \subseteq \Theta\) with \(\#t \le \ell\) and \(c\bigl(\sum_{\theta \in t} C_\theta(V)\bigr) \le \max\bigl(16\varepsilon, e^{-\ell c_0}\bigr)\dim Y\).
+\end{problem}
+% End problem: 234R
+
+\begin{problem}\label{pr:rate}
+If \(V \ne 0\), then \(0 < c_0 \le 1\).
+\end{problem}
+% End problem: 234S
+
+\begin{problem}\label{pr:stopping}
+Under the hypotheses of Problem~\ref{pr:rate}, with \(V\ne0\), there is an integer \(\ell\ge0\) such that \(e^{-\ell c_0}\le16\varepsilon\) and \(\ell c_0\le1+\log(1/(16\varepsilon))\), where \(\log\) is the natural logarithm.
+\end{problem}
+% End problem: 234T
+
+Problems~\ref{pr:greedy-iterate} and~\ref{pr:stopping} give the following theorem, used in the proof.
+
+\begin{theorem}\label{thm:few}
+Let \(\Theta\) be a set, let \(V\) and \(Y\) be finite-dimensional complex vector spaces, let \(C_\theta \colon V \to Y\), \(\theta \in \Theta\), be linear maps, and let \(\varepsilon \in \R\).  Assume that \(V \ne 0\), that the family spreads with error \(\frac32\varepsilon\), that \(\dim Y > 0\), and that \(0 < \varepsilon < 1/16\).  Then there is a finite set \(t \subseteq \Theta\) with
+\[
+  \#t \cdot \dim V \le \frac52 \Bigl( 1 + \log \frac{1}{16\varepsilon} \Bigr) \dim Y
+  \quad\text{and}\quad
+  (1 - 16\varepsilon)\dim Y \le \dim \sum_{\theta \in t} C_\theta(V) .
+\]
+\end{theorem}
+
+Applied with \(\Theta = \Gamma\), \(V = S\), \(Y = T_0\) and \(C_s = p\rho(s)B\), Theorems~\ref{thm:spread} and~\ref{thm:few} say: if \(S \ne 0\), \(T_0 \ne 0\), \(0 < \varepsilon < 1/16\), \(pB\) is a near isometry with error \(\varepsilon\) and~\eqref{eq:moment} holds, then the images of at most \(\frac52(1 + \log(1/(16\varepsilon)))\dim T_0/\dim S\) of the maps \(p\rho(s)B\) span at least \((1 - 16\varepsilon)\dim T_0\) dimensions of \(T_0\).  This is the step that Theorem~B of the proof needs.  There (Chapter~\ref{bp-chap}) \(\Gamma\) is the finite group \(\bar G\), \(p\) is the action of the good idempotent \(e_0\), \(T_0\) is the space \(T\) of target forms, of dimension \(d_T\), and the theorems are used with \(\varepsilon=1/(8b^2)\), where \(b\) is the weight at the \(b\)-places (Chapter~\ref{da-chap}).  The resulting statement, after restriction to the ramified source forms, is Theorem~\ref{bp-thm:B}.  For a related logarithmic bound in greedy submodular covering, see Wolsey~\cite{Wo}.
+
+\begin{leanremark}
+In the Lean proof \cite{GL}, file \tl{grh/src/New/Spanning/SecondMoment/FewTranslates.lean}, Theorem~\ref{thm:spread} is \tl{New.isSpread\_of\_second\_moment} and Theorem~\ref{thm:few} is \tl{New.IsSpread.exists\_few\_le\_finrank\_iSup\_range}; spreading and near isometry are \tl{New.IsSpread} and \tl{New.IsNearIsometry}.
+\end{leanremark}
+
+\section{Translations of a cyclic group}\label{sec:cyclic}
+
+Let \(\Gamma = \Z/N\Z\), \(T = \C^{\Gamma}\) with \(\langle f, g \rangle = \sum_x \overline{f(x)} g(x)\), \((\rho(s)f)(x) = f(x - s)\), and \(1 \le M \le N\).  Let \(S = \C^M\) with standard basis \(e_0, \dots, e_{M-1}\), and \(I := \{0, 1, \dots, M-1\} \subseteq \Z/N\Z\).
+
+\begin{problem}\label{pr:points}
+Let \(Be_j := \delta_j\), the indicator function of \(\{j\}\).  Then \(\lVert B^*\rho(s)B \rVert_\HS^2 = \#(I \cap (I + s))\), and the second moment is \(M^2\).  Hence, with \(p = 1\),~\eqref{eq:moment} holds with \(\varepsilon = 0\), with equality.
+\end{problem}
+% End problem: 234W
+
+\begin{problem}\label{pr:points-count}
+In Problem~\ref{pr:points}, for \(0 < \varepsilon < 1/16\), the least number of translates \(\rho(s)B\) whose images span at least \((1 - 16\varepsilon)N\) dimensions is \(\lceil (1 - 16\varepsilon)N/M \rceil\).  For \(N = 12\), \(M = 3\), \(\varepsilon = 1/128\) it is \(4\), while the bound of Theorem~\ref{thm:few} is \(10(1 + \log 8) \approx 30.79\).
+\end{problem}
+% End problem: 234X
+
+Every translate of \(B(S)\) is orthogonal to any \(\Gamma\)-stable subspace orthogonal to \(B(S)\).
+
+\begin{problem}\label{pr:frequencies}
+Let \(Be_j(x) := N^{-1/2}e^{2\pi \mathrm{i} jx/N}\), \(0 \le j < M\).  Then \(B\) is an isometry, every \(B^*\rho(s)B\) is diagonal and unitary, the second moment is \(NM\), and the images of any nonempty set of translates span exactly \(B(S)\).  With \(p = 1\), \eqref{eq:moment} holds exactly when \(N \le (1 + \varepsilon)M\).  The subspace \(B(S)\) is \(\Gamma\)-stable, and with \(p = P_{B(S)}\), \eqref{eq:moment} holds with \(\varepsilon = 0\).
+\end{problem}
+% End problem: 234Y
+
+\begin{problem}\label{pr:missed}
+In the setting of Section~\ref{sec:translates}, let \(S \ne 0\), let \(B\) be an isometry, and let \(T_1 \subseteq T\) be a \(\Gamma\)-stable subspace orthogonal to \(B(S)\).  If~\eqref{eq:moment} holds with \(p = 1\), then \(\dim T_1 \le \varepsilon\dim T/(1 + \varepsilon)\).
+\end{problem}
+% End problem: 234Z
+
+Thus a stable subspace orthogonal to \(B(S)\) gives a lower bound for the second moment.  In general the theorems bound the dimension spanned inside the chosen target \(T_0=\im p\).
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:gram}}
+\begin{description}
+\item[\ref{pr:rank-trace}] \(Q = \Phi\Phi^* \ge 0\).  Cauchy--Schwarz for the nonzero eigenvalues of \(Q\).
+\item[\ref{pr:image}] \(\ker \Phi^* = (\im \Phi)^\perp\).
+\item[\ref{pr:gram}] If \(Gx = \lambda x\) with \(\lambda \ne 0\), then \(Q(\Phi x) = \lambda \Phi x\).  Then expand \(\tr G^2\) by blocks.
+\item[\ref{pr:two-lines}] \(G\) is the \(2 \times 2\) matrix with diagonal entries \(1\) and off-diagonal entries \(\langle v, w \rangle\) and \(\langle w, v \rangle\).
+\end{description}
+
+\subsection*{\S\ref{sec:translates}}
+\begin{description}
+\item[\ref{pr:hs}] For the last identity, \(\tr(XY) = \tr(YX)\) and \(P_W^2 = P_W = P_W^*\).
+\item[\ref{pr:translate-gram}] \(\rho(s)^* = \rho(s^{-1})\); then Problem~\ref{pr:gram}, and count the pairs \((s, t)\) with given \(s^{-1}t\).
+\item[\ref{pr:all-translates}] Theorem~\ref{thm:gram} and Problem~\ref{pr:translate-gram}.
+\item[\ref{pr:cs}] Sum Problem~\ref{pr:hs} over \(s\), apply Cauchy--Schwarz for \(\langle\cdot,\cdot\rangle_\HS\), and use Problem~\ref{pr:translate-gram}.
+\item[\ref{pr:moment-min}] Problem~\ref{pr:cs} with \(W = T_0\).
+\end{description}
+
+\subsection*{\S\ref{sec:spread}}
+\begin{description}
+\item[\ref{pr:near-isom}] \(\lVert AP_U \rVert_\HS^2 = \dim U + \langle P_U, A^*A - 1 \rangle_\HS\).
+\item[\ref{pr:one-translate}] Problem~\ref{pr:cs}, with \(W\) viewed inside \(T\), and \(\sqrt{ab} \le (a + b)/2\).
+\item[\ref{pr:preimage}] Compare \(\rho(s)pB\) and \(P_W\rho(s)B\) on \(U\).
+\end{description}
+
+\subsection*{\S\ref{sec:greedy}}
+\begin{description}
+\item[\ref{pr:rank-add}] Rank--nullity for the restriction of \(A\) to \(A^{-1}(F)\), and \(\dim(F + A(V)) + \dim(F \cap A(V)) = \dim F + \dim A(V)\).
+\item[\ref{pr:greedy-step}] Problem~\ref{pr:rank-add} with \(A = C_\theta\).  Compare \(\frac{1+\alpha}{2} + \frac32\varepsilon\) with \(1 - \frac25(1 - \alpha)\).
+\item[\ref{pr:greedy-iterate}] Induction on \(\ell\), and \(1 - c_0 \le e^{-c_0}\).
+\item[\ref{pr:rate}] Problem~\ref{pr:greedy-step} with \(F = 0\).
+\item[\ref{pr:stopping}] Round \(\log(1/(16\varepsilon))/c_0\) up to an integer.
+\end{description}
+
+\subsection*{\S\ref{sec:cyclic}}
+\begin{description}
+\item[\ref{pr:points}] Count the pairs \((j, k) \in I \times I\) with \(j - k = s\).
+\item[\ref{pr:points-count}] The images are spanned by indicator functions of points.
+\item[\ref{pr:frequencies}] Each \(Be_j\) is an eigenvector of every \(\rho(s)\).
+\item[\ref{pr:missed}] Problem~\ref{pr:moment-min} with \(p = P_{T_1^\perp}\).
+\end{description}
+
+\begin{thebibliography}{GL}
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+\bibitem[We]{We} L.~R.~Welch, \emph{Lower bounds on the maximum cross correlation of signals}, IEEE Trans.\ Inform.\ Theory \textbf{20} (1974), 397--399.
+\bibitem[Wo]{Wo} L.~A.~Wolsey, \emph{An analysis of the greedy algorithm for the submodular set covering problem}, Combinatorica \textbf{2} (1982), 385--393.
+\end{thebibliography}

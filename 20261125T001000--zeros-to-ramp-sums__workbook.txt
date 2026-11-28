@@ -1,0 +1,342 @@
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\one}{\mathbf{1}}
+\title{From zeros to a one-sided bound}
+
+\paragraph{Prerequisites.}
+The zeta function and Dirichlet $L$-functions as in \cite{Dav}: orthogonality of characters and $L(1, \chi) \ne 0$ for nonprincipal $\chi$ (Ch.~4), the class number formula (Ch.~6), the Hadamard product and the constant $B$ (Ch.~12), nonvanishing on $\Re s = 1$ (Ch.~13 and~14), the explicit formula for Chebyshev's function $\psi(x)$ and its contour shift (Ch.~17), their analogues for $L(s, \chi)$ (Ch.~12 and~19), and the prime number theorem in progressions to a fixed modulus (Ch.~20).  Chebyshev's bound $\psi(x) \ll x$ \cite[\S2.2]{MV}.  Mellin transforms.  Landau's theorem is stated in \S\ref{sec:landau}.  Section~\ref{sec:dirichlet} uses the auxiliary-prime theorem stated as Theorem~\ref{ib-thm:choice} in Chapter~\ref{ib-chap}.  Chapter~\ref{ip-chap} is used only for motivation, in \S\ref{sec:smoothing}. 
+
+\medskip
+A comparison of divisibility with size, as in Chebyshev's method, gives upper bounds for weighted sums over primes.  Can an upper bound for a sum over primes prove the Riemann hypothesis?  This chapter shows that it can, for a suitable weight.  After the zeta function, Theorem~\ref{thm:dirichlet} gives the criterion for Dirichlet $L$-functions in the form used in the proof.  The upper bound itself is not treated here.
+
+\section{The ramp sum}\label{sec:ramp}
+
+Write $v_+ := \max(v, 0)$ for real $v$, and let $\Lambda$ be the von Mangoldt function.  We define the \emph{ramp} at $x$ to be the function $n \mapsto (x/n - 1)_+$: it is large for small $n$, decreases, and vanishes for $n \ge x$.  Let
+\begin{equation}\label{eq:G}
+  S(x) := \sum_{n} \Lambda(n) \Bigl(\frac{x}{n} - 1\Bigr)_+ ,
+  \qquad
+  G(x) := S(x) - x \log x + (1 + \gamma) x ,
+\end{equation}
+where $\gamma$ is Euler's constant, and let $\psi(x) := \sum_{n \le x} \Lambda(n)$ be Chebyshev's function.  In \S\ref{sec:dirichlet}, $\psi$ denotes a Dirichlet character.  The two subtracted terms are the main term of $S$, as the problems show.
+
+\begin{problem}\label{pr:ramp-mellin}
+For $n \ge 1$ and $\Re s > 1$,
+\(
+  \int_1^\infty (x/n - 1)_+ \, x^{-s-1} \, d x = n^{-s}/\bigl(s(s-1)\bigr)
+\).
+\end{problem}
+% End problem: 2224
+
+\begin{problem}\label{pr:S-integral}
+$S(x) = x \int_1^x \psi(t) \, t^{-2} \, d t$.  Hence $G(x) \ll x \log x$ for $x \ge 2$.
+\end{problem}
+% End problem: 2225
+
+\begin{problem}\label{pr:F}
+For $\Re s > 1$,
+\begin{equation}\label{eq:F}
+  F(s) := \int_1^\infty G(x)\, x^{-s-1} \, d x
+  = -\frac{\zeta'}{\zeta}(s) \, \frac{1}{s(s-1)} - \frac{1}{(s-1)^2} + \frac{1 + \gamma}{s - 1} .
+\end{equation}
+\end{problem}
+% End problem: 2226
+
+\begin{problem}\label{pr:F-poles}
+$F$ is meromorphic in $\C$ and regular at $s = 1$.  Its poles in $\Re s > 0$ are the zeros $\rho$ of $\zeta$ in the critical strip $0 \le \Re s \le 1$, and a zero of multiplicity $m$ gives residue $-m/\bigl(\rho(\rho - 1)\bigr)$.
+\end{problem}
+% End problem: 2227
+
+\begin{problem}\label{pr:residue-zero}
+The residue of $F(s) x^s$ at $s = 0$ is $\log 2\pi$.
+\end{problem}
+% End problem: 2228
+
+Problems~\ref{pr:F}--\ref{pr:residue-zero} and a contour shift as in \cite[Ch.~17]{Dav}, applied to $-\frac{\zeta'}{\zeta}(s)\, x^s/(s(s-1))$, the part of $F(s) x^s$ that comes from $S$, where now every integral converges absolutely because of the factor $1/(s(s-1))$, give the following.
+
+\begin{theorem}\label{thm:explicit}
+For $x > 1$,
+\[
+  G(x) = \log 2\pi - \sum_\rho \frac{x^\rho}{\rho(\rho - 1)} + O(x^{-2}) ,
+\]
+where $\rho$ runs over the zeros of $\zeta$ in the critical strip with multiplicity, and the sum converges absolutely.
+\end{theorem}
+
+\begin{problem}\label{pr:sum-rho}
+$\sum_\rho 1/\bigl(\rho(1 - \rho)\bigr) = 2 + \gamma - \log 4\pi = 0.0461\ldots$, with multiplicity.
+\end{problem}
+% End problem: 222A
+
+\begin{problem}\label{pr:rh-bound}
+If the Riemann hypothesis holds, then $\lvert G(x) - \log 2\pi \rvert \le (2 + \gamma - \log 4\pi)\sqrt{x} + O(x^{-2})$.
+\end{problem}
+% End problem: 222B
+
+For instance $G(10^4) \approx 1.749$, $G(10^5) \approx 3.671$, $G(10^6) \approx 11.040$ and $G(2 \cdot 10^6) \approx -12.268$, to be compared with $\log 2\pi \approx 1.838$ and $0.0462 \sqrt{10^6} = 46.2$.
+
+\begin{problem}\label{pr:one-pair}
+Let $\rho = \beta + i\gamma_0$ be a nonreal zero of $\zeta$, and let $c := -1/\bigl(\rho(\rho-1)\bigr)$.  The joint term $c x^\rho + \bar c x^{\bar\rho}$ of $\rho$ and $\bar\rho$ in Theorem~\ref{thm:explicit} exceeds $\lvert c \rvert x^\beta$ for all $x$ in a set whose image under $\log$ has density $1/3$ in $[0, \infty)$, and it is less than $-\lvert c \rvert x^\beta$ on another such set.
+\end{problem}
+% End problem: 222C
+
+If $\beta > \frac12$, the contribution of this conjugate pair exceeds $\sqrt x$ along one sequence tending to infinity and falls below $-\sqrt x$ along another.  A comparison of divisibility with size sees only one sign.  The next section shows that one is enough.
+
+\section{One side suffices}\label{sec:landau}
+
+We use the following measurable version of Landau's theorem \cite{Lan}.  Montgomery and Vaughan \cite[Lemma~15.1]{MV} assume local Riemann integrability and use $x^{-s}$; their proof applies to the Lebesgue integral below after replacing $s$ by $s+1$.  Let $A \colon [1, \infty) \to \R$ be measurable and bounded on compact sets, with $A(x) \ge 0$ for $x \ge X_0$.  Let $\sigma_c$ be the infimum of the real $\sigma$ with $\int_1^\infty \lvert A(x) \rvert x^{-\sigma-1} \, d x < \infty$, and suppose that $-\infty < \sigma_c < \infty$.  Then $H(s) := \int_1^\infty A(x) x^{-s-1} \, d x$ is holomorphic in $\Re s > \sigma_c$, and it has no holomorphic continuation to a neighborhood of $\sigma_c$.
+
+\begin{problem}\label{pr:below}
+In this situation $H(\sigma)$ is bounded below for real $\sigma \in (\sigma_c, \sigma_c + 1]$.
+\end{problem}
+% End problem: 222E
+
+Fix $0 < \theta < 1$, suppose that $G(x) \le x^\theta$ for all large $x$, and let $A(x) := x^\theta - G(x)$.
+
+\begin{problem}\label{pr:H}
+$-\infty < \sigma_c \le 1$, and $H(s) = 1/(s - \theta) - F(s)$ for $\Re s > 1$.
+\end{problem}
+% End problem: 222F
+
+\begin{problem}\label{pr:zeta-negative}
+$\zeta(\sigma) < 0$ for $0 < \sigma < 1$.
+\end{problem}
+% End problem: 222G
+
+\begin{problem}\label{pr:real-zero}
+If $\sigma_c > \theta$, then $\sigma_c$ is a real zero of $\zeta$, and $H(\sigma) \to -\infty$ as $\sigma \downarrow \sigma_c$.  Hence $\sigma_c \le \theta$.
+\end{problem}
+% End problem: 222H
+
+By Problem~\ref{pr:zeta-negative} $\zeta$ has no real zero in $(0,1)$, but Problem~\ref{pr:real-zero} does not use this, and in \S\ref{sec:dirichlet} the same argument will be applied where real zeros cannot be excluded in advance.  By Problem~\ref{pr:real-zero}, $F = 1/(s-\theta) - H$ is holomorphic in $\Re s > \theta$, and by Problem~\ref{pr:F-poles} this excludes zeros there.
+
+\begin{theorem}\label{thm:one-sided}
+Let $0 < \theta < 1$.  If $G(x) \le x^\theta$ for all large $x$, then $\zeta$ has no zeros in $\Re s > \theta$.
+\end{theorem}
+
+\begin{problem}\label{pr:rh-from}
+If for every $\varepsilon > 0$ one has $G(x) \le x^{1/2 + \varepsilon}$ for all large $x$, then the Riemann hypothesis holds.
+\end{problem}
+% End problem: 222N
+
+\begin{problem}\label{pr:two-poles}
+For $0<\alpha<1$, $t>0$, $\Re s>\alpha$: $\int_1^\infty x^{\alpha-1}(1 + \cos(t\log x))x^{-s}dx = \frac1{s-\alpha} + \frac{1/2}{s-\alpha-it} + \frac{1/2}{s-\alpha+it}$; at $(\alpha, t, s) = (0.3, 2, 1.1)$ both give $1.42241\ldots$.  For real $s$ the integrand is $\ge0$; the poles $\alpha \pm it$ lie beside $\alpha$.
+\end{problem}
+% End problem: 2388
+
+The transform $F$ continues meromorphically, with at most simple poles in $\Re s > 0$.  This, the sign of its residues at real points to the right of $\theta$, and the eventual upper bound for $G$ are what the argument of Problem~\ref{pr:real-zero} uses.  In the variable $v = \log x$, with $E(v) := e^{-v} G(e^v)$, the transform $F(s)$ becomes $\int_0^\infty E(v) e^{(1-s)v} \, d v$, and the bound $G(x) \le x^\theta$ becomes $E(v) \le e^{(\theta - 1)v}$.  In this form the argument proves the following.
+
+\begin{theorem}\label{thm:landau-polar}
+Let $E \colon \R \to \R$ and $r \colon \C \to \C$.  Suppose that $E$ is Borel measurable, and that there are $C \in \R$ and a meromorphic function $\Phi$ on $\C$ such that $\lvert E(v) \rvert \le C e^v$ for all $v \ge 0$, such that $\Phi(s) = \int_0^\infty E(v) e^{(1-s)v} \, d v$ for all $s$ with $\Re s > 2$, and such that $(z - \rho)\Phi(z) \to r(\rho)$ as $z \to \rho$, $z \ne \rho$, for every $\rho$ with $\Re \rho > 0$.  Let $\beta > 0$.  Suppose that $\Re r(x) \ge 0$ for every real $x > \beta$, and that there is $V$ with $E(v) \le e^{(\beta - 1)v}$ for all $v \ge V$.  Then $r(\rho) = 0$ for every $\rho \in \C$ with $\Re \rho > \beta$.
+\end{theorem}
+
+The hypothesis on $\Phi$ says that its poles in $\Re s > 0$ are simple, with residues $r$; the conclusion says that it has none in $\Re s > \beta$.  Only a sign is assumed at real points, and only there.
+
+\begin{problem}[Optional]\label{pr:landau-taylor}
+Under the hypotheses of Landau's theorem at the start of this section, convergence at a real $b < c$ of the Taylor series of $H$ centered at a real $c > \sigma_c$ implies absolute convergence of the defining integral at $b$.  In particular, $H$ has a singularity at $\sigma_c$.
+\end{problem}
+% End problem: 23ES
+
+\section{Smoothing, and the triangle weight}\label{sec:smoothing}
+
+Why the ramp, and not another weight?  Let $\phi \colon (0, \infty) \to \R$ be measurable, vanish on $(1, \infty)$, be bounded on compact subsets of $(0, 1]$, and satisfy $\phi(t) = O(1/t)$ as $t \to 0$.  Let
+\[
+  \psi_\phi(x) := \sum_n \Lambda(n) \phi(n/x) ,
+  \qquad
+  \tilde\phi(s) := \int_0^\infty \phi(t) t^{s-1} \, d t \quad (\Re s > 1) .
+\]
+We use $\tilde\phi$ on its half-plane of absolute convergence and, for the three weights below, also for the meromorphic continuation given by their rational formulas.  The sharp cutoff $\phi = \one_{(0,1]}$ gives $\psi_\phi = \psi$ and $\tilde\phi(s) = 1/s$.  The ramp is $\phi(t) = (1/t - 1)_+$, with $\tilde\phi(s) = 1/(s(s-1))$ by Problem~\ref{pr:ramp-mellin}.  We define the \emph{triangle weight} by $\phi(t) = (1 - t)_+$, with $\psi_\phi(x) = x^{-1}\int_0^x \psi(t) \, d t$.
+
+\begin{problem}\label{pr:smooth-mellin}
+For $\Re s > 1$, $\int_0^\infty \psi_\phi(x) x^{-s-1} \, d x = -\frac{\zeta'}{\zeta}(s) \, \tilde\phi(s)$.
+\end{problem}
+% End problem: 222Q
+
+\begin{problem}\label{pr:triangle-mellin}
+For the triangle weight $\tilde\phi(s) = 1/(s(s+1))$ for $\Re s > 0$.  If $\phi_1(t) := \phi(t)/t$, then $\tilde\phi_1(s) = \tilde\phi(s - 1)$ wherever either integral converges absolutely; for the triangle weight $\phi_1$ is the ramp.
+\end{problem}
+% End problem: 222R
+
+The following theorem is proved as Theorem~\ref{thm:explicit}: by Problem~\ref{pr:smooth-mellin} with $\tilde\phi(s) = 1/(s(s+1))$, shift the line of integration to $\Re s = -3/2$ as in \cite[Ch.~17]{Dav}, along horizontal segments at heights $T$ where $\zeta'/\zeta \ll \log^2 T$.  The factor $1/(s(s+1))$ makes every integral converge absolutely, and the poles of $-\frac{\zeta'}{\zeta}(s)\, x^s/(s(s+1))$ to the right of $-3/2$ are at $1$, $0$, $-1$ and the zeros $\rho$.
+
+\begin{theorem}\label{thm:triangle}
+For $x > 1$,
+\[
+  \sum_{n \le x} \Lambda(n) \Bigl(1 - \frac{n}{x}\Bigr) = \frac{x}{2} - \log 2\pi - \sum_\rho \frac{x^\rho}{\rho(\rho + 1)} + O\Bigl(\frac1x\Bigr) .
+\]
+\end{theorem}
+
+As a check, the left side minus $(x/2 - \log 2\pi)$ is approximately $0.106$, $7.975$ and $-12.115$ at $x = 10^4$, $10^6$ and $2 \cdot 10^6$.  For the ramp and the triangle weight $\lvert \tilde\phi(\rho) \rvert \ll \lvert \rho \rvert^{-2}$, so the sums over zeros converge absolutely.  For the sharp cutoff they do not, since $\sum_\rho 1/\lvert \rho \rvert$ diverges.
+
+\begin{problem}\label{pr:triangle-one-sided}
+Let $0 < \theta < 1$.  If $\sum_{n \le x} \Lambda(n)(1 - n/x) \le x/2 + x^\theta$ for all large $x$, then $\zeta$ has no zeros in $\Re s > \theta$.
+\end{problem}
+% End problem: 222T
+
+We return to real zeros in \S\ref{sec:dirichlet}.
+
+The ramp itself is forced by the arithmetic.  Theorem~\ref{ip-thm:main} gives, at primes $p \equiv 3 \pmod 8$, lower bounds for $p$-adic valuations of the form $\sum_{i \text{ odd}} (\lfloor a/p^i \rfloor - w)_+$.  Up to an error of $1$ for each odd $i$ with $p^i \le a$, and with $a = wx$, the summand is $(a/p^i - w)_+ = w(x/p^i - 1)_+$, which is $w$ times the ramp at $x$.  Bounds of this form at every inert prime, summed with weights $\log p$, give the ramp sum over odd powers of primes inert in an imaginary quadratic field; Chapter~\ref{ib-chap} says what this sum counts.
+
+\section{Dirichlet \texorpdfstring{$L$}{L}-functions}\label{sec:dirichlet}
+
+What replaces $G$ for the $L$-functions of the characters modulo $q$?  The arithmetic bounds sums over primes that do not split in an imaginary quadratic field.  For a prime $d \equiv 3 \pmod 4$, the Legendre symbol $\chi_d(n) = (n/d)$ is the character of $K = \Q(\sqrt{-d})$, and at a prime $p$ the weight $1 - \chi_d(p)$ is $2$ if $p$ is inert, $1$ if $p = d$, and $0$ if $p$ splits.  This weight brings in the twisted $L$-functions $L(s, \psi\chi_d)$, whose orders of vanishing are subtracted from the untwisted ones in the residues below.  The prime $d$ will be chosen so that they do not vanish where it matters.
+
+For a primitive nonprincipal Dirichlet character $\chi$ let $c_\chi := \frac{L'}{L}(1, \chi)$ and
+\begin{equation}\label{eq:Gchi}
+  G_\chi(x) := \sum_{n \le x} \Lambda(n) \chi(n) \Bigl(\frac{x}{n} - 1\Bigr) + c_\chi x .
+\end{equation}
+Let $d$ be an odd prime, $\chi_d(n) := (n/d)$ the Legendre symbol, and $q \ge 1$ an integer prime to $d$.  Let $\varphi$ be Euler's function.  For $n \ge 1$ let
+\[
+  \lambda(n) := \Lambda(n)\bigl(1 - \chi_d(n)\bigr) \ \text{if } n \equiv 1 \ (\mathrm{mod}\ q),
+  \qquad \lambda(n) := 0 \ \text{otherwise}.
+\]
+The analytic definitions below apply to every odd prime $d$.  For a Dirichlet character $\psi$ modulo $q$, let $L(s, \psi)$ be the meromorphic continuation of $\sum_{n \ge 1} \psi(n) n^{-s}$ from $\Re s > 1$; its Euler product there runs over the primes $p \nmid q$.  Let $E_\psi := L(\,\cdot\,, \psi)$ if $\psi$ is not principal, and if $\psi$ is principal let $E_\psi$ be the entire continuation of $(s - 1)L(s, \psi)$, with $E_\psi(1) = \prod_{p \mid q}(1 - p^{-1})$.  Let $m_\psi(\rho) \ge 0$ be the order of vanishing of $E_\psi$ at $\rho$.  The product $\psi\chi_d$ is a character modulo $qd$; it is not principal, and we write $E_{\psi\chi_d} := L(\,\cdot\,, \psi\chi_d)$ and $m_{\psi\chi_d}$ for its order.  Let
+\[
+  G_{d,q}(s) := \frac{1}{\varphi(q)} \Bigl( \sum_{\psi} \Bigl( \frac{E_{\psi\chi_d}'}{E_{\psi\chi_d}}(s) - \frac{E_\psi'}{E_\psi}(s) \Bigr) - 1 \Bigr),
+\]
+the sum over the characters $\psi$ modulo $q$.  The $E$'s do not vanish on $\Re s \ge 1$, so $G_{d,q}$ is holomorphic there.  Let $c_{d,q} := \Re G_{d,q}(1)$, and for real $x > 0$ let
+\begin{equation}\label{eq:R}
+  R_{d,q}(x) := \sum_{1 \le n \le x} \lambda(n) \Bigl( \frac1n - \frac1x \Bigr) - \frac{\log x}{\varphi(q)} - c_{d,q} .
+\end{equation}
+The simplest case is $q = 1$, where $\lambda(n) = \Lambda(n)(1 - \chi_d(n))$ for all $n$ and $E_{\one}(s) = (s - 1)\zeta(s)$ for $s \ne 1$, with $E_{\one}(1) = 1$.
+
+\begin{problem}\label{pr:coef}
+$\lambda(n) = \varphi(q)^{-1} \sum_\psi \bigl(\psi(n) - \psi(n)\chi_d(n)\bigr) \Lambda(n)$, and $0 \le \lambda(n) \le 2\Lambda(n)$.  For $q = 1$ and $d = 7$ the nonzero values for $n \le 11$ are $\lambda(3) = 2\log 3$, $\lambda(5) = 2\log 5$ and $\lambda(7) = \log 7$.
+\end{problem}
+% End problem: 222V
+
+\begin{problem}\label{pr:dirichlet-series}
+For $\Re s > 1$,
+\(
+  \sum_{n \ge 1} \lambda(n) n^{-s} = s/\bigl(\varphi(q)(s-1)\bigr) + G_{d,q}(s)
+\).
+\end{problem}
+% End problem: 22Z2
+
+\begin{problem}\label{pr:R-transform}
+For $\Re s > 1$,
+\(
+  \int_1^\infty R_{d,q}(y)\, y^{-s} \, d y = \bigl(G_{d,q}(s)/s - c_{d,q}\bigr)/(s - 1)
+\).
+\end{problem}
+% End problem: 22Z3
+
+\begin{problem}\label{pr:product}
+(i) The function $\Phi(s) := \bigl(G_{d,q}(s)/s - c_{d,q}\bigr)/(s - 1)$ is meromorphic on $\C$ and regular at $s = 1$.  At every $\rho \ne 0, 1$ it has at most a simple pole, with residue
+\[
+  \frac{1}{\varphi(q)\, \rho(1 - \rho)} \sum_\psi \bigl( m_\psi(\rho) - m_{\psi\chi_d}(\rho) \bigr) .
+\]
+(ii) If no $L(s, \psi\chi_d)$ vanishes at a real $x \in (0, 1)$, the residue at $x$ is $\ge 0$, and it is $> 0$ if some $L(s, \psi)$ vanishes there.  A zero of order $m$ of one $L(s, \psi\chi_d)$ at a point $\rho \ne 0, 1$ where no other $E$ vanishes gives the residue $-m/\bigl(\varphi(q)\rho(1-\rho)\bigr)$.
+\end{problem}
+% End problem: 222X
+
+At $\rho \ne 0, 1$ the residue depends on the difference between the total untwisted and twisted orders.  A common zero can therefore reduce or cancel the contribution of an untwisted factor, and at a real point $0 < \rho < 1$ a twisted zero alone gives a negative residue.  Neither happens where no twist vanishes.
+
+\begin{problem}\label{pr:c-value}
+$c_{d,1} = -1 - \gamma + \frac{L'}{L}(1, \chi_d)$.  For $d = 7$, $L(1, \chi_7) = \pi/\sqrt 7 = 1.1874104\ldots$; with $\frac{L'}{L}(1, \chi_7) \approx 0.0156357$ this gives $c_{7,1} \approx -1.56158$.
+\end{problem}
+% End problem: 22Z4
+
+\begin{problem}\label{pr:G-difference}
+For $y \ge 1$, $y R_{d,1}(y) = G(y) - G_{\chi_d}(y)$, with $G$ as in \eqref{eq:G} and $G_{\chi_d}$ as in \eqref{eq:Gchi}.
+\end{problem}
+% End problem: 22Z5
+
+For instance $R_{7,1}(y) \approx 6.27 \cdot 10^{-4}$, $1.05 \cdot 10^{-4}$ and $-7.71 \cdot 10^{-5}$ at $y = 10^4$, $10^5$ and $10^6$.
+
+\begin{problem}\label{pr:R-limit}
+(i) $\sum_{n \le y} \lambda(n)(1/n - 1/y) - \log y/\varphi(q)$ has a limit as $y \to \infty$.  (ii) The limit is $c_{d,q}$; that is, $R_{d,q}(y) \to 0$.
+\end{problem}
+% End problem: 22Z6
+
+Let $E_{d,q}(t) := \sum_{n \le t} \lambda(n) - t/\varphi(q)$.  The prime number theorem in the reduced classes modulo $qd$ gives $E_{d,q}(t) = O_{d,q}(t/(\log t)^2)$ as $t \to \infty$ \cite[Ch.~20]{Dav}.  With this estimate, the remainder can be written as a tail integral.
+
+\begin{problem}\label{pr:R-tail}
+For $y \ge 1$, $R_{d,q}(y) = -\int_y^\infty E_{d,q}(t)t^{-2} \, d t$.
+\end{problem}
+% End problem: 23EP
+
+So $c_{d,q}$ is the constant that makes the remainder small.  The proof gives more: for every odd prime $d$, every $q \ge 1$ prime to $d$ and every integer $B \ge 0$, $\lvert R_{d,q}(y) \rvert \le (\log y)^{-B}$ for all large real $y$.  It is a case of the prime number theorem in progressions \cite{MV}; the proof derives it by a Tauberian theorem applied to $v \mapsto R_{d,q}(e^v)$ and the transform identity of Problem~\ref{pr:R-transform} for $\Re s > 2$.
+
+Now fix a point $\rho$.  The next problem is the analogue of Theorem~\ref{thm:one-sided} for the $L(s, \psi)$, at one prime $d$ whose twists do not vanish near the real axis up to the height of $\rho$.
+
+\begin{problem}\label{pr:fixed-d}
+Let $d \equiv 7 \pmod 8$ be prime, $q \ge 1$ prime to $d$, $\beta > 0$, and $\rho \ne 1$ with $\Re \rho > \beta$.  Suppose that $L(s, \psi\chi_d) \ne 0$ for every $\psi$ modulo $q$ and every $s$ with $\Re s \ge \beta$ and $\lvert \Im s \rvert \le \lvert \Im \rho \rvert$, and that $R_{d,q}(y) \le y^{\beta - 1}$ for all large real $y$.  Then $L(\rho, \psi) \ne 0$ for every $\psi$ modulo $q$.
+\end{problem}
+% End problem: 22Z7
+
+Problem~\ref{pr:fixed-d} assumes no separate exclusion of real zeros of the untwisted $L$-functions.  For $\beta > 1/2$, Theorem~\ref{ib-thm:choice} of Chapter~\ref{ib-chap} supplies the required twist nonvanishing for some prime $d$ in any residue class satisfying its hypotheses.  For a Dirichlet character $\xi$ modulo $N$ and an odd prime $d$ not dividing $N$, write $\xi\chi_d$ for their product, a character modulo $Nd$.  That theorem says: let $N \ge 1$, $\beta > 1/2$ and $t_0 \in \R$, and let $a$ be a unit modulo $N$ such that every prime $p \equiv a \pmod N$ satisfies $p \equiv 7 \pmod 8$ and $\gcd(N, p) = 1$; then there is a prime $d \equiv a \pmod N$ such that $L(s, \xi\chi_d) \ne 0$ for every character $\xi$ modulo $N$ and every $s$ with $\Re s \ge \beta$ and $\lvert \Im s \rvert \le t_0$.  It says nothing about $R_{d,q}$.
+
+Let $q_0$ be a positive multiple of $8$, and let $d_0 \equiv 7 \pmod 8$ be prime to $q_0$.  Every prime $d \equiv d_0 \pmod{q_0}$ is then $\equiv 7 \pmod 8$ and prime to $q_0$.  The next theorem assumes the bound for $R_{d,q_0}$ for every prime $d$ in this class.  Given $\rho$, Theorem~\ref{ib-thm:choice} with $N = q_0$, $a = d_0$ and $t_0 = \lvert \Im \rho \rvert$ chooses $d$ in the class, and Problem~\ref{pr:fixed-d} applies to it.
+
+\begin{theorem}\label{thm:dirichlet}
+Let $q_0 \ge 1$ with $8 \mid q_0$, let $d_0 \ge 0$ be an integer with $d_0 \equiv 7 \pmod 8$ and $\gcd(d_0, q_0) = 1$, and let $\beta > 1/2$.  Suppose that for every prime $d \equiv d_0 \pmod{q_0}$ there is $Y \in \R$ such that $R_{d,q_0}(x) \le x^{\beta - 1}$ for every real $x \ge Y$.  Then $L(\rho, \psi) \ne 0$ for every character $\psi$ modulo $q_0$ and every $\rho \ne 1$ with $\Re \rho > \beta$.
+\end{theorem}
+
+The hypothesis concerns every prime of one class modulo $q_0$, and the point $Y$ from which the bound holds may depend on $d$.  For $q = 1$, by Problem~\ref{pr:G-difference}, a bound $R_{d,1}(x) \le x^{\theta - 1}$ reads $G(x) - G_{\chi_d}(x) \le x^\theta$; compare Theorem~\ref{thm:one-sided}.
+
+\begin{problem}\label{pr:rh-dirichlet}
+Let $M \ge 1$.  If for every $\beta > 1/2$ the hypothesis of Theorem~\ref{thm:dirichlet} holds for $q_0 = 8M$ and $d_0 = 8M - 1$, then $L(s, \chi) \ne 0$ for every character $\chi$ modulo $M$ and every $s \ne 1$ with $\Re s > 1/2$.
+\end{problem}
+% End problem: 22Z8
+
+{\raggedright
+\paragraph{In the Lean formalization.}
+In the Lean proof \cite{GL} (readable edition), Theorem~\ref{thm:dirichlet} is \path{New.LFunction_ne_zero_of_primeRemainder_le} in \path{New/Reduction/Zeros/Criterion.lean}; for $x > 0$, $R_{d,q}(x)$ is \path{New.primeRemainder} at $d, q, x$ in \path{New/Reduction/Zeros/PrimeError.lean}.  The finite-interval identity used in Problem~\ref{pr:R-tail} is \path{New.primeRemainder_eq_integral_countError_sub} in \path{New/Reduction/Zeros/PrimeNumberTheorem.lean}.  Theorem~\ref{thm:landau-polar} is \path{New.IsPolar.landau} in \path{Lib/Analytic/Landau.lean}, with the definition \path{New.IsPolar} written out.  The two steps of Problem~\ref{pr:landau-taylor} are \path{New.mem_integrableExpSet_of_summable_taylor} and \path{New.exists_Ioi_subset_integrableExpSet_of_analyticAt} in the same file, in the variable $\log x$.  The bound $\lvert R_{d,q}(y) \rvert \le (\log y)^{-B}$ is \path{New.eventually_abs_primeRemainder_le} in \path{New/Reduction/Zeros/PrimeNumberTheorem.lean}.\par}
+
+\section*{Hints}
+
+\subsection*{\S\ref{sec:ramp}}
+\begin{description}
+\item[\ref{pr:S-integral}] Integrate each step of $\psi$.  For the bound use Chebyshev's estimate.
+\item[\ref{pr:F}] Use Problem~\ref{pr:ramp-mellin} termwise, and compute the transforms of $x \log x$ and $x$.
+\item[\ref{pr:F-poles}] Use $-\zeta'/\zeta(s) = 1/(s-1) - \gamma + O(s - 1)$ and expand $1/(s(s-1))$ at $s = 1$.
+\item[\ref{pr:residue-zero}] The functional equation gives $\zeta'/\zeta(0) = \log 2\pi$.
+\item[\ref{pr:sum-rho}] Write $1/(\rho(1-\rho)) = 1/\rho + 1/(1 - \rho)$ and use the value of $B$ in \cite[Ch.~12]{Dav}.
+\end{description}
+
+\subsection*{\S\ref{sec:landau}}
+\begin{description}
+\item[\ref{pr:below}] Split the integral at $X_0$.
+\item[\ref{pr:H}] Use Problem~\ref{pr:S-integral} for $\sigma_c \le 1$ and Problem~\ref{pr:F} for the formula for $H$.  For $\sigma_c > -\infty$ use Problem~\ref{pr:F-poles}: $\zeta$ has infinitely many zeros in the critical strip \cite[Ch.~12]{Dav}, so it has nonreal ones.
+\item[\ref{pr:zeta-negative}] Consider $(1 - 2^{1-\sigma})\zeta(\sigma) = \sum_{n \ge 1} (-1)^{n-1} n^{-\sigma}$.
+\item[\ref{pr:real-zero}] By Landau's theorem $\sigma_c$ is a singularity of $H$.  Of the real points in $(\theta, 1]$, only real zeros of $\zeta$ can be singular (Problem~\ref{pr:F-poles}).  Find the sign of the residue of $F$ at a real zero $\beta \in (0,1)$, and compare with Problem~\ref{pr:below}.
+\item[\ref{pr:rh-from}] Use Theorem~\ref{thm:one-sided} and the symmetry $\rho \mapsto 1 - \rho$.
+\item[\ref{pr:two-poles}] $2\cos(t\log x) = x^{it} + x^{-it}$.
+\item[\ref{pr:landau-taylor}] The bounded initial interval contributes an entire function.  On the tail, the exponential series for $x^{c-b}$ has nonnegative terms, so Tonelli's theorem applies.  A Taylor disk centered just to the right of $\sigma_c$ in a holomorphic continuation would reach a real point to its left.
+\end{description}
+
+\subsection*{\S\ref{sec:smoothing}}
+\begin{description}
+\item[\ref{pr:smooth-mellin}] Substitute $x = n/t$ in each term.
+\item[\ref{pr:triangle-one-sided}] Repeat \S\ref{sec:landau} with $\tilde\phi(s) = 1/(s(s+1))$, including the argument for $\sigma_c > -\infty$ in Problem~\ref{pr:H}, and compare the sign of the residue at a real zero with that in Problem~\ref{pr:real-zero}; conclude with Problem~\ref{pr:zeta-negative}.
+\end{description}
+
+\subsection*{\S\ref{sec:dirichlet}}
+\begin{description}
+\item[\ref{pr:coef}] Orthogonality of the characters modulo $q$; a number $n \equiv 1 \pmod q$ is prime to $q$.
+\item[\ref{pr:dirichlet-series}] Problem~\ref{pr:coef} and $-\frac{L'}{L}(s, \chi) = \sum_n \chi(n)\Lambda(n) n^{-s}$; for the principal $\psi$, $E_\psi'/E_\psi$ and $L'/L$ differ by $1/(s-1)$.
+\item[\ref{pr:R-transform}] As Problem~\ref{pr:F}: $(1/n - 1/y)_+ y^{-s} = (y/n - 1)_+ y^{-s-1}$, so Problem~\ref{pr:ramp-mellin} applies; then Problem~\ref{pr:dirichlet-series}.
+\item[\ref{pr:product}] (i) A zero of order $m$ of an entire function at $\rho$ is a simple pole of its logarithmic derivative, with residue $m$.  At $s = 1$: the characters modulo $q$ are closed under complex conjugation, so $G_{d,q}(1)$ is real.
+\item[\ref{pr:c-value}] For $q = 1$ the untwisted factor is $(s-1)\zeta(s) = 1 + \gamma(s - 1) + \cdots$.  For $d = 7$ use the class number formula.
+\item[\ref{pr:G-difference}] Problem~\ref{pr:c-value}; for $n \le y$ the ramp is $y(1/n - 1/y)$.
+\item[\ref{pr:R-limit}] (i) Partial summation, as in Problem~\ref{pr:S-integral}, with the prime number theorem with error term for the characters modulo $qd$ \cite[Ch.~20]{Dav}.  (ii) If $R_{d,q} \to \ell$, compare the behaviour of the two sides of Problem~\ref{pr:R-transform} as $s \downarrow 1$, using Problem~\ref{pr:product}.
+\item[\ref{pr:R-tail}] Apply partial summation to the ramp and to Problem~\ref{pr:dirichlet-series}.  Use dominated convergence in the resulting integral for $G_{d,q}(s)$ as real $s \downarrow 1$.
+\item[\ref{pr:fixed-d}] Theorem~\ref{thm:landau-polar} for $E(v) := R_{d,q}(e^v)$, with Problems~\ref{pr:R-transform} and~\ref{pr:product}.  Check the sign of the residue at real $x$ in $(\beta, 1)$, at $1$ and in $(1, \infty)$ separately.
+\item[\ref{pr:rh-dirichlet}] A character modulo $M$ induces one modulo $8M$; the two $L$-functions differ by finitely many Euler factors.
+\end{description}
+
+\begin{thebibliography}{Alp}
+
+\bibitem[Dav]{Dav}
+H.~Davenport, \emph{Multiplicative Number Theory}, 3rd ed., revised by H.~L.~Montgomery, Grad. Texts in Math. \textbf{74}, Springer, 2000.
+
+\bibitem[GL]{GL} L.~Sernau, \emph{GRH for Dirichlet \(L\)-functions, in Lean~4}, a shorter rewriting of the Lean proof, text by Claude, \url{https://github.com/lsernau/grh-lean}, commit \texttt{72fead1}, readable edition \texttt{grh/}.
+
+\bibitem[Lan]{Lan}
+E.~Landau, \emph{\"Uber einen Satz von Tschebyschef}, Math. Ann. \textbf{61} (1905), 527--550.
+
+\bibitem[MV]{MV}
+H.~L.~Montgomery and R.~C.~Vaughan, \emph{Multiplicative Number Theory~I. Classical Theory}, Cambridge Stud. Adv. Math. \textbf{97}, Cambridge University Press, 2007.
+
+\end{thebibliography}

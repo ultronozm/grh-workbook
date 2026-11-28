@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-tmymuRqgAV43Hm7yTfWjJdZEdePlHygHyVXRhOI6LEo=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>The sieve over the entries</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","R":"\\mathbb{R}","ii":"\\mathrm{i}","Jc":"\\mathcal{J}","hh":"\\mathfrak{h}","ff":"\\mathfrak{f}","Ec":"\\mathcal{E}","Zc":"\\mathcal{Z}","Oc":"\\mathcal{O}","Oh":"\\hat{\\mathcal O}_E","Pf":"\\mathsf{P}","OP":"\\mathcal{O}_{\\mathsf P}","EP":"E_{\\mathsf P}","wt":"\\mathrm{wt}","dec":"\\mathrm{dec}","ent":"\\mathrm{ent}","cbot":"c_{\\mathrm{bot}}","cm":"c_{\\mathrm{mass}}","Cs":"\\mathsf{C}","Us":"\\mathsf{U}","inv":"\\mathrm{inv}","ee":"\\mathfrak{e}","Nm":"\\mathrm{N}","vol":"\\operatorname{vol}","e":"\\mathrm{e}","tl":["\\texttt{#1}",1],"gk":["\\href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/#1.lean\\#L#2}{#3}",3],"gl":["\\gk{New/Spanning/#1}",1],"gs":"\\gl{MainTerm/GlobalSieve}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="46">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T080400--the-sieve-over-the-entries__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-27 23:34:45
+      <a href="20261126T080400--the-sieve-over-the-entries__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T080400--the-sieve-over-the-entries__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T080400--the-sieve-over-the-entries__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">The sieve over the entries</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:model" id="toc-sec:model">§46.1. One step on \(\mathbb{Z}/25\)</a></li>
+<li><a href="#sec:recurrence" id="toc-sec:recurrence">§46.2. Sieve systems and the recurrence</a></li>
+<li><a href="#sec:frequencies" id="toc-sec:frequencies">§46.3. The sum over the frequencies</a></li>
+<li><a href="#sec:heads" id="toc-sec:heads">§46.4. Heads, weights and the sieve</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secmodel" id="toc-secmodel">§46.1</a></li>
+<li><a href="#secrecurrence" id="toc-secrecurrence">§46.2</a></li>
+<li><a href="#secfrequencies" id="toc-secfrequencies">§46.3</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Chapter <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#chap" data-reference-type="ref"
+data-reference="m3-chap">45</a>: heads (Definition <a
+href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#def:head" data-reference-type="ref"
+data-reference="m3-def:head">45.1.1</a>), the additive character
+<span class="math inline">\(\psi_f\)</span> of the finite adeles and
+<span class="math inline">\(\operatorname{vol}(\hat{\mathcal
+O}_E)=2^f\lvert d_E\rvert^{-1/2}\)</span> (Section <a
+href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#sec:siegel" data-reference-type="ref"
+data-reference="m3-sec:siegel">45.2</a>), Theorems <a
+href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#thm:poisson" data-reference-type="ref"
+data-reference="m3-thm:poisson">45.3.1</a> and <a
+href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#thm:sieve" data-reference-type="ref"
+data-reference="m3-thm:sieve">45.3.2</a>, Problem <a
+href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#pr:schur" data-reference-type="ref"
+data-reference="m3-pr:schur">45.3.6</a>, and <span
+class="math inline">\(\mathrm{e}(\cdot)=e^{2\pi\mathrm{i}\,\cdot}\)</span>.
+Fourier analysis on finite abelian groups; Lebesgue integration; the
+product formula and the Euler product of the Dedekind zeta function
+<span class="citation" data-cites="Ne">[<a href="#ref-Ne">Ne</a>]</span>.
+The level <span class="math inline">\(M\)</span>, the prime <span
+class="math inline">\(N\)</span> and the numbers <span
+class="math inline">\(\varrho\)</span>, <span
+class="math inline">\(k\)</span>, <span
+class="math inline">\(b\)</span>, <span
+class="math inline">\(f\)</span>, <span
+class="math inline">\(d_\tau\)</span> are those of the data, as in
+Chapter <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#chap" data-reference-type="ref"
+data-reference="m3-chap">45</a>. In the finite models <span
+class="math inline">\(q\ge1\)</span> is an integer and <span
+class="math inline">\(j,l\)</span> are residues or integers; in this
+sheet <span class="math inline">\(w\)</span>, <span
+class="math inline">\(\mathfrak{f}\)</span> are functions, <span
+class="math inline">\(y\)</span>, <span class="math inline">\(z\)</span>
+numbers, and <span class="math inline">\(\mathrm{N}\mathfrak b\)</span>
+is the norm of an ideal.</p>
+<p>Theorem <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#thm:sieve" data-reference-type="ref"
+data-reference="m3-thm:sieve">45.3.2</a> bounds the sums <span
+class="math inline">\(\Sigma_i\)</span> of densities of pairs of heads
+by a recurrence, <span class="math inline">\(\Sigma_{i+1}\le
+c_i(\Sigma_i+2c_{\mathrm{fr}}\lambda_i^2)\)</span>. This sheet proves
+the recurrence from six properties of the forms (Definition <a
+href="#def:sieve-system" data-reference-type="ref"
+data-reference="def:sieve-system">46.2.1</a>) and Poisson summation, and
+proves the bound on the sum over the frequencies that its error term
+needs (Theorem <a href="#thm:frequencies" data-reference-type="ref"
+data-reference="thm:frequencies">46.3.1</a>). The proof is cited as <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>. Where
+does the factor <span class="math inline">\(2\)</span> come from when
+one entry is summed out?</p>
+<h1 id="sec:model">§46.1. One step on <span
+class="math inline">\(\mathbb{Z}/25\)</span></h1>
+<p>For <span
+class="math inline">\(\mathfrak{f}\colon\mathbb{Z}/q\to\mathbb{C}\)</span>
+put <span
+class="math inline">\(\hat{\mathfrak{f}}(l):=\sum_{j\in\mathbb{Z}/q}\mathfrak{f}(j)\,\mathrm{e}(-lj/q)\)</span>
+(counting measure; Chapter <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#chap" data-reference-type="ref"
+data-reference="m3-chap">45</a> uses the mean). For a subgroup
+<span class="math inline">\(H\subseteq\mathbb{Z}/q\)</span> let <span
+class="math inline">\(H^\perp:=\{l:\mathrm{e}(lh/q)=1\text{ for all
+}h\in H\}\)</span>.</p>
+<div id="pr:finite-poisson" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:finite-poisson&quot;]">
+<p><strong>Problem 46.1.1</strong>. <span class="math inline">\(\sum_{h\in
+H}\mathfrak{f}(h)=\frac{\#H}{q}\sum_{l\in
+H^\perp}\hat{\mathfrak{f}}(l)\)</span>. For <span
+class="math inline">\(H=5\mathbb{Z}/25\subseteq\mathbb{Z}/25\)</span>
+one has <span class="math inline">\(H^\perp=5\mathbb{Z}/25\)</span> and
+<span class="math inline">\(\#H/q=1/5\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:model-step">Problem 46.1.5</a></div><!-- used-in:end -->
+</div>
+<p>In this sheet <span class="math inline">\(w(j):=1+\cos(2\pi
+j/25)\)</span> on <span class="math inline">\(\mathbb{Z}/25\)</span>,
+and <span class="math inline">\(H:=5\mathbb{Z}/25\)</span>.</p>
+<div id="pr:weight-transform" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:weight-transform&quot;]">
+<p><strong>Problem 46.1.2</strong>. <span class="math inline">\(\hat
+w(0)=25\)</span>, <span class="math inline">\(\hat
+w(\pm1)=25/2\)</span>, and <span class="math inline">\(\hat
+w(l)=0\)</span> for <span class="math inline">\(l\ne0,\pm1\)</span>.
+Hence <span class="math inline">\(\sum_{h\in H}w(h)=5\)</span>, all of
+it from <span class="math inline">\(l=0\)</span>.</p>
+</div>
+<div id="pr:one-sided" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:one-sided&quot;]">
+<p><strong>Problem 46.1.3</strong>. If <span
+class="math inline">\(\mathfrak{f}\ge0\)</span> and <span
+class="math inline">\(\mathcal{Z}\subseteq H\)</span>, then <span
+class="math inline">\(\sum_{j\in\mathcal{Z}}\mathfrak{f}(j)\le\frac{\#H}{q}\bigl(\hat{\mathfrak{f}}(0)+\sum_{l\in
+H^\perp,\,l\ne0}\lvert\hat{\mathfrak{f}}(l)\rvert\bigr)\)</span>.</p>
+</div>
+<p>In the model a head is a residue <span
+class="math inline">\(a\in\mathbb{Z}/25\)</span>, and a head followed by
+an entry <span class="math inline">\(j\)</span> is the pair <span
+class="math inline">\((a,j)\)</span>. Put <span
+class="math display">\[\mathcal{J}_2\bigl((a,j),(a&#39;,j)\bigr):=w(j)\,\mathrm{e}\bigl((a-a&#39;)j/25\bigr),\qquad
+\mathcal{J}_1(a,a&#39;):=\sum_{j\in\mathbb{Z}/25}\mathcal{J}_2\bigl((a,j),(a&#39;,j)\bigr).\]</span>
+For a set <span
+class="math inline">\(\mathcal{E}\subseteq\mathbb{Z}/25\)</span> of
+heads write <span
+class="math display">\[\Sigma_1:=\sum_{a\in\mathcal{E}}\mathcal{J}_1(a,a),\qquad
+\Sigma_2:=\sum_{j\in
+H}\sum_{a,a&#39;\in\mathcal{E}}\mathcal{J}_2((a,j),(a&#39;,j)).\]</span></p>
+<div id="pr:model-forms" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:model-forms&quot;]">
+<p><strong>Problem 46.1.4</strong>. <span
+class="math inline">\(\mathcal{J}_1(a,a&#39;)=\hat w(a&#39;-a)\)</span>,
+and <span
+class="math inline">\(\sum_j\mathrm{e}(-lj/25)\,\mathcal{J}_2((a,j),(a&#39;,j))=\hat
+w(a&#39;-a+l)\)</span>. For each <span class="math inline">\(j\)</span>
+the matrix <span
+class="math inline">\(\bigl(\mathcal{J}_2((a,j),(a&#39;,j))\bigr)_{a,a&#39;\in\mathbb{Z}/25}\)</span>
+is positive semidefinite of rank one.</p>
+</div>
+<div id="pr:model-step" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:model-step&quot;]">
+<p><strong>Problem 46.1.5</strong>. For <span
+class="math inline">\(\mathcal{E}=\{0,1,7\}\)</span>: <span
+class="math inline">\(\Sigma_1=75\)</span> and <span
+class="math inline">\(\Sigma_2=25\)</span>. In Problem <a
+href="#pr:finite-poisson" data-reference-type="ref"
+data-reference="pr:finite-poisson">46.1.1</a> for <span
+class="math inline">\(j\mapsto\sum_{a,a&#39;\in\mathcal{E}}\mathcal{J}_2((a,j),(a&#39;,j))\)</span>,
+the frequency <span class="math inline">\(l=0\)</span> gives <span
+class="math inline">\(75\)</span> from equal heads and <span
+class="math inline">\(25\)</span> from the pairs <span
+class="math inline">\((0,1)\)</span>, <span
+class="math inline">\((1,0)\)</span>; <span
+class="math inline">\(l=\pm5\)</span> give <span
+class="math inline">\(12.5\)</span> each, from <span
+class="math inline">\((7,1)\)</span> and <span
+class="math inline">\((1,7)\)</span>; <span
+class="math inline">\(l=\pm10\)</span> give <span
+class="math inline">\(0\)</span>. Thus <span
+class="math inline">\(25=(75+25+25)/5\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html">Chapter 45</a></div><!-- used-in:end -->
+</div>
+<div id="pr:model-congruent" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:model-congruent&quot;]">
+<p><strong>Problem 46.1.6</strong>. For <span
+class="math inline">\(\mathcal{E}=\{0,7,14\}\)</span>, <span
+class="math inline">\(\Sigma_2=20=(75+0+25)/5\)</span>. For <span
+class="math inline">\(\mathcal{E}=\{0,1,\dots,6\}\)</span>, <span
+class="math inline">\(\Sigma_2=105=(175+150+200)/5\)</span>: together
+the two errors are twice the main term.</p>
+</div>
+<div id="pr:model-bound" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:model-bound&quot;]">
+<p><strong>Problem 46.1.7</strong>. Let <span
+class="math inline">\(\mathcal{E}\ne\varnothing\)</span>, <span
+class="math inline">\(\varepsilon\ge\lvert\mathcal{J}_1(a,a&#39;)\rvert\)</span>
+for all <span class="math inline">\(a\ne a&#39;\)</span> in <span
+class="math inline">\(\mathcal{E}\)</span>, and <span
+class="math inline">\(\varepsilon\ge\sum_{l\in
+H^\perp,\,l\ne0}\max_{a,a&#39;\in\mathcal{E}}\lvert\hat
+w(a&#39;-a+l)\rvert\)</span>. Then <span
+class="math inline">\(\Sigma_2\le\frac15\bigl(\Sigma_1+2\varepsilon(\#\mathcal{E})^2\bigr)\)</span>.
+For <span class="math inline">\(\mathcal{E}=\{0,1,7\}\)</span> the least
+such <span class="math inline">\(\varepsilon\)</span> is <span
+class="math inline">\(25\)</span>, and the bound is <span
+class="math inline">\(105\)</span>.</p>
+</div>
+<p>Heads in the proof carry weights.</p>
+<div id="pr:model-weights" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:model-weights&quot;]">
+<p><strong>Problem 46.1.8</strong>. On <span
+class="math inline">\(\mathbb{Z}/6\)</span> let <span
+class="math inline">\(w&#39;(j):=2+\cos(2\pi j/3)\)</span>, and give two
+heads <span class="math inline">\(\mathfrak{h}_1,\mathfrak{h}_2\)</span>
+the weights <span class="math inline">\(1\)</span> and <span
+class="math inline">\(1/2\)</span> and the form <span
+class="math inline">\(\mathrm{wt}(\mathfrak{h})\mathrm{wt}(\mathfrak{h}&#39;)w&#39;(j)\)</span>
+at a common entry <span class="math inline">\(j\)</span>. Then <span
+class="math inline">\(\hat w&#39;=12,3,3\)</span> at <span
+class="math inline">\(l=0,2,4\)</span> and <span
+class="math inline">\(\hat w&#39;(l)=0\)</span> otherwise. The sum over
+<span class="math inline">\(j\in\{0,3\}\)</span> and all pairs of heads
+is <span class="math inline">\(13.5=5+4+4.5\)</span>: equal heads at
+<span class="math inline">\(l=0\)</span>, unequal heads at <span
+class="math inline">\(l=0\)</span>, and <span
+class="math inline">\(l=2,4\)</span>.</p>
+</div>
+<h1 id="sec:recurrence">§46.2. Sieve systems and the recurrence</h1>
+<p>In the proof the heads are sequences of local units, the sums run
+over scaled images of elements of <span
+class="math inline">\(E^\times\)</span>, and integrating over a common
+entry gives the preceding form.</p>
+<div id="def:sieve-system" class="definition">
+<p><strong>Definition 46.2.1</strong>. Let <span
+class="math inline">\(\mathsf{C}\)</span> be a commutative ring with a
+measure, <span
+class="math inline">\(\psi\colon\mathsf{C}\to\mathbb{C}\)</span> a
+function, <span class="math inline">\(\mathsf{U}\)</span> a topological
+space whose points are called <em>entries</em>, and <span
+class="math inline">\(u\mapsto u^\times\)</span>, <span
+class="math inline">\(\mathsf{C}\to\mathsf{U}\)</span>, and <span
+class="math inline">\(\mathrm{inv}\colon\mathsf{U}\to\mathsf{C}\)</span>
+maps. A <em>head</em> is a sequence <span
+class="math inline">\(\mathfrak{h}=(\mathfrak{h}_0,\mathfrak{h}_1,\dots)\)</span>
+of entries; <span class="math inline">\(\mathfrak{h}[i{:}u]\)</span> is
+<span class="math inline">\(\mathfrak{h}\)</span> with its entry at
+position <span class="math inline">\(i\)</span> replaced by <span
+class="math inline">\(u^\times\)</span>. A <em>sieve system</em> of
+length <span class="math inline">\(n\)</span> is a family <span
+class="math inline">\((\mathcal{J}_i)_{i\ge0}\)</span> of complex
+functions on pairs of heads, of which the axioms use <span
+class="math inline">\(\mathcal{J}_0,\dots,\mathcal{J}_{n+1}\)</span>,
+with <em>weights</em> <span
+class="math inline">\(\mathrm{wt}_i(\mathfrak{h})\in\mathbb{R}\)</span>,
+a <em>decay</em> <span
+class="math inline">\(\mathrm{dec}\colon\mathsf{C}\to\mathbb{R}\)</span>
+and a real number <span
+class="math inline">\(c_{\mathrm{mass}}\)</span>, such that:</p>
+<ol>
+<li><p><span class="math inline">\(\psi(0)=1\)</span>;</p></li>
+<li><p>for <span class="math inline">\(i\le n\)</span>, heads <span
+class="math inline">\(\mathfrak{h},\mathfrak{h}&#39;\)</span> and <span
+class="math inline">\(l\in\mathsf{C}\)</span>, the function <span
+class="math inline">\(u\mapsto\psi(lu)\,\mathcal{J}_{i+1}(\mathfrak{h}[i{:}u],\mathfrak{h}&#39;[i{:}u])\)</span>
+is integrable; its integral is <span
+class="math inline">\(\mathcal{J}_i(\mathfrak{h},\mathfrak{h}&#39;)\)</span>
+if <span class="math inline">\(l=0\)</span>, and has modulus at most
+<span
+class="math inline">\(\mathrm{dec}(l)\mathrm{wt}_i(\mathfrak{h})\mathrm{wt}_i(\mathfrak{h}&#39;)\)</span>
+if <span class="math inline">\(l\)</span> is a unit;</p></li>
+<li><p>for every finite family of heads with a common entry at position
+<span class="math inline">\(n\)</span>, the matrix of the values of
+<span class="math inline">\(\mathcal{J}_{n+1}\)</span> on its pairs is
+positive semidefinite;</p></li>
+<li><p><span class="math inline">\(\mathcal{J}_{n+1}\)</span> is
+continuous on pairs of heads (product topology);</p></li>
+<li><p><span
+class="math inline">\(\lvert\mathcal{J}_0(\mathfrak{h},\mathfrak{h}&#39;)\rvert\le
+c_{\mathrm{mass}}\)</span>;</p></li>
+<li><p>for <span class="math inline">\(i&lt;n\)</span>, if <span
+class="math inline">\(l:=\mathrm{inv}(\mathfrak{h}_i)-\mathrm{inv}(\mathfrak{h}&#39;_i)\)</span>
+is a unit, then <span
+class="math inline">\(\lvert\mathcal{J}_{i+1}(\mathfrak{h},\mathfrak{h}&#39;)\rvert\le\mathrm{dec}(l)\mathrm{wt}_{i+1}(\mathfrak{h})\mathrm{wt}_{i+1}(\mathfrak{h}&#39;)\)</span>.</p></li>
+</ol>
+</div>
+<p>In the model, (ii) at <span class="math inline">\(l=0\)</span>
+defines <span class="math inline">\(\mathcal{J}_1\)</span>, Problem <a
+href="#pr:model-forms" data-reference-type="ref"
+data-reference="pr:model-forms">46.1.4</a> gives (iii), and Problem <a
+href="#pr:model-bound" data-reference-type="ref"
+data-reference="pr:model-bound">46.1.7</a> models the bounds of (ii) and
+(vi); its nonzero frequencies <span
+class="math inline">\(\pm5,\pm10\)</span> are not units of <span
+class="math inline">\(\mathbb{Z}/25\)</span>, so the bound of (ii) at
+units does not apply to them.</p>
+<p><em>The sieve system over the data.</em> We use the admissible
+filling of the data over the CM field <span
+class="math inline">\(E\)</span>, with one chosen embedding <span
+class="math inline">\(\tau\)</span> at each infinite place, as in
+Chapter <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#chap" data-reference-type="ref"
+data-reference="m3-chap">45</a>. Let <span
+class="math inline">\(\mathsf{P}\)</span> be a finite set of finite
+places of <span class="math inline">\(E\)</span>, <span
+class="math inline">\(E_{\mathsf P}:=\prod_{v\in\mathsf{P}}E_v\)</span>
+with integers <span class="math inline">\(\mathcal{O}_{\mathsf
+P}\)</span>, and <span
+class="math inline">\(\mathsf{C}:=\prod_\tau\mathbb{C}\times E_{\mathsf
+P}\)</span>, with Lebesgue measure on each <span
+class="math inline">\(\mathbb{C}\)</span> and the Haar measure of <span
+class="math inline">\(E_{\mathsf P}\)</span> for which <span
+class="math inline">\(\mathcal{O}_{\mathsf P}\)</span> has measure one.
+Let <span class="math inline">\(\delta_E\)</span> be the generator of
+the different of <span class="math inline">\(E\)</span> fixed in the
+proof, with <span class="math inline">\(\bar\delta_E=-\delta_E\)</span>,
+and <span class="math inline">\(\psi(u):=\prod_\tau e^{u_\tau-\bar
+u_\tau}\cdot\psi_f(-u_\mathsf{P}/\delta_E)\)</span>, where <span
+class="math inline">\(u_\mathsf{P}\)</span> is read as a finite adele
+with components <span class="math inline">\(0\)</span> outside <span
+class="math inline">\(\mathsf{P}\)</span>. The entries are the units of
+<span class="math inline">\(\mathsf{C}\)</span>; <span
+class="math inline">\(u^\times\)</span> replaces each zero component of
+<span class="math inline">\(u\)</span> at an infinite place by <span
+class="math inline">\(1\)</span>, and its component at <span
+class="math inline">\(\mathsf{P}\)</span> by <span
+class="math inline">\(1\)</span> if that is not a unit; and <span
+class="math inline">\(\mathrm{inv}(u):=\bigl((u_\tau^{-1})_\tau,\,M^{-1}u_\mathsf{P}^{-1}\bigr)\)</span>.
+Define the <em>scales</em> by <span class="math inline">\(R_{\tau
+i}:=\lvert M\tau(\delta_E)/(2\pi)\rvert^{2(\varrho-i)}/N\)</span> for
+<span class="math inline">\(i\le\varrho\)</span> (exponent <span
+class="math inline">\(0\)</span> for <span
+class="math inline">\(i&gt;\varrho\)</span>); in the proof <span
+class="math inline">\(\lvert M\tau(\delta_E)/(2\pi)\rvert\ge1\)</span>
+at every <span class="math inline">\(\tau\)</span>. For <span
+class="math inline">\(\mathfrak{e}\in E^\times\)</span> let <span
+class="math inline">\(\mathrm{ent}_a(\mathfrak{e}):=\bigl((R_{\tau
+a}\tau(\mathfrak{e}))_\tau,\,\mathfrak{e}\bigr)\in\mathsf{C}\)</span>, a
+unit.</p>
+<div id="def:density-sums" class="definition">
+<p><strong>Definition 46.2.2</strong>. Let <span
+class="math inline">\(\mathcal{E}\subset E^\times\)</span> be finite. A
+tuple <span
+class="math inline">\(\mathfrak{h}=(\mathfrak{e}_0,\dots,\mathfrak{e}_{i-1})\in\mathcal{E}^i\)</span>
+is read as the head with entries <span
+class="math inline">\(\mathrm{ent}_a(\mathfrak{e}_a)\)</span> for <span
+class="math inline">\(a&lt;i\)</span> and <span
+class="math inline">\(\mathrm{ent}_a(1)\)</span> for <span
+class="math inline">\(a\ge i\)</span>; <span
+class="math inline">\((\mathfrak{h},\mathfrak{e})\in\mathcal{E}^{i+1}\)</span>
+is <span class="math inline">\(\mathfrak{h}\)</span> followed by <span
+class="math inline">\(\mathfrak{e}\)</span>. For a sieve system <span
+class="math inline">\((\mathcal{J}_i)\)</span> over <span
+class="math inline">\(\mathsf{C}\)</span> put <span
+class="math inline">\(\Sigma_0:=\operatorname{Re}\mathcal{J}_0(\varnothing,\varnothing)\)</span>,
+<span
+class="math display">\[\Sigma_{i+1}:=\sum_{\mathfrak{e}\in\mathcal{E}}\operatorname{Re}\sum_{\mathfrak{h},\mathfrak{h}&#39;\in\mathcal{E}^i}\mathcal{J}_{i+1}\bigl((\mathfrak{h},\mathfrak{e}),(\mathfrak{h}&#39;,\mathfrak{e})\bigr),\qquad
+\lambda_i:=\sum_{\mathfrak{h}\in\mathcal{E}^i}\mathrm{wt}_i(\mathfrak{h}),\qquad
+c_i:=\frac{\operatorname{vol}(\hat{\mathcal O}_E)}{\prod_\tau R_{\tau
+i}^2}.\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: Chapter 45: <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#thm:sieve">Theorem 45.3.2</a></div><!-- used-in:end -->
+</div>
+<p>For <span class="math inline">\(l\in\mathsf{C}\)</span> and an
+integrable <span
+class="math inline">\(\mathfrak{f}\colon\mathsf{C}\to\mathbb{C}\)</span>
+write <span
+class="math inline">\(\hat{\mathfrak{f}}(l):=\int_{\mathsf{C}}\psi(lu)\mathfrak{f}(u)\,du\)</span>.
+Theorem <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#thm:poisson" data-reference-type="ref"
+data-reference="m3-thm:poisson">45.3.1</a> is used on <span
+class="math inline">\(\mathsf{C}\)</span> in the following form. Let
+<span class="math inline">\(i\ge0\)</span>, let <span
+class="math inline">\(\mathcal{Z}\subset E^\times\)</span> be finite
+with elements integral outside <span
+class="math inline">\(\mathsf{P}\)</span>, let <span
+class="math inline">\(\mathfrak{f}\colon\mathsf{C}\to\mathbb{R}\)</span>
+be nonnegative and integrable and lower semicontinuous at the points
+<span class="math inline">\(\mathrm{ent}_i(\mathfrak{e})\)</span>, <span
+class="math inline">\(\mathfrak{e}\in\mathcal{Z}\)</span>, and let <span
+class="math inline">\(c_\mathfrak{f}\ge0\)</span> with <span
+class="math inline">\(\lvert\hat{\mathfrak{f}}(l)\rvert\le\mathrm{dec}(l)c_\mathfrak{f}\)</span>
+for every unit <span class="math inline">\(l\)</span>. If <span
+class="math inline">\(\varepsilon\)</span> bounds <span
+class="math inline">\(\sum_{y\in\mathcal{Z}&#39;}\mathrm{dec}\bigl(((2\pi\mathrm{i}\,\tau(y)/(\tau(\delta_E)R_{\tau
+i}))_\tau,y)\bigr)\)</span> for every finite set <span
+class="math inline">\(\mathcal{Z}&#39;\)</span> of nonzero elements of
+<span class="math inline">\(E\)</span> integral outside <span
+class="math inline">\(\mathsf{P}\)</span>, then <span
+class="math display">\[\sum_{\mathfrak{e}\in\mathcal{Z}}\mathfrak{f}\bigl(\mathrm{ent}_i(\mathfrak{e})\bigr)\le
+c_i\Bigl(\varepsilon
+c_\mathfrak{f}+\int_{\mathsf{C}}\mathfrak{f}\Bigr).\]</span>
+<em>Status</em>: read from the proof; it is Theorem <a
+href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#thm:poisson" data-reference-type="ref"
+data-reference="m3-thm:poisson">45.3.1</a> for the function on
+the adeles that is <span class="math inline">\(\mathfrak{f}\)</span>
+after the dilation by <span class="math inline">\(R_{\tau i}\)</span> at
+the infinite places on the adeles integral outside <span
+class="math inline">\(\mathsf{P}\)</span>, and zero elsewhere; the
+factor <span class="math inline">\(c_i\)</span> is the change of
+measure.</p>
+<p>For the recurrence fix a sieve system <span
+class="math inline">\((\mathcal{J}_i)\)</span> of length <span
+class="math inline">\(\varrho\)</span> over <span
+class="math inline">\(\mathsf{C}\)</span> with weights <span
+class="math inline">\(\mathrm{wt}_i\ge0\)</span>, a finite <span
+class="math inline">\(\mathcal{E}\subset E^\times\)</span> with <span
+class="math inline">\(\mathfrak{e}\)</span> and <span
+class="math inline">\(\mathfrak{e}^{-1}\)</span> integral outside <span
+class="math inline">\(\mathsf{P}\)</span> for <span
+class="math inline">\(\mathfrak{e}\in\mathcal{E}\)</span>, assume <span
+class="math inline">\(M^{-1}\)</span> integral outside <span
+class="math inline">\(\mathsf{P}\)</span> and <span
+class="math inline">\(\lvert M\tau(\delta_E)/(2\pi)\rvert\ge1\)</span>
+at every <span class="math inline">\(\tau\)</span>, and let <span
+class="math inline">\(\varepsilon\ge0\)</span> satisfy <span id="eq:eps"
+class="math display">\[\begin{equation}
+\label{eq:eps}\tag{1}
+\sum_{y\in\mathcal{Z}&#39;}\mathrm{dec}\Bigl(\bigl((c_\tau\tau(y)/R_{\tau
+a})_\tau,\,y\bigr)\Bigr)\le\varepsilon
+\end{equation}\]</span> for every <span
+class="math inline">\(a\ge0\)</span>, every <span
+class="math inline">\(\mathbf c=(c_\tau)\in\prod_\tau\mathbb{C}\)</span>
+with <span class="math inline">\(c_\tau=0\)</span> or <span
+class="math inline">\(\lvert
+c_\tau\rvert\ge2\pi/\lvert\tau(\delta_E)\rvert\)</span> at each <span
+class="math inline">\(\tau\)</span>, and every finite set <span
+class="math inline">\(\mathcal{Z}&#39;\)</span> of nonzero elements of
+<span class="math inline">\(E\)</span> integral outside <span
+class="math inline">\(\mathsf{P}\)</span>. For <span
+class="math inline">\(i\le\varrho\)</span> and <span
+class="math inline">\(u\in\mathsf{C}\)</span> put <span
+class="math inline">\(\mathfrak{f}_i(u):=\sum_{\mathfrak{h},\mathfrak{h}&#39;\in\mathcal{E}^i}\mathcal{J}_{i+1}(\mathfrak{h}[i{:}u],\mathfrak{h}&#39;[i{:}u])\)</span>,
+so that <span
+class="math inline">\(\Sigma_{i+1}=\sum_{\mathfrak{e}\in\mathcal{E}}\operatorname{Re}\mathfrak{f}_i(\mathrm{ent}_i(\mathfrak{e}))\)</span>.
+By Fatou’s lemma and downward induction on <span
+class="math inline">\(i\)</span>, <span
+class="math inline">\(\operatorname{Re}\mathfrak{f}_i\)</span> is lower
+semicontinuous at <span
+class="math inline">\(\mathrm{ent}_i(\mathfrak{e})\)</span> for every
+<span class="math inline">\(\mathfrak{e}\in E^\times\)</span> (read from
+the proof).</p>
+<div id="pr:nonneg" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:nonneg&quot;]">
+<p><strong>Problem 46.2.1</strong>. In a sieve system of length <span
+class="math inline">\(n\)</span>, for <span class="math inline">\(i\le
+n\)</span> and finitely many heads with a common entry at position <span
+class="math inline">\(i\)</span>, the sum of <span
+class="math inline">\(\mathcal{J}_{i+1}\)</span> over all their pairs is
+real and nonnegative. In particular <span
+class="math inline">\(\mathfrak{f}_i\ge0\)</span>.</p>
+</div>
+<div id="pr:zero-frequency" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:zero-frequency&quot;]">
+<p><strong>Problem 46.2.2</strong>. For <span class="math inline">\(0\le
+i\le\varrho\)</span>, <span
+class="math inline">\(\int_{\mathsf{C}}\mathfrak{f}_i=\sum_{\mathfrak{h},\mathfrak{h}&#39;\in\mathcal{E}^i}\mathcal{J}_i(\mathfrak{h},\mathfrak{h}&#39;)\)</span>.
+For <span class="math inline">\(1\le i\le\varrho\)</span>, if <span
+class="math inline">\(\mathfrak{h},\mathfrak{h}&#39;\in\mathcal{E}^i\)</span>
+have distinct last entries <span
+class="math inline">\(\mathfrak{e},\mathfrak{e}&#39;\)</span>, then
+<span
+class="math inline">\(y:=(\mathfrak{e}^{-1}-\mathfrak{e}&#39;^{-1})/M\)</span>
+is nonzero and integral outside <span
+class="math inline">\(\mathsf{P}\)</span>, the <span
+class="math inline">\(\mathrm{inv}\)</span>-images of the entries at
+position <span class="math inline">\(i-1\)</span> differ by <span
+class="math inline">\(\bigl((M\tau(y)/R_{\tau,i-1})_\tau,y\bigr)\)</span>,
+and <span
+class="math inline">\(\lvert\mathcal{J}_i(\mathfrak{h},\mathfrak{h}&#39;)\rvert\le\varepsilon\mathrm{wt}_i(\mathfrak{h})\mathrm{wt}_i(\mathfrak{h}&#39;)\)</span>.
+For <span class="math inline">\(0\le i\le\varrho\)</span>, <span
+class="math inline">\(\operatorname{Re}\int_{\mathsf{C}}\mathfrak{f}_i\le\Sigma_i+\varepsilon\lambda_i^2\)</span>.</p>
+</div>
+<div id="pr:nonzero-frequencies" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:nonzero-frequencies&quot;]">
+<p><strong>Problem 46.2.3</strong>. <span
+class="math inline">\(\lvert\hat{\mathfrak{f}}_i(l)\rvert\le\mathrm{dec}(l)\lambda_i^2\)</span>
+for every unit <span class="math inline">\(l\)</span> of <span
+class="math inline">\(\mathsf{C}\)</span>.</p>
+</div>
+<p>The change of measure with <span
+class="math inline">\(\mathfrak{f}=\operatorname{Re}\mathfrak{f}_i\)</span>,
+<span class="math inline">\(\mathcal{Z}=\mathcal{E}\)</span> and <span
+class="math inline">\(c_\mathfrak{f}=\lambda_i^2\)</span> (the
+frequencies are <a href="#eq:eps" data-reference-type="eqref"
+data-reference="eq:eps">(1)</a> with <span
+class="math inline">\(c_\tau=2\pi\mathrm{i}/\tau(\delta_E)\)</span>),
+together with Problems <a href="#pr:nonneg" data-reference-type="ref"
+data-reference="pr:nonneg">46.2.1</a>–<a href="#pr:nonzero-frequencies"
+data-reference-type="ref"
+data-reference="pr:nonzero-frequencies">46.2.3</a>, proves the
+following.</p>
+<div id="thm:recurrence" class="theorem">
+<p><strong>Theorem 46.2.1</strong>. <em>Under these hypotheses, for the data,
+<span class="math inline">\(\Sigma_{i+1}\le
+c_i\bigl(\Sigma_i+2\varepsilon\lambda_i^2\bigr)\)</span> for <span
+class="math inline">\(0\le i\le\varrho\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html">Chapter 45</a></div><!-- used-in:end -->
+</div>
+<div id="pr:gaussian" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:gaussian&quot;]">
+<p><strong>Problem 46.2.4</strong>. In the lattice example <span
+class="math inline">\(E=\mathbb{Q}(\mathrm{i})\)</span>, <span
+class="math inline">\(\operatorname{vol}(\hat{\mathcal O}_E)=1\)</span>,
+and <span class="math inline">\(\delta_E=2\mathrm{i}\)</span> generates
+the different. With <span
+class="math inline">\(\mathsf{P}=\varnothing\)</span>, the scale <span
+class="math inline">\(2\)</span> and <span
+class="math inline">\(\mathfrak{f}(z)=e^{-\lvert z\rvert^2}\)</span>,
+the change-of-measure factor is <span
+class="math inline">\(1/4\)</span>, and Poisson summation on the lattice
+gives <span
+class="math inline">\(\sum_{\nu\in\mathbb{Z}[\mathrm{i}]}e^{-4\lvert\nu\rvert^2}=1.0746048\ldots=\frac\pi4\sum_{l\in\mathbb{Z}[\mathrm{i}]}e^{-\pi^2\lvert
+l\rvert^2/4}\)</span>. The term <span class="math inline">\(l=0\)</span>
+is <span class="math inline">\(\pi/4=\frac14\int_\mathbb{C}e^{-\lvert
+z\rvert^2}dz\)</span>.</p>
+</div>
+<h1 id="sec:frequencies">§46.3. The sum over the frequencies</h1>
+<p>Condition <a href="#eq:eps" data-reference-type="eqref"
+data-reference="eq:eps">(1)</a> asks for a uniform bound over all
+finite sets of nonzero numbers integral outside <span
+class="math inline">\(\mathsf{P}\)</span>. For <span
+class="math inline">\(\nu\in E\)</span> let <span
+class="math inline">\(\mathfrak
+b_\nu:=\{a\in\mathcal{O}_E:a\nu\in\mathcal{O}_E\}\)</span>, the
+<em>denominator ideal</em>. For a unit <span
+class="math inline">\(z\)</span> of <span
+class="math inline">\(E_{\mathsf P}\)</span>, <span
+class="math inline">\([\mathcal{O}_{\mathsf P}:z\mathcal{O}_{\mathsf
+P}]:=\prod_{v\in\mathsf{P}}\lvert z\rvert_v^{-1}\)</span> (normalized
+absolute values) is the index when <span
+class="math inline">\(z\in\mathcal{O}_{\mathsf P}\)</span>. In the
+proof, at a unit <span class="math inline">\(l\)</span> of <span
+class="math inline">\(\mathsf{C}\)</span>, <span
+class="math display">\[\mathrm{dec}(l)=c&#39;\prod_\tau\lvert
+l_\tau\rvert^{-k_1}\min\bigl(1,\lvert
+l_\tau\rvert^{-1}\bigr)^6\cdot\frac{[\mathcal{O}_{\mathsf
+P}:l_\mathsf{P}\mathcal{O}_{\mathsf P}]^{k_1/2}}{[\mathcal{O}_{\mathsf
+P}:\mathcal{O}_{\mathsf P}\cap l_\mathsf{P}^{-1}\mathcal{O}_{\mathsf
+P}]^3},\qquad k_1:=k-(\varrho+1)^7\ge0,\]</span> with <span
+class="math inline">\(c&#39;=(c_{\mathrm{vol}}b^{2000(\varrho+1)^9})^fb^{(\varrho+1)^9f}\)</span>,
+where <span class="math inline">\(c_{\mathrm{vol}}&gt;0\)</span> is the
+volume ratio of the shape, and <span
+class="math inline">\(\mathrm{dec}(l)=0\)</span> if some <span
+class="math inline">\(l_\tau=0\)</span> (read from the proof).</p>
+<div id="pr:product-formula" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:product-formula&quot;]">
+<p><strong>Problem 46.3.1</strong>. For <span class="math inline">\(y\in
+E^\times\)</span> integral outside <span
+class="math inline">\(\mathsf{P}\)</span>: <span
+class="math inline">\([\mathcal{O}_{\mathsf P}:y\mathcal{O}_{\mathsf
+P}]\le\prod_\tau\lvert\tau(y)\rvert^2\)</span> and <span
+class="math inline">\(\mathrm{N}\mathfrak b_y\le[\mathcal{O}_{\mathsf
+P}:\mathcal{O}_{\mathsf P}\cap y^{-1}\mathcal{O}_{\mathsf
+P}]\)</span>.</p>
+</div>
+<div id="pr:inert" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:inert&quot;]">
+<p><strong>Problem 46.3.2</strong>. In <span
+class="math inline">\(\mathbb{Q}(\mathrm{i})\)</span> with <span
+class="math inline">\(\mathsf{P}=\{3\}\)</span> and <span
+class="math inline">\(y=3^j\)</span> for <span
+class="math inline">\(j\in\mathbb{Z}\)</span>: <span
+class="math inline">\([\mathcal{O}_{\mathsf P}:y\mathcal{O}_{\mathsf
+P}]=9^j\)</span> and <span class="math inline">\([\mathcal{O}_{\mathsf
+P}:\mathcal{O}_{\mathsf P}\cap y^{-1}\mathcal{O}_{\mathsf
+P}]=9^{\max(0,-j)}\)</span>. With the model exponent <span
+class="math inline">\(k_1=2\)</span>, the quotient of the two index
+powers in <span class="math inline">\(\mathrm{dec}\)</span> is <span
+class="math inline">\(9^{-8},9^{-4},1,9\)</span> at <span
+class="math inline">\(j=-2,-1,0,1\)</span>, while <span
+class="math inline">\([\mathcal{O}_{\mathsf P}:y\mathcal{O}_{\mathsf
+P}]\cdot\lvert y\rvert^{-2}=1\)</span> for all <span
+class="math inline">\(j\)</span>.</p>
+</div>
+<div id="pr:one-place" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:one-place&quot;]">
+<p><strong>Problem 46.3.3</strong>. If <span
+class="math inline">\(c,y\in\mathbb{C}^\times\)</span> and <span
+class="math inline">\(k_1\ge0\)</span>, then <span
+class="math display">\[\lvert cy\rvert^{-k_1}\min\bigl(1,\lvert
+cy\rvert^{-1}\bigr)^6\lvert y\rvert^{k_1}\le\lvert
+c\rvert^{-k_1}\max\bigl(1,\lvert c\rvert^{-1}\bigr)^6\max\bigl(1,\lvert
+y\rvert\bigr)^{-6}.\]</span></p>
+</div>
+<p>So for <span class="math inline">\(y\ne0\)</span> integral outside
+<span class="math inline">\(\mathsf{P}\)</span> and <span
+class="math inline">\(c_\tau\in\mathbb{C}^\times\)</span>, the decay at
+<span class="math inline">\(((c_\tau\tau(y))_\tau,y)\)</span> is at most
+<span class="math inline">\(c&#39;\prod_\tau\lvert
+c_\tau\rvert^{-k_1}\max(1,\lvert c_\tau\rvert^{-1})^6\)</span> times
+<span
+class="math inline">\(\prod_\tau\max(1,\lvert\tau(y)\rvert)^{-6}\cdot\mathrm{N}\mathfrak
+b_y^{-3}\)</span>.</p>
+<div id="pr:cosets" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:cosets&quot;]">
+<p><strong>Problem 46.3.4</strong>. For a nonzero ideal <span
+class="math inline">\(\mathfrak b\)</span>, the <span
+class="math inline">\(\nu\in E\)</span> with <span
+class="math inline">\(\mathfrak b\subseteq\mathfrak b_\nu\)</span> lie
+in at most <span class="math inline">\(\mathrm{N}\mathfrak b\)</span>
+classes modulo <span class="math inline">\(\mathcal{O}_E\)</span>. Two
+distinct elements <span class="math inline">\(\nu,\nu&#39;\)</span> of
+one class do not have <span class="math inline">\(\tau(\nu)\)</span> and
+<span class="math inline">\(\tau(\nu&#39;)\)</span> in the same square
+<span
+class="math inline">\([j/2,(j+1)/2)\times[j&#39;/2,(j&#39;+1)/2)\)</span>
+for every <span class="math inline">\(\tau\)</span>.</p>
+</div>
+<div id="pr:corner-weight" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:corner-weight&quot;]">
+<p><strong>Problem 46.3.5</strong>. If <span class="math inline">\(\lvert
+z-z_0\rvert&lt;1\)</span>, then <span
+class="math inline">\(\max(1,\lvert z\rvert)^{-6}\le64\max(1,\lvert
+z_0\rvert)^{-6}\)</span>.</p>
+</div>
+<div id="pr:corner-sum" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:corner-sum&quot;]">
+<p><strong>Problem 46.3.6</strong>. By machine, <span
+class="math inline">\(\sum_{z\in\frac12\mathbb{Z}[\mathrm{i}]}\max(1,\lvert
+z\rvert)^{-6}=19.1704\ldots\)</span>. A disc of radius at least <span
+class="math inline">\(1\)</span> contains at most <span
+class="math inline">\(25\)</span> times its squared radius points of
+<span class="math inline">\(\frac12\mathbb{Z}[\mathrm{i}]\)</span>, and,
+without the machine value, the sum over every finite subset of <span
+class="math inline">\(\frac12\mathbb{Z}[\mathrm{i}]\)</span> is at most
+<span class="math inline">\(38\)</span>.</p>
+</div>
+<p>At <span class="math inline">\(s=2\)</span> the Euler factor of the
+Dedekind zeta function <span class="math inline">\(\zeta_E\)</span> at a
+prime <span class="math inline">\(p\)</span> is at most <span
+class="math inline">\((1-p^{-2})^{-[E:\mathbb{Q}]}\)</span>, so the sum
+over the nonzero integral ideals is <span
+class="math inline">\(\sum_{\mathfrak b}\mathrm{N}\mathfrak
+b^{-2}=\zeta_E(2)\le\zeta(2)^{2f}\le e^{4f}\)</span>. <em>Status</em>:
+classical <span class="citation"
+data-cites="Ne">[<a href="#ref-Ne">Ne</a>]</span>. Problems <a
+href="#pr:cosets" data-reference-type="ref"
+data-reference="pr:cosets">46.3.4</a>–<a href="#pr:corner-sum"
+data-reference-type="ref" data-reference="pr:corner-sum">46.3.6</a> and this
+bound prove the following.</p>
+<div id="thm:frequencies" class="theorem">
+<p><strong>Theorem 46.3.1</strong>. <em>Let <span
+class="math inline">\(E\)</span> be a totally complex number field with
+<span class="math inline">\(f\)</span> infinite places and a chosen
+embedding <span class="math inline">\(\tau\)</span> at each, and <span
+class="math inline">\(\mathcal{Z}\subset E\)</span> finite. Then <span
+class="math display">\[\sum_{\nu\in\mathcal{Z}}\prod_\tau\max\bigl(1,\lvert\tau(\nu)\rvert\bigr)^{-6}\cdot\mathrm{N}\mathfrak
+b_\nu^{-3}\le(64\cdot38\cdot e^4)^f .\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:frequencies-qi">Problem 46.3.7</a>; <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html">Chapter 45</a></div><!-- used-in:end -->
+</div>
+<div id="pr:frequencies-qi" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:frequencies-qi&quot;]">
+<p><strong>Problem 46.3.7</strong>. By machine, for <span
+class="math inline">\(\mathbb{Q}(\mathrm{i})\)</span>: <span
+class="math inline">\(\sum_{\nu\in\mathbb{Z}[\mathrm{i}]}\max(1,\lvert\nu\rvert)^{-6}=5.6589\ldots\)</span>,
+and the <span class="math inline">\(\nu\)</span> with <span
+class="math inline">\(\mathrm{N}\mathfrak b_\nu\le40\)</span> and <span
+class="math inline">\(\lvert\nu\rvert\le12\)</span> contribute <span
+class="math inline">\(6.966\ldots\)</span> to the sum of Theorem <a
+href="#thm:frequencies" data-reference-type="ref"
+data-reference="thm:frequencies">46.3.1</a> (the bound is <span
+class="math inline">\(1.3278\ldots\cdot10^5\)</span>).</p>
+</div>
+<p>If some <span class="math inline">\(c_\tau=0\)</span> in <a
+href="#eq:eps" data-reference-type="eqref"
+data-reference="eq:eps">(1)</a>, every summand is <span
+class="math inline">\(0\)</span>. Otherwise <span
+class="math inline">\(\lvert c_\tau/R_{\tau a}\rvert^{-1}\le\lvert
+M\tau(\delta_E)/(2\pi)\rvert^{2\varrho+1}/(MN)\le
+b^{23(2\varrho+1)}\)</span> in the proof, and Problems <a
+href="#pr:product-formula" data-reference-type="ref"
+data-reference="pr:product-formula">46.3.1</a> and <a href="#pr:one-place"
+data-reference-type="ref" data-reference="pr:one-place">46.3.3</a> and
+Theorem <a href="#thm:frequencies" data-reference-type="ref"
+data-reference="thm:frequencies">46.3.1</a> bound the sum by <span
+class="math display">\[c&#39;(64\cdot38\cdot
+e^4)^fb^{138(2\varrho+1)f}\prod_\tau(\lvert
+M\tau(\delta_E)/(2\pi)\rvert^{2\varrho+1}/(MN))^{k_1}.\]</span> With
+<span class="math inline">\(64\cdot38\cdot e^4\le b^3\)</span> and
+similar size bounds the proof enlarges this to <span
+class="math inline">\(\varepsilon=c_{\mathrm{fr}}\)</span> of Theorem <a
+href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#thm:sieve" data-reference-type="ref"
+data-reference="m3-thm:sieve">45.3.2</a>.</p>
+<h1 id="sec:heads">§46.4. Heads, weights and the sieve</h1>
+<p>In the proof the weight of <span
+class="math inline">\(\mathfrak{h}\in\mathcal{E}^i\)</span> is a product
+over its prefix products <span
+class="math inline">\(\delta_a:=\mathfrak{e}_0\cdots\mathfrak{e}_a\)</span>,
+<span class="math inline">\(a&lt;i\)</span>. At <span
+class="math inline">\(\tau\)</span> the factor is <span
+class="math inline">\(\max(1,\lvert z\rvert^{-1})^{k_2}\)</span> if
+<span class="math inline">\(\lvert z\rvert\le
+b^{60(\varrho+1)^2}\)</span> and <span class="math inline">\(0\)</span>
+otherwise, where <span class="math inline">\(z\)</span> is the product
+of the first <span class="math inline">\(a+1\)</span> entries of the
+head at <span class="math inline">\(\tau\)</span>; at <span
+class="math inline">\(\mathsf{P}\)</span> it is <span
+class="math inline">\([\mathcal{O}_{\mathsf
+P}:\delta_a\mathcal{O}_{\mathsf P}]^{k_2/2}\)</span> if <span
+class="math inline">\(\delta_a\in\mathcal{O}_{\mathsf P}\)</span> and
+<span class="math inline">\(0\)</span> otherwise; here <span
+class="math inline">\(k_2:=(\varrho+1)^6\)</span>. A head is determined
+by its prefix products.</p>
+<div id="pr:prefix" class="problem" data-progress-ids="[&quot;20261126T080400--the-sieve-over-the-entries__workbook.tex#pr:prefix&quot;]">
+<p><strong>Problem 46.4.1</strong>. Take <span
+class="math inline">\(\mathcal{E}=\{1,2,1/2\}\subset\mathbb{Q}(\mathrm{i})\)</span>,
+<span class="math inline">\(\mathsf{P}\)</span> the prime above <span
+class="math inline">\(2\)</span>, all scales <span
+class="math inline">\(1\)</span>, the cutoff <span
+class="math inline">\(2\)</span> in place of <span
+class="math inline">\(b^{60(\varrho+1)^2}\)</span> and the exponent
+<span class="math inline">\(2\)</span> in place of <span
+class="math inline">\(k_2\)</span>. The heads of length two with nonzero
+weight are <span
+class="math inline">\((1,1),(1,2),(2,1),(2,1/2)\)</span>, with weights
+<span class="math inline">\(1,4,16,4\)</span>; so <span
+class="math inline">\(\lambda_2=25\)</span>.</p>
+</div>
+<p>In the proof, for <span class="math inline">\(0\le
+i\le\varrho\)</span> and <span
+class="math inline">\(\mathcal{E}\)</span> with elements integral
+outside <span class="math inline">\(\mathsf{P}\)</span>, the prefix
+products of a head of nonzero weight are algebraic integers of modulus
+at most <span class="math inline">\(b^{120(\varrho+1)^2}\)</span> at
+every <span class="math inline">\(\tau\)</span>, and packing them,
+bounding each weight and bounding <span
+class="math inline">\(\prod_{a&lt;i}c_a\)</span> below gives <span
+class="math inline">\(\lambda_i^2\le
+c_{\mathrm{wt}}\prod_{a&lt;i}c_a\)</span>, with <span
+class="math inline">\(c_{\mathrm{wt}}=b^{400(\varrho+1)^9f}\)</span>
+(<em>Status</em>: read from the proof; not proved here). For the
+application the proof uses the Weil data and the places <span
+class="math inline">\(\mathcal D\)</span> of Theorem <a
+href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#thm:sieve" data-reference-type="ref"
+data-reference="m3-thm:sieve">45.3.2</a> with a <em>nonzero
+vector in the reduced Bessel span</em> at each, that is, in the span of
+the <em>Bessel tuple</em> <span
+class="math inline">\((v_1,\dots,v_\varrho,z)\)</span> modulo the chosen
+place or its conjugate (Definitions <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:frame"
+data-reference-type="ref"
+data-reference="m2-def:frame">43.2.1</a> and <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:fixer" data-reference-type="ref"
+data-reference="m2-def:fixer">43.2.7</a>), and chooses <span
+class="math inline">\(\mathsf{P}\)</span> stable under conjugation with
+<span class="math inline">\(M^{-1}\)</span> integral outside <span
+class="math inline">\(\mathsf{P}\)</span> and every element of <span
+class="math inline">\(\mathcal{E}\)</span> a unit outside <span
+class="math inline">\(\mathsf{P}\)</span>. At each <span
+class="math inline">\(\tau\)</span> the band limits of the Bessel system
+give a sieve system of length <span
+class="math inline">\(\varrho\)</span> over <span
+class="math inline">\(\mathbb{C}\)</span> with character <span
+class="math inline">\(e^{z-\bar z}\)</span> and <span
+class="math inline">\(c_{\mathrm{mass}}=(1+b^{-10})/d_\tau\)</span>.
+Over <span class="math inline">\(E_{\mathsf P}\)</span> the proof
+chooses an intermediate subgroup. For <span
+class="math inline">\(j\le\varrho\)</span> it uses the subgroup’s floor
+form at <span class="math inline">\(j\)</span>, and for <span
+class="math inline">\(j&gt;\varrho\)</span> it uses the last-entry
+density at the <span class="math inline">\(\mathsf{P}\)</span>-component
+of the chosen idele above <span class="math inline">\(N\)</span>.
+Dividing each form by the subgroup’s mass ratio gives a sieve system of
+length <span class="math inline">\(\varrho\)</span> with <span
+class="math inline">\(c_{\mathrm{mass}}=(1+b^{-6})b^{-6k\#\mathcal
+D}\)</span>. <em>Status</em>: the local systems are read from the proof.
+Their product is a sieve system over <span
+class="math inline">\(\mathsf{C}\)</span>, by Fubini’s theorem and
+Problem <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#pr:schur" data-reference-type="ref"
+data-reference="m3-pr:schur">45.3.6</a>, with the prefix weights
+above, the decay of Section <a href="#sec:frequencies"
+data-reference-type="ref" data-reference="sec:frequencies">46.3</a> and
+<span class="math inline">\(c_{\mathrm{mass}}=c_{\mathrm{bot}}\)</span>.
+Then <span class="math inline">\(\Sigma_0\le c_{\mathrm{bot}}\)</span>
+by (v), Theorem <a href="#thm:recurrence" data-reference-type="ref"
+data-reference="thm:recurrence">46.2.1</a> with <span
+class="math inline">\(\varepsilon=c_{\mathrm{fr}}\)</span> gives the
+recurrence, and the real part of the top sum of Theorem <a
+href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#thm:sieve" data-reference-type="ref"
+data-reference="m3-thm:sieve">45.3.2</a>, whose last entries run
+over a subset of <span class="math inline">\(\mathcal{E}\)</span>, is at
+most <span class="math inline">\(\Sigma_{\varrho+1}\)</span> by
+Problem <a href="#pr:nonneg" data-reference-type="ref"
+data-reference="pr:nonneg">46.2.1</a>. This gives Theorem <a
+href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#thm:sieve" data-reference-type="ref"
+data-reference="m3-thm:sieve">45.3.2</a>.</p>
+<h4 id="what-has-been-proved.">What has been proved.</h4>
+<p>The six axioms and Poisson summation give Theorem <a
+href="#thm:recurrence" data-reference-type="ref"
+data-reference="thm:recurrence">46.2.1</a>. Packing in cosets and <span
+class="math inline">\(\zeta_E(2)\)</span> give Theorem <a
+href="#thm:frequencies" data-reference-type="ref"
+data-reference="thm:frequencies">46.3.1</a>. Taken as given: Theorem <a
+href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#thm:poisson" data-reference-type="ref"
+data-reference="m3-thm:poisson">45.3.1</a> and its form on
+<span class="math inline">\(\mathsf{C}\)</span>, the lower
+semicontinuity of <span
+class="math inline">\(\operatorname{Re}\mathfrak{f}_i\)</span>, the
+bound for <span class="math inline">\(\zeta_E(2)\)</span>, the form of
+the decay, the bound for <span
+class="math inline">\(\lambda_i^2\)</span> in terms of the Poisson
+constants, and the local bounds for pairs of translates of the Bessel
+tuple of Definition <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:frame" data-reference-type="ref"
+data-reference="m2-def:frame">43.2.1</a>.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. Definition <a
+href="#def:sieve-system" data-reference-type="ref"
+data-reference="def:sieve-system">46.2.1</a> is <code>New.SieveSystem</code>,
+and the system over the data is
+<code>New.Filling.IsGlobalSieveSystem</code>; <span
+class="math inline">\(\Sigma_i\)</span> is <code>densitySum</code>.
+Theorem <a href="#thm:recurrence" data-reference-type="ref"
+data-reference="thm:recurrence">46.2.1</a> is the case <span
+class="math inline">\(n=\varrho\)</span> of
+<code>New.Filling.densitySum_succ_le_mul_densitySum_add</code>, the
+change of measure is the case <span class="math inline">\(r_\tau=R_{\tau
+i}\)</span> of
+<code>sum_ratPoint_le_mul_add_integral_of_fourier_le</code>, and the
+lower semicontinuity is <code>lowerSemicontinuousAt_entryDensity</code>.
+Theorem <a href="#thm:frequencies" data-reference-type="ref"
+data-reference="thm:frequencies">46.3.1</a> is
+<code>New.sum_height_inv_cube_le</code>; the decay of the proof
+satisfies <a href="#eq:eps" data-reference-type="eqref"
+data-reference="eq:eps">(1)</a> with the bound in
+<code>boundsDecay_prod</code>, the bound for <span
+class="math inline">\(\lambda_i^2\)</span> is
+<code>sq_sum_globalWeight_le</code>, and <code>New.Filling.sieve</code>
+combines these estimates, in the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>. For the remaining
+statements see <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>: <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalSieve.lean#L93">the
+character</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/Unfolding/Setup.lean#L250">the
+scales</a> and <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/Unfolding/Setup.lean#L509">their
+bounds</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalSieve.lean#L521">scaled
+entries and heads</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalSieve.lean#L514">the
+condition on <span class="math inline">\(\varepsilon\)</span></a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalSieve.lean#L102">the
+decay at <span class="math inline">\(\mathsf{P}\)</span></a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalSieve.lean#L927">the
+weights</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalSieve.lean#L974">size</a>
+and <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalSieve.lean#L877">injectivity</a>
+of prefix products, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalSieve.lean#L693">the
+two</a> <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalSieve.lean#L620">errors</a>,
+<a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalSieve.lean#L653">unequal
+last entries</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/Unfolding/Setup.lean#L109">the
+different</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Adelic/Adeles/SemilocalProducts.lean#L255">the
+measure on <span class="math inline">\(E_{\mathsf P}\)</span></a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/Frequencies.lean#L28"><span
+class="math inline">\(\mathfrak b_\nu\)</span></a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean#L641">the
+choice of places</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/Bessel/Basic.lean#L849">the
+volume ratio</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalSieve.lean#L531"><span
+class="math inline">\(c_i\)</span></a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalSieve.lean#L540"><span
+class="math inline">\(\mathfrak{f}_i\)</span></a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Adelic/Adeles/SemilocalProducts.lean#L329">the
+index</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/SieveSystem.lean#L147">products
+of systems</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/Frames/RealBandLimits.lean#L696">the
+systems at <span class="math inline">\(\tau\)</span></a> and <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/FiniteSieveSystem.lean#L280">at
+<span class="math inline">\(\mathsf{P}\)</span></a>.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secmodel">§<a href="#sec:model"
+data-reference-type="ref" data-reference="sec:model">46.1</a></h2>
+<dl>
+<dt><a href="#pr:finite-poisson" data-reference-type="ref"
+data-reference="pr:finite-poisson">46.1.1</a></dt>
+<dd>
+<p>Sum <span class="math inline">\(\mathrm{e}(-lj/q)\)</span> over <span
+class="math inline">\(l\in H^\perp\)</span> first.</p>
+</dd>
+<dt><a href="#pr:one-sided" data-reference-type="ref"
+data-reference="pr:one-sided">46.1.3</a></dt>
+<dd>
+<p>Enlarge <span class="math inline">\(\mathcal{Z}\)</span> to <span
+class="math inline">\(H\)</span>.</p>
+</dd>
+<dt><a href="#pr:model-step" data-reference-type="ref"
+data-reference="pr:model-step">46.1.5</a></dt>
+<dd>
+<p>Problem <a href="#pr:model-forms" data-reference-type="ref"
+data-reference="pr:model-forms">46.1.4</a>: list <span
+class="math inline">\(a&#39;-a\)</span> modulo <span
+class="math inline">\(25\)</span> for <span
+class="math inline">\(a,a&#39;\in\mathcal{E}\)</span>.</p>
+</dd>
+<dt><a href="#pr:model-bound" data-reference-type="ref"
+data-reference="pr:model-bound">46.1.7</a></dt>
+<dd>
+<p>Split the term <span class="math inline">\(l=0\)</span> into equal
+and unequal heads.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secrecurrence">§<a href="#sec:recurrence"
+data-reference-type="ref" data-reference="sec:recurrence">46.2</a></h2>
+<dl>
+<dt><a href="#pr:nonneg" data-reference-type="ref"
+data-reference="pr:nonneg">46.2.1</a></dt>
+<dd>
+<p>Induct downwards using (iii) and (ii) at <span
+class="math inline">\(l=0\)</span>.</p>
+</dd>
+<dt><a href="#pr:zero-frequency" data-reference-type="ref"
+data-reference="pr:zero-frequency">46.2.2</a></dt>
+<dd>
+<p>Which pairs already occur in <span
+class="math inline">\(\Sigma_i\)</span>?</p>
+</dd>
+<dt><a href="#pr:gaussian" data-reference-type="ref"
+data-reference="pr:gaussian">46.2.4</a></dt>
+<dd>
+<p>Take the Gaussian transform in each real coordinate.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secfrequencies">§<a href="#sec:frequencies"
+data-reference-type="ref" data-reference="sec:frequencies">46.3</a></h2>
+<dl>
+<dt><a href="#pr:product-formula" data-reference-type="ref"
+data-reference="pr:product-formula">46.3.1</a></dt>
+<dd>
+<p>Use the product formula and reduce <span
+class="math inline">\(\mathcal{O}_E\)</span> modulo <span
+class="math inline">\(\mathcal{O}_{\mathsf P}\cap
+y^{-1}\mathcal{O}_{\mathsf P}\)</span>.</p>
+</dd>
+<dt><a href="#pr:one-place" data-reference-type="ref"
+data-reference="pr:one-place">46.3.3</a></dt>
+<dd>
+<p>Separate <span class="math inline">\(\lvert y\rvert\ge1\)</span> and
+<span class="math inline">\(\lvert y\rvert\le1\)</span>.</p>
+</dd>
+<dt><a href="#pr:cosets" data-reference-type="ref"
+data-reference="pr:cosets">46.3.4</a></dt>
+<dd>
+<p><span class="math inline">\(\mathfrak b^{-1}/\mathcal{O}_E\)</span>;
+a nonzero algebraic integer has norm at least <span
+class="math inline">\(1\)</span>.</p>
+</dd>
+<dt><a href="#pr:corner-weight" data-reference-type="ref"
+data-reference="pr:corner-weight">46.3.5</a></dt>
+<dd>
+<p>Use the triangle inequality.</p>
+</dd>
+<dt><a href="#pr:corner-sum" data-reference-type="ref"
+data-reference="pr:corner-sum">46.3.6</a></dt>
+<dd>
+<p>Use Python’s <code>math.hypot</code> for the sum. For the bound
+integrate the disc count against <span
+class="math inline">\(6s^{-7}\,ds\)</span>.</p>
+</dd>
+<dt><a href="#pr:frequencies-qi" data-reference-type="ref"
+data-reference="pr:frequencies-qi">46.3.7</a></dt>
+<dd>
+<p>Use Python’s <code>sum</code> on reduced Gaussian fractions, with one
+denominator per unit orbit.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Ne"><span class="bib-label">[Ne]</span> J. Neukirch, <em>Algebraic Number Theory</em>, Springer, 1999.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-fPze2OA1e2EC4hjyJgdIOlx5n1IYOpYTFO9fqwKZT+Q=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-25" />
+  <title>Divisibility along the chain</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","Oc":"\\mathcal{O}","Ec":"\\mathcal{E}","Kc":"\\mathcal{K}","Int":"\\mathrm{Int}","Price":"\\mathrm{Pr}","len":"\\operatorname{length}","gain":"\\operatorname{gain}","ord":"\\operatorname{ord}","diag":"\\operatorname{diag}","qbinom":["\\genfrac{[}{]}{0pt}{}{#1}{#2}_{#3}",3]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="25">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261125T016700--divisibility-along-the-chain__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-26 19:19:04
+      <a href="20261125T016700--divisibility-along-the-chain__workbook.tex" class="my-link">tex</a>
+      <a href="20261125T016700--divisibility-along-the-chain__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261125T016700--divisibility-along-the-chain__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Divisibility along the chain <a class="stable-tag" href="tag/22PE.html" title="Stable tag: cite as Tag 22PE">Tag 22PE</a></h1>
+<p class="date">November 25, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:sym" id="toc-sec:sym">§25.1. Elementary and complete symmetric functions</a></li>
+<li><a href="#sec:val" id="toc-sec:val">§25.2. Valuations</a></li>
+<li><a href="#sec:move" id="toc-sec:move">§25.3. Moving a Hecke operator along a chain</a></li>
+<li><a href="#sec:gain" id="toc-sec:gain">§25.4. A gain on a sublattice</a></li>
+<li><a href="#sec:overcount" id="toc-sec:overcount">§25.5. Stepwise maxima overcount</a>
+<ul>
+<li><a href="#exercises" id="toc-exercises">Exercises</a></li>
+</ul></li>
+<li><a href="#sec:proof" id="toc-sec:proof">§25.6. The step in the proof</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secsym" id="toc-secsym">§25.1</a></li>
+<li><a href="#secval" id="toc-secval">§25.2</a></li>
+<li><a href="#secmove" id="toc-secmove">§25.3</a></li>
+<li><a href="#secgain" id="toc-secgain">§25.4</a></li>
+<li><a href="#secovercount" id="toc-secovercount">§25.5</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Formal power series over a commutative ring. Finite extensions of
+<span class="math inline">\(\mathbb{Q}_p\)</span>, their valuations, and
+lattices over their rings of integers; the length of a module of finite
+length. Gaussian binomial coefficients <span
+class="math inline">\(\genfrac{[}{]}{0pt}{}{n}{l}_{Q}\)</span> <span
+class="citation" data-cites="Mac">[<a href="#ref-Mac">Mac</a>, Ch. I, §2,
+Example 3]</span>. From Chapter <a href="20261125T000000--slope-method__workbook.html#chap"
+data-reference-type="ref" data-reference="sm-chap">5</a>,
+<em>Size against divisibility</em>: that a sublattice of small colength
+has small index, so that a gain on it is charged its colength. From
+Chapter <a href="20261125T003000--the-chain-and-the-square-root__workbook.html#chap" data-reference-type="ref"
+data-reference="ch-chap">8</a>, <em>The chain and the square
+root</em>: Section <a href="20261125T003000--the-chain-and-the-square-root__workbook.html#sec:chain" data-reference-type="ref"
+data-reference="ch-sec:chain">8.4</a>. From Chapter <a
+href="20261125T013500--hecke-nondegeneracy-on-the-tree__workbook.html#chap" data-reference-type="ref"
+data-reference="hn-chap">18</a>, <em>Hecke nondegeneracy on the
+tree</em>: the loss, defined in Section <a href="20261125T013500--hecke-nondegeneracy-on-the-tree__workbook.html#sec:tree"
+data-reference-type="ref"
+data-reference="hn-sec:tree">18.1</a>. From Chapter <a
+href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="ho-chap">24</a>, <em>Hecke operators and theta
+lifts</em>: Section <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#sec:split" data-reference-type="ref"
+data-reference="ho-sec:split">24.5</a>, in particular
+Problems <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#pr:split-el" data-reference-type="ref"
+data-reference="ho-pr:split-el">24.5.3</a> and <a
+href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#pr:split-chain" data-reference-type="ref"
+data-reference="ho-pr:split-chain">24.5.4</a>. Section <a
+href="#sec:proof" data-reference-type="ref"
+data-reference="sec:proof">25.6</a> says where the proof uses this
+transfer; the step in the generality of the proof is Theorem <a
+href="20261126T051700--exceptional-primes-a-full-mark__workbook.html#thm:full-mark" data-reference-type="ref"
+data-reference="d3-thm:full-mark">62.4.1</a> of Chapter <a
+href="20261126T051700--exceptional-primes-a-full-mark__workbook.html#chap" data-reference-type="ref"
+data-reference="d3-chap">62</a>, and the rest of the chapter does
+not use it.</p>
+<p>Problem <a href="20261125T003000--the-chain-and-the-square-root__workbook.html#pr:subadd" data-reference-type="ref"
+data-reference="ch-pr:subadd">8.4.3</a> adds the divisibility
+exponents that hold on the whole lattice at each step of the chain. In
+the proof, Theorem <a href="20261126T051700--exceptional-primes-a-full-mark__workbook.html#thm:full-mark" data-reference-type="ref"
+data-reference="d3-thm:full-mark">62.4.1</a> bounds the
+gauge of the restricted chain on the image of the integral source forms
+under a power of a product of Hecke operators. The local model in
+Chapter <a href="20261125T013500--hecke-nondegeneracy-on-the-tree__workbook.html#chap" data-reference-type="ref"
+data-reference="hn-chap">18</a> measures the colength of the
+values of a Hecke operator at a single lattice. How does a gain on a
+sublattice at the start of a chain become a gain of the composite? In
+the model of Problem <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#pr:split-chain"
+data-reference-type="ref"
+data-reference="ho-pr:split-chain">24.5.4</a>, moving the
+source operator through the chain introduces signed complete symmetric
+functions. Their valuations enter the bound in Section <a
+href="#sec:gain" data-reference-type="ref"
+data-reference="sec:gain">25.4</a>. The model below uses one Hecke
+operator. Theorem <a href="20261126T051700--exceptional-primes-a-full-mark__workbook.html#thm:full-mark" data-reference-type="ref"
+data-reference="d3-thm:full-mark">62.4.1</a> uses a product
+indexed by a full mark above <span class="math inline">\(p\)</span>.</p>
+<h1 id="sec:sym">§25.1. Elementary and complete symmetric functions <a class="stable-tag" href="tag/22PF.html" title="Stable tag: cite as Tag 22PF">Tag 22PF</a></h1>
+<p>Let <span class="math inline">\(x = (x_1, \dots, x_n)\)</span> be a
+finite family in a commutative ring. The <em>elementary</em> and
+<em>complete symmetric functions</em> <span
+class="math inline">\(e_l(x)\)</span> and <span
+class="math inline">\(h_l(x)\)</span> are the sums of the products <span
+class="math inline">\(x_{i_1} \cdots x_{i_l}\)</span> over <span
+class="math inline">\(i_1 &lt; \dots &lt; i_l\)</span> and over <span
+class="math inline">\(i_1 \le \dots \le i_l\)</span> respectively, with
+<span class="math inline">\(e_0 = h_0 = 1\)</span>. Their generating
+series are <span class="math display">\[E_x(X) := \prod_{i} (1 + x_i X)
+= \sum_{l \ge 0} e_l(x) X^l , \qquad
+  H_x(X) := \prod_{i} (1 - x_i X)^{-1} = \sum_{l \ge 0} h_l(x) X^l
+.\]</span> All degrees <span class="math inline">\(l\)</span> are
+nonnegative integers, and <span
+class="math inline">\(\genfrac{[}{]}{0pt}{}{n}{l}_{Q} = 0\)</span> for
+<span class="math inline">\(l &gt; n\)</span>.</p>
+<div id="pr:EH" class="problem" data-progress-ids="[&quot;22PG&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:EH&quot;]"><a class="stable-tag" href="tag/22PG.html" title="Stable tag: cite as Tag 22PG">Tag 22PG</a>
+<p><strong>Problem 25.1.1</strong>. <span class="math inline">\(E_x(X)
+H_x(-X) = 1\)</span>, that is, <span class="math inline">\(\sum_{l=0}^r
+(-1)^l e_{r-l}(x)\, h_l(x) = 0\)</span> for <span
+class="math inline">\(r \ge 1\)</span>. For <span
+class="math inline">\(x = (a, b)\)</span>, <span
+class="math inline">\(h_2(x) = a^2 + ab + b^2\)</span>.</p>
+</div>
+<p>This is <span class="citation"
+data-cites="Mac">[<a href="#ref-Mac">Mac</a>, Ch. I, (2.6)]</span>. For
+families <span class="math inline">\(x\)</span> and <span
+class="math inline">\(y\)</span> write <span class="math inline">\(x
+\sqcup y\)</span> for the concatenated family.</p>
+<div id="pr:union" class="problem" data-progress-ids="[&quot;22PH&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:union&quot;]"><a class="stable-tag" href="tag/22PH.html" title="Stable tag: cite as Tag 22PH">Tag 22PH</a>
+<p><strong>Problem 25.1.2</strong>. <span class="math display">\[e_r(x \sqcup
+y) = \sum_{l=0}^r e_l(x)\, e_{r-l}(y) , \qquad h_r(x \sqcup y) =
+\sum_{l=0}^r h_l(x)\, h_{r-l}(y) .\]</span></p>
+</div>
+<p>The families that occur are geometric progressions.</p>
+<div id="pr:geom" class="problem" data-progress-ids="[&quot;22PJ&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:geom&quot;]"><a class="stable-tag" href="tag/22PJ.html" title="Stable tag: cite as Tag 22PJ">Tag 22PJ</a>
+<p><strong>Problem 25.1.3</strong>. For <span class="math inline">\(t \ge
+0\)</span>, <span class="math display">\[e_l(1, Q, \dots, Q^t) =
+Q^{l(l-1)/2} \genfrac{[}{]}{0pt}{}{t+1}{l}_{Q} , \qquad h_l(1, Q, \dots,
+Q^t) = \genfrac{[}{]}{0pt}{}{t+l}{l}_{Q} .\]</span> For instance <span
+class="math inline">\(h_2(1, Q) = 1 + Q + Q^2\)</span>.</p>
+</div>
+<p>These are <span class="citation"
+data-cites="Mac">[<a href="#ref-Mac">Mac</a>, Ch. I, §2, Example 3]</span>.
+Let <span class="math inline">\(q\)</span> be invertible, <span
+class="math inline">\(Q := q^2\)</span>, <span class="math inline">\(g
+\ge 1\)</span> and <span class="math inline">\(t := g - 1\)</span>. A
+<em>block</em> is a family <span id="eq:block" class="math display">\[\begin{equation}
+\label{eq:block}\tag{1}
+  x = \beta\,(q^t, q^{t-2}, \dots, q^{-t})
+\end{equation}\]</span> of <span class="math inline">\(g\)</span> terms
+with ratio <span class="math inline">\(Q^{-1}\)</span>, where <span
+class="math inline">\(\beta\)</span> is invertible. For <span
+class="math inline">\(\beta = 1\)</span> this is the family in
+Problem <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#pr:split-el" data-reference-type="ref"
+data-reference="ho-pr:split-el">24.5.3</a>, where <span
+class="math inline">\(q^t\)</span> is written <span
+class="math inline">\(Q^{t/2}\)</span>.</p>
+<div id="pr:sym-block" class="problem" data-progress-ids="[&quot;22PK&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:sym-block&quot;]"><a class="stable-tag" href="tag/22PK.html" title="Stable tag: cite as Tag 22PK">Tag 22PK</a>
+<p><strong>Problem 25.1.4</strong>. For the block <a href="#eq:block"
+data-reference-type="eqref" data-reference="eq:block">(1)</a>,
+<span class="math inline">\(e_l(x) = \beta^l q^{-l(g-l)}
+\genfrac{[}{]}{0pt}{}{g}{l}_{Q}\)</span> and <span
+class="math inline">\(h_l(x) = \beta^l q^{-lt}
+\genfrac{[}{]}{0pt}{}{t+l}{l}_{Q}\)</span>.</p>
+</div>
+<p>For <span class="math inline">\(\beta = 1\)</span> the first formula,
+in degrees <span class="math inline">\(0 \le l \le g\)</span>, is
+Problem <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#pr:split-el" data-reference-type="ref"
+data-reference="ho-pr:split-el">24.5.3</a>.</p>
+<h1 id="sec:val">§25.2. Valuations <a class="stable-tag" href="tag/22PL.html" title="Stable tag: cite as Tag 22PL">Tag 22PL</a></h1>
+<p>Let <span class="math inline">\(k\)</span> be a finite extension of
+<span class="math inline">\(\mathbb{Q}_p\)</span>, with ring of integers
+<span class="math inline">\(\mathcal{O}\)</span> and valuation <span
+class="math inline">\(v\)</span> normalized by <span
+class="math inline">\(v(p) = 1\)</span>.</p>
+<div id="pr:gauss-unit" class="problem" data-progress-ids="[&quot;22PM&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:gauss-unit&quot;]"><a class="stable-tag" href="tag/22PM.html" title="Stable tag: cite as Tag 22PM">Tag 22PM</a>
+<p><strong>Problem 25.2.1</strong>. <span
+class="math inline">\(\genfrac{[}{]}{0pt}{}{n}{l}_{Q}\)</span> is a
+polynomial in <span class="math inline">\(Q\)</span> with integer
+coefficients and constant term <span class="math inline">\(1\)</span>,
+for <span class="math inline">\(0 \le l \le n\)</span>. Hence <span
+class="math inline">\(v\bigl(\genfrac{[}{]}{0pt}{}{n}{l}_{Q}\bigr) =
+0\)</span> if <span class="math inline">\(Q \in k\)</span> and <span
+class="math inline">\(v(Q) &gt; 0\)</span>.</p>
+</div>
+<div id="pr:block-val" class="problem" data-progress-ids="[&quot;22PN&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:block-val&quot;]"><a class="stable-tag" href="tag/22PN.html" title="Stable tag: cite as Tag 22PN">Tag 22PN</a>
+<p><strong>Problem 25.2.2</strong>. Let <span class="math inline">\(a \in
+k^\times\)</span> and <span class="math inline">\(Q \in
+k^\times\)</span> with <span class="math inline">\(v(Q) = v_Q &gt;
+0\)</span>. Then <span class="math display">\[\begin{align*}
+  v\bigl(e_l(a, aQ, \dots, aQ^t)\bigr) &amp;= l\,v(a) +
+v_Q\,\frac{l(l-1)}{2} &amp;&amp; (0 \le l \le t+1) , \\
+  v\bigl(h_l(a, aQ, \dots, aQ^t)\bigr) &amp;= l\,v(a) &amp;&amp; (l \ge
+0) .
+\end{align*}\]</span></p>
+</div>
+<p>For <span class="math inline">\(0\le l\le t+1\)</span>, the
+difference <span class="math inline">\(v(e_l)-v(h_l)\)</span> for this
+family is <span class="math inline">\(v_Q\,l(l-1)/2\)</span>.</p>
+<div id="pr:sym-val" class="problem" data-progress-ids="[&quot;22PP&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:sym-val&quot;]"><a class="stable-tag" href="tag/22PP.html" title="Stable tag: cite as Tag 22PP">Tag 22PP</a>
+<p><strong>Problem 25.2.3</strong>. Let <span
+class="math inline">\(x\)</span> be the block <a href="#eq:block"
+data-reference-type="eqref" data-reference="eq:block">(1)</a>
+with <span class="math inline">\(\beta, q \in k^\times\)</span> and
+<span class="math inline">\(v(q) = \nu &gt; 0\)</span>. Then <span
+class="math inline">\(v(h_l(x)) = l\,(v(\beta) - t\nu)\)</span> for
+<span class="math inline">\(l \ge 0\)</span>, and <span
+class="math inline">\(v(e_l(x)) = l\,(v(\beta) - t\nu) + \nu\,
+l(l-1)\)</span> for <span class="math inline">\(0 \le l \le g\)</span>.
+In particular every <span class="math inline">\(h_l(x)\)</span> lies in
+<span class="math inline">\(\mathcal{O}\)</span> if and only if <span
+class="math inline">\(v(\beta) \ge t\nu\)</span>.</p>
+</div>
+<p>For a union of blocks only a bound survives.</p>
+<div id="pr:union-val" class="problem" data-progress-ids="[&quot;22PQ&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:union-val&quot;]"><a class="stable-tag" href="tag/22PQ.html" title="Stable tag: cite as Tag 22PQ">Tag 22PQ</a>
+<p><strong>Problem 25.2.4</strong>. Let <span
+class="math inline">\(Z\)</span> be a finite family in <span
+class="math inline">\(k\)</span> whose least valuation is a real number
+<span class="math inline">\(\mu\)</span>. Then <span
+class="math inline">\(v(h_l(Z)) \ge l\mu\)</span>, with equality if
+exactly one member of <span class="math inline">\(Z\)</span> has
+valuation <span class="math inline">\(\mu\)</span>. For <span
+class="math inline">\(Z = (1, 1)\)</span> and <span
+class="math inline">\(Z = (1, -1)\)</span> one has <span
+class="math inline">\(h_l(Z) = l + 1\)</span> and <span
+class="math inline">\(h_l(Z) = (1 + (-1)^l)/2\)</span>.</p>
+</div>
+<div id="pr:two-blocks" class="problem" data-progress-ids="[&quot;22PR&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:two-blocks&quot;]"><a class="stable-tag" href="tag/22PR.html" title="Stable tag: cite as Tag 22PR">Tag 22PR</a>
+<p><strong>Problem 25.2.5</strong>. Let <span class="math inline">\(Z = x_1
+\sqcup x_2\)</span>, where <span class="math inline">\(x_i =
+\beta_i\,(q, q^{-1})\)</span> are blocks with <span
+class="math inline">\(g = 2\)</span>, and let <span
+class="math inline">\(v(q) = \nu &gt; 0\)</span> and <span
+class="math inline">\(v(\beta_1) = v(\beta_2) = 0\)</span>. Then <span
+class="math inline">\(h_1(Z) = (\beta_1 + \beta_2)(q + q^{-1})\)</span>,
+so <span class="math inline">\(v(h_1(Z)) = v(\beta_1 + \beta_2) -
+\nu\)</span>, which exceeds <span class="math inline">\(-\nu\)</span>
+exactly when <span class="math inline">\(\beta_1 \equiv
+-\beta_2\)</span> modulo the maximal ideal of <span
+class="math inline">\(\mathcal{O}\)</span>.</p>
+</div>
+<h1 id="sec:move">§25.3. Moving a Hecke operator along a chain <a class="stable-tag" href="tag/22PS.html" title="Stable tag: cite as Tag 22PS">Tag 22PS</a></h1>
+<p>We use the setting of Problem <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#pr:split-chain"
+data-reference-type="ref"
+data-reference="ho-pr:split-chain">24.5.4</a>. Let <span
+class="math inline">\(F_0, \dots, F_m\)</span> be finite-dimensional
+<span class="math inline">\(k\)</span>-vector spaces, let <span
+class="math inline">\(K_j \colon F_j \to F_{j+1}\)</span> be linear
+maps, and let <span class="math inline">\(\mathcal{K}_j := K_{j-1}
+\cdots K_0\)</span>, with <span class="math inline">\(\mathcal{K}_0 :=
+1\)</span>. Fix <span class="math inline">\(r \ge 1\)</span>. For each
+<span class="math inline">\(j\)</span> let <span
+class="math inline">\(\mathcal{E}^{(j)}_0 = 1, \mathcal{E}^{(j)}_1,
+\dots, \mathcal{E}^{(j)}_r\)</span> be operators on <span
+class="math inline">\(F_j\)</span>, and let <span
+class="math inline">\(x_1, \dots, x_m\)</span> be finite families in
+<span class="math inline">\(k\)</span> with <span id="eq:R"
+class="math display">\[\begin{equation}
+\label{eq:R}\tag{2}
+  \mathcal{E}^{(j+1)}_i\, K_j = K_j \sum_{l=0}^i e_l(x_{j+1})\,
+\mathcal{E}^{(j)}_{i-l} \qquad (0 \le i \le r,\ 0 \le j &lt; m) .
+\end{equation}\]</span> This is the case with source argument <span
+class="math inline">\(X\)</span> of the split relation in Section <a
+href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#sec:split" data-reference-type="ref"
+data-reference="ho-sec:split">24.5</a>. Under the hypotheses
+of Theorem <a href="20261126T051700--exceptional-primes-a-full-mark__workbook.html#thm:full-mark" data-reference-type="ref"
+data-reference="d3-thm:full-mark">62.4.1</a>, statement (B)
+of Chapter <a href="20261126T051700--exceptional-primes-a-full-mark__workbook.html#chap" data-reference-type="ref"
+data-reference="d3-chap">62</a> gives this relation for every
+translation in the support of the datum, at every prime of a mark, on
+forms spherical there, for <span class="math inline">\(r \le
+N_0\)</span>. The family at each step is a block <a href="#eq:block"
+data-reference-type="eqref" data-reference="eq:block">(1)</a>.
+Let <span class="math inline">\(Z_j := x_1 \sqcup \dots \sqcup
+x_j\)</span>. In <a href="#eq:R" data-reference-type="eqref"
+data-reference="eq:R">(2)</a> the operators at the target are
+expressed through those at the source. We need the converse.</p>
+<div id="pr:r-one" class="problem" data-progress-ids="[&quot;22PT&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:r-one&quot;]"><a class="stable-tag" href="tag/22PT.html" title="Stable tag: cite as Tag 22PT">Tag 22PT</a>
+<p><strong>Problem 25.3.1</strong>. Let <span class="math inline">\(r =
+1\)</span> and <span class="math inline">\(m \ge 2\)</span>. Then <span
+class="math inline">\(K_0 \mathcal{E}^{(0)}_1 =
+\bigl(\mathcal{E}^{(1)}_1 - e_1(x_1)\bigr) K_0\)</span>, and <span
+class="math inline">\(\mathcal{K}_2 \mathcal{E}^{(0)}_1 =
+\bigl(\mathcal{E}^{(2)}_1 - h_1(Z_2)\bigr) \mathcal{K}_2\)</span>.</p>
+</div>
+<div id="pr:r-two" class="problem" data-progress-ids="[&quot;22PU&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:r-two&quot;]"><a class="stable-tag" href="tag/22PU.html" title="Stable tag: cite as Tag 22PU">Tag 22PU</a>
+<p><strong>Problem 25.3.2</strong>. Let <span class="math inline">\(r =
+2\)</span> and <span class="math inline">\(m \ge 1\)</span>. Then <span
+class="math inline">\(K_0 \mathcal{E}^{(0)}_2 =
+\bigl(\mathcal{E}^{(1)}_2 - h_1(x_1)\, \mathcal{E}^{(1)}_1 +
+h_2(x_1)\bigr) K_0\)</span>.</p>
+</div>
+<div id="pr:forward" class="problem" data-progress-ids="[&quot;22PV&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:forward&quot;]"><a class="stable-tag" href="tag/22PV.html" title="Stable tag: cite as Tag 22PV">Tag 22PV</a>
+<p><strong>Problem 25.3.3</strong>. <span
+class="math inline">\(\mathcal{E}^{(j)}_i\, \mathcal{K}_j =
+\mathcal{K}_j \sum_{l=0}^i e_l(Z_j)\, \mathcal{E}^{(0)}_{i-l}\)</span>
+for <span class="math inline">\(0 \le i \le r\)</span>.</p>
+</div>
+<p>Problem <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#pr:split-chain" data-reference-type="ref"
+data-reference="ho-pr:split-chain">24.5.4</a>, applied to
+the first <span class="math inline">\(j\)</span> maps, gives the
+following identity.</p>
+<div id="thm:move" class="theorem"><a class="stable-tag" href="tag/22PW.html" title="Stable tag: cite as Tag 22PW">Tag 22PW</a>
+<p><strong>Theorem 25.3.1</strong>. <em>For <span class="math inline">\(1 \le
+j \le m\)</span>, <span class="math inline">\(\displaystyle
+\mathcal{K}_j\, \mathcal{E}^{(0)}_r = \sum_{l=0}^r (-1)^l h_l(Z_j)\,
+\mathcal{E}^{(j)}_{r-l}\, \mathcal{K}_j\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:raw">Problem 25.3.4</a>; <a href="20261126T051700--exceptional-primes-a-full-mark__workbook.html">Chapter 62</a></div><!-- used-in:end -->
+</div>
+<p>The relation for one lift has the elementary functions of a block.
+For a block <span class="math inline">\(x\)</span> with <span
+class="math inline">\(v(q)=\nu&gt;0\)</span> and <span
+class="math inline">\(0\le l\le g\)</span>, one has <span
+class="math inline">\(v(e_l(x))-v(h_l(x))=\nu\,l(l-1)\)</span>
+(Problem <a href="#pr:sym-val" data-reference-type="ref"
+data-reference="pr:sym-val">25.2.3</a>). The inverse relation has the
+complete functions, which may have denominators. For the lattice
+normalization in the next two problems assume <span
+class="math inline">\(1 \le r \le N_0\)</span>, where <span
+class="math inline">\(N_0\)</span> is the dimension of the space
+underlying <span class="math inline">\(F_0\)</span>. The operators <span
+class="math inline">\(\mathcal{E}^{(j)}_i\)</span> are normalized forms
+of the sums <span class="math inline">\(T^{(j)}_i\)</span> over edges of
+type <span class="math inline">\(i\)</span> of Section <a
+href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#sec:split" data-reference-type="ref"
+data-reference="ho-sec:split">24.5</a>: when <span
+class="math inline">\(F_j\)</span> consists of functions of lattices in
+a space of dimension <span class="math inline">\(N_j\)</span>, with
+<span class="math inline">\(N_0 &lt; N_1 &lt; \dots &lt; N_m\)</span>,
+one takes <span class="math inline">\(\mathcal{E}^{(j)}_i = q^{-i(N_j -
+i)}\, T^{(j)}_i\)</span> for <span class="math inline">\(0 \le i \le
+N_j\)</span>.</p>
+<div id="pr:raw" class="problem" data-progress-ids="[&quot;22PX&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:raw&quot;]"><a class="stable-tag" href="tag/22PX.html" title="Stable tag: cite as Tag 22PX">Tag 22PX</a>
+<p><strong>Problem 25.3.4</strong>. With this normalization, Theorem <a
+href="#thm:move" data-reference-type="ref"
+data-reference="thm:move">25.3.1</a> reads <span
+class="math display">\[\sum_{l=0}^r (-1)^l h_l(Z_j)\, q^{l(N_j - 2r +
+l)}\, T^{(j)}_{r-l}\, \mathcal{K}_j = q^{r(N_j - N_0)}\, \mathcal{K}_j\,
+T^{(0)}_r .\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:integral">Problem 25.3.5</a></div><!-- used-in:end -->
+</div>
+<div id="pr:integral" class="problem" data-progress-ids="[&quot;22PY&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:integral&quot;]"><a class="stable-tag" href="tag/22PY.html" title="Stable tag: cite as Tag 22PY">Tag 22PY</a>
+<p><strong>Problem 25.3.5</strong>. Suppose that <span
+class="math inline">\(Z_j\)</span> is a union of blocks <a
+href="#eq:block" data-reference-type="eqref"
+data-reference="eq:block">(1)</a> with the same <span
+class="math inline">\(t\)</span>, that <span class="math inline">\(v(q)
+&gt; 0\)</span>, that <span class="math inline">\(v(\beta) \ge
+0\)</span> for each block, and that <span class="math inline">\(N_j \ge
+2r + t - 1\)</span>. Then every coefficient <span
+class="math inline">\(h_l(Z_j)\, q^{l(N_j - 2r + l)}\)</span> in
+Problem <a href="#pr:raw" data-reference-type="ref"
+data-reference="pr:raw">25.3.4</a> lies in <span
+class="math inline">\(\mathcal{O}\)</span>.</p>
+</div>
+<h1 id="sec:gain">§25.4. A gain on a sublattice <a class="stable-tag" href="tag/22PZ.html" title="Stable tag: cite as Tag 22PZ">Tag 22PZ</a></h1>
+<p>For each <span class="math inline">\(j\)</span> let <span
+class="math inline">\(\mathrm{Int}_j \subset F_j\)</span> be an <span
+class="math inline">\(\mathcal{O}\)</span>-lattice of full rank. For
+<span class="math inline">\(w \in F_j\)</span> let <span
+class="math inline">\(\operatorname{ord}(w)\)</span> be the least
+valuation of a coordinate of <span class="math inline">\(w\)</span> in a
+basis of <span class="math inline">\(\mathrm{Int}_j\)</span>, with <span
+class="math inline">\(\operatorname{ord}(0) = \infty\)</span>; we use
+<span class="math inline">\(v(0) = +\infty\)</span> and <span
+class="math inline">\(\min\varnothing = +\infty\)</span>. For a linear
+map <span class="math inline">\(\phi \colon F_i \to F_j\)</span> let
+<span class="math inline">\(\operatorname{gain}(\phi)\)</span> be the
+least value of <span class="math inline">\(\operatorname{ord}(\phi
+y)\)</span> over the members <span class="math inline">\(y\)</span> of a
+basis of <span class="math inline">\(\mathrm{Int}_i\)</span>. For <span
+class="math inline">\(k = \mathbb{Q}_p\)</span> and <span
+class="math inline">\(\phi \ne 0\)</span>, <span
+class="math inline">\(\operatorname{gain}(\phi)\)</span> is the largest
+integer <span class="math inline">\(n\)</span> with <span
+class="math inline">\(\phi(\mathrm{Int}_i) \subseteq p^n
+\mathrm{Int}_j\)</span>; so <span
+class="math inline">\(\operatorname{gain}(\phi) \log p\)</span> plays at
+<span class="math inline">\(p\)</span> the role of the divisibility
+<span class="math inline">\(-h_{\mathrm{fin}}\)</span> of Section <a
+href="20261125T003000--the-chain-and-the-square-root__workbook.html#sec:chain" data-reference-type="ref"
+data-reference="ch-sec:chain">8.4</a>.</p>
+<div id="pr:gain" class="problem" data-progress-ids="[&quot;22Q2&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:gain&quot;]"><a class="stable-tag" href="tag/22Q2.html" title="Stable tag: cite as Tag 22Q2">Tag 22Q2</a>
+<p><strong>Problem 25.4.1</strong>. <span
+class="math inline">\(\operatorname{ord}\)</span> and <span
+class="math inline">\(\operatorname{gain}\)</span> do not depend on the
+bases. <span class="math inline">\(\operatorname{ord}(\phi w) \ge
+\operatorname{ord}(w) + \operatorname{gain}(\phi)\)</span>, <span
+class="math inline">\(\operatorname{gain}(\phi\psi) \ge
+\operatorname{gain}(\phi) + \operatorname{gain}(\psi)\)</span>, <span
+class="math inline">\(\operatorname{gain}(\phi + \psi) \ge
+\min(\operatorname{gain}(\phi), \operatorname{gain}(\psi))\)</span>, and
+<span class="math inline">\(\operatorname{gain}(c\phi) = v(c) +
+\operatorname{gain}(\phi)\)</span> for <span class="math inline">\(c \in
+k^\times\)</span>.</p>
+</div>
+<p>Assume <a href="#eq:R" data-reference-type="eqref"
+data-reference="eq:R">(2)</a>. For <span class="math inline">\(1 \le
+j \le m\)</span> and <span class="math inline">\(0 \le i \le r\)</span>
+let <span class="math display">\[\gamma_j(i) :=
+\operatorname{gain}\bigl(\mathcal{E}^{(j)}_i K_{j-1}\bigr) ,\]</span> so
+that <span class="math inline">\(\gamma_j(0) =
+\operatorname{gain}(K_{j-1})\)</span> is the gain of the <span
+class="math inline">\(j\)</span>th step on the whole lattice, and <span
+class="math inline">\(\gamma_j(r)\)</span> its gain after the Hecke
+operator <span class="math inline">\(\mathcal{E}^{(j)}_r\)</span> at the
+target. Let <span class="math inline">\(c \in k^\times\)</span> be such
+that <span class="math inline">\(Y := c\, \mathcal{E}^{(0)}_r\)</span>
+maps <span class="math inline">\(\mathrm{Int}_0\)</span> into itself,
+and let <span class="math inline">\(A := v(c)\)</span>. To bound <span
+class="math inline">\(\operatorname{ord}(\mathcal{K}_j\,
+\mathcal{E}^{(0)}_r w)\)</span> in terms of <span
+class="math inline">\(\operatorname{ord}(\mathcal{K}_{j-1} w)\)</span>,
+define <span class="math display">\[\delta_j := \min_{0 \le l \le r}
+\bigl( v(h_l(Z_j)) + \gamma_j(r - l) \bigr) .\]</span> When <span
+class="math inline">\(\gamma_j(r) &lt; +\infty\)</span>, define the
+<em>price</em> of the <span class="math inline">\(j\)</span>th step by
+<span class="math inline">\(\mathrm{Pr}_j := \gamma_j(r) -
+\delta_j\)</span>. It is nonnegative.</p>
+<div id="pr:one-step" class="problem" data-progress-ids="[&quot;22Q3&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:one-step&quot;]"><a class="stable-tag" href="tag/22Q3.html" title="Stable tag: cite as Tag 22Q3">Tag 22Q3</a>
+<p><strong>Problem 25.4.2</strong>. For <span class="math inline">\(w \in
+F_0\)</span> and <span class="math inline">\(1 \le j \le m\)</span>,
+<span class="math inline">\(\operatorname{ord}\bigl(\mathcal{K}_j\,
+\mathcal{E}^{(0)}_r w\bigr) \ge
+\operatorname{ord}\bigl(\mathcal{K}_{j-1} w\bigr) +
+\delta_j\)</span>.</p>
+</div>
+<div id="pr:induction" class="problem" data-progress-ids="[&quot;22Q4&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:induction&quot;]"><a class="stable-tag" href="tag/22Q4.html" title="Stable tag: cite as Tag 22Q4">Tag 22Q4</a>
+<p><strong>Problem 25.4.3</strong>. Let <span class="math inline">\(S
+\subseteq \{1, \dots, m\}\)</span>, and let <span
+class="math inline">\(n_j\)</span> be the number of elements of <span
+class="math inline">\(S\)</span> that are at most <span
+class="math inline">\(j\)</span>. For <span class="math inline">\(G \in
+\mathrm{Int}_0\)</span> and <span class="math inline">\(0 \le j \le
+m\)</span>, <span
+class="math display">\[\operatorname{ord}\bigl(\mathcal{K}_j\, Y^{n_j}
+G\bigr) \ge \sum_{1 \le i \le j,\ i \in S} \bigl(A + \delta_i\bigr) +
+\sum_{1 \le i \le j,\ i \notin S} \gamma_i(0) .\]</span></p>
+</div>
+<div id="thm:chain-gain" class="theorem"><a class="stable-tag" href="tag/22Q5.html" title="Stable tag: cite as Tag 22Q5">Tag 22Q5</a>
+<p><strong>Theorem 25.4.1</strong>. <em>For every <span
+class="math inline">\(F \in \mathrm{Int}_0\)</span>, <span
+class="math display">\[\operatorname{ord}\bigl(\mathcal{K}_m\, Y^m
+F\bigr) \ge \sum_{j=1}^m \max\bigl(\gamma_j(0),\ A + \delta_j\bigr)
+.\]</span></em></p>
+</div>
+<p>The gain holds on the image <span class="math inline">\(Y^m
+\mathrm{Int}_0\)</span>. When <span class="math inline">\(Y\)</span> is
+injective this is a sublattice of full rank, and in Chapter <a
+href="20261125T000000--slope-method__workbook.html#chap" data-reference-type="ref"
+data-reference="sm-chap">5</a> the gain on such a sublattice is
+charged its colength. In the proof one copy of the product <span
+class="math inline">\(Y_{\mathfrak{M}}\)</span> of Hecke operators of a
+full mark (Section <a href="#sec:proof" data-reference-type="ref"
+data-reference="sec:proof">25.6</a>) goes into the datum of every lift, and
+the transfer is cleared by a power of <span
+class="math inline">\(p\)</span> fixed in advance (Problem <a
+href="20261126T051700--exceptional-primes-a-full-mark__workbook.html#pr:transfer-paid" data-reference-type="ref"
+data-reference="d3-pr:transfer-paid">62.4.2</a>).</p>
+<div id="pr:colength" class="problem" data-progress-ids="[&quot;22Q6&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:colength&quot;]"><a class="stable-tag" href="tag/22Q6.html" title="Stable tag: cite as Tag 22Q6">Tag 22Q6</a>
+<p><strong>Problem 25.4.4</strong>. If <span
+class="math inline">\(Y\)</span> is injective, then the length of <span
+class="math inline">\(\mathrm{Int}_0/Y^m\mathrm{Int}_0\)</span> is <span
+class="math inline">\(m\)</span> times the length of <span
+class="math inline">\(\mathrm{Int}_0/Y\,\mathrm{Int}_0\)</span>.</p>
+</div>
+<p>In the tree model of Chapter <a href="20261125T013500--hecke-nondegeneracy-on-the-tree__workbook.html#chap"
+data-reference-type="ref" data-reference="hn-chap">18</a>, as
+<span class="math inline">\(F\)</span> ranges over all integral forms
+the values <span class="math inline">\((YF)(L)\)</span> fill <span
+class="math inline">\(S(L)\)</span>, and the loss at <span
+class="math inline">\(L\)</span> is the length of <span
+class="math inline">\(H(L)/S(L)\)</span>. The proof does not assume that
+<span class="math inline">\(Y\)</span> is injective; the colength bound
+it uses is in Chapter <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="c35-chap">57</a>, Section <a
+href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#sec:exceptional" data-reference-type="ref"
+data-reference="c35-sec:exceptional">57.4</a>.</p>
+<h1 id="sec:overcount">§25.5. Stepwise maxima overcount <a class="stable-tag" href="tag/22Q7.html" title="Stable tag: cite as Tag 22Q7">Tag 22Q7</a></h1>
+<p>Theorem <a href="#thm:chain-gain" data-reference-type="ref"
+data-reference="thm:chain-gain">25.4.1</a> uses <span
+class="math inline">\(\delta_j\)</span> at step <span
+class="math inline">\(j\)</span>. Can one replace its lower bound for
+<span class="math inline">\(\operatorname{gain}(\mathcal{K}_m
+Y^m)\)</span> by <span class="math inline">\(\sum_{j=1}^m
+\max(\gamma_j(0), A + \gamma_j(r))\)</span>? We compare two chains with
+the same numbers <span class="math inline">\(\gamma_j(i)\)</span>. Let
+<span class="math inline">\(p\)</span> be any prime, <span
+class="math inline">\(k = \mathbb{Q}_p\)</span>, <span
+class="math inline">\(m = 2\)</span>, <span class="math inline">\(r =
+1\)</span>, <span class="math inline">\(F_j = \mathbb{Q}_p^2\)</span>
+and <span class="math inline">\(\mathrm{Int}_j =
+\mathbb{Z}_p^2\)</span>. Let <span class="math inline">\(K_0 = K_1 =
+K\)</span> be a diagonal matrix, let <span class="math inline">\(x_1 =
+(\alpha_1)\)</span> and <span class="math inline">\(x_2 =
+(\alpha_2)\)</span> be families of one element, and let <span
+class="math display">\[Y := \mathcal{E}^{(0)}_1 :=
+\operatorname{diag}(p, 1) , \qquad \mathcal{E}^{(j)}_1 := Y + h_1(Z_j)
+\quad (j = 1, 2) ,\]</span> so that <span class="math inline">\(A =
+0\)</span>.</p>
+<div id="pr:diag" class="problem" data-progress-ids="[&quot;22Q8&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:diag&quot;]"><a class="stable-tag" href="tag/22Q8.html" title="Stable tag: cite as Tag 22Q8">Tag 22Q8</a>
+<p><strong>Problem 25.5.1</strong>. These data satisfy <a href="#eq:R"
+data-reference-type="eqref" data-reference="eq:R">(2)</a>, and <span
+class="math inline">\(\operatorname{length}\mathbb{Z}_p^2/Y\mathbb{Z}_p^2
+= 1\)</span>.</p>
+</div>
+<div id="pr:good" class="problem" data-progress-ids="[&quot;22Q9&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:good&quot;]"><a class="stable-tag" href="tag/22Q9.html" title="Stable tag: cite as Tag 22Q9">Tag 22Q9</a>
+<p><strong>Problem 25.5.2</strong>. Let <span class="math inline">\(K =
+\operatorname{diag}(1, p)\)</span> and <span
+class="math inline">\(\alpha_1 = \alpha_2 = p\)</span>. Then <span
+class="math inline">\(\gamma_j(0) = 0\)</span>, <span
+class="math inline">\(\gamma_j(1) = 1\)</span> and <span
+class="math inline">\(\mathrm{Pr}_j = 0\)</span> for <span
+class="math inline">\(j = 1, 2\)</span>, and <span
+class="math inline">\(\operatorname{gain}(\mathcal{K}_2\, Y^2) =
+2\)</span>.</p>
+</div>
+<div id="pr:bad" class="problem" data-progress-ids="[&quot;22QA&quot;,&quot;20261125T016700--divisibility-along-the-chain__workbook.tex#pr:bad&quot;]"><a class="stable-tag" href="tag/22QA.html" title="Stable tag: cite as Tag 22QA">Tag 22QA</a>
+<p><strong>Problem 25.5.3</strong>. Let <span class="math inline">\(K =
+\operatorname{diag}(p, 1)\)</span>, <span class="math inline">\(\alpha_1
+= p - 1\)</span> and <span class="math inline">\(\alpha_2 =
+-2p\)</span>. Then <span class="math inline">\(\gamma_j(0) = 0\)</span>,
+<span class="math inline">\(\gamma_j(1) = 1\)</span> and <span
+class="math inline">\(\mathrm{Pr}_j = 1\)</span> for <span
+class="math inline">\(j = 1, 2\)</span>, and <span
+class="math inline">\(\operatorname{gain}(\mathcal{K}_2\, Y^2) =
+0\)</span>.</p>
+</div>
+<p>The sum of the stepwise maxima is <span
+class="math inline">\(2\)</span> in both chains. Theorem <a
+href="#thm:chain-gain" data-reference-type="ref"
+data-reference="thm:chain-gain">25.4.1</a> gives the exact gain in each
+case.</p>
+<p>Theorem <a href="#thm:chain-gain" data-reference-type="ref"
+data-reference="thm:chain-gain">25.4.1</a> uses the gains <span
+class="math inline">\(\gamma_j(i)\)</span>, the scaling valuation <span
+class="math inline">\(A\)</span>, and the coefficients <span
+class="math inline">\(h_l(Z_j)\)</span>. Chapters <a href="20261124T214500--supersingular-theta-divisibility__workbook.html#chap"
+data-reference-type="ref" data-reference="st-chap">15</a> and <a
+href="20261124T214600--the-isotropic-plane__workbook.html#chap" data-reference-type="ref"
+data-reference="ip-chap">16</a> model divisibility for a single
+theta kernel. If <span class="math inline">\(Z_j\)</span> has finite
+least valuation <span class="math inline">\(\mu_j\)</span>, then <span
+class="math inline">\(v(h_l(Z_j)) \ge l\mu_j\)</span> (Problem <a
+href="#pr:union-val" data-reference-type="ref"
+data-reference="pr:union-val">25.2.4</a>). A separate colength estimate
+enters when the gain on the image is used; Chapter <a href="20261125T013500--hecke-nondegeneracy-on-the-tree__workbook.html#chap"
+data-reference-type="ref" data-reference="hn-chap">18</a>
+computes a local colength at one lattice.</p>
+<h2 class="unnumbered" id="exercises">Exercises</h2>
+<ol>
+<li><p>The Newton polygon of <span class="math inline">\(\prod_{i=0}^t
+(1 + aQ^iX)\)</span> over <span class="math inline">\(k\)</span>, with
+<span class="math inline">\(a \in k^\times\)</span>, <span
+class="math inline">\(Q \in k^\times\)</span> and <span
+class="math inline">\(v(Q) &gt; 0\)</span>, has the vertices <span
+class="math inline">\(\bigl(l, l\,v(a) + v(Q)\,l(l-1)/2\bigr)\)</span>
+for <span class="math inline">\(0 \le l \le t+1\)</span>.</p></li>
+<li><p>Suppose that <a href="#eq:R" data-reference-type="eqref"
+data-reference="eq:R">(2)</a> holds with <span
+class="math inline">\(u_{j+1}^i K_j\)</span> in place of <span
+class="math inline">\(K_j\)</span> on the right, for units <span
+class="math inline">\(u_j \in \mathcal{O}^\times\)</span>. Write <span
+class="math inline">\(E_j(X):=\sum_{i=0}^r \mathcal{E}^{(j)}_i
+X^i\)</span>. Show first that the relation is equivalent modulo <span
+class="math inline">\(X^{r+1}\)</span> to <span
+class="math inline">\(E_{j+1}(X)K_j=K_j E_{x_{j+1}}(u_{j+1}X)
+E_j(u_{j+1}X)\)</span>, the relation of Section <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#sec:split"
+data-reference-type="ref"
+data-reference="ho-sec:split">24.5</a> with <span
+class="math inline">\(P(X)=E_{u_{j+1}x_{j+1}}(X)\)</span>. Then
+Theorem <a href="#thm:move" data-reference-type="ref"
+data-reference="thm:move">25.3.1</a> holds with <span
+class="math inline">\(\mathcal{K}_j\mathcal{E}^{(0)}_r\)</span>
+multiplied by <span class="math inline">\((u_1 \cdots u_j)^r\)</span>,
+and with <span class="math inline">\(Z_j\)</span> replaced by the family
+<span class="math inline">\(Z&#39;_j\)</span> of the <span
+class="math inline">\(u_l u_{l+1} \cdots u_j\, a\)</span> for <span
+class="math inline">\(l \le j\)</span> and <span
+class="math inline">\(a\)</span> in <span
+class="math inline">\(x_l\)</span>. Theorem <a href="#thm:chain-gain"
+data-reference-type="ref" data-reference="thm:chain-gain">25.4.1</a> holds
+with <span class="math inline">\(\delta_j\)</span> computed from <span
+class="math inline">\(Z&#39;_j\)</span>. For the same gains <span
+class="math inline">\(\gamma_j(i)\)</span>, the two values of <span
+class="math inline">\(\delta_j\)</span> agree when <span
+class="math inline">\(Z_j\)</span> has exactly one member of least
+valuation. For <span class="math inline">\(r = 1\)</span>, <span
+class="math inline">\(p\)</span> odd, <span class="math inline">\(x_1 =
+(1)\)</span>, <span class="math inline">\(x_2 = (-1)\)</span>, <span
+class="math inline">\(u_1 = -1\)</span>, <span class="math inline">\(u_2
+= 1\)</span> and <span class="math inline">\(\gamma_2(1) &gt;
+\gamma_2(0)\)</span>, the two values of <span
+class="math inline">\(\delta_2\)</span> differ.</p></li>
+</ol>
+<h1 id="sec:proof">§25.6. The step in the proof <a class="stable-tag" href="tag/236A.html" title="Stable tag: cite as Tag 236A">Tag 236A</a></h1>
+<p>At an exceptional prime <span class="math inline">\(p &lt;
+x_1\)</span> the proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span> applies this transfer to
+the Hecke operators of a full mark and to the chain of <span
+class="math inline">\(m\)</span> lifts, and obtains Theorem <a
+href="20261126T051700--exceptional-primes-a-full-mark__workbook.html#thm:full-mark" data-reference-type="ref"
+data-reference="d3-thm:full-mark">62.4.1</a>; Chapter <a
+href="20261126T051700--exceptional-primes-a-full-mark__workbook.html#chap" data-reference-type="ref"
+data-reference="d3-chap">62</a> states and develops it, and
+Chapter <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="c35-chap">57</a>, Section <a
+href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#sec:exceptional" data-reference-type="ref"
+data-reference="c35-sec:exceptional">57.4</a>, uses it.
+There the relation <a href="#eq:R" data-reference-type="eqref"
+data-reference="eq:R">(2)</a> appears for the lift <span
+class="math inline">\(X_j \to X_{j+1}\)</span> with one polynomial for
+all translations, in degrees <span class="math inline">\(i \le
+r_p\)</span>, with a block <span class="math inline">\(\chi(q^t,
+q^{t-2}, \dots, q^{-t})\)</span> in place of <span
+class="math inline">\(x_{j+1}\)</span>, <span
+class="math inline">\(\chi\)</span> a <span
+class="math inline">\(p\)</span>-adic unit (this comparison is ours);
+the proof inverts that polynomial over the ring <span
+class="math inline">\(\mathcal{O}_\eta\)</span> of Chapter <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a> and puts one copy of the product
+of Hecke operators into the datum of every lift, as in the choice <span
+class="math inline">\(S = \{1, \dots, m\}\)</span> of Problem <a
+href="#pr:induction" data-reference-type="ref"
+data-reference="pr:induction">25.4.3</a>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secsym">§<a href="#sec:sym"
+data-reference-type="ref" data-reference="sec:sym">25.1</a></h2>
+<dl>
+<dt><a href="#pr:EH" data-reference-type="ref"
+data-reference="pr:EH">25.1.1</a></dt>
+<dd>
+<p>Compare the product formulas.</p>
+</dd>
+<dt><a href="#pr:union" data-reference-type="ref"
+data-reference="pr:union">25.1.2</a></dt>
+<dd>
+<p><span class="math inline">\(E_{x \sqcup y} = E_x E_y\)</span>.</p>
+</dd>
+<dt><a href="#pr:geom" data-reference-type="ref"
+data-reference="pr:geom">25.1.3</a></dt>
+<dd>
+<p>Induction on <span class="math inline">\(t\)</span> and <span
+class="math inline">\(l\)</span> together, using <span
+class="math inline">\(\genfrac{[}{]}{0pt}{}{n}{0}_{Q} = 1\)</span> at
+the boundary and, for <span class="math inline">\(1 \le l \le
+n\)</span>, the rule <span
+class="math inline">\(\genfrac{[}{]}{0pt}{}{n}{l}_{Q} =
+\genfrac{[}{]}{0pt}{}{n-1}{l-1}_{Q} + Q^l
+\genfrac{[}{]}{0pt}{}{n-1}{l}_{Q}\)</span> and its companion <span
+class="math inline">\(\genfrac{[}{]}{0pt}{}{n}{l}_{Q} =
+Q^{n-l}\genfrac{[}{]}{0pt}{}{n-1}{l-1}_{Q} +
+\genfrac{[}{]}{0pt}{}{n-1}{l}_{Q}\)</span>.</p>
+</dd>
+<dt><a href="#pr:sym-block" data-reference-type="ref"
+data-reference="pr:sym-block">25.1.4</a></dt>
+<dd>
+<p>Problem <a href="#pr:geom" data-reference-type="ref"
+data-reference="pr:geom">25.1.3</a> for the family <span
+class="math inline">\(\beta q^{-t}(1, Q, \dots, Q^t)\)</span>; <span
+class="math inline">\(e_l\)</span> and <span
+class="math inline">\(h_l\)</span> are homogeneous of degree <span
+class="math inline">\(l\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secval">§<a href="#sec:val"
+data-reference-type="ref" data-reference="sec:val">25.2</a></h2>
+<dl>
+<dt><a href="#pr:gauss-unit" data-reference-type="ref"
+data-reference="pr:gauss-unit">25.2.1</a></dt>
+<dd>
+<p>The first rule in the hint to Problem <a href="#pr:geom"
+data-reference-type="ref" data-reference="pr:geom">25.1.3</a>.</p>
+</dd>
+<dt><a href="#pr:block-val" data-reference-type="ref"
+data-reference="pr:block-val">25.2.2</a></dt>
+<dd>
+<p>Problems <a href="#pr:geom" data-reference-type="ref"
+data-reference="pr:geom">25.1.3</a> and <a href="#pr:gauss-unit"
+data-reference-type="ref" data-reference="pr:gauss-unit">25.2.1</a>.</p>
+</dd>
+<dt><a href="#pr:sym-val" data-reference-type="ref"
+data-reference="pr:sym-val">25.2.3</a></dt>
+<dd>
+<p>Problems <a href="#pr:sym-block" data-reference-type="ref"
+data-reference="pr:sym-block">25.1.4</a> and <a href="#pr:gauss-unit"
+data-reference-type="ref" data-reference="pr:gauss-unit">25.2.1</a>.</p>
+</dd>
+<dt><a href="#pr:union-val" data-reference-type="ref"
+data-reference="pr:union-val">25.2.4</a></dt>
+<dd>
+<p>Which monomial of degree <span class="math inline">\(l\)</span> has
+the least valuation?</p>
+</dd>
+<dt><a href="#pr:two-blocks" data-reference-type="ref"
+data-reference="pr:two-blocks">25.2.5</a></dt>
+<dd>
+<p>Problem <a href="#pr:union" data-reference-type="ref"
+data-reference="pr:union">25.1.2</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secmove">§<a href="#sec:move"
+data-reference-type="ref" data-reference="sec:move">25.3</a></h2>
+<dl>
+<dt><a href="#pr:r-one" data-reference-type="ref"
+data-reference="pr:r-one">25.3.1</a></dt>
+<dd>
+<p>Apply <a href="#eq:R" data-reference-type="eqref"
+data-reference="eq:R">(2)</a> with <span class="math inline">\(i =
+1\)</span> once for each step.</p>
+</dd>
+<dt><a href="#pr:r-two" data-reference-type="ref"
+data-reference="pr:r-two">25.3.2</a></dt>
+<dd>
+<p>Use <a href="#eq:R" data-reference-type="eqref"
+data-reference="eq:R">(2)</a> with <span class="math inline">\(i =
+1\)</span> to remove <span
+class="math inline">\(K_0\mathcal{E}^{(0)}_1\)</span>, then Problem <a
+href="#pr:EH" data-reference-type="ref"
+data-reference="pr:EH">25.1.1</a>.</p>
+</dd>
+<dt><a href="#pr:forward" data-reference-type="ref"
+data-reference="pr:forward">25.3.3</a></dt>
+<dd>
+<p>Write <a href="#eq:R" data-reference-type="eqref"
+data-reference="eq:R">(2)</a> as an identity of polynomials in <span
+class="math inline">\(X\)</span> modulo <span
+class="math inline">\(X^{r+1}\)</span>, as in the hint to Problem <a
+href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#pr:split-chain" data-reference-type="ref"
+data-reference="ho-pr:split-chain">24.5.4</a>, and use
+Problem <a href="#pr:union" data-reference-type="ref"
+data-reference="pr:union">25.1.2</a>.</p>
+</dd>
+<dt><a href="#pr:raw" data-reference-type="ref"
+data-reference="pr:raw">25.3.4</a></dt>
+<dd>
+<p>Multiply Theorem <a href="#thm:move" data-reference-type="ref"
+data-reference="thm:move">25.3.1</a> by <span class="math inline">\(q^{r(N_j
+- r)}\)</span>.</p>
+</dd>
+<dt><a href="#pr:integral" data-reference-type="ref"
+data-reference="pr:integral">25.3.5</a></dt>
+<dd>
+<p>Problems <a href="#pr:sym-val" data-reference-type="ref"
+data-reference="pr:sym-val">25.2.3</a> and <a href="#pr:union-val"
+data-reference-type="ref" data-reference="pr:union-val">25.2.4</a>; look at
+<span class="math inline">\(l = 1\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secgain">§<a href="#sec:gain"
+data-reference-type="ref" data-reference="sec:gain">25.4</a></h2>
+<dl>
+<dt><a href="#pr:gain" data-reference-type="ref"
+data-reference="pr:gain">25.4.1</a></dt>
+<dd>
+<p>Write <span class="math inline">\(w\)</span> in coordinates.</p>
+</dd>
+<dt><a href="#pr:one-step" data-reference-type="ref"
+data-reference="pr:one-step">25.4.2</a></dt>
+<dd>
+<p>Apply Theorem <a href="#thm:move" data-reference-type="ref"
+data-reference="thm:move">25.3.1</a> to <span
+class="math inline">\(w\)</span>, write <span
+class="math inline">\(\mathcal{K}_j = K_{j-1}\mathcal{K}_{j-1}\)</span>,
+and use Problem <a href="#pr:gain" data-reference-type="ref"
+data-reference="pr:gain">25.4.1</a>.</p>
+</dd>
+<dt><a href="#pr:induction" data-reference-type="ref"
+data-reference="pr:induction">25.4.3</a></dt>
+<dd>
+<p>Induction on <span class="math inline">\(j\)</span>. For <span
+class="math inline">\(j \in S\)</span> write <span
+class="math inline">\(Y^{n_j} = c\,\mathcal{E}^{(0)}_r\,
+Y^{n_{j-1}}\)</span> and use Problem <a href="#pr:one-step"
+data-reference-type="ref" data-reference="pr:one-step">25.4.2</a>. For
+Theorem <a href="#thm:chain-gain" data-reference-type="ref"
+data-reference="thm:chain-gain">25.4.1</a>, compare <span
+class="math inline">\(A+\delta_j\)</span> with <span
+class="math inline">\(\gamma_j(0)\)</span> when choosing <span
+class="math inline">\(S\)</span>, and apply the problem to <span
+class="math inline">\(Y^{m-n_m}F\)</span>.</p>
+</dd>
+<dt><a href="#pr:colength" data-reference-type="ref"
+data-reference="pr:colength">25.4.4</a></dt>
+<dd>
+<p><span class="math inline">\(Y^i\mathrm{Int}_0 / Y^{i+1}\mathrm{Int}_0
+\cong \mathrm{Int}_0/Y\,\mathrm{Int}_0\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secovercount">§<a href="#sec:overcount"
+data-reference-type="ref" data-reference="sec:overcount">25.5</a></h2>
+<dl>
+<dt><a href="#pr:diag" data-reference-type="ref"
+data-reference="pr:diag">25.5.1</a></dt>
+<dd>
+<p>Diagonal matrices commute.</p>
+</dd>
+<dt><a href="#pr:good" data-reference-type="ref"
+data-reference="pr:good">25.5.2</a></dt>
+<dd>
+<p>Compute <span class="math inline">\(\mathcal{K}_2\, Y^2\)</span>.</p>
+</dd>
+<dt><a href="#pr:bad" data-reference-type="ref"
+data-reference="pr:bad">25.5.3</a></dt>
+<dd>
+<p>Compute <span class="math inline">\(\mathcal{E}^{(1)}_1\)</span> and
+<span class="math inline">\(\mathcal{E}^{(2)}_1\)</span> first.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Mac"><span class="bib-label">[Mac]</span> I. G. Macdonald, <em>Symmetric Functions and Hall Polynomials</em>, 2nd ed., Oxford Math. Monogr., Clarendon Press, Oxford, 1995.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

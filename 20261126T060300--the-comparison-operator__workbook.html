@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-Q70y085n2vGwoTNvaOVICv66AIAvCBJ86PeJ/yD7GvI=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>The comparison operator</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"{\\mathbb{Z}}","C":"{\\mathbb{C}}","F":"{\\mathbb{F}}","Oc":"{\\mathcal{O}}","Hc":"{\\mathcal{H}}","Mch":"{\\mathcal{M}}","Nc":"{\\mathcal{N}}","Ac":"{\\mathcal{A}}","ii":"\\mathrm{i}","im":"\\operatorname{im}","Aut":"\\operatorname{Aut}","Nm":"\\operatorname{Nm}","Sym":"\\operatorname{Sym}","per":"\\mathrm{per}","phif":"\\phi_{\\mathrm f}","vt":"\\vartheta","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="76">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T060300--the-comparison-operator__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-27 17:44:27
+      <a href="20261126T060300--the-comparison-operator__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T060300--the-comparison-operator__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T060300--the-comparison-operator__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">The comparison operator</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:toy" id="toc-sec:toy">§76.1. A seesaw with a twist</a></li>
+<li><a href="#sec:glue" id="toc-sec:glue">§76.2. Gluing by a congruence</a></li>
+<li><a href="#sec:general" id="toc-sec:general">§76.3. The general statement</a></li>
+<li><a href="#sec:false" id="toc-sec:false">§76.4. Periods of false lifts</a></li>
+<li><a href="#sec:frames" id="toc-sec:frames">§76.5. Tight frames, integrality and size</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Complex inner product spaces and Gaussian binomial coefficients <span
+class="citation" data-cites="St">[<a href="#ref-St">St</a>, Ch. 1]</span>.
+For lifts, norms and Gaussian moments over <span
+class="math inline">\({\mathbb{Z}}[\mathrm{i}]\)</span>, see Chapters <a
+href="20261125T002000--definite-theta-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dt-chap">21</a> and <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#chap"
+data-reference-type="ref" data-reference="tn-chap">23</a>. We use
+the data and spaces of Chapters <a href="20261126T030300--the-data__workbook.html#chap"
+data-reference-type="ref" data-reference="da-chap">36</a> and <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>, the descent pair of
+Definition <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:descent-pair" data-reference-type="ref"
+data-reference="dp-def:descent-pair">80.1.2</a> and the
+definitions of Chapter <a href="20261126T050800--compressions-and-false-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="l1-chap">75</a>.</p>
+<p>The cost bound in Theorem <a href="20261126T030800--the-cost-of-one-lift__workbook.html#thm:main"
+data-reference-type="ref"
+data-reference="col-thm:main">74.2.1</a> of Chapter <a
+href="20261126T030800--the-cost-of-one-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="col-chap">74</a> uses a comparison operator
+<span class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>,
+LiftVolumeHeight, line 729]</span>. How is it constructed? Clause (2) of
+Definition <a href="20261126T050800--compressions-and-false-lifts__workbook.html#def:comparison" data-reference-type="ref"
+data-reference="l1-def:comparison">75.3.3</a> asks that all
+the pullbacks <span
+class="math inline">\(u_{\vartheta,j}^*\Upsilon_\vartheta
+u_{\vartheta,j}\)</span> equal a common positive definite operator times
+<span
+class="math inline">\({\mathcal{H}}_j(\vartheta)/{\mathcal{H}}_j(1)\)</span>.
+A seesaw over <span
+class="math inline">\({\mathbb{Z}}[\mathrm{i}]\)</span> illustrates how
+rescaling a period makes it independent of the twist.</p>
+<h1 id="sec:toy">§76.1. A seesaw with a twist</h1>
+<div id="pr:scalar" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:scalar&quot;]">
+<p><strong>Problem 76.1.1</strong>. Let <span
+class="math inline">\(A\)</span>, <span class="math inline">\(T\)</span>
+and <span class="math inline">\(V_\vartheta\)</span> be
+finite-dimensional complex inner product spaces, with <span
+class="math inline">\(\vartheta\)</span> in a set containing <span
+class="math inline">\(1\)</span>; let <span
+class="math inline">\(u_\vartheta\colon A\to V_\vartheta\)</span> and
+<span class="math inline">\(g_\vartheta\colon T\to V_\vartheta\)</span>
+be linear, <span class="math inline">\(n&gt;0\)</span>, and <span
+class="math inline">\(c&#39;_\vartheta\ne0\)</span> numbers such that
+<span class="math inline">\(c&#39;_\vartheta g_\vartheta^*u_\vartheta=
+\mathrm{per}\)</span> for every <span
+class="math inline">\(\vartheta\)</span>, with <span
+class="math inline">\(\mathrm{per}\colon A\to T\)</span> injective and
+independent of <span class="math inline">\(\vartheta\)</span>. Then
+<span class="math inline">\(\Upsilon_\vartheta:= n\,g_\vartheta
+g_\vartheta^*\)</span> satisfies <span class="math display">\[\langle
+u_\vartheta y&#39;, \Upsilon_\vartheta u_\vartheta y\rangle =
+\rho_\vartheta\,\langle y&#39;, \Upsilon^\circ y\rangle,
+  \qquad \rho_\vartheta= \frac{\lvert c&#39;_1\rvert^2}{\lvert
+c&#39;_\vartheta\rvert^2},\quad \Upsilon^\circ = \frac{n}{\lvert
+c&#39;_1\rvert^2}\,\mathrm{per}^*\mathrm{per},\]</span> every <span
+class="math inline">\(u_\vartheta\)</span> is injective, and <span
+class="math inline">\(\langle y,\Upsilon^\circ y\rangle&gt;0\)</span>
+for <span class="math inline">\(y\ne0\)</span>: the hypotheses of
+Problem <a href="20261126T050800--compressions-and-false-lifts__workbook.html#pr:comparison" data-reference-type="ref"
+data-reference="l1-pr:comparison">75.1.2</a>.</p>
+</div>
+<p>Write <span
+class="math inline">\({\mathcal{O}}:={\mathbb{Z}}[\mathrm{i}]\)</span>
+and <span class="math inline">\(\mathfrak q:=(3+2\mathrm{i})\)</span>,
+so <span class="math inline">\({\mathcal{O}}/\mathfrak
+q\cong{\mathbb{F}}_{13}\)</span> by <span
+class="math inline">\(\mathrm{i}\mapsto5\)</span>. Take <span
+class="math inline">\(\psi\)</span> identically <span
+class="math inline">\(1\)</span> on <span
+class="math inline">\({\mathcal{O}}\)</span>, or the cubic character
+modulo <span class="math inline">\(\mathfrak q\)</span> with <span
+class="math inline">\(\psi(2)=e^{2\pi\mathrm{i}/3}\)</span>, extended by
+zero on <span class="math inline">\(\mathfrak q\)</span>. It is trivial
+on units. Write <span
+class="math inline">\(c_a(\psi):=\sum_{\alpha\in{\mathcal{O}}}\psi(\alpha)\alpha^a
+e^{-\pi|\alpha|^2}\)</span>, with <span
+class="math inline">\(c_a(1)=c_a\)</span> as in Chapter <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#chap" data-reference-type="ref"
+data-reference="tn-chap">23</a>.</p>
+<p>On <span
+class="math inline">\(A:={\mathcal{A}}_{(8)}(1)={\mathbb{C}}\)</span>
+take <span class="math inline">\(\langle
+y&#39;,y\rangle=\overline{y&#39;}y/4\)</span>. On <span
+class="math inline">\(\operatorname{Sym}^8({\mathbb{C}}^2)\)</span> let
+<span class="math inline">\(\langle v,w\rangle_0\)</span> be the
+conjugate of the pairing of Problem <a href="20261125T002000--definite-theta-lifts__workbook.html#pr:sym-norm"
+data-reference-type="ref"
+data-reference="dt-pr:sym-norm">21.3.2</a>, linear in <span
+class="math inline">\(w\)</span>. The target pairing is <span
+class="math inline">\(\langle v,w\rangle_0/32\)</span>, giving the norm
+of <span class="math inline">\({\mathcal{A}}_{(8)}(2)\)</span> on
+invariant vectors. Define <span class="math inline">\(u_\psi,g\colon
+A\to\operatorname{Sym}^8({\mathbb{C}}^2)\)</span> by <span
+class="math display">\[u_\psi(\varphi) :=
+\frac{\varphi}{4}\sum_{x\in{\mathcal{O}}^2}\psi(x_2)\,(x_1e_1+x_2e_2)^8
+e^{-\pi\lvert x\rvert^2},
+  \qquad g(\zeta) := 8\zeta\, e_1^4e_2^4 .\]</span></p>
+<div id="pr:toy-lift" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:toy-lift&quot;]">
+<p><strong>Problem 76.1.2</strong>. <span
+class="math inline">\(u_\psi(\varphi) =
+\frac{\varphi}{4}\bigl(c_8c_0(\psi)\,e_1^8 +
+70\,c_4c_4(\psi)\,e_1^4e_2^4 + c_0c_8(\psi)\,e_2^8\bigr)\)</span>, and
+<span class="math inline">\(g^*v = \langle e_1^4e_2^4,
+v\rangle_0\)</span>.</p>
+</div>
+<div id="pr:toy-period" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:toy-period&quot;]">
+<p><strong>Problem 76.1.3</strong>. <span
+class="math inline">\(g^*u_\psi(\varphi) =
+c_4c_4(\psi)\varphi/4\)</span>. Hence, with <span
+class="math inline">\(c&#39;_\psi := c_4/c_4(\psi)\)</span> (when <span
+class="math inline">\(c_4(\psi)\ne0\)</span>), <span
+class="math inline">\(c&#39;_\psi\,g^*u_\psi = \mathrm{per}\)</span> is
+multiplication by <span class="math inline">\(c_4^2/4\)</span> for both
+<span class="math inline">\(\psi\)</span>. <span id="pr:toy-numbers"
+data-label="pr:toy-numbers"></span> By machine: <span
+class="math inline">\(c_4(\psi) \approx 0.187713 +
+0.026069\,\mathrm{i}\)</span> for <span
+class="math inline">\(\psi\ne1\)</span>, against <span
+class="math inline">\(c_4 \approx 0.143191\)</span>; so <span
+class="math inline">\(\rho_\psi := \lvert c&#39;_1\rvert^2/\lvert
+c&#39;_\psi\rvert^2 = \lvert c_4(\psi)\rvert^2/c_4^2 \approx
+1.75167\)</span>.</p>
+</div>
+<div id="pr:toy-compression" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:toy-compression&quot;]">
+<p><strong>Problem 76.1.4</strong>. Let <span
+class="math inline">\(\Upsilon_\psi := gg^*\)</span>, <span
+class="math inline">\(Z(\psi) := u_\psi^*u_\psi\)</span> and <span
+class="math inline">\(D_\psi\)</span> the compression determinant of
+<span class="math inline">\(\Upsilon_\psi\)</span> on the line <span
+class="math inline">\(u_\psi({\mathbb{C}})\)</span>. Then <span
+class="math inline">\(\Upsilon^\circ = c_4^4/16\)</span>, <span
+class="math inline">\(Z(\psi)D_\psi = (c_4^4/16)\rho_\psi\)</span>, and
+<span class="math inline">\(Z(1)/Z(\psi) =
+(D_\psi/D_1)\rho_\psi^{-1}\)</span>. At the trivial twist <span
+class="math inline">\(D_1 = 1/81\)</span>. By machine, for <span
+class="math inline">\(\psi\ne1\)</span>, <span
+class="math inline">\(Z(\psi)\approx 6.6676\cdot10^{-4}\)</span> and
+<span class="math inline">\(D_\psi \approx 0.069029\)</span>.</p>
+</div>
+<p>With toy Hecke value <span
+class="math inline">\(|c_4(\psi)|^2\)</span>, these identities model
+clauses (1) and (2).</p>
+<div id="pr:toy-false" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:toy-false&quot;]">
+<p><strong>Problem 76.1.5</strong>. <span
+class="math inline">\({\mathcal{A}}_{(8)}(2)\)</span> is spanned by
+<span class="math inline">\(e_1^8+e_2^8\)</span> and <span
+class="math inline">\(e_1^4e_2^4\)</span> (Problem <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:forms-2" data-reference-type="ref"
+data-reference="dt-pr:forms-2">21.3.5</a>); <span
+class="math inline">\(\phi_{\mathrm f}:= e_1^8 - 34e_1^4e_2^4 +
+e_2^8\)</span> is orthogonal to <span
+class="math inline">\(u_1({\mathbb{C}})\)</span>, and <span
+class="math inline">\(g^*\phi_{\mathrm f}= -17/35\)</span>. Hence <span
+class="math inline">\(\langle\phi_{\mathrm f},
+\Upsilon_1u_1(\varphi)\rangle \ne 0\)</span> for <span
+class="math inline">\(\varphi\ne0\)</span>.</p>
+</div>
+<p>Clause (3) also uses the Hecke equation at a split place (Section <a
+href="#sec:false" data-reference-type="ref"
+data-reference="sec:false">76.4</a>).</p>
+<h1 id="sec:glue">§76.2. Gluing by a congruence</h1>
+<p>In the period of the gluing map, a sum over a congruence group
+enforces a matrix congruence.</p>
+<div id="pr:glue-mod9" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:glue-mod9&quot;]">
+<p><strong>Problem 76.2.1</strong>. Modulo <span
+class="math inline">\(9\)</span>, let <span class="math inline">\(\Gamma
+:= \{Y \equiv 1 \pmod 3\} = \{1,4,7\}\)</span>. For <span
+class="math inline">\(v\in{\mathbb{Z}}/9\)</span>, the equation <span
+class="math inline">\(vY=1\)</span> has a solution <span
+class="math inline">\(Y\in\Gamma\)</span> if and only if <span
+class="math inline">\(v\equiv1\pmod 3\)</span>, and then exactly one.
+Hence <span class="math inline">\(\mathbf 1_{v\equiv1\,(3)} =
+\sum_{Y\in\Gamma}\mathbf 1_{vY=1}\)</span>.</p>
+</div>
+<div id="pr:glue-sum" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:glue-sum&quot;]">
+<p><strong>Problem 76.2.2</strong>. Let a finite group <span
+class="math inline">\(\Gamma\)</span> act on a finite set <span
+class="math inline">\(X\)</span> on the right, and let <span
+class="math inline">\(S, N\subseteq X\)</span> be such that for <span
+class="math inline">\(x\in S\)</span> exactly one <span
+class="math inline">\(Y\in\Gamma\)</span> has <span
+class="math inline">\(xY\in N\)</span>, and <span
+class="math inline">\(xY\in N\)</span> implies <span
+class="math inline">\(x\in S\)</span>. Then <span
+class="math inline">\(\mathbf 1_S(x) = \sum_{Y}\mathbf 1_N(xY)\)</span>,
+and for every <span class="math inline">\(\Gamma\)</span>-invariant
+<span class="math inline">\(f\)</span>, <span
+class="math inline">\(\sum_{x}\mathbf 1_S(x)f(x) = \#\Gamma\sum_x
+\mathbf 1_N(x)f(x)\)</span>.</p>
+</div>
+<p>In the proof, <span class="math inline">\(X\)</span> consists of
+matrices modulo <span class="math inline">\(\pi_M^2\)</span>, where
+<span class="math inline">\((\pi_M)\)</span> is the product of the
+chosen primes (Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chosen"
+data-reference-type="ref"
+data-reference="ob-sec:chosen">37.1</a> and <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>, ExchangeData,
+line 80]</span>). Invertible <span class="math inline">\(r\times
+r\)</span> matrices congruent to <span class="math inline">\(1\)</span>
+modulo <span class="math inline">\(\pi_M\)</span> act on the right. Here
+<span class="math inline">\(S\)</span> is given by the gluing congruence
+and <span class="math inline">\(N\)</span> by block normalization. The
+group order occurs in <span class="math inline">\(c^\circ_i\)</span>
+below <span class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>,
+GluedLattices, lines 490–535 and GluingMaps, line 999]</span>.</p>
+<h1 id="sec:general">§76.3. The general statement</h1>
+<p>Fix <span class="math inline">\(1\le j\le m\)</span>. Write <span
+class="math inline">\(V_j=V&#39;&#39;\oplus V^\circ\)</span> with
+definite summands of ranks <span class="math inline">\(r+9m+1\)</span>
+and <span class="math inline">\(t-9m-1\)</span>. A choice <span
+class="math inline">\(i\)</span> specifies a <span
+class="math inline">\(3m\times(r+9m+1)\)</span> matrix modulo <span
+class="math inline">\(\pi_M^2\)</span>, a class of the standard definite
+space of rank <span class="math inline">\(6m+1\)</span> at principal
+level <span class="math inline">\(\pi_M^2\)</span>, and at each infinite
+place <span class="math inline">\(r^8-(t+1)/2\)</span> lists of <span
+class="math inline">\(2m\)</span> row indices of that space. Let <span
+class="math inline">\(c\)</span> range over the classes of <span
+class="math inline">\(V^\circ\)</span> at principal level <span
+class="math inline">\(\pi_M^2\)</span>. Write <span
+class="math inline">\(\mu^-\)</span> for the minus diagram of the
+untwisted <span class="math inline">\(j\)</span>-th descent pair and
+<span class="math inline">\(h\)</span> for its hook number. Tuples <span
+class="math inline">\(\zeta=(\zeta_{i,c})\)</span> carry one Weyl module
+of weight <span class="math inline">\(\mu^-\)</span> per slot <span
+class="math inline">\((i,c)\)</span>, with the sum of the Gram pairings
+<span class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>,
+ExchangeData, lines 169–193, 294, 444–449 and GluingMaps, lines
+58–88]</span>.</p>
+<div id="def:glue" class="definition">
+<p><strong>Definition 76.3.1</strong>. For a twist <span
+class="math inline">\(\vartheta\)</span>, define the <em>gluing map</em>
+from tuples <span class="math inline">\(\zeta\)</span> to the target of
+<span class="math inline">\(u_{\vartheta,j}\)</span> by <span
+class="math display">\[g_\vartheta\zeta=M^{l_1}\sum_{i,c,d&#39;&#39;}\delta_{\operatorname{block}(d&#39;&#39;,c)\gamma_i}
+     \bigl(\phi&#39;&#39;_{\vartheta,i}(d&#39;&#39;)\mathbin{\odot}\zeta_{i,c}\bigr).\]</span>
+Here <span class="math inline">\(\mathbin{\odot}\)</span> denotes the
+Cartan product, <span class="math inline">\(d&#39;&#39;\)</span> runs
+over class representatives of <span
+class="math inline">\(V&#39;&#39;\)</span> at the row-fixing level of
+<span class="math inline">\(i,\vartheta\)</span>, and <span
+class="math inline">\(c\)</span> in the subscript denotes its chosen
+representative. The class form satisfies <span
+class="math inline">\(\langle\delta_x(v),\phi\rangle=\langle
+v,\phi(x)\rangle\)</span>. The matrix <span
+class="math inline">\(\gamma_i\)</span> is a glued lattice basis chosen
+at the trivial twist and <span class="math inline">\(l_1\)</span> the
+denominator exponent of the splitting. The first factor <span
+class="math inline">\(\phi&#39;&#39;_{\vartheta,i}=\overline{c&#39;&#39;L_{\vartheta,i}}\)</span>
+comes from a vector-valued theta series <span
+class="math inline">\(L_{\vartheta,i}\)</span> on <span
+class="math inline">\(\mathrm U(V&#39;&#39;)(\mathbb A_f)\)</span>, with
+<span class="math inline">\(c&#39;&#39;\ne0\)</span> depending only on
+the data and <span class="math inline">\(j\)</span> <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>, TestedForms,
+line 138, GluedLattices, line 550, GluedForms, line 450,
+LineCoordinates, line 331 and GluingMaps, lines 190–199, 211–247,
+350–354]</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#thm:operator">Theorem 76.5.1</a>; <a href="20261126T030800--the-cost-of-one-lift__workbook.html">Chapter 74</a></div><!-- used-in:end -->
+</div>
+<p>First, write <span class="math inline">\(\mathsf
+S_{\vartheta,i}(g)\)</span> for the pairing, conjugate-linear in <span
+class="math inline">\(\phi&#39;&#39;_{\vartheta,i}\)</span>, with the
+theta kernel for <span class="math inline">\((W_j,V&#39;&#39;)\)</span>,
+summed over the row-fixing classes. Its finite datum tests the rows of
+the choice matrix stacked over the level generator times the identity
+modulo <span class="math inline">\(\pi_M^2\)</span>. It evaluates the
+residue character, with local factors <span
+class="math inline">\(\chi_{M,w}^{\,j}\vartheta_w\)</span>, on the
+determinant of the distinguished rows modulo the product of <span
+class="math inline">\((\pi_M)^2\)</span> and the prime ideals at the
+places in <span class="math inline">\(Q_\vartheta\)</span>. Here <span
+class="math inline">\(\vartheta_w\)</span> is the local tame part <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>, LevelAndTwists,
+line 336, GluedLattices, lines 272–278, 422–425 and GluingMaps, lines
+249–255]</span>. In the last of three applications of the exchange
+identity of Chapter <a href="20261126T050600--the-exchange-identity__workbook.html#chap" data-reference-type="ref"
+data-reference="c3-chap">71</a>, the first two applications
+having produced a carrier form of signature <span
+class="math inline">\((2m,m)\)</span>, one obtains functions <span
+class="math inline">\(F_i\)</span> on <span
+class="math inline">\(\mathrm U(W_j)(\mathbb A)\)</span> independent of
+the twist. There is a scalar <span
+class="math inline">\(c&#39;_\vartheta\)</span> per twist such that
+<span class="math inline">\(c&#39;_\vartheta\mathsf
+S_{\vartheta,i}(g)=c&#39;&#39;F_i(g)\)</span> for all <span
+class="math inline">\(i,g\)</span>, and <span
+class="math display">\[\lvert c&#39;_\vartheta\rvert^2 =
+C/{\mathcal{H}}_j(\vartheta)\qquad\text{for every twist
+}\vartheta,\]</span> with one <span
+class="math inline">\(C\in{\mathbb{C}}\)</span> and <span
+class="math inline">\(1/0:=0\)</span> in this identity. The three
+exchange factors give <span
+class="math inline">\({\mathcal{H}}_j\)</span> of Definition <a
+href="20261126T050800--compressions-and-false-lifts__workbook.html#def:hecke-product" data-reference-type="ref"
+data-reference="l1-def:hecke-product">75.3.1</a>.
+Second, for every good form <span class="math inline">\(y\)</span> on
+<span class="math inline">\(W_j\)</span> and tuple <span
+class="math inline">\(\zeta\)</span>, <span
+class="math display">\[c&#39;_\vartheta\,\langle\zeta,
+g_\vartheta^*u_{\vartheta,j}y\rangle = \sum_i c^\circ_i\int
+y\,F_i\,\Theta^\circ(\zeta_i),\]</span> integrated over the adelic
+unitary group of <span class="math inline">\(W_j\)</span> modulo its
+rational points. Here <span class="math inline">\(c^\circ_i\ne0\)</span>
+is independent of <span class="math inline">\(\vartheta\)</span>, and
+<span class="math inline">\(\Theta^\circ(\zeta_i)\)</span> pairs the
+slice <span class="math inline">\((\zeta_{i,c})_c\)</span>
+conjugate-linearly with the untwisted theta kernel for <span
+class="math inline">\((W_j,V^\circ)\)</span> at principal level <span
+class="math inline">\(\pi_M^2\)</span>. <em>Status</em>: read from the
+code <span class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>,
+OneExchange, line 93, ThreeExchanges, lines 181, 284, 748 and
+GluingMaps, lines 293–319, 999–1048]</span>. The right side is
+independent of <span class="math inline">\(\vartheta\)</span>, so <span id="eq:period-lift"
+class="math display">\[\begin{equation}
+\label{eq:period-lift}\tag{1}
+  c&#39;_\vartheta\, g_\vartheta^*u_{\vartheta,j} = \mathrm{per}_j :=
+c&#39;_1\, g_1^*u_{1,j} .
+\end{equation}\]</span> Third, <span
+class="math inline">\(\mathrm{per}_j\)</span> is injective on <span
+class="math inline">\(H_g(W_j)\)</span>. The proof shows that if a good
+form <span class="math inline">\(y\ne0\)</span> had <span
+class="math inline">\(\int yF_i\Theta^\circ(\zeta_i)=0\)</span> for all
+<span class="math inline">\(i,\zeta_i\)</span>, a function <span
+class="math inline">\(F_0\)</span> with <span
+class="math inline">\(F_0(1)\ne0\)</span> would satisfy <span
+class="math inline">\(|F_0(1)|\le 2(4b_*+1)b_*^{-19}|F_0(1)|\)</span>,
+where <span class="math inline">\(b_*:=b^{2ft^3}&gt;10\)</span>.
+<em>Status</em>: read from the code <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>, ProductsSpan, lines 717,
+855–907]</span>. For stable-range nonvanishing compare <span
+class="citation" data-cites="Li92">[<a href="#ref-Li92">Li92</a>]</span>.</p>
+<div id="pr:peak" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:peak&quot;]">
+<p><strong>Problem 76.3.1</strong>. For <span
+class="math inline">\(b_*&gt;10\)</span>, <span
+class="math inline">\(2(4b_*+1)&lt;b_*^2\le b_*^{19}\)</span>. At <span
+class="math inline">\(b_*=2\)</span> the factor <span
+class="math inline">\(2(4b_*+1)b_*^{-19}\)</span> is about <span
+class="math inline">\(3.4\cdot10^{-5}\)</span>.</p>
+</div>
+<div id="pr:nonzero" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:nonzero&quot;]">
+<p><strong>Problem 76.3.2</strong>. If <a href="#eq:period-lift"
+data-reference-type="eqref"
+data-reference="eq:period-lift">(1)</a> holds for every
+twist, <span class="math inline">\(\mathrm{per}_j\)</span> is injective
+and <span class="math inline">\(\dim H_g(W_j) = d_T &gt; 0\)</span>
+(Corollary <a href="20261126T050500--equal-multiplicities__workbook.html#cor:equal" data-reference-type="ref"
+data-reference="c2-cor:equal">70.4.1</a>; positivity by <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>, SpanningTheorem,
+line 307]</span>), then <span
+class="math inline">\(c&#39;_\vartheta\ne0\)</span> for every twist.</p>
+</div>
+<div id="pr:ratio" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:ratio&quot;]">
+<p><strong>Problem 76.3.3</strong>. Let <span
+class="math inline">\(c&#39;_\vartheta\ne0\)</span> and <span
+class="math inline">\(\lvert c&#39;_\vartheta\rvert^2 =
+C/{\mathcal{H}}_j(\vartheta)\)</span> for every twist, with one <span
+class="math inline">\(C\in{\mathbb{C}}\)</span>, where <span
+class="math inline">\(1/0\)</span> is read as <span
+class="math inline">\(0\)</span>. Then <span
+class="math inline">\(C\ne0\)</span>, every <span
+class="math inline">\({\mathcal{H}}_j(\vartheta)\ne0\)</span>, and <span
+class="math inline">\({\mathcal{H}}_j(\vartheta)/{\mathcal{H}}_j(1) =
+\lvert c&#39;_1\rvert^2/\lvert c&#39;_\vartheta\rvert^2 \ne 0\)</span>:
+clause (1).</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:clause2">Problem 76.3.4</a></div><!-- used-in:end -->
+</div>
+<div id="pr:clause2" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:clause2&quot;]">
+<p><strong>Problem 76.3.4</strong>. Let <span
+class="math inline">\(h&gt;0\)</span>, <span
+class="math inline">\(\mathrm{per}_j\)</span> be injective, and for
+every twist let <a href="#eq:period-lift" data-reference-type="eqref"
+data-reference="eq:period-lift">(1)</a> hold with <span
+class="math inline">\(c&#39;_\vartheta\ne0\)</span> and <span
+class="math inline">\({\mathcal{H}}_j(\vartheta)/{\mathcal{H}}_j(1)=\lvert
+c&#39;_1\rvert^2/\lvert c&#39;_\vartheta\rvert^2\)</span> (Problem <a
+href="#pr:ratio" data-reference-type="ref"
+data-reference="pr:ratio">76.3.3</a>). Then the family <span
+class="math inline">\(\Upsilon_\vartheta:= {\mathcal{N}}h^2 g_\vartheta
+g_\vartheta^*\)</span> satisfies clause (2) with <span
+class="math inline">\(\Upsilon^\circ = {\mathcal{N}}h^2\lvert
+c&#39;_1\rvert^{-2}\mathrm{per}_j^*\mathrm{per}_j\)</span>, and <span
+class="math inline">\(\Upsilon_\vartheta u_{\vartheta,j}y =
+{\mathcal{N}}h^2 c&#39;_\vartheta{}^{-1}\, g_\vartheta\mathrm{per}_j
+y\)</span> for every twist and good form <span
+class="math inline">\(y\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:clause3">Problem 76.4.4</a></div><!-- used-in:end -->
+</div>
+<h1 id="sec:false">§76.4. Periods of false lifts</h1>
+<p>For clause (3) we need <span
+class="math inline">\(g_\vartheta\mathrm{per}_jy\)</span> orthogonal to
+the false lifts (Problem <a href="#pr:clause2" data-reference-type="ref"
+data-reference="pr:clause2">76.3.4</a>).</p>
+<div id="pr:qbinom" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:qbinom&quot;]">
+<p><strong>Problem 76.4.1</strong>. <span class="math inline">\(\sum_U
+q^{\binom{\dim U}{2}}x^{\dim U} = \prod_{k=0}^{n-1}(1+q^kx)\)</span>,
+the sum over the subspaces <span class="math inline">\(U\)</span> of
+<span class="math inline">\({\mathbb{F}}_q^n\)</span>. For <span
+class="math inline">\(q=2\)</span>, <span
+class="math inline">\(n=2\)</span>: <span
+class="math inline">\(1+3x+2x^2\)</span>.</p>
+</div>
+<div id="pr:small-roots" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:small-roots&quot;]">
+<p><strong>Problem 76.4.2</strong>. Let <span
+class="math inline">\(q\)</span> be a prime power, <span
+class="math inline">\(F\)</span> a bounded function on a group <span
+class="math inline">\(G\)</span>, elements <span
+class="math inline">\(g_U\in G\)</span> indexed by the subspaces of
+<span class="math inline">\({\mathbb{F}}_q^n\)</span>, and <span
+class="math inline">\(\sum_U a_U F(gg_U) = 0\)</span> for all <span
+class="math inline">\(g\)</span>, with <span
+class="math inline">\(a_{\{0\}} = 1\)</span> and <span
+class="math inline">\(\lvert a_U\rvert = q^{\binom{\dim U}2}\lvert
+X\rvert^{\dim U}\)</span>. If <span class="math inline">\(q^{n+1}\lvert
+X\rvert\le1\)</span>, then <span class="math inline">\(\sum_U\lvert
+a_U\rvert\le e^{1/2}\)</span>, so <span
+class="math inline">\(\sum_{U\ne\{0\}}\lvert a_U\rvert&lt;1\)</span>,
+and <span class="math inline">\(F = 0\)</span>. <span id="pr:hecke-toy"
+data-label="pr:hecke-toy"></span> For <span class="math inline">\(q =
+2\)</span>, <span class="math inline">\(n = 2\)</span>, <span
+class="math inline">\(\lvert X\rvert = 1/8\)</span>: <span
+class="math inline">\(\sum_U\lvert a_U\rvert=45/32\)</span>, and <span
+class="math inline">\(\sup\lvert F\rvert\le\frac{13}{32}\sup\lvert
+F\rvert\)</span>.</p>
+</div>
+<p>Fix a false lift <span class="math inline">\(\phi_{\mathrm
+f}\)</span> at a split place <span class="math inline">\(w\)</span> with
+<span class="math inline">\(w,\bar w\notin{\mathcal{M}}\cup
+Q_\vartheta\)</span> (Definition <a href="20261126T050800--compressions-and-false-lifts__workbook.html#def:false"
+data-reference-type="ref"
+data-reference="l1-def:false">75.3.2</a>). Its normalized
+descent to <span class="math inline">\(W_j\)</span> vanishes, and every
+product of chosen-place hyperplane sums with a nonzero indexing row
+kills it. The proof adds hyperbolic planes using boundedness and a Hecke
+equation as in Problem <a href="#pr:small-roots"
+data-reference-type="ref" data-reference="pr:small-roots">76.4.2</a>. If
+<span class="math inline">\(2\operatorname{rk}W_j+2n_{\mathbb
+H}+3&lt;\operatorname{rk}V_j\)</span>, the theta descents to <span
+class="math inline">\(W_j\oplus\mathbb H^{n_{\mathbb H}}\)</span> of
+every conjugate matrix coefficient of <span
+class="math inline">\(\phi_{\mathrm f}\)</span> vanish for the character
+<span class="math inline">\(\chi_W\upsilon^{n_{\mathbb H}}\)</span> and
+every Schwartz datum vacuum off the level and its conjugate. Here <span
+class="math inline">\(\chi_W=\upsilon^{r_-}\)</span> is the character of
+the norm-one ideles attached to <span
+class="math inline">\(W_j\)</span>, where <span
+class="math inline">\(r_-\)</span> is the number of negative signs of
+<span class="math inline">\(W_j\)</span> <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>, AuxiliaryPair, line 332]</span>.
+Taking <span class="math inline">\(n_{\mathbb
+H}=\operatorname{rk}V&#39;&#39;\)</span> gives <span
+class="math inline">\(\Theta^\circ((g_\vartheta^*\phi_{\mathrm
+f})_i)(g)=0\)</span> for all choices <span
+class="math inline">\(i\)</span> and adelic <span
+class="math inline">\(g\)</span>. <em>Status</em>: read from the code
+<span class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>,
+HyperbolicPlaneStep, lines 64, 437 and GluingMaps, lines
+912–958]</span>. For theta towers compare <span class="citation"
+data-cites="Ra84">[<a href="#ref-Ra84">Ra84</a>, Ch. I, §§1–2]</span>.</p>
+<div id="pr:tower-rank" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:tower-rank&quot;]">
+<p><strong>Problem 76.4.3</strong>. With <span
+class="math inline">\(\operatorname{rk}W_j = r\)</span>, <span
+class="math inline">\(\operatorname{rk}V_j = r+t\)</span>, <span
+class="math inline">\(t = 5r\)</span> and <span
+class="math inline">\(n_{\mathbb H} = r+9m+1\)</span>: the condition
+reads <span class="math inline">\(18m+5&lt;2r\)</span>, and it holds for
+the data, where <span class="math inline">\(m\le2\sqrt x\)</span>, <span
+class="math inline">\(r\ge x^5\)</span> and <span
+class="math inline">\(x&gt;2\)</span>.</p>
+</div>
+<div id="pr:clause3" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:clause3&quot;]">
+<p><strong>Problem 76.4.4</strong>. Given the second statement of Section <a
+href="#sec:general" data-reference-type="ref"
+data-reference="sec:general">76.3</a> at <span
+class="math inline">\(\vartheta= 1\)</span> (so <span
+class="math inline">\(\langle\zeta,\mathrm{per}_jy\rangle =
+\sum_ic^\circ_i\int yF_i\Theta^\circ(\zeta_i)\)</span>) and the
+vanishing above: for every twist <span
+class="math inline">\(\vartheta\)</span>, good form <span
+class="math inline">\(y\)</span> and false lift <span
+class="math inline">\(\phi_{\mathrm f}\)</span> at an eligible split
+place, <span class="math inline">\(\langle\phi_{\mathrm f},
+g_\vartheta\mathrm{per}_jy\rangle = 0\)</span>. With Problem <a
+href="#pr:clause2" data-reference-type="ref"
+data-reference="pr:clause2">76.3.4</a>, clause (3) holds.</p>
+</div>
+<h1 id="sec:frames">§76.5. Tight frames, integrality and size</h1>
+<div id="def:frame" class="definition">
+<p><strong>Definition 76.5.1</strong>. Let <span
+class="math inline">\(G\)</span> be a positive definite Hermitian <span
+class="math inline">\(d\times d\)</span> matrix and <span
+class="math inline">\(h&gt;0\)</span>. A <em>tight frame</em> for <span
+class="math inline">\((G,h)\)</span> is a finite family <span
+class="math inline">\((\eta_a)\)</span> in <span
+class="math inline">\({\mathbb{C}}^d\)</span> with <span
+class="math inline">\(\sum_a(\eta_a^*G\xi)\,\eta_a = h^2\xi\)</span> for
+every <span class="math inline">\(\xi\in{\mathbb{C}}^d\)</span>.</p>
+</div>
+<p>A frame expresses <span class="math inline">\(g_\vartheta
+g_\vartheta^*\)</span> as a sum of operators of rank at most one.</p>
+<div id="pr:frame" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:frame&quot;]">
+<p><strong>Problem 76.5.1</strong>. Let <span
+class="math inline">\(h&gt;0\)</span> be an integer, <span
+class="math inline">\(F\)</span> an integer matrix with <span
+class="math inline">\(d\)</span> independent columns (indexed by a basis
+of a Weyl module) and rows indexed by tensors <span
+class="math inline">\(T\)</span>, <span class="math inline">\(G :=
+F^tF\)</span>, and let an integer matrix <span
+class="math inline">\(H\)</span> satisfy <span class="math inline">\(GH
+= hI\)</span>. Then <span class="math inline">\(\eta_T :=
+HF^te_T\in{\mathbb{Z}}^d\)</span> satisfies <span
+class="math inline">\(G\eta_T = hF^te_T\)</span>, the <span
+class="math inline">\(\eta_T\)</span> form a tight frame for <span
+class="math inline">\((G,h)\)</span>, and <span
+class="math inline">\(\eta_T^*G\eta_T\le h^2\)</span>.</p>
+</div>
+<p>For the Weyl modules of the proof, <span
+class="math inline">\(G\)</span> is the integral Gram matrix and <span
+class="math inline">\(H\)</span> the matrix of Fock pairings of the
+basis polynomials. The identity <span
+class="math inline">\(GH=hI\)</span> and the integral frame are read
+from the code <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>, GramMatrix, lines 101,
+447]</span>.</p>
+<div id="pr:sym-frame" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:sym-frame&quot;]">
+<p><strong>Problem 76.5.2</strong>. For <span
+class="math inline">\(\operatorname{Sym}^a({\mathbb{C}}^n)\)</span> with
+<span class="math inline">\(n\ge2\)</span>, let <span
+class="math inline">\(H\)</span> be the matrix of Fock pairings of the
+monomials <span class="math inline">\(z^\alpha\)</span>, and take the
+basis <span class="math inline">\(m_\alpha\)</span>, <span
+class="math inline">\(\lvert\alpha\rvert = a\)</span>, with <span
+class="math inline">\(m_\alpha\)</span> the sum of the distinct tensors
+<span class="math inline">\(e_{w_1}\otimes\dots\otimes e_{w_a}\)</span>
+of content <span class="math inline">\(\alpha\)</span> (so <span
+class="math inline">\(m_\alpha = (a!/\alpha!)e^\alpha\)</span> in the
+notation of Chapter <a href="20261125T002000--definite-theta-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dt-chap">21</a>), and <span
+class="math inline">\(F\)</span> the inclusion into tensors. Then <span
+class="math inline">\(G = \operatorname{diag}(a!/\alpha!)\)</span>,
+<span class="math inline">\(H = \operatorname{diag}(\alpha!)\)</span>
+and <span class="math inline">\(h = a!\)</span>. For <span
+class="math inline">\(\operatorname{Sym}^2{\mathbb{C}}^2\)</span> (basis
+<span class="math inline">\(11,12,22\)</span>): <span
+class="math inline">\(G = \operatorname{diag}(1,2,1)\)</span>, <span
+class="math inline">\(h = 2\)</span>, the frame is <span
+class="math inline">\(2e_{11}, e_{12}, e_{12}, 2e_{22}\)</span>, with
+squared <span class="math inline">\(G\)</span>-norms <span
+class="math inline">\(4,2,2,4\)</span>, and <span
+class="math inline">\(\sum_T\eta_T\eta_T^tG = 4I\)</span>.</p>
+</div>
+<p>For each class <span class="math inline">\(c\)</span> fix a rational
+unitary <span class="math inline">\(\delta_c\)</span> of <span
+class="math inline">\(V^\circ\)</span>. For the representation <span
+class="math inline">\(\rho\)</span> of weight <span
+class="math inline">\(\mu^-\)</span>, place <span
+class="math inline">\(\overline{\rho(\delta_c^{-1})\eta_T}\)</span> in
+slot <span class="math inline">\((i,c)\)</span> and zero elsewhere. The
+tuples <span class="math inline">\(f_a\)</span>, indexed by <span
+class="math inline">\(a=((i,c),T)\)</span> with <span
+class="math inline">\(T\)</span> a filling of <span
+class="math inline">\(\mu^-\)</span> with strictly increasing columns,
+satisfy <span class="math inline">\(\sum_a\langle f_a,\zeta\rangle
+f_a=h^2\zeta\)</span> for every tuple. In each slot <span
+class="math inline">\(\rho(\delta_c)\overline{f_a(i,c)}\)</span> is
+integral in the Weyl basis, and <span
+class="math inline">\(N_\sigma(f_a)\le h^2\)</span> for every <span
+class="math inline">\(\sigma\in\operatorname{Aut}({\mathbb{C}})\)</span>.
+Here <span class="math inline">\(N_\sigma\)</span> sums the squared Gram
+norms after <span class="math inline">\(\sigma\)</span> over the slots.
+<em>Status</em>: read from the code <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>, LiftVolumeHeight, line
+350]</span>.</p>
+<div id="pr:rank-one-sum" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:rank-one-sum&quot;]">
+<p><strong>Problem 76.5.3</strong>. Then <span
+class="math inline">\(\Upsilon_\vartheta\phi =
+\sum_a{\mathcal{N}}\,\langle g_\vartheta f_a,\phi\rangle\, g_\vartheta
+f_a\)</span>.</p>
+</div>
+<div id="pr:clause4" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:clause4&quot;]">
+<p><strong>Problem 76.5.4</strong>. Let <span
+class="math inline">\(\ell\)</span> be a prime, <span
+class="math inline">\({\mathbb{C}}_\ell\)</span> the completion of an
+algebraic closure of <span class="math inline">\(\mathbb
+Q_\ell\)</span>, and <span
+class="math inline">\(\eta\colon{\mathbb{C}}\to{\mathbb{C}}_\ell\)</span>
+a ring homomorphism. Suppose each <span
+class="math inline">\(g_\vartheta f_a\)</span> is integral at <span
+class="math inline">\(\eta\)</span> and at <span
+class="math inline">\(\eta\circ(\text{complex conjugation})\)</span>,
+and that <span
+class="math inline">\(\lvert\eta({\mathcal{N}}\langle\phi&#39;,\phi\rangle)\rvert_\ell\le1\)</span>
+whenever <span class="math inline">\(\phi&#39;\)</span> is integral at
+<span class="math inline">\(\eta\circ(\text{conjugation})\)</span> and
+<span class="math inline">\(\phi\)</span> at <span
+class="math inline">\(\eta\)</span>. Then <span
+class="math inline">\(\Upsilon_\vartheta\)</span> maps forms integral at
+<span class="math inline">\(\eta\)</span> to forms integral at <span
+class="math inline">\(\eta\)</span>.</p>
+</div>
+<p>A tuple <span class="math inline">\(\zeta\)</span> is integral at
+<span class="math inline">\(\eta\)</span> if, in every slot <span
+class="math inline">\((i,c)\)</span>, the Weyl gauge of <span
+class="math inline">\(\overline{\zeta_{i,c}}\)</span> at the chosen
+representative of <span class="math inline">\(c\)</span>, taken at <span
+class="math inline">\(\eta\circ\mathrm{conj}\)</span>, is at most <span
+class="math inline">\(1\)</span> <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>, GluingMaps, line 82]</span>. For
+<span
+class="math inline">\(\ell\nmid\operatorname{Nm}Q_\vartheta\)</span> one
+can choose the <span class="math inline">\(\delta_c\)</span> to make the
+frame integral at every <span class="math inline">\(\eta\)</span> above
+<span class="math inline">\(\ell\)</span>. Gluing preserves integrality
+there and every target stabilizer order divides <span
+class="math inline">\({\mathcal{N}}\)</span> (compare Problem <a
+href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html#pr:class-sum" data-reference-type="ref"
+data-reference="l3-pr:class-sum">77.3.1</a>), giving the
+hypotheses above. <em>Status</em>: read from the code <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>,
+LiftVolumeHeight, lines 407–433, GluingMaps, line 552, LiftChains, line
+548 and PAdicGauge, line 750]</span>. For the size bound use <span
+class="math inline">\(N_\sigma\)</span> on target forms as in Chapter <a
+href="20261126T050800--compressions-and-false-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="l1-chap">75</a> and <span
+class="math inline">\(\sigma&#39;:=\mathrm{conj}\circ\sigma\circ\mathrm{conj}\)</span>.</p>
+<div id="pr:clause5" class="problem" data-progress-ids="[&quot;20261126T060300--the-comparison-operator__workbook.tex#pr:clause5&quot;]">
+<p><strong>Problem 76.5.5</strong>. Let <span
+class="math inline">\(\lambda&gt;0\)</span> and suppose <span
+class="math inline">\(N_\sigma(g_1\zeta)\le
+e^{2\lambda}N_\sigma(\zeta)\)</span> for all tuples and all <span
+class="math inline">\(\sigma\)</span>, <span
+class="math inline">\(\lvert\sigma\langle\phi&#39;,\phi\rangle\rvert\le
+N_\sigma(\phi)^{1/2}N_{\sigma&#39;}(\phi&#39;)^{1/2}\)</span>, <span
+class="math inline">\(N_\sigma(f_a)\le h^2\)</span> for all <span
+class="math inline">\(a,\sigma\)</span>, and (number of slots <span
+class="math inline">\((i,c)\)</span>)<span
+class="math inline">\(\cdot(\#\{a\}\cdot{\mathcal{N}}h^2)^2\le
+e^{2\lambda}\)</span>. Then <span
+class="math inline">\(N_\sigma(\Upsilon_1\phi)\le
+e^{6\lambda}N_\sigma(\phi)\)</span>. The bounds hold with <span
+class="math inline">\(\lambda=fmb\log^2b\)</span> (<em>Status</em>: read
+from the code <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>, GluingMaps, line 755, PAdicGauge,
+line 673 and LiftVolumeHeight, line 443]</span>), giving clause (5).</p>
+</div>
+<p>Problems <a href="#pr:nonzero" data-reference-type="ref"
+data-reference="pr:nonzero">76.3.2</a>, <a href="#pr:ratio"
+data-reference-type="ref" data-reference="pr:ratio">76.3.3</a>, <a
+href="#pr:clause2" data-reference-type="ref"
+data-reference="pr:clause2">76.3.4</a>, <a href="#pr:clause3"
+data-reference-type="ref" data-reference="pr:clause3">76.4.4</a>, <a
+href="#pr:rank-one-sum" data-reference-type="ref"
+data-reference="pr:rank-one-sum">76.5.3</a>, <a href="#pr:clause4"
+data-reference-type="ref" data-reference="pr:clause4">76.5.4</a> and <a
+href="#pr:clause5" data-reference-type="ref"
+data-reference="pr:clause5">76.5.5</a>, with the inputs of Sections <a
+href="#sec:general" data-reference-type="ref"
+data-reference="sec:general">76.3</a>–<a href="#sec:frames"
+data-reference-type="ref" data-reference="sec:frames">76.5</a>, prove the
+following theorem.</p>
+<div id="thm:operator" class="theorem">
+<p><strong>Theorem 76.5.1</strong>. <em>For every <span
+class="math inline">\(1\le j\le m\)</span> the operators <span
+class="math inline">\(\Upsilon_\vartheta:= {\mathcal{N}}h^2\,g_\vartheta
+g_\vartheta^*\)</span>, one for each twist <span
+class="math inline">\(\vartheta\)</span>, form a comparison operator in
+the sense of Definition <a href="20261126T050800--compressions-and-false-lifts__workbook.html#def:comparison"
+data-reference-type="ref"
+data-reference="l1-def:comparison">75.3.3</a>. Here <span
+class="math inline">\(g_\vartheta\)</span> is the gluing map of
+Definition <a href="#def:glue" data-reference-type="ref"
+data-reference="def:glue">76.3.1</a>, from tuples of forms on the definite
+space <span class="math inline">\(V^\circ\)</span> of rank <span
+class="math inline">\(t-9m-1\)</span> to the target space of <span
+class="math inline">\(u_{\vartheta,j}\)</span>, <span
+class="math inline">\(h\)</span> is the hook number of the weight <span
+class="math inline">\(\mu^-\)</span> of those forms, and <span
+class="math inline">\({\mathcal{N}}=
+\prod_{w\in{\mathcal{M}}}\#\mathrm{GL}_{rt}(k_w)\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030800--the-cost-of-one-lift__workbook.html">Chapter 74</a>; <a href="20261126T050800--compressions-and-false-lifts__workbook.html">Chapter 75</a></div><!-- used-in:end -->
+</div>
+<p>The inputs are the scalar and period identities, injectivity, <span
+class="math inline">\(d_T&gt;0\)</span> and hook positivity <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>, WeylKernel, line
+57]</span>, vanishing for false lifts, the frame, the gluing and pairing
+bounds and the index counts. For the ratio and pullback see <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>,
+LiftVolumeHeight, lines 207–243]</span>. Chapter <a href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html#chap"
+data-reference-type="ref" data-reference="l3-chap">77</a> treats
+the factors of the inverse ratio <span
+class="math inline">\({\mathcal{H}}_j(1)/{\mathcal{H}}_j(\vartheta)\)</span>.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. In <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>,
+<code>LiftVolumeHeight.lean</code>, Theorem <a href="#thm:operator"
+data-reference-type="ref" data-reference="thm:operator">76.5.1</a> is
+<code>New.Data.isComparisonOperator_comparisonOp</code>. Problem <a
+href="#pr:rank-one-sum" data-reference-type="ref"
+data-reference="pr:rank-one-sum">76.5.3</a> applies
+<code>comparisonOp_eq_sum</code> to the frame above. In
+<code>GluingMaps.lean</code>, Definition <a href="#def:glue"
+data-reference-type="ref" data-reference="def:glue">76.3.1</a> gives
+<code>New.Rows.glue</code>, the period integral is
+<code>twistFactor_mul_inner_adjoint_glue</code>, and line 1068 gives
+injectivity. At the bottom of the tower,
+<code>normalizedDescent_eq_zero_of_mem_orthogonal</code> gives vanishing
+of the normalized descent, <code>hyperplaneSum_apply_eq_zero</code>
+gives annihilation by the hyperplane sums, and
+<code>tamePart_twistPlace_ne_one</code> gives nontriviality of the tame
+part at each twist place. The proof of
+<code>descentsVanish_hyperbolicSum</code> obtains vanishing for all the
+prescribed Schwartz data at the highest vector by
+<code>lift_polyVector_blockDatum_eq_zero</code> and
+<code>descentsVanish_of_hyperplaneSumsAnnihilate</code>.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<dl>
+<dt><a href="#pr:scalar" data-reference-type="ref"
+data-reference="pr:scalar">76.1.1</a></dt>
+<dd>
+<p><span class="math inline">\(g_\vartheta^*u_\vartheta=
+c&#39;_\vartheta{}^{-1}\mathrm{per}\)</span>; move <span
+class="math inline">\(g_\vartheta\)</span> across the inner product.</p>
+</dd>
+<dt><a href="#pr:toy-lift" data-reference-type="ref"
+data-reference="pr:toy-lift">76.1.2</a></dt>
+<dd>
+<p>Expand by the binomial theorem and rotate <span
+class="math inline">\(\alpha\mapsto\mathrm{i}\alpha\)</span> in each
+moment. For <span class="math inline">\(g^*\)</span> compute <span
+class="math inline">\(\langle g\zeta,v\rangle\)</span>.</p>
+</dd>
+<dt><a href="#pr:toy-period" data-reference-type="ref"
+data-reference="pr:toy-period">76.1.3</a></dt>
+<dd>
+<p><span class="math inline">\(\langle e_1^4e_2^4,e_1^4e_2^4\rangle_0 =
+1/70\)</span>; only the factor on <span
+class="math inline">\({\mathcal{O}}e_2\)</span> carries <span
+class="math inline">\(\psi\)</span>. Compare Problem <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:seesaw" data-reference-type="ref"
+data-reference="tn-pr:seesaw">23.4.2</a>. For the moments use
+Python with <code>mpmath.exp</code> on <span
+class="math inline">\(|\Re\alpha|,|\Im\alpha|\le10\)</span>.</p>
+</dd>
+<dt><a href="#pr:toy-compression" data-reference-type="ref"
+data-reference="pr:toy-compression">76.1.4</a></dt>
+<dd>
+<p>Problems <a href="#pr:scalar" data-reference-type="ref"
+data-reference="pr:scalar">76.1.1</a> and <a href="20261126T050800--compressions-and-false-lifts__workbook.html#pr:comparison"
+data-reference-type="ref"
+data-reference="l1-pr:comparison">75.1.2</a>; on a line
+<span class="math inline">\(D = \langle v,\Upsilon v\rangle/\langle
+v,v\rangle\)</span>. For <span class="math inline">\(D_1\)</span> use
+<span class="math inline">\(c_4 = 4\vartheta_0(\varpi/2\pi)^4\)</span>
+and Problem <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:rallis" data-reference-type="ref"
+data-reference="tn-pr:rallis">23.3.2</a>.</p>
+</dd>
+<dt><a href="#pr:toy-false" data-reference-type="ref"
+data-reference="pr:toy-false">76.1.5</a></dt>
+<dd>
+<p>Use the coefficients <span class="math inline">\(17, 70, 17\)</span>
+of Problem <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:U1U2" data-reference-type="ref"
+data-reference="tn-pr:U1U2">23.2.4</a>.</p>
+</dd>
+<dt><a href="#pr:glue-sum" data-reference-type="ref"
+data-reference="pr:glue-sum">76.2.2</a></dt>
+<dd>
+<p>For the second statement substitute <span
+class="math inline">\(x\mapsto xY^{-1}\)</span> in each summand.</p>
+</dd>
+<dt><a href="#pr:nonzero" data-reference-type="ref"
+data-reference="pr:nonzero">76.3.2</a></dt>
+<dd>
+<p>If <span class="math inline">\(c&#39;_\vartheta= 0\)</span>, <a
+href="#eq:period-lift" data-reference-type="eqref"
+data-reference="eq:period-lift">(1)</a> gives <span
+class="math inline">\(\mathrm{per}_j = 0\)</span>.</p>
+</dd>
+<dt><a href="#pr:ratio" data-reference-type="ref"
+data-reference="pr:ratio">76.3.3</a></dt>
+<dd>
+<p>Evaluate at <span class="math inline">\(\vartheta= 1\)</span>
+first.</p>
+</dd>
+<dt><a href="#pr:clause2" data-reference-type="ref"
+data-reference="pr:clause2">76.3.4</a></dt>
+<dd>
+<p>Problems <a href="#pr:scalar" data-reference-type="ref"
+data-reference="pr:scalar">76.1.1</a> (with <span class="math inline">\(n =
+{\mathcal{N}}h^2\)</span>) and <a href="#pr:ratio"
+data-reference-type="ref" data-reference="pr:ratio">76.3.3</a>.</p>
+</dd>
+<dt><a href="#pr:qbinom" data-reference-type="ref"
+data-reference="pr:qbinom">76.4.1</a></dt>
+<dd>
+<p>Induct on <span class="math inline">\(n\)</span>, splitting by
+whether <span class="math inline">\(U\)</span> lies in a fixed
+hyperplane.</p>
+</dd>
+<dt><a href="#pr:small-roots" data-reference-type="ref"
+data-reference="pr:small-roots">76.4.2</a></dt>
+<dd>
+<p><span class="math inline">\(1+y\le e^y\)</span> and <span
+class="math inline">\(\sum_{k&lt;n}q^k &lt; q^n\)</span>; then isolate
+the term <span class="math inline">\(U = \{0\}\)</span> at <span
+class="math inline">\(g g_{\{0\}}^{-1}\)</span> and take a supremum.</p>
+</dd>
+<dt><a href="#pr:clause3" data-reference-type="ref"
+data-reference="pr:clause3">76.4.4</a></dt>
+<dd>
+<p><span class="math inline">\(\langle\phi_{\mathrm f},
+g_\vartheta\mathrm{per}_jy\rangle = \langle g_\vartheta^*\phi_{\mathrm
+f}, \mathrm{per}_jy\rangle\)</span>.</p>
+</dd>
+<dt><a href="#pr:frame" data-reference-type="ref"
+data-reference="pr:frame">76.5.1</a></dt>
+<dd>
+<p><span class="math inline">\(H = hG^{-1}\)</span>; then <span
+class="math inline">\(\eta_T^*G\xi = h(F\xi)_T\)</span>. For the norm,
+<span class="math inline">\(F\eta_T\)</span> is <span
+class="math inline">\(h\)</span> times the orthogonal projection of
+<span class="math inline">\(e_T\)</span> to the column space of <span
+class="math inline">\(F\)</span>.</p>
+</dd>
+<dt><a href="#pr:sym-frame" data-reference-type="ref"
+data-reference="pr:sym-frame">76.5.2</a></dt>
+<dd>
+<p>Evaluate <span class="math inline">\(\partial^\alpha z^\beta\)</span>
+at zero.</p>
+</dd>
+<dt><a href="#pr:rank-one-sum" data-reference-type="ref"
+data-reference="pr:rank-one-sum">76.5.3</a></dt>
+<dd>
+<p>Apply the frame identity to <span class="math inline">\(\zeta =
+g_\vartheta^*\phi\)</span>.</p>
+</dd>
+<dt><a href="#pr:clause4" data-reference-type="ref"
+data-reference="pr:clause4">76.5.4</a></dt>
+<dd>
+<p>Problem <a href="#pr:rank-one-sum" data-reference-type="ref"
+data-reference="pr:rank-one-sum">76.5.3</a>: each coefficient is
+integral.</p>
+</dd>
+<dt><a href="#pr:clause5" data-reference-type="ref"
+data-reference="pr:clause5">76.5.5</a></dt>
+<dd>
+<p>By Problem <a href="#pr:rank-one-sum" data-reference-type="ref"
+data-reference="pr:rank-one-sum">76.5.3</a>, <span
+class="math inline">\(\Upsilon_1\phi = g_1\bigl(\sum_a
+x_af_a\bigr)\)</span>; bound <span
+class="math inline">\(\lvert\sigma(x_a)\rvert\)</span>, then each slot,
+then glue.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Li92"><span class="bib-label">[Li92]</span> J.-S. Li, <em>Non-vanishing theorems for the cohomology of certain arithmetic quotients</em>, J. reine angew. Math. <strong>428</strong> (1992), 177–217.</p>
+<p id="ref-Ra84"><span class="bib-label">[Ra84]</span> S. Rallis, <em>On the Howe duality conjecture</em>, Compositio Math. <strong>51</strong> (1984), 333–399.</p>
+<p id="ref-St"><span class="bib-label">[St]</span> R. P. Stanley, <em>Enumerative Combinatorics</em>, Vol. 1, 2nd ed., Cambridge Univ. Press, 2012.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

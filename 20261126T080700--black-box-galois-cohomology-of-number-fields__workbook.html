@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-1K4b+kY3dQBLVz3theCLaxpUOdT6RFIhL8PyNRMRtLk=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Black box: Galois cohomology of number fields</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Q":"\\mathbb Q","Z":"\\mathbb Z","Lc":"\\mathcal L","Fr":"\\mathrm{Fr}","Rel":"\\mathrm{Rel}","inv":"\\operatorname{inv}","rec":"\\operatorname{rec}","ur":"\\mathrm{ur}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="33">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-27 01:16:56
+      <a href="20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Black box: Galois cohomology of number fields <a class="stable-tag" href="tag/238C.html" title="Stable tag: cite as Tag 238C">Tag 238C</a></h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:local" id="toc-sec:local">§33.1. Local conditions</a></li>
+<li><a href="#sec:cubic" id="toc-sec:cubic">§33.2. Cubic characters over \(\mathbb Q\)</a></li>
+<li><a href="#sec:primes" id="toc-sec:primes">§33.3. Choosing primes and bounding ramification</a></li>
+<li><a href="#sec:count" id="toc-sec:count">§33.4. The relation count</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<p>Chapter <a href="20261125T011000--galois-representations-black-box__workbook.html#chap" data-reference-type="ref"
+data-reference="gr-chap">32</a> states an attachment theorem for
+eigenforms on definite unitary groups. Chapter <a href="20261126T060700--tied-primes__workbook.html#chap"
+data-reference-type="ref" data-reference="w3-chap">88</a>,
+<em>Tied primes</em>, uses a bound for a group of cocycles in terms of
+relations among their values at auxiliary primes. How does a formula for
+the orders of two cohomology groups give such a bound? We check the
+formula for cubic characters over <span class="math inline">\(\mathbb
+Q\)</span>, then relate dual cohomology classes to values of cocycles at
+auxiliary primes.</p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Continuous Galois cohomology through degree two, cup products, Kummer
+theory and local and global class field theory <span class="citation"
+data-cites="NSW CFT">[<a href="#ref-NSW">NSW</a>;
+<a href="#ref-CFT">CFT</a>]</span>. Section <a href="20261125T011000--galois-representations-black-box__workbook.html#sec:spherical"
+data-reference-type="ref"
+data-reference="gr-sec:spherical">32.4</a> supplies the
+definition of most Frobenius data. For the final section use the setting
+of Definition <a href="20261126T060700--tied-primes__workbook.html#def:relations" data-reference-type="ref"
+data-reference="w3-def:relations">88.3.1</a> in Chapter <a
+href="20261126T060700--tied-primes__workbook.html#chap" data-reference-type="ref"
+data-reference="w3-chap">88</a>.</p>
+<h1 id="sec:local">§33.1. Local conditions <a class="stable-tag" href="tag/238D.html" title="Stable tag: cite as Tag 238D">Tag 238D</a></h1>
+<p>Local duality gives the complementary conditions needed to apply the
+counting formula. Let <span class="math inline">\(F\)</span> be a number
+field, <span class="math inline">\(G_F\)</span> its absolute Galois
+group and <span class="math inline">\(F_v\)</span> the completion at a
+place <span class="math inline">\(v\)</span>. In this chapter <span
+class="math inline">\(M\)</span> denotes a finite discrete <span
+class="math inline">\(G_F\)</span>-module. Write <span
+class="math inline">\(M^*=\operatorname{Hom}(M,\mu)\)</span>, with <span
+class="math inline">\(\mu\)</span> the roots of unity in an algebraic
+closure and with the action on both source and target. Cohomology is
+continuous. Restriction uses a choice of place above <span
+class="math inline">\(v\)</span>, so that <span
+class="math inline">\(G_{F_v}\)</span> is the decomposition group. At
+finite <span class="math inline">\(v\)</span>, write <span
+class="math inline">\(I_v\)</span> for inertia, the kernel of the action
+on the residue field. The unramified subgroup <span
+class="math inline">\(H^1_{\mathrm{ur}}(F_v,M)\)</span> is the kernel of
+restriction to <span class="math inline">\(I_v\)</span>.</p>
+<div id="thm:local-duality" class="theorem"><a class="stable-tag" href="tag/238E.html" title="Stable tag: cite as Tag 238E">Tag 238E</a>
+<p><strong>Theorem 33.1.1</strong> (Local Tate duality and Euler
+characteristic). <em>At a finite place <span
+class="math inline">\(v\)</span>, the cup product followed by evaluation
+<span class="math inline">\(M\otimes M^*\to\mu\)</span> and the local
+invariant <span class="math inline">\(\operatorname{inv}_v\)</span>
+gives a perfect pairing <span class="math display">\[H^1(F_v,M)\times
+H^1(F_v,M^*)\longrightarrow \mathbb Q/\mathbb Z.\]</span> The orders of
+the local groups satisfy <span class="math display">\[\begin{align}
+  \# H^1(F_v,M)&amp;=\# H^0(F_v,M)\,\# H^2(F_v,M)\,|\#M|_v^{-1},\\
+  \# H^2(F_v,M)&amp;=\# H^0(F_v,M^*).
+  \end{align}\]</span> The absolute value <span
+class="math inline">\(|\cdot|_v\)</span> gives a uniformizer absolute
+value <span class="math inline">\((\#k_v)^{-1}\)</span>, where <span
+class="math inline">\(k_v\)</span> is the residue field.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T080800--black-box-crystalline-lattices-and-the-condition-above-l__workbook.html">Chapter 34</a></div><!-- used-in:end -->
+</div>
+<p><em>Status.</em> Classical <span class="citation"
+data-cites="NSW">[<a href="#ref-NSW">NSW</a>]</span>. At a real place use the
+same degree-one pairing with the real invariant taking values in <span
+class="math inline">\(\tfrac12\mathbb Z/\mathbb Z\)</span>. At a complex
+place both degree-one groups are zero <span class="citation"
+data-cites="NSW">[<a href="#ref-NSW">NSW</a>]</span>.</p>
+<div id="thm:unramified" class="theorem"><a class="stable-tag" href="tag/238F.html" title="Stable tag: cite as Tag 238F">Tag 238F</a>
+<p><strong>Theorem 33.1.2</strong> (Unramified classes). <em>At a finite
+place, <span
+class="math display">\[\#H^1_{\mathrm{ur}}(F_v,M)=\#H^0(F_v,M).\]</span>
+If inertia acts trivially on <span class="math inline">\(M\)</span> and
+the residue characteristic is prime to <span
+class="math inline">\(\#M\)</span>, then <span
+class="math inline">\(H^1_{\mathrm{ur}}(F_v,M)\)</span> and <span
+class="math inline">\(H^1_{\mathrm{ur}}(F_v,M^*)\)</span> are exact
+annihilators.</em></p>
+</div>
+<p><em>Status.</em> Classical <span class="citation"
+data-cites="NSW">[<a href="#ref-NSW">NSW</a>]</span>.</p>
+<div id="def:local-conditions" class="definition"><a class="stable-tag" href="tag/238G.html" title="Stable tag: cite as Tag 238G">Tag 238G</a>
+<p><strong>Definition 33.1.1</strong>. A family of local conditions <span
+class="math inline">\(\mathcal L\)</span> consists of subgroups <span
+class="math inline">\(\mathcal L_v\subseteq H^1(F_v,M)\)</span>, equal
+to <span class="math inline">\(H^1_{\mathrm{ur}}(F_v,M)\)</span> at all
+but finitely many finite places. Write <span
+class="math inline">\(\mathcal L_v^\perp\)</span> for the annihilator
+under the local pairing. The Selmer group <span
+class="math inline">\(H^1_{\mathcal L}(F,M)\)</span> is the group of
+classes whose restriction at each <span class="math inline">\(v\)</span>
+lies in <span class="math inline">\(\mathcal L_v\)</span>. Use the same
+definition for <span class="math inline">\(H^1_{\mathcal
+L^\perp}(F,M^*)\)</span>.</p>
+</div>
+<div id="thm:gw" class="theorem"><a class="stable-tag" href="tag/238H.html" title="Stable tag: cite as Tag 238H">Tag 238H</a>
+<p><strong>Theorem 33.1.3</strong> (Greenberg–Wiles). <em>For local
+conditions <span class="math inline">\(\mathcal L\)</span> as above, the
+two Selmer groups are finite and <span
+class="math display">\[\frac{\#H^1_{\mathcal L}(F,M)}{\#H^1_{\mathcal
+L^\perp}(F,M^*)}
+  = \frac{\#H^0(F,M)}{\#H^0(F,M^*)}
+    \prod_v \frac{\#\mathcal L_v}{\#H^0(F_v,M)} .\]</span> Here <span
+class="math inline">\(H^0\)</span> means ordinary invariants, including
+at infinite places.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:cubic-ratio">Problem 33.2.7</a>; <a href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.html">Chapter 84</a>; <a href="20261126T060700--tied-primes__workbook.html">Chapter 88</a></div><!-- used-in:end -->
+</div>
+<p><em>Status.</em> Classical <span class="citation"
+data-cites="DDT">[<a href="#ref-DDT">DDT</a>, Thm. 2.19]</span>, <span
+class="citation" data-cites="NSW">[<a href="#ref-NSW">NSW</a>]</span>.</p>
+<div id="thm:reciprocity" class="theorem"><a class="stable-tag" href="tag/238J.html" title="Stable tag: cite as Tag 238J">Tag 238J</a>
+<p><strong>Theorem 33.1.4</strong> (Reciprocity). <em>For a class in <span
+class="math inline">\(H^2(F,\mu)\)</span>, the sum of the local
+invariants is zero. Let <span class="math inline">\(n\ge 1\)</span> and
+write <span class="math inline">\(\mu_n\)</span> for the <span
+class="math inline">\(n\)</span>-th roots of unity. At a finite place
+<span class="math inline">\(v\)</span>, let <span
+class="math inline">\(\chi\)</span> be a continuous character of <span
+class="math inline">\(G_{F_v}\)</span> into <span
+class="math inline">\(\tfrac1n\mathbb Z/\mathbb Z\)</span> and <span
+class="math inline">\([a]\)</span> the Kummer class of <span
+class="math inline">\(a\in F_v^\times\)</span> in <span
+class="math inline">\(H^1(F_v,\mu_n)\)</span>. Then <span
+class="math display">\[\operatorname{inv}_v(\chi\cup[a])=\chi(\operatorname{rec}_v(a)).\]</span>
+The coefficient pairing sends <span
+class="math inline">\((j/n,\xi)\)</span> to <span
+class="math inline">\(\xi^j\)</span> for <span
+class="math inline">\(\xi\in\mu_n\)</span>. The local Artin map <span
+class="math inline">\(\operatorname{rec}_v\)</span> sends a uniformizer
+to arithmetic Frobenius modulo inertia. In particular, if <span
+class="math inline">\(\chi\)</span> is unramified, the invariant is
+<span
+class="math inline">\(\operatorname{ord}_v(a)\chi(\mathrm{Fr}_v)\)</span>,
+where <span class="math inline">\(\operatorname{ord}_v\)</span> gives a
+uniformizer value <span class="math inline">\(1\)</span>.</em></p>
+</div>
+<p><em>Status.</em> Classical <span class="citation"
+data-cites="CFT">[<a href="#ref-CFT">CFT</a>, Ch. VIII, Thm. 4.2]</span>,
+<span class="citation"
+data-cites="NSW">[<a href="#ref-NSW">NSW</a>]</span>.</p>
+<h1 id="sec:cubic">§33.2. Cubic characters over <span
+class="math inline">\(\mathbb Q\)</span> <a class="stable-tag" href="tag/238K.html" title="Stable tag: cite as Tag 238K">Tag 238K</a></h1>
+<p>The following problems compare the two sides of the counting formula
+independently. Take <span class="math inline">\(F=\mathbb Q\)</span>,
+<span class="math inline">\(M=\mathbb Z/3\)</span> with trivial action,
+and <span class="math inline">\(q\in\{5,7,13,19\}\)</span>. Use the full
+local group at <span class="math inline">\(q\)</span>, the unramified
+subgroup at every other finite place, and zero at the real place. Thus
+<span class="math inline">\(M^*=\mu_3\)</span>.</p>
+<div id="pr:cubic-invariants" class="problem" data-progress-ids="[&quot;238L&quot;,&quot;20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.tex#pr:cubic-invariants&quot;]"><a class="stable-tag" href="tag/238L.html" title="Stable tag: cite as Tag 238L">Tag 238L</a>
+<p><strong>Problem 33.2.1</strong>. The group of cube roots of unity in <span
+class="math inline">\(\mathbb Q_q\)</span> has order <span
+class="math inline">\(1\)</span> at <span
+class="math inline">\(q=5\)</span> and <span
+class="math inline">\(3\)</span> at <span
+class="math inline">\(q=7,13,19\)</span>.</p>
+</div>
+<div id="pr:cubic-local" class="problem" data-progress-ids="[&quot;238M&quot;,&quot;20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.tex#pr:cubic-local&quot;]"><a class="stable-tag" href="tag/238M.html" title="Stable tag: cite as Tag 238M">Tag 238M</a>
+<p><strong>Problem 33.2.2</strong>. The order of <span
+class="math inline">\(H^1(\mathbb Q_q,\mathbb Z/3)\)</span> is <span
+class="math inline">\(3\)</span> at <span
+class="math inline">\(q=5\)</span> and <span
+class="math inline">\(9\)</span> at <span
+class="math inline">\(q=7,13,19\)</span>.</p>
+</div>
+<div id="pr:cubic-unramified" class="problem" data-progress-ids="[&quot;238N&quot;,&quot;20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.tex#pr:cubic-unramified&quot;]"><a class="stable-tag" href="tag/238N.html" title="Stable tag: cite as Tag 238N">Tag 238N</a>
+<p><strong>Problem 33.2.3</strong>. For any finite place <span
+class="math inline">\(v\)</span> of <span class="math inline">\(\mathbb
+Q\)</span>, the annihilator of the unramified subgroup of <span
+class="math inline">\(H^1(\mathbb Q_v,\mathbb Z/3)\)</span> consists of
+Kummer classes represented by elements of valuation divisible by <span
+class="math inline">\(3\)</span>.</p>
+</div>
+<div id="pr:cubic-dual" class="problem" data-progress-ids="[&quot;238P&quot;,&quot;20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.tex#pr:cubic-dual&quot;]"><a class="stable-tag" href="tag/238P.html" title="Stable tag: cite as Tag 238P">Tag 238P</a>
+<p><strong>Problem 33.2.4</strong>. The dual Selmer group is trivial.</p>
+</div>
+<div id="pr:cubic-conductor" class="problem" data-progress-ids="[&quot;238Q&quot;,&quot;20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.tex#pr:cubic-conductor&quot;]"><a class="stable-tag" href="tag/238Q.html" title="Stable tag: cite as Tag 238Q">Tag 238Q</a>
+<p><strong>Problem 33.2.5</strong>. Inflation identifies <span
+class="math inline">\(\operatorname{Hom}(\operatorname{Gal}(\mathbb
+Q(\mu_q)/\mathbb Q),\mathbb Z/3)\)</span> with the Selmer group.</p>
+</div>
+<div id="pr:cubic-global" class="problem" data-progress-ids="[&quot;238R&quot;,&quot;20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.tex#pr:cubic-global&quot;]"><a class="stable-tag" href="tag/238R.html" title="Stable tag: cite as Tag 238R">Tag 238R</a>
+<p><strong>Problem 33.2.6</strong>. The Selmer group has order <span
+class="math inline">\(1\)</span> at <span
+class="math inline">\(q=5\)</span> and <span
+class="math inline">\(3\)</span> at <span
+class="math inline">\(q=7,13,19\)</span>. For each of the latter primes
+the nonzero characters cut out the unique cubic subfield of <span
+class="math inline">\(\mathbb Q(\mu_q)\)</span>.</p>
+</div>
+<div id="pr:cubic-ratio" class="problem" data-progress-ids="[&quot;238S&quot;,&quot;20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.tex#pr:cubic-ratio&quot;]"><a class="stable-tag" href="tag/238S.html" title="Stable tag: cite as Tag 238S">Tag 238S</a>
+<p><strong>Problem 33.2.7</strong>. Both sides of Theorem <a href="#thm:gw"
+data-reference-type="ref" data-reference="thm:gw">33.1.3</a> are <span
+class="math inline">\(1,3,3,3\)</span> in the order <span
+class="math inline">\(q=5,7,13,19\)</span>. The real place contributes a
+factor of <span class="math inline">\(1/3\)</span> to the product.</p>
+</div>
+<h1 id="sec:primes">§33.3. Choosing primes and bounding ramification <a class="stable-tag" href="tag/238T.html" title="Stable tag: cite as Tag 238T">Tag 238T</a></h1>
+<p>Chebotarev supplies primes with prescribed Frobenius behavior. A
+cocycle has bounded ramification here if it vanishes on inertia outside
+a fixed finite set of places.</p>
+<div id="thm:chebotarev" class="theorem"><a class="stable-tag" href="tag/238U.html" title="Stable tag: cite as Tag 238U">Tag 238U</a>
+<p><strong>Theorem 33.3.1</strong> (Chebotarev, existence form). <em>Let a
+nonempty subset of <span class="math inline">\(G_F\)</span> be a
+neighborhood of each of its points, and prescribe a finite set of finite
+places of <span class="math inline">\(F\)</span> to avoid. There is a
+finite place <span class="math inline">\(v\)</span> outside the
+prescribed set with prime residue-field order, and a place above <span
+class="math inline">\(v\)</span> of the algebraic closure. There is an
+arithmetic Frobenius element at the chosen place in the given subset,
+and every arithmetic Frobenius element at the chosen place lies in the
+subset. An arithmetic Frobenius element is a lift to the decomposition
+group of the map <span class="math inline">\(x\mapsto x^{\#k_v}\)</span>
+on the residue field of the chosen place.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060700--tied-primes__workbook.html">Chapter 88</a></div><!-- used-in:end -->
+</div>
+<p><em>Status.</em> The existence statement follows from the classical
+density theorem <span class="citation"
+data-cites="CFT">[<a href="#ref-CFT">CFT</a>, Ch. V, Thm. 3.23]</span>.</p>
+<p>The density problem uses the Frobenius data of Section <a
+href="20261125T011000--galois-representations-black-box__workbook.html#sec:spherical" data-reference-type="ref"
+data-reference="gr-sec:spherical">32.4</a>.</p>
+<div id="pr:most" class="problem" data-progress-ids="[&quot;238V&quot;,&quot;20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.tex#pr:most&quot;]"><a class="stable-tag" href="tag/238V.html" title="Stable tag: cite as Tag 238V">Tag 238V</a>
+<p><strong>Problem 33.3.1</strong>. Let <span
+class="math inline">\(F\)</span> be a CM field. If a property of <span
+class="math inline">\(s\in G_F\)</span> holds for most Frobenius data
+<span class="math inline">\((v,A,s)\)</span> in the sense of Section <a
+href="20261125T011000--galois-representations-black-box__workbook.html#sec:spherical" data-reference-type="ref"
+data-reference="gr-sec:spherical">32.4</a>, then the set
+of elements satisfying the property is dense in <span
+class="math inline">\(G_F\)</span>.</p>
+</div>
+<div id="thm:finiteness" class="theorem"><a class="stable-tag" href="tag/238W.html" title="Stable tag: cite as Tag 238W">Tag 238W</a>
+<p><strong>Theorem 33.3.2</strong> (Finiteness with bounded ramification).
+<em>For a finite set of finite places of <span
+class="math inline">\(F\)</span>, there are only finitely many
+continuous <span class="math inline">\(1\)</span>-cocycles with values
+in <span class="math inline">\(M\)</span> that vanish on every inertia
+group above places outside the set.</em></p>
+</div>
+<p><em>Status.</em> Classical. For the finiteness of classes with
+restricted ramification, see <span class="citation"
+data-cites="ADT">[<a href="#ref-ADT">ADT</a>, Ch. I, Cor. 4.15]</span>.</p>
+<h1 id="sec:count">§33.4. The relation count <a class="stable-tag" href="tag/238X.html" title="Stable tag: cite as Tag 238X">Tag 238X</a></h1>
+<p>The count uses the totally complex setting of Section <a
+href="20261126T060700--tied-primes__workbook.html#sec:count" data-reference-type="ref"
+data-reference="w3-sec:count">88.3</a> and Definition <a
+href="20261126T060700--tied-primes__workbook.html#def:relations" data-reference-type="ref"
+data-reference="w3-def:relations">88.3.1</a>. Use <span
+class="math inline">\(E\)</span> for the field of the data as in that
+chapter. Retain <span class="math inline">\(V\)</span>, <span
+class="math inline">\(A_v\)</span>, <span
+class="math inline">\(Z(R)\)</span>, <span
+class="math inline">\(G&#39;\)</span>, <span
+class="math inline">\(\Sigma&#39;\)</span> and <span
+class="math inline">\(f_E\)</span> from the setting of the definition.
+Assume <span class="math inline">\(\sigma\in G_E\)</span> fixes the
+<span class="math inline">\(\ell\)</span>-power roots of unity, is
+central modulo <span class="math inline">\(G&#39;\)</span> and fixes
+only <span class="math inline">\(0\)</span> in <span
+class="math inline">\(V\)</span>. Put <span
+class="math inline">\(\Sigma&#39;&#39;=\Sigma&#39;\cup\{v:v\mid\ell\}\)</span>.
+Use <span class="math inline">\(M=V\)</span> in Definition <a
+href="#def:local-conditions" data-reference-type="ref"
+data-reference="def:local-conditions">33.1.1</a>, with <span
+class="math inline">\(\mathcal L_v\)</span> the image of <span
+class="math inline">\(A_v\)</span> at places in <span
+class="math inline">\(\Sigma&#39;\)</span>, and with the unramified
+condition at the other finite places. At complex places take zero. Write
+<span class="math inline">\(D=H^1_{\mathcal L^\perp}(E,M^*)\)</span> in
+this section. Let <span class="math inline">\(\zeta\)</span> be the
+fixed primitive root of order <span
+class="math inline">\(\ell^{h_1}\)</span> in Definition <a
+href="20261126T060700--tied-primes__workbook.html#def:relations" data-reference-type="ref"
+data-reference="w3-def:relations">88.3.1</a>. Sending <span
+class="math inline">\(\zeta^k\)</span> to <span
+class="math inline">\(k/\ell^{h_1}+\mathbb Z\)</span> identifies <span
+class="math inline">\(M^*\)</span> as an abelian group with the
+character group of that definition. The Galois action on a character is
+precomposition by the inverse action on <span
+class="math inline">\(V\)</span>, followed by multiplication by the
+cyclotomic character modulo <span
+class="math inline">\(\ell^{h_1}\)</span>.</p>
+<p>The first two problems change a count of cohomology classes to a
+count of cocycles.</p>
+<div id="pr:quotient" class="problem" data-progress-ids="[&quot;238Y&quot;,&quot;20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.tex#pr:quotient&quot;]"><a class="stable-tag" href="tag/238Y.html" title="Stable tag: cite as Tag 238Y">Tag 238Y</a>
+<p><strong>Problem 33.4.1</strong>. The natural map induces an isomorphism
+<span class="math inline">\(Z(\varnothing)/B^1(E,V)\cong H^1_{\mathcal
+L}(E,V)\)</span>, where <span class="math inline">\(B^1(E,V)\)</span> is
+the group of global coboundaries. For <span
+class="math inline">\(v\in\Sigma&#39;\)</span>, the order of the local
+image <span class="math inline">\(\mathcal L_v\)</span> is <span
+class="math inline">\(\#A_v\cdot \#H^0(E_v,V)/\#V\)</span>.</p>
+</div>
+<div id="pr:count-classes" class="problem" data-progress-ids="[&quot;238Z&quot;,&quot;20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.tex#pr:count-classes&quot;]"><a class="stable-tag" href="tag/238Z.html" title="Stable tag: cite as Tag 238Z">Tag 238Z</a>
+<p><strong>Problem 33.4.2</strong>. The orders satisfy <span
+class="math display">\[\#Z(\varnothing)\,(\#V)^{\#\Sigma&#39;+f_E} =
+  \frac{\#D}{\#H^0(E,M^*)}\,\#V\prod_{v\in\Sigma&#39;}\#A_v
+.\]</span></p>
+</div>
+<p>The next two problems relate dual classes to homomorphisms on <span
+class="math inline">\(G&#39;\)</span>.</p>
+<div id="pr:sah" class="problem" data-progress-ids="[&quot;2392&quot;,&quot;20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.tex#pr:sah&quot;]"><a class="stable-tag" href="tag/2392.html" title="Stable tag: cite as Tag 2392">Tag 2392</a>
+<p><strong>Problem 33.4.3</strong> (Sah’s lemma). Let <span
+class="math inline">\(w\)</span> be a <span
+class="math inline">\(1\)</span>-cocycle on <span
+class="math inline">\(G_E/G&#39;\)</span> with values in <span
+class="math inline">\(M^*\)</span>, and use <span
+class="math inline">\(\sigma\)</span> also for its image in the
+quotient. Then <span
+class="math inline">\((\sigma-1)w(g)=(g-1)w(\sigma)\)</span> for each
+<span class="math inline">\(g\in G_E/G&#39;\)</span>. The map <span
+class="math inline">\(\sigma-1\)</span> is invertible on <span
+class="math inline">\(M^*\)</span>, the cocycle <span
+class="math inline">\(w\)</span> is a coboundary, and <span
+class="math inline">\(H^0(E,M^*)=0\)</span>.</p>
+</div>
+<div id="pr:restrict" class="problem" data-progress-ids="[&quot;2393&quot;,&quot;20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.tex#pr:restrict&quot;]"><a class="stable-tag" href="tag/2393.html" title="Stable tag: cite as Tag 2393">Tag 2393</a>
+<p><strong>Problem 33.4.4</strong>. Restriction gives an injection from
+<span class="math inline">\(D\)</span> to the group of continuous
+homomorphisms from <span class="math inline">\(G&#39;\)</span> to <span
+class="math inline">\(M^*\)</span>. For <span class="math inline">\(b\in
+D\)</span>, let <span class="math inline">\(y\)</span> be the restricted
+homomorphism extended by zero on <span
+class="math inline">\(G_E\setminus G&#39;\)</span> and viewed in the
+character group of Definition <a href="20261126T060700--tied-primes__workbook.html#def:relations"
+data-reference-type="ref"
+data-reference="w3-def:relations">88.3.1</a>. Then <span
+class="math inline">\(y\)</span> is locally constant, satisfies the
+conjugation rule in that definition and vanishes on inertia outside
+<span class="math inline">\(\Sigma&#39;&#39;\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:local-sum">Problem 33.4.5</a>, <a href="#pr:count">Problem 33.4.6</a></div><!-- used-in:end -->
+</div>
+<p>It remains to check the reciprocity condition for the relation.</p>
+<div id="pr:local-sum" class="problem" data-progress-ids="[&quot;2394&quot;,&quot;20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.tex#pr:local-sum&quot;]"><a class="stable-tag" href="tag/2394.html" title="Stable tag: cite as Tag 2394">Tag 2394</a>
+<p><strong>Problem 33.4.5</strong>. Fix <span class="math inline">\(b\in
+D\)</span> with associated <span class="math inline">\(y\)</span> from
+Problem <a href="#pr:restrict" data-reference-type="ref"
+data-reference="pr:restrict">33.4.4</a>. Take any family <span
+class="math inline">\((v_j,\mathrm{Fr}_j,s_j)_j\)</span> with the
+choices of Definition <a href="20261126T060700--tied-primes__workbook.html#def:relations"
+data-reference-type="ref"
+data-reference="w3-def:relations">88.3.1</a> outside <span
+class="math inline">\(\Sigma&#39;&#39;\)</span>, and let <span
+class="math inline">\(z\in Z(\{v_j\})\)</span> with class <span
+class="math inline">\([z]\)</span>. The local invariant of <span
+class="math inline">\(b\cup[z]\)</span>, using evaluation on <span
+class="math inline">\(M^*\otimes M\)</span>, is <span
+class="math inline">\(y(\mathrm{Fr}_j)(z(s_j))\)</span> at <span
+class="math inline">\(v_j\)</span> and zero at every other place.</p>
+</div>
+<div id="pr:count" class="problem" data-progress-ids="[&quot;2395&quot;,&quot;20261126T080700--black-box-galois-cohomology-of-number-fields__workbook.tex#pr:count&quot;]"><a class="stable-tag" href="tag/2395.html" title="Stable tag: cite as Tag 2395">Tag 2395</a>
+<p><strong>Problem 33.4.6</strong>. The group <span
+class="math inline">\(\mathrm{Rel}(\Sigma&#39;&#39;)\)</span> is finite.
+For every <span class="math inline">\(b\in D\)</span>, let <span
+class="math inline">\(y\)</span> be the function from Problem <a
+href="#pr:restrict" data-reference-type="ref"
+data-reference="pr:restrict">33.4.4</a>. For every test family of
+Definition <a href="20261126T060700--tied-primes__workbook.html#def:relations" data-reference-type="ref"
+data-reference="w3-def:relations">88.3.1</a> outside <span
+class="math inline">\(\Sigma&#39;&#39;\)</span> and every <span
+class="math inline">\(z\in Z(\{v_j\})\)</span>, the sum of <span
+class="math inline">\(y(\mathrm{Fr}_j)(z(s_j))\)</span> is zero. The map
+<span class="math inline">\(b\mapsto y\)</span> is an injection into
+<span class="math inline">\(\mathrm{Rel}(\Sigma&#39;&#39;)\)</span> and
+gives <span
+class="math display">\[\#Z(\varnothing)\,(\#V)^{\#\Sigma&#39;+f_E}
+  \le \#\mathrm{Rel}(\Sigma&#39;&#39;)\,\#V\prod_{v\in\Sigma&#39;}\#A_v
+.\]</span> If a positive integer <span class="math inline">\(p\)</span>
+is prime to <span class="math inline">\(\ell\)</span> and no place of
+<span class="math inline">\(\Sigma&#39;\)</span> lies above a prime
+dividing <span class="math inline">\(p\)</span>, then no place of <span
+class="math inline">\(\Sigma&#39;&#39;\)</span> lies above a prime
+dividing <span class="math inline">\(p\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060700--tied-primes__workbook.html">Chapter 88</a></div><!-- used-in:end -->
+</div>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, the existence statement
+is <code>New.chebotarev</code>. The finiteness statement is
+<code>New.selmerZ1.finite_unramified_cocycles</code>, the absolute
+Galois group case of
+<code>New.finite_cocycles_unramified_outside</code>. Problem <a
+href="#pr:most" data-reference-type="ref" data-reference="pr:most">33.3.1</a>
+is the CM case of <code>New.dense_of_mostFrobenii</code>.</p>
+<p>The Lean form of the count uses the avoidance hypotheses of
+Section <a href="20261126T060700--tied-primes__workbook.html#sec:count" data-reference-type="ref"
+data-reference="w3-sec:count">88.3</a>. Let <span
+class="math inline">\(p\)</span> be a positive integer prime to <span
+class="math inline">\(\ell\)</span>, with no place of <span
+class="math inline">\(\Sigma&#39;\)</span> above a prime dividing <span
+class="math inline">\(p\)</span> and with every inertia group above
+primes dividing <span class="math inline">\(p\)</span> contained in
+<span class="math inline">\(G&#39;\)</span>.
+<code>New.RelationSetting.exists_card_cocycles_le</code> gives a finite
+set <span
+class="math inline">\(\widetilde\Sigma\supseteq\Sigma&#39;\)</span> with
+no place above a prime dividing <span class="math inline">\(p\)</span>
+such that the inequality of Problem <a href="#pr:count"
+data-reference-type="ref" data-reference="pr:count">33.4.6</a> holds with
+<span class="math inline">\(\mathrm{Rel}(\widetilde\Sigma)\)</span> on
+the right.</p>
+<p>Under the avoidance hypotheses of Section <a href="20261126T060700--tied-primes__workbook.html#sec:count"
+data-reference-type="ref"
+data-reference="w3-sec:count">88.3</a>, Problem <a
+href="#pr:count" data-reference-type="ref"
+data-reference="pr:count">33.4.6</a> gives the count used there with <span
+class="math inline">\(\Sigma&#39;&#39;=\Sigma&#39;\cup\{v:v\mid\ell\}\)</span>.
+The deductions take as given local Tate duality and the local Euler
+characteristic, the unramified annihilator and cardinality statements,
+the Greenberg–Wiles formula, reciprocity, Chebotarev and finiteness with
+bounded ramification.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<p>The hints give starting points for the cubic computation and the
+relation count.</p>
+<dl>
+<dt><a href="#pr:cubic-conductor" data-reference-type="ref"
+data-reference="pr:cubic-conductor">33.2.5</a></dt>
+<dd>
+<p>Use Kronecker–Weber and the prime-power factors of a cyclotomic
+conductor.</p>
+</dd>
+<dt><a href="#pr:most" data-reference-type="ref"
+data-reference="pr:most">33.3.1</a></dt>
+<dd>
+<p>Keep track of which Frobenius convention is used.</p>
+</dd>
+<dt><a href="#pr:count-classes" data-reference-type="ref"
+data-reference="pr:count-classes">33.4.2</a></dt>
+<dd>
+<p>Use Theorem <a href="#thm:gw" data-reference-type="ref"
+data-reference="thm:gw">33.1.3</a>.</p>
+</dd>
+<dt><a href="#pr:sah" data-reference-type="ref"
+data-reference="pr:sah">33.4.3</a></dt>
+<dd>
+<p>See Baker and Ribet <span class="citation"
+data-cites="BR">[<a href="#ref-BR">BR</a>, Lemma A.2]</span>.</p>
+</dd>
+<dt><a href="#pr:restrict" data-reference-type="ref"
+data-reference="pr:restrict">33.4.4</a></dt>
+<dd>
+<p>Both modules are trivial on <span
+class="math inline">\(G&#39;\)</span>.</p>
+</dd>
+<dt><a href="#pr:local-sum" data-reference-type="ref"
+data-reference="pr:local-sum">33.4.5</a></dt>
+<dd>
+<p>Decompose <span class="math inline">\(V\)</span> into cyclic
+groups.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-ADT"><span class="bib-label">[ADT]</span> J. S. Milne, <em>Arithmetic Duality Theorems</em>, 2nd ed., BookSurge, 2006.</p>
+<p id="ref-BR"><span class="bib-label">[BR]</span> M. Baker and K. Ribet, <em>Galois theory and torsion points on curves</em>, Journal de Théorie des Nombres de Bordeaux, 2003.</p>
+<p id="ref-CFT"><span class="bib-label">[CFT]</span> J. S. Milne, <em>Class Field Theory</em>, version 4.03, <a href="https://www.jmilne.org/math/CourseNotes/cft.html">online notes</a>.</p>
+<p id="ref-DDT"><span class="bib-label">[DDT]</span> H. Darmon, F. Diamond and R. Taylor, <em>Fermat’s Last Theorem</em>, Current Developments in Mathematics 1995, <a href="https://www.math.mcgill.ca/darmon/pub/Articles/Expository/05.DDT/paper.pdf">authors’ version of September 9, 2007</a>.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> <em>The Generalized Riemann Hypothesis for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, readable edition <code>grh/</code>, commit <code>72fead1</code>, <a href="https://github.com/lsernau/grh-lean/tree/72fead1/grh" class="uri">https://github.com/lsernau/grh-lean/tree/72fead1/grh</a>.</p>
+<p id="ref-NSW"><span class="bib-label">[NSW]</span> J. Neukirch, A. Schmidt and K. Wingberg, <em>Cohomology of Number Fields</em>, 2nd ed., Springer, 2008.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-lgdRvXHCyB5Ff3Y0x7MvZ16Y8yEZuWMt1C2LE7GbV3g=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Positive type and the bootstrap: the second moment</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"C":"\\mathbb{C}","F":"\\mathbb{F}","GL":"\\mathrm{GL}","Gb":"\\bar G","Rb":"\\bar R_0","Pco":"{\\mathcal P^\\circ}","Kc":"\\mathcal K","Uc":"\\mathcal U","Dc":"\\mathcal D","Mch":"\\mathcal M","en":"\\mathrm{en}","Did":"D_{\\mathrm{id}}","Dmain":"D_{\\mathrm{main}}","mt":"\\operatorname{mt}","rBes":"\\rho_{\\mathrm{Bes}}","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="47">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 09:42:12
+      <a href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Positive type and the bootstrap: the second
+moment</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:positive" id="toc-sec:positive">§47.1. Positive type and singular minors</a></li>
+<li><a href="#sec:fixers" id="toc-sec:fixers">§47.2. The open part and the terminal fixer</a></li>
+<li><a href="#sec:bootstrap" id="toc-sec:bootstrap">§47.3. The bootstrap</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secpositive" id="toc-secpositive">§47.1</a></li>
+<li><a href="#secfixers" id="toc-secfixers">§47.2</a></li>
+<li><a href="#secbootstrap" id="toc-secbootstrap">§47.3</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Hermitian forms and inner products are linear in the first variable;
+norms of operators are Hilbert–Schmidt norms. Additive characters of a
+finite field and their orthogonality <span class="citation"
+data-cites="LN">[<a href="#ref-LN">LN</a>, Ch. 5, §1]</span>. From
+Chapter <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#chap" data-reference-type="ref"
+data-reference="rl-chap">9</a>: Problem <a
+href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#pr:translate-gram" data-reference-type="ref"
+data-reference="rl-pr:translate-gram">9.2.2</a>. From
+Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">39</a>: the Bessel subgroup and the
+vectors <span class="math inline">\(v_1,\dots,v_\varrho\)</span>, <span
+class="math inline">\(z\)</span> (Section <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:subgroup"
+data-reference-type="ref"
+data-reference="bp-sec:subgroup">39.1</a>; they belong to
+the lattice basis of Definition <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:scaled"
+data-reference-type="ref"
+data-reference="bp-def:scaled">39.4.1</a>), the scaled Poincaré
+map <span class="math inline">\({\mathcal P^\circ}\)</span>, the Gram
+operators <span class="math inline">\(\mathcal K_s\)</span> and the
+covolume <span class="math inline">\(\nu\)</span> (Definition <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:scaled" data-reference-type="ref"
+data-reference="bp-def:scaled">39.4.1</a>), the group <span
+class="math inline">\(\bar R_0\)</span> and <span
+class="math inline">\(\rho_{\mathrm{Bes}}\)</span> (Definition <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:bessel-rep" data-reference-type="ref"
+data-reference="bp-def:bessel-rep">39.4.2</a>), and
+admissible fillings (Definition <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:filling"
+data-reference-type="ref"
+data-reference="bp-def:filling">39.4.3</a>). From Chapter <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#chap" data-reference-type="ref"
+data-reference="m1-chap">40</a>: Theorem <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#thm:blocks"
+data-reference-type="ref"
+data-reference="m1-thm:blocks">40.3.2</a>, the sizes <span
+class="math inline">\(D_{\mathrm{id}}=\#\bar R_0\cdot D_X\)</span> and
+<span class="math inline">\(D_{\mathrm{main}}\)</span> (Definition <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#def:two-sizes" data-reference-type="ref"
+data-reference="m1-def:two-sizes">40.3.2</a>), Problems <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:near-one" data-reference-type="ref"
+data-reference="m1-pr:near-one">40.4.3</a>, <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:P-one" data-reference-type="ref"
+data-reference="m1-pr:P-one">40.4.4</a> and <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:positive-type" data-reference-type="ref"
+data-reference="m1-pr:positive-type">40.4.5</a>. From
+Chapter <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#chap" data-reference-type="ref"
+data-reference="m2-chap">43</a>: the <em>Bessel tuple</em> <span
+class="math inline">\((v_1,\dots,v_\varrho,z)\)</span>, the <em>Bessel
+pairings</em> of the image of the reduced tuple under <span
+class="math inline">\(s\)</span> with the reduced tuple itself, the
+leading minors <span class="math inline">\(\langle s\rangle_j\)</span>
+of their <em>pairing matrix</em> (Definition <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:frame"
+data-reference-type="ref"
+data-reference="m2-def:frame">43.2.1</a>), meeting and the meet
+norm <span class="math inline">\(\operatorname{mt}\)</span>
+(Definition <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:meet" data-reference-type="ref"
+data-reference="m2-def:meet">43.2.5</a>), open reductions
+(Definition <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:open" data-reference-type="ref"
+data-reference="m2-def:open">43.2.6</a>), fixers (Definition <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:fixer" data-reference-type="ref"
+data-reference="m2-def:fixer">43.2.7</a>), scalar cosets
+(Definition <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:scalar-coset" data-reference-type="ref"
+data-reference="m2-def:scalar-coset">43.2.4</a>), second
+moments and link second moments (Definition <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:moments"
+data-reference-type="ref"
+data-reference="m2-def:moments">43.3.1</a>), Theorems <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:link-bound" data-reference-type="ref"
+data-reference="m2-thm:link-bound">43.3.1</a>, <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:cut" data-reference-type="ref"
+data-reference="m2-thm:cut">43.3.2</a> and <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:strip"
+data-reference-type="ref"
+data-reference="m2-thm:strip">43.3.3</a>. From Chapter <a
+href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#chap" data-reference-type="ref"
+data-reference="m3-chap">45</a>: Theorem <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#thm:open"
+data-reference-type="ref"
+data-reference="m3-thm:open">45.3.3</a>. At a chosen place <span
+class="math inline">\(w\)</span> above <span
+class="math inline">\(p_0\)</span>, the <em>reduced Bessel span</em> is
+the span of the Bessel tuple modulo <span
+class="math inline">\(w\)</span>. A <em>span vector</em> is a nonzero
+vector in this span with a choice of side <span
+class="math inline">\(w\)</span> or <span class="math inline">\(\bar
+w\)</span> as in Definition <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:fixer"
+data-reference-type="ref"
+data-reference="m2-def:fixer">43.2.7</a>.</p>
+<p>Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">39</a> deduces Theorem B from three
+estimates for the Gram operators <span class="math inline">\(\mathcal
+K_s={\mathcal P^\circ}{}^*\rho(s){\mathcal P^\circ}\)</span>, <span
+class="math inline">\(s\in\bar G\)</span>. This sheet proves the
+second-moment estimate <span class="math inline">\(\sum_{s\in\bar
+G}\lVert\mathcal K_s\rVert^2\le(1+9b^{-4})D_{\mathrm{main}}\)</span>.
+Chapter <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#chap" data-reference-type="ref"
+data-reference="m3-chap">45</a> bounds the open reductions that
+fix given span vectors; the others, where a leading minor of the pairing
+matrix vanishes, are many (three sevenths of <span
+class="math inline">\(\mathrm{GL}_3(\mathbb{F}_2)\)</span> in the toy
+below). How can one show that they carry little of <span
+class="math inline">\(s\mapsto\lVert\mathcal K_s\rVert^2\)</span>
+without knowing that this function is spread evenly over <span
+class="math inline">\(\bar G\)</span>?</p>
+<h1 id="sec:positive">§47.1. Positive type and singular minors</h1>
+<p>As in Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">39</a>, a real function <span
+class="math inline">\(\Theta\)</span> on a finite group <span
+class="math inline">\(G\)</span> is <em>of positive type</em> if there
+are vectors <span class="math inline">\(u_a\)</span>, <span
+class="math inline">\(a\in G\)</span>, of a complex inner product space
+with <span class="math inline">\(\langle
+u_a,u_b\rangle=\Theta(a^{-1}b)\)</span> for all <span
+class="math inline">\(a,b\)</span>. We say that a subset of <span
+class="math inline">\(G\)</span> <em>carries</em> the sum of <span
+class="math inline">\(\Theta\)</span> over that subset. By Problem <a
+href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#pr:translate-gram" data-reference-type="ref"
+data-reference="rl-pr:translate-gram">9.2.2</a>, if
+<span class="math inline">\(\rho\)</span> is a unitary representation of
+<span class="math inline">\(G\)</span> and <span
+class="math inline">\(L\)</span> a linear map into its space, then <span
+class="math inline">\(s\mapsto\lVert L^*\rho(s)L\rVert^2\)</span> is of
+positive type, with <span
+class="math inline">\(u_a=\rho(a)LL^*\rho(a)^*\)</span> in the
+Hilbert–Schmidt inner product.</p>
+<div id="pr:positive" class="problem" data-progress-ids="[&quot;20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex#pr:positive&quot;]">
+<p><strong>Problem 47.1.1</strong>. Let <span
+class="math inline">\(\Theta\)</span> be of positive type on <span
+class="math inline">\(G\)</span>, with vectors <span
+class="math inline">\(u_a\)</span>. (a) <span
+class="math inline">\(\Theta(s^{-1})=\Theta(s)\)</span> and <span
+class="math inline">\(\lvert\Theta(s)\rvert\le\Theta(1)=\lVert
+u_a\rVert^2\)</span> for all <span class="math inline">\(s,a\)</span>.
+(b) For a subgroup <span class="math inline">\(\Gamma&#39;\subseteq
+G\)</span>, <span
+class="math inline">\(\sum_{s\in\Gamma&#39;}\Theta(s)=\lVert\sum_{a\in\Gamma&#39;}u_a\rVert^2/\#\Gamma&#39;\ge0\)</span>,
+and the restriction of <span class="math inline">\(\Theta\)</span> to
+<span class="math inline">\(\Gamma&#39;\)</span> is of positive
+type.</p>
+</div>
+<p>Let <span class="math inline">\(\psi\)</span> be a nontrivial
+additive character of <span class="math inline">\(\mathbb{F}_q\)</span>;
+vectors are columns, <span class="math inline">\(y^t\)</span> is a
+transpose and <span class="math inline">\(g^{-t}\)</span> the inverse
+transpose of <span
+class="math inline">\(g\in\mathrm{GL}_n(\mathbb{F}_q)\)</span>.</p>
+<div id="pr:kernel" class="problem" data-progress-ids="[&quot;20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex#pr:kernel&quot;]">
+<p><strong>Problem 47.1.2</strong>. For a <span class="math inline">\(j\times
+j\)</span> matrix <span class="math inline">\(Z\)</span> over <span
+class="math inline">\(\mathbb{F}_q\)</span>, <span
+class="math inline">\(\#\{y\in\mathbb{F}_q^j:y^tZ=0\}=q^{-j}\sum_{y,v\in\mathbb{F}_q^j}\psi(y^tZv)\)</span>,
+and this number is at least <span class="math inline">\(q\)</span> if
+<span class="math inline">\(\det Z=0\)</span>.</p>
+</div>
+<h4 id="the-toy.">The toy.</h4>
+<p>In this sheet let <span class="math inline">\(J\)</span> be the
+permutation matrix exchanging <span class="math inline">\(e_1\)</span>
+and <span class="math inline">\(e_3\)</span> and fixing <span
+class="math inline">\(e_2\)</span>, the Gram matrix of the symmetric
+bilinear form <span class="math inline">\((x,x&#39;)\mapsto
+x^tJx&#39;\)</span> on <span
+class="math inline">\(\mathbb{F}_p^3\)</span>. Take <span
+class="math inline">\((e_1,e_2)\)</span> as the Bessel tuple: <span
+class="math inline">\(e_1\)</span> is isotropic and paired with <span
+class="math inline">\(e_3\)</span>. The only proper leading minor of the
+pairing matrix of <span
+class="math inline">\(s\in\mathrm{GL}_3(\mathbb{F}_p)\)</span> is <span
+class="math inline">\(e_1^tJse_1=s_{31}\)</span>, so the open elements
+are those with <span class="math inline">\(s_{31}\ne0\)</span>. Here a
+span vector is a nonzero <span
+class="math inline">\(x\in\operatorname{span}(e_1,e_2)\)</span> with a
+choice of side. On one side the fixer consists of the <span
+class="math inline">\(s\)</span> with <span
+class="math inline">\(sx=x\)</span>. On the other side <span
+class="math inline">\(s^{-t}(Jx)=Jx\)</span>, so <span
+class="math inline">\(s\)</span> fixes the linear form <span
+class="math inline">\(x&#39;\mapsto x^tJx&#39;\)</span>. For <span
+class="math inline">\(x=e_1\)</span> the latter condition is <span
+class="math inline">\(e_3^ts=e_3^t\)</span>.</p>
+<div id="pr:gl3-counts" class="problem" data-progress-ids="[&quot;20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex#pr:gl3-counts&quot;]">
+<p><strong>Problem 47.1.3</strong>. By machine: in <span
+class="math inline">\(\mathrm{GL}_3(\mathbb{F}_p)\)</span> the group,
+the set <span class="math inline">\(\{s_{31}=0\}\)</span>, the fixer of
+<span class="math inline">\(e_1\)</span> and the fixer <span
+class="math inline">\(\{s:e_3^ts=e_3^t\}\)</span> of the form <span
+class="math inline">\(e_3^t\)</span> have <span
+class="math inline">\(168, 72, 24, 24\)</span> elements for <span
+class="math inline">\(p=2\)</span> and <span
+class="math inline">\(11232, 3456, 432, 432\)</span> for <span
+class="math inline">\(p=3\)</span>. Both fixers lie in <span
+class="math inline">\(\{s_{31}=0\}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:det-toy">Problem 47.1.6</a></div><!-- used-in:end -->
+</div>
+<p>So a weight concentrated on a fixer lives entirely where the minor
+vanishes. The next two problems show that this is the only obstruction:
+a vanishing minor is detected by characters, and the character sums are
+bounded by the weight of stabilizers.</p>
+<div id="pr:character-sum" class="problem" data-progress-ids="[&quot;20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex#pr:character-sum&quot;]">
+<p><strong>Problem 47.1.4</strong>. Let <span class="math inline">\(\pi\colon
+G\to\mathrm{GL}_n(\mathbb{F}_q)\)</span> be a homomorphism, <span
+class="math inline">\(\Theta\)</span> of positive type on <span
+class="math inline">\(G\)</span>, <span
+class="math inline">\(y,v\in\mathbb{F}_q^n\)</span> and <span
+class="math inline">\(Y\)</span> real. If the <span
+class="math inline">\(s\)</span> with <span
+class="math inline">\(\pi(s)v=v\)</span>, and the <span
+class="math inline">\(s\)</span> with <span
+class="math inline">\(\pi(s)^{-t}y=y\)</span>, each carry at most <span
+class="math inline">\(Y\)</span>, then <span
+class="math display">\[\Bigl\lvert\sum_{s\in
+G}\Theta(s)\,\psi\bigl(y^t\pi(s)v\bigr)\Bigr\rvert\le q^{n/2}Y
+.\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:det-lemma">Problem 47.1.5</a></div><!-- used-in:end -->
+</div>
+<div id="pr:det-lemma" class="problem" data-progress-ids="[&quot;20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex#pr:det-lemma&quot;]">
+<p><strong>Problem 47.1.5</strong>. Let <span
+class="math inline">\(\pi\)</span> be as in Problem <a
+href="#pr:character-sum" data-reference-type="ref"
+data-reference="pr:character-sum">47.1.4</a>, <span
+class="math inline">\(\Theta\ge0\)</span> of positive type, <span
+class="math inline">\(A_0,A_1\)</span> two <span
+class="math inline">\(n\times j\)</span> matrices over <span
+class="math inline">\(\mathbb{F}_q\)</span> and <span
+class="math inline">\(Y\ge0\)</span>. Suppose that for every <span
+class="math inline">\(v\in\mathbb{F}_q^j\smallsetminus0\)</span> the
+<span class="math inline">\(s\)</span> with <span
+class="math inline">\(\pi(s)A_0v=A_0v\)</span>, and the <span
+class="math inline">\(s\)</span> with <span
+class="math inline">\(\pi(s)^{-t}A_1v=A_1v\)</span>, each carry at most
+<span class="math inline">\(Y\)</span>. Then <span
+class="math display">\[q\sum_{\det(A_1^t\pi(s)A_0)=0}\Theta(s)\le2\sum_{s\in
+G}\Theta(s)+q^{j}q^{n/2}\,Y .\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:det-toy">Problem 47.1.6</a></div><!-- used-in:end -->
+</div>
+<div id="pr:det-toy" class="problem" data-progress-ids="[&quot;20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex#pr:det-toy&quot;]">
+<p><strong>Problem 47.1.6</strong>. In the toy take <span
+class="math inline">\(j=1\)</span>, <span
+class="math inline">\(A_0=e_1\)</span>, <span
+class="math inline">\(A_1=Je_1=e_3\)</span>, so that <span
+class="math inline">\(\det(A_1^tsA_0)=s_{31}\)</span>. (a) For <span
+class="math inline">\(\Theta\equiv1\)</span> and <span
+class="math inline">\(Y\)</span> the order of a fixer in Problem <a
+href="#pr:gl3-counts" data-reference-type="ref"
+data-reference="pr:gl3-counts">47.1.3</a>, Problem <a href="#pr:det-lemma"
+data-reference-type="ref" data-reference="pr:det-lemma">47.1.5</a> reads
+<span class="math inline">\(144\le471.764\ldots\)</span> for <span
+class="math inline">\(p=2\)</span> and <span
+class="math inline">\(10368\le29198.213\ldots\)</span> for <span
+class="math inline">\(p=3\)</span>. (b) For <span
+class="math inline">\(p=2\)</span> the indicator <span
+class="math inline">\(\Theta\)</span> of the fixer of <span
+class="math inline">\(e_1\)</span> is of positive type; all of its mass
+<span class="math inline">\(24\)</span> lies in <span
+class="math inline">\(\{s_{31}=0\}\)</span>, the least admissible <span
+class="math inline">\(Y\)</span> is <span
+class="math inline">\(24\)</span>, and Problem <a href="#pr:det-lemma"
+data-reference-type="ref" data-reference="pr:det-lemma">47.1.5</a> reads
+<span class="math inline">\(48\le183.764\ldots\)</span>.</p>
+</div>
+<p>For the uniform weight the elements with <span
+class="math inline">\(s_{31}=0\)</span> are a proportion <span
+class="math inline">\(3/7\)</span> of <span
+class="math inline">\(\mathrm{GL}_3(\mathbb{F}_2)\)</span>; for the
+weight of (b) they are everything. The function <span
+class="math inline">\(s\mapsto\lVert\mathcal K_s\rVert^2\)</span> is
+neither, and the proof never replaces its non-open part (where the minor
+condition in Definition <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:open" data-reference-type="ref"
+data-reference="m2-def:open">43.2.6</a> fails) by a proportion
+for the uniform measure. It chooses a subgroup on which stabilizers
+carry little, and then Problem <a href="#pr:det-lemma"
+data-reference-type="ref" data-reference="pr:det-lemma">47.1.5</a> makes the
+singular part small. In the toy the lemma gains almost nothing: for
+<span class="math inline">\(p=2\)</span> its right side <span
+class="math inline">\(471.7\ldots\)</span> exceeds the trivial bound
+<span class="math inline">\(2\cdot168\)</span>, and for <span
+class="math inline">\(p=3\)</span> it is <span
+class="math inline">\(29198.2\ldots\)</span> against <span
+class="math inline">\(3\cdot11232=33696\)</span>. It gains when <span
+class="math inline">\(q^{j+n/2}\,Y\)</span> is small against <span
+class="math inline">\(q\sum\Theta\)</span>; for the data this is
+Problem <a href="#pr:exponent" data-reference-type="ref"
+data-reference="pr:exponent">47.2.1</a> with <span
+class="math inline">\(Y=b^{-6k}H\)</span>.</p>
+<h1 id="sec:fixers">§47.2. The open part and the terminal fixer</h1>
+<p>We work as the proof does: with an admissible filling (Definition <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:filling" data-reference-type="ref"
+data-reference="bp-def:filling">39.4.3</a>) over a CM field
+<span class="math inline">\(E\)</span> with Weil data (Chapter <a
+href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#chap" data-reference-type="ref"
+data-reference="m3-chap">45</a>); the data provide one, the group
+<span class="math inline">\(\bar G=\prod_{w\in\mathcal
+M}\mathrm{GL}_r(k_w)\)</span>, <span class="math inline">\(\mathcal
+M=\mathcal M_0\cup\mathcal M_1\)</span> the chosen places above <span
+class="math inline">\(p_0\)</span> and <span
+class="math inline">\(p_1\)</span>, a unitary representation <span
+class="math inline">\(\rho\)</span> of <span class="math inline">\(\bar
+G\)</span> on a finite-dimensional complex inner product space, and a
+linear map <span class="math inline">\({\mathcal P^\circ}\)</span> from
+the coordinate space with the block identity of Theorem <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#thm:blocks" data-reference-type="ref"
+data-reference="m1-thm:blocks">40.3.2</a>. In this sheet <span
+class="math inline">\(\mathrm{en}(s):=\lVert\mathcal
+K_s\rVert^2\)</span>, formed with the full Bessel function. By
+Problem <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:positive-type" data-reference-type="ref"
+data-reference="m1-pr:positive-type">40.4.5</a>, <span
+class="math inline">\(\mathrm{en}\)</span> is of positive type, with
+<span class="math inline">\(u_a=\rho(a){\mathcal P^\circ}{\mathcal
+P^\circ}{}^*\rho(a)^*\)</span>, and <span
+class="math inline">\(\mathrm{en}(s)\le\mathrm{en}(1)\)</span>. The
+proof also gives <span
+class="math inline">\(\mathrm{en}(1)=\lVert\mathcal
+K_1\rVert^2\le2D_X\)</span> in this generality (see the remark), by
+Theorem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:strip" data-reference-type="ref"
+data-reference="m2-thm:strip">43.3.3</a> and Problems <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:near-one" data-reference-type="ref"
+data-reference="m1-pr:near-one">40.4.3</a> and <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:P-one" data-reference-type="ref"
+data-reference="m1-pr:P-one">40.4.4</a>, whose hypotheses (<span
+class="math inline">\(\mathcal K_{st}=\mathcal
+K_s\rho_{\mathrm{Bes}}(t)\)</span> for <span
+class="math inline">\(t\in\bar R_0\)</span>, and <span
+class="math inline">\(\rho_{\mathrm{Bes}}\)</span> a unitary
+representation of <span class="math inline">\(\bar R_0\)</span>) it
+states for every admissible filling with the block identity. Of the
+conditions of admissibility we use: <span
+class="math inline">\(b\ge1000\)</span>; <span
+class="math inline">\(b^{10}\le p_0\le b^{11}\)</span> and <span
+class="math inline">\(M=p_0p_1\le b^{23}\)</span>; <span
+class="math inline">\(1000(2\varrho+2)\le k\le f\)</span> and <span
+class="math inline">\(\varrho+1\le b\)</span>; there are <span
+class="math inline">\(f\)</span> chosen places above each <span
+class="math inline">\(p_i\)</span>, each with residue field of <span
+class="math inline">\(p_i\)</span> elements, all distinct, and no
+conjugate of a chosen place is chosen; <span
+class="math inline">\(b^{11kf}D_{\mathrm{id}}\le
+D_{\mathrm{main}}\)</span>. The matrices <span
+class="math inline">\(s_w\)</span> have size <span
+class="math inline">\(r=k+2\varrho+1\)</span>.</p>
+<p>We recall Definitions <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:open"
+data-reference-type="ref"
+data-reference="m2-def:open">43.2.6</a>, <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:fixer"
+data-reference-type="ref"
+data-reference="m2-def:fixer">43.2.7</a> and <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:meet" data-reference-type="ref"
+data-reference="m2-def:meet">43.2.5</a> at a chosen place <span
+class="math inline">\(w\)</span> above <span
+class="math inline">\(p_0\)</span>. For a span vector <span
+class="math inline">\(x\)</span>, <span class="math inline">\(s\)</span>
+fixes it on the side of <span class="math inline">\(w\)</span> if <span
+class="math inline">\(s_wx=x\)</span>, and on the side of <span
+class="math inline">\(\bar w\)</span> if <span
+class="math inline">\(s_w^{-t}\)</span> fixes <span
+class="math inline">\(Jx\)</span>, where <span
+class="math inline">\(J\)</span> is the Gram matrix of the lattice basis
+modulo <span class="math inline">\(w\)</span>. The fixer of span vectors
+given at a set <span class="math inline">\(\mathcal D\subseteq\mathcal
+M_0\)</span> of such places is the subgroup of the <span
+class="math inline">\(s\)</span> fixing each. An element <span
+class="math inline">\(s\)</span> is <em>open</em> if at some <span
+class="math inline">\(w\in\mathcal M_0\)</span> the leading minors <span
+class="math inline">\(\langle s\rangle_1,\dots,\langle
+s\rangle_\varrho\)</span> of its pairing matrix are nonzero. With <span
+class="math inline">\(A_0\)</span> the matrix whose columns are the
+first <span class="math inline">\(j\)</span> members <span
+class="math inline">\(v_1,\dots,v_j\)</span> of the Bessel tuple and
+<span class="math inline">\(A_1=JA_0\)</span>, the minor <span
+class="math inline">\(\langle s\rangle_j\)</span> at <span
+class="math inline">\(w\)</span> is <span
+class="math inline">\(\det(A_1^ts_wA_0)\)</span>. An element
+<em>meets</em> at <span class="math inline">\(w\)</span> (or at <span
+class="math inline">\(\bar w\)</span>) if modulo that place the span of
+the Bessel tuple and that of its image share a nonzero vector, and <span
+class="math inline">\(\operatorname{mt}(s)\)</span> is the product of
+<span class="math inline">\(\#k_w\)</span> over the places <span
+class="math inline">\(w\)</span> and <span class="math inline">\(\bar
+w\)</span>, <span class="math inline">\(w\in\mathcal M\)</span>, at
+which <span class="math inline">\(s\)</span> meets; an element that
+fixes a span vector on a side meets at that place. An element of <span
+class="math inline">\(\bar R_0\)</span> fixes <span
+class="math inline">\(v_1\)</span> modulo every chosen place: <span
+class="math inline">\(\mathcal U\)</span> and <span
+class="math inline">\(U(X_0)\)</span> fix <span
+class="math inline">\(v_1\)</span> (Section <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:subgroup"
+data-reference-type="ref"
+data-reference="bp-sec:subgroup">39.1</a>), and <span
+class="math inline">\(v_1\)</span> is a vector of the lattice basis. For
+<span class="math inline">\(s\notin\bar R_0\)</span> we have <span
+class="math inline">\(\rho_{\mathrm{Bes}}(s)=0\)</span>, and <span
+class="math inline">\(\mathrm{en}(s)\)</span> is the second moment at
+<span class="math inline">\(s\)</span> of the terms outside the Bessel
+subgroup.</p>
+<p>Three statements are used, for sets <span
+class="math inline">\(\mathcal B\subseteq\bar G\)</span>. Theorem <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:link-bound" data-reference-type="ref"
+data-reference="m2-thm:link-bound">43.3.1</a>: if <span
+class="math inline">\(z_0\)</span> is a positive integer with <span
+class="math inline">\(z_0\le\operatorname{mt}(s)\)</span> for all <span
+class="math inline">\(s\in\mathcal B\)</span>, the link second moment of
+the terms with <span
+class="math inline">\(\operatorname{disc}\ne0\)</span> over <span
+class="math inline">\(\mathcal B\)</span> is at most <span
+class="math display">\[(b^{2f}/z_0)^k\,D_{\mathrm{main}}\,\nu^2
+.\]</span> The <em>truncation bound</em> (Theorem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:cut"
+data-reference-type="ref" data-reference="m2-thm:cut">43.3.2</a>)
+uses that link second moment, formed with Bessel functions truncated by
+length. If <span class="math inline">\(\mathcal B\)</span> avoids the
+scalar cosets and that moment is at most <span
+class="math inline">\(C_0\nu^2\)</span>, <span
+class="math inline">\(C_0\ge0\)</span>, then the second moment over
+<span class="math inline">\(\mathcal B\)</span> of the terms outside the
+Bessel subgroup, for the full Bessel function, has square root at most
+<span
+class="math display">\[\sqrt{C_0}+b^{-15}\sqrt{D_{\mathrm{id}}}.\]</span>
+Theorem <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#thm:open" data-reference-type="ref"
+data-reference="m3-thm:open">45.3.3</a>: for a set <span
+class="math inline">\(\mathcal D\)</span> of <span
+class="math inline">\(h\)</span> chosen places above <span
+class="math inline">\(p_0\)</span> with a span vector at each, the link
+second moment of the terms with <span
+class="math inline">\(\operatorname{disc}\ne0\)</span> over the open
+elements of their fixer is at most <span
+class="math display">\[(1+b^{-4})\,b^{-6kh}\,D_{\mathrm{main}}\,\nu^2
+.\]</span> In this sheet <span
+class="math inline">\(y_h:=b^{-6kh}D_{\mathrm{main}}\)</span> for <span
+class="math inline">\(0\le h\le f\)</span>; since <span
+class="math inline">\(b^{11kf}D_{\mathrm{id}}\le
+D_{\mathrm{main}}\)</span>, we have <span
+class="math inline">\(b^{5kf}D_{\mathrm{id}}\le y_h\)</span>.</p>
+<div id="pr:exponent" class="problem" data-progress-ids="[&quot;20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex#pr:exponent&quot;]">
+<p><strong>Problem 47.2.1</strong>. <span
+class="math inline">\(p_0^j\sqrt{p_0^{\,r}}\le b^{6k}\)</span> for <span
+class="math inline">\(0\le j\le\varrho\)</span>.</p>
+</div>
+<div id="pr:non-open" class="problem" data-progress-ids="[&quot;20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex#pr:non-open&quot;]">
+<p><strong>Problem 47.2.2</strong>. Let <span
+class="math inline">\(\Gamma&#39;\subseteq\bar G\)</span> be a subgroup,
+<span
+class="math inline">\(H:=\sum_{s\in\Gamma&#39;}\mathrm{en}(s)\)</span>
+(in this sheet), and <span class="math inline">\(w\)</span> a chosen
+place above <span class="math inline">\(p_0\)</span>. Suppose that for
+every span vector at <span class="math inline">\(w\)</span>, on either
+side, the elements of <span class="math inline">\(\Gamma&#39;\)</span>
+fixing it carry at most <span class="math inline">\(b^{-6k}H\)</span>.
+Then the elements of <span class="math inline">\(\Gamma&#39;\)</span>
+that are not open carry at most <span
+class="math inline">\(b^{-4}H\)</span>.</p>
+</div>
+<div id="pr:scalar-not-open" class="problem" data-progress-ids="[&quot;20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex#pr:scalar-not-open&quot;]">
+<p><strong>Problem 47.2.3</strong>. If <span class="math inline">\(s_wv_1\in
+k_wv_1\)</span> at a chosen place <span class="math inline">\(w\)</span>
+above <span class="math inline">\(p_0\)</span>, then <span
+class="math inline">\(\langle s\rangle_1=0\)</span> at <span
+class="math inline">\(w\)</span>. Hence no <span
+class="math inline">\(s\in\bar G\)</span> with <span
+class="math inline">\(s_w=\zeta_wt_w\)</span> for every <span
+class="math inline">\(w\in\mathcal M\)</span>, for some <span
+class="math inline">\(t\in\bar R_0\)</span> and some integral finite
+adele <span class="math inline">\(\zeta\)</span> with residues <span
+class="math inline">\(\zeta_w\)</span>, is open; in particular the open
+elements avoid the scalar cosets and lie outside <span
+class="math inline">\(\bar R_0\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:terminal-sizes">Problem 47.2.5</a></div><!-- used-in:end -->
+</div>
+<div id="pr:open-part" class="problem" data-progress-ids="[&quot;20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex#pr:open-part&quot;]">
+<p><strong>Problem 47.2.4</strong>. Let <span
+class="math inline">\(\Gamma&#39;\)</span> be the fixer of span vectors
+at a set of <span class="math inline">\(h\)</span> chosen places above
+<span class="math inline">\(p_0\)</span>. The open elements of <span
+class="math inline">\(\Gamma&#39;\)</span> carry at most <span
+class="math inline">\((1+4b^{-4})\,y_h\)</span>.</p>
+</div>
+<p>The terminal case fixes vectors at all <span
+class="math inline">\(f\)</span> places above <span
+class="math inline">\(p_0\)</span>.</p>
+<div id="pr:terminal-sizes" class="problem" data-progress-ids="[&quot;20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex#pr:terminal-sizes&quot;]">
+<p><strong>Problem 47.2.5</strong>. (a) <span
+class="math inline">\((b^{2f}/p_0^f)^k\,D_{\mathrm{main}}\le
+y_f/8\)</span>. (b) <span class="math inline">\(8M^fD_{\mathrm{id}}\le
+y_f\)</span>. (c) At most <span class="math inline">\(M^f\#\bar
+R_0\)</span> elements of <span class="math inline">\(\bar G\)</span>
+have the form <span class="math inline">\(s_w=\zeta_wt_w\)</span> of
+Problem <a href="#pr:scalar-not-open" data-reference-type="ref"
+data-reference="pr:scalar-not-open">47.2.3</a>.</p>
+</div>
+<div id="pr:terminal" class="problem" data-progress-ids="[&quot;20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex#pr:terminal&quot;]">
+<p><strong>Problem 47.2.6</strong>. Let <span
+class="math inline">\(\Gamma&#39;\)</span> be the fixer of span vectors
+at all <span class="math inline">\(f\)</span> chosen places above <span
+class="math inline">\(p_0\)</span>. Then <span
+class="math inline">\(\operatorname{mt}(s)\ge p_0^f\)</span> for <span
+class="math inline">\(s\in\Gamma&#39;\)</span>, and <span
+class="math inline">\(\Gamma&#39;\)</span> carries at most <span
+class="math inline">\(y_f\)</span>.</p>
+</div>
+<h1 id="sec:bootstrap">§47.3. The bootstrap</h1>
+<p>Problem <a href="#pr:non-open" data-reference-type="ref"
+data-reference="pr:non-open">47.2.2</a> needs a subgroup on which stabilizers
+carry little, and fixing a vector costs a factor <span
+class="math inline">\(b^{-6k}\)</span> in Problem <a
+href="#pr:open-part" data-reference-type="ref"
+data-reference="pr:open-part">47.2.4</a>. For a set <span
+class="math inline">\(\mathcal D\)</span> of chosen places above <span
+class="math inline">\(p_0\)</span> and span vectors at its places, let
+<span class="math inline">\(\Gamma_{\mathcal D}\)</span> be their fixer
+(the vectors understood); <span
+class="math inline">\(\Gamma_\varnothing=\bar G\)</span>. The proof
+maximizes the <em>objective</em> <span
+class="math inline">\(b^{6k\#\mathcal D}\sum_{s\in\Gamma_{\mathcal
+D}}\mathrm{en}(s)\)</span> over the finitely many choices, the empty one
+included.</p>
+<div id="pr:bootstrap-toy" class="problem" data-progress-ids="[&quot;20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex#pr:bootstrap-toy&quot;]">
+<p><strong>Problem 47.3.1</strong>. In the toy with <span
+class="math inline">\(p=2\)</span>, <span
+class="math inline">\(\Theta\equiv1\)</span>, one place, and the factor
+<span class="math inline">\(b^{6k}\)</span> replaced by <span
+class="math inline">\(c\)</span>: every span vector, on either side, has
+a fixer of <span class="math inline">\(24\)</span> elements, and the
+objective at (no place, the place) is <span
+class="math inline">\((168,24c)\)</span>; it is <span
+class="math inline">\((168,96)\)</span> for <span
+class="math inline">\(c=4\)</span> and <span
+class="math inline">\((168,192)\)</span> for <span
+class="math inline">\(c=8\)</span>. Either choice can be the
+maximum.</p>
+</div>
+<div id="pr:bootstrap" class="problem" data-progress-ids="[&quot;20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex#pr:bootstrap&quot;]">
+<p><strong>Problem 47.3.2</strong>. Let <span class="math inline">\(\mathcal
+D\)</span> with its span vectors maximize the objective, <span
+class="math inline">\(h:=\#\mathcal D\)</span> and <span
+class="math inline">\(H:=\sum_{s\in\Gamma_{\mathcal
+D}}\mathrm{en}(s)\)</span>. If <span
+class="math inline">\(h&lt;f\)</span> and <span
+class="math inline">\(w\notin\mathcal D\)</span> is a chosen place above
+<span class="math inline">\(p_0\)</span>, then the elements of <span
+class="math inline">\(\Gamma_{\mathcal D}\)</span> fixing a span vector
+at <span class="math inline">\(w\)</span>, on either side, carry at most
+<span class="math inline">\(b^{-6k}H\)</span>, and <span
+class="math display">\[H\le(1+4b^{-4})\,y_h+b^{-4}H .\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:whole">Problem 47.3.4</a></div><!-- used-in:end -->
+</div>
+<div id="pr:absorb" class="problem" data-progress-ids="[&quot;20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex#pr:absorb&quot;]">
+<p><strong>Problem 47.3.3</strong>. If <span
+class="math inline">\(H\le(1+4\delta)Y+\delta H\)</span> with <span
+class="math inline">\(0\le\delta\le1/10\)</span> and <span
+class="math inline">\(Y\ge0\)</span>, then <span
+class="math inline">\(H\le(1+9\delta)Y\)</span>. For <span
+class="math inline">\(\delta=1/16\)</span>: <span
+class="math inline">\((1+4\delta)/(1-\delta)=4/3\le25/16=1+9\delta\)</span>.</p>
+</div>
+<div id="pr:whole" class="problem" data-progress-ids="[&quot;20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.tex#pr:whole&quot;]">
+<p><strong>Problem 47.3.4</strong>. With <span
+class="math inline">\(\mathcal D\)</span> as in Problem <a
+href="#pr:bootstrap" data-reference-type="ref"
+data-reference="pr:bootstrap">47.3.2</a>, <span
+class="math inline">\(H\le(1+9b^{-4})\,y_h\)</span>; hence <span
+class="math inline">\(\sum_{s\in\bar
+G}\mathrm{en}(s)\le(1+9b^{-4})\,D_{\mathrm{main}}\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:positive" data-reference-type="ref"
+data-reference="pr:positive">47.1.1</a>, <a href="#pr:kernel"
+data-reference-type="ref" data-reference="pr:kernel">47.1.2</a>, <a
+href="#pr:character-sum" data-reference-type="ref"
+data-reference="pr:character-sum">47.1.4</a>, <a href="#pr:det-lemma"
+data-reference-type="ref" data-reference="pr:det-lemma">47.1.5</a> and <a
+href="#pr:exponent" data-reference-type="ref"
+data-reference="pr:exponent">47.2.1</a>–<a href="#pr:whole"
+data-reference-type="ref" data-reference="pr:whole">47.3.4</a>, with
+Theorems <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:link-bound" data-reference-type="ref"
+data-reference="m2-thm:link-bound">43.3.1</a>, <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:cut" data-reference-type="ref"
+data-reference="m2-thm:cut">43.3.2</a> and <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#thm:open"
+data-reference-type="ref" data-reference="m3-thm:open">45.3.3</a>
+and the two properties of <span
+class="math inline">\(\mathrm{en}\)</span> recalled in Section <a
+href="#sec:fixers" data-reference-type="ref"
+data-reference="sec:fixers">47.2</a> (positive type, and <span
+class="math inline">\(\mathrm{en}(1)\le2D_X\)</span>), prove the
+following.</p>
+<div id="thm:second-moment" class="theorem">
+<p><strong>Theorem 47.3.1</strong> (the second moment). <em>Let an admissible
+filling over a CM field with Weil data be given, <span
+class="math inline">\(\rho\)</span> a unitary representation of <span
+class="math inline">\(\bar G\)</span> on a finite-dimensional complex
+inner product space, and <span class="math inline">\({\mathcal
+P^\circ}\)</span> a linear map from the coordinate space satisfying the
+block identity of Theorem <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#thm:blocks"
+data-reference-type="ref"
+data-reference="m1-thm:blocks">40.3.2</a>. Then <span
+class="math display">\[\sum_{s\in\bar G}\lVert\mathcal
+K_s\rVert^2\le(1+9b^{-4})\,D_{\mathrm{main}}.\]</span> In particular
+this holds for the data, with <span class="math inline">\({\mathcal
+P^\circ}\)</span> the scaled Poincaré map and <span
+class="math inline">\(\rho\)</span> the representation of Chapter <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">39</a>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html">Chapter 39</a>; <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html">Chapter 43</a>; <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html">Chapter 45</a>; <a href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html">Chapter 48</a></div><!-- used-in:end -->
+</div>
+<p>What has been proved is the second moment over the whole group, from
+the link bound and the truncation bound, which Chapter <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#chap" data-reference-type="ref"
+data-reference="m2-chap">43</a> reads from the proof, and the
+open-cell bound, whose steps Chapter <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#chap"
+data-reference-type="ref" data-reference="m3-chap">45</a> models
+with statements read from the proof. With the count of Theorem <a
+href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html#thm:count" data-reference-type="ref"
+data-reference="m5-thm:count">48.3.1</a> it gives the hypothesis
+of Theorem <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#thm:spread" data-reference-type="ref"
+data-reference="rl-thm:spread">9.3.1</a> on the second moment
+(Problem <a href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html#pr:spread-hyp" data-reference-type="ref"
+data-reference="m5-pr:spread-hyp">48.3.6</a>); the other
+hypothesis, the near isometry of the projected map, is Theorem <a
+href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.html#thm:good" data-reference-type="ref"
+data-reference="m5-thm:good">48.2.2</a>.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. In the Lean proof <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span> the
+theorem is
+<code>Filling.HasAmplitudeBlocks.sum_hilbertSchmidtNorm_sq_le</code>,
+and for the data
+<code>Data.sum_hilbertSchmidtNorm_scaledPoincare_sq_le</code>; it is
+deduced from <code>Filling.sum_secondMoment_le</code>, which bounds the
+sum over <span class="math inline">\(\bar G\)</span> of the second
+moments at <span class="math inline">\(s\)</span> of all terms, for an
+admissible filling with Weil data, assuming that this function of <span
+class="math inline">\(s\)</span> is of positive type and at most <span
+class="math inline">\(2D_X\)</span> at <span
+class="math inline">\(s=1\)</span>, by the maximization of Section <a
+href="#sec:bootstrap" data-reference-type="ref"
+data-reference="sec:bootstrap">47.3</a>. The bound <span
+class="math inline">\(\mathrm{en}(1)\le2D_X\)</span> under the block
+identity, for any representation, is
+<code>Filling.HasAmplitudeBlocks.hilbertSchmidtNorm_adjoint_comp_sq_le</code>.
+Problem <a href="#pr:det-lemma" data-reference-type="ref"
+data-reference="pr:det-lemma">47.1.5</a> is
+<code>card_mul_sum_det_eq_zero_le</code>, whose proof bounds only the
+real part of the sum of Problem <a href="#pr:character-sum"
+data-reference-type="ref" data-reference="pr:character-sum">47.1.4</a>;
+Problem <a href="#pr:non-open" data-reference-type="ref"
+data-reference="pr:non-open">47.2.2</a> is the case <span
+class="math inline">\(\mathrm{en}\)</span> of
+<code>Filling.sum_not_isOpenElement_le</code>, stated there for every
+function <span class="math inline">\(\ge0\)</span> of positive type; the
+second sentence of Problem <a href="#pr:scalar-not-open"
+data-reference-type="ref" data-reference="pr:scalar-not-open">47.2.3</a>, up
+to “in particular”, is
+<code>Filling.InScalarCoset.not_isOpenElement</code>; Problem <a
+href="#pr:open-part" data-reference-type="ref"
+data-reference="pr:open-part">47.2.4</a> is
+<code>Filling.secondMoment_fixer_isOpenElement_le</code>; the bound for
+the fixer in Problem <a href="#pr:terminal" data-reference-type="ref"
+data-reference="pr:terminal">47.2.6</a> is
+<code>Filling.secondMoment_fixer_univ_le</code>, which assumes <span
+class="math inline">\(\mathrm{en}\le2D_X\)</span>; the first sentence of
+Problem <a href="#pr:absorb" data-reference-type="ref"
+data-reference="pr:absorb">47.3.3</a> is
+<code>Filling.le_one_add_nine_mul_of_le_add</code>.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secpositive">§<a href="#sec:positive"
+data-reference-type="ref" data-reference="sec:positive">47.1</a></h2>
+<dl>
+<dt><a href="#pr:positive" data-reference-type="ref"
+data-reference="pr:positive">47.1.1</a></dt>
+<dd>
+<p><span class="math inline">\(\langle u_a,u_a\rangle=\Theta(1)\)</span>
+and Cauchy–Schwarz. Expand <span
+class="math inline">\(\lVert\sum_au_a\rVert^2\)</span> and group the
+pairs <span class="math inline">\((a,b)\)</span> by <span
+class="math inline">\(a^{-1}b\)</span>.</p>
+</dd>
+<dt><a href="#pr:kernel" data-reference-type="ref"
+data-reference="pr:kernel">47.1.2</a></dt>
+<dd>
+<p><span class="math inline">\(\sum_{v}\psi(z^tv)\)</span> is <span
+class="math inline">\(q^j\)</span> if <span
+class="math inline">\(z=0\)</span> and <span
+class="math inline">\(0\)</span> otherwise; a nonzero <span
+class="math inline">\(y\)</span> in the kernel gives a line.</p>
+</dd>
+<dt><a href="#pr:gl3-counts" data-reference-type="ref"
+data-reference="pr:gl3-counts">47.1.3</a></dt>
+<dd>
+<p>Run through the <span class="math inline">\(p^9\)</span>
+matrices.</p>
+</dd>
+<dt><a href="#pr:character-sum" data-reference-type="ref"
+data-reference="pr:character-sum">47.1.4</a></dt>
+<dd>
+<p>Write the sum as an inner product of two vectors of <span
+class="math inline">\(\mathbb{C}^{\mathbb{F}_q^n}\otimes\operatorname{span}(u_a)\)</span>,
+one built from point masses, the other from the normalized characters
+<span class="math inline">\(\xi\mapsto q^{-n/2}\psi(z^t\xi)\)</span>;
+then Cauchy–Schwarz.</p>
+</dd>
+<dt><a href="#pr:det-lemma" data-reference-type="ref"
+data-reference="pr:det-lemma">47.1.5</a></dt>
+<dd>
+<p>Bound <span class="math inline">\(q\)</span> times the indicator of
+<span class="math inline">\(\det Z_s=0\)</span>, <span
+class="math inline">\(Z_s:=A_1^t\pi(s)A_0\)</span>, by Problem <a
+href="#pr:kernel" data-reference-type="ref"
+data-reference="pr:kernel">47.1.2</a>; sum against <span
+class="math inline">\(\Theta\)</span>. Separate the pairs with <span
+class="math inline">\(y=0\)</span> or <span
+class="math inline">\(v=0\)</span>, and use <span
+class="math inline">\(y^tZ_sv=(A_1y)^t\pi(s)(A_0v)\)</span> for the
+others.</p>
+</dd>
+<dt><a href="#pr:det-toy" data-reference-type="ref"
+data-reference="pr:det-toy">47.1.6</a></dt>
+<dd>
+<p>For (b), <span class="math inline">\(u_a:=\delta_{ae_1}\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secfixers">§<a href="#sec:fixers"
+data-reference-type="ref" data-reference="sec:fixers">47.2</a></h2>
+<dl>
+<dt><a href="#pr:exponent" data-reference-type="ref"
+data-reference="pr:exponent">47.2.1</a></dt>
+<dd>
+<p>Show <span class="math inline">\(11(2j+r)\le12k\)</span>, using <span
+class="math inline">\(p_0\le b^{11}\)</span>, <span
+class="math inline">\(r=k+2\varrho+1\)</span>, <span
+class="math inline">\(1000(2\varrho+2)\le k\)</span>.</p>
+</dd>
+<dt><a href="#pr:non-open" data-reference-type="ref"
+data-reference="pr:non-open">47.2.2</a></dt>
+<dd>
+<p>A non-open element has <span class="math inline">\(\langle
+s\rangle_j=0\)</span> at <span class="math inline">\(w\)</span> for some
+<span class="math inline">\(1\le j\le\varrho\)</span>. For each <span
+class="math inline">\(j\)</span>, Problem <a href="#pr:det-lemma"
+data-reference-type="ref" data-reference="pr:det-lemma">47.1.5</a> for <span
+class="math inline">\(\Gamma&#39;\)</span>, <span
+class="math inline">\(\pi(s)=s_w\)</span>, <span
+class="math inline">\(\Theta=\mathrm{en}\)</span> and <span
+class="math inline">\(Y=b^{-6k}H\)</span>: <span
+class="math inline">\(A_0v\)</span> and <span
+class="math inline">\(A_1v=J(A_0v)\)</span> are a span vector and its
+form. Then Problem <a href="#pr:exponent" data-reference-type="ref"
+data-reference="pr:exponent">47.2.1</a> and <span
+class="math inline">\(\varrho+1\le b\)</span>.</p>
+</dd>
+<dt><a href="#pr:scalar-not-open" data-reference-type="ref"
+data-reference="pr:scalar-not-open">47.2.3</a></dt>
+<dd>
+<p><span class="math inline">\(v_1\)</span> is isotropic.</p>
+</dd>
+<dt><a href="#pr:open-part" data-reference-type="ref"
+data-reference="pr:open-part">47.2.4</a></dt>
+<dd>
+<p>By Problem <a href="#pr:scalar-not-open" data-reference-type="ref"
+data-reference="pr:scalar-not-open">47.2.3</a>, Theorems <a
+href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.html#thm:open" data-reference-type="ref"
+data-reference="m3-thm:open">45.3.3</a> and <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:cut"
+data-reference-type="ref" data-reference="m2-thm:cut">43.3.2</a>
+apply to the open elements of <span
+class="math inline">\(\Gamma&#39;\)</span>. Then <span
+class="math inline">\(\sqrt{1+\epsilon}\le1+\epsilon/2\)</span>, <span
+class="math inline">\(b^{-15}\le b^{-4}/2\)</span> and <span
+class="math inline">\(D_{\mathrm{id}}\le y_h\)</span>.</p>
+</dd>
+<dt><a href="#pr:terminal-sizes" data-reference-type="ref"
+data-reference="pr:terminal-sizes">47.2.5</a></dt>
+<dd>
+<p>(a) <span class="math inline">\(p_0\ge b^{10}\)</span>. (b) <span
+class="math inline">\(23f+1\le5kf\)</span>. (c) Only the residues of
+<span class="math inline">\(\zeta\)</span> at the <span
+class="math inline">\(2f\)</span> chosen places matter.</p>
+</dd>
+<dt><a href="#pr:terminal" data-reference-type="ref"
+data-reference="pr:terminal">47.2.6</a></dt>
+<dd>
+<p>The pairs (place, side) at which the fixed vectors sit are distinct
+places above <span class="math inline">\(M\)</span>. Split <span
+class="math inline">\(\Gamma&#39;\)</span> into the elements of
+Problem <a href="#pr:terminal-sizes" data-reference-type="ref"
+data-reference="pr:terminal-sizes">47.2.5</a>(c) and the rest; use <span
+class="math inline">\(\mathrm{en}\le2D_X\)</span>, Theorems <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:link-bound" data-reference-type="ref"
+data-reference="m2-thm:link-bound">43.3.1</a> with <span
+class="math inline">\(z_0=p_0^f\)</span> and <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:cut"
+data-reference-type="ref" data-reference="m2-thm:cut">43.3.2</a>,
+and <span class="math inline">\((\sqrt
+C+\sqrt{C&#39;})^2\le2C+2C&#39;\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secbootstrap">§<a href="#sec:bootstrap"
+data-reference-type="ref" data-reference="sec:bootstrap">47.3</a></h2>
+<dl>
+<dt><a href="#pr:bootstrap-toy" data-reference-type="ref"
+data-reference="pr:bootstrap-toy">47.3.1</a></dt>
+<dd>
+<p>A nonzero vector of <span
+class="math inline">\(\mathbb{F}_2^3\)</span>, or a nonzero form, has
+<span class="math inline">\(7\)</span> images.</p>
+</dd>
+<dt><a href="#pr:bootstrap" data-reference-type="ref"
+data-reference="pr:bootstrap">47.3.2</a></dt>
+<dd>
+<p>Adding <span class="math inline">\(w\)</span> with one span vector
+replaces <span class="math inline">\(\Gamma_{\mathcal D}\)</span> by its
+intersection with the fixer of that vector; compare the objectives. Then
+Problems <a href="#pr:positive" data-reference-type="ref"
+data-reference="pr:positive">47.1.1</a>(b), <a href="#pr:non-open"
+data-reference-type="ref" data-reference="pr:non-open">47.2.2</a> and <a
+href="#pr:open-part" data-reference-type="ref"
+data-reference="pr:open-part">47.2.4</a>.</p>
+</dd>
+<dt><a href="#pr:absorb" data-reference-type="ref"
+data-reference="pr:absorb">47.3.3</a></dt>
+<dd>
+<p><span
+class="math inline">\((1-\delta)(1+9\delta)-(1+4\delta)=\delta(4-9\delta)\)</span>.</p>
+</dd>
+<dt><a href="#pr:whole" data-reference-type="ref"
+data-reference="pr:whole">47.3.4</a></dt>
+<dd>
+<p>If <span class="math inline">\(h=f\)</span>, Problem <a
+href="#pr:terminal" data-reference-type="ref"
+data-reference="pr:terminal">47.2.6</a>; otherwise <span
+class="math inline">\(\delta=b^{-4}\)</span>. Then compare with <span
+class="math inline">\(\mathcal D=\varnothing\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-LN"><span class="bib-label">[LN]</span> R. Lidl and H. Niederreiter, <em>Finite Fields</em>, 2nd ed., Encyclopedia of Mathematics and its Applications <strong>20</strong>, Cambridge University Press, 1997.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

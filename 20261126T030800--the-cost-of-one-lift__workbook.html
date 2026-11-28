@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-QI+ZxU/j60BPWZpdvU1/t6kNVRyQ4lsRbVG/1+W5pJA=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>The cost of one lift</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"{\\mathbb{Z}}","Q":"{\\mathbb{Q}}","R":"{\\mathbb{R}}","N":"{\\mathbb{N}}","C":"{\\mathbb{C}}","Hc":"{\\mathcal{H}}","Aut":"\\operatorname{Aut}","Nm":"\\operatorname{Nm}","hdir":"h_{\\mathrm{dir}}","sfin":"s_{\\mathrm{fin}}","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="74">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T030800--the-cost-of-one-lift__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 09:11:17
+      <a href="20261126T030800--the-cost-of-one-lift__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T030800--the-cost-of-one-lift__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T030800--the-cost-of-one-lift__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">The cost of one lift</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:general" id="toc-sec:general">§74.1. The inputs</a></li>
+<li><a href="#sec:deduction" id="toc-sec:deduction">§74.2. The deduction</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>From Chapter <a href="20261125T000000--slope-method__workbook.html#chap" data-reference-type="ref"
+data-reference="sd-chap">5</a>: heights of families (Section <a
+href="20261125T000000--slope-method__workbook.html#sec:heights" data-reference-type="ref"
+data-reference="sd-sec:heights">5.3</a>, Problem <a
+href="20261125T000000--slope-method__workbook.html#pr:height-mul" data-reference-type="ref"
+data-reference="sd-pr:height-mul">5.3.2</a>). From
+Chapter <a href="20261126T030100--a-twist-for-each-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="at-chap">6</a>: sizes read at the trivial twist,
+valuations at a twist that depends on the prime. The data of Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a> and the objects of Chapter <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>. The factorization of Chapter <a
+href="20261126T030700--the-determinant-of-a-chain__workbook.html#chap" data-reference-type="ref"
+data-reference="dch-chap">68</a>. The statements of Chapters <a
+href="20261126T050800--compressions-and-false-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="l1-chap">75</a>, <a href="20261126T060300--the-comparison-operator__workbook.html#chap"
+data-reference-type="ref" data-reference="l2-chap">76</a>, <a
+href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="l3-chap">77</a> and <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#chap"
+data-reference-type="ref" data-reference="l5-chap">79</a>
+recalled in Section <a href="#sec:general" data-reference-type="ref"
+data-reference="sec:general">74.1</a>.</p>
+<p>Chapter <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#chap" data-reference-type="ref"
+data-reference="dch-chap">68</a> expresses the ratio of the
+chain Gram determinant at an <span class="math inline">\(m\)</span>-fold
+twist <span class="math inline">\(\vartheta\)</span> to its value at the
+trivial twist as a product of single-lift Gram determinant ratios and a
+correction factor. The determinant <span
+class="math inline">\(Z_j(\vartheta)\)</span> uses the <span
+class="math inline">\(j\)</span>-th lift at <span
+class="math inline">\(\vartheta^j\)</span>. The proof needs a height
+bound for <span class="math inline">\(Z_j(1)/Z_j(\vartheta)\)</span>
+when <span class="math inline">\(\vartheta\)</span> varies with the
+prime <span class="math inline">\(\ell\)</span> and the isomorphism
+<span class="math inline">\(\iota \mid \ell\)</span>. The proof
+multiplies the Gram determinant of a single lift by the determinant of
+the compression of a second operator to the image of the lift. The
+compression theorem (Theorem <a href="20261126T050800--compressions-and-false-lifts__workbook.html#thm:compression"
+data-reference-type="ref"
+data-reference="l1-thm:compression">75.3.1</a>(a))
+expresses this product as a fixed nonzero constant times the <span
+class="math inline">\(d_T\)</span>-th power of the ratio of the Hecke
+value product at the twist to its value at the trivial twist. Chapter <a
+href="20261126T050800--compressions-and-false-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="l1-chap">75</a> gives an archimedean bound for
+the compression determinant at the trivial twist and a local bound at a
+twist when <span class="math inline">\(\ell\)</span> is prime to its
+modulus norm and a clearing bound is given. The Hecke quotient is a
+power of the modulus norm times the square of a product of ratios
+attached to critical pairs (Chapter <a href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html#chap"
+data-reference-type="ref" data-reference="l3-chap">77</a>). For a
+regular family (Definition <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:regular"
+data-reference-type="ref"
+data-reference="l5-def:regular">79.1.3</a>) the inverse ratios
+have bounded height, with the estimate for the selected main factors in
+Chapter <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#chap" data-reference-type="ref"
+data-reference="l5-chap">79</a> using Chapter <a href="20261126T051000--the-bound-is-attained-at-many-places__workbook.html#chap"
+data-reference-type="ref" data-reference="l4-chap">78</a>. This
+chapter deduces Theorem <a href="#thm:main" data-reference-type="ref"
+data-reference="thm:main">74.2.1</a> from these inputs and from the
+comparison operator of Theorem <a href="20261126T060300--the-comparison-operator__workbook.html#thm:operator"
+data-reference-type="ref"
+data-reference="l2-thm:operator">76.5.1</a>. The inputs are
+deduced in Chapters <a href="20261126T050800--compressions-and-false-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="l1-chap">75</a>, <a href="20261126T060300--the-comparison-operator__workbook.html#chap"
+data-reference-type="ref" data-reference="l2-chap">76</a>, <a
+href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="l3-chap">77</a>, <a href="20261126T051000--the-bound-is-attained-at-many-places__workbook.html#chap"
+data-reference-type="ref" data-reference="l4-chap">78</a> and <a
+href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#chap" data-reference-type="ref"
+data-reference="l5-chap">79</a> from the background and the
+statements taken from the proof that each of them lists.</p>
+<h1 id="sec:general">§74.1. The inputs</h1>
+<p>We use the data of Chapter <a href="20261126T030300--the-data__workbook.html#chap"
+data-reference-type="ref" data-reference="da-chap">36</a>: the
+number <span class="math inline">\(f\)</span> of infinite places, the
+scales <span class="math inline">\(x &lt; x_1 &lt; b\)</span> and <span
+class="math inline">\(a = xb\)</span>, the number <span
+class="math inline">\(m\)</span> of lifts, the ranks <span
+class="math inline">\(r\)</span> and <span
+class="math inline">\(k\)</span>, the direction amount <span
+class="math inline">\(h_{\mathrm{dir}}\)</span> and the denominator
+budget <span class="math inline">\(B = U/(mk) = fa\log^3 b/(mk)\)</span>
+(Definition <a href="20261126T030300--the-data__workbook.html#def:budget" data-reference-type="ref"
+data-reference="da-def:budget">36.4.1</a>); and the objects of
+Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>: twists <span
+class="math inline">\(\vartheta\)</span> and <span
+class="math inline">\(m\)</span>-fold twists, with modulus <span
+class="math inline">\(Q_\vartheta\)</span> and <span
+class="math inline">\(\operatorname{Nm}Q_\vartheta\)</span>, the target
+dimension <span class="math inline">\(d_T\)</span>, the single lifts
+<span class="math inline">\(u_{\vartheta,j}\)</span>, and <span
+class="math inline">\(Z_j(\vartheta) =
+\det(u_{\vartheta^j,j}^*u_{\vartheta^j,j})\)</span> for an <span
+class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span>.</p>
+<p>Fix <span class="math inline">\(1 \le j \le m\)</span>. The Hecke
+value product <span
+class="math inline">\({\mathcal{H}}_j(\vartheta)\)</span> of lift <span
+class="math inline">\(j\)</span> at a twist <span
+class="math inline">\(\vartheta\)</span> is that of Definition <a
+href="20261126T050800--compressions-and-false-lifts__workbook.html#def:hecke-product" data-reference-type="ref"
+data-reference="l1-def:hecke-product">75.3.1</a>.
+Comparison operators <span
+class="math inline">\((\Upsilon_\vartheta)\)</span>, one operator on the
+target space of <span class="math inline">\(u_{\vartheta,j}\)</span> for
+every twist <span class="math inline">\(\vartheta\)</span>, are defined
+in Definition <a href="20261126T050800--compressions-and-false-lifts__workbook.html#def:comparison" data-reference-type="ref"
+data-reference="l1-def:comparison">75.3.3</a>, their
+compression determinants <span
+class="math inline">\(D_\vartheta\)</span> in <a href="20261126T050800--compressions-and-false-lifts__workbook.html#eq:D"
+data-reference-type="eqref" data-reference="l1-eq:D">(1)</a>, and
+the statement that a real <span
+class="math inline">\(\mathrm{cl}(\ell)\)</span> clears the projection
+at <span class="math inline">\((\iota, \vartheta, j)\)</span> in
+Definition <a href="20261126T050800--compressions-and-false-lifts__workbook.html#def:clears" data-reference-type="ref"
+data-reference="l1-def:clears">75.3.4</a>. A family <span
+class="math inline">\(\theta = (\theta_\iota)\)</span> of <span
+class="math inline">\(m\)</span>-fold twists, one for each prime <span
+class="math inline">\(\ell\)</span> and each <span
+class="math inline">\(\iota \mid \ell\)</span>, is <em>regular</em>
+(Definitions <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:small-ratios" data-reference-type="ref"
+data-reference="l5-def:small-ratios">79.1.2</a> and <a
+href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:regular" data-reference-type="ref"
+data-reference="l5-def:regular">79.1.3</a>) if: (i) <span
+class="math inline">\(\ell\)</span> is prime to <span
+class="math inline">\(\operatorname{Nm}Q_{\theta_\iota}\)</span>; (ii)
+for every <span class="math inline">\(j\)</span>, every ramified
+critical pair <span class="math inline">\(P\)</span> and <span
+class="math inline">\(\epsilon = \pm 1\)</span>, the family <span
+class="math inline">\(\iota \mapsto R_P(\theta_\iota^j,
+\epsilon)^{-1}\)</span> has height at most <span
+class="math inline">\(x_1\)</span>; (iii) for every <span
+class="math inline">\(j\)</span> there are reals <span
+class="math inline">\(\mathrm{cl}(\ell)\)</span>, one for each prime
+<span class="math inline">\(\ell\)</span>, with <span
+class="math inline">\(\sum_{\ell \in P_0}\mathrm{cl}(\ell) \le
+B\)</span> for every finite set <span class="math inline">\(P_0\)</span>
+of primes, such that for every <span
+class="math inline">\(\iota\mid\ell\)</span>, with <span
+class="math inline">\(\vartheta:=\theta_\iota^j\)</span>, <span
+class="math inline">\(\mathrm{cl}(\ell)\)</span> clears the projection
+at <span class="math inline">\((\iota,\vartheta,j)\)</span> and, for
+every critical pair <span class="math inline">\(P\)</span> main for
+<span class="math inline">\(j\)</span> and any two test forms for <span
+class="math inline">\(\ell\)</span> at <span
+class="math inline">\((P,\vartheta)\)</span>, the pairing of their
+projections to the line of the lift of <span
+class="math inline">\(P\)</span> at <span
+class="math inline">\(\vartheta\)</span> has <span
+class="math inline">\(\iota\)</span>-absolute value at most <span
+class="math inline">\(e^{\mathrm{cl}(\ell)}\)</span> (Definition <a
+href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:regular" data-reference-type="ref"
+data-reference="l5-def:regular">79.1.3</a>). With (i) and (ii)
+alone the family has <em>small ratios</em>. Chapter <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#chap"
+data-reference-type="ref" data-reference="dp-chap">80</a> treats
+the denominators of the projection onto the image of a single lift and
+the sum of the clearing bounds in clause (iii). Chapter <a
+href="20261126T031000--twists-with-few-congruences__workbook.html#chap" data-reference-type="ref"
+data-reference="tw-chap">85</a> states the existence of regular
+families.</p>
+<p>By Theorem <a href="20261126T060300--the-comparison-operator__workbook.html#thm:operator" data-reference-type="ref"
+data-reference="l2-thm:operator">76.5.1</a>, for every <span
+class="math inline">\(1 \le j \le m\)</span> the operators <span
+class="math inline">\(\Upsilon_\vartheta := \mathcal N h^2\, g_\vartheta
+g_\vartheta^*\)</span>, one for each twist <span
+class="math inline">\(\vartheta\)</span>, form a comparison operator;
+here <span class="math inline">\(g_\vartheta\)</span> is the gluing map
+of Definition <a href="20261126T060300--the-comparison-operator__workbook.html#def:glue" data-reference-type="ref"
+data-reference="l2-def:glue">76.3.1</a>, <span
+class="math inline">\(h\)</span> is the hook number of the weight of the
+tuples on which <span class="math inline">\(g_\vartheta\)</span> is
+defined, and <span class="math inline">\(\mathcal N\)</span> is the
+order of Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chosen" data-reference-type="ref"
+data-reference="ob-sec:chosen">37.1</a>.</p>
+<p>By Theorem <a href="20261126T050800--compressions-and-false-lifts__workbook.html#thm:compression" data-reference-type="ref"
+data-reference="l1-thm:compression">75.3.1</a>, for every
+comparison operator every <span
+class="math inline">\(D_\vartheta\)</span> is nonzero, <span
+class="math display">\[\lvert\iota(D_\vartheta)\rvert_\ell \le e^{d_T
+r\,\mathrm{cl}(\ell)}
+  \qquad\text{and}\qquad
+  \lvert\sigma(D_1)\rvert \le e^{3d_T fmb\log^2 b} ,\]</span> the first
+for every twist <span class="math inline">\(\vartheta\)</span>, every
+<span class="math inline">\(\iota \mid \ell\)</span> with <span
+class="math inline">\(\ell\)</span> prime to <span
+class="math inline">\(\operatorname{Nm}Q_\vartheta\)</span> and every
+real <span class="math inline">\(\mathrm{cl}(\ell)\)</span> that clears
+the projection at <span
+class="math inline">\((\iota,\vartheta,j)\)</span>, the second for every
+<span class="math inline">\(\sigma \in
+\operatorname{Aut}({\mathbb{C}})\)</span>; and by Problem <a
+href="20261126T050800--compressions-and-false-lifts__workbook.html#pr:quotient" data-reference-type="ref"
+data-reference="l1-pr:quotient">75.3.2</a>, for every <span
+class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span>, <span
+class="math display">\[\frac{Z_j(1)}{Z_j(\vartheta)} =
+\frac{D_{\vartheta^j}}{D_1}\Bigl(\frac{{\mathcal{H}}_j(\vartheta^j)}{{\mathcal{H}}_j(1)}\Bigr)^{-d_T}
+.\]</span> By Problem <a href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html#pr:hecke-product"
+data-reference-type="ref"
+data-reference="l3-pr:hecke-product">77.5.1</a>, for the
+fixed <span class="math inline">\(j\)</span> there are a nonnegative
+integer <span class="math inline">\(e\)</span>, a list of <span
+class="math inline">\(k/2\)</span> critical pairs (Definition <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#def:pair" data-reference-type="ref"
+data-reference="ob-def:pair">37.10.1</a>) main for <span
+class="math inline">\(j\)</span> (Definition <a href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html#def:main"
+data-reference-type="ref"
+data-reference="l3-def:main">77.4.1</a>), and a list of <span
+class="math inline">\(5m\)</span> ramified critical pairs with a sign
+<span class="math inline">\(\epsilon = \pm 1\)</span> for each entry.
+For every twist <span class="math inline">\(\vartheta\)</span>, the
+quotient <span
+class="math inline">\({\mathcal{H}}_j(\vartheta)/{\mathcal{H}}_j(1)\)</span>
+is <span class="math inline">\((\operatorname{Nm}Q_\vartheta)^e\)</span>
+times the square of the product of the ratios <span
+class="math inline">\(R_P(\vartheta,1)\)</span> from the first list and
+<span class="math inline">\(R_P(\vartheta,\epsilon)\)</span> from the
+second. By Theorem <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#thm:main-pair" data-reference-type="ref"
+data-reference="l5-thm:main-pair">79.3.1</a>, for a regular
+family <span class="math inline">\(\theta\)</span> and a critical pair
+<span class="math inline">\(P\)</span> main for <span
+class="math inline">\(j\)</span>, the family <span
+class="math inline">\(\iota \mapsto R_P(\theta_\iota^j)^{-1}\)</span>
+has height at most <span class="math inline">\(6B -
+h_{\mathrm{dir}}\)</span>.</p>
+<h1 id="sec:deduction">§74.2. The deduction</h1>
+<p>A height bound <span class="math inline">\(\mathrm{ht}(y) \le
+c\)</span> for a family <span class="math inline">\(y =
+(y_\iota)\)</span> is as in Section <a href="20261125T000000--slope-method__workbook.html#sec:heights"
+data-reference-type="ref"
+data-reference="sd-sec:heights">5.3</a>; products and
+powers are treated in Problem <a href="20261125T000000--slope-method__workbook.html#pr:height-mul"
+data-reference-type="ref"
+data-reference="sd-pr:height-mul">5.3.2</a>. We need two
+more operations.</p>
+<div id="pr:of-mul" class="problem" data-progress-ids="[&quot;20261126T030800--the-cost-of-one-lift__workbook.tex#pr:of-mul&quot;]">
+<p><strong>Problem 74.2.1</strong>. Let <span class="math inline">\(H \ne
+0\)</span> and <span class="math inline">\(\alpha \in
+{\mathbb{R}}\)</span> with <span class="math inline">\(\lvert\sigma
+H\rvert \le e^\alpha\)</span> for all <span class="math inline">\(\sigma
+\in \operatorname{Aut}({\mathbb{C}})\)</span>, and let <span
+class="math inline">\(e(\ell) \in {\mathbb{R}}\)</span>, of any sign,
+one for each prime <span class="math inline">\(\ell\)</span>, with <span
+class="math inline">\(\lvert H y_\iota\rvert_\iota \le
+\exp(e(\ell))\)</span> for all <span class="math inline">\(\iota \mid
+\ell\)</span> and <span class="math inline">\(\alpha + \sum_{\ell \in
+P_0} e(\ell) \le c\)</span> for every finite set <span
+class="math inline">\(P_0\)</span> of primes. Then <span
+class="math inline">\(\mathrm{ht}(y) \le c\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html">Chapter 79</a></div><!-- used-in:end -->
+</div>
+<div id="pr:height-ops" class="problem" data-progress-ids="[&quot;20261126T030800--the-cost-of-one-lift__workbook.tex#pr:height-ops&quot;]">
+<p><strong>Problem 74.2.2</strong>. If <span
+class="math inline">\(\mathrm{ht}(y) \le c \le c&#39;&#39;\)</span> and
+<span class="math inline">\(\lvert y&#39;&#39;_\iota\rvert_\iota \le
+\lvert y_\iota\rvert_\iota\)</span> for every <span
+class="math inline">\(\iota \mid \ell\)</span> and every prime <span
+class="math inline">\(\ell\)</span>, then <span
+class="math inline">\(\mathrm{ht}(y&#39;&#39;) \le
+c&#39;&#39;\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html">Chapter 79</a></div><!-- used-in:end -->
+</div>
+<p>Let <span class="math inline">\(\theta\)</span> be regular and <span
+class="math inline">\(1 \le j \le m\)</span>, let <span
+class="math inline">\((\Upsilon_\vartheta)\)</span> be the comparison
+operator of Theorem <a href="20261126T060300--the-comparison-operator__workbook.html#thm:operator" data-reference-type="ref"
+data-reference="l2-thm:operator">76.5.1</a>, and write <span
+class="math inline">\(\vartheta_\iota := \theta_\iota^j\)</span>.</p>
+<div id="pr:delta-height" class="problem" data-progress-ids="[&quot;20261126T030800--the-cost-of-one-lift__workbook.tex#pr:delta-height&quot;]">
+<p><strong>Problem 74.2.3</strong>. The family <span
+class="math inline">\(\iota \mapsto D_{\vartheta_\iota}/D_1\)</span> has
+height at most <span class="math inline">\(d_T(3fmb\log^2 b +
+rB)\)</span>.</p>
+</div>
+<div id="pr:hecke-height" class="problem" data-progress-ids="[&quot;20261126T030800--the-cost-of-one-lift__workbook.tex#pr:hecke-height&quot;]">
+<p><strong>Problem 74.2.4</strong>. The family <span
+class="math inline">\(\iota \mapsto
+\bigl({\mathcal{H}}_j(\vartheta_\iota)/{\mathcal{H}}_j(1)\bigr)^{-1}\)</span>
+has height at most <span class="math inline">\(10mx_1 + k(6B -
+h_{\mathrm{dir}})\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T050800--compressions-and-false-lifts__workbook.html">Chapter 75</a>; <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html">Chapter 79</a></div><!-- used-in:end -->
+</div>
+<p>The upper bound on <span class="math inline">\(m\)</span> controls
+the sum of the two height bounds. In the one-sided bound for the prime
+remainder, <span class="math inline">\(m^2 \ge x\)</span> gives the
+factor <span class="math inline">\(1/m \le x^{-1/2}\)</span>.</p>
+<div id="pr:budget" class="problem" data-progress-ids="[&quot;20261126T030800--the-cost-of-one-lift__workbook.tex#pr:budget&quot;]">
+<p><strong>Problem 74.2.5</strong>. Let <span class="math inline">\(f \ge
+1\)</span>, <span class="math inline">\(b &gt; 1\)</span> with <span
+class="math inline">\(\log b \ge 16\)</span>, <span
+class="math inline">\(x \ge 1\)</span>, <span class="math inline">\(0
+&lt; m \le 2\sqrt x\)</span>, <span class="math inline">\(r \ge
+2m\)</span>, <span class="math inline">\(k = r + 1 - m\)</span>, <span
+class="math inline">\(1 \le x_1 \le b\)</span>, <span
+class="math inline">\(a = xb\)</span> and <span class="math inline">\(B
+= fa\log^3 b/(mk)\)</span>. Then for every real <span
+class="math inline">\(h_{\mathrm{dir}}\)</span> <span
+class="math display">\[3fmb\log^2 b + rB + 10mx_1 + k(6B -
+h_{\mathrm{dir}}) \le k(B\log b - h_{\mathrm{dir}}) .\]</span> The data
+satisfy these hypotheses.</p>
+</div>
+<p>Problems <a href="#pr:delta-height" data-reference-type="ref"
+data-reference="pr:delta-height">74.2.3</a>, <a href="#pr:hecke-height"
+data-reference-type="ref" data-reference="pr:hecke-height">74.2.4</a>, <a
+href="20261126T050800--compressions-and-false-lifts__workbook.html#pr:quotient" data-reference-type="ref"
+data-reference="l1-pr:quotient">75.3.2</a>, <a
+href="#pr:height-ops" data-reference-type="ref"
+data-reference="pr:height-ops">74.2.2</a> and <a href="#pr:budget"
+data-reference-type="ref" data-reference="pr:budget">74.2.5</a>, with
+Problem <a href="20261125T000000--slope-method__workbook.html#pr:height-mul" data-reference-type="ref"
+data-reference="sd-pr:height-mul">5.3.2</a> for the product
+and for the <span class="math inline">\(d_T\)</span>-th power of the
+family of Problem <a href="#pr:hecke-height" data-reference-type="ref"
+data-reference="pr:hecke-height">74.2.4</a>, prove the following.</p>
+<div id="thm:main" class="theorem">
+<p><strong>Theorem 74.2.1</strong>. <em>For the data, every regular family
+<span class="math inline">\(\theta\)</span> of <span
+class="math inline">\(m\)</span>-fold twists, and every <span
+class="math inline">\(1 \le j \le m\)</span>, the family <span
+class="math display">\[\iota \longmapsto
+\frac{Z_j(1)}{Z_j(\theta_\iota)}\]</span> has height at most <span
+class="math inline">\(d_T\, k\,(B\log b -
+h_{\mathrm{dir}})\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:negative">Problem 74.2.6</a>; <a href="20261126T040200--theorem-c__workbook.html">Chapter 67</a>; <a href="20261126T050800--compressions-and-false-lifts__workbook.html">Chapter 75</a>; <a href="20261126T060300--the-comparison-operator__workbook.html">Chapter 76</a>; <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a></div><!-- used-in:end -->
+</div>
+<div id="pr:negative" class="problem" data-progress-ids="[&quot;20261126T030800--the-cost-of-one-lift__workbook.tex#pr:negative&quot;]">
+<p><strong>Problem 74.2.6</strong>. For the data, <span
+class="math inline">\(B\log b &lt; h_{\mathrm{dir}}\)</span>. So the
+bound of Theorem <a href="#thm:main" data-reference-type="ref"
+data-reference="thm:main">74.2.1</a> is <span
+class="math inline">\(-d_Tk(h_{\mathrm{dir}}- B\log b)\)</span> with
+<span class="math inline">\(h_{\mathrm{dir}}- B\log b &gt;
+0\)</span>.</p>
+</div>
+<p>So the bound of Theorem <a href="#thm:main" data-reference-type="ref"
+data-reference="thm:main">74.2.1</a> is, per unit of <span
+class="math inline">\(d_T\)</span>, <span
+class="math inline">\(k\)</span> times the budget <span
+class="math inline">\(B\log b\)</span> less <span
+class="math inline">\(k\)</span> times the direction amount. Chapter <a
+href="20261126T040200--theorem-c__workbook.html#chap" data-reference-type="ref"
+data-reference="tc-chap">67</a> combines these bounds for <span
+class="math inline">\(1\le j\le m\)</span> with the factorization of
+Chapter <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#chap" data-reference-type="ref"
+data-reference="dch-chap">68</a> and the height bound there for
+the inverse of the scalar whose <span
+class="math inline">\(d_T\)</span>-th power is the correction factor.
+The inputs are deduced in Chapters <a href="20261126T050800--compressions-and-false-lifts__workbook.html#chap"
+data-reference-type="ref" data-reference="l1-chap">75</a>, <a
+href="20261126T060300--the-comparison-operator__workbook.html#chap" data-reference-type="ref"
+data-reference="l2-chap">76</a>, <a href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html#chap"
+data-reference-type="ref" data-reference="l3-chap">77</a>, <a
+href="20261126T051000--the-bound-is-attained-at-many-places__workbook.html#chap" data-reference-type="ref"
+data-reference="l4-chap">78</a> and <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#chap"
+data-reference-type="ref" data-reference="l5-chap">79</a> from
+the statements each of them lists as taken from the proof.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, in the readable edition:
+Theorem <a href="#thm:main" data-reference-type="ref"
+data-reference="thm:main">74.2.1</a> is
+<code>Data.heightLe_liftDeterminant_ratio</code>, in
+<code>New/OneLift/LiftVolumeHeight.lean</code>; comparison operators are
+<code>Data.IsComparisonOperator</code>, and the budget <span
+class="math inline">\(B\)</span> is <code>Data.denominatorBudget</code>.
+The compression bounds, the comparison operator, the Hecke product
+factorization and the main-pair bound have their declaration names in
+Chapters <a href="20261126T050800--compressions-and-false-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="l1-chap">75</a>, <a href="20261126T060300--the-comparison-operator__workbook.html#chap"
+data-reference-type="ref" data-reference="l2-chap">76</a>, <a
+href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="l3-chap">77</a> and <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#chap"
+data-reference-type="ref" data-reference="l5-chap">79</a>,
+respectively. In the proof of
+<code>Data.heightLe_liftDeterminant_ratio</code>, the steps
+<code>h_eq</code>, <code>h_height</code> and <code>h_bound</code> give
+the quotient identity for the chosen operator and twist, the compression
+height bound and the data instance of the budget inequality. The Hecke
+height bound is <code>Data.heightLe_inv_heckeValueProd_div</code>.
+Problems <a href="#pr:of-mul" data-reference-type="ref"
+data-reference="pr:of-mul">74.2.1</a> and <a href="#pr:height-ops"
+data-reference-type="ref" data-reference="pr:height-ops">74.2.2</a> use
+<code>HeightLe.of_mul_le</code> and <code>HeightLe.mono</code> in
+<code>New/Reduction/Lattices/Heights.lean</code>. In the first
+declaration <span
+class="math inline">\(e\colon{\mathbb{N}}\to{\mathbb{R}}\)</span>, and
+only its values at primes occur.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<dl>
+<dt><a href="#pr:of-mul" data-reference-type="ref"
+data-reference="pr:of-mul">74.2.1</a></dt>
+<dd>
+<p>Only the primes with <span class="math inline">\(e(\ell) &gt;
+0\)</span> cost anything.</p>
+</dd>
+<dt><a href="#pr:height-ops" data-reference-type="ref"
+data-reference="pr:height-ops">74.2.2</a></dt>
+<dd>
+<p>Keep the multiplier <span class="math inline">\(H\)</span>.</p>
+</dd>
+<dt><a href="#pr:delta-height" data-reference-type="ref"
+data-reference="pr:delta-height">74.2.3</a></dt>
+<dd>
+<p>Problem <a href="#pr:of-mul" data-reference-type="ref"
+data-reference="pr:of-mul">74.2.1</a> with <span class="math inline">\(H =
+D_1\)</span>, which is nonzero; the two bounds recalled from Theorem <a
+href="20261126T050800--compressions-and-false-lifts__workbook.html#thm:compression" data-reference-type="ref"
+data-reference="l1-thm:compression">75.3.1</a>; and the
+reals <span class="math inline">\(\mathrm{cl}(\ell)\)</span> of
+clause (iii) of Definition <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:regular"
+data-reference-type="ref"
+data-reference="l5-def:regular">79.1.3</a>, whose sums are at
+most <span class="math inline">\(B\)</span>.</p>
+</dd>
+<dt><a href="#pr:hecke-height" data-reference-type="ref"
+data-reference="pr:hecke-height">74.2.4</a></dt>
+<dd>
+<p>Problem <a href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html#pr:hecke-product" data-reference-type="ref"
+data-reference="l3-pr:hecke-product">77.5.1</a> and
+Theorem <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#thm:main-pair" data-reference-type="ref"
+data-reference="l5-thm:main-pair">79.3.1</a> for the <span
+class="math inline">\(k/2\)</span> pairs of the first list, clause (ii)
+of Definition <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:small-ratios" data-reference-type="ref"
+data-reference="l5-def:small-ratios">79.1.2</a> for the
+<span class="math inline">\(5m\)</span> of the second, Problems <a
+href="20261125T000000--slope-method__workbook.html#pr:height-mul" data-reference-type="ref"
+data-reference="sd-pr:height-mul">5.3.2</a> and <a
+href="#pr:height-ops" data-reference-type="ref"
+data-reference="pr:height-ops">74.2.2</a>; by (i), <span
+class="math inline">\(\operatorname{Nm}Q_{\vartheta_\iota}\)</span> is a
+unit at <span class="math inline">\(\ell\)</span>.</p>
+</dd>
+<dt><a href="#pr:budget" data-reference-type="ref"
+data-reference="pr:budget">74.2.5</a></dt>
+<dd>
+<p>Cancel the terms in <span
+class="math inline">\(h_{\mathrm{dir}}\)</span> and divide by <span
+class="math inline">\(kB\)</span>. Use <span class="math inline">\(m^2
+\le 4x\)</span> and <span class="math inline">\(r \le 2k\)</span>.</p>
+</dd>
+<dt><a href="#pr:negative" data-reference-type="ref"
+data-reference="pr:negative">74.2.6</a></dt>
+<dd>
+<p><span class="math inline">\(h_{\mathrm{dir}}\ge b\,\#\Phi_a\)</span>
+(Problem <a href="20261126T030300--the-data__workbook.html#pr:hdir" data-reference-type="ref"
+data-reference="da-pr:hdir">36.4.5</a>), <span
+class="math inline">\(f = \#\Phi_a\,\varphi(q_0)\)</span> (Problem <a
+href="20261126T030300--the-data__workbook.html#pr:degree" data-reference-type="ref"
+data-reference="da-pr:degree">36.2.2</a>); compare <span
+class="math inline">\(\varphi(q_0)\,x\log^4 b\)</span> with <span
+class="math inline">\(mk\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

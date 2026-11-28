@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-8/RT0h0YH00Hz1jyPk64wGRgPWZ4QWkezweGqFalouE=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Squares and the triangle</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb Z","R":"\\mathbb R","C":"\\mathbb C","F":"\\mathbb F","Nm":"\\operatorname{Nm}","Rc":"\\mathcal R","cM":"\\mathcal M","Oc":"\\mathcal O","GL":"\\mathrm{GL}","ex":"\\mathrm{ex}","cmat":"c_{\\mathrm{mat}}","cwt":"c_{\\mathrm{wt}}","Klast":"K_{\\mathrm{last}}","Hc":"H_\\circ","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="72">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T050700--squares-and-the-triangle__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-26 19:19:14
+      <a href="20261126T050700--squares-and-the-triangle__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T050700--squares-and-the-triangle__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T050700--squares-and-the-triangle__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Squares and the triangle</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:why" id="toc-sec:why">§72.1. Why a triangle</a></li>
+<li><a href="#sec:triangle" id="toc-sec:triangle">§72.2. The triangle and its two square laws</a></li>
+<li><a href="#sec:scalars" id="toc-sec:scalars">§72.3. The triangle of the chain and its scalars</a></li>
+<li><a href="#sec:gram" id="toc-sec:gram">§72.4. The Gram identity of the chain</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Inner products are conjugate-linear in the first argument. From
+Chapter <a href="20261126T050400--the-norm-of-one-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="c1-chap">69</a>: Theorem <a
+href="20261126T050400--the-norm-of-one-lift__workbook.html#thm:one-lift" data-reference-type="ref"
+data-reference="c1-thm:one-lift">69.4.1</a>, the twist factor
+<span class="math inline">\(c_Q\)</span> (Definition <a
+href="20261126T050400--the-norm-of-one-lift__workbook.html#def:twist-factor" data-reference-type="ref"
+data-reference="c1-def:twist-factor">69.3.1</a>), the
+Rallis operators <span class="math inline">\(\mathcal R_j(\xi;
+V)\)</span> (Definition <a href="20261126T050400--the-norm-of-one-lift__workbook.html#def:rallis-operator"
+data-reference-type="ref"
+data-reference="c1-def:rallis-operator">69.3.2</a>)
+and Problem <a href="20261126T050400--the-norm-of-one-lift__workbook.html#pr:left-inverse" data-reference-type="ref"
+data-reference="c1-pr:left-inverse">69.3.2</a>. From
+Chapter <a href="20261126T050600--the-exchange-identity__workbook.html#chap" data-reference-type="ref"
+data-reference="c3-chap">71</a>: moduli <span
+class="math inline">\(\mathfrak m\)</span> and <span
+class="math inline">\(S_{\mathfrak m}\)</span> (Definition <a
+href="20261126T050600--the-exchange-identity__workbook.html#def:modulus" data-reference-type="ref"
+data-reference="c3-def:modulus">71.2.1</a>), the exchange
+factor <span class="math inline">\(\mathrm{ex}_h(S, \nu)\)</span>
+(Definition <a href="20261126T050600--the-exchange-identity__workbook.html#def:exchange-factor" data-reference-type="ref"
+data-reference="c3-def:exchange-factor">71.2.3</a>),
+Theorem <a href="20261126T050600--the-exchange-identity__workbook.html#thm:exchange" data-reference-type="ref"
+data-reference="c3-thm:exchange">71.5.1</a> and Problem <a
+href="20261126T050600--the-exchange-identity__workbook.html#pr:ex-ratio" data-reference-type="ref"
+data-reference="c3-pr:ex-ratio">71.5.5</a>. From Chapter <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>: <span
+class="math inline">\(\mathcal M\)</span>, <span
+class="math inline">\(k_w\)</span>, <span
+class="math inline">\(q_w\)</span>, the spaces <span
+class="math inline">\(Y_j\)</span> (rank <span class="math inline">\(r +
+jt\)</span>), <span class="math inline">\(H(V) \supseteq
+H_g(V)\)</span>, <span class="math inline">\(T\)</span>, <span
+class="math inline">\(m\)</span>-fold twists <span
+class="math inline">\(\vartheta\)</span> with tame part <span
+class="math inline">\((\psi_w)\)</span> and set <span
+class="math inline">\(Q_\vartheta\)</span>, the tame part <span
+class="math inline">\((\omega_w)\)</span> of <span
+class="math inline">\(\chi_M\)</span>, of order <span
+class="math inline">\(q_2\)</span>, the characters <span
+class="math inline">\(\mu_j^0\)</span>, the lower chain <span
+class="math inline">\(\Theta_\vartheta\)</span> (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chain" data-reference-type="ref"
+data-reference="ob-sec:chain">37.9</a>), and <span
+class="math inline">\(L^S(z, \nu)\)</span> and critical pairs
+(Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:pair" data-reference-type="ref"
+data-reference="ob-def:pair">37.10.1</a>). Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a> supplies <span
+class="math inline">\(t = 5r\)</span> and <span
+class="math inline">\(b\)</span>, and Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:weights"
+data-reference-type="ref"
+data-reference="ob-sec:weights">37.2</a> defines <span
+class="math inline">\(\Delta = 2r^8\)</span>. Chapter <a href="20261125T003000--the-chain-and-the-square-root__workbook.html#chap"
+data-reference-type="ref" data-reference="cs-chap">8</a> is
+motivation.</p>
+<p>Theorem <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#thm:main" data-reference-type="ref"
+data-reference="dch-thm:main">68.4.1</a> factors <span
+class="math inline">\(Z(\vartheta)/Z(1)\)</span>. It uses the
+injectivity of the chain (Problem <a href="#pr:theta-injective"
+data-reference-type="ref" data-reference="pr:theta-injective">72.4.3</a>)
+and the Gram identity of Theorem <a href="#thm:chain-gram"
+data-reference-type="ref" data-reference="thm:chain-gram">72.4.1</a>. We
+derive the Gram identity from the realization of a triangle of lifts,
+the inner product formula on its first edges, and the comparison at the
+last level, all three read from the proof. The square laws in the
+realization of the triangle are what the proof obtains from the exchange
+identity (Theorem <a href="20261126T050600--the-exchange-identity__workbook.html#thm:exchange" data-reference-type="ref"
+data-reference="c3-thm:exchange">71.5.1</a>, stated and not
+proved in Chapter <a href="20261126T050600--the-exchange-identity__workbook.html#chap" data-reference-type="ref"
+data-reference="c3-chap">71</a>). By Theorem <a
+href="20261126T050400--the-norm-of-one-lift__workbook.html#thm:one-lift" data-reference-type="ref"
+data-reference="c1-thm:one-lift">69.4.1</a>, for each <span
+class="math inline">\(1 \le j \le m\)</span> there is a nonzero <span
+class="math inline">\(a_j \in \mathbb C\)</span> such that for every
+tame character <span class="math inline">\(\xi\)</span> the Gram
+operator of the single lift on <span
+class="math inline">\(H(W_j)\)</span> is <span class="math inline">\(a_j
+c_{Q_\xi}\mathcal R_j(\xi; W_j)\)</span>. Why is the Gram operator of
+the chain on <span class="math inline">\(T\)</span> a scalar multiple of
+the product of the <span class="math inline">\(m\)</span> Rallis
+operators, and how do ratios of <span
+class="math inline">\(L\)</span>-values enter that scalar?</p>
+<h1 id="sec:why">§72.1. Why a triangle</h1>
+<div id="pr:range" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:range&quot;]">
+<p><strong>Problem 72.1.1</strong>. With <span class="math inline">\(t =
+5r\)</span>: <span class="math inline">\(2r &lt; r + t\)</span>, but
+<span class="math inline">\(2(r + (j-1)t) &gt; r + jt\)</span> for every
+<span class="math inline">\(j \ge 2\)</span>. So the condition <span
+class="math inline">\(2n^\flat &lt; n^\sharp\)</span> of the inner
+product formula (Theorem <a href="20261126T050400--the-norm-of-one-lift__workbook.html#thm:rallis"
+data-reference-type="ref"
+data-reference="c1-thm:rallis">69.2.1</a>) holds for the first
+lift <span class="math inline">\(Y_0 \to Y_1\)</span> of the chain and
+for no later lift <span class="math inline">\(Y_{j-1} \to
+Y_j\)</span>.</p>
+</div>
+<p>The following identity would suffice if the Gram operators could be
+moved through the preceding lifts.</p>
+<div id="pr:push-down" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:push-down&quot;]">
+<p><strong>Problem 72.1.2</strong>. Let <span class="math inline">\(u_j
+\colon \mathcal V_{j-1} \to \mathcal V_j\)</span> (<span
+class="math inline">\(1 \le j \le m\)</span>) be linear maps of complex
+inner product spaces that have adjoints, and <span
+class="math inline">\(U_j := u_j \circ \dots \circ u_1\)</span>. Suppose
+that <span class="math inline">\(u_1^*u_1 = a_1 \mathcal E_1\)</span>
+and that <span class="math inline">\(u_j^*u_j\,U_{j-1} = a_j\,U_{j-1}
+\mathcal E_j\)</span> for <span class="math inline">\(2 \le j \le
+m\)</span>, with scalars <span class="math inline">\(a_j\)</span> and
+endomorphisms <span class="math inline">\(\mathcal E_j\)</span> of <span
+class="math inline">\(\mathcal V_0\)</span>. Then <span
+class="math inline">\(U_m^*U_m = a_1 \cdots a_m\, \mathcal E_1 \mathcal
+E_2 \cdots \mathcal E_m\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a></div><!-- used-in:end -->
+</div>
+<p>For <span class="math inline">\(2 \le j \le m\)</span> the ranks of
+the chain are outside the range of the inner product formula (Problem <a
+href="#pr:range" data-reference-type="ref"
+data-reference="pr:range">72.1.1</a>). The proof applies the formula only on
+the first edge of each row of a triangle of lifts, and relates the
+resulting Gram forms by two square laws.</p>
+<h1 id="sec:triangle">§72.2. The triangle and its two square laws</h1>
+<p>In this sheet a <em>triangle of size <span
+class="math inline">\(m\)</span></em> consists of inner product spaces
+<span class="math inline">\(H_{i,n}\)</span> (<span
+class="math inline">\(i, n \ge 0\)</span>, <span class="math inline">\(i
++ n \le m\)</span>); a space <span
+class="math inline">\(H_\circ\)</span> with linear isometric embeddings
+<span class="math inline">\(H_\circ\to H_{i,0}\)</span>, through which
+we regard <span class="math inline">\(H_\circ\)</span> as a subspace of
+each <span class="math inline">\(H_{i,0}\)</span>; linear maps <span
+class="math inline">\(\lambda_{i,n} \colon H_{i,n} \to
+H_{i,n+1}\)</span> (lifts) and <span class="math inline">\(\delta_{i,n}
+\colon H_{i,n+1} \to H_{i+1,n}\)</span> (descents) for <span
+class="math inline">\(i + n &lt; m\)</span>; and positive integer
+weights <span class="math inline">\(g_0, g_1, \dots\)</span>. The
+<em>weighted rows</em> are <span class="math inline">\(\lambda_i^{(0)}
+:= 1\)</span> and <span class="math inline">\(\lambda_i^{(n+1)} := g_n
+\lambda_{i,n} \lambda_i^{(n)} \colon H_{i,0} \to H_{i,n+1}\)</span>. The
+<em>square</em> <span class="math inline">\((i,n)\)</span>, for <span
+class="math inline">\(i + n + 2 \le m\)</span>, has corners <span
+class="math inline">\(H_{i,n+1}\)</span>, <span
+class="math inline">\(H_{i,n+2}\)</span>, <span
+class="math inline">\(H_{i+1,n}\)</span>, <span
+class="math inline">\(H_{i+1,n+1}\)</span>. We ask:</p>
+<ul>
+<li><p>for <span class="math inline">\(i &lt; m\)</span>, <span
+class="math inline">\(x \in H_\circ\)</span> and <span
+class="math inline">\(v \in H_{i,1}\)</span>: <span
+class="math inline">\(\langle v, \lambda_{i,0}x\rangle = \langle
+\delta_{i,0}v, x\rangle\)</span>; and <span
+class="math inline">\(\delta_{i,0}\lambda_{i,0}\)</span> maps <span
+class="math inline">\(H_\circ\subseteq H_{i,0}\)</span> injectively into
+<span class="math inline">\(H_\circ\subseteq
+H_{i+1,0}\)</span>;</p></li>
+<li><p>the <em>direct law</em> at each square, with a scalar <span
+class="math inline">\(c_{i,n}\)</span>: <span class="math inline">\(g_n
+\lambda_{i+1,n}\delta_{i,n} = (g_{n+2}/\bar c_{i,n})\,
+\delta_{i,n+1}\lambda_{i,n+1}\)</span> on <span
+class="math inline">\(H_{i,n+1}\)</span>, where a quotient by <span
+class="math inline">\(0\)</span> means <span
+class="math inline">\(0\)</span>;</p></li>
+<li><p>the <em>adjoint law</em> at each square, with a scalar <span
+class="math inline">\(c^*_{i,n}\)</span>: every <span
+class="math inline">\(v \in H_{i,n+2}\)</span> has an <span
+class="math inline">\(x \in H_{i,n+1}\)</span> with <span
+class="math inline">\(\langle \lambda_{i,n+1}y, v\rangle = \langle y,
+x\rangle\)</span> for all <span class="math inline">\(y\)</span>, and
+<span class="math inline">\(\langle \delta_{i,n}x, y&#39;\rangle =
+c^*_{i,n} \langle \delta_{i,n+1}v, \lambda_{i+1,n}y&#39;\rangle\)</span>
+for all <span class="math inline">\(y&#39; \in
+H_{i+1,n}\)</span>.</p></li>
+</ul>
+<div id="pr:toy-square" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:toy-square&quot;]">
+<p><strong>Problem 72.2.1</strong>. Let <span class="math inline">\(m =
+2\)</span>, every <span class="math inline">\(H_{i,n} = H_\circ= \mathbb
+C\)</span> with the usual inner product and identity embeddings, <span
+class="math inline">\((g_0, g_1, g_2) = (2, 3, 5)\)</span>, and let the
+maps be multiplication by <span class="math inline">\(\lambda_{0,0} =
+2\)</span>, <span class="math inline">\(\lambda_{1,0} = 3\)</span>,
+<span class="math inline">\(\lambda_{0,1} = 4\)</span>, <span
+class="math inline">\(\delta_{0,0} = 2\)</span>, <span
+class="math inline">\(\delta_{1,0} = 3\)</span>, <span
+class="math inline">\(\delta_{0,1} = 1\)</span>. Then (F) holds; the
+only square is <span class="math inline">\((0,0)\)</span>, its direct
+law holds exactly with <span class="math inline">\(c_{0,0} =
+5/3\)</span>, and its adjoint law exactly with <span
+class="math inline">\(c^*_{0,0} = 8/3\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:toy-gram">Problem 72.2.2</a></div><!-- used-in:end -->
+</div>
+<div id="pr:toy-gram" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:toy-gram&quot;]">
+<p><strong>Problem 72.2.2</strong>. In Problem <a href="#pr:toy-square"
+data-reference-type="ref" data-reference="pr:toy-square">72.2.1</a>, <span
+class="math inline">\(\lambda_0^{(2)} = 48\)</span>, and <span
+class="math inline">\(48^2 = 2304 =
+c_{0,0}c^*_{0,0}\,(g_0g_1^2/g_2)\,(g_0\lambda_{0,0}^2)(g_0\lambda_{1,0}^2)\)</span>.</p>
+</div>
+<p>In Problems <a href="#pr:row-commute" data-reference-type="ref"
+data-reference="pr:row-commute">72.2.3</a>–<a href="#pr:shorten"
+data-reference-type="ref" data-reference="pr:shorten">72.2.6</a> the triangle
+is arbitrary and satisfies (F), (D), (A). For <span
+class="math inline">\(i + n &lt; m\)</span> put <span
+class="math inline">\(c_i^{[n]} := c_{i,0}c_{i,1}\cdots
+c_{i,n-1}\)</span> and <span class="math inline">\(c_i^{*[n]} :=
+c^*_{i,0}\cdots c^*_{i,n-1}\)</span> (empty products are <span
+class="math inline">\(1\)</span>); Problems <a href="#pr:row-commute"
+data-reference-type="ref" data-reference="pr:row-commute">72.2.3</a>, <a
+href="#pr:row-adjoint" data-reference-type="ref"
+data-reference="pr:row-adjoint">72.2.5</a> and <a href="#pr:shorten"
+data-reference-type="ref" data-reference="pr:shorten">72.2.6</a> assume <span
+class="math inline">\(i + n &lt; m\)</span>.</p>
+<div id="pr:row-commute" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:row-commute&quot;]">
+<p><strong>Problem 72.2.3</strong>. <span
+class="math inline">\(\lambda_{i+1}^{(n)}\delta_{i,0}\lambda_{i,0} =
+\dfrac{g_{n+1}}{g_1g_0\,\overline{c_i^{[n]}}}\,\delta_{i,n}\lambda_i^{(n+1)}\)</span>
+on <span class="math inline">\(H_{i,0}\)</span>.</p>
+</div>
+<div id="pr:row-injective" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:row-injective&quot;]">
+<p><strong>Problem 72.2.4</strong>. For <span class="math inline">\(i + n \le
+m\)</span>, <span class="math inline">\(\lambda_i^{(n)}\)</span> is
+injective on <span class="math inline">\(H_\circ\)</span>. If <span
+class="math inline">\(H_\circ\ne 0\)</span> and <span
+class="math inline">\(i + n &lt; m\)</span>, then <span
+class="math inline">\(c_i^{[n]} \ne 0\)</span>.</p>
+</div>
+<div id="pr:row-adjoint" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:row-adjoint&quot;]">
+<p><strong>Problem 72.2.5</strong>. For <span class="math inline">\(x \in
+H_\circ\)</span> and <span class="math inline">\(v \in
+H_{i,n+1}\)</span>: <span class="math inline">\(\langle v,
+\lambda_{i,n}\lambda_i^{(n)}x\rangle = c_i^{*[n]}\,\langle
+\delta_{i,n}v, \lambda_{i+1}^{(n)}x\rangle\)</span>.</p>
+</div>
+<div id="pr:shorten" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:shorten&quot;]">
+<p><strong>Problem 72.2.6</strong>. For <span class="math inline">\(x, y \in
+H_\circ\)</span> and <span class="math inline">\(x&#39; :=
+\delta_{i,0}\lambda_{i,0}x \in H_\circ\)</span>: <span
+class="math inline">\(\langle \lambda_i^{(n+1)}x,
+\lambda_i^{(n+1)}y\rangle =
+c_i^{[n]}c_i^{*[n]}\,\dfrac{g_0g_1g_n}{g_{n+1}}\,\langle
+\lambda_{i+1}^{(n)}x&#39;, \lambda_{i+1}^{(n)}y\rangle\)</span>.</p>
+</div>
+<p>In the chain, <span class="math inline">\(H_{i,n}\)</span> consists
+of forms on a Hermitian space of rank <span class="math inline">\(r +
+nt\)</span> whose parameter has <span class="math inline">\(n\)</span>
+blocks of length <span class="math inline">\(t\)</span>, labelled <span
+class="math inline">\(i+1, \dots, i+n\)</span>. In row <span
+class="math inline">\(0\)</span> these spaces are <span
+class="math inline">\(Y_0, \dots, Y_m\)</span>; the first space of row
+<span class="math inline">\(i\)</span> is <span
+class="math inline">\(Y_0\)</span> with its form multiplied by <span
+class="math inline">\((-1)^i\)</span>. On labels, the lift <span
+class="math inline">\(\lambda_{i,n}\)</span> adds block <span
+class="math inline">\(i+n+1\)</span> and the descent <span
+class="math inline">\(\delta_{i,n}\)</span> removes block <span
+class="math inline">\(i+1\)</span>. So the square <span
+class="math inline">\((i,n)\)</span> removes block <span
+class="math inline">\(i+1\)</span> and adds block <span
+class="math inline">\(i+n+2\)</span>; we say it carries the pair <span
+class="math inline">\((i+1, i+n+2)\)</span>.</p>
+<div id="pr:pairs" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:pairs&quot;]">
+<p><strong>Problem 72.2.7</strong>. As <span
+class="math inline">\((i,n)\)</span> runs over the squares of a triangle
+of size <span class="math inline">\(m\)</span>, the pair <span
+class="math inline">\((i+1, i+n+2)\)</span> runs over the pairs <span
+class="math inline">\(1 \le i&#39; &lt; j&#39; \le m\)</span>, each
+once; there are <span class="math inline">\(m(m-1)/2\)</span> squares.
+For <span class="math inline">\(m = 3\)</span> the squares <span
+class="math inline">\((0,0), (0,1), (1,0)\)</span> carry <span
+class="math inline">\((1,2), (1,3), (2,3)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html">Chapter 73</a></div><!-- used-in:end -->
+</div>
+<h1 id="sec:scalars">§72.3. The triangle of the chain and its scalars</h1>
+<p>For an <span class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span> let <span
+class="math inline">\(\mathfrak m := (\pi_M)\prod_{w \in Q_\vartheta}
+w\)</span>, so <span class="math inline">\(S_{\mathfrak m} = \mathcal
+M\cup Q_\vartheta\)</span>, and in this sheet <span
+class="math inline">\(\mathfrak R := \mathcal O_E/\mathfrak m\)</span>,
+both depending on <span class="math inline">\(\vartheta\)</span>; <span
+class="math inline">\(\mathfrak R \cong \prod_{w \in \mathcal M\cup
+Q_\vartheta} k_w\)</span>, as <span class="math inline">\(p_0,
+p_1\)</span> split completely in <span class="math inline">\(E\)</span>
+and <span class="math inline">\(\operatorname{Nm}Q_\vartheta\)</span> is
+prime to <span class="math inline">\(M\)</span>. In the triangle of the
+chain, <span class="math inline">\(H_\circ= H(Y_0)\)</span>, the node
+<span class="math inline">\(H_{i,n}\)</span> is a space of forms on a
+space of rank <span class="math inline">\(r + nt\)</span>, row <span
+class="math inline">\(0\)</span> runs through <span
+class="math inline">\(Y_0, \dots, Y_m\)</span>, the lift <span
+class="math inline">\(\lambda_{i,n}\)</span> is a theta lift built from
+the character <span
+class="math inline">\(\mu^0_{i+n+1}\vartheta^{i+n+1}\)</span> (times a
+power of the splitting character <span
+class="math inline">\(\upsilon\)</span>, depending on the ranks) with
+the indicator of <span class="math inline">\(\binom{1}{0}\)</span>
+modulo <span class="math inline">\(\mathfrak m\)</span> as finite datum,
+and <span class="math inline">\(g_n(\vartheta) :=
+\#\mathrm{GL}_{r+nt}(\mathfrak R)\)</span>. The descents are transposed
+theta lifts; in each row the proof chooses their polynomials at infinity
+and the finite datum of <span
+class="math inline">\(\delta_{i,0}\)</span> so that <span
+class="math inline">\(\delta_{i,0}\)</span> is adjoint to <span
+class="math inline">\(\lambda_{i,0}\)</span> on <span
+class="math inline">\(H_\circ\)</span>. For a function <span
+class="math inline">\(p\)</span> on matrices <span
+class="math inline">\(\eta\)</span> of a fixed shape over <span
+class="math inline">\(\mathfrak R\)</span>, the <em>next datum</em> is
+the function on the matrices with one more block of rows and of columns,
+of size <span class="math inline">\(t\)</span>, that equals <span
+class="math inline">\(p(-\eta)\)</span>, divided by the number of
+possible blocks <span class="math inline">\(\eta&#39;\)</span>, at <span
+class="math inline">\(\bigl(\begin{smallmatrix}\eta &amp; \eta&#39;\\ 0
+&amp; 1\end{smallmatrix}\bigr)\)</span>, and <span
+class="math inline">\(0\)</span> at all other matrices; the finite datum
+of <span class="math inline">\(\delta_{i,n+1}\)</span> is the next datum
+of that of <span class="math inline">\(\delta_{i,n}\)</span>.</p>
+<p><em>Realization of the triangle.</em> The proof shows (F), and (D),
+(A) at each square with functions <span
+class="math inline">\(c_{i,n}\)</span>, <span
+class="math inline">\(c^*_{i,n}\)</span> of the <span
+class="math inline">\(m\)</span>-fold twist, as follows. Theorem <a
+href="20261126T050600--the-exchange-identity__workbook.html#thm:exchange" data-reference-type="ref"
+data-reference="c3-thm:exchange">71.5.1</a>, on the sum of
+the two middle Hermitian spaces, gives a finite square law for the two
+composites around the square on point data; a finite summation turns it
+into (D) for a datum and its next datum, with <span
+class="math inline">\(\lvert c_{i,n}(\vartheta)\rvert^2 =
+C_{i,n}\,\mathrm{ex}_t(\mathcal M\cup Q_\vartheta,
+\nu_{i,n}(\vartheta))\)</span>, <span class="math inline">\(C_{i,n} \in
+\mathbb R\)</span> independent of <span
+class="math inline">\(\vartheta\)</span> and <span
+class="math inline">\(\nu_{i,n}(\vartheta)\)</span> as in Problem <a
+href="#pr:square-char" data-reference-type="ref"
+data-reference="pr:square-char">72.3.2</a>. The proof also provides the
+adjoint vectors in (A), with <span class="math inline">\(c^*_{i,n}
+\doteq 1\)</span> in the sense of Definition <a href="#def:doteq"
+data-reference-type="ref" data-reference="def:doteq">72.3.1</a>; one of its
+factors is the scalar of the reversed square, which combines an exchange
+with partners of equal rank with the inverse of the Fourier constant of
+Problem <a href="#pr:gauss" data-reference-type="ref"
+data-reference="pr:gauss">72.3.5</a>. <em>Status</em>: read from the proof.
+For joint harmonics see <span class="citation"
+data-cites="Li90 Ho89">[<a href="#ref-Li90">Li90</a>;
+<a href="#ref-Ho89">Ho89</a>]</span>, for the seesaw principle <span
+class="citation" data-cites="Ku84">[<a href="#ref-Ku84">Ku84</a>]</span>.</p>
+<div id="def:doteq" class="definition">
+<p><strong>Definition 72.3.1</strong>. For functions <span
+class="math inline">\(c\)</span> from <span
+class="math inline">\(m\)</span>-fold twists to <span
+class="math inline">\(\mathbb C\)</span> and <span
+class="math inline">\(f\)</span> to <span class="math inline">\(\mathbb
+R\)</span>, <span class="math inline">\(c \doteq f\)</span> means: there
+are <span class="math inline">\(C&#39; \in \mathbb R\)</span> (possibly
+<span class="math inline">\(0\)</span>) and <span
+class="math inline">\(e&#39; \in \mathbb Z\)</span> with <span
+class="math inline">\(\lvert c(\vartheta)\rvert^2 =
+C&#39;(\operatorname{Nm}Q_\vartheta)^{e&#39;} f(\vartheta)^2\)</span>
+for every <span class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a>; <a href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html">Chapter 73</a></div><!-- used-in:end -->
+</div>
+<p>The relation <span class="math inline">\(c \doteq f\)</span> allows
+<span class="math inline">\(c\)</span> to vanish identically; if <span
+class="math inline">\(c\)</span> is nonzero at one twist, its zeros are
+exactly those of <span class="math inline">\(f\)</span>.</p>
+<div id="def:rho" class="definition">
+<p><strong>Definition 72.3.2</strong>. For <span class="math inline">\(1 \le
+i &lt; j \le m\)</span>, <span class="math inline">\(\nu :=
+\mu_j^0/\mu_i^0\)</span> and an <span
+class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span>, <span
+class="math display">\[\rho_{ij}(\vartheta) := \prod_{z=1}^{t}
+\frac{\lvert L^{\mathcal M\cup Q_\vartheta}\bigl(z,
+(\nu\vartheta^{j-i})^{-1}\bigr)\rvert}{\lvert L^{\mathcal M}(z,
+\nu^{-1})\rvert} ,\]</span> a quotient by <span
+class="math inline">\(0\)</span> being <span
+class="math inline">\(0\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T040200--theorem-c__workbook.html">Chapter 67</a>; <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a></div><!-- used-in:end -->
+</div>
+<p>The values <span class="math inline">\(L^S(z, \nu)\)</span> in
+Definition <a href="#def:rho" data-reference-type="ref"
+data-reference="def:rho">72.3.2</a> and in the exchange factors below are
+finite and nonzero, by the nonvanishing stated in Chapter <a
+href="20261126T050600--the-exchange-identity__workbook.html#chap" data-reference-type="ref"
+data-reference="c3-chap">71</a>, Section <a
+href="20261126T050600--the-exchange-identity__workbook.html#sec:integrals" data-reference-type="ref"
+data-reference="c3-sec:integrals">71.2</a>: the characters
+have weight <span class="math inline">\(\pm(j-i)\Delta \ne 0\)</span>
+and a tame part (Problems <a href="#pr:square-char"
+data-reference-type="ref" data-reference="pr:square-char">72.3.2</a> and <a
+href="#pr:rho-pair" data-reference-type="ref"
+data-reference="pr:rho-pair">72.4.6</a>).</p>
+<div id="pr:square-ranks" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:square-ranks&quot;]">
+<p><strong>Problem 72.3.1</strong>. In the square <span
+class="math inline">\((i,n)\)</span> the Hermitian spaces underlying the
+middle corners <span class="math inline">\(H_{i,n+1}\)</span>, <span
+class="math inline">\(H_{i+1,n+1}\)</span> have rank <span
+class="math inline">\(r + (n+1)t\)</span> each, and those underlying the
+partners <span class="math inline">\(H_{i,n+2}\)</span>, <span
+class="math inline">\(H_{i+1,n}\)</span> have ranks <span
+class="math inline">\(r + (n+2)t\)</span> and <span
+class="math inline">\(r + nt\)</span>. So in Theorem <a
+href="20261126T050600--the-exchange-identity__workbook.html#thm:exchange" data-reference-type="ref"
+data-reference="c3-thm:exchange">71.5.1</a>, with <span
+class="math inline">\(V^0\)</span> the orthogonal sum of the two middle
+Hermitian spaces, <span class="math inline">\(n_0 = 2(r +
+(n+1)t)\)</span> and <span class="math inline">\(h = t\)</span>. In the
+reversed square the partners are the spaces underlying <span
+class="math inline">\(H_{i,n+1}\)</span>, <span
+class="math inline">\(H_{i+1,n+1}\)</span>, of equal rank, so <span
+class="math inline">\(h = 0\)</span> and <span
+class="math inline">\(\mathrm{ex}_0 = 1\)</span>.</p>
+</div>
+<p>For the data, <span class="math inline">\(8m \le 16\sqrt x &lt;
+x^{11} \le T(s) \le q_1 d\)</span> (Definition <a href="20261126T030300--the-data__workbook.html#def:data"
+data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a>, Problem <a
+href="20261126T030300--the-data__workbook.html#pr:T" data-reference-type="ref"
+data-reference="da-pr:T">36.3.3</a>) and <span
+class="math inline">\(q_1 d \mid q_2\)</span> (Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>).</p>
+<div id="pr:square-char" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:square-char&quot;]">
+<p><strong>Problem 72.3.2</strong>. Let <span
+class="math inline">\(\nu_{i,n}(\vartheta) :=
+\bigl((\mu^0_{i+n+2}/\mu^0_{i+1})\vartheta^{n+1}\bigr)^{-1}\)</span>. It
+has weight <span class="math inline">\((n+1)\Delta\)</span>; moreover
+<span class="math inline">\((n+1)\Delta \ge r + (n+1)t\)</span> and
+<span class="math inline">\(n_0 \le 2(n+1)\Delta\)</span>. Its tame part
+is <span class="math inline">\(\omega_w^{-(n+1)}\)</span> at <span
+class="math inline">\(w \in \mathcal M\)</span>, <span
+class="math inline">\(\psi_w^{-(n+1)}\)</span> at <span
+class="math inline">\(w \in Q_\vartheta\)</span>, trivial elsewhere, and
+nontrivial at every <span class="math inline">\(w \in \mathcal M\cup
+Q_\vartheta\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a></div><!-- used-in:end -->
+</div>
+<div id="pr:square-scalars" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:square-scalars&quot;]">
+<p><strong>Problem 72.3.3</strong>. If <span class="math inline">\(c \doteq
+f\)</span> and <span class="math inline">\(c&#39; \doteq
+f&#39;\)</span>, then <span class="math inline">\(cc&#39; \doteq
+ff&#39;\)</span>. For every square, <span class="math inline">\(c_{i,n}
+\doteq \rho_{i+1,\,i+n+2}\)</span>, with exponent <span
+class="math inline">\(e&#39; = t^2\)</span>, and <span
+class="math inline">\(c^*_{i,n} \doteq 1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060200--turns-and-the-auxiliary-forms__workbook.html">Chapter 73</a></div><!-- used-in:end -->
+</div>
+<p>The powers of <span class="math inline">\(\#\mathfrak R\)</span> in
+the adjoint law come from finite Fourier transforms <span
+class="math inline">\(\hat F(\mathbf v&#39;) := \sum_{\mathbf v}
+F(\mathbf v)\,\mathbf e(\operatorname{tr}(\mathbf v&#39;\mathbf
+v))\)</span>, with <span class="math inline">\(\mathbf e\)</span> a
+primitive additive character of <span class="math inline">\(\mathfrak
+R\)</span> (nontrivial on each field factor). For <span
+class="math inline">\(\mathfrak R = \prod_w k_w\)</span>, with primitive
+characters <span class="math inline">\(\mathbf e\)</span> (additive) and
+<span class="math inline">\(\chi\)</span> (multiplicative, <span
+class="math inline">\(0\)</span> on nonunits: every <span
+class="math inline">\(a \ne 0\)</span> has some <span
+class="math inline">\(\chi(1+ca) \notin \{0,1\}\)</span>) there is <span
+class="math inline">\(G \in \mathbb C\)</span> with <span
+class="math inline">\(\lvert G\rvert^2 = \#\mathfrak R^{t^2}\)</span>
+such that every function <span class="math inline">\(F\)</span> on <span
+class="math inline">\(t \times t\)</span> matrices with <span
+class="math inline">\(F(k\mathbf v) = \chi(\det k)F(\mathbf v)\)</span>
+for invertible <span class="math inline">\(k\)</span> has <span
+class="math inline">\(\hat F(\mathbf v&#39;) = G\,\chi^{-1}(\det \mathbf
+v&#39;)\,F(1)\)</span>, with <span
+class="math inline">\(\chi^{-1}\)</span> also extended by <span
+class="math inline">\(0\)</span>. <em>Status</em>: for the Gauss sum of
+a determinant character over a finite field see <span class="citation"
+data-cites="Ko63">[<a href="#ref-Ko63">Ko63</a>]</span>; for <span
+class="math inline">\(\mathfrak R = \prod_w k_w\)</span> such an <span
+class="math inline">\(F\)</span> vanishes off the invertible matrices
+and is a product over <span class="math inline">\(w\)</span>, so the
+identity follows from the case of fields. At a node of rank <span
+class="math inline">\(r+nt\)</span>, let <span
+class="math inline">\(\iota=\binom{1}{0}\)</span> be the inclusion into
+rank <span class="math inline">\(r+(n+1)t\)</span>. The proof compares
+two sums over matrices <span class="math inline">\(x\)</span>, each
+against <span class="math inline">\(L((\iota\;x))\)</span>, where <span
+class="math inline">\((\iota\;x)\)</span> denotes adjoining the columns
+of <span class="math inline">\(x\)</span> to <span
+class="math inline">\(\iota\)</span> and <span
+class="math inline">\(L(k\mathbf v)=\chi(\det k)L(\mathbf v)\)</span>
+for invertible <span class="math inline">\(k\)</span>. The sum weighted
+by the Fourier transform of the conjugate of the next datum of <span
+class="math inline">\(p\)</span> is <span
+class="math inline">\(G\,\#\mathfrak R^{(r+nt)t}\)</span> times the sum
+weighted by the next datum of the Fourier transform of <span
+class="math inline">\(\bar p\)</span>: <span
+class="math inline">\(G\)</span> comes from a corner block of size <span
+class="math inline">\(t\)</span>, and <span
+class="math inline">\(\#\mathfrak R^{(r+nt)t}\)</span> from the sum over
+a free block of size <span class="math inline">\((r+nt)\times
+t\)</span>. The reversed square uses the inverse of <span
+class="math inline">\(G\,\#\mathfrak R^{(r+nt)t}\)</span> (in the proof
+of (A)).</p>
+<div id="pr:next" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:next&quot;]">
+<p><strong>Problem 72.3.4</strong>. Take the added block of size <span
+class="math inline">\(1\)</span>. Over <span
+class="math inline">\(\mathfrak R = \mathbb F_3\)</span>, with <span
+class="math inline">\(p\)</span> the indicator of <span
+class="math inline">\(\{1\}\)</span> on <span class="math inline">\(1
+\times 1\)</span> matrices, the next datum is <span
+class="math inline">\(1/3\)</span> at the three matrices <span
+class="math inline">\(\bigl(\begin{smallmatrix}-1 &amp; \eta&#39;\\ 0
+&amp; 1\end{smallmatrix}\bigr)\)</span> (<span
+class="math inline">\(\eta&#39; \in \mathbb F_3\)</span>) and <span
+class="math inline">\(0\)</span> elsewhere. With <span
+class="math inline">\(\mathbf e(x) = e^{2\pi i x/3}\)</span>, its
+Fourier transform at <span
+class="math inline">\(\bigl(\begin{smallmatrix}A &amp; B\\ C &amp;
+D\end{smallmatrix}\bigr)\)</span> is <span
+class="math inline">\(1_{C=0}\,\mathbf e(-A+D)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:gauss">Problem 72.3.5</a></div><!-- used-in:end -->
+</div>
+<div id="pr:gauss" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:gauss&quot;]">
+<p><strong>Problem 72.3.5</strong>. For <span class="math inline">\(\mathbf
+e\)</span> as in Problem <a href="#pr:next" data-reference-type="ref"
+data-reference="pr:next">72.3.4</a> and the nontrivial character <span
+class="math inline">\(\chi\)</span> of <span
+class="math inline">\(\mathbb F_3^\times\)</span>, the Gauss sum <span
+class="math inline">\(\sum_{x \in \mathbb F_3^\times}\chi(x)\,\mathbf
+e(x)\)</span> is <span class="math inline">\(i\sqrt3\)</span>. In
+general <span class="math inline">\(\lvert G\cdot\#\mathfrak
+R^{(r+nt)t}\rvert^2 = \#\mathfrak R^{t(t + 2(r+nt))}\)</span>; formally,
+for <span class="math inline">\(\mathfrak R = \mathbb F_3\)</span> and
+<span class="math inline">\(r + nt = t = 1\)</span>, this is <span
+class="math inline">\(\lvert 3i\sqrt3\rvert^2 = 27\)</span>.</p>
+</div>
+<div id="pr:flag" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:flag&quot;]">
+<p><strong>Problem 72.3.6</strong>. Over <span class="math inline">\(\mathbb
+F_q\)</span>, the invertible block upper triangular matrices with
+diagonal blocks of sizes <span class="math inline">\(r, t, \dots,
+t\)</span> (<span class="math inline">\(j\)</span> blocks <span
+class="math inline">\(t\)</span>) form a group of order <span
+class="math inline">\(\#\mathrm{GL}_r(\mathbb
+F_q)\,\#\mathrm{GL}_t(\mathbb F_q)^j\,q^{jrt + t^2 j(j-1)/2}\)</span>.
+For blocks <span class="math inline">\((1,2)\)</span> over <span
+class="math inline">\(\mathbb F_2\)</span> the order is <span
+class="math inline">\(24\)</span>; for <span class="math inline">\(r =
+1\)</span>, <span class="math inline">\(t = 5\)</span> the exponent is
+<span class="math inline">\(5, 35, 90\)</span> for <span
+class="math inline">\(j = 1, 2, 3\)</span>.</p>
+</div>
+<h1 id="sec:gram">§72.4. The Gram identity of the chain</h1>
+<div id="def:rallis-product" class="definition">
+<p><strong>Definition 72.4.1</strong>. For an <span
+class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span>, let <span
+class="math inline">\(\mathcal R_\vartheta\)</span> be the endomorphism
+of <span class="math inline">\(T\)</span> <span
+class="math display">\[\mathcal R_\vartheta := \mathcal R_1(\vartheta;
+Y_0)\,\mathcal R_2(\vartheta^2; Y_0) \cdots \mathcal R_m(\vartheta^m;
+Y_0) .\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a></div><!-- used-in:end -->
+</div>
+<p>Each factor preserves <span class="math inline">\(T\)</span>
+(Corollary <a href="20261126T050500--equal-multiplicities__workbook.html#cor:equal" data-reference-type="ref"
+data-reference="c2-cor:equal">70.4.1</a>). In this sheet <span
+class="math inline">\(c_{\mathrm{mat}}(\vartheta) := \#\mathfrak
+R^{r(r+t)}\)</span>, the number of <span class="math inline">\((r+t)
+\times r\)</span> matrices over <span class="math inline">\(\mathfrak
+R\)</span>. The inner product formula on the first lift of each row
+(Problem <a href="#pr:range" data-reference-type="ref"
+data-reference="pr:range">72.1.1</a>), with the point datum, gives: for <span
+class="math inline">\(i &lt; m\)</span> there is <span
+class="math inline">\(C_i \in \mathbb C\)</span>, independent of <span
+class="math inline">\(\vartheta\)</span>, with <span
+class="math display">\[g_0\,\langle \lambda_{i,0}x,
+\lambda_{i,0}y\rangle = \frac{C_i}{c_{\mathrm{mat}}(\vartheta)}\,\langle
+x, \mathcal R_{i+1}(\vartheta^{i+1}; Y_0)\,y\rangle \qquad (x \in
+H(Y_0),\ y \in T).\]</span> <em>Status</em>: read from the proof.</p>
+<div id="pr:full-row" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:full-row&quot;]">
+<p><strong>Problem 72.4.1</strong>. In a triangle of size <span
+class="math inline">\(m\)</span> with (F), (D), (A), let <span
+class="math inline">\(T&#39; \subseteq H_\circ\)</span> be a subspace,
+<span class="math inline">\(\mathcal E_i\)</span> endomorphisms of <span
+class="math inline">\(T&#39;\)</span> and <span
+class="math inline">\(C_i\)</span> scalars with <span
+class="math inline">\(g_0\langle \lambda_{i,0}x, \lambda_{i,0}y\rangle =
+C_i\langle x, \mathcal E_i y\rangle\)</span> for <span
+class="math inline">\(i &lt; m\)</span>, <span class="math inline">\(x
+\in H_\circ\)</span>, <span class="math inline">\(y \in T&#39;\)</span>.
+Then for <span class="math inline">\(i + n = m\)</span>, <span
+class="math inline">\(x \in H_\circ\)</span> and <span
+class="math inline">\(y \in T&#39;\)</span> <span
+class="math display">\[\langle \lambda_i^{(n)}x, \lambda_i^{(n)}y\rangle
+= c_{(i)}\,\frac{g_0g_1^n}{g_n}\,\langle x, \mathcal E_i\mathcal
+E_{i+1}\cdots\mathcal E_{m-1}\,y\rangle ,\]</span> where <span
+class="math inline">\(c_{(i)}\)</span> is the product of <span
+class="math inline">\(C_i, \dots, C_{m-1}\)</span> and of all <span
+class="math inline">\(c_{i&#39;,n&#39;}c^*_{i&#39;,n&#39;}\)</span> with
+<span class="math inline">\(i&#39; \ge i\)</span>.</p>
+</div>
+<div id="pr:chain-row" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:chain-row&quot;]">
+<p><strong>Problem 72.4.2</strong>. For the triangle of the chain there is
+<span class="math inline">\(c_\triangle \doteq \prod_{1 \le i &lt; j \le
+m}\rho_{ij}\)</span> with <span class="math display">\[\langle
+\lambda_0^{(m)}x, \lambda_0^{(m)}y\rangle =
+c_\triangle(\vartheta)\,\frac{g_0g_1^m}{g_m\,c_{\mathrm{mat}}^m}\,\langle
+x, \mathcal R_\vartheta y\rangle \qquad (x \in H(Y_0),\ y \in
+T).\]</span></p>
+</div>
+<p>On <span class="math inline">\(H(Y_0)\)</span> we write <span
+class="math inline">\(\Theta_\vartheta\)</span> for the lower chain with
+values in algebraic forms on <span class="math inline">\(Y_m\)</span>,
+and on <span class="math inline">\(T\)</span> for its restriction, as in
+Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>. Its target consists of algebraic
+forms of the prescribed weight on <span
+class="math inline">\(Y_m\)</span> on which the final level <span
+class="math inline">\(K_{\mathrm{last}}(\vartheta) \subseteq
+K^\circ(Y_m)\)</span> acts by its character (Definition <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#def:final-level" data-reference-type="ref"
+data-reference="ob-def:final-level">37.9.1</a>): the
+elements of <span class="math inline">\(K^\circ(Y_m)\)</span> that
+reduce to <span class="math inline">\(1\)</span> at each <span
+class="math inline">\(w \in \mathcal M\)</span> and to a block upper
+triangular matrix, with blocks <span class="math inline">\(r, t, \dots,
+t\)</span>, at each <span class="math inline">\(w \in
+Q_\vartheta\)</span>. The proof shows <span
+class="math inline">\([K^\circ(Y_m) : K_{\mathrm{last}}(\vartheta)] =
+\prod_{w \in \mathcal M}\#\mathrm{GL}_{r+mt}(k_w)\,\prod_{w \in
+Q_\vartheta}[\mathrm{GL}_{r+mt}(k_w) : \mathrm{Par}_w]\)</span>, with
+<span class="math inline">\(\mathrm{Par}_w\)</span> the group of
+Problem <a href="#pr:flag" data-reference-type="ref"
+data-reference="pr:flag">72.3.6</a> over <span
+class="math inline">\(k_w\)</span>, and that for <span
+class="math inline">\(x, y \in H(Y_0)\)</span> <span
+class="math display">\[\langle \Theta_\vartheta x, \Theta_\vartheta
+y\rangle = c_{\mathrm{wt}}\,[K^\circ(Y_m) :
+K_{\mathrm{last}}(\vartheta)]\,\langle \lambda_0^{(m)}x,
+\lambda_0^{(m)}y\rangle ,\]</span> with <span
+class="math inline">\(c_{\mathrm{wt}}\)</span> a positive integer
+independent of <span class="math inline">\(\vartheta\)</span>.
+<em>Status</em>: read from the proof.</p>
+<div id="pr:theta-injective" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:theta-injective&quot;]">
+<p><strong>Problem 72.4.3</strong>. <span
+class="math inline">\(\Theta_\vartheta\)</span> is injective on <span
+class="math inline">\(H(Y_0)\)</span>, in particular on <span
+class="math inline">\(T\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T040100--spaces-forms-and-twists__workbook.html">Chapter 37</a>; <a href="20261126T040200--theorem-c__workbook.html">Chapter 67</a>; <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a></div><!-- used-in:end -->
+</div>
+<div id="pr:last-index" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:last-index&quot;]">
+<p><strong>Problem 72.4.4</strong>. For every <span
+class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span>, <span
+class="math display">\[[K^\circ(Y_m) :
+K_{\mathrm{last}}(\vartheta)]\,\frac{g_0g_1^m}{g_m} =
+\bigl(c_{\mathrm{mat}}(\vartheta)\,c_{Q_\vartheta}\bigr)^m\,(\operatorname{Nm}Q_\vartheta)^{-mrt
+- t^2m(m-1)/2}\]</span> times a positive number independent of <span
+class="math inline">\(\vartheta\)</span>.</p>
+</div>
+<div id="pr:assemble" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:assemble&quot;]">
+<p><strong>Problem 72.4.5</strong>. There is <span
+class="math inline">\(c\)</span> with <span class="math inline">\(c
+\doteq \prod_{1 \le i &lt; j \le m}\rho_{ij}\)</span> and <span
+class="math inline">\(\langle \Theta_\vartheta x, \Theta_\vartheta
+y\rangle = c(\vartheta)\,c_{Q_\vartheta}^m\,\langle x, \mathcal
+R_\vartheta y\rangle\)</span> for all <span
+class="math inline">\(m\)</span>-fold twists <span
+class="math inline">\(\vartheta\)</span> and <span
+class="math inline">\(x, y \in T\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:row-commute" data-reference-type="ref"
+data-reference="pr:row-commute">72.2.3</a>–<a href="#pr:pairs"
+data-reference-type="ref" data-reference="pr:pairs">72.2.7</a>, <a
+href="#pr:square-scalars" data-reference-type="ref"
+data-reference="pr:square-scalars">72.3.3</a> and <a href="#pr:full-row"
+data-reference-type="ref" data-reference="pr:full-row">72.4.1</a>–<a
+href="#pr:assemble" data-reference-type="ref"
+data-reference="pr:assemble">72.4.5</a>, with the realization of the
+triangle, the first-edge identity and the description of the last level,
+prove the following.</p>
+<div id="thm:chain-gram" class="theorem">
+<p><strong>Theorem 72.4.1</strong>. <em>There is a function <span
+class="math inline">\(c\)</span> from <span
+class="math inline">\(m\)</span>-fold twists to <span
+class="math inline">\(\mathbb C\)</span> with <span
+class="math inline">\(c \doteq \prod_{1 \le i &lt; j \le
+m}\rho_{ij}\)</span> such that for every <span
+class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span> and all <span
+class="math inline">\(x, y \in T\)</span>, <span
+class="math display">\[\langle \Theta_\vartheta x, \Theta_\vartheta
+y\rangle = c(\vartheta)\,c_{Q_\vartheta}^m\,\langle x, \mathcal
+R_\vartheta y\rangle .\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a>: <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#pr:chain-det">Problem 68.4.2</a></div><!-- used-in:end -->
+</div>
+<p>The data satisfy <span class="math inline">\(t \le \Delta\)</span>
+and <span class="math inline">\(m\Delta \le 4b\)</span> (as <span
+class="math inline">\(m\Delta \le 4\sqrt x\,(3x^5)^8 &lt; x_1 &lt;
+b\)</span> by Definition <a href="20261126T030300--the-data__workbook.html#def:data"
+data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a>).</p>
+<div id="pr:rho-pair" class="problem" data-progress-ids="[&quot;20261126T050700--squares-and-the-triangle__workbook.tex#pr:rho-pair&quot;]">
+<p><strong>Problem 72.4.6</strong>. <span class="math inline">\(\rho_{ij}(1)
+= 1\)</span>. The character <span
+class="math inline">\(\mu_j^0/\mu_i^0\)</span> has weight <span
+class="math inline">\(-(j-i)\Delta\)</span>, with <span
+class="math inline">\(t \le (j-i)\Delta \le 4b\)</span>, and tame part
+<span class="math inline">\((\omega_w^{j-i})\)</span>, nontrivial
+exactly at the <span class="math inline">\(w \in \mathcal M\)</span>; so
+each <span class="math inline">\(P_z := (\mu_j^0/\mu_i^0, z)\)</span>,
+<span class="math inline">\(1 \le z \le t\)</span>, is a ramified
+critical pair (Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:pair"
+data-reference-type="ref"
+data-reference="ob-def:pair">37.10.1</a>), and <span
+class="math inline">\(\rho_{ij}(\vartheta) = \prod_{z=1}^t
+R_{P_z}(\vartheta^{j-i}, 1)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a></div><!-- used-in:end -->
+</div>
+<p>Problem <a href="#pr:rho-pair" data-reference-type="ref"
+data-reference="pr:rho-pair">72.4.6</a> identifies the unprimed ratios of
+Problem <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#pr:count-ratios" data-reference-type="ref"
+data-reference="dch-pr:count-ratios">68.5.1</a>;
+Theorem <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#thm:small-ratios" data-reference-type="ref"
+data-reference="dch-thm:small-ratios">68.5.1</a>, used
+in Chapter <a href="20261126T040200--theorem-c__workbook.html#chap" data-reference-type="ref"
+data-reference="tc-chap">67</a>, bounds for a family with small
+ratios the height of the inverses of <span
+class="math inline">\((\operatorname{Nm}Q_{\theta_\iota})^{e/2}\prod_{i&lt;j}\rho_{ij}(\theta_\iota)\)</span>,
+every <span class="math inline">\(e \in \mathbb Z\)</span>. We have
+proved Theorem <a href="#thm:chain-gram" data-reference-type="ref"
+data-reference="thm:chain-gram">72.4.1</a> from three statements read from
+the proof; the exchange identity enters through the square laws.
+Chapter <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#chap" data-reference-type="ref"
+data-reference="dch-chap">68</a> uses it to factor <span
+class="math inline">\(Z(\vartheta)/Z(1)\)</span>.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>
+(<code>grh/src/New/Determinant/Chain/</code>), Theorem <a
+href="#thm:chain-gram" data-reference-type="ref"
+data-reference="thm:chain-gram">72.4.1</a> is
+<code>New.Data.exists_inner_chain_eq</code>; <span
+class="math inline">\(\rho_{ij}\)</span>, <span
+class="math inline">\(\mathcal R_\vartheta\)</span>, <span
+class="math inline">\(\doteq\)</span> are <code>quotientRatio</code>,
+<code>rallisProduct</code>, <code>HasAbsUpToNormPower</code> (for the
+indices used here). The realization is <code>exists_isTriangle</code>
+(flag <code>false</code>), using
+<code>exists_triangleLift_triangleTransposedLift_comm</code> for (D) and
+<code>exists_triangleTransposedLift_adjoint_comm</code> for the identity
+in (A). The first-edge identity is a step in the proof of
+<code>exists_inner_weightedChain_eq</code>. The comparison at the last
+level is <code>inner_lowerChainAtLevel</code>, and the product formula
+for the index of <span
+class="math inline">\(K_{\mathrm{last}}(\vartheta)\)</span> is
+<code>stdLevelIndex_lastLevel_eq_prod</code>, both in
+<code>ChainNorms.lean</code>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<dl>
+<dt><a href="#pr:row-injective" data-reference-type="ref"
+data-reference="pr:row-injective">72.2.4</a></dt>
+<dd>
+<p>For injectivity, induction on <span class="math inline">\(n\)</span>,
+passing a kernel vector to row <span class="math inline">\(i+1\)</span>
+by Problem <a href="#pr:row-commute" data-reference-type="ref"
+data-reference="pr:row-commute">72.2.3</a> and (F). For <span
+class="math inline">\(c_i^{[n]} \ne 0\)</span>, take a nonzero vector of
+<span class="math inline">\(H_\circ\)</span>; a quotient by <span
+class="math inline">\(0\)</span> is <span
+class="math inline">\(0\)</span>.</p>
+</dd>
+<dt><a href="#pr:row-adjoint" data-reference-type="ref"
+data-reference="pr:row-adjoint">72.2.5</a></dt>
+<dd>
+<p>Induction on <span class="math inline">\(n\)</span>; for the step use
+(A).</p>
+</dd>
+<dt><a href="#pr:shorten" data-reference-type="ref"
+data-reference="pr:shorten">72.2.6</a></dt>
+<dd>
+<p>Problem <a href="#pr:row-adjoint" data-reference-type="ref"
+data-reference="pr:row-adjoint">72.2.5</a> with <span class="math inline">\(v
+= \lambda_i^{(n+1)}x\)</span>, then Problem <a href="#pr:row-commute"
+data-reference-type="ref" data-reference="pr:row-commute">72.2.3</a> for
+<span class="math inline">\(\lambda_{i+1}^{(n)}x&#39;\)</span>.</p>
+</dd>
+<dt><a href="#pr:square-char" data-reference-type="ref"
+data-reference="pr:square-char">72.3.2</a></dt>
+<dd>
+<p>The weights <span class="math inline">\(\kappa_j\)</span> of
+Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a> increase by <span
+class="math inline">\(\Delta\)</span>. For the rank bound use <span
+class="math inline">\(r \ge 3\)</span>, <span class="math inline">\(t =
+5r\)</span>, <span class="math inline">\(\Delta = 2r^8\)</span>; for
+nontriviality use <span class="math inline">\(0 &lt; n+1 \le m &lt;
+q_2\)</span> and the <span class="math inline">\(m\)</span>-fold
+condition.</p>
+</dd>
+<dt><a href="#pr:square-scalars" data-reference-type="ref"
+data-reference="pr:square-scalars">72.3.3</a></dt>
+<dd>
+<p>Problem <a href="20261126T050600--the-exchange-identity__workbook.html#pr:ex-ratio" data-reference-type="ref"
+data-reference="c3-pr:ex-ratio">71.5.5</a> with <span
+class="math inline">\(S = \mathcal M\)</span>, <span
+class="math inline">\(Q = Q_\vartheta\)</span>, <span
+class="math inline">\(h = t\)</span>; the untwisted value <span
+class="math inline">\(\mathrm{ex}_t(\mathcal M, \nu_{i,n}(1))\)</span>
+is a constant. Note <span class="math inline">\(\#\mathfrak R =
+\operatorname{Nm}Q_\vartheta \prod_{w \in \mathcal M} q_w\)</span>.</p>
+</dd>
+<dt><a href="#pr:full-row" data-reference-type="ref"
+data-reference="pr:full-row">72.4.1</a></dt>
+<dd>
+<p>Induction on <span class="math inline">\(n\)</span> from row <span
+class="math inline">\(i+1\)</span> to row <span
+class="math inline">\(i\)</span>, with Problem <a href="#pr:shorten"
+data-reference-type="ref" data-reference="pr:shorten">72.2.6</a>, and (F) to
+apply the first-edge relation to <span class="math inline">\(x\)</span>
+and <span class="math inline">\(\mathcal E_{i+1}\cdots\mathcal
+E_{m-1}y\)</span>.</p>
+</dd>
+<dt><a href="#pr:chain-row" data-reference-type="ref"
+data-reference="pr:chain-row">72.4.2</a></dt>
+<dd>
+<p>Problem <a href="#pr:full-row" data-reference-type="ref"
+data-reference="pr:full-row">72.4.1</a> with <span
+class="math inline">\(\mathcal E_i = \mathcal R_{i+1}(\vartheta^{i+1};
+Y_0)/c_{\mathrm{mat}}\)</span>, and Problems <a href="#pr:pairs"
+data-reference-type="ref" data-reference="pr:pairs">72.2.7</a> and <a
+href="#pr:square-scalars" data-reference-type="ref"
+data-reference="pr:square-scalars">72.3.3</a>.</p>
+</dd>
+<dt><a href="#pr:last-index" data-reference-type="ref"
+data-reference="pr:last-index">72.4.4</a></dt>
+<dd>
+<p>Factor over <span class="math inline">\(w \in \mathcal M\cup
+Q_\vartheta\)</span>; at <span class="math inline">\(w \in
+Q_\vartheta\)</span> use Problem <a href="#pr:flag"
+data-reference-type="ref" data-reference="pr:flag">72.3.6</a>, the
+stabilizer of an injective <span class="math inline">\((r+t) \times
+r\)</span> matrix, and Problem <a href="20261126T050400--the-norm-of-one-lift__workbook.html#pr:left-inverse"
+data-reference-type="ref"
+data-reference="c1-pr:left-inverse">69.3.2</a>.</p>
+</dd>
+<dt><a href="#pr:assemble" data-reference-type="ref"
+data-reference="pr:assemble">72.4.5</a></dt>
+<dd>
+<p>Problems <a href="#pr:chain-row" data-reference-type="ref"
+data-reference="pr:chain-row">72.4.2</a> and <a href="#pr:last-index"
+data-reference-type="ref" data-reference="pr:last-index">72.4.4</a>; for
+<span class="math inline">\(A \in \mathbb C\)</span> and <span
+class="math inline">\(k \in \mathbb Z\)</span>, <span
+class="math inline">\(\vartheta \mapsto
+A(\operatorname{Nm}Q_\vartheta)^k\)</span> satisfies <span
+class="math inline">\(\doteq 1\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Ho89"><span class="bib-label">[Ho89]</span> R. Howe, <em>Transcending classical invariant theory</em>, J. Amer. Math. Soc. <strong>2</strong> (1989), 535–552.</p>
+<p id="ref-Ko63"><span class="bib-label">[Ko63]</span> T. Kondo, <em>On Gaussian sums attached to the general linear groups over finite fields</em>, J. Math. Soc. Japan <strong>15</strong> (1963), 244–255.</p>
+<p id="ref-Ku84"><span class="bib-label">[Ku84]</span> S. S. Kudla, <em>Seesaw dual reductive pairs</em>, in: Automorphic Forms of Several Variables (Katata, 1983), Progr. Math. <strong>46</strong>, Birkhäuser, 1984, 244–268.</p>
+<p id="ref-Li90"><span class="bib-label">[Li90]</span> J.-S. Li, <em>Theta lifting for unitary representations with nonzero cohomology</em>, Duke Math. J. <strong>61</strong> (1990), 913–937.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

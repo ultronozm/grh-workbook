@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-XR+7DV6d5M913K/eP+P+l+NsUTLNnOYZV69cSlBQwug=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Twists with few congruences</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","Ql":"\\bar{\\mathbb{Q}}_\\ell","Zl":"\\bar{\\mathbb{Z}}_\\ell","Sel":"\\mathrm{Sel}","val":"\\operatorname{val}","Oc":"\\mathcal{O}","St":"\\mathrm{St}","bd":"\\mathrm{bd}","TS":"T_{\\mathrm{Sel}}","ctor":"c_{\\mathrm{tor}}","cl":"\\mathrm{cl}","loc":"\\mathrm{loc}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="85">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T031000--twists-with-few-congruences__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-27 02:20:30
+      <a href="20261126T031000--twists-with-few-congruences__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T031000--twists-with-few-congruences__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T031000--twists-with-few-congruences__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Twists with few congruences <a class="stable-tag" href="tag/23AP.html" title="Stable tag: cite as Tag 23AP">Tag 23AP</a></h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:twisting" id="toc-sec:twisting">§85.1. The twisting theorem</a></li>
+<li><a href="#sec:regular" id="toc-sec:regular">§85.2. Regular families</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#section-sectwisting"
+id="toc-section-sectwisting">Section 85.1</a></li>
+<li><a href="#section-secregular"
+id="toc-section-secregular">Section 85.2</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Valuations on <span
+class="math inline">\(\bar{\mathbb{Q}}_\ell\)</span> <span
+class="citation" data-cites="Ne">[<a href="#ref-Ne">Ne</a>, Ch. II]</span>;
+roots of unity of prime power order <span class="citation"
+data-cites="Wa">[<a href="#ref-Wa">Wa</a>, Ch. 1–2]</span>; inertia groups
+and tame inertia at a finite place. Chapter <a href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#chap"
+data-reference-type="ref" data-reference="w1-chap">86</a>,
+<em>Roots of unity for many polynomials</em>, which follows this
+chapter: only the statements of Theorem <a href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#thm:roots"
+data-reference-type="ref"
+data-reference="w1-thm:roots">86.2.1</a>, Corollary <a
+href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#pr:powers" data-reference-type="ref"
+data-reference="w1-pr:powers">86.2.2</a> and Problem <a
+href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#pr:powers-far" data-reference-type="ref"
+data-reference="w1-pr:powers-far">86.2.5</a>. Chapter <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#chap" data-reference-type="ref"
+data-reference="w2-chap">87</a>, <em>Lengths as values of
+polynomials</em>: Definitions <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:chi"
+data-reference-type="ref" data-reference="w2-def:chi">87.2.1</a>,
+<a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:selmer-datum" data-reference-type="ref"
+data-reference="w2-def:selmer-datum">87.3.1</a>, <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:twisted-length" data-reference-type="ref"
+data-reference="w2-def:twisted-length">87.3.2</a>, <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:torsion-level" data-reference-type="ref"
+data-reference="w2-def:torsion-level">87.3.3</a> and <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:system" data-reference-type="ref"
+data-reference="w2-def:system">87.5.1</a>, the evaluation of
+characters on <span class="math inline">\(\mathrm{Cl}_Q\)</span> at the
+beginning of Section <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#sec:systems" data-reference-type="ref"
+data-reference="w2-sec:systems">87.5</a>, and Theorem <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#thm:polynomials" data-reference-type="ref"
+data-reference="w2-thm:polynomials">87.6.1</a>. Chapter <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dp-chap">80</a>, <em>Denominators of projections
+to lifts</em>: Section <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#sec:statement"
+data-reference-type="ref"
+data-reference="dp-sec:statement">80.1</a> with its
+definitions (coefficient rings and normalized lengths, auxiliary twists,
+main-summand-like representations, Selmer bounds, the numbers <span
+class="math inline">\(\mathrm{tw}_\ell\)</span> and <span
+class="math inline">\(\mathrm{cl}_\ell\)</span>) and Theorem <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#thm:denominators" data-reference-type="ref"
+data-reference="dp-thm:denominators">80.1.1</a>. The data
+of Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>; twists and critical pairs
+(Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>, Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:twists"
+data-reference-type="ref"
+data-reference="ob-sec:twists">37.6</a> and Definition <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#def:pair" data-reference-type="ref"
+data-reference="ob-def:pair">37.10.1</a>); heights of families
+(Section <a href="20261125T000000--slope-method__workbook.html#sec:heights" data-reference-type="ref"
+data-reference="sd-sec:heights">5.3</a>) and the twist at
+each prime of Chapter <a href="20261126T030100--a-twist-for-each-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="at-chap">6</a>; regular families (Definitions <a
+href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:small-ratios" data-reference-type="ref"
+data-reference="l5-def:small-ratios">79.1.2</a> and <a
+href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:regular" data-reference-type="ref"
+data-reference="l5-def:regular">79.1.3</a>). For the deduction
+of the twisting theorem, use Theorem <a href="20261126T081200--a-measure-for-hecke-values__workbook.html#thm:pair-system"
+data-reference-type="ref"
+data-reference="w4-thm:pair-system">89.3.1</a> and the
+Selmer data of Chapter <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#chap" data-reference-type="ref"
+data-reference="w5-chap">90</a>. As background: Stickelberger
+elements (Chapter <a href="20261125T004000--denominators-and-sha__workbook.html#chap" data-reference-type="ref"
+data-reference="ds-chap">26</a>) and Selmer classes (Chapter <a
+href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#chap" data-reference-type="ref"
+data-reference="ec-chap">30</a>).</p>
+<p>Chapter <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dp-chap">80</a> bounds the denominator of a
+projection to lifts through the Selmer groups of twisted Galois
+representations, and the cost of comparing a lift at two twists involves
+ratios of Hecke <span class="math inline">\(L\)</span>-values
+(Chapter <a href="20261126T030800--the-cost-of-one-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="col-chap">74</a>). For each prime <span
+class="math inline">\(\ell\)</span> and each <span
+class="math inline">\(\iota \mid \ell\)</span>, can one twist bound the
+Selmer lengths for a prescribed finite family satisfying the hypotheses
+of Theorem <a href="#thm:twisting" data-reference-type="ref"
+data-reference="thm:twisting">85.1.2</a> and the valuations of the ratios for
+every ramified critical pair and both signs? The proof reduces both to
+values of polynomials at points <span
+class="math inline">\((\zeta_w-1)_w\)</span>, with <span
+class="math inline">\(\zeta_w\)</span> roots of unity of <span
+class="math inline">\(\ell\)</span>-power order. The lemma that chooses
+the roots of unity is proved in Chapter <a href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#chap"
+data-reference-type="ref" data-reference="w1-chap">86</a>;
+Section <a href="#sec:twisting" data-reference-type="ref"
+data-reference="sec:twisting">85.1</a> recalls the polynomial input
+(Theorem <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#thm:polynomials" data-reference-type="ref"
+data-reference="w2-thm:polynomials">87.6.1</a>), deduces
+the existence of small twists (Theorem <a href="#thm:small"
+data-reference-type="ref" data-reference="thm:small">85.1.1</a>) and states
+the twisting theorem deduced in Chapter <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#chap"
+data-reference-type="ref" data-reference="w5-chap">90</a>;
+Section <a href="#sec:regular" data-reference-type="ref"
+data-reference="sec:regular">85.2</a> gives the regular family to which
+Chapter <a href="20261126T040200--theorem-c__workbook.html#chap" data-reference-type="ref"
+data-reference="tc-chap">67</a> applies the one-lift bound of
+Chapter <a href="20261126T030800--the-cost-of-one-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="col-chap">74</a>.</p>
+<p>Throughout, <span class="math inline">\(\ell\)</span> is a prime and
+<span class="math inline">\(\operatorname{val}\)</span> is the valuation
+of <span class="math inline">\(\bar{\mathbb{Q}}_\ell\)</span> with <span
+class="math inline">\(\operatorname{val}(\ell) = 1\)</span> and <span
+class="math inline">\(\operatorname{val}(0) = \infty\)</span>, as in
+Chapter <a href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#chap" data-reference-type="ref"
+data-reference="w1-chap">86</a>; <span
+class="math inline">\(\operatorname{val}_+ := \max(\operatorname{val},
+0)\)</span>, and <span
+class="math inline">\(\operatorname{val}_\ell\)</span> is the <span
+class="math inline">\(\ell\)</span>-adic valuation of integers.
+Coefficient rings <span class="math inline">\(\mathcal{O}\)</span> and
+normalized lengths are those of Section <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#sec:statement"
+data-reference-type="ref"
+data-reference="dp-sec:statement">80.1</a>.</p>
+<h1 id="sec:twisting">§85.1. The twisting theorem <a class="stable-tag" href="tag/23AQ.html" title="Stable tag: cite as Tag 23AQ">Tag 23AQ</a></h1>
+<p>Fix a CM field <span
+class="math inline">\(E\subseteq\bar{\mathbb{Q}}\)</span>, with <span
+class="math inline">\(G_E := \mathrm{Gal}(\bar{\mathbb{Q}}/E)\)</span>
+and <span class="math inline">\(g^c := cgc\)</span> for the complex
+conjugation <span class="math inline">\(c\)</span> of Section <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#sec:statement" data-reference-type="ref"
+data-reference="dp-sec:statement">80.1</a>, a finite set
+<span class="math inline">\(\Sigma_0\)</span> of finite places of <span
+class="math inline">\(E\)</span> containing those above <span
+class="math inline">\(\ell\)</span>, and an element <span
+class="math inline">\(g_0\)</span> of inertia at a place of <span
+class="math inline">\(\Sigma_0\)</span> prime to <span
+class="math inline">\(\ell\)</span>. Fix finitely many Selmer data over
+one coefficient ring <span class="math inline">\(\mathcal{O}\)</span>
+and finitely many Stickelberger systems for <span
+class="math inline">\((\Sigma_0, g_0)\)</span> (Definitions <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:selmer-datum" data-reference-type="ref"
+data-reference="w2-def:selmer-datum">87.3.1</a> and <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:system" data-reference-type="ref"
+data-reference="w2-def:system">87.5.1</a>). Chapter <a
+href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#chap" data-reference-type="ref"
+data-reference="ec-chap">30</a> gives examples of Selmer classes
+arising from congruences, and Chapter <a href="20261125T004000--denominators-and-sha__workbook.html#chap"
+data-reference-type="ref" data-reference="ds-chap">26</a> treats
+the classical cyclotomic Stickelberger element.</p>
+<p>From Chapter <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#chap" data-reference-type="ref"
+data-reference="w2-chap">87</a> we use: the rank <span
+class="math inline">\(\operatorname{rk}T_{\mathrm{Sel}}\)</span>, the
+set <span class="math inline">\(\Sigma(T_{\mathrm{Sel}})\)</span>, the
+local relations, the terms <span
+class="math inline">\(\mathrm{glob}(T_{\mathrm{Sel}})\)</span>, <span
+class="math inline">\(\mathrm{plc}(T_{\mathrm{Sel}})\)</span>, <span
+class="math inline">\(\mathrm{inr}(T_{\mathrm{Sel}})\)</span> and the
+number <span
+class="math inline">\(\mathrm{bd}(T_{\mathrm{Sel}})\)</span> of a Selmer
+datum (Definition <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:selmer-datum"
+data-reference-type="ref"
+data-reference="w2-def:selmer-datum">87.3.1</a>), with
+<span class="math inline">\(e_{\mathcal{O}} :=
+\mathrm{ord}_{\mathcal{O}}(\ell)\)</span>; the bounds <span
+class="math inline">\(\mathrm{len}\,\mathrm{Sel}_Q(T_{\mathrm{Sel}}\chi)
+\le d\)</span> of Definition <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:twisted-length"
+data-reference-type="ref"
+data-reference="w2-def:twisted-length">87.3.2</a>; sets
+<span class="math inline">\(Q\)</span> admissible for <span
+class="math inline">\(\Sigma_0\)</span> and <em>characters for <span
+class="math inline">\(Q\)</span></em> (Definition <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:chi"
+data-reference-type="ref" data-reference="w2-def:chi">87.2.1</a>),
+that is, locally constant characters of <span
+class="math inline">\(G_E\)</span> coming by <span
+class="math inline">\(y \mapsto y/\bar y\)</span> from a finite idele
+class character of tame level <span class="math inline">\(Q\)</span>
+trivial above <span class="math inline">\(\ell\)</span>; the elements
+<span class="math inline">\(\mathrm{St}_Q \in
+\bar{\mathbb{Z}}_\ell[\mathrm{Cl}_Q]\)</span> and the number <span
+class="math inline">\(\mathrm{bd}(\mathrm{St})\)</span> of a
+Stickelberger system (Definition <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:system"
+data-reference-type="ref"
+data-reference="w2-def:system">87.5.1</a>), with the value
+<span class="math inline">\(\chi(\mathrm{St}_Q)\)</span> of a character
+<span class="math inline">\(\chi\)</span> for <span
+class="math inline">\(Q\)</span> (Section <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#sec:systems"
+data-reference-type="ref"
+data-reference="w2-sec:systems">87.5</a>); and torsion
+levels (Definition <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:torsion-level"
+data-reference-type="ref"
+data-reference="w2-def:torsion-level">87.3.3</a>).</p>
+<p>The insertion identity of Definition <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:system"
+data-reference-type="ref"
+data-reference="w2-def:system">87.5.1</a> has a classical model
+over <span class="math inline">\(\mathbb{Q}\)</span>. For <span
+class="math inline">\(u \ge 2\)</span> put <span
+class="math inline">\(\theta^{\mathbb{Q}}_u := \sum_{1 \le a &lt; u,\
+(a,u)=1}\{a/u\}\,\sigma_a^{-1}\)</span>, so that <span
+class="math inline">\(\theta^{\mathbb{Q}}_p\)</span> is the element
+<span class="math inline">\(\theta\)</span> of Chapter <a
+href="20261125T004000--denominators-and-sha__workbook.html#chap" data-reference-type="ref"
+data-reference="ds-chap">26</a>, and evaluate a character <span
+class="math inline">\(\chi\)</span> of <span
+class="math inline">\((\mathbb{Z}/u)^\times\)</span> on it by <span
+class="math inline">\(\chi(\sigma_a) := \chi(a)\)</span>; for a prime
+<span class="math inline">\(v \nmid u\)</span> we also write <span
+class="math inline">\(\chi\)</span> for its pullback to <span
+class="math inline">\((\mathbb{Z}/uv)^\times\)</span>.</p>
+<div id="pr:insertion-model" class="problem" data-progress-ids="[&quot;23AR&quot;,&quot;20261126T031000--twists-with-few-congruences__workbook.tex#pr:insertion-model&quot;]"><a class="stable-tag" href="tag/23AR.html" title="Stable tag: cite as Tag 23AR">Tag 23AR</a>
+<p><strong>Problem 85.1.1</strong>. For a nontrivial character <span
+class="math inline">\(\chi\)</span> of <span
+class="math inline">\((\mathbb{Z}/u)^\times\)</span> and a prime <span
+class="math inline">\(v \nmid u\)</span>, <span
+class="math inline">\(\chi(\theta^{\mathbb{Q}}_{uv}) = (1 -
+\chi(v)^{-1})\,\chi(\theta^{\mathbb{Q}}_u)\)</span>: an insertion
+identity with <span class="math inline">\(\alpha\)</span> trivial, one
+sign and <span class="math inline">\(L = [0]\)</span>. For <span
+class="math inline">\(u = 5\)</span>, <span
+class="math inline">\(\chi(2) = \mathrm i\)</span> and <span
+class="math inline">\(v = 3\)</span>: <span
+class="math inline">\(\chi(\theta^{\mathbb{Q}}_5) = (-3 + \mathrm
+i)/5\)</span> and <span
+class="math inline">\(\chi(\theta^{\mathbb{Q}}_{15}) = (-2 + 4\mathrm
+i)/5\)</span>.</p>
+</div>
+<p>The polynomial input is Theorem <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#thm:polynomials"
+data-reference-type="ref"
+data-reference="w2-thm:polynomials">87.6.1</a>; it is read
+from the proof and developed in Chapter <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#chap"
+data-reference-type="ref" data-reference="w2-chap">87</a>. It
+holds for any finite <span class="math inline">\(\Sigma_0\)</span> with
+<span class="math inline">\(g_0\)</span> inertial at a place of <span
+class="math inline">\(\Sigma_0\)</span> prime to <span
+class="math inline">\(\ell\)</span>; we use it with <span
+class="math inline">\(\Sigma_0\)</span> containing the places above
+<span class="math inline">\(\ell\)</span>. Fix a torsion level <span
+class="math inline">\(c_{\mathrm{tor}}\)</span> for the data. The
+theorem gives an integer <span class="math inline">\(s_0 \ge 1\)</span>
+and, for every rational <span class="math inline">\(\rho &gt; 0\)</span>
+with <span class="math inline">\(s_0\rho &lt; 1\)</span> and every
+sufficiently large <span class="math inline">\(h_1\)</span>, a set <span
+class="math inline">\(Q\)</span> with homomorphisms <span
+class="math inline">\(\lg_w\colon G_E \to
+\mathbb{Z}/\ell^{h_1}\)</span>, <span class="math inline">\(w \in
+Q\)</span>, and for each datum and each system a polynomial <span
+class="math inline">\(F\)</span> and a point, with the properties
+(1)–(3) stated there. For <span
+class="math inline">\(\ell^{h_1}\)</span>-th roots of unity <span
+class="math inline">\(\zeta_w\)</span>, the product <span
+class="math inline">\(\chi_\zeta := \prod_{w \in Q}
+\zeta_w^{\lg_w}\)</span> is a character for <span
+class="math inline">\(Q\)</span> in the sense of Definition <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:chi" data-reference-type="ref"
+data-reference="w2-def:chi">87.2.1</a>. Each <span
+class="math inline">\(\lg_w\)</span> is a character for <span
+class="math inline">\(\{w\}\)</span> with the value <span
+class="math inline">\(1\)</span> at an element of an inertia group at
+<span class="math inline">\(w\)</span>; thus it is onto on inertia at
+<span class="math inline">\(w\)</span>, anticyclotomic (meaning <span
+class="math inline">\(\lg_w(g^c) = -\lg_w(g)\)</span>), unramified
+outside <span class="math inline">\(w\)</span> and <span
+class="math inline">\(\bar w\)</span>, and trivial on the decomposition
+groups above <span class="math inline">\(\ell\)</span>.</p>
+<p>Two local conditions of the same dimension can give Selmer groups of
+different lengths.</p>
+<div id="pr:tilted-line" class="problem" data-progress-ids="[&quot;23AS&quot;,&quot;20261126T031000--twists-with-few-congruences__workbook.tex#pr:tilted-line&quot;]"><a class="stable-tag" href="tag/23AS.html" title="Stable tag: cite as Tag 23AS">Tag 23AS</a>
+<p><strong>Problem 85.1.2</strong>. A continuous cocycle of <span
+class="math inline">\(G_{\mathbb{Q}_{11}}\)</span> with values in <span
+class="math inline">\(\mathbb F_5\)</span> and trivial action is a
+homomorphism; it is trivial on wild inertia and is determined by its
+values <span class="math inline">\((a, b)\)</span> at a Frobenius lift
+and at a generator of tame inertia, and all <span
+class="math inline">\(25\)</span> pairs occur. The unramified classes
+form the line <span class="math inline">\(b = 0\)</span>, and the line
+<span class="math inline">\(b = 2a\)</span> meets it only in <span
+class="math inline">\(0\)</span>.</p>
+</div>
+<p>If restriction maps a space of global classes onto the line <span
+class="math inline">\(b = 0\)</span>, the classes satisfying <span
+class="math inline">\(b = 2a\)</span> form the kernel of restriction, of
+codimension one in that space. Problem <a href="20261126T060700--tied-primes__workbook.html#pr:decrease"
+data-reference-type="ref"
+data-reference="w3-pr:decrease">88.2.4</a> gives conditions
+under which some choice of slope at a new tied prime decreases the sum
+of the tied Selmer lengths.</p>
+<div id="pr:psi-power" class="problem" data-progress-ids="[&quot;23AT&quot;,&quot;20261126T031000--twists-with-few-congruences__workbook.tex#pr:psi-power&quot;]"><a class="stable-tag" href="tag/23AT.html" title="Stable tag: cite as Tag 23AT">Tag 23AT</a>
+<p><strong>Problem 85.1.3</strong>. For <span
+class="math inline">\(\chi_\zeta = \prod_{w} \zeta_w^{\lg_w}\)</span>
+and <span class="math inline">\(n \ge 1\)</span>, <span
+class="math inline">\(\chi_\zeta^n = \prod_{w}
+(\zeta_w^n)^{\lg_w}\)</span>, and <span
+class="math inline">\(\chi_\zeta^{\ell^{h_1}} = 1\)</span>. For <span
+class="math inline">\(w \in Q\)</span> some <span
+class="math inline">\(g\)</span> in an inertia group at <span
+class="math inline">\(w\)</span> has <span
+class="math inline">\(\chi_\zeta(g) = \zeta_w\)</span>.</p>
+</div>
+<div id="pr:inertia-sum" class="problem" data-progress-ids="[&quot;23AU&quot;,&quot;20261126T031000--twists-with-few-congruences__workbook.tex#pr:inertia-sum&quot;]"><a class="stable-tag" href="tag/23AU.html" title="Stable tag: cite as Tag 23AU">Tag 23AU</a>
+<p><strong>Problem 85.1.4</strong>. Let <span class="math inline">\(0 &lt;
+\rho &lt; 1\)</span> and <span class="math inline">\(m \ge 1\)</span>,
+and let the <span class="math inline">\(\zeta_w\)</span>, <span
+class="math inline">\(w \in Q\)</span>, be <span
+class="math inline">\(\ell^{h_1}\)</span>-th roots of unity with <span
+class="math inline">\(\operatorname{val}(\zeta_w - 1) \le
+\rho/m\)</span>. Then <span
+class="math inline">\(\operatorname{val}\bigl(\chi_\zeta^n(s_{w&#39;}) -
+1\bigr) \le \rho\)</span> for every <span class="math inline">\(1 \le n
+\le m\)</span>, every <span class="math inline">\(w&#39; \in Q \cup \bar
+Q\)</span> and every generator <span
+class="math inline">\(s_{w&#39;}\)</span> of tame inertia at a place of
+<span class="math inline">\(\bar{\mathbb{Q}}\)</span> above <span
+class="math inline">\(w&#39;\)</span>. Hence <span
+class="math inline">\(\sum_{w&#39; \in Q \cup \bar
+Q}\operatorname{val}\bigl(\chi_\zeta^n(s_{w&#39;}) - 1\bigr) \le
+2\,\#Q\,\rho\)</span>.</p>
+</div>
+<div id="pr:twist-from-roots" class="problem" data-progress-ids="[&quot;23AV&quot;,&quot;20261126T031000--twists-with-few-congruences__workbook.tex#pr:twist-from-roots&quot;]"><a class="stable-tag" href="tag/23AV.html" title="Stable tag: cite as Tag 23AV">Tag 23AV</a>
+<p><strong>Problem 85.1.5</strong>. Let <span class="math inline">\(0 &lt;
+\varepsilon &lt; 1\)</span> and <span class="math inline">\(m \ge
+1\)</span>. There are an admissible set <span
+class="math inline">\(Q\)</span> and homomorphisms <span
+class="math inline">\(\lg_w\)</span> as in Theorem <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#thm:polynomials" data-reference-type="ref"
+data-reference="w2-thm:polynomials">87.6.1</a>, and a
+character <span class="math inline">\(\chi_\zeta = \prod_{w}
+\zeta_w^{\lg_w}\)</span> such that, for all <span
+class="math inline">\(1 \le n \le m\)</span>, <span
+class="math inline">\(\mathrm{len}\,\mathrm{Sel}_Q(T_{\mathrm{Sel}}\chi_\zeta^n)
+\le \mathrm{bd}(T_{\mathrm{Sel}}) + \varepsilon\)</span> for every
+datum, <span
+class="math inline">\(\operatorname{val}(\chi_\zeta^n(\mathrm{St}_Q))
+\le \mathrm{bd}(\mathrm{St}) + \varepsilon\)</span> for every system,
+<span class="math inline">\(\chi_\zeta^n\)</span> is ramified at every
+place of <span class="math inline">\(Q\)</span>, and <span
+class="math inline">\(\sum_{w&#39; \in Q \cup \bar
+Q}\operatorname{val}\bigl(\chi_\zeta^n(s_{w&#39;}) - 1\bigr) \le
+\varepsilon\)</span> for any generators <span
+class="math inline">\(s_{w&#39;}\)</span> of tame inertia.</p>
+</div>
+<div id="thm:small" class="theorem"><a class="stable-tag" href="tag/23AW.html" title="Stable tag: cite as Tag 23AW">Tag 23AW</a>
+<p><strong>Theorem 85.1.1</strong> (small twists). <em>Let <span
+class="math inline">\(\Sigma_0\)</span>, <span
+class="math inline">\(g_0\)</span>, finitely many Selmer data over one
+coefficient ring <span class="math inline">\(\mathcal{O}\)</span>,
+finitely many Stickelberger systems and a torsion level <span
+class="math inline">\(c_{\mathrm{tor}}\)</span> be as above, and let
+<span class="math inline">\(m \ge 1\)</span> be an integer and <span
+class="math inline">\(\varepsilon &gt; 0\)</span> real. There are a
+finite set <span class="math inline">\(Q\)</span> of places, admissible
+for <span class="math inline">\(\Sigma_0\)</span>, and a character <span
+class="math inline">\(\chi\colon G_E \to
+\bar{\mathbb{Q}}_\ell^\times\)</span> such that for every <span
+class="math inline">\(1 \le n \le m\)</span>:</em></p>
+<ol>
+<li><p><em><span class="math inline">\(\chi^n\)</span> is a character
+for <span class="math inline">\(Q\)</span> (Definition <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#def:chi" data-reference-type="ref"
+data-reference="w2-def:chi">87.2.1</a>), of <span
+class="math inline">\(\ell\)</span>-power order, and ramified at every
+place of <span class="math inline">\(Q\)</span>;</em></p></li>
+<li><p><em><span
+class="math inline">\(\mathrm{len}\,\mathrm{Sel}_Q(T_{\mathrm{Sel}}\chi^n)
+\le \mathrm{bd}(T_{\mathrm{Sel}}) + \varepsilon\)</span> for every
+datum, and <span
+class="math inline">\(\operatorname{val}(\chi^n(\mathrm{St}_Q)) \le
+\mathrm{bd}(\mathrm{St}) + \varepsilon\)</span> for every
+system;</em></p></li>
+<li><p><em><span class="math inline">\(\sum_{w&#39; \in Q \cup \bar
+Q}\operatorname{val}\bigl(\chi^n(s_{w&#39;}) - 1\bigr) \le
+\varepsilon\)</span> for any generators <span
+class="math inline">\(s_{w&#39;}\)</span> of tame inertia at any places
+of <span class="math inline">\(\bar{\mathbb{Q}}\)</span> above the <span
+class="math inline">\(w&#39;\)</span>.</em></p></li>
+</ol>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html">Chapter 87</a>; <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html">Chapter 90</a>: <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#pr:assemble">Problem 90.4.2</a></div><!-- used-in:end -->
+</div>
+<p>Problems <a href="#pr:psi-power" data-reference-type="ref"
+data-reference="pr:psi-power">85.1.3</a>–<a href="#pr:twist-from-roots"
+data-reference-type="ref" data-reference="pr:twist-from-roots">85.1.5</a>
+give Theorem <a href="#thm:small" data-reference-type="ref"
+data-reference="thm:small">85.1.1</a> for <span class="math inline">\(0 &lt;
+\varepsilon &lt; 1\)</span>. The proof uses the same reduction to the
+polynomial input.</p>
+<p>For the data of Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>, let <span
+class="math inline">\(\Sigma_0\)</span> be the set of places dividing
+<span class="math inline">\(\ell MN\)</span>, and let <span
+class="math inline">\(g_0\)</span> be the tame generator at the fixed
+place above a chosen <span class="math inline">\(w_0 \nmid
+\ell\)</span>. The proof applies Theorem <a href="#thm:small"
+data-reference-type="ref" data-reference="thm:small">85.1.1</a>, with <span
+class="math inline">\(\varepsilon = 2^{-\ell}\)</span>, to Selmer data
+on lattices in the given representations and to one Stickelberger system
+for each ramified critical pair and sign. We use the notation of
+Chapters <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a> and <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap"
+data-reference-type="ref" data-reference="ob-chap">37</a> (<span
+class="math inline">\(f\)</span>, <span
+class="math inline">\(r\)</span>, <span
+class="math inline">\(t\)</span>, <span
+class="math inline">\(m\)</span>, <span
+class="math inline">\(b\)</span>, <span
+class="math inline">\(p_0\)</span>, <span
+class="math inline">\(p_1\)</span>, <span class="math inline">\(M =
+p_0p_1\)</span>, <span class="math inline">\(N\)</span>, the chosen
+places <span class="math inline">\(\mathcal M\)</span>, the integer
+<span class="math inline">\(\mathcal N\)</span>, <span
+class="math inline">\(m\)</span>-fold twists <span
+class="math inline">\(\vartheta\)</span> with their sets <span
+class="math inline">\(Q_\vartheta\)</span>), the critical pairs <span
+class="math inline">\(P = (\nu, z)\)</span>, their ratios <span
+class="math inline">\(R_P(\vartheta, \epsilon)\)</span>, <span
+class="math inline">\(\epsilon = \pm1\)</span>, and ramified pairs of
+Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:pair" data-reference-type="ref"
+data-reference="ob-def:pair">37.10.1</a>, and the number of
+Definition <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:clearing-bound" data-reference-type="ref"
+data-reference="dp-def:clearing-bound">80.1.1</a>,
+<span class="math display">\[\mathrm{tw}_\ell := (4f + 3)\, r\,
+\operatorname{val}_\ell(\mathcal N) + 2^{-\ell}.\]</span> For a twist
+<span class="math inline">\(\vartheta\)</span> and <span
+class="math inline">\(\iota\colon \mathbb{C}\simeq
+\bar{\mathbb{Q}}_\ell\)</span>, <span
+class="math inline">\(\hat\vartheta\)</span> is the inverse avatar of
+Definition <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:aux-twist" data-reference-type="ref"
+data-reference="dp-def:aux-twist">80.1.5</a>.</p>
+<div id="thm:twisting" class="theorem"><a class="stable-tag" href="tag/23AX.html" title="Stable tag: cite as Tag 23AX">Tag 23AX</a>
+<p><strong>Theorem 85.1.2</strong> (twisting theorem). <em>Let <span
+class="math inline">\(\iota\colon \mathbb{C}\simeq
+\bar{\mathbb{Q}}_\ell\)</span>, and let <span class="math inline">\(R_1,
+\dots, R_n\)</span> (<span class="math inline">\(n \ge 0\)</span>; not
+to be confused with the ratios <span class="math inline">\(R_P\)</span>
+of clause 3) be <span class="math inline">\(\ell\)</span>-adic
+representations of <span class="math inline">\(G_E\)</span> such that
+each <span class="math inline">\(R_i\)</span> is main-summand-like for
+<span class="math inline">\((t&#39;_i, \mathrm{HT}_i)\)</span>, for some
+integer <span class="math inline">\(t&#39;_i \ge 0\)</span> and some
+family <span class="math inline">\(\mathrm{HT}_i\)</span> (Definition <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:main-summand-like" data-reference-type="ref"
+data-reference="dp-def:main-summand-like">80.1.7</a>).
+There is an <span class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span> such that for every <span
+class="math inline">\(1 \le j \le m\)</span>:</em></p>
+<ol>
+<li><p><em>the twist <span class="math inline">\(\vartheta^j\)</span> is
+auxiliary with ramification at most <span
+class="math inline">\(\mathrm{tw}_\ell\)</span> (Definition <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:aux-twist" data-reference-type="ref"
+data-reference="dp-def:aux-twist">80.1.5</a>);</em></p></li>
+<li><p><em>for each <span class="math inline">\(i\)</span>, the twist
+<span class="math inline">\(\widehat{\vartheta^j}R_i\)</span> has Selmer
+bound <span class="math inline">\(\mathrm{tw}_\ell\)</span>
+(Definition <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:selmer-bound" data-reference-type="ref"
+data-reference="dp-def:selmer-bound">80.1.9</a>);</em></p></li>
+<li><p><em>for each ramified critical pair <span
+class="math inline">\(P\)</span> and each sign <span
+class="math inline">\(\epsilon\)</span>, the ratio <span
+class="math inline">\(R_P(\vartheta^j, \epsilon)\)</span> of
+Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:pair" data-reference-type="ref"
+data-reference="ob-def:pair">37.10.1</a> has <span
+class="math inline">\(\operatorname{val}_+\bigl(\iota(R_P(\vartheta^j,
+\epsilon))\bigr) \le \mathrm{tw}_\ell\)</span>.</em></p></li>
+</ol>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:selmer-input">Problem 85.1.6</a>, <a href="#pr:assembly">Problem 85.2.4</a>; <a href="20261126T081200--a-measure-for-hecke-values__workbook.html">Chapter 89</a>; <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html">Chapter 90</a>: <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#pr:assemble">Problem 90.4.2</a>, <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#pr:twisting">Problem 90.4.3</a></div><!-- used-in:end -->
+</div>
+<p><em>Status</em>: deduced in Chapter <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#chap"
+data-reference-type="ref" data-reference="w5-chap">90</a>,
+Problems <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#pr:assemble" data-reference-type="ref"
+data-reference="w5-pr:assemble">90.4.2</a> and <a
+href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#pr:twisting" data-reference-type="ref"
+data-reference="w5-pr:twisting">90.4.3</a>. It uses Theorem <a
+href="#thm:small" data-reference-type="ref"
+data-reference="thm:small">85.1.1</a> at <span
+class="math inline">\(\varepsilon = 2^{-\ell}\)</span>, Selmer data
+supplied by Theorem <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#thm:datum" data-reference-type="ref"
+data-reference="w5-thm:datum">90.3.1</a>, and the systems
+supplied by Theorem <a href="20261126T081200--a-measure-for-hecke-values__workbook.html#thm:pair-system"
+data-reference-type="ref"
+data-reference="w4-thm:pair-system">89.3.1</a>.</p>
+<div id="pr:selmer-input" class="problem" data-progress-ids="[&quot;23AY&quot;,&quot;20261126T031000--twists-with-few-congruences__workbook.tex#pr:selmer-input&quot;]"><a class="stable-tag" href="tag/23AY.html" title="Stable tag: cite as Tag 23AY">Tag 23AY</a>
+<p><strong>Problem 85.1.6</strong>. For each <span
+class="math inline">\(R_i\)</span> in Theorem <a href="#thm:twisting"
+data-reference-type="ref" data-reference="thm:twisting">85.1.2</a>, let <span
+class="math inline">\(T_{\mathrm{Sel}}\)</span> be the datum supplied
+for <span class="math inline">\(R_i\)</span> by Problem <a
+href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#pr:torsion" data-reference-type="ref"
+data-reference="w5-pr:torsion">90.4.1</a>, with the bound of
+Theorem <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#thm:datum" data-reference-type="ref"
+data-reference="w5-thm:datum">90.3.1</a>. Show that <span
+class="math inline">\(\mathrm{bd}(T_{\mathrm{Sel}}) + 2^{-\ell} \le
+\mathrm{tw}_\ell\)</span>.</p>
+</div>
+<div id="pr:ratio-input" class="problem" data-progress-ids="[&quot;23AZ&quot;,&quot;20261126T031000--twists-with-few-congruences__workbook.tex#pr:ratio-input&quot;]"><a class="stable-tag" href="tag/23AZ.html" title="Stable tag: cite as Tag 23AZ">Tag 23AZ</a>
+<p><strong>Problem 85.1.7</strong>. For a system supplied by Theorem <a
+href="20261126T081200--a-measure-for-hecke-values__workbook.html#thm:pair-system" data-reference-type="ref"
+data-reference="w4-thm:pair-system">89.3.1</a> and a twist
+<span class="math inline">\(\xi\)</span> satisfying its hypotheses,
+suppose <span
+class="math inline">\(\operatorname{val}(\hat\xi(\mathrm{St}_{Q_\xi}))
+\le \mathrm{bd}(\mathrm{St}) + 2^{-\ell}\)</span>. Show that <span
+class="math inline">\(\operatorname{val}_+(\iota(R_P(\xi,\epsilon))) \le
+\mathrm{tw}_\ell\)</span>.</p>
+</div>
+<p>The integer <span class="math inline">\(\mathcal N\)</span> of
+Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a> is the order of a product of
+finite general linear groups; the next problem is a numerical example of
+such an order and its valuation.</p>
+<div id="pr:group-order" class="problem" data-progress-ids="[&quot;23B2&quot;,&quot;20261126T031000--twists-with-few-congruences__workbook.tex#pr:group-order&quot;]"><a class="stable-tag" href="tag/23B2.html" title="Stable tag: cite as Tag 23B2">Tag 23B2</a>
+<p><strong>Problem 85.1.8</strong>. <span
+class="math inline">\(\#\mathrm{GL}_3(\mathbb F_7) = 33784128 = 2^6\cdot
+3^4\cdot 7^3\cdot 19\)</span>, and <span
+class="math inline">\(\operatorname{val}_3(7^e - 1) = 1, 1, 2\)</span>
+for <span class="math inline">\(e = 1, 2, 3\)</span>, with sum <span
+class="math inline">\(4 = \operatorname{val}_3(\#\mathrm{GL}_3(\mathbb
+F_7))\)</span>.</p>
+</div>
+<h1 id="sec:regular">§85.2. Regular families <a class="stable-tag" href="tag/23B3.html" title="Stable tag: cite as Tag 23B3">Tag 23B3</a></h1>
+<p>As in Chapter <a href="20261126T030100--a-twist-for-each-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="at-chap">6</a>, the twist may depend on the
+prime: it is chosen for every <span class="math inline">\(\iota \mid
+\ell\)</span>, and families <span class="math inline">\(y =
+(y_\iota)\)</span> are measured by their heights (Section <a
+href="20261125T000000--slope-method__workbook.html#sec:heights" data-reference-type="ref"
+data-reference="sd-sec:heights">5.3</a>). Regular families
+and small ratios are those of Definitions <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:regular"
+data-reference-type="ref"
+data-reference="l5-def:regular">79.1.3</a> and <a
+href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:small-ratios" data-reference-type="ref"
+data-reference="l5-def:small-ratios">79.1.2</a>; the
+denominators are measured against the budget <span
+class="math inline">\(B = U/(mk)\)</span>, <span class="math inline">\(U
+= fa\log^3 b\)</span>.</p>
+<div id="pr:height" class="problem" data-progress-ids="[&quot;23B4&quot;,&quot;20261126T031000--twists-with-few-congruences__workbook.tex#pr:height&quot;]"><a class="stable-tag" href="tag/23B4.html" title="Stable tag: cite as Tag 23B4">Tag 23B4</a>
+<p><strong>Problem 85.2.1</strong>. Let <span class="math inline">\(e_\ell
+\ge 0\)</span> be reals with <span class="math inline">\(\sum_{\ell \in
+P_0} e_\ell\log \ell \le c\)</span> for every finite set <span
+class="math inline">\(P_0\)</span> of primes. If <span
+class="math inline">\(\lVert \iota(y_\iota)\rVert \le
+\ell^{e_\ell}\)</span> for every prime <span
+class="math inline">\(\ell\)</span> and every <span
+class="math inline">\(\iota \mid \ell\)</span>, then <span
+class="math inline">\(y\)</span> has height at most <span
+class="math inline">\(c\)</span>.</p>
+</div>
+<div id="pr:inverse" class="problem" data-progress-ids="[&quot;23B5&quot;,&quot;20261126T031000--twists-with-few-congruences__workbook.tex#pr:inverse&quot;]"><a class="stable-tag" href="tag/23B5.html" title="Stable tag: cite as Tag 23B5">Tag 23B5</a>
+<p><strong>Problem 85.2.2</strong>. If <span class="math inline">\(y \in
+\mathbb{C}\)</span> and <span
+class="math inline">\(\operatorname{val}_+(\iota(y)) \le c\)</span> for
+a real <span class="math inline">\(c \ge 0\)</span>, then <span
+class="math inline">\(y \ne 0\)</span> and <span
+class="math inline">\(\lVert\iota(y^{-1})\rVert \le
+\ell^{c}\)</span>.</p>
+</div>
+<div id="pr:coprime" class="problem" data-progress-ids="[&quot;23B6&quot;,&quot;20261126T031000--twists-with-few-congruences__workbook.tex#pr:coprime&quot;]"><a class="stable-tag" href="tag/23B6.html" title="Stable tag: cite as Tag 23B6">Tag 23B6</a>
+<p><strong>Problem 85.2.3</strong>. If <span
+class="math inline">\(Q\)</span> is admissible for a set <span
+class="math inline">\(\Sigma_0\)</span> containing the places above
+<span class="math inline">\(\ell\)</span>, then <span
+class="math inline">\(\ell\)</span> does not divide the product of the
+norms of the places of <span class="math inline">\(Q\)</span>.</p>
+</div>
+<p>In the proof, <span class="math inline">\(\sum_{\ell \in
+P_0}(\mathrm{cl}_\ell + \operatorname{val}_\ell(C_1))\log\ell \le
+B\)</span> for every finite set <span class="math inline">\(P_0\)</span>
+of primes, with <span class="math inline">\(C_1\)</span> as in
+Problem <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#pr:budget-sum" data-reference-type="ref"
+data-reference="dp-pr:budget-sum">80.1.7</a>. That problem
+deduces the inequality from the five size comparisons displayed before
+it, using Theorem <a href="20261126T051800--the-local-loss-and-the-sparse-places__workbook.html#thm:local-loss" data-reference-type="ref"
+data-reference="n3-thm:local-loss">82.4.1</a> for the local
+losses.</p>
+<div id="thm:regular" class="theorem"><a class="stable-tag" href="tag/23B7.html" title="Stable tag: cite as Tag 23B7">Tag 23B7</a>
+<p><strong>Theorem 85.2.1</strong>. <em>For all data <span
+class="math inline">\(D\)</span> there is a regular family <span
+class="math inline">\(\theta = (\theta_\iota)\)</span> of <span
+class="math inline">\(m\)</span>-fold twists.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T040200--theorem-c__workbook.html">Chapter 67</a>; <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html">Chapter 79</a></div><!-- used-in:end -->
+</div>
+<p><em>Status</em>: read from the proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>. The next two problems
+give the clause on small ratios and one step of the clause on
+denominators. For the hypothesis of the first: the comparison of sizes
+displayed before Problem <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#pr:budget-sum"
+data-reference-type="ref"
+data-reference="dp-pr:budget-sum">80.1.7</a> gives <span
+class="math inline">\((4f + 3)\, r \log \mathcal N + 2 \le
+x^{999}\)</span>, and <span class="math inline">\(x^{999} \le
+x_1\)</span> by Definition <a href="20261126T030300--the-data__workbook.html#def:data"
+data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a>, so by Problem <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#pr:negligible" data-reference-type="ref"
+data-reference="dp-pr:negligible">80.1.6</a> the sum of
+<span class="math inline">\(\mathrm{tw}_\ell \log \ell\)</span> over
+every finite set of primes is at most <span
+class="math inline">\(x^{999} \le x_1\)</span>.</p>
+<div id="pr:assembly" class="problem" data-progress-ids="[&quot;23B8&quot;,&quot;20261126T031000--twists-with-few-congruences__workbook.tex#pr:assembly&quot;]"><a class="stable-tag" href="tag/23B8.html" title="Stable tag: cite as Tag 23B8">Tag 23B8</a>
+<p><strong>Problem 85.2.4</strong>. Assume <span
+class="math inline">\(\sum_{\ell \in P_0} \mathrm{tw}_\ell\log \ell \le
+x_1\)</span> for every finite set <span
+class="math inline">\(P_0\)</span> of primes. If each <span
+class="math inline">\(\theta_\iota\)</span> satisfies the conclusions of
+Theorem <a href="#thm:twisting" data-reference-type="ref"
+data-reference="thm:twisting">85.1.2</a> at <span
+class="math inline">\(\iota\)</span>, then <span
+class="math inline">\(\theta\)</span> has small ratios.</p>
+</div>
+<div id="pr:class-number" class="problem" data-progress-ids="[&quot;23B9&quot;,&quot;20261126T031000--twists-with-few-congruences__workbook.tex#pr:class-number&quot;]"><a class="stable-tag" href="tag/23B9.html" title="Stable tag: cite as Tag 23B9">Tag 23B9</a>
+<p><strong>Problem 85.2.5</strong>. Let <span class="math inline">\(C_1 \ge
+1\)</span> be an integer, <span class="math inline">\(y \in
+\mathbb{C}\)</span> and <span class="math inline">\(c\)</span> real. If
+<span class="math inline">\(\lVert\iota(C_1y)\rVert \le e^{c}\)</span>,
+then <span class="math inline">\(\lVert\iota(y)\rVert \le e^{c +
+\operatorname{val}_\ell(C_1)\log\ell}\)</span>.</p>
+</div>
+<p>For the denominator clause of regularity, the proof uses the
+ramification and Selmer bounds of Theorem <a href="#thm:twisting"
+data-reference-type="ref" data-reference="thm:twisting">85.1.2</a>. It takes
+one main summand for each lift index and each eigensystem occurring on
+the good forms of <span class="math inline">\(W_m\)</span>, and one
+rank-one main summand for the untwisted lift from <span
+class="math inline">\(U(1)\)</span> for each main pair and its lift
+index. At <span class="math inline">\(\vartheta =
+\theta_\iota^j\)</span> it applies Theorem <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#thm:denominators" data-reference-type="ref"
+data-reference="dp-thm:denominators">80.1.1</a> to the
+image of the good-form lift from <span
+class="math inline">\(W_j\)</span> and to the line of the twisted lift
+of the constant function for each main pair for <span
+class="math inline">\(j\)</span>. It uses that the <span
+class="math inline">\(U(1)\)</span> stabilizers at the chosen level are
+trivial. The logarithmic allowance for the pairing of the projections of
+two test forms onto that line is <span
+class="math inline">\((\mathrm{cl}_\ell +
+\operatorname{val}_\ell(C_1))\log\ell\)</span>; the class number enters
+as in Problem <a href="#pr:class-number" data-reference-type="ref"
+data-reference="pr:class-number">85.2.5</a>. This allowance also suffices
+for clearing the good-form projection. The preceding finite-prime bound
+puts the sum of these allowances within <span
+class="math inline">\(B\)</span>.</p>
+<p>This chapter has deduced the small twists from the polynomial input
+and the lemma on roots of unity, and the small ratios of a regular
+family from the twisting theorem, which is deduced in Chapter <a
+href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#chap" data-reference-type="ref"
+data-reference="w5-chap">90</a>. We take from the proof the
+polynomial input (Theorem <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#thm:polynomials"
+data-reference-type="ref"
+data-reference="w2-thm:polynomials">87.6.1</a>, developed
+in Chapter <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#chap" data-reference-type="ref"
+data-reference="w2-chap">87</a>), the existence of the main
+summands and the estimate for the pairing on the line of the twisted
+lift; and Theorem <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#thm:denominators"
+data-reference-type="ref"
+data-reference="dp-thm:denominators">80.1.1</a>, which
+Chapter <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html#chap" data-reference-type="ref"
+data-reference="n1-chap">83</a> deduces from the eigenvalue bound
+of Theorem <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html#thm:eigenvalues" data-reference-type="ref"
+data-reference="n1-thm:eigenvalues">83.4.1</a>. Chapter <a
+href="20261126T040200--theorem-c__workbook.html#chap" data-reference-type="ref"
+data-reference="tc-chap">67</a> uses Theorem <a
+href="#thm:regular" data-reference-type="ref"
+data-reference="thm:regular">85.2.1</a> to choose a family and applies
+Theorem <a href="20261126T030800--the-cost-of-one-lift__workbook.html#thm:main" data-reference-type="ref"
+data-reference="col-thm:main">74.2.1</a> to that family.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span> (<code>grh/src/</code>,
+namespace <code>New.Selmer</code> unless stated), Theorem <a
+href="#thm:small" data-reference-type="ref"
+data-reference="thm:small">85.1.1</a> is
+<code>exists_anticyclotomic_twist</code>, with conclusions
+<code>IsSmallTwist</code>. Theorem <a href="#thm:twisting"
+data-reference-type="ref" data-reference="thm:twisting">85.1.2</a> is
+<code>exists_mFoldTwist_hasDivisibleSelmerLengthLe</code>; it uses
+<code>exists_selmerData_isTorsionLevel</code> for the common choice of
+coefficient ring, data and torsion level. Theorem <a href="#thm:regular"
+data-reference-type="ref" data-reference="thm:regular">85.2.1</a> is
+<code>New.exists_isRegularFamily</code>; its denominator clause is
+<code>New.Data.IsRegularFamily.exists_denominator_bound</code>. The
+proof uses <code>exists_mFoldTwist_hasDenominatorsLe</code> at each
+<span class="math inline">\(\iota\)</span> and the finite-prime budget
+bound recalled before Theorem <a href="#thm:regular"
+data-reference-type="ref" data-reference="thm:regular">85.2.1</a>. The two
+families of main summands come from
+<code>exists_isMainSummand_descentPair</code> and
+<code>exists_isMainSummand_mainPair</code>. The lemma
+<code>exists_stickelbergerSystem_ellVal_ratio_le</code> supplies a
+system for each ramified critical pair and sign and gives the ratio
+bound for every eligible twist and every allowance in <span
+class="math inline">\([0,+\infty]\)</span>. Problem <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#pr:ratio-from-system" data-reference-type="ref"
+data-reference="w2-pr:ratio-from-system">87.5.5</a>
+deduces the implication for finite allowances from the bound and norm
+identity of Theorem <a href="20261126T081200--a-measure-for-hecke-values__workbook.html#thm:pair-system"
+data-reference-type="ref"
+data-reference="w4-thm:pair-system">89.3.1</a>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="section-sectwisting">Section <a
+href="#sec:twisting" data-reference-type="ref"
+data-reference="sec:twisting">85.1</a></h2>
+<dl>
+<dt><a href="#pr:insertion-model" data-reference-type="ref"
+data-reference="pr:insertion-model">85.1.1</a></dt>
+<dd>
+<p>Write <span class="math inline">\(a\)</span> modulo <span
+class="math inline">\(uv\)</span> as <span class="math inline">\(b +
+ku\)</span> with <span class="math inline">\(0 \le k &lt; v\)</span>,
+and remove the <span class="math inline">\(a\)</span> divisible by <span
+class="math inline">\(v\)</span>.</p>
+</dd>
+<dt><a href="#pr:tilted-line" data-reference-type="ref"
+data-reference="pr:tilted-line">85.1.2</a></dt>
+<dd>
+<p>In the quotient of <span
+class="math inline">\(G_{\mathbb{Q}_{11}}\)</span> by wild inertia, an
+arithmetic Frobenius lift <span class="math inline">\(\varphi\)</span>
+and a generator <span class="math inline">\(s\)</span> of tame inertia
+satisfy <span class="math inline">\(\varphi s\varphi^{-1} =
+s^{11}\)</span>. Reduce <span class="math inline">\(11\)</span> modulo
+<span class="math inline">\(5\)</span>.</p>
+</dd>
+<dt><a href="#pr:psi-power" data-reference-type="ref"
+data-reference="pr:psi-power">85.1.3</a></dt>
+<dd>
+<p>For the last claim, the <span
+class="math inline">\(\lg_{w&#39;}\)</span> with <span
+class="math inline">\(w&#39; \ne w\)</span> are unramified at <span
+class="math inline">\(w\)</span> because <span
+class="math inline">\(Q\)</span> is admissible.</p>
+</dd>
+<dt><a href="#pr:inertia-sum" data-reference-type="ref"
+data-reference="pr:inertia-sum">85.1.4</a></dt>
+<dd>
+<p><span class="math inline">\(\lg_w\)</span> is trivial on wild
+inertia, and a generator of tame inertia at <span
+class="math inline">\(w\)</span> maps to a generator of <span
+class="math inline">\(\mathbb{Z}/\ell^{h_1}\)</span>; so <span
+class="math inline">\(\chi_\zeta(s_w) = \zeta_w^a\)</span> with <span
+class="math inline">\(a\)</span> prime to <span
+class="math inline">\(\ell\)</span>, and <span
+class="math inline">\(\zeta_w^{an}\)</span>, <span
+class="math inline">\(\zeta_w^n\)</span> have the same order. At <span
+class="math inline">\(\bar w\)</span> use <span
+class="math inline">\(\lg_w(g^c) = -\lg_w(g)\)</span>. Then Problem <a
+href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#pr:powers-far" data-reference-type="ref"
+data-reference="w1-pr:powers-far">86.2.5</a>.</p>
+</dd>
+<dt><a href="#pr:twist-from-roots" data-reference-type="ref"
+data-reference="pr:twist-from-roots">85.1.5</a></dt>
+<dd>
+<p>Choose <span class="math inline">\(s_0\)</span> as in Theorem <a
+href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#thm:polynomials" data-reference-type="ref"
+data-reference="w2-thm:polynomials">87.6.1</a>, then a
+rational <span class="math inline">\(\rho &gt; 0\)</span> with <span
+class="math inline">\(s_0\rho \le \varepsilon/2\)</span>, then <span
+class="math inline">\(h_0\)</span> by Corollary <a href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#pr:powers"
+data-reference-type="ref"
+data-reference="w1-pr:powers">86.2.2</a> with the bounds <span
+class="math inline">\(\mathrm{bd}+ 1 \ge 0\)</span> (the polynomial
+input supplies for each <span class="math inline">\(F\)</span> a point
+<span class="math inline">\(x_F\)</span> with <span
+class="math inline">\(0\le\operatorname{val}(F(x_F))\le\mathrm{bd}+s_0\rho\)</span>)
+and <span class="math inline">\(\varepsilon/2\)</span>, then a
+sufficiently large <span class="math inline">\(h_1 \ge h_0\)</span> and
+the data of the input at level <span
+class="math inline">\(\ell^{h_1}\)</span>. Use Problem <a
+href="#pr:psi-power" data-reference-type="ref"
+data-reference="pr:psi-power">85.1.3</a>; for the ramification, Problem <a
+href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.html#pr:powers-far" data-reference-type="ref"
+data-reference="w1-pr:powers-far">86.2.5</a>; for the last
+sum, Problem <a href="#pr:inertia-sum" data-reference-type="ref"
+data-reference="pr:inertia-sum">85.1.4</a> and <span
+class="math inline">\(2\,\#Q \le s_0\)</span>.</p>
+</dd>
+<dt><a href="#pr:selmer-input" data-reference-type="ref"
+data-reference="pr:selmer-input">85.1.6</a></dt>
+<dd>
+<p>Use the bound in Theorem <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#thm:datum"
+data-reference-type="ref"
+data-reference="w5-thm:datum">90.3.1</a> and <span
+class="math inline">\(\operatorname{rk} R_i \le r\)</span>.</p>
+</dd>
+<dt><a href="#pr:ratio-input" data-reference-type="ref"
+data-reference="pr:ratio-input">85.1.7</a></dt>
+<dd>
+<p>Combine Problem <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#pr:ratio-from-system"
+data-reference-type="ref"
+data-reference="w2-pr:ratio-from-system">87.5.5</a>
+and the first inequality in Problem <a href="20261126T081300--from-a-representation-to-a-selmer-datum__workbook.html#pr:twisting"
+data-reference-type="ref"
+data-reference="w5-pr:twisting">90.4.3</a>.</p>
+</dd>
+<dt>Theorem <a href="#thm:small" data-reference-type="ref"
+data-reference="thm:small">85.1.1</a></dt>
+<dd>
+<p>How do the three bounds change when <span
+class="math inline">\(\varepsilon\)</span> increases?</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="section-secregular">Section <a
+href="#sec:regular" data-reference-type="ref"
+data-reference="sec:regular">85.2</a></h2>
+<dl>
+<dt><a href="#pr:height" data-reference-type="ref"
+data-reference="pr:height">85.2.1</a></dt>
+<dd>
+<p>Which multiplier leaves the local inequalities unchanged?</p>
+</dd>
+<dt><a href="#pr:coprime" data-reference-type="ref"
+data-reference="pr:coprime">85.2.3</a></dt>
+<dd>
+<p>A place of <span class="math inline">\(Q\)</span> has prime norm and
+does not lie above <span class="math inline">\(\ell\)</span>.</p>
+</dd>
+<dt><a href="#pr:assembly" data-reference-type="ref"
+data-reference="pr:assembly">85.2.4</a></dt>
+<dd>
+<p>For coprimality, apply Problem <a href="#pr:coprime"
+data-reference-type="ref" data-reference="pr:coprime">85.2.3</a> to the
+first power using clause 1 of Theorem <a href="#thm:twisting"
+data-reference-type="ref" data-reference="thm:twisting">85.1.2</a> and
+Definition <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:aux-twist" data-reference-type="ref"
+data-reference="dp-def:aux-twist">80.1.5</a>(a). For the
+inverse ratios, use Problems <a href="#pr:inverse"
+data-reference-type="ref" data-reference="pr:inverse">85.2.2</a> and <a
+href="#pr:height" data-reference-type="ref"
+data-reference="pr:height">85.2.1</a>.</p>
+</dd>
+<dt><a href="#pr:class-number" data-reference-type="ref"
+data-reference="pr:class-number">85.2.5</a></dt>
+<dd>
+<p><span class="math inline">\(\lVert\iota(C_1)\rVert =
+\ell^{-\operatorname{val}_\ell(C_1)}\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Ne"><span class="bib-label">[Ne]</span> J. Neukirch, <em>Algebraic Number Theory</em>, Grundlehren Math. Wiss. 322, Springer, 1999.</p>
+<p id="ref-Wa"><span class="bib-label">[Wa]</span> L. C. Washington, <em>Introduction to Cyclotomic Fields</em>, 2nd ed., Grad. Texts in Math. 83, Springer, 1997.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

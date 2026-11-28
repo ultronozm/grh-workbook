@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-8/kerv8IFzugE3j4JO3xf6SdsZUVUXzK6foaziXoSJg=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>A twist for each prime</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","R":"\\mathbb{R}","C":"\\mathbb{C}","Qlb":"\\overline{\\Q}_\\ell","Oc":"\\mathcal{O}","ii":"\\mathrm{i}","Aut":"\\operatorname{Aut}","diag":"\\operatorname{diag}","cvol":"c_{\\mathrm{vol}}","cshort":"c_{\\mathrm{short}}","cden":"c_{\\mathrm{den}}","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="6">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T030100--a-twist-for-each-prime__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 09:11:17
+      <a href="20261126T030100--a-twist-for-each-prime__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T030100--a-twist-for-each-prime__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T030100--a-twist-for-each-prime__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">A twist for each prime <a class="stable-tag" href="tag/233L.html" title="Stable tag: cite as Tag 233L">Tag 233L</a></h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:toy" id="toc-sec:toy">§6.1. One twist on \(\mathbb{C}^2\)</a></li>
+<li><a href="#sec:general" id="toc-sec:general">§6.2. Index, covolume and the inequality</a></li>
+<li><a href="#sec:each" id="toc-sec:each">§6.3. A twist for each prime</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Finite-dimensional complex inner product spaces; Hadamard’s
+inequality and Fischer’s inequality for positive semidefinite hermitian
+matrices <span class="citation"
+data-cites="HJ">[<a href="#ref-HJ">HJ</a>]</span>. From Chapter <a
+href="20261125T000000--slope-method__workbook.html#chap" data-reference-type="ref"
+data-reference="c5-chap">5</a>, <em>Size against
+divisibility</em>: Sections <a href="20261125T000000--slope-method__workbook.html#sec:heights"
+data-reference-type="ref"
+data-reference="c5-sec:heights">5.3</a> and <a
+href="20261125T000000--slope-method__workbook.html#sec:index" data-reference-type="ref"
+data-reference="c5-sec:index">5.4</a>, whose notation we
+keep: isomorphisms <span class="math inline">\(\iota \mid \ell\)</span>,
+<span class="math inline">\(\lvert\cdot\rvert_\iota\)</span>, <span
+class="math inline">\(\mathcal{O}_\iota\)</span>, <span
+class="math inline">\(\bar\iota\)</span>, families and their heights,
+lattice data, index and covolume. Inner products are conjugate-linear in
+the first variable. For vectors <span class="math inline">\(w_1, \dots,
+w_n\)</span> in an inner product space let <span
+class="math inline">\(\Gamma(w) := \det(\langle w_i, w_k
+\rangle)_{i,k}\)</span>, with <span
+class="math inline">\(\Gamma(\varnothing) = 1\)</span>.</p>
+<p>Theorem <a href="20261125T000000--slope-method__workbook.html#thm:one" data-reference-type="ref"
+data-reference="c5-thm:one">5.4.3</a> compares the size and the
+divisibility of one Gram determinant, both read through one map <span
+class="math inline">\(\Theta\)</span>. The inequality below reads the
+size through a fixed map <span class="math inline">\(\Theta_1\)</span>.
+At each isomorphism <span class="math inline">\(\iota \mid \ell\)</span>
+it takes a <em>twist</em> <span
+class="math inline">\(\theta_\iota\)</span> allowed at <span
+class="math inline">\(\ell\)</span> and reads the determinant valuation
+through <span class="math inline">\(\Theta_{\theta_\iota}\)</span>. For
+injective maps the Gram determinant of a basis under <span
+class="math inline">\(\Theta_1\)</span> is its Gram determinant under
+<span class="math inline">\(\Theta_{\theta_\iota}\)</span> times a
+number <span class="math inline">\(Z(1)/Z(\theta_\iota)\)</span> that
+does not depend on the basis. This chapter works this out on <span
+class="math inline">\(\mathbb{C}^2\)</span> and then states the general
+inequality.</p>
+<h1 id="sec:toy">§6.1. One twist on <span
+class="math inline">\(\mathbb{C}^2\)</span> <a class="stable-tag" href="tag/233M.html" title="Stable tag: cite as Tag 233M">Tag 233M</a></h1>
+<p>A lattice datum asks for <span class="math inline">\(\lvert \langle
+\varphi, \varphi&#39; \rangle \rvert_\iota \le 1\)</span> with <span
+class="math inline">\(\varphi\)</span> integral at <span
+class="math inline">\(\bar\iota\)</span> and <span
+class="math inline">\(\varphi&#39;\)</span> integral at <span
+class="math inline">\(\iota\)</span>. The two isomorphisms cannot be
+taken equal.</p>
+<div id="pr:one-place" class="problem" data-progress-ids="[&quot;233N&quot;,&quot;20261126T030100--a-twist-for-each-prime__workbook.tex#pr:one-place&quot;]"><a class="stable-tag" href="tag/233N.html" title="Stable tag: cite as Tag 233N">Tag 233N</a>
+<p><strong>Problem 6.1.1</strong>. Some <span class="math inline">\(\iota
+\mid 5\)</span> has <span class="math inline">\(\lvert 2 +
+\mathrm{i}\rvert_\iota = 1\)</span>. For such <span
+class="math inline">\(\iota\)</span>, <span class="math inline">\(v :=
+(2 + \mathrm{i})^{-1}\)</span> lies in <span
+class="math inline">\(\mathcal{O}_\iota\)</span>, and <span
+class="math inline">\(\langle v, v \rangle = 1/5\)</span> does not.</p>
+</div>
+<p>A <em>twisted lattice</em> on a complex vector space <span
+class="math inline">\(V\)</span>, with twists in a set <span
+class="math inline">\(\mathrm{Tw}\)</span> that has a distinguished
+element <span class="math inline">\(1\)</span>, consists of the
+following data.</p>
+<ol>
+<li><p>For each <span class="math inline">\(\vartheta \in
+\mathrm{Tw}\)</span>, a complex inner product space <span
+class="math inline">\(W_\vartheta\)</span> and a linear map <span
+class="math inline">\(\Theta_\vartheta\colon V \to
+W_\vartheta\)</span>.</p></li>
+<li><p>A predicate on <span
+class="math inline">\(\mathbb{N}\times\mathrm{Tw}\)</span>. At a prime
+<span class="math inline">\(\ell\)</span> the predicate specifies the
+twists <em>allowed</em> at <span class="math inline">\(\ell\)</span>. In
+the toys take it to be false at nonprimes.</p></li>
+<li><p>For each <span class="math inline">\(\vartheta \in
+\mathrm{Tw}\)</span> and each <span class="math inline">\(\iota \mid
+\ell\)</span>, an <span
+class="math inline">\(\mathcal{O}_\iota\)</span>-submodule <span
+class="math inline">\(\Lambda_{\vartheta, \iota} \subseteq
+W_\vartheta\)</span>, such that <span class="math inline">\(\lvert
+\langle \varphi, \varphi&#39; \rangle \rvert_\iota \le 1\)</span> for
+all <span class="math inline">\(\varphi \in \Lambda_{\vartheta,
+\bar\iota}\)</span> and <span class="math inline">\(\varphi&#39; \in
+\Lambda_{\vartheta, \iota}\)</span> whenever <span
+class="math inline">\(\vartheta\)</span> is allowed at <span
+class="math inline">\(\ell\)</span>.</p></li>
+<li><p>Rational coordinates on <span class="math inline">\(W_1\)</span>
+alone: a finite set <span class="math inline">\(I\)</span>, a linear map
+<span class="math inline">\(b\colon W_1 \to \mathbb{C}^I\)</span> and a
+matrix <span class="math inline">\(G \in M_I(\mathbb{Q})\)</span>,
+positive definite as a complex matrix, with <span
+class="math inline">\(\langle \varphi, \varphi&#39; \rangle =
+b(\varphi)^* G\, b(\varphi&#39;)\)</span> for all <span
+class="math inline">\(\varphi, \varphi&#39; \in W_1\)</span>.</p></li>
+</ol>
+<p>A vector <span class="math inline">\(y \in V\)</span> is <em>integral
+at <span class="math inline">\(\iota \mid \ell\)</span></em> if <span
+class="math inline">\(\Theta_\vartheta y \in \Lambda_{\vartheta,
+\iota}\)</span> for every <span class="math inline">\(\vartheta\)</span>
+allowed at <span class="math inline">\(\ell\)</span>; these vectors form
+an <span class="math inline">\(\mathcal{O}_\iota\)</span>-submodule
+<span class="math inline">\(M_\iota \subseteq V\)</span>. Sizes will be
+read through <span class="math inline">\(\Theta_1\)</span> alone.</p>
+<p>Throughout, <span class="math inline">\(p\)</span> and <span
+class="math inline">\(r\)</span> are distinct primes. The <em>toy</em>
+is the following twisted lattice on <span class="math inline">\(V =
+\mathbb{C}^2\)</span> with <span class="math inline">\(\mathrm{Tw} =
+\{1, \vartheta\}\)</span>: <span class="math inline">\(W_1 = W_\vartheta
+= \mathbb{C}^2\)</span> with the standard inner product, <span
+class="math inline">\(\Theta_1 = \mathrm{id}\)</span>, <span
+class="math inline">\(\Theta_\vartheta = \operatorname{diag}(p^{-1},
+1)\)</span>; the twist <span class="math inline">\(1\)</span> is allowed
+at every prime and <span class="math inline">\(\vartheta\)</span> at
+every prime except <span class="math inline">\(r\)</span>; <span
+class="math inline">\(\Lambda_{1, \iota} = \Lambda_{\vartheta, \iota} =
+\mathcal{O}_\iota^2\)</span> for every <span
+class="math inline">\(\iota\)</span>; <span class="math inline">\(I =
+\{1, 2\}\)</span>, <span class="math inline">\(b = \mathrm{id}\)</span>,
+<span class="math inline">\(G = 1\)</span>. Let <span
+class="math inline">\(e_1, e_2\)</span> be the standard basis.</p>
+<div id="pr:toy-lattice" class="problem" data-progress-ids="[&quot;233P&quot;,&quot;20261126T030100--a-twist-for-each-prime__workbook.tex#pr:toy-lattice&quot;]"><a class="stable-tag" href="tag/233P.html" title="Stable tag: cite as Tag 233P">Tag 233P</a>
+<p><strong>Problem 6.1.2</strong>. The toy is a twisted lattice. Its
+integral vectors are <span class="math inline">\(M_\iota =
+p\mathcal{O}_\iota \oplus \mathcal{O}_\iota\)</span> for <span
+class="math inline">\(\iota \mid p\)</span>, and <span
+class="math inline">\(M_\iota = \mathcal{O}_\iota^2\)</span> for <span
+class="math inline">\(\iota \mid \ell\)</span>, <span
+class="math inline">\(\ell \ne p\)</span>.</p>
+</div>
+<p>For a linear map <span class="math inline">\(u\colon U \to W\)</span>
+between finite-dimensional inner product spaces, <span
+class="math inline">\(u^*\)</span> is its adjoint, and <span
+class="math inline">\(u \circ w\)</span> is the family <span
+class="math inline">\(u(w_1), u(w_2), \dots\)</span>.</p>
+<div id="pr:gram-comp" class="problem" data-progress-ids="[&quot;233Q&quot;,&quot;20261126T030100--a-twist-for-each-prime__workbook.tex#pr:gram-comp&quot;]"><a class="stable-tag" href="tag/233Q.html" title="Stable tag: cite as Tag 233Q">Tag 233Q</a>
+<p><strong>Problem 6.1.3</strong>. If <span class="math inline">\(w_1,
+\dots, w_n \in U\)</span> and <span class="math inline">\(n = \dim
+U\)</span>, then <span class="math inline">\(\Gamma(u \circ w) =
+\det(u^* u)\, \Gamma(w)\)</span>.</p>
+</div>
+<p>The hypothesis <span class="math inline">\(n = \dim U\)</span> cannot
+be dropped.</p>
+<div id="pr:not-basis" class="problem" data-progress-ids="[&quot;233R&quot;,&quot;20261126T030100--a-twist-for-each-prime__workbook.tex#pr:not-basis&quot;]"><a class="stable-tag" href="tag/233R.html" title="Stable tag: cite as Tag 233R">Tag 233R</a>
+<p><strong>Problem 6.1.4</strong>. In the toy, <span
+class="math inline">\(\Gamma(\Theta_\vartheta e_1) = p^{-2}\,
+\Gamma(\Theta_1 e_1)\)</span> and <span
+class="math inline">\(\Gamma(\Theta_\vartheta e_2) = \Gamma(\Theta_1
+e_2)\)</span>.</p>
+</div>
+<p>Let <span class="math inline">\(Z(\vartheta) :=
+\det(\Theta_\vartheta^* \Theta_\vartheta)\)</span>; in the toy <span
+class="math inline">\(Z(1) = 1\)</span> and <span
+class="math inline">\(Z(\vartheta) = p^{-2}\)</span>. Write <span
+class="math inline">\(\Gamma_\vartheta(w) := \Gamma(\Theta_\vartheta
+\circ w)\)</span>.</p>
+<div id="pr:toy-gain" class="problem" data-progress-ids="[&quot;233S&quot;,&quot;20261126T030100--a-twist-for-each-prime__workbook.tex#pr:toy-gain&quot;]"><a class="stable-tag" href="tag/233S.html" title="Stable tag: cite as Tag 233S">Tag 233S</a>
+<p><strong>Problem 6.1.5</strong>. In the toy, let <span
+class="math inline">\(w_1, w_2\)</span> be a basis of <span
+class="math inline">\(\mathbb{C}^2\)</span> with <span
+class="math inline">\(w_1, w_2 \in M_\iota\)</span> for every <span
+class="math inline">\(\iota \mid p\)</span>. Then <span
+class="math inline">\(\Gamma_1(w) = p^2\, \Gamma_\vartheta(w)\)</span>,
+and <span class="math inline">\(\lvert \Gamma_1(w) \rvert_\iota \le
+p^{-2}\)</span> for every <span class="math inline">\(\iota \mid
+p\)</span>.</p>
+</div>
+<p>Problem <a href="#pr:toy-gain" data-reference-type="ref"
+data-reference="pr:toy-gain">6.1.5</a> gives divisibility by <span
+class="math inline">\(p^2\)</span> at every <span
+class="math inline">\(\iota\mid p\)</span>. Section <a href="#sec:each"
+data-reference-type="ref" data-reference="sec:each">6.3</a> compares the
+gains from different choices of twist.</p>
+<h1 id="sec:general">§6.2. Index, covolume and the inequality <a class="stable-tag" href="tag/233T.html" title="Stable tag: cite as Tag 233T">Tag 233T</a></h1>
+<p>Fix a twisted lattice on <span class="math inline">\(V\)</span> with
+twists <span class="math inline">\(\mathrm{Tw}\)</span>. Heights of
+families are those of Section <a href="20261125T000000--slope-method__workbook.html#sec:heights"
+data-reference-type="ref"
+data-reference="c5-sec:heights">5.3</a>. We use two facts
+from there: Problem <a href="20261125T000000--slope-method__workbook.html#pr:height-mul"
+data-reference-type="ref"
+data-reference="c5-pr:height-mul">5.3.2</a>, that the
+product of families of heights at most <span
+class="math inline">\(a\)</span> and <span
+class="math inline">\(a&#39;\)</span> has height at most <span
+class="math inline">\(a+a&#39;\)</span>, and the <span
+class="math inline">\(m\)</span>-th power of a family of height at most
+<span class="math inline">\(a\)</span> has height at most <span
+class="math inline">\(ma\)</span> for every integer <span
+class="math inline">\(m\ge0\)</span>; and the product formula for
+families, Theorem <a href="20261125T000000--slope-method__workbook.html#thm:product" data-reference-type="ref"
+data-reference="c5-thm:product">5.3.1</a>: if <span
+class="math inline">\(z \in \mathbb{C}\)</span>, <span
+class="math inline">\(z \ne 0\)</span>, the constant family <span
+class="math inline">\(z\)</span> has height at most <span
+class="math inline">\(c\)</span>, and <span class="math inline">\(\lvert
+\sigma z \rvert \le e^{c&#39;}\)</span> for every <span
+class="math inline">\(\sigma \in
+\operatorname{Aut}(\mathbb{C})\)</span>, then <span
+class="math display">\[-c \le c&#39; .\]</span> Index and covolume are
+defined as in Section <a href="20261125T000000--slope-method__workbook.html#sec:index" data-reference-type="ref"
+data-reference="c5-sec:index">5.4</a>, with two changes:
+<span class="math inline">\(M_\iota\)</span> is now the module of
+vectors integral at <span class="math inline">\(\iota\)</span> for every
+allowed twist, and sizes are read through <span
+class="math inline">\(\Theta_1\)</span>, with the coordinates <span
+class="math inline">\(b\)</span> and the matrix <span
+class="math inline">\(G\)</span> of <span
+class="math inline">\(W_1\)</span>. Thus <span
+class="math inline">\(v_\sigma(y)\)</span> is <span
+class="math inline">\(b(\Theta_1 y)\)</span> with <span
+class="math inline">\(\sigma\)</span> applied to each coordinate, <span
+class="math inline">\(N(y, \sigma) = v_\sigma(y)^* G\,
+v_\sigma(y)\)</span>, a real number <span class="math inline">\(\ge
+0\)</span> because <span class="math inline">\(G\)</span> is positive
+definite as a complex matrix, so that the real part in Chapter <a
+href="20261125T000000--slope-method__workbook.html#chap" data-reference-type="ref"
+data-reference="c5-chap">5</a> may be omitted, and <span
+class="math inline">\(y\)</span> has covolume at most <span
+class="math inline">\(c\)</span> if <span class="math inline">\(\lvert
+\det(v_\sigma(y_i)^* G\, v_\sigma(y_k))_{i,k} \rvert \le e^c\)</span>
+for every <span class="math inline">\(\sigma\)</span>. A family <span
+class="math inline">\(y\)</span> has index at most <span
+class="math inline">\(\delta\)</span> if there is a function <span
+class="math inline">\(e\colon \mathbb{N} \to \mathbb{R}\)</span>,
+nonnegative everywhere, with <span class="math inline">\(\sum_{\ell \in
+U} e(\ell) \log \ell \le \delta\)</span> for every finite set <span
+class="math inline">\(U\)</span> of primes, such that for every <span
+class="math inline">\(\iota \mid \ell\)</span> some <span
+class="math inline">\(u \in M_n(\mathcal{O}_\iota)\)</span> <em>carries
+<span class="math inline">\(y\)</span> into <span
+class="math inline">\(M_\iota\)</span> with loss</em> <span
+class="math inline">\(e(\ell)\)</span>: <span
+class="math inline">\(\sum_k u_{ik} y_k \in M_\iota\)</span> for every
+<span class="math inline">\(i\)</span>, and <span
+class="math inline">\(\lvert \det u \rvert_\iota \ge
+\ell^{-e(\ell)}\)</span>. The matrix may depend on <span
+class="math inline">\(\iota\)</span> but not on the twist. For the
+untwisted coordinates, the conjugate bound of Problem <a
+href="20261125T000000--slope-method__workbook.html#pr:cs-det" data-reference-type="ref"
+data-reference="c5-pr:cs-det">5.4.8</a> holds for every twisted
+lattice, with the same proof: the modules <span
+class="math inline">\(\Lambda_{\vartheta,\iota}\)</span> play no role.
+If <span class="math inline">\(y\)</span> has covolume at most <span
+class="math inline">\(c\)</span>, then <span
+class="math display">\[\lvert \sigma(\Gamma_1(y)) \rvert \le e^c \quad
+\text{for every } \sigma \in
+\operatorname{Aut}(\mathbb{C}).\]</span></p>
+<p>Let <span class="math inline">\(y_1,\dots,y_n\)</span> and <span
+class="math inline">\(z_1,\dots,z_{n&#39;}\)</span> be vectors in <span
+class="math inline">\(V\)</span>. In Problems <a href="#pr:val"
+data-reference-type="ref" data-reference="pr:val">6.2.1</a>–<a
+href="#pr:index-height" data-reference-type="ref"
+data-reference="pr:index-height">6.2.3</a>, assume that <span
+class="math inline">\(V\)</span> is a complex inner product space. Write
+<span class="math inline">\(y \sqcup z\)</span> for the family <span
+class="math inline">\(y_1, \dots, y_n, z_1, \dots, z_{n&#39;}\)</span>,
+and <span class="math inline">\(\lvert\gamma\rvert^2\)</span> for the
+complex number <span
+class="math inline">\(\bar\gamma\gamma\)</span>.</p>
+<div id="pr:val" class="problem" data-progress-ids="[&quot;233U&quot;,&quot;20261126T030100--a-twist-for-each-prime__workbook.tex#pr:val&quot;]"><a class="stable-tag" href="tag/233U.html" title="Stable tag: cite as Tag 233U">Tag 233U</a>
+<p><strong>Problem 6.2.1</strong>. Let <span
+class="math inline">\(\vartheta\)</span> be allowed at <span
+class="math inline">\(\ell\)</span>, let <span
+class="math inline">\(\iota \mid \ell\)</span>, let <span
+class="math inline">\(w_1, \dots, w_m \in V\)</span>, and let <span
+class="math inline">\(u, u&#39; \in M_m(\mathbb{C})\)</span> be such
+that <span class="math inline">\(\sum_k u_{ik} \Theta_\vartheta w_k \in
+\Lambda_{\vartheta, \iota}\)</span> and <span
+class="math inline">\(\sum_k u&#39;_{ik} \Theta_\vartheta w_k \in
+\Lambda_{\vartheta, \bar\iota}\)</span> for every <span
+class="math inline">\(i\)</span>. Then <span
+class="math display">\[\lvert \det u&#39; \rvert_{\bar\iota} \, \lvert
+\Gamma_\vartheta(w) \rvert_\iota \, \lvert \det u \rvert_\iota \le 1
+.\]</span></p>
+</div>
+<div id="pr:complete" class="problem" data-progress-ids="[&quot;233V&quot;,&quot;20261126T030100--a-twist-for-each-prime__workbook.tex#pr:complete&quot;]"><a class="stable-tag" href="tag/233V.html" title="Stable tag: cite as Tag 233V">Tag 233V</a>
+<p><strong>Problem 6.2.2</strong>. Let <span
+class="math inline">\(\vartheta\)</span> be allowed at <span
+class="math inline">\(\ell\)</span>, let <span
+class="math inline">\(\iota \mid \ell\)</span> and <span
+class="math inline">\(a \in \mathbb{R}\)</span>. Suppose that <span
+class="math inline">\(u \in M_n(\mathcal{O}_\iota)\)</span> carries
+<span class="math inline">\(y\)</span> into <span
+class="math inline">\(M_\iota\)</span> with loss <span
+class="math inline">\(a\)</span>, that <span
+class="math inline">\(u&#39; \in M_n(\mathcal{O}_{\bar\iota})\)</span>
+carries <span class="math inline">\(y\)</span> into <span
+class="math inline">\(M_{\bar\iota}\)</span> with loss <span
+class="math inline">\(a\)</span>, and that <span
+class="math inline">\(\gamma \in \mathbb{C}\)</span> satisfies <span
+class="math inline">\(\gamma\, \Theta_\vartheta z_i \in
+\Lambda_{\vartheta, \iota} \cap \Lambda_{\vartheta, \bar\iota}\)</span>
+for every <span class="math inline">\(i\)</span>. Then <span
+class="math display">\[\bigl\lvert (\lvert\gamma\rvert^2)^{n&#39;}\,
+\Gamma_\vartheta(y \sqcup z) \bigr\rvert_\iota \le \ell^{2a}
+.\]</span></p>
+</div>
+<div id="pr:index-height" class="problem" data-progress-ids="[&quot;233W&quot;,&quot;20261126T030100--a-twist-for-each-prime__workbook.tex#pr:index-height&quot;]"><a class="stable-tag" href="tag/233W.html" title="Stable tag: cite as Tag 233W">Tag 233W</a>
+<p><strong>Problem 6.2.3</strong>. Let <span
+class="math inline">\(y\)</span> have index at most <span
+class="math inline">\(\delta\)</span>. For each <span
+class="math inline">\(\iota \mid \ell\)</span> let <span
+class="math inline">\(\theta_\iota \in \mathrm{Tw}\)</span> be allowed
+at <span class="math inline">\(\ell\)</span> and <span
+class="math inline">\(\gamma_\iota \in \mathbb{C}\)</span>, with <span
+class="math inline">\(\gamma_\iota\, \Theta_{\theta_\iota} z_i \in
+\Lambda_{\theta_\iota, \iota} \cap \Lambda_{\theta_\iota,
+\bar\iota}\)</span> for every <span class="math inline">\(i\)</span>.
+Then the family <span class="math inline">\(\iota \mapsto
+(\lvert\gamma_\iota\rvert^2)^{n&#39;}\, \Gamma_{\theta_\iota}(y \sqcup
+z)\)</span> has height at most <span
+class="math inline">\(2\delta\)</span>.</p>
+</div>
+<div id="pr:fischer" class="problem" data-progress-ids="[&quot;233X&quot;,&quot;20261126T030100--a-twist-for-each-prime__workbook.tex#pr:fischer&quot;]"><a class="stable-tag" href="tag/233X.html" title="Stable tag: cite as Tag 233X">Tag 233X</a>
+<p><strong>Problem 6.2.4</strong>. If <span class="math inline">\(y\)</span>
+has covolume at most <span class="math inline">\(c\)</span>, and <span
+class="math inline">\(N(z_i, \sigma) \le e^{h}\)</span> for every <span
+class="math inline">\(i\)</span> and every <span
+class="math inline">\(\sigma \in
+\operatorname{Aut}(\mathbb{C})\)</span>, then <span
+class="math inline">\(y \sqcup z\)</span> has covolume at most <span
+class="math inline">\(c + n&#39; h\)</span>.</p>
+</div>
+<p>Now let <span class="math inline">\(V\)</span> be a
+finite-dimensional complex inner product space. For <span
+class="math inline">\(\vartheta \in \mathrm{Tw}\)</span> let <span
+class="math inline">\(Z(\vartheta)\)</span> be the square of the
+absolute value of the determinant of <span
+class="math inline">\(\Theta_\vartheta\)</span>, as a map <span
+class="math inline">\(V \to \Theta_\vartheta(V)\)</span>, in orthonormal
+bases, when <span class="math inline">\(\Theta_\vartheta\)</span> is
+injective, and <span class="math inline">\(Z(\vartheta) := 0\)</span>
+otherwise. If <span class="math inline">\(W_\vartheta\)</span> is
+finite-dimensional, the Gram calculation of Problem <a
+href="#pr:gram-comp" data-reference-type="ref"
+data-reference="pr:gram-comp">6.1.3</a> gives <span
+class="math inline">\(Z(\vartheta) = \det(\Theta_\vartheta^*
+\Theta_\vartheta)\)</span>, as in Section <a href="#sec:toy"
+data-reference-type="ref" data-reference="sec:toy">6.1</a>.</p>
+<div id="pr:factor" class="problem" data-progress-ids="[&quot;233Y&quot;,&quot;20261126T030100--a-twist-for-each-prime__workbook.tex#pr:factor&quot;]"><a class="stable-tag" href="tag/233Y.html" title="Stable tag: cite as Tag 233Y">Tag 233Y</a>
+<p><strong>Problem 6.2.5</strong>. Let all <span
+class="math inline">\(\Theta_\vartheta\)</span> be injective, let <span
+class="math inline">\(y \sqcup z\)</span> be a basis of <span
+class="math inline">\(V\)</span>, and let <span
+class="math inline">\(\gamma \in \mathbb{C}\)</span>, <span
+class="math inline">\(\gamma \ne 0\)</span>. Then <span
+class="math inline">\(\Gamma_1(y \sqcup z) \ne 0\)</span>, and for every
+<span class="math inline">\(\vartheta \in \mathrm{Tw}\)</span> <span
+class="math display">\[\Gamma_1(y \sqcup z) =
+(\lvert\gamma\rvert^2)^{n&#39;}\, \Gamma_\vartheta(y \sqcup z) \cdot
+(\lvert\gamma\rvert^{-2})^{n&#39;} \cdot \frac{Z(1)}{Z(\vartheta)}
+.\]</span></p>
+</div>
+<p>Problems <a href="#pr:index-height" data-reference-type="ref"
+data-reference="pr:index-height">6.2.3</a>, <a href="#pr:fischer"
+data-reference-type="ref" data-reference="pr:fischer">6.2.4</a> and <a
+href="#pr:factor" data-reference-type="ref"
+data-reference="pr:factor">6.2.5</a>, together with the height bounds and
+the product formula of Chapter <a href="20261125T000000--slope-method__workbook.html#chap"
+data-reference-type="ref" data-reference="c5-chap">5</a>, give
+the following theorem.</p>
+<div id="thm:twist" class="theorem"><a class="stable-tag" href="tag/233Z.html" title="Stable tag: cite as Tag 233Z">Tag 233Z</a>
+<p><strong>Theorem 6.2.1</strong>. <em>Let <span
+class="math inline">\(V\)</span> be a finite-dimensional complex inner
+product space, <span class="math inline">\(\mathrm{Tw}\)</span> a set
+with a distinguished element <span class="math inline">\(1\)</span>, and
+<span class="math inline">\(L\)</span> a twisted lattice on <span
+class="math inline">\(V\)</span> with twists <span
+class="math inline">\(\mathrm{Tw}\)</span> whose maps <span
+class="math inline">\(\Theta_\vartheta\)</span> are all injective. Let
+<span class="math inline">\(y_1, \dots, y_n, z_1, \dots, z_{n&#39;} \in
+V\)</span> be linearly independent, with <span
+class="math inline">\(\dim V = n + n&#39;\)</span>. For each <span
+class="math inline">\(\iota \mid \ell\)</span>, for every prime <span
+class="math inline">\(\ell\)</span>, let <span
+class="math inline">\(\theta_\iota \in \mathrm{Tw}\)</span> be allowed
+at <span class="math inline">\(\ell\)</span>. Let <span
+class="math inline">\(c, \delta, c_{\mathrm{vol}}, c_{\mathrm{short}},
+c_{\mathrm{den}}\in \mathbb{R}\)</span>, and suppose that <span
+class="math inline">\(y\)</span> has covolume at most <span
+class="math inline">\(c\)</span> and index at most <span
+class="math inline">\(\delta\)</span>. Let <span
+class="math inline">\(\gamma\colon \mathrm{Tw} \to \mathbb{C}\)</span>
+with <span class="math inline">\(\gamma(\vartheta) \ne 0\)</span> for
+every <span class="math inline">\(\vartheta\)</span>, and suppose
+that</em></p>
+<ol>
+<li><p><em><span class="math inline">\(\gamma(\vartheta)\,
+\Theta_\vartheta z_i \in \Lambda_{\vartheta, \iota}\)</span> for every
+<span class="math inline">\(i\)</span>, every <span
+class="math inline">\(\iota \mid \ell\)</span> for every prime <span
+class="math inline">\(\ell\)</span>, and every <span
+class="math inline">\(\vartheta\)</span> allowed at <span
+class="math inline">\(\ell\)</span>;</em></p></li>
+<li><p><em><span class="math inline">\(N(z_i, \sigma) \le
+e^{c_{\mathrm{short}}}\)</span> for every <span
+class="math inline">\(i\)</span> and every <span
+class="math inline">\(\sigma \in
+\operatorname{Aut}(\mathbb{C})\)</span>;</em></p></li>
+<li><p><em>the family <span class="math inline">\(\iota \mapsto (\lvert
+\gamma(\theta_\iota) \rvert^2)^{-1}\)</span> has height at most <span
+class="math inline">\(c_{\mathrm{den}}\)</span>;</em></p></li>
+<li><p><em>the family <span class="math inline">\(\iota \mapsto
+Z(1)/Z(\theta_\iota)\)</span> has height at most <span
+class="math inline">\(c_{\mathrm{vol}}\)</span>.</em></p></li>
+</ol>
+<p><em>Then <span class="math display">\[0 \le c + 2\delta +
+n&#39;(c_{\mathrm{short}}+ c_{\mathrm{den}}) +
+c_{\mathrm{vol}}.\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:toy-check">Problem 6.3.1</a>, <a href="#pr:two-twists">Problem 6.3.2</a>; <a href="20261125T003000--the-chain-and-the-square-root__workbook.html">Chapter 8</a>; <a href="20261126T040200--theorem-c__workbook.html">Chapter 67</a>; <a href="20261126T050800--compressions-and-false-lifts__workbook.html">Chapter 75</a></div><!-- used-in:end -->
+</div>
+<p>Hypothesis (1) concerns every twist allowed at <span
+class="math inline">\(\ell\)</span>, including <span
+class="math inline">\(\theta_\iota\)</span> when it differs from <span
+class="math inline">\(\theta_{\bar\iota}\)</span>. To recover Theorem <a
+href="20261125T000000--slope-method__workbook.html#thm:one" data-reference-type="ref"
+data-reference="c5-thm:one">5.4.3</a>, give <span
+class="math inline">\(V\)</span> the inner product in which its given
+basis <span class="math inline">\(y\)</span> is orthonormal, and take
+<span class="math inline">\(\mathrm{Tw}=\{1\}\)</span>, with <span
+class="math inline">\(1\)</span> allowed at every prime, <span
+class="math inline">\(n&#39;=0\)</span>, <span
+class="math inline">\(\gamma=1\)</span> and <span
+class="math inline">\(c_{\mathrm{short}}=c_{\mathrm{den}}=c_{\mathrm{vol}}=0\)</span>.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. In the Lean proof <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span> (file
+<code>grh/src/New/Reduction/Lattices/TwistedLattice.lean</code>), a
+twisted lattice is <code>New.TwistedLattice</code>; the integral
+vectors, carrying with loss, index, covolume, <span
+class="math inline">\(N(y,\sigma)\)</span> and <span
+class="math inline">\(Z(\vartheta)\)</span> are
+<code>integralVectors</code>, <code>New.PrimePadicIso.Carries</code>,
+<code>IndexLe</code>, <code>CovolumeLe</code>, <code>normSqAt</code> and
+<code>volume</code>. Admissibility is tested only at primes. The
+function <span class="math inline">\(e\)</span> is nonnegative on all of
+<span class="math inline">\(\mathbb N\)</span>, and only its prime
+values occur in the sums and the carrying bounds. Theorem <a
+href="#thm:twist" data-reference-type="ref"
+data-reference="thm:twist">6.2.1</a> is
+<code>New.TwistedLattice.covolume_add_index_nonneg</code>, whose
+<code>b_volume</code>, <code>b_short</code>, <code>b_denom</code> are
+<span class="math inline">\(c_{\mathrm{vol}}, c_{\mathrm{short}},
+c_{\mathrm{den}}\)</span>.</p>
+</div>
+<h1 id="sec:each">§6.3. A twist for each prime <a class="stable-tag" href="tag/2342.html" title="Stable tag: cite as Tag 2342">Tag 2342</a></h1>
+<p>We first test Theorem <a href="#thm:twist" data-reference-type="ref"
+data-reference="thm:twist">6.2.1</a> on the toy, then add a twist that is
+allowed at <span class="math inline">\(r\)</span>.</p>
+<div id="pr:toy-check" class="problem" data-progress-ids="[&quot;2343&quot;,&quot;20261126T030100--a-twist-for-each-prime__workbook.tex#pr:toy-check&quot;]"><a class="stable-tag" href="tag/2343.html" title="Stable tag: cite as Tag 2343">Tag 2343</a>
+<p><strong>Problem 6.3.1</strong>. In the toy, let <span
+class="math inline">\(k \in \mathbb{Z}\)</span> and <span
+class="math inline">\(s \ge 1\)</span> an integer, and take <span
+class="math inline">\(n = n&#39; = 1\)</span>, <span
+class="math inline">\(y_1 = p^k e_1\)</span>, <span
+class="math inline">\(z_1 = s^{-1} e_2\)</span>, <span
+class="math inline">\(\gamma(1) = \gamma(\vartheta) = s\)</span>, <span
+class="math inline">\(\theta_\iota = \vartheta\)</span> for <span
+class="math inline">\(\iota \mid \ell\)</span> with <span
+class="math inline">\(\ell \ne r\)</span>, and <span
+class="math inline">\(\theta_\iota = 1\)</span> for <span
+class="math inline">\(\iota \mid r\)</span>. The hypotheses of
+Theorem <a href="#thm:twist" data-reference-type="ref"
+data-reference="thm:twist">6.2.1</a> hold with <span
+class="math display">\[c = 2k \log p, \quad \delta = \max(1 - k, 0) \log
+p, \quad c_{\mathrm{short}}= -2\log s, \quad c_{\mathrm{den}}= 2 \log s,
+\quad c_{\mathrm{vol}}= -2 \log p ,\]</span> and then <span
+class="math inline">\(c + 2\delta + n&#39;(c_{\mathrm{short}}+
+c_{\mathrm{den}}) + c_{\mathrm{vol}}= 2\max(k - 1, 0) \log p\)</span>.
+For <span class="math inline">\(p = 3\)</span>, <span
+class="math inline">\(k = -1\)</span>, <span class="math inline">\(s =
+2\)</span>: <span class="math inline">\(c = -2\log 3\)</span> and <span
+class="math inline">\(\delta = 2 \log 3\)</span>. For the constant
+choice <span class="math inline">\(\theta_\iota = 1\)</span>, with the
+same <span class="math inline">\(c_{\mathrm{short}}\)</span> and <span
+class="math inline">\(c_{\mathrm{den}}\)</span>, the theorem gives only
+<span class="math inline">\(c + 2\delta \ge 0\)</span>.</p>
+</div>
+<p>The <em>second toy</em> adds to the toy a twist <span
+class="math inline">\(\vartheta&#39;\)</span>: <span
+class="math inline">\(\mathrm{Tw} = \{1, \vartheta,
+\vartheta&#39;\}\)</span>, <span
+class="math inline">\(W_{\vartheta&#39;} = \mathbb{C}^2\)</span>, <span
+class="math inline">\(\Theta_{\vartheta&#39;} = \operatorname{diag}(1,
+r^{-1})\)</span>, <span class="math inline">\(\Lambda_{\vartheta&#39;,
+\iota} = \mathcal{O}_\iota^2\)</span>, and <span
+class="math inline">\(\vartheta&#39;\)</span> is allowed at every prime
+except <span class="math inline">\(p\)</span>.</p>
+<div id="pr:two-twists" class="problem" data-progress-ids="[&quot;2344&quot;,&quot;20261126T030100--a-twist-for-each-prime__workbook.tex#pr:two-twists&quot;]"><a class="stable-tag" href="tag/2344.html" title="Stable tag: cite as Tag 2344">Tag 2344</a>
+<p><strong>Problem 6.3.2</strong>. The second toy is a twisted lattice,
+with <span class="math inline">\(M_\iota = p\mathcal{O}_\iota \oplus
+\mathcal{O}_\iota\)</span> for <span class="math inline">\(\iota \mid
+p\)</span>, <span class="math inline">\(M_\iota = \mathcal{O}_\iota
+\oplus r\mathcal{O}_\iota\)</span> for <span class="math inline">\(\iota
+\mid r\)</span>, and <span class="math inline">\(M_\iota =
+\mathcal{O}_\iota^2\)</span> otherwise. For <span
+class="math inline">\(y = (p e_1, r e_2)\)</span>, <span
+class="math inline">\(n&#39; = 0\)</span>, <span
+class="math inline">\(\theta_\iota = \vartheta\)</span> for <span
+class="math inline">\(\iota \mid p\)</span>, <span
+class="math inline">\(\theta_\iota = \vartheta&#39;\)</span> for <span
+class="math inline">\(\iota \mid r\)</span>, and <span
+class="math inline">\(\theta_\iota = 1\)</span> otherwise, the
+hypotheses of Theorem <a href="#thm:twist" data-reference-type="ref"
+data-reference="thm:twist">6.2.1</a> hold with <span
+class="math inline">\(\gamma = 1\)</span>, <span
+class="math inline">\(c_{\mathrm{short}}= c_{\mathrm{den}}= 0\)</span>,
+<span class="math inline">\(c = 2\log(pr)\)</span>, <span
+class="math inline">\(\delta = 0\)</span> and <span
+class="math inline">\(c_{\mathrm{vol}}= -2\log(pr)\)</span>, and the
+inequality is an equality.</p>
+</div>
+<div id="pr:no-single" class="problem" data-progress-ids="[&quot;2345&quot;,&quot;20261126T030100--a-twist-for-each-prime__workbook.tex#pr:no-single&quot;]"><a class="stable-tag" href="tag/2345.html" title="Stable tag: cite as Tag 2345">Tag 2345</a>
+<p><strong>Problem 6.3.3</strong>. In the second toy, suppose that <span
+class="math inline">\(\theta_\iota \in \{1, \vartheta\}\)</span> for
+every <span class="math inline">\(\iota\)</span>. If <span
+class="math inline">\(\iota \mapsto Z(1)/Z(\theta_\iota)\)</span> has
+height at most <span class="math inline">\(c&#39;&#39;\)</span>, then
+<span class="math inline">\(c&#39;&#39; \ge -2\log p\)</span>. The same
+holds with <span class="math inline">\(\vartheta&#39;\)</span> and <span
+class="math inline">\(r\)</span> in place of <span
+class="math inline">\(\vartheta\)</span> and <span
+class="math inline">\(p\)</span>.</p>
+</div>
+<p>So for <span class="math inline">\(y\)</span> as in Problem <a
+href="#pr:two-twists" data-reference-type="ref"
+data-reference="pr:two-twists">6.3.2</a>, a choice of twists with values in
+<span class="math inline">\(\{1, \vartheta\}\)</span> or in <span
+class="math inline">\(\{1, \vartheta&#39;\}\)</span> yields through
+Theorem <a href="#thm:twist" data-reference-type="ref"
+data-reference="thm:twist">6.2.1</a> at most <span class="math inline">\(c
+\ge 2\log p\)</span> or <span class="math inline">\(c \ge 2\log
+r\)</span>, while the choice that depends on the prime yields <span
+class="math inline">\(c \ge 2\log(pr)\)</span>, which is attained.</p>
+<p>Under the other hypotheses of Theorem <a href="#thm:twist"
+data-reference-type="ref" data-reference="thm:twist">6.2.1</a>, a height
+bound of <span class="math inline">\(-A\)</span> for <span
+class="math inline">\(\iota\mapsto Z(1)/Z(\theta_\iota)\)</span> gives
+<span class="math inline">\(c+2\delta\ge
+A-n&#39;(c_{\mathrm{short}}+c_{\mathrm{den}})\)</span>. The proof of
+Theorem C (Chapter <a href="20261126T040200--theorem-c__workbook.html#chap" data-reference-type="ref"
+data-reference="tc-chap">67</a>) contains the sole application of
+Theorem <a href="#thm:twist" data-reference-type="ref"
+data-reference="thm:twist">6.2.1</a>. There <span
+class="math inline">\(V\)</span> is the space <span
+class="math inline">\(T\)</span> of target forms, and <span
+class="math inline">\(\mathrm{Tw}\)</span> is the set of <span
+class="math inline">\(m\)</span>-fold twists. A twist <span
+class="math inline">\(\vartheta\)</span> with modulus <span
+class="math inline">\(Q_\vartheta\)</span> is allowed at <span
+class="math inline">\(\ell\)</span> when <span
+class="math inline">\(\ell\)</span> is prime to <span
+class="math inline">\(\mathrm{Nm}\,Q_\vartheta\)</span>. Its volume
+<span class="math inline">\(Z(\vartheta)\)</span> is the Gram
+determinant of the images of an orthonormal basis under the chain of
+lifts (Chapter <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#chap" data-reference-type="ref"
+data-reference="c37-chap">68</a>). The height of <span
+class="math inline">\(\iota\mapsto Z(1)/Z(\theta_\iota)\)</span> is
+bounded by combining the bounds for the single lifts of Chapter <a
+href="20261126T030800--the-cost-of-one-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="c38-chap">74</a> with a height bound for the
+inverse scalar in the chain factorization of Chapter <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#chap"
+data-reference-type="ref" data-reference="c37-chap">68</a>. The
+auxiliary forms of Section <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#sec:aux"
+data-reference-type="ref" data-reference="c37-sec:aux">68.5</a>
+span <span class="math inline">\(T\)</span>, so we choose <span
+class="math inline">\(z_i\)</span> among them to complete <span
+class="math inline">\(y\)</span> to a basis. By the auxiliary condition,
+each <span class="math inline">\(\gamma(\vartheta)\Theta_\vartheta
+z_i\)</span> is integral at every <span
+class="math inline">\(\iota\)</span> at which <span
+class="math inline">\(\vartheta\)</span> is allowed.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<dl>
+<dt><a href="#pr:one-place" data-reference-type="ref"
+data-reference="pr:one-place">6.1.1</a></dt>
+<dd>
+<p>Problem <a href="20261125T000000--slope-method__workbook.html#pr:iota" data-reference-type="ref"
+data-reference="c5-pr:iota">5.3.1</a>.</p>
+</dd>
+<dt><a href="#pr:toy-lattice" data-reference-type="ref"
+data-reference="pr:toy-lattice">6.1.2</a></dt>
+<dd>
+<p>Problem <a href="20261125T000000--slope-method__workbook.html#pr:index-basic" data-reference-type="ref"
+data-reference="c5-pr:index-basic">5.4.1</a> for the
+pairing condition. At <span class="math inline">\(p\)</span> the twist
+<span class="math inline">\(\vartheta\)</span> is allowed; elsewhere
+<span class="math inline">\(p\)</span> is a unit.</p>
+</dd>
+<dt><a href="#pr:gram-comp" data-reference-type="ref"
+data-reference="pr:gram-comp">6.1.3</a></dt>
+<dd>
+<p>Write <span class="math inline">\(\Gamma(w) = \lvert \det P
+\rvert^2\)</span> with <span class="math inline">\(P\)</span> the matrix
+of <span class="math inline">\(w\)</span> in an orthonormal basis.</p>
+</dd>
+<dt><a href="#pr:toy-gain" data-reference-type="ref"
+data-reference="pr:toy-gain">6.1.5</a></dt>
+<dd>
+<p>Problem <a href="#pr:gram-comp" data-reference-type="ref"
+data-reference="pr:gram-comp">6.1.3</a>; for <span
+class="math inline">\(\Gamma_\vartheta(w)\)</span>, the pairing
+condition at <span class="math inline">\(\iota\)</span> and <span
+class="math inline">\(\bar\iota\)</span>.</p>
+</dd>
+<dt><a href="#pr:val" data-reference-type="ref"
+data-reference="pr:val">6.2.1</a></dt>
+<dd>
+<p>Form the matrix of pairings of the rows formed with <span
+class="math inline">\(u&#39;\)</span> against those formed with <span
+class="math inline">\(u\)</span>, in that order.</p>
+</dd>
+<dt><a href="#pr:complete" data-reference-type="ref"
+data-reference="pr:complete">6.2.2</a></dt>
+<dd>
+<p>Block diagonal matrices.</p>
+</dd>
+<dt><a href="#pr:index-height" data-reference-type="ref"
+data-reference="pr:index-height">6.2.3</a></dt>
+<dd>
+<p>Take the multiplier <span class="math inline">\(1\)</span>. The index
+gives matrices at <span class="math inline">\(\iota\)</span> and at
+<span class="math inline">\(\bar\iota\)</span>, which lie above the same
+prime.</p>
+</dd>
+<dt><a href="#pr:fischer" data-reference-type="ref"
+data-reference="pr:fischer">6.2.4</a></dt>
+<dd>
+<p>Fischer’s inequality, then Hadamard’s.</p>
+</dd>
+<dt><a href="#pr:factor" data-reference-type="ref"
+data-reference="pr:factor">6.2.5</a></dt>
+<dd>
+<p>Problem <a href="#pr:gram-comp" data-reference-type="ref"
+data-reference="pr:gram-comp">6.1.3</a> with target <span
+class="math inline">\(\Theta_\vartheta(V)\)</span> and its induced inner
+product.</p>
+</dd>
+<dt><a href="#pr:toy-check" data-reference-type="ref"
+data-reference="pr:toy-check">6.3.1</a></dt>
+<dd>
+<p>Problem <a href="#pr:toy-lattice" data-reference-type="ref"
+data-reference="pr:toy-lattice">6.1.2</a> for the index. For <span
+class="math inline">\(c_{\mathrm{vol}}\)</span> take <span
+class="math inline">\(H = p^{-2}\)</span>.</p>
+</dd>
+<dt><a href="#pr:two-twists" data-reference-type="ref"
+data-reference="pr:two-twists">6.3.2</a></dt>
+<dd>
+<p>For <span class="math inline">\(c_{\mathrm{vol}}\)</span> take <span
+class="math inline">\(H = (pr)^{-2}\)</span>.</p>
+</dd>
+<dt><a href="#pr:no-single" data-reference-type="ref"
+data-reference="pr:no-single">6.3.3</a></dt>
+<dd>
+<p>Compare with the constant family <span
+class="math inline">\(p^2\)</span> at every <span
+class="math inline">\(\iota\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-HJ"><span class="bib-label">[HJ]</span> R. A. Horn and C. R. Johnson, <em>Matrix Analysis</em>, 2nd ed., Cambridge University Press, 2013.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

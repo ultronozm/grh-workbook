@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-mroLm6y7HrUBftxWNw90mNgV3ooXVh3PAi8JTyGrtYM=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>The norm of one lift</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","C":"\\mathbb{C}","F":"\\mathbb{F}","ii":"\\mathrm{i}","Oc":"\\mathcal{O}","Ac":"\\mathcal{A}","Mch":"\\mathcal{M}","Rc":"\\mathcal{R}","Cl":"\\mathrm{Cl}","Nm":"\\operatorname{Nm}","GL":"\\mathrm{GL}","U":"\\mathrm{U}","Hom":"\\operatorname{Hom}","vol":"\\operatorname{vol}","cch":"c_{\\mathrm{ch}}","uh":"\\hat u"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="69">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T050400--the-norm-of-one-lift__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-27 17:44:27
+      <a href="20261126T050400--the-norm-of-one-lift__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T050400--the-norm-of-one-lift__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T050400--the-norm-of-one-lift__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">The norm of one lift</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:doubled" id="toc-sec:doubled">§69.1. The squared norm of a lift is a theta sum on the doubled space</a></li>
+<li><a href="#sec:unfold" id="toc-sec:unfold">§69.2. Only graphs survive, and unfolding</a></li>
+<li><a href="#sec:sharp" id="toc-sec:sharp">§69.3. The sharp datum and the twist factor</a></li>
+<li><a href="#sec:theorem" id="toc-sec:theorem">§69.4. Injectivity and the theorem</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secdoubled" id="toc-secdoubled">§69.1</a></li>
+<li><a href="#secunfold" id="toc-secunfold">§69.2</a></li>
+<li><a href="#secsharp" id="toc-secsharp">§69.3</a></li>
+<li><a href="#sectheorem" id="toc-sectheorem">§69.4</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Adjoints (inner products are conjugate-linear in the first argument).
+From Chapter <a href="20261125T002000--definite-theta-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dt-chap">21</a>: the class sets <span
+class="math inline">\(\mathrm{Cl}_n\)</span>, the groups <span
+class="math inline">\(\Gamma_L\)</span> and Problems <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:aut" data-reference-type="ref"
+data-reference="dt-pr:aut">21.1.2</a> and <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:class-one" data-reference-type="ref"
+data-reference="dt-pr:class-one">21.1.4</a>. From Chapter <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#chap" data-reference-type="ref"
+data-reference="tn-chap">23</a>: the theta function <span
+class="math inline">\(\Theta_{L,L&#39;}\)</span>, the lift <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#eq:lift" data-reference-type="eqref"
+data-reference="tn-eq:lift">(1)</a> and Problems <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:adjoint" data-reference-type="ref"
+data-reference="tn-pr:adjoint">23.1.5</a>, <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:compose" data-reference-type="ref"
+data-reference="tn-pr:compose">23.5.1</a> and <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:rallis" data-reference-type="ref"
+data-reference="tn-pr:rallis">23.3.2</a>; the Gaussian constant
+<span class="math inline">\(\vartheta_0 := \sum_{\alpha \in
+\mathbb{Z}[\mathrm{i}]} e^{-\pi\lvert\alpha\rvert^2}\)</span> of that
+chapter. From Chapter <a href="20261125T015500--siegel-weil-in-the-smallest-case__workbook.html#chap" data-reference-type="ref"
+data-reference="sw-chap">22</a>: Section <a href="20261125T015500--siegel-weil-in-the-smallest-case__workbook.html#sec:gram"
+data-reference-type="ref"
+data-reference="sw-sec:gram">22.4</a>. From Chapter <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>: <span
+class="math inline">\(\mathcal{M}\)</span>, <span
+class="math inline">\(\bar G\)</span> (Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chosen"
+data-reference-type="ref"
+data-reference="ob-sec:chosen">37.1</a>), <span
+class="math inline">\(W_j\)</span>, <span
+class="math inline">\(V_j\)</span> (Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces"
+data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a>), <span
+class="math inline">\(H(V)\)</span> (Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:forms"
+data-reference-type="ref"
+data-reference="ob-sec:forms">37.4</a>), with the Petersson
+product (Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:petersson"
+data-reference-type="ref"
+data-reference="ob-def:petersson">37.4.1</a>), tame
+characters <span class="math inline">\(\xi\)</span>, <span
+class="math inline">\(Q_\xi\)</span>, <span
+class="math inline">\((\psi_w)\)</span> (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:twists" data-reference-type="ref"
+data-reference="ob-sec:twists">37.6</a>), <span
+class="math inline">\(\mu_j^0\)</span> (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:characters" data-reference-type="ref"
+data-reference="ob-sec:characters">37.7</a>) and <span
+class="math inline">\(\hat u_{\xi,j}\)</span> on <span
+class="math inline">\(H(W_j)\)</span> (Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chain"
+data-reference-type="ref"
+data-reference="ob-sec:chain">37.9</a>).</p>
+<p>Theorem <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#thm:main" data-reference-type="ref"
+data-reference="dch-thm:main">68.4.1</a> of Chapter <a
+href="20261126T030700--the-determinant-of-a-chain__workbook.html#chap" data-reference-type="ref"
+data-reference="dch-chap">68</a> expresses the volume of the
+chain, relative to the trivial twist, through the corresponding ratios
+for <span class="math inline">\(m\)</span> single lifts on good forms, a
+power of the norm of the twist and ratios of <span
+class="math inline">\(L\)</span>-values. For each single lift the proof
+needs <span class="math inline">\(\hat u^*\hat u= (\text{scalar}) \cdot
+(\text{Hecke series})\)</span>. How is the norm of a theta lift
+computed, and where does the twist enter?</p>
+<h1 id="sec:doubled">§69.1. The squared norm of a lift is a theta sum on the
+doubled space</h1>
+<p>We use the definite model of Chapter <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#chap"
+data-reference-type="ref" data-reference="tn-chap">23</a> in
+weight <span class="math inline">\(0\)</span>, from <span
+class="math inline">\(\mathrm{U}(1)\)</span> to <span
+class="math inline">\(\mathrm{U}(3)\)</span>. By Problem <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:class-one" data-reference-type="ref"
+data-reference="dt-pr:class-one">21.1.4</a> the class sets of
+<span class="math inline">\(I_1\)</span> and <span
+class="math inline">\(I_3\)</span> have one element each; let <span
+class="math inline">\(1\)</span> be the constant form on <span
+class="math inline">\(\mathrm{Cl}_1\)</span>, so <span
+class="math inline">\(\lVert 1\rVert^2 = 1/4\)</span>. Write <span
+class="math inline">\(\Theta_{(0)} \colon \mathcal{A}_{(0)}(1) \to
+\mathcal{A}_{(0)}(3)\)</span> for the lift <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#eq:lift"
+data-reference-type="eqref" data-reference="tn-eq:lift">(1)</a>
+in weight <span class="math inline">\(0\)</span>, and <span
+class="math inline">\(\Theta&#39;_{(0)}\)</span> for the lift in the
+other direction. In weight <span class="math inline">\(0\)</span> the
+kernel of <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#eq:lift" data-reference-type="eqref"
+data-reference="tn-eq:lift">(1)</a> at <span
+class="math inline">\((L, L&#39;)\)</span> is the number <span
+class="math inline">\(\Theta_{L,L&#39;}(0) = \sum_{u \in
+\operatorname{Hom}_\mathcal{O}(L, L&#39;)} e^{-\pi h(u,u)}\)</span>.</p>
+<div id="pr:theta-I3" class="problem" data-progress-ids="[&quot;20261126T050400--the-norm-of-one-lift__workbook.tex#pr:theta-I3&quot;]">
+<p><strong>Problem 69.1.1</strong>. <span class="math inline">\((\Theta_{(0)}
+1)(I_3) = \vartheta_0^3/4 = 0.4111137902\ldots\)</span>, where <span
+class="math inline">\(\vartheta_0 = 1.1803405990\ldots\)</span> is the
+square of <span class="math inline">\(\sum_{n \in \mathbb{Z}} e^{-\pi
+n^2}\)</span>.</p>
+</div>
+<div id="pr:norm-I3" class="problem" data-progress-ids="[&quot;20261126T050400--the-norm-of-one-lift__workbook.tex#pr:norm-I3&quot;]">
+<p><strong>Problem 69.1.2</strong>. <span class="math display">\[\frac{\lVert
+\Theta_{(0)} 1 \rVert^2}{\lVert 1 \rVert^2} = \frac{\vartheta_0^6}{1536}
+= \frac{1}{384}\cdot\frac14 \sum_{(\alpha, \beta) \in \mathcal{O}^3
+\times \mathcal{O}^3} e^{-\pi(\lvert \alpha\rvert^2 + \lvert
+\beta\rvert^2)} = 0.0017605682\ldots ,\]</span> with <span
+class="math inline">\(\mathcal{O}= \mathbb{Z}[\mathrm{i}]\)</span> and
+<span class="math inline">\(\lvert \alpha\rvert^2 = \sum_k \lvert
+\alpha_k\rvert^2\)</span>.</p>
+</div>
+<p>The middle expression is a theta sum over <span
+class="math inline">\(\operatorname{Hom}_\mathcal{O}(I_1 \oplus I_1,
+I_3) = \mathcal{O}^3 \times \mathcal{O}^3\)</span>; in general:</p>
+<div id="pr:double" class="problem" data-progress-ids="[&quot;20261126T050400--the-norm-of-one-lift__workbook.tex#pr:double&quot;]">
+<p><strong>Problem 69.1.3</strong>. For unimodular Hermitian lattices <span
+class="math inline">\(L, L&#39;\)</span>, <span
+class="math display">\[\Theta_{L,L&#39;}(0)\,
+\overline{\Theta_{L,L&#39;}(0)} = \Theta_{L \oplus L, L&#39;}(0)
+.\]</span> Hence, for the weight-<span class="math inline">\(0\)</span>
+lift <span class="math inline">\(\Theta_{(0)}\)</span> from <span
+class="math inline">\(\mathrm{Cl}_n\)</span> to <span
+class="math inline">\(\mathrm{Cl}_{n&#39;}\)</span> and its reverse
+<span class="math inline">\(\Theta&#39;_{(0)}\)</span>, the kernel of
+<span class="math inline">\(\Theta&#39;_{(0)}\Theta_{(0)}\)</span> at
+<span class="math inline">\((L, L)\)</span>, <span
+class="math inline">\(L \in \mathrm{Cl}_n\)</span>, is the sum of <span
+class="math inline">\(\lvert\Gamma_{L&#39;}\rvert^{-1}\, \Theta_{L
+\oplus L, L&#39;}(0)\)</span> over <span class="math inline">\(L&#39;
+\in \mathrm{Cl}_{n&#39;}\)</span>.</p>
+</div>
+<p>The class sum models the adelic doubling integral: for a source <span
+class="math inline">\(V^\flat\)</span> and a target <span
+class="math inline">\(V^\sharp\)</span>, a theta kernel times the
+conjugate of another is a theta function on <span
+class="math inline">\(\operatorname{Hom}(V^\flat \oplus (V^\flat)^-,
+V^\sharp)\)</span>, and the doubled source (<span
+class="math inline">\((V^\flat)^-\)</span> has the negated form) is
+split. Let <span class="math inline">\(V^0\)</span> and <span
+class="math inline">\(V^\sharp\)</span> be framed Hermitian spaces, in
+the sense of Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces" data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a>, over a CM field with
+a chosen CM type and Weil data, <span class="math inline">\(V^0\)</span>
+with a complete splitting into <span class="math inline">\(p\)</span>
+hyperbolic planes (in this sheet <span class="math inline">\(p\)</span>
+counts planes) and <span class="math inline">\(V^\sharp\)</span> of rank
+<span class="math inline">\(n^\sharp &gt; 2p\)</span>, and let <span
+class="math inline">\(\omega\)</span> be the split Weil action on the
+test space <span class="math inline">\(\mathcal S\)</span> of <span
+class="math inline">\(\operatorname{Hom}(V^0, V^\sharp)\)</span>. For a
+rational Lagrangian <span class="math inline">\(\mathcal L\)</span> of
+<span class="math inline">\(V^0\)</span> let <span
+class="math inline">\(D_{\mathcal L}(\phi)\)</span> be the value at
+<span class="math inline">\(0\)</span> of <span
+class="math inline">\(\phi \in \mathcal S\)</span> in the Schrödinger
+model of a splitting whose isotropic space is <span
+class="math inline">\(\mathcal L\)</span>. Then the operator norms of
+the <span class="math inline">\(D_{\mathcal L}\)</span> are summable,
+<span class="math inline">\(g^\sharp \mapsto \theta(\omega(1, g^\sharp)
+\phi)\)</span> is integrable for every <span
+class="math inline">\(\phi\)</span>, and <span
+class="math display">\[\int_{[\mathrm{U}(V^\sharp)]} \theta(\omega(1,
+g^\sharp) \phi)\, dg^\sharp = \operatorname{vol}[\mathrm{U}(V^\sharp)]
+\sum_{\mathcal L} D_{\mathcal L}(\phi) ,\]</span> where <span
+class="math inline">\(\operatorname{vol}[\mathrm{U}(V^\sharp)]\)</span>
+is the total mass of the quotient measure. This is the Siegel–Weil
+formula in Weil’s range <span class="citation"
+data-cites="We65">[<a href="#ref-We65">We65</a>, Thm. 5]</span>.
+<em>Status</em>: classical; the proof establishes it in this form. For
+<span class="math inline">\(V^0 = V^\flat \oplus (V^\flat)^-\)</span>
+the condition is <span class="math inline">\(2n^\flat &lt;
+n^\sharp\)</span>; for <span class="math inline">\(n^\flat = 1\)</span>
+it first holds for <span class="math inline">\(\mathrm{U}(3)\)</span>,
+not for the <span class="math inline">\(\mathrm{U}(2)\)</span> of
+Problem <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:rallis" data-reference-type="ref"
+data-reference="tn-pr:rallis">23.3.2</a>.</p>
+<p>For the summability the proof assigns to each <span
+class="math inline">\(\mathcal L\)</span> a vector <span
+class="math inline">\(\mathbf e \in \mathbb N^p\)</span> of dyadic
+exponents (with <span class="math inline">\(0 \in \mathbb N\)</span>);
+with <span class="math inline">\(\lvert\mathbf e\rvert := e_1 + \dots +
+e_p\)</span> and <span class="math inline">\(f\)</span> the number of
+infinite places, at most <span class="math inline">\(C\,
+2^{2fp\lvert\mathbf e\rvert}\)</span> Lagrangians have a given <span
+class="math inline">\(\mathbf e\)</span>, and <span
+class="math inline">\(\lVert D_{\mathcal L}\rVert \le C&#39; 2^{-f
+n^\sharp \lvert\mathbf e\rvert}\)</span>.</p>
+<div id="pr:majorant" class="problem" data-progress-ids="[&quot;20261126T050400--the-norm-of-one-lift__workbook.tex#pr:majorant&quot;]">
+<p><strong>Problem 69.1.4</strong>. For integers <span
+class="math inline">\(p, f \ge 1\)</span> and <span
+class="math inline">\(n^\sharp\)</span>, <span
+class="math inline">\(\sum_{\mathbf e \in \mathbb N^p} 2^{-f(n^\sharp -
+2p)\lvert\mathbf e\rvert} = \sum_{l \ge 0} \binom{l + p - 1}{p - 1}
+2^{-f(n^\sharp - 2p) l}\)</span>. It converges if and only if <span
+class="math inline">\(n^\sharp &gt; 2p\)</span>, with sum <span
+class="math inline">\((1 - 2^{-f(n^\sharp - 2p)})^{-p}\)</span>; for
+<span class="math inline">\(p = f = 1\)</span>, <span
+class="math inline">\(n^\sharp = 3\)</span> the sum is <span
+class="math inline">\(2\)</span>, and the terms with <span
+class="math inline">\(l \le 5\)</span> give <span
+class="math inline">\(63/32\)</span>.</p>
+</div>
+<h1 id="sec:unfold">§69.2. Only graphs survive, and unfolding</h1>
+<p>Which Lagrangians of the doubled space contribute? Over a finite
+field, let <span class="math inline">\(\mathbb{F}_9 =
+\mathbb{F}_3[\mathrm{i}]\)</span>, with conjugation <span
+class="math inline">\(z \mapsto \bar z := z^3\)</span>.</p>
+<div id="pr:F9" class="problem" data-progress-ids="[&quot;20261126T050400--the-norm-of-one-lift__workbook.tex#pr:F9&quot;]">
+<p><strong>Problem 69.2.1</strong>. The norm <span class="math inline">\(z
+\mapsto z\bar z\)</span> from <span
+class="math inline">\(\mathbb{F}_9\)</span> to <span
+class="math inline">\(\mathbb{F}_3\)</span> has fibres of sizes <span
+class="math inline">\(1, 4, 4\)</span> over <span
+class="math inline">\(0, 1, 2\)</span>. The form <span
+class="math inline">\(z_1\bar z_1 - z_2\bar z_2\)</span> on <span
+class="math inline">\(\mathbb{F}_9^2\)</span> has <span
+class="math inline">\(33\)</span> isotropic vectors (including <span
+class="math inline">\(0\)</span>) and <span
+class="math inline">\(4\)</span> isotropic lines, and these lines are
+the graphs <span class="math inline">\(\{(\delta z, z) : z \in
+\mathbb{F}_9\}\)</span> of the <span class="math inline">\(4\)</span>
+elements <span class="math inline">\(\delta\)</span> of norm <span
+class="math inline">\(1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T050600--the-exchange-identity__workbook.html">Chapter 71</a></div><!-- used-in:end -->
+</div>
+<p>A <em>frame</em> of a Lagrangian is a matrix whose columns are a
+basis of that Lagrangian.</p>
+<div id="pr:graph" class="problem" data-progress-ids="[&quot;20261126T050400--the-norm-of-one-lift__workbook.tex#pr:graph&quot;]">
+<p><strong>Problem 69.2.2</strong>. Let <span
+class="math inline">\(V^\flat\)</span> be a nondegenerate Hermitian
+space of dimension <span class="math inline">\(n^\flat\)</span> over a
+field with involution, with Gram matrix <span
+class="math inline">\(J\)</span>, and give <span
+class="math inline">\(V^\flat \oplus (V^\flat)^-\)</span> the Gram
+matrix <span class="math inline">\(\operatorname{diag}(J, -J)\)</span>.
+Let <span class="math inline">\(\mathcal L\)</span> be a Lagrangian,
+with frame <span class="math inline">\(\binom{K_1}{K_2}\)</span>: a
+<span class="math inline">\(2n^\flat \times n^\flat\)</span> matrix of
+rank <span class="math inline">\(n^\flat\)</span> whose columns span
+<span class="math inline">\(\mathcal L\)</span>. If <span
+class="math inline">\(K_2\)</span> is invertible, then <span
+class="math inline">\(\delta := -K_1K_2^{-1}\)</span> is an isometry of
+<span class="math inline">\(V^\flat\)</span> and <span
+class="math inline">\(\mathcal L = \{(\delta z, -z) : z \in
+V^\flat\}\)</span>. If <span class="math inline">\(V^\flat\)</span> has
+no nonzero isotropic vector, every Lagrangian is of this form.</p>
+</div>
+<p>For the clean data <span class="math inline">\(\phi\)</span> of
+Theorem <a href="#thm:rallis" data-reference-type="ref"
+data-reference="thm:rallis">69.2.1</a> below, the proof shows that only
+graphs of rational isometries contribute (by Problem <a href="#pr:graph"
+data-reference-type="ref" data-reference="pr:graph">69.2.2</a> when <span
+class="math inline">\(V^\flat\)</span> is definite): for the doubled
+datum of the translates of <span
+class="math inline">\(\phi&#39;\)</span>, <span
+class="math inline">\(\phi\)</span> by <span
+class="math inline">\(g&#39;\)</span>, <span
+class="math inline">\(g\)</span>, the term of <span
+class="math inline">\(\{(\delta^{-1} z, -z)\}\)</span> is <span
+class="math inline">\(\langle \phi&#39;, \omega(g&#39;^{-1}\delta
+g)\phi\rangle\)</span>. Integrating against <span
+class="math inline">\(y(g)\overline{y&#39;(g&#39;)}\)</span> then
+unfolds, as in this finite model.</p>
+<div id="pr:unfold" class="problem" data-progress-ids="[&quot;20261126T050400--the-norm-of-one-lift__workbook.tex#pr:unfold&quot;]">
+<p><strong>Problem 69.2.3</strong>. Let <span
+class="math inline">\(\Gamma\)</span> be a subgroup of a finite group
+<span class="math inline">\(G\)</span>, let <span
+class="math inline">\(K\)</span> be a function on <span
+class="math inline">\(G\)</span> (in this sheet <span
+class="math inline">\(K\)</span> is a function; the field <span
+class="math inline">\(\mathbb{Q}(\sqrt{-d})\)</span> does not occur),
+and let <span class="math inline">\(y, y&#39;\)</span> be functions on
+<span class="math inline">\(G\)</span> invariant on the left under <span
+class="math inline">\(\Gamma\)</span>, with <span
+class="math inline">\(\langle y&#39;, y\rangle := \sum_{g \in
+\Gamma\backslash G} \overline{y&#39;(g)}\, y(g)\)</span>. Then <span
+class="math display">\[\sum_{g, g&#39; \in \Gamma\backslash G}\
+\sum_{\delta \in \Gamma} K(g&#39;^{-1}\delta g)\, y(g)\,
+\overline{y&#39;(g&#39;)} = \sum_{g \in G} K(g)\, \bigl\langle y&#39;,
+y(\cdot\, g)\bigr\rangle .\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:collapse">Problem 69.3.4</a></div><!-- used-in:end -->
+</div>
+<p>The result is the Rallis inner product formula. Let <span
+class="math inline">\(V^\flat\)</span>, <span
+class="math inline">\(V^\sharp\)</span> be framed Hermitian spaces over
+a CM field with a chosen CM type and Weil data, of ranks <span
+class="math inline">\(n^\flat\)</span>, <span
+class="math inline">\(n^\sharp\)</span> with <span
+class="math inline">\(2n^\flat &lt; n^\sharp\)</span>, and let <span
+class="math inline">\(G^\flat\)</span> be the adelic unitary group of
+<span class="math inline">\(V^\flat\)</span>. Let <span
+class="math inline">\(\chi_1, \chi_2\)</span> be continuous unitary
+characters of the norm-one ideles trivial on rational points, and let
+<span class="math inline">\(\phi, \phi&#39;\)</span> lie in the adelic
+test space of <span class="math inline">\(\operatorname{Hom}(V^\flat,
+V^\sharp)\)</span>. Suppose that <span
+class="math inline">\(\phi\)</span> is <em>clean</em>: either all signs
+of <span class="math inline">\(V^\flat\)</span> agree, or <span
+class="math inline">\(\phi = \phi_1 \otimes \phi_0\)</span> for a
+Schwartz–Bruhat function <span class="math inline">\(\phi_1\)</span> at
+a set of finite places disjoint from its conjugate such that, at some
+finite place, every matrix in the support of <span
+class="math inline">\(\phi_1\)</span> has a left inverse. Let <span
+class="math inline">\(y, y&#39;\)</span> be automorphic functions on
+<span class="math inline">\(G^\flat\)</span> of rapid decay, let <span
+class="math inline">\(\Theta[\phi]\, y\)</span> be the theta lift of
+<span class="math inline">\(y\)</span> to the group of <span
+class="math inline">\(V^\sharp\)</span> with datum <span
+class="math inline">\(\phi\)</span> and characters <span
+class="math inline">\((\chi_1, \chi_2)\)</span>, and put <span
+class="math inline">\(K(g) := \langle \phi&#39;, \omega(g) \phi\rangle\,
+\langle y&#39;, y(\cdot\, g)\rangle\)</span>, where <span
+class="math inline">\(\omega(g)\)</span> is the action of <span
+class="math inline">\((g, 1)\)</span> with characters <span
+class="math inline">\((1, \chi_2)\)</span> and the second factor is the
+Petersson product.</p>
+<div id="thm:rallis" class="theorem">
+<p><strong>Theorem 69.2.1</strong> (Rallis inner product formula). <em><span
+class="math inline">\(K\)</span> is integrable on all of <span
+class="math inline">\(G^\flat\)</span>, and <span
+class="math inline">\(\langle \Theta[\phi&#39;] y&#39;, \Theta[\phi]
+y\rangle = \operatorname{vol}[\mathrm{U}(V^\sharp)] \int_{G^\flat}
+K(g)\, dg\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html">Chapter 23</a>; <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a>; Chapter 72: <a href="20261126T050700--squares-and-the-triangle__workbook.html#pr:range">Problem 72.1.1</a>; <a href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html">Chapter 77</a></div><!-- used-in:end -->
+</div>
+<p>This is the unitary form, used here, of Rallis’s inner product
+formula; for the classical method see <span class="citation"
+data-cites="Ra87">[<a href="#ref-Ra87">Ra87</a>]</span>. <em>Status</em>:
+classical; the proof derives it in this form from the Siegel–Weil
+formula, as Problems <a href="#pr:graph" data-reference-type="ref"
+data-reference="pr:graph">69.2.2</a> and <a href="#pr:unfold"
+data-reference-type="ref" data-reference="pr:unfold">69.2.3</a> model.</p>
+<h1 id="sec:sharp">§69.3. The sharp datum and the twist factor</h1>
+<p>For <span class="math inline">\(1 \le j \le m\)</span> the single
+lift <span class="math inline">\(\hat u_{\xi,j}\)</span> goes from <span
+class="math inline">\(W_j\)</span>, of rank <span
+class="math inline">\(r\)</span>, to <span
+class="math inline">\(V_j\)</span>, of rank <span
+class="math inline">\(r + t &gt; 2r\)</span>; <span
+class="math inline">\(H(W_j)\)</span> is finite-dimensional
+(Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:petersson" data-reference-type="ref"
+data-reference="ob-def:petersson">37.4.1</a>), so <span
+class="math inline">\(\hat u_{\xi,j}\)</span> has an adjoint. At the
+places of <span class="math inline">\(\mathcal{M}\cup Q_\xi\)</span>
+every residue matrix in the support of its finite datum has a left
+inverse; this support count and the count of all such matrices (through
+the target level index) give the finite factor in Theorem <a
+href="#thm:one-lift" data-reference-type="ref"
+data-reference="thm:one-lift">69.4.1</a>.</p>
+<div id="pr:columns" class="problem" data-progress-ids="[&quot;20261126T050400--the-norm-of-one-lift__workbook.tex#pr:columns&quot;]">
+<p><strong>Problem 69.3.1</strong>. Of the <span
+class="math inline">\(5^3\)</span> columns of height <span
+class="math inline">\(3\)</span> over <span
+class="math inline">\(\mathbb{F}_5\)</span>, exactly <span
+class="math inline">\(124\)</span> have a left inverse; of the <span
+class="math inline">\(5^6\)</span> columns of height <span
+class="math inline">\(6\)</span>, exactly <span
+class="math inline">\(15624\)</span>.</p>
+</div>
+<div id="pr:left-inverse" class="problem" data-progress-ids="[&quot;20261126T050400--the-norm-of-one-lift__workbook.tex#pr:left-inverse&quot;]">
+<p><strong>Problem 69.3.2</strong>. For integers <span
+class="math inline">\(r \ge 1\)</span> and <span class="math inline">\(t
+\ge 0\)</span>, the number of <span class="math inline">\((r + t) \times
+r\)</span> matrices over <span
+class="math inline">\(\mathbb{F}_q\)</span> with a left inverse is <span
+class="math inline">\(q^{r(r+t)} \prod_{v = t+1}^{t+r} (1 -
+q^{-v})\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T050700--squares-and-the-triangle__workbook.html">Chapter 72</a></div><!-- used-in:end -->
+</div>
+<div id="def:twist-factor" class="definition">
+<p><strong>Definition 69.3.1</strong>. For a finite set <span
+class="math inline">\(Q\)</span> of finite places of <span
+class="math inline">\(E\)</span>, with residue fields <span
+class="math inline">\(k_w\)</span> of order <span
+class="math inline">\(q_w\)</span>, define the <em>twist factor</em> by
+<span class="math display">\[c_Q := (\operatorname{Nm}Q)^{rt} \prod_{w
+\in Q} \prod_{v = t+1}^{t+r} \bigl(1 - q_w^{-v}\bigr), \qquad
+\operatorname{Nm}Q := \prod_{w \in Q} q_w ,\]</span> where <span
+class="math inline">\(r\)</span> is the source rank and <span
+class="math inline">\(t\)</span> the target rank minus the source rank;
+for the single lifts of the data, <span class="math inline">\(t =
+5r\)</span> and <span class="math inline">\(Q = Q_\xi\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:cQ">Problem 69.3.3</a>; <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a>; <a href="20261126T050700--squares-and-the-triangle__workbook.html">Chapter 72</a></div><!-- used-in:end -->
+</div>
+<div id="pr:cQ" class="problem" data-progress-ids="[&quot;20261126T050400--the-norm-of-one-lift__workbook.tex#pr:cQ&quot;]">
+<p><strong>Problem 69.3.3</strong>. <span class="math inline">\(c_Q =
+\prod_{w \in Q} (\lambda_w / q_w^{r^2})\)</span>, where <span
+class="math inline">\(\lambda_w\)</span> (in this sheet) is the number
+of <span class="math inline">\((r+t) \times r\)</span> matrices over
+<span class="math inline">\(k_w\)</span> with a left inverse; in
+particular <span class="math inline">\(c_\varnothing = 1\)</span>.
+Formally evaluating the expression of Definition <a
+href="#def:twist-factor" data-reference-type="ref"
+data-reference="def:twist-factor">69.3.1</a> at <span class="math inline">\(Q
+= \{w\}\)</span>, <span class="math inline">\(q_w = 5\)</span>, <span
+class="math inline">\(r = 1\)</span> gives <span
+class="math inline">\(c_Q = 124/5\)</span> for <span
+class="math inline">\(t = 2\)</span> and <span class="math inline">\(c_Q
+= 15624/5\)</span> for <span class="math inline">\(t = 5\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:mass">Problem 69.3.6</a></div><!-- used-in:end -->
+</div>
+<p>Give the standard lattice stabilizer in each finite adelic unitary
+group Haar volume <span class="math inline">\(1\)</span>. When both
+lifts use the same sharp datum (below) and the unprimed form has
+principal level, the finite integration in Theorem <a href="#thm:rallis"
+data-reference-type="ref" data-reference="thm:rallis">69.2.1</a> is a sum
+over cosets of the subgroup integral outside <span
+class="math inline">\(\mathcal{M}\cup Q_\xi\)</span> and their
+conjugates, and the integral on each coset supplies the mass of the
+finite datum as a factor; here is the finite model.</p>
+<div id="pr:collapse" class="problem" data-progress-ids="[&quot;20261126T050400--the-norm-of-one-lift__workbook.tex#pr:collapse&quot;]">
+<p><strong>Problem 69.3.4</strong>. Let <span
+class="math inline">\(\Gamma\)</span> and <span
+class="math inline">\(\mathcal J\)</span> be subgroups of a finite group
+<span class="math inline">\(G\)</span>, let <span
+class="math inline">\(y, y&#39;\)</span> be functions on <span
+class="math inline">\(\Gamma\backslash G\)</span>, and let <span
+class="math inline">\(y\)</span> be invariant on the right under <span
+class="math inline">\(\mathcal J\)</span>. With the pairing of
+Problem <a href="#pr:unfold" data-reference-type="ref"
+data-reference="pr:unfold">69.2.3</a>, <span class="math inline">\(\sum_{g
+\in G} \mathbf 1_{\mathcal J}(g)\, \langle y&#39;, y(\cdot\, g)\rangle =
+\#\mathcal J\, \langle y&#39;, y\rangle\)</span>.</p>
+</div>
+<p>The lift <span class="math inline">\(\hat u_{\xi,j}\)</span> uses a
+highest-vector Fock datum <span
+class="math inline">\(\phi_\infty\)</span> at the infinite places and a
+finite Weil vector <span
+class="math inline">\(F_{\mathrm{fin}}\)</span>, obtained from the
+vacuum by imposing, modulo the product of the places of <span
+class="math inline">\(\mathcal{M}\cup Q_\xi\)</span>, the following
+residue function <span class="math inline">\(F\)</span> (in this sheet)
+on families <span class="math inline">\(\mathbf X = (X_w)_{w \in
+\mathcal{M}\cup Q_\xi}\)</span> of <span class="math inline">\((r+t)
+\times r\)</span> matrices over the <span
+class="math inline">\(k_w\)</span>: <span
+class="math inline">\(F(\mathbf X) := \prod_{w \in Q_\xi} \psi_w(\det
+X_w&#39;)\)</span> if <span class="math inline">\(X_w\)</span> is the
+standard inclusion <span class="math inline">\(\binom{1}{0}\)</span> at
+every <span class="math inline">\(w \in \mathcal{M}\)</span>, and <span
+class="math inline">\(F(\mathbf X) := 0\)</span> otherwise; here <span
+class="math inline">\(X_w&#39;\)</span> is the top <span
+class="math inline">\(r \times r\)</span> block of <span
+class="math inline">\(X_w\)</span>, and <span
+class="math inline">\(\psi_w(0) := 0\)</span>. Let <span
+class="math inline">\(J_{\mathcal{M}}\)</span> (in this sheet) be the
+principal level of <span class="math inline">\(H(W_j)\)</span> and <span
+class="math inline">\(K^\circ\)</span> the stabilizer of the standard
+lattice. Let <span class="math inline">\(S_0\)</span> be the set of
+places of <span class="math inline">\(\mathcal{M}\cup Q_\xi\)</span> and
+their conjugates. In the matrix coefficients of this lift take <span
+class="math inline">\(\chi_2 = b_j := \mu_j^0\xi\,\upsilon^{\lfloor
+(r+t)/2\rfloor}\)</span> in Theorem <a href="#thm:rallis"
+data-reference-type="ref" data-reference="thm:rallis">69.2.1</a>, with <span
+class="math inline">\(\upsilon\)</span> the splitting character on the
+norm-one ideles. The proof shows that <span
+class="math inline">\(F_{\mathrm{fin}}\)</span> is <em>sharp</em> for
+<span class="math inline">\(J_{\mathcal{M}}\)</span> off <span
+class="math inline">\(S_0\)</span>: for every Fock vector <span
+class="math inline">\(v\)</span>, <span class="math inline">\(v \otimes
+F_{\mathrm{fin}}\)</span> is clean and a vacuum off <span
+class="math inline">\(S_0\)</span>; <span class="math inline">\(\lVert
+F_{\mathrm{fin}}\rVert^2 = \langle F_{\mathrm{fin}},
+F_{\mathrm{fin}}\rangle \ne 0\)</span>; and for finite <span
+class="math inline">\(g\)</span> integral outside <span
+class="math inline">\(S_0\)</span>, <span class="math inline">\(\langle
+F_{\mathrm{fin}}, \omega(g) F_{\mathrm{fin}}\rangle = \lVert
+F_{\mathrm{fin}}\rVert^2\, \mathbf 1_{J_{\mathcal{M}}}(g)\)</span>. The
+<em>mass</em> of <span class="math inline">\(F_{\mathrm{fin}}\)</span>
+is <span class="math inline">\(\lVert F_{\mathrm{fin}}\rVert^2/[K^\circ
+: J_{\mathcal{M}}]\)</span>, where <span class="math inline">\(\lVert
+F_{\mathrm{fin}}\rVert^2\)</span> is the mean of <span
+class="math inline">\(\lvert F(\mathbf X)\rvert^2\)</span> over all
+families <span class="math inline">\(\mathbf X\)</span> and <span
+class="math inline">\([K^\circ : J_{\mathcal{M}}] = \#\bar
+G\)</span>.</p>
+<div id="pr:sum-block" class="problem" data-progress-ids="[&quot;20261126T050400--the-norm-of-one-lift__workbook.tex#pr:sum-block&quot;]">
+<p><strong>Problem 69.3.5</strong>. <span
+class="math inline">\(\sum_{\mathbf X} \lvert F(\mathbf X)\rvert^2 =
+\#\mathrm{GL}_r(Q_\xi) \cdot (\operatorname{Nm}Q_\xi)^{rt}\)</span>,
+where <span class="math inline">\(\#\mathrm{GL}_r(Q) := \prod_{w \in Q}
+\#\mathrm{GL}_r(k_w)\)</span>.</p>
+</div>
+<p>The class-sum product on the target of <span
+class="math inline">\(\hat u_{\xi,j}\)</span> is the index of the level
+of <span class="math inline">\(V_j\)</span> times the dimension of the
+coefficient representation times the Petersson product of the associated
+adelic forms, and the proof shows that this index times <span
+class="math inline">\(\#\mathrm{GL}_r(Q_\xi)\)</span> is <span
+class="math inline">\(\prod_{w \in \mathcal{M}\cup Q_\xi}
+\lambda_w\)</span>, the size of the orbit of the standard inclusion. Put
+<span class="math display">\[c_{\mathrm{ch}}:= \prod_{w \in \mathcal{M}}
+\biggl( \frac{1}{\#\mathrm{GL}_r(k_w)} \prod_{v = t+1}^{t+r} \bigl(1 -
+q_w^{-v}\bigr) \biggr) ,\]</span> a nonzero number that does not depend
+on <span class="math inline">\(\xi\)</span>.</p>
+<div id="pr:mass" class="problem" data-progress-ids="[&quot;20261126T050400--the-norm-of-one-lift__workbook.tex#pr:mass&quot;]">
+<p><strong>Problem 69.3.6</strong>. With <span
+class="math inline">\(\lambda_w\)</span> as in Problem <a href="#pr:cQ"
+data-reference-type="ref" data-reference="pr:cQ">69.3.3</a>, <span
+class="math display">\[\frac{(\operatorname{Nm}Q_\xi)^{rt}}{\#\bar G}
+\prod_{w \in \mathcal{M}\cup Q_\xi} \frac{\lambda_w}{q_w^{(r+t)r}} =
+c_{\mathrm{ch}}\, c_{Q_\xi} .\]</span> So the index of the level of
+<span class="math inline">\(V_j\)</span> times the mass of <span
+class="math inline">\(F_{\mathrm{fin}}\)</span> is <span
+class="math inline">\(c_{\mathrm{ch}}c_{Q_\xi}\)</span>, and only the
+factor <span class="math inline">\(c_{Q_\xi}\)</span> depends on <span
+class="math inline">\(\xi\)</span>.</p>
+</div>
+<p>At the other places the integral becomes a sum over Hecke cosets.
+Write <span class="math inline">\(A\)</span> (in this sheet) for the set
+of finite places outside <span class="math inline">\(S_0\)</span>. For a
+finite point <span class="math inline">\(\gamma\)</span> of the unitary
+group of a framed space <span class="math inline">\(V\)</span> of rank
+<span class="math inline">\(r\)</span> let <span
+class="math inline">\(\Delta_f(\gamma)\)</span> be its finite Weil
+multiplier and (in this sheet) <span
+class="math display">\[\mathrm{mc}(\gamma) := \bigl(b_j(\det\gamma)\,
+\Delta_f(\gamma)^{r+t}\bigr)^{-1} ,\]</span> so <span
+class="math inline">\(\mathrm{mc}(1) = 1\)</span>. For a datum that is a
+vacuum on <span class="math inline">\(A\)</span>, left multiplication by
+<span class="math inline">\(\gamma\)</span> supported on <span
+class="math inline">\(A\)</span> multiplies its matrix coefficient at
+<span class="math inline">\(g\)</span>, with <span
+class="math inline">\(g\)</span> integral on <span
+class="math inline">\(A\)</span>, by <span
+class="math inline">\(\mathrm{mc}(\gamma)\)</span>.</p>
+<div id="def:rallis-operator" class="definition">
+<p><strong>Definition 69.3.2</strong>. Let <span class="math inline">\(j \ge
+0\)</span> be an integer, <span class="math inline">\(\xi\)</span> a
+tame character, and <span class="math inline">\(V\)</span> a framed
+space of rank <span class="math inline">\(r\)</span>, with any signs,
+such as <span class="math inline">\(W_j\)</span> or <span
+class="math inline">\(Y_0\)</span>. Define the <em>Rallis operator</em>
+<span class="math inline">\(\mathcal{R}_j(\xi; V)\)</span> as the
+endomorphism of <span class="math inline">\(H(V)\)</span> given by <span
+class="math display">\[\mathcal{R}_j(\xi; V)\, y := \sum_\gamma
+\mathrm{mc}(\gamma)\, y(\cdot\, \gamma) ,\]</span> where <span
+class="math inline">\(\gamma\)</span> runs over representatives, equal
+to <span class="math inline">\(1\)</span> outside <span
+class="math inline">\(A\)</span>, of the finite points of <span
+class="math inline">\(\mathrm{U}(V)\)</span> modulo those integral at
+every place of <span class="math inline">\(A\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a>; <a href="20261126T050500--equal-multiplicities__workbook.html">Chapter 70</a>; <a href="20261126T050700--squares-and-the-triangle__workbook.html">Chapter 72</a></div><!-- used-in:end -->
+</div>
+<p>Through the frames, all framed spaces <span
+class="math inline">\(V\)</span> of rank <span
+class="math inline">\(r\)</span> have the same finite adelic unitary
+group, so one family of representatives <span
+class="math inline">\(\gamma\)</span> serves every <span
+class="math inline">\(V\)</span>; the representatives are <span
+class="math inline">\(1\)</span> at the places of <span
+class="math inline">\(\mathcal{M}\)</span>, and neither they nor the
+coefficients <span class="math inline">\(\mathrm{mc}(\gamma)\)</span>
+depend on <span class="math inline">\(V\)</span>.</p>
+<p>The proof shows that for <span class="math inline">\(2r &lt; r +
+t\)</span> the series converges absolutely, lies in <span
+class="math inline">\(H(V)\)</span>, and <span
+class="math inline">\(\langle y&#39;, \mathcal{R}_j(\xi; V)\, y\rangle =
+\sum_\gamma \mathrm{mc}(\gamma) \langle y&#39;,
+y(\cdot\,\gamma)\rangle\)</span> for <span class="math inline">\(y,
+y&#39; \in H(V)\)</span>; it proves the summability of the coefficients
+by counting neighbouring lattices. For <span class="math inline">\(1 \le
+j \le m\)</span>, the sharp-data form of Theorem <a href="#thm:rallis"
+data-reference-type="ref" data-reference="thm:rallis">69.2.1</a> and
+Problem <a href="#pr:mass" data-reference-type="ref"
+data-reference="pr:mass">69.3.6</a> give, for every tame character <span
+class="math inline">\(\xi\)</span> and all <span
+class="math inline">\(y, y&#39; \in H(W_j)\)</span>, <span
+class="math display">\[\langle \hat u_{\xi,j}\, y&#39;, \hat u_{\xi,j}\,
+y\rangle = a_j\, c_{Q_\xi}\, \langle y&#39;, \mathcal{R}_j(\xi; W_j)\,
+y\rangle ,\]</span> where <span class="math inline">\(a_j\)</span> is
+<span class="math inline">\(c_{\mathrm{ch}}\)</span> times the dimension
+of the coefficient representation times a constant <span
+class="math inline">\(c_\infty\)</span> (in this sheet) that depends
+only on the spaces and the real data. As <span
+class="math inline">\(\xi\)</span> has weight <span
+class="math inline">\(0\)</span>, <span
+class="math inline">\(a_j\)</span> does not depend on <span
+class="math inline">\(\xi\)</span>. Here <span
+class="math inline">\(c_\infty = \operatorname{vol}[\mathrm{U}(V_j)]\,
+z_\infty\)</span>, where <span class="math inline">\(z_\infty\)</span>
+(in this sheet) is the integral over the real source group of <span
+class="math inline">\(\langle \phi_\infty,
+\Omega(x,1)\phi_\infty\rangle\, \overline{e(x)}/e(1)\)</span>, with
+<span class="math inline">\(e\)</span> the source type kernel and <span
+class="math inline">\(\Omega\)</span> the real Weil action. Cartan
+averaging on the lowest compact type gives positive real part to the
+pairing of each local factor of <span
+class="math inline">\(\phi_\infty\)</span> with its Weil average against
+the local discrete-series kernel. The integral <span
+class="math inline">\(z_\infty\)</span> is the product of these pairings
+divided by <span class="math inline">\(e(1) \ne 0\)</span>, so <span
+class="math inline">\(z_\infty \ne 0\)</span>. The proof also shows that
+the lift with datum <span class="math inline">\(\phi_\infty \otimes
+F_{\mathrm{fin}}\)</span> takes forms of the source type to forms of the
+target type; for the correspondence at infinity see <span
+class="citation" data-cites="Li90">[<a href="#ref-Li90">Li90</a>]</span>.</p>
+<h1 id="sec:theorem">§69.4. Injectivity and the theorem</h1>
+<p>Is <span class="math inline">\(\mathcal{R}_j(\xi; V)\)</span>
+injective? The proof partitions <span class="math inline">\(A\)</span>
+into finitely many disjoint conjugation-stable sets, on each of which
+the neighbour weights (the number of steps at <span
+class="math inline">\(w\)</span> times <span
+class="math inline">\(q_w^{-(r+t)/2}\)</span>) add up to at most <span
+class="math inline">\(1/3\)</span>. By sharpness, <span
+class="math inline">\(b_j \circ \det\)</span> is trivial on the integral
+points supported on <span class="math inline">\(A\)</span>. On bounded
+functions fixed by the integral points supported on these places, the
+series over a union of parts is the composite of their series; on one
+part the moduli of the <span
+class="math inline">\(\mathrm{mc}(\gamma)\)</span> off the trivial coset
+add up to at most <span class="math inline">\(1/2\)</span>, by a walk
+whose one-step weights total at most <span
+class="math inline">\(1/3\)</span>.</p>
+<div id="pr:half" class="problem" data-progress-ids="[&quot;20261126T050400--the-norm-of-one-lift__workbook.tex#pr:half&quot;]">
+<p><strong>Problem 69.4.1</strong>. <span class="math inline">\(\sum_{l \ge
+1} 3^{-l} = 1/2\)</span>. Let <span class="math inline">\(y\)</span> be
+a bounded function on a group <span class="math inline">\(G\)</span>,
+and let <span class="math inline">\(g_i \in G\)</span> and <span
+class="math inline">\(\zeta_i \in \mathbb{C}\)</span>, <span
+class="math inline">\(i \ge 1\)</span>, with <span
+class="math inline">\(\sum_i \lvert \zeta_i\rvert \le 1/2\)</span>. If
+<span class="math inline">\(y + \sum_i \zeta_i\, y(\cdot\, g_i) =
+0\)</span>, then <span class="math inline">\(y = 0\)</span>.</p>
+</div>
+<p>With Problem <a href="#pr:half" data-reference-type="ref"
+data-reference="pr:half">69.4.1</a> this gives what the proof shows: <span
+class="math inline">\(\mathcal{R}_j(\xi; V)\)</span> is injective.</p>
+<div id="pr:injective" class="problem" data-progress-ids="[&quot;20261126T050400--the-norm-of-one-lift__workbook.tex#pr:injective&quot;]">
+<p><strong>Problem 69.4.2</strong>. Let <span class="math inline">\(u \colon
+\mathcal E \to \mathcal E&#39;\)</span> be a linear map of
+finite-dimensional complex inner product spaces, <span
+class="math inline">\(\mathcal{R}\)</span> an injective endomorphism of
+<span class="math inline">\(\mathcal E\)</span>, and <span
+class="math inline">\(\zeta \in \mathbb{C}\)</span>, <span
+class="math inline">\(\zeta \ne 0\)</span>. If <span
+class="math inline">\(\langle u y&#39;, u y\rangle = \zeta \langle
+y&#39;, \mathcal{R}y\rangle\)</span> for all <span
+class="math inline">\(y, y&#39; \in \mathcal E\)</span>, then <span
+class="math inline">\(u\)</span> is injective.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:operator">Problem 69.4.3</a>; <a href="20261126T050800--compressions-and-false-lifts__workbook.html">Chapter 75</a></div><!-- used-in:end -->
+</div>
+<div id="pr:operator" class="problem" data-progress-ids="[&quot;20261126T050400--the-norm-of-one-lift__workbook.tex#pr:operator&quot;]">
+<p><strong>Problem 69.4.3</strong>. In Problem <a href="#pr:injective"
+data-reference-type="ref" data-reference="pr:injective">69.4.2</a>, the
+identity <span class="math inline">\(\langle u y&#39;, u y\rangle =
+\zeta \langle y&#39;, \mathcal{R}y\rangle\)</span> for all <span
+class="math inline">\(y, y&#39;\)</span> is equivalent to <span
+class="math inline">\(u^* u = \zeta\, \mathcal{R}\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:collapse" data-reference-type="ref"
+data-reference="pr:collapse">69.3.4</a>–<a href="#pr:mass"
+data-reference-type="ref" data-reference="pr:mass">69.3.6</a> compute the
+finite factor <span
+class="math inline">\(c_{\mathrm{ch}}c_{Q_\xi}\)</span> of the Gram
+identity of Section <a href="#sec:sharp" data-reference-type="ref"
+data-reference="sec:sharp">69.3</a>, whose other inputs we took from the
+proof, and Problem <a href="#pr:operator" data-reference-type="ref"
+data-reference="pr:operator">69.4.3</a> turns it into the following theorem,
+which the proof states in this form.</p>
+<div id="thm:one-lift" class="theorem">
+<p><strong>Theorem 69.4.1</strong>. <em>For every <span
+class="math inline">\(1 \le j \le m\)</span> there is <span
+class="math inline">\(a_j \in \mathbb{C}\)</span>, <span
+class="math inline">\(a_j \ne 0\)</span>, such that for every tame
+character <span class="math inline">\(\xi\)</span>, <span
+class="math display">\[\hat u_{\xi,j}^*\, \hat u_{\xi,j} = a_j\,
+c_{Q_\xi}\, \mathcal{R}_j(\xi; W_j)\]</span> on <span
+class="math inline">\(H(W_j)\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a>; <a href="20261126T050500--equal-multiplicities__workbook.html">Chapter 70</a>; <a href="20261126T050700--squares-and-the-triangle__workbook.html">Chapter 72</a>; <a href="20261126T050800--compressions-and-false-lifts__workbook.html">Chapter 75</a></div><!-- used-in:end -->
+</div>
+<p>By Problem <a href="#pr:injective" data-reference-type="ref"
+data-reference="pr:injective">69.4.2</a> and the injectivity of <span
+class="math inline">\(\mathcal{R}_j(\xi; W_j)\)</span>, the lift <span
+class="math inline">\(\hat u_{\xi,j}\)</span> is injective.</p>
+<p>Taken as given were the Siegel–Weil formula in Weil’s range,
+Theorem <a href="#thm:rallis" data-reference-type="ref"
+data-reference="thm:rallis">69.2.1</a> in its sharp form, the summability of
+the coefficients, the archimedean properties of <span
+class="math inline">\(\phi_\infty\)</span>, the sharpness of <span
+class="math inline">\(F_{\mathrm{fin}}\)</span>, the class-sum product
+and the index identity on the target of <span class="math inline">\(\hat
+u_{\xi,j}\)</span>, and the change of matrix coefficients under left
+multiplication, and the bound on the neighbour weights behind the
+injectivity of <span class="math inline">\(\mathcal{R}_j(\xi;
+V)\)</span>. Chapter <a href="20261126T050500--equal-multiplicities__workbook.html#chap" data-reference-type="ref"
+data-reference="c2-chap">70</a> compares <span
+class="math inline">\(\det \mathcal{R}_j(\xi; W_j)\)</span> and <span
+class="math inline">\(\det \mathcal{R}_j(\xi; Y_0)\)</span> on good
+forms. The rank hypothesis of Theorem <a href="#thm:rallis"
+data-reference-type="ref" data-reference="thm:rallis">69.2.1</a> holds for
+<span class="math inline">\(Y_0 \to Y_1\)</span> but not for <span
+class="math inline">\(Y_1 \to Y_2\)</span>, as <span
+class="math inline">\(2(r + t) &gt; r + 2t\)</span>; the chain identity
+uses the exchange identity of Chapter <a href="20261126T050600--the-exchange-identity__workbook.html#chap"
+data-reference-type="ref" data-reference="c3-chap">71</a>
+instead.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, Theorem <a
+href="#thm:one-lift" data-reference-type="ref"
+data-reference="thm:one-lift">69.4.1</a> is
+<code>New.Data.exists_adjoint_singleLift_comp_eq</code> in
+<code>New/Determinant/Norms/AdjointThetaLift.lean</code>, and the Gram
+identity of Section <a href="#sec:sharp" data-reference-type="ref"
+data-reference="sec:sharp">69.3</a>, with <span
+class="math inline">\(\langle y&#39;, \mathcal{R}_j(\xi; W_j)\,
+y\rangle\)</span> written as its series over <span
+class="math inline">\(\gamma\)</span>, is
+<code>Data.exists_hasSum_inner_singleLift</code> there. See also, in
+that file, <code>DescentPair.twistFactor</code>,
+<code>Data.rallisOperator</code>,
+<code>DescentPair.isSharp_blockDatum</code> and
+<code>DescentPair.gramFactor_div_card</code>, and in
+<code>Lib/SiegelWeil/</code> the declarations
+<code>New.SiegelWeil.siegel_weil</code>,
+<code>New.SiegelWeil.inner_product_formula</code> (Theorem <a
+href="#thm:rallis" data-reference-type="ref"
+data-reference="thm:rallis">69.2.1</a>),
+<code>New.SiegelWeil.rallis_inner_product_cosetTerm</code> and
+<code>New.SiegelWeil.eq_zero_of_rallisSeries_eq_zero</code>. The
+nonvanishing of <span class="math inline">\(z_\infty\)</span> is
+<code>New.integral_fockInner_mul_typeKernel_ne_zero</code> in
+<code>Lib/Weil/Lift.lean</code>, using
+<code>New.OscillatorPair.re_inner_integratedRep_pos</code> in
+<code>Lib/DiscreteSeries/Theta/LocalCorrespondence.lean</code>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secdoubled">§<a href="#sec:doubled"
+data-reference-type="ref" data-reference="sec:doubled">69.1</a></h2>
+<dl>
+<dt><a href="#pr:theta-I3" data-reference-type="ref"
+data-reference="pr:theta-I3">69.1.1</a></dt>
+<dd>
+<p>Equation <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#eq:lift" data-reference-type="eqref"
+data-reference="tn-eq:lift">(1)</a> with <span
+class="math inline">\(\lvert\Gamma_{I_1}\rvert = 4\)</span>; <span
+class="math inline">\(\operatorname{Hom}_\mathcal{O}(I_1, I_3) =
+\mathcal{O}^3\)</span>, and the sum over <span
+class="math inline">\(\mathcal{O}= \mathbb{Z}\oplus
+\mathbb{Z}\mathrm{i}\)</span> factors.</p>
+</dd>
+<dt><a href="#pr:norm-I3" data-reference-type="ref"
+data-reference="pr:norm-I3">69.1.2</a></dt>
+<dd>
+<p>The squared norm on <span
+class="math inline">\(\mathcal{A}_{(0)}(3)\)</span> and Problem <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:aut" data-reference-type="ref"
+data-reference="dt-pr:aut">21.1.2</a> for <span
+class="math inline">\(I_3\)</span>.</p>
+</dd>
+<dt><a href="#pr:double" data-reference-type="ref"
+data-reference="pr:double">69.1.3</a></dt>
+<dd>
+<p><span class="math inline">\(\operatorname{Hom}_\mathcal{O}(L \oplus
+L, L&#39;) = \operatorname{Hom}_\mathcal{O}(L, L&#39;)^2\)</span>;
+Problems <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:compose" data-reference-type="ref"
+data-reference="tn-pr:compose">23.5.1</a> and <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:adjoint" data-reference-type="ref"
+data-reference="tn-pr:adjoint">23.1.5</a>.</p>
+</dd>
+<dt><a href="#pr:majorant" data-reference-type="ref"
+data-reference="pr:majorant">69.1.4</a></dt>
+<dd>
+<p>Count the <span class="math inline">\(\mathbf e \in \mathbb
+N^p\)</span> with <span class="math inline">\(\lvert\mathbf e\rvert =
+l\)</span>, and expand <span class="math inline">\((1 -
+z)^{-p}\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secunfold">§<a href="#sec:unfold"
+data-reference-type="ref" data-reference="sec:unfold">69.2</a></h2>
+<dl>
+<dt><a href="#pr:F9" data-reference-type="ref"
+data-reference="pr:F9">69.2.1</a></dt>
+<dd>
+<p><span class="math inline">\((u_1 + u_2\mathrm{i})\overline{(u_1 +
+u_2\mathrm{i})} = u_1^2 + u_2^2\)</span>.</p>
+</dd>
+<dt><a href="#pr:graph" data-reference-type="ref"
+data-reference="pr:graph">69.2.2</a></dt>
+<dd>
+<p>Isotropy reads <span class="math inline">\(K_1^* J K_1 = K_2^* J
+K_2\)</span>; then look at vectors of <span
+class="math inline">\(\mathcal L\)</span> of the form <span
+class="math inline">\((z, 0)\)</span>.</p>
+</dd>
+<dt><a href="#pr:unfold" data-reference-type="ref"
+data-reference="pr:unfold">69.2.3</a></dt>
+<dd>
+<p>Fix representatives of <span class="math inline">\(\Gamma\backslash
+G\)</span> and the representative <span
+class="math inline">\(g&#39;\)</span>. As <span
+class="math inline">\(\delta\)</span> and the representative <span
+class="math inline">\(g\)</span> vary together, which values does <span
+class="math inline">\(g&#39;^{-1}\delta g\)</span> take?</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secsharp">§<a href="#sec:sharp"
+data-reference-type="ref" data-reference="sec:sharp">69.3</a></h2>
+<dl>
+<dt><a href="#pr:left-inverse" data-reference-type="ref"
+data-reference="pr:left-inverse">69.3.2</a></dt>
+<dd>
+<p>Left inverse means independent columns; choose them one at a
+time.</p>
+</dd>
+<dt><a href="#pr:sum-block" data-reference-type="ref"
+data-reference="pr:sum-block">69.3.5</a></dt>
+<dd>
+<p>Sum place by place; <span class="math inline">\(\lvert\psi_w(d)\rvert
+= 1\)</span> for <span class="math inline">\(d \ne 0\)</span>.</p>
+</dd>
+<dt><a href="#pr:mass" data-reference-type="ref"
+data-reference="pr:mass">69.3.6</a></dt>
+<dd>
+<p>Problem <a href="#pr:left-inverse" data-reference-type="ref"
+data-reference="pr:left-inverse">69.3.2</a>, and the definition of <span
+class="math inline">\(\bar G\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="sectheorem">§<a href="#sec:theorem"
+data-reference-type="ref" data-reference="sec:theorem">69.4</a></h2>
+<dl>
+<dt><a href="#pr:half" data-reference-type="ref"
+data-reference="pr:half">69.4.1</a></dt>
+<dd>
+<p>Compare <span class="math inline">\(\sup \lvert y\rvert\)</span> with
+its half.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Li90"><span class="bib-label">[Li90]</span> J.-S. Li, <em>Theta lifting for unitary representations with nonzero cohomology</em>, Duke Math. J. <strong>61</strong> (1990), 913–937.</p>
+<p id="ref-Ra87"><span class="bib-label">[Ra87]</span> S. Rallis, <em><span class="math inline">\(L\)</span>-functions and the oscillator representation</em>, Lecture Notes in Math. 1245, Springer, 1987.</p>
+<p id="ref-We65"><span class="bib-label">[We65]</span> A. Weil, <em>Sur la formule de Siegel dans la théorie des groupes classiques</em>, Acta Math. <strong>113</strong> (1965), 1–87.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

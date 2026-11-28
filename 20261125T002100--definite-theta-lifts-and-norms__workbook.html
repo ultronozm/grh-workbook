@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-rxjAFdDZ18om7mH2CjCuZ/pUitYQCtunvXyiRRlwuJA=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-25" />
+  <title>Definite theta lifts and their norms</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","R":"\\mathbb{R}","C":"\\mathbb{C}","ii":"\\mathrm{i}","Oc":"\\mathcal{O}","Sc":"\\mathbb{S}","Ac":"\\mathcal{A}","Fc":"\\mathcal{F}","Cl":"\\mathrm{Cl}","Hom":"\\operatorname{Hom}","Sym":"\\operatorname{Sym}","tr":"\\operatorname{tr}","Nm":"\\mathrm{N}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="23">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261125T002100--definite-theta-lifts-and-norms__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-26 19:19:14
+      <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.tex" class="my-link">tex</a>
+      <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261125T002100--definite-theta-lifts-and-norms__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Definite theta lifts and their norms <a class="stable-tag" href="tag/22MN.html" title="Stable tag: cite as Tag 22MN">Tag 22MN</a></h1>
+<p class="date">November 25, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:kernel" id="toc-sec:kernel">§23.1. The theta kernel</a></li>
+<li><a href="#sec:smallest" id="toc-sec:smallest">§23.2. The smallest examples</a></li>
+<li><a href="#sec:norm" id="toc-sec:norm">§23.3. The Gaussian norm and the norm of the lift</a></li>
+<li><a href="#sec:seesaw" id="toc-sec:seesaw">§23.4. The seesaw</a></li>
+<li><a href="#sec:chain" id="toc-sec:chain">§23.5. Chains</a></li>
+<li><a href="#sec:questions" id="toc-sec:questions">§23.6. Questions</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#seckernel" id="toc-seckernel">§23.1</a></li>
+<li><a href="#secsmallest" id="toc-secsmallest">§23.2</a></li>
+<li><a href="#secnorm" id="toc-secnorm">§23.3</a></li>
+<li><a href="#secseesaw" id="toc-secseesaw">§23.4</a></li>
+<li><a href="#secchain" id="toc-secchain">§23.5</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Chapter <a href="20261125T002000--definite-theta-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dt-chap">21</a>, <em>Masses and the count of
+forms</em>: the class sets <span
+class="math inline">\(\mathrm{Cl}_n\)</span>, the groups <span
+class="math inline">\(\Gamma_L\)</span>, the representations <span
+class="math inline">\(V_\lambda(L) =
+\mathbb{S}_\lambda(L_\mathbb{C})\)</span>, the notation <span
+class="math inline">\(e^\nu\)</span> in <span
+class="math inline">\(\operatorname{Sym}^a\)</span>, and the spaces of
+forms <span class="math inline">\(\mathcal{A}_\lambda(n)\)</span> with
+their norm (Sections <a href="20261125T002000--definite-theta-lifts__workbook.html#sec:lattices"
+data-reference-type="ref"
+data-reference="dt-sec:lattices">21.1</a> and <a
+href="20261125T002000--definite-theta-lifts__workbook.html#sec:forms" data-reference-type="ref"
+data-reference="dt-sec:forms">21.3</a>). From Chapter <a
+href="20261124T223000--elliptic-curves-for-the-proof__workbook.html#chap" data-reference-type="ref"
+data-reference="ec-chap">11</a>: Theorem <a href="20261124T223000--elliptic-curves-for-the-proof__workbook.html#thm:LL"
+data-reference-type="ref" data-reference="ec-thm:LL">11.3.1</a> and
+Problems <a href="20261124T223000--elliptic-curves-for-the-proof__workbook.html#pr:Omega" data-reference-type="ref"
+data-reference="ec-pr:Omega">11.3.7</a>, <a href="20261124T223000--elliptic-curves-for-the-proof__workbook.html#pr:hurwitz"
+data-reference-type="ref"
+data-reference="ec-pr:hurwitz">11.3.1</a> and <a
+href="20261124T223000--elliptic-curves-for-the-proof__workbook.html#pr:epstein" data-reference-type="ref"
+data-reference="ec-pr:epstein">11.3.4</a>. From Chapter <a
+href="20261124T214500--supersingular-theta-divisibility__workbook.html#chap" data-reference-type="ref"
+data-reference="st-chap">15</a>: Section <a
+href="20261124T214500--supersingular-theta-divisibility__workbook.html#sec:moments" data-reference-type="ref"
+data-reference="st-sec:moments">15.1</a> and Problem <a
+href="20261124T214500--supersingular-theta-divisibility__workbook.html#pr:gauss" data-reference-type="ref"
+data-reference="st-pr:gauss">15.1.3</a>. Stirling’s formula.</p>
+<p>Since a definite unitary group has a finite class set, a theta lift
+between two such groups is a finite matrix. What are its entries, and
+how large is it? We compute both in the smallest cases.</p>
+<h1 id="sec:kernel">§23.1. The theta kernel <a class="stable-tag" href="tag/22MP.html" title="Stable tag: cite as Tag 22MP">Tag 22MP</a></h1>
+<p>How does one map forms on one class set to forms on another? The idea
+is to sum over all homomorphisms between the two lattices, with a
+Gaussian weight.</p>
+<p>Let <span class="math inline">\(L\)</span> and <span
+class="math inline">\(L&#39;\)</span> be positive definite unimodular
+Hermitian lattices over <span class="math inline">\(\mathcal{O}=
+\mathbb{Z}[\mathrm{i}]\)</span> of ranks <span
+class="math inline">\(n\)</span> and <span
+class="math inline">\(n&#39;\)</span>. For <span class="math inline">\(x
+\in \operatorname{Hom}_\mathcal{O}(L, L&#39;)\)</span> let <span
+class="math inline">\(x^* \in \operatorname{Hom}(L&#39;_\mathbb{C},
+L_\mathbb{C})\)</span> be its adjoint, and let <span
+class="math inline">\(h(x,y) := \operatorname{tr}(y^* x)\)</span>. Let
+<span class="math display">\[\Theta_{L,L&#39;}(Z) := \sum_{x \in
+\operatorname{Hom}_\mathcal{O}(L,L&#39;)} e^{-\pi h(x,x) +
+\operatorname{tr}(Z x)},
+  \qquad Z \in \operatorname{Hom}(L&#39;_\mathbb{C}, L_\mathbb{C})
+.\]</span> For a polynomial <span class="math inline">\(P\)</span> in
+the entries of <span class="math inline">\(x\)</span>, let <span
+class="math inline">\(P(\partial)\)</span> be the differential operator
+obtained by replacing <span
+class="math inline">\(x_{\beta\alpha}\)</span> with <span
+class="math inline">\(\partial/\partial Z_{\alpha\beta}\)</span>. For a
+weight <span class="math inline">\(\lambda\)</span> define <span
+class="math display">\[\vartheta_\lambda(L, L&#39;) := \sum_{x \in
+\operatorname{Hom}_\mathcal{O}(L,L&#39;)} \mathbb{S}_\lambda(x)\,
+e^{-\pi h(x,x)} \colon V_\lambda(L) \to V_\lambda(L&#39;),\]</span> and,
+for the class sets <span class="math inline">\(\mathrm{Cl}_n\)</span>
+and <span class="math inline">\(\mathrm{Cl}_{n&#39;}\)</span>, define
+the <em>lift</em> <span class="math inline">\(\Theta_\lambda \colon
+\mathcal{A}_\lambda(n) \to \mathcal{A}_\lambda(n&#39;)\)</span> by <span id="eq:lift"
+class="math display">\[\begin{equation}
+\label{eq:lift}\tag{1}
+  (\Theta_\lambda \varphi)(L&#39;) := \sum_{L \in \mathrm{Cl}_n}
+\frac{1}{\lvert\Gamma_L\rvert}\, \vartheta_\lambda(L, L&#39;)\,
+\varphi(L) .
+\end{equation}\]</span> In bases, <span
+class="math inline">\(\Theta_\lambda\)</span> is a finite matrix whose
+block in row <span class="math inline">\(L&#39;\)</span> and column
+<span class="math inline">\(L\)</span> is <span
+class="math inline">\(\lvert\Gamma_L\rvert^{-1}\vartheta_\lambda(L,L&#39;)\)</span>,
+restricted from <span
+class="math inline">\(V_\lambda(L)^{\Gamma_L}\)</span> to <span
+class="math inline">\(V_\lambda(L&#39;)^{\Gamma_{L&#39;}}\)</span>. For
+a matrix coefficient <span class="math inline">\(P\)</span> of <span
+class="math inline">\(\mathbb{S}_\lambda\)</span>, the series <span
+class="math inline">\(\sum_x P(x)\, q^{h(x,x)}\)</span> is a classical
+theta series with polynomial coefficients, and the corresponding entry
+of <span class="math inline">\(\vartheta_\lambda\)</span> is its value
+at <span class="math inline">\(q = e^{-\pi}\)</span>.</p>
+<p>Thus <span class="math inline">\(\Theta_{L,L&#39;}\)</span> is a
+theta function of the Hermitian lattice <span
+class="math inline">\(\operatorname{Hom}_\mathcal{O}(L,L&#39;)\)</span>,
+which is unimodular of rank <span class="math inline">\(nn&#39;\)</span>
+by Problem <a href="#pr:hom" data-reference-type="ref"
+data-reference="pr:hom">23.1.1</a> below. Chapter <a href="20261125T009500--fock-model-and-theta-intertwiners__workbook.html#chap"
+data-reference-type="ref" data-reference="fm-chap">12</a>,
+<em>The Fock model and theta intertwiners</em>, treats one-variable
+theta functions of self-dual lattices with semicharacters; for
+commensurable lattices whose semicharacters agree on their intersection
+it defines an intertwiner, and for the neighbours of <span
+class="math inline">\(\mathbb{Z}[\mathrm{i}]\)</span> studied there the
+composition scalar is a root of unity given by a Gauss sum. The problems
+of this chapter use only the series itself.</p>
+<div id="pr:hom" class="problem" data-progress-ids="[&quot;22MQ&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:hom&quot;]"><a class="stable-tag" href="tag/22MQ.html" title="Stable tag: cite as Tag 22MQ">Tag 22MQ</a>
+<p><strong>Problem 23.1.1</strong>. If <span class="math inline">\(L\)</span>
+and <span class="math inline">\(L&#39;\)</span> are unimodular, then
+with <span class="math inline">\(h(x,y) =
+\operatorname{tr}(y^*x)\)</span>, <span
+class="math inline">\(\operatorname{Hom}_\mathcal{O}(L, L&#39;)\)</span>
+is a unimodular Hermitian lattice of rank <span
+class="math inline">\(nn&#39;\)</span>, and <span
+class="math inline">\(\operatorname{Hom}_\mathcal{O}(I_n, I_{n&#39;})
+\cong I_{nn&#39;}\)</span>.</p>
+</div>
+<div id="pr:jet" class="problem" data-progress-ids="[&quot;22MR&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:jet&quot;]"><a class="stable-tag" href="tag/22MR.html" title="Stable tag: cite as Tag 22MR">Tag 22MR</a>
+<p><strong>Problem 23.1.2</strong>. <span
+class="math inline">\(\Theta_{L,L&#39;}\)</span> is entire, and <span
+class="math inline">\(P(\partial)\Theta_{L,L&#39;}(0) = \sum_x P(x)\,
+e^{-\pi h(x,x)}\)</span>. If <span
+class="math inline">\(\Theta_{L,L&#39;}(Z) = \sum_\nu b_\nu
+Z^\nu\)</span> and <span class="math inline">\(P(x) = \sum_\nu P_\nu
+x^\nu\)</span>, with the matching indexing of the entries of <span
+class="math inline">\(Z\)</span> and of <span
+class="math inline">\(x\)</span>, this equals <span
+class="math inline">\(\sum_\nu P_\nu\, \nu!\, b_\nu\)</span>.</p>
+</div>
+<div id="pr:entries" class="problem" data-progress-ids="[&quot;22MS&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:entries&quot;]"><a class="stable-tag" href="tag/22MS.html" title="Stable tag: cite as Tag 22MS">Tag 22MS</a>
+<p><strong>Problem 23.1.3</strong>. In Schur bases of <span
+class="math inline">\(V_\lambda(L)\)</span> and <span
+class="math inline">\(V_\lambda(L&#39;)\)</span> obtained over <span
+class="math inline">\(\mathbb{Q}\)</span> from <span
+class="math inline">\(\mathcal{O}\)</span>-bases of <span
+class="math inline">\(L\)</span> and <span
+class="math inline">\(L&#39;\)</span>, each entry of <span
+class="math inline">\(\vartheta_\lambda(L,L&#39;)\)</span> is <span
+class="math inline">\(P(\partial)\Theta_{L,L&#39;}(0)\)</span> for a
+polynomial <span class="math inline">\(P\)</span>, homogeneous of degree
+<span class="math inline">\(\lvert\lambda\rvert\)</span>, with rational
+coefficients. Moreover <span class="math inline">\(\vartheta_\lambda(L,
+L&#39;) = 0\)</span> unless <span class="math inline">\(4 \mid
+\lvert\lambda\rvert\)</span>.</p>
+</div>
+<div id="pr:equiv" class="problem" data-progress-ids="[&quot;22MT&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:equiv&quot;]"><a class="stable-tag" href="tag/22MT.html" title="Stable tag: cite as Tag 22MT">Tag 22MT</a>
+<p><strong>Problem 23.1.4</strong>. For <span class="math inline">\(\gamma
+\in \Gamma_L\)</span> and <span class="math inline">\(\gamma&#39; \in
+\Gamma_{L&#39;}\)</span>, <span
+class="math inline">\(\mathbb{S}_\lambda(\gamma&#39;)\,
+\vartheta_\lambda(L,L&#39;) = \vartheta_\lambda(L,L&#39;) =
+\vartheta_\lambda(L,L&#39;)\, \mathbb{S}_\lambda(\gamma)\)</span>. Hence
+<a href="#eq:lift" data-reference-type="eqref"
+data-reference="eq:lift">(1)</a> is a form on <span
+class="math inline">\(\mathrm{Cl}_{n&#39;}\)</span>, and it does not
+depend on the lattices chosen in the classes, up to transport of forms
+along isometries.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a></div><!-- used-in:end -->
+</div>
+<div id="pr:adjoint" class="problem" data-progress-ids="[&quot;22MU&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:adjoint&quot;]"><a class="stable-tag" href="tag/22MU.html" title="Stable tag: cite as Tag 22MU">Tag 22MU</a>
+<p><strong>Problem 23.1.5</strong>. <span
+class="math inline">\(\vartheta_\lambda(L,L&#39;)^* =
+\vartheta_\lambda(L&#39;,L)\)</span>. Hence the lift <span
+class="math inline">\(\Theta&#39;_\lambda \colon
+\mathcal{A}_\lambda(n&#39;) \to \mathcal{A}_\lambda(n)\)</span> in the
+other direction is the adjoint of <span
+class="math inline">\(\Theta_\lambda\)</span>: <span
+class="math inline">\(\langle \Theta_\lambda \varphi, \psi \rangle =
+\langle \varphi, \Theta&#39;_\lambda \psi \rangle\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a>; <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html">Chapter 53</a>; <a href="20261126T050400--the-norm-of-one-lift__workbook.html">Chapter 69</a></div><!-- used-in:end -->
+</div>
+<h1 id="sec:smallest">§23.2. The smallest examples <a class="stable-tag" href="tag/22MV.html" title="Stable tag: cite as Tag 22MV">Tag 22MV</a></h1>
+<p>What are these matrices for <span class="math inline">\(\mathrm{U}(1)
+\times \mathrm{U}(1)\)</span> and <span
+class="math inline">\(\mathrm{U}(1) \times \mathrm{U}(2)\)</span>? By
+Problem <a href="20261125T002000--definite-theta-lifts__workbook.html#pr:class-one" data-reference-type="ref"
+data-reference="dt-pr:class-one">21.1.4</a> each class set
+has one element, and the lift is a single block. Everything is expressed
+through the Gaussian moments <span class="math display">\[c_a :=
+\sum_{\alpha \in \mathcal{O}} \alpha^a e^{-\pi\lvert\alpha\rvert^2}
+\qquad (a \ge 0) .\]</span> Let <span
+class="math inline">\(\varpi\)</span>, <span
+class="math inline">\(\vartheta_0\)</span> and <span
+class="math inline">\(F = \sigma^2\wp\)</span> be as in §<a
+href="20261124T214500--supersingular-theta-divisibility__workbook.html#sec:moments" data-reference-type="ref"
+data-reference="st-sec:moments">15.1</a>.</p>
+<div id="pr:ca" class="problem" data-progress-ids="[&quot;22MW&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:ca&quot;]"><a class="stable-tag" href="tag/22MW.html" title="Stable tag: cite as Tag 22MW">Tag 22MW</a>
+<p><strong>Problem 23.2.1</strong>. <span class="math inline">\(c_a\)</span>
+is real, <span class="math inline">\(c_a = 0\)</span> unless <span
+class="math inline">\(4 \mid a\)</span>, and <span
+class="math inline">\(c_a = \vartheta_0\, (\varpi/2\pi)^a
+F^{(a)}(0)\)</span> with <span class="math inline">\(F^{(a)}(0) \in
+\mathbb{Q}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a>; <a href="20261126T051300--two-lifts-at-a-time__workbook.html">Chapter 54</a>; <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a></div><!-- used-in:end -->
+</div>
+<div id="pr:Fa" class="problem" data-progress-ids="[&quot;22MX&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:Fa&quot;]"><a class="stable-tag" href="tag/22MX.html" title="Stable tag: cite as Tag 22MX">Tag 22MX</a>
+<p><strong>Problem 23.2.2</strong>. For <span class="math inline">\(a = 0, 4,
+8, 12, 16\)</span> the rational numbers <span
+class="math inline">\(F^{(a)}(0)\)</span> are <span
+class="math inline">\(1\)</span>, <span
+class="math inline">\(4\)</span>, <span
+class="math inline">\(272\)</span>, <span
+class="math inline">\(-7104\)</span>, <span
+class="math inline">\(3203328\)</span>.</p>
+</div>
+<p>We identify <span
+class="math inline">\(\operatorname{Sym}^a(\mathbb{C}) =
+\mathbb{C}e^a\)</span> with <span
+class="math inline">\(\mathbb{C}\)</span> by <span
+class="math inline">\(e^a \mapsto 1\)</span>, so that the values <span
+class="math inline">\(\varphi(I_1)\)</span> of forms on <span
+class="math inline">\(\mathrm{U}(1)\)</span> are numbers.</p>
+<div id="pr:U1U1" class="problem" data-progress-ids="[&quot;22MY&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:U1U1&quot;]"><a class="stable-tag" href="tag/22MY.html" title="Stable tag: cite as Tag 22MY">Tag 22MY</a>
+<p><strong>Problem 23.2.3</strong>. For <span class="math inline">\(n =
+n&#39; = 1\)</span> and <span class="math inline">\(4 \mid a\)</span>,
+<span class="math inline">\(\Theta_{(a)}\)</span> is multiplication by
+<span class="math inline">\(c_a/4\)</span> on the line <span
+class="math inline">\(\mathcal{A}_{(a)}(1)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a>; <a href="20261126T051300--two-lifts-at-a-time__workbook.html">Chapter 54</a>; <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a>; <a href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html">Chapter 77</a></div><!-- used-in:end -->
+</div>
+<p>For <span class="math inline">\(n = 1\)</span> and <span
+class="math inline">\(n&#39; = 2\)</span>, <span
+class="math inline">\(\operatorname{Hom}_\mathcal{O}(I_1, I_2) =
+\mathcal{O}^2\)</span> is the space of columns <span
+class="math inline">\(x = (x_1, x_2)\)</span>.</p>
+<div id="pr:U1U2" class="problem" data-progress-ids="[&quot;22MZ&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:U1U2&quot;]"><a class="stable-tag" href="tag/22MZ.html" title="Stable tag: cite as Tag 22MZ">Tag 22MZ</a>
+<p><strong>Problem 23.2.4</strong>. For <span class="math inline">\(\varphi
+\in \mathcal{A}_{(a)}(1)\)</span>, <span
+class="math display">\[(\Theta_{(a)}\varphi)(I_2) =
+\frac{\varphi(I_1)}{4} \sum_{j} \binom{a}{j} c_j c_{a-j}\, e_1^j
+e_2^{a-j} .\]</span> For <span class="math inline">\(a = 8\)</span> this
+is <span class="math inline">\(4\varphi(I_1)\, \vartheta_0^2
+(\varpi/2\pi)^8 \bigl(17 e_1^8 + 70 e_1^4 e_2^4 + 17
+e_2^8\bigr)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a>; <a href="20261126T051300--two-lifts-at-a-time__workbook.html">Chapter 54</a>; <a href="20261126T060300--the-comparison-operator__workbook.html">Chapter 76</a></div><!-- used-in:end -->
+</div>
+<div id="pr:U2U1" class="problem" data-progress-ids="[&quot;22N2&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:U2U1&quot;]"><a class="stable-tag" href="tag/22N2.html" title="Stable tag: cite as Tag 22N2">Tag 22N2</a>
+<p><strong>Problem 23.2.5</strong>. The lift <span
+class="math inline">\(\Theta&#39;_{(a)} \colon \mathcal{A}_{(a)}(2) \to
+\mathcal{A}_{(a)}(1)\)</span> is <span
+class="math display">\[(\Theta&#39;_{(a)}\psi)(I_1) = \frac{1}{32}
+\sum_j c_j c_{a-j}\, \psi_j,
+  \qquad \text{where } \psi(I_2) = \sum_j \psi_j\, e_1^j e_2^{a-j}
+.\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a>: <a href="20261126T030400--the-seesaw-identity__workbook.html#pr:theta-vector">Problem 52.2.3</a></div><!-- used-in:end -->
+</div>
+<p>How large are these entries?</p>
+<div id="pr:ca-size" class="problem" data-progress-ids="[&quot;22N3&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:ca-size&quot;]"><a class="stable-tag" href="tag/22N3.html" title="Stable tag: cite as Tag 22N3">Tag 22N3</a>
+<p><strong>Problem 23.2.6</strong>. <span class="math inline">\(\log c_a^2
+\le a \log a - a(1 + \log 2\pi) + O(\log a)\)</span>, where <span
+class="math inline">\(\log 0 := -\infty\)</span>.</p>
+</div>
+<p>Numerically the bound is attained up to <span
+class="math inline">\(O(\log a)\)</span>: for <span
+class="math inline">\(a = 40, 80, \dots, 240\)</span> the left side
+exceeds the right side without the <span class="math inline">\(O(\log
+a)\)</span> by between <span class="math inline">\(1.7\)</span> and
+<span class="math inline">\(4.8\)</span>. The scale <span
+class="math inline">\(2\pi\)</span> belongs to the Gaussian; the
+rational part <span class="math inline">\(F^{(a)}(0)\)</span> of <span
+class="math inline">\(c_a\)</span> sees instead the period. By
+Problem <a href="20261124T223000--elliptic-curves-for-the-proof__workbook.html#pr:Omega" data-reference-type="ref"
+data-reference="ec-pr:Omega">11.3.7</a>, <span
+class="math inline">\(\varpi^2/2\pi = \Omega/4\)</span> with <span
+class="math inline">\(\Omega = 2\varpi^2/\pi\)</span>, and by Theorem <a
+href="20261124T223000--elliptic-curves-for-the-proof__workbook.html#thm:LL" data-reference-type="ref"
+data-reference="ec-thm:LL">11.3.1</a>, <span
+class="math inline">\(\log \Omega = \gamma + \log \pi -
+L&#39;(1,\chi)/L(1,\chi)\)</span>. Combining these with Problems <a
+href="#pr:ca" data-reference-type="ref" data-reference="pr:ca">23.2.1</a>
+and <a href="#pr:ca-size" data-reference-type="ref"
+data-reference="pr:ca-size">23.2.6</a> gives <span id="eq:F-size"
+class="math display">\[\begin{equation}
+\label{eq:F-size}\tag{2}
+  \log F^{(a)}(0)^2 \le a \log a - a\Bigl(1 + \gamma + \log\frac{\pi}{4}
+- \frac{L&#39;(1,\chi)}{L(1,\chi)}\Bigr) + O(\log a) .
+\end{equation}\]</span> This is how Euler’s constant and <span
+class="math inline">\(L&#39;(1,\chi)/L(1,\chi)\)</span> enter the linear
+term of a size bound.</p>
+<h1 id="sec:norm">§23.3. The Gaussian norm and the norm of the lift <a class="stable-tag" href="tag/22N4.html" title="Stable tag: cite as Tag 22N4">Tag 22N4</a></h1>
+<p>The size of an entry is one thing; the size of the lift is measured
+by its operator norm. What is <span class="math inline">\(\lVert
+\Theta_{(a)} \rVert\)</span> in the smallest case?</p>
+<p>Let <span class="math inline">\(\mathcal{F}_m\)</span> be the space
+of entire functions on <span class="math inline">\(\mathbb{C}^m\)</span>
+with <span class="math display">\[\lVert f \rVert^2 :=
+\pi^{-m}\int_{\mathbb{C}^m} \lvert f(z) \rvert^2 e^{-\lvert z\rvert^2}
+\, dA(z) &lt; \infty .\]</span></p>
+<p>For <span class="math inline">\(m = 1\)</span> this is the norm of
+Chapter <a href="20261125T000000--slope-method__workbook.html#chap" data-reference-type="ref"
+data-reference="sm-chap">5</a>, in which the monomials are
+orthogonal and <span class="math inline">\(\lVert z^a \rVert^2 =
+a!\)</span> (Problem <a href="20261125T000000--slope-method__workbook.html#pr:fock" data-reference-type="ref"
+data-reference="sm-pr:fock">5.4.4</a>); since the measure and the
+inner product of two monomials factor over the variables, the monomials
+<span class="math inline">\(z^\nu\)</span> are orthogonal in <span
+class="math inline">\(\mathcal{F}_m\)</span> with <span
+class="math inline">\(\lVert z^\nu \rVert^2 = \nu!\)</span>. By
+Problems <a href="20261125T002000--definite-theta-lifts__workbook.html#pr:sym-norm" data-reference-type="ref"
+data-reference="dt-pr:sym-norm">21.3.2</a> and <a
+href="20261125T000000--slope-method__workbook.html#pr:fock" data-reference-type="ref"
+data-reference="sm-pr:fock">5.4.4</a>, sending <span
+class="math inline">\(e^\nu\)</span> to <span
+class="math inline">\(z^\nu\)</span> identifies <span
+class="math inline">\(\operatorname{Sym}^a(\mathbb{C}^m)\)</span> with
+the homogeneous polynomials of degree <span
+class="math inline">\(a\)</span> in <span
+class="math inline">\(\mathcal{F}_m\)</span>, with <span
+class="math inline">\(\lVert e^\nu \rVert^2 = \lVert z^\nu
+\rVert^2/a!\)</span>. In this normalization the size of a derivative is
+controlled as follows.</p>
+<div id="pr:CS" class="problem" data-progress-ids="[&quot;22N6&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:CS&quot;]"><a class="stable-tag" href="tag/22N6.html" title="Stable tag: cite as Tag 22N6">Tag 22N6</a>
+<p><strong>Problem 23.3.1</strong>. If <span class="math inline">\(\Theta(Z)
+= \sum_\nu b_\nu Z^\nu\)</span> and <span class="math inline">\(P =
+\sum_\nu P_\nu x^\nu\)</span>, then <span class="math display">\[\lvert
+P(\partial)\Theta(0) \rvert^2 \le \lVert P \rVert_{\mathcal{F}}^2
+\sum_{\nu \in \operatorname{supp} P} \nu!\, \lvert b_\nu \rvert^2
+.\]</span></p>
+</div>
+<p>What is the squared norm of the lift from <span
+class="math inline">\(\mathrm{U}(1)\)</span> to <span
+class="math inline">\(\mathrm{U}(2)\)</span>?</p>
+<div id="pr:rallis" class="problem" data-progress-ids="[&quot;22N7&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:rallis&quot;]"><a class="stable-tag" href="tag/22N7.html" title="Stable tag: cite as Tag 22N7">Tag 22N7</a>
+<p><strong>Problem 23.3.2</strong>. For <span
+class="math inline">\(\Theta_{(a)} \colon \mathcal{A}_{(a)}(1) \to
+\mathcal{A}_{(a)}(2)\)</span> and <span class="math inline">\(\varphi
+\ne 0\)</span>, <span class="math display">\[\frac{\lVert
+\Theta_{(a)}\varphi \rVert^2}{\lVert \varphi \rVert^2}
+  = \frac{1}{128} \sum_{x, y \in \mathcal{O}^2} h(x,y)^a e^{-\pi(\lvert
+x\rvert^2 + \lvert y\rvert^2)}
+  = \frac{1}{128} \sum_j \binom{a}{j} c_j^2 c_{a-j}^2 .\]</span> For
+<span class="math inline">\(a = 4\)</span> and <span
+class="math inline">\(a = 8\)</span> it equals <span
+class="math inline">\(\tfrac14 \vartheta_0^4 (\varpi/2\pi)^8\)</span>
+and <span class="math inline">\(1296\, \vartheta_0^4
+(\varpi/2\pi)^{16}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a>; <a href="20261126T050400--the-norm-of-one-lift__workbook.html">Chapter 69</a>; <a href="20261126T060300--the-comparison-operator__workbook.html">Chapter 76</a></div><!-- used-in:end -->
+</div>
+<p>The middle expression is a theta sum over <span
+class="math inline">\(\operatorname{Hom}_\mathcal{O}(I_1 \oplus I_1,
+I_2)\)</span>, the lattice of pairs <span class="math inline">\((x,
+y)\)</span>. This is the structure of the Rallis inner product formula
+<span class="citation" data-cites="Ra">[<a href="#ref-Ra">Ra</a>]</span>.
+More generally, the diagonal kernel of <span
+class="math inline">\(\Theta&#39;_\lambda\Theta_\lambda\)</span> is a
+stabilizer-weighted sum over <span
+class="math inline">\(L&#39;\in\mathrm{Cl}_{n&#39;}\)</span> of theta
+series on the doubled lattice <span
+class="math inline">\(\operatorname{Hom}_\mathcal{O}(L\oplus
+L,L&#39;)\)</span>. In the convergent range the Siegel–Weil formula
+identifies the corresponding adelic theta integral with an Eisenstein
+series <span class="citation"
+data-cites="We65">[<a href="#ref-We65">We65</a>]</span>, and the doubled theta
+sum is the construction behind the inner product formula of <span
+class="citation" data-cites="Ra">[<a href="#ref-Ra">Ra</a>]</span>. For
+<span class="math inline">\(4 \mid a\)</span> the source <span
+class="math inline">\(\mathcal{A}_{(a)}(1)\)</span> is a line, and
+Problem <a href="#pr:rallis" data-reference-type="ref"
+data-reference="pr:rallis">23.3.2</a> computes the scalar directly.</p>
+<p>The two smallest lifts satisfy the following norm estimate.</p>
+<div id="thm:norm" class="theorem"><a class="stable-tag" href="tag/22N8.html" title="Stable tag: cite as Tag 22N8">Tag 22N8</a>
+<p><strong>Theorem 23.3.1</strong>. <em>For the lifts <span
+class="math inline">\(\Theta_{(a)} \colon \mathcal{A}_{(a)}(1) \to
+\mathcal{A}_{(a)}(n&#39;)\)</span> with <span
+class="math inline">\(n&#39; = 1, 2\)</span>, one has <span
+class="math inline">\(\lVert \Theta_{(a)} \rVert^2 = c_a^2/16\)</span>
+and <span class="math inline">\(\lVert \Theta_{(a)} \rVert^2 =
+\tfrac{1}{128}\sum_j \binom{a}{j} c_j^2 c_{a-j}^2\)</span> respectively,
+and in both cases <span class="math display">\[\log \lVert \Theta_{(a)}
+\rVert^2 \le a \log a - a(1 + \log 2\pi) + O(\log a) .\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T050800--compressions-and-false-lifts__workbook.html">Chapter 75</a></div><!-- used-in:end -->
+</div>
+<p>So the squared norm of the lift is at most a power of <span
+class="math inline">\(a\)</span> times one factorial, <span
+class="math inline">\(\lVert z^a \rVert^2 = a!\)</span>, times <span
+class="math inline">\((2\pi)^{-a}\)</span>. Numerically, for <span
+class="math inline">\(n&#39; = 2\)</span> and <span
+class="math inline">\(a = 40, 80, \dots, 240\)</span>, the left side
+exceeds the right side without the <span class="math inline">\(O(\log
+a)\)</span> by an amount growing from <span
+class="math inline">\(1.5\)</span> to <span
+class="math inline">\(5.1\)</span>, roughly like <span
+class="math inline">\(2\log a - 5.8\)</span>.</p>
+<p>What kind of number is <span class="math inline">\(c_a^2/16\)</span>?
+For <span class="math inline">\(4 \mid n\)</span> the function <span
+class="math inline">\(\upsilon_n((\alpha)) := \alpha^n\)</span> is well
+defined on the nonzero ideals of <span
+class="math inline">\(\mathcal{O}\)</span>, since the units of <span
+class="math inline">\(\mathcal{O}\)</span> are fourth roots of unity; it
+is a Hecke character. For <span class="math inline">\(\Re s &gt; n/2 +
+1\)</span> let <span class="math display">\[L(\bar\upsilon_n, s) :=
+\sum_{\mathfrak{a} \ne 0} \overline{\upsilon_n(\mathfrak{a})}\,
+\mathrm{N}\mathfrak{a}^{-s} = \frac14 \sum_{\alpha \in
+\mathcal{O}}{}&#39; \bar\alpha^n \lvert\alpha\rvert^{-2s} .\]</span> For
+<span class="math inline">\(n \ge 4\)</span> the series converges at
+<span class="math inline">\(s = n\)</span>, where it equals <span
+class="math inline">\(\frac14\sum&#39;_\alpha \alpha^{-n} = (2\varpi)^n
+H_n/(4\cdot n!)\)</span> by Problem <a href="20261124T223000--elliptic-curves-for-the-proof__workbook.html#pr:hurwitz"
+data-reference-type="ref"
+data-reference="ec-pr:hurwitz">11.3.1</a>.</p>
+<div id="pr:hecke-positive" class="problem" data-progress-ids="[&quot;2365&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:hecke-positive&quot;]"><a class="stable-tag" href="tag/2365.html" title="Stable tag: cite as Tag 2365">Tag 2365</a>
+<p><strong>Problem 23.3.3</strong>. For <span class="math inline">\(4 \mid
+n\)</span> and <span class="math inline">\(n \ge 4\)</span>, <span
+class="math inline">\(\bigl\lvert \sum&#39;_\alpha \alpha^{-n} - 4
+\bigr\rvert &lt; 3\)</span>. Hence <span
+class="math inline">\(L(\bar\upsilon_n, n) &gt; 0\)</span> and <span
+class="math inline">\(H_n &gt; 0\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html">Chapter 77</a></div><!-- used-in:end -->
+</div>
+<div id="pr:hecke-norm" class="problem" data-progress-ids="[&quot;2366&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:hecke-norm&quot;]"><a class="stable-tag" href="tag/2366.html" title="Stable tag: cite as Tag 2366">Tag 2366</a>
+<p><strong>Problem 23.3.4</strong>. For <span class="math inline">\(4 \mid
+a\)</span> and <span class="math inline">\(a \ge 4\)</span> there is
+<span class="math inline">\(\kappa_a \in \mathbb{Q}\)</span> (a local
+notation of this chapter) with <span
+class="math display">\[\frac{c_a^2}{16} = \kappa_a\, \vartheta_0^2\,
+(2\pi)^{-2a}\, L(\bar\upsilon_{2a}, 2a) ,\]</span> and <span
+class="math inline">\(\kappa_a \ne 0\)</span> if and only if <span
+class="math inline">\(F^{(a)}(0) \ne 0\)</span>. Moreover <span
+class="math inline">\(\kappa_4 = 2100\)</span> and <span
+class="math inline">\(\kappa_8 = 22992840000\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html">Chapter 77</a></div><!-- used-in:end -->
+</div>
+<p>So for <span class="math inline">\(4 \mid a\)</span>, <span
+class="math inline">\(a \ge 4\)</span>, the squared norm of the smallest
+lift is a value of a Hecke <span
+class="math inline">\(L\)</span>-function times the factor <span
+class="math inline">\(\vartheta_0^2(2\pi)^{-2a}\)</span>, up to a
+rational factor that the problem does not explain.</p>
+<h1 id="sec:seesaw">§23.4. The seesaw <a class="stable-tag" href="tag/22N9.html" title="Stable tag: cite as Tag 22N9">Tag 22N9</a></h1>
+<p>A seesaw computes one period in two ways: lift to a large group and
+restrict to a subgroup, or restrict first and lift between smaller
+groups <span class="citation"
+data-cites="Ku">[<a href="#ref-Ku">Ku</a>]</span>. In the definite lattice
+model, take an orthogonal decomposition <span
+class="math inline">\(L&#39; = L_1 \perp L_2\)</span>.</p>
+<div id="pr:factor" class="problem" data-progress-ids="[&quot;22NA&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:factor&quot;]"><a class="stable-tag" href="tag/22NA.html" title="Stable tag: cite as Tag 22NA">Tag 22NA</a>
+<p><strong>Problem 23.4.1</strong>. <span class="math inline">\(\Theta_{L,
+L_1 \perp L_2}(Z_1, Z_2) = \Theta_{L, L_1}(Z_1)\, \Theta_{L,
+L_2}(Z_2)\)</span>.</p>
+</div>
+<p>Here is the smallest case. Write <span class="math inline">\(I_2 = Y
+\perp \mathcal{O}z\)</span> with <span class="math inline">\(Y =
+\mathcal{O}e_1\)</span> and <span class="math inline">\(z =
+e_2\)</span>, and let <span class="math inline">\(0 \le j \le a\)</span>
+be integers with <span class="math inline">\(4 \mid j\)</span> and <span
+class="math inline">\(4 \mid a - j\)</span>. For <span
+class="math inline">\(\psi \in \mathcal{A}_{(a)}(2)\)</span> and <span
+class="math inline">\(\xi \in \mathcal{A}_{(j)}(1)\)</span>, viewed as a
+form on the class set of <span class="math inline">\(Y\)</span>, define
+the <em>period</em> of <span class="math inline">\(\psi\)</span> along
+<span class="math inline">\(Y\)</span> by <span
+class="math display">\[P(\psi, \xi) := \frac{1}{\lvert\Gamma_Y\rvert}
+\bigl\langle \psi(Y \perp \mathcal{O}z),\; \xi(Y)\, e_2^{a-j}
+\bigr\rangle .\]</span> On the other side let <span
+class="math inline">\(\theta_z := \vartheta_{(a-j)}(\mathcal{O}z, I_1)\,
+e_2^{a-j} \in \operatorname{Sym}^{a-j}(\mathbb{C})\)</span>, the vector
+obtained from <span class="math inline">\(\mathcal{O}z\)</span> alone.
+Since <span class="math inline">\(4\mid a\)</span>, we identify each
+vector of <span
+class="math inline">\(\operatorname{Sym}^a((I_1)_\mathbb{C})\)</span>
+with the unique form in <span
+class="math inline">\(\mathcal{A}_{(a)}(1)\)</span> taking that value at
+<span class="math inline">\(I_1\)</span>.</p>
+<div id="pr:seesaw" class="problem" data-progress-ids="[&quot;22NB&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:seesaw&quot;]"><a class="stable-tag" href="tag/22NB.html" title="Stable tag: cite as Tag 22NB">Tag 22NB</a>
+<p><strong>Problem 23.4.2</strong>. For <span class="math inline">\(\varphi
+\in \mathcal{A}_{(a)}(1)\)</span> and <span class="math inline">\(\xi
+\in \mathcal{A}_{(j)}(1)\)</span>, <span
+class="math display">\[P(\Theta_{(a)}\varphi, \xi) = \bigl\langle
+\varphi,\; (\Theta_{(j)}\xi)(I_1)\, \theta_z \bigr\rangle ,\]</span>
+where the pairing on the right is the inner product of <span
+class="math inline">\(\mathcal{A}_{(a)}(1)\)</span>, the product is that
+of <span class="math inline">\(\operatorname{Sym}^j(\mathbb{C}) \otimes
+\operatorname{Sym}^{a-j}(\mathbb{C}) \to
+\operatorname{Sym}^a(\mathbb{C})\)</span>, and <span
+class="math inline">\(e_1 \mapsto 1\)</span> identifies <span
+class="math inline">\(Y\)</span> with <span
+class="math inline">\(I_1\)</span> for the lift of <span
+class="math inline">\(\xi\)</span>; both factors of the product take
+values in the symmetric algebra of <span
+class="math inline">\((I_1)_\mathbb{C}= \mathbb{C}\)</span>. Both sides
+equal <span class="math inline">\(\varphi(I_1)\overline{\xi(I_1)}\, c_j
+c_{a-j}/16\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:seesaw-eight">Problem 23.4.3</a>; <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a>: <a href="20261126T030400--the-seesaw-identity__workbook.html#pr:transpose">Problem 52.2.4</a>; <a href="20261126T060300--the-comparison-operator__workbook.html">Chapter 76</a></div><!-- used-in:end -->
+</div>
+<p>The left side lifts <span class="math inline">\(\varphi\)</span> to
+<span class="math inline">\(\mathrm{U}(2)\)</span> and integrates along
+<span class="math inline">\(\mathrm{U}(1)\)</span>. The right side lifts
+<span class="math inline">\(\xi\)</span> to <span
+class="math inline">\(\mathrm{U}(1)\)</span> and pairs with <span
+class="math inline">\(\varphi\)</span> there; it depends on <span
+class="math inline">\(\xi\)</span> only through <span
+class="math inline">\(\Theta_{(j)}\xi\)</span>. Here both sides are
+computed explicitly.</p>
+<div id="pr:seesaw-eight" class="problem" data-progress-ids="[&quot;2367&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:seesaw-eight&quot;]"><a class="stable-tag" href="tag/2367.html" title="Stable tag: cite as Tag 2367">Tag 2367</a>
+<p><strong>Problem 23.4.3</strong>. For <span class="math inline">\((a, j) =
+(8, 4)\)</span> both sides of Problem <a href="#pr:seesaw"
+data-reference-type="ref" data-reference="pr:seesaw">23.4.2</a> equal <span
+class="math inline">\(\varphi(I_1)\overline{\xi(I_1)}\, \vartheta_0^2
+(\varpi/2\pi)^8\)</span>.</p>
+</div>
+<p>In the proof an identity of the same kind holds for chains of <span
+class="math inline">\(m\)</span> lifts (Theorem <a
+href="20261126T030400--the-seesaw-identity__workbook.html#thm:seesaw" data-reference-type="ref"
+data-reference="c34-thm:seesaw">52.4.1</a>): on the ramified
+source forms, the lower chain applied to the Poincaré image of a form
+equals one constant <span class="math inline">\(c \ne 0\)</span>,
+independent of the twist, times a composite lift along the upper chain
+restricted to <span class="math inline">\(Y_m\)</span>, whose data are
+chosen for each twist.</p>
+<h1 id="sec:chain">§23.5. Chains <a class="stable-tag" href="tag/22NC.html" title="Stable tag: cite as Tag 22NC">Tag 22NC</a></h1>
+<p>How do kernels and norms behave under composition?</p>
+<div id="pr:compose" class="problem" data-progress-ids="[&quot;22ND&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:compose&quot;]"><a class="stable-tag" href="tag/22ND.html" title="Stable tag: cite as Tag 22ND">Tag 22ND</a>
+<p><strong>Problem 23.5.1</strong>. The composite <span
+class="math inline">\(\mathcal{A}_\lambda(n) \to
+\mathcal{A}_\lambda(n&#39;) \to
+\mathcal{A}_\lambda(n&#39;&#39;)\)</span> of two lifts is <span
+class="math inline">\(\varphi \mapsto \bigl(L&#39;&#39; \mapsto \sum_{L
+\in \mathrm{Cl}_n} \lvert\Gamma_L\rvert^{-1} K(L,
+L&#39;&#39;)\,\varphi(L)\bigr)\)</span>, with the kernel <span
+class="math display">\[K(L, L&#39;&#39;) = \sum_{L&#39; \in
+\mathrm{Cl}_{n&#39;}} \frac{1}{\lvert\Gamma_{L&#39;}\rvert}\,
+\vartheta_\lambda(L&#39;, L&#39;&#39;)\, \vartheta_\lambda(L, L&#39;)
+.\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a>; <a href="20261126T050400--the-norm-of-one-lift__workbook.html">Chapter 69</a></div><!-- used-in:end -->
+</div>
+<div id="pr:rational" class="problem" data-progress-ids="[&quot;22NE&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:rational&quot;]"><a class="stable-tag" href="tag/22NE.html" title="Stable tag: cite as Tag 22NE">Tag 22NE</a>
+<p><strong>Problem 23.5.2</strong>. In the bases <span
+class="math inline">\(e^\mu\)</span> of <span
+class="math inline">\(\operatorname{Sym}^a(\mathbb{C}^n)\)</span> and
+<span
+class="math inline">\(\operatorname{Sym}^a(\mathbb{C}^{n&#39;})\)</span>,
+every entry of <span class="math inline">\(\vartheta_{(a)}(I_n,
+I_{n&#39;})\)</span> lies in <span
+class="math inline">\(\vartheta_0^{nn&#39;} (\varpi/2\pi)^a\,
+\mathbb{Q}\)</span>.</p>
+</div>
+<p>So for fixed <span class="math inline">\(n\)</span>, <span
+class="math inline">\(n&#39;\)</span> and <span
+class="math inline">\(a\)</span>, the entries of the standard kernel
+have the common factor <span
+class="math inline">\(\vartheta_0^{nn&#39;}(\varpi/2\pi)^a\)</span>. For
+a term of the composite kernel passing through standard lattices of
+ranks <span class="math inline">\(n_0, \dots, n_m\)</span>, the product
+of its kernel entries lies in <span
+class="math inline">\(\vartheta_0^{\sum_{j=1}^m
+n_{j-1}n_j}(\varpi/2\pi)^{ma}\,\mathbb{Q}\)</span>; the class sums add
+the weights <span
+class="math inline">\(1/\lvert\Gamma_L\rvert\)</span>.</p>
+<div id="pr:clear" class="problem" data-progress-ids="[&quot;22NF&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:clear&quot;]"><a class="stable-tag" href="tag/22NF.html" title="Stable tag: cite as Tag 22NF">Tag 22NF</a>
+<p><strong>Problem 23.5.3</strong>. Let <span class="math inline">\(S
+\subset R\)</span> be commutative rings and <span
+class="math inline">\(D_1, \dots, D_m \in R\)</span>. Suppose that in a
+composite of <span class="math inline">\(m\)</span> maps <span
+class="math inline">\((T_j f)(i&#39;) = \sum_i h_j(i)\, K_j(i, i&#39;)\,
+f(i)\)</span>, with finite sums and <span class="math inline">\(h_j(i)
+\in R\)</span>, all <span class="math inline">\(K_j(i,i&#39;)\)</span>
+and all starting values lie in <span class="math inline">\(S\)</span>,
+and that <span class="math inline">\(D_j h_j(i) \in S\)</span> for all
+<span class="math inline">\(i\)</span>. Then <span
+class="math inline">\(D_1 \cdots D_m\)</span> times every final value
+lies in <span class="math inline">\(S\)</span>.</p>
+</div>
+<p>How large is a chain? It is measured by the volume <span
+class="math inline">\(\det(u^*u)\)</span> of the map <span
+class="math inline">\(u\)</span> it defines.</p>
+<div id="pr:det-compose" class="problem" data-progress-ids="[&quot;2368&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:det-compose&quot;]"><a class="stable-tag" href="tag/2368.html" title="Stable tag: cite as Tag 2368">Tag 2368</a>
+<p><strong>Problem 23.5.4</strong>. Let <span class="math inline">\(u_j
+\colon H_{j-1} \to H_j\)</span>, <span class="math inline">\(1 \le j \le
+m\)</span>, be linear maps between complex inner product spaces of the
+same finite dimension, and <span class="math inline">\(u := u_m \circ
+\dots \circ u_1\)</span>. Then <span class="math inline">\(\det(u^*u) =
+\prod_j \det(u_j^*u_j)\)</span>. For <span class="math inline">\(4 \mid
+a\)</span> the space <span
+class="math inline">\(\mathcal{A}_{(a)}(1)\)</span> is a line, and for
+the chain of <span class="math inline">\(m\)</span> lifts <span
+class="math inline">\(\Theta_{(a)} \colon \mathcal{A}_{(a)}(1) \to
+\mathcal{A}_{(a)}(1)\)</span> this is <span
+class="math inline">\((c_a^2/16)^m\)</span>.</p>
+</div>
+<div id="pr:det-ratio" class="problem" data-progress-ids="[&quot;2369&quot;,&quot;20261125T002100--definite-theta-lifts-and-norms__workbook.tex#pr:det-ratio&quot;]"><a class="stable-tag" href="tag/2369.html" title="Stable tag: cite as Tag 2369">Tag 2369</a>
+<p><strong>Problem 23.5.5</strong>. Let <span
+class="math inline">\(u(\omega) \colon H \to H&#39;\)</span> be linear
+maps of finite-dimensional complex inner product spaces, depending on a
+parameter <span class="math inline">\(\omega\)</span>, with <span
+class="math inline">\(\langle u(\omega)x, u(\omega)y\rangle =
+a(\omega)\langle S(\omega)x, y\rangle\)</span> for all <span
+class="math inline">\(x, y \in H\)</span>, where <span
+class="math inline">\(a(\omega) \in \mathbb{C}\)</span> and <span
+class="math inline">\(S(\omega) \in \operatorname{End}(H)\)</span>. Then
+<span class="math inline">\(\det(u(\omega)^*u(\omega)) = a(\omega)^{\dim
+H}\det S(\omega)\)</span>. Hence, if <span
+class="math inline">\(\det(u(1)^*u(1)) \ne 0\)</span> and <span
+class="math inline">\(a(\omega) = c\, b(\omega)\)</span> with <span
+class="math inline">\(c\)</span> independent of <span
+class="math inline">\(\omega\)</span> and <span
+class="math inline">\(b(1) \ne 0\)</span>, the ratio <span
+class="math inline">\(\det(u(\omega)^*u(\omega))/\det(u(1)^*u(1))\)</span>
+equals <span class="math inline">\((b(\omega)/b(1))^{\dim H}\det
+S(\omega)/\det S(1)\)</span> and does not involve <span
+class="math inline">\(c\)</span>.</p>
+</div>
+<p>For the chains of the proof see Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap"
+data-reference-type="ref" data-reference="ob-chap">37</a>.
+Theorem <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#thm:main" data-reference-type="ref"
+data-reference="c37-thm:main">68.4.1</a> compares the
+determinant of the chain from <span class="math inline">\(Y_0\)</span>
+to <span class="math inline">\(Y_m\)</span> with the determinants of the
+single lifts from <span class="math inline">\(W_j\)</span> to <span
+class="math inline">\(V_j\)</span>. Problem <a href="#pr:det-compose"
+data-reference-type="ref" data-reference="pr:det-compose">23.5.4</a> gives a
+model for composition, and Problem <a href="#pr:det-ratio"
+data-reference-type="ref" data-reference="pr:det-ratio">23.5.5</a> explains
+how division by the value at the trivial twist cancels the common
+constant.</p>
+<p>Beyond the smallest cases a chain needs more. The class sets grow
+with the rank (Section <a href="20261125T002000--definite-theta-lifts__workbook.html#sec:mass" data-reference-type="ref"
+data-reference="dt-sec:mass">21.2</a>), and in the proof the
+norm of a lift comes from Rallis’s inner product formula (Theorem <a
+href="20261126T050400--the-norm-of-one-lift__workbook.html#thm:rallis" data-reference-type="ref"
+data-reference="c1-thm:rallis">69.2.1</a>) in place of
+Problem <a href="#pr:rallis" data-reference-type="ref"
+data-reference="pr:rallis">23.3.2</a>. For the moments <span
+class="math inline">\(c_a\)</span> the rational factors are the
+derivatives <span class="math inline">\(F^{(a)}(0)\)</span>; Problem <a
+href="20261124T214500--supersingular-theta-divisibility__workbook.html#pr:failure" data-reference-type="ref"
+data-reference="st-pr:failure">15.5.3</a> gives a one-variable
+obstruction at inert primes, and Theorem <a href="20261124T214600--the-isotropic-plane__workbook.html#thm:main"
+data-reference-type="ref" data-reference="ip-thm:main">16.3.1</a>
+gives a divisibility bound for the normalized two-variable moments <span
+class="math inline">\(t(a,w)\)</span> of Section <a
+href="20261124T214500--supersingular-theta-divisibility__workbook.html#sec:moments" data-reference-type="ref"
+data-reference="st-sec:moments">15.1</a> when <span
+class="math inline">\(p \equiv 3 \pmod 8\)</span>. Constants need not be
+exact: one seesaw constant works for all twists (Theorem <a
+href="20261126T030400--the-seesaw-identity__workbook.html#thm:seesaw" data-reference-type="ref"
+data-reference="c34-thm:seesaw">52.4.1</a>), and constants
+independent of the twist cancel in the ratio of Theorem <a
+href="20261126T030700--the-determinant-of-a-chain__workbook.html#thm:main" data-reference-type="ref"
+data-reference="c37-thm:main">68.4.1</a>.</p>
+<p>In the upper-bound argument of the proof, the seesaw transfers a size
+bound for the composite lift to the lower chain on Poincaré images
+(Theorem <a href="20261126T030400--the-seesaw-identity__workbook.html#thm:seesaw" data-reference-type="ref"
+data-reference="c34-thm:seesaw">52.4.1</a>). In the
+lower-bound argument, the norms of single lifts enter the factorization
+of the ratio of chain determinants (Theorem <a href="20261126T030700--the-determinant-of-a-chain__workbook.html#thm:main"
+data-reference-type="ref"
+data-reference="c37-thm:main">68.4.1</a>).</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>The corresponding statement of the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span> for the squared norm of a
+lift, as in Problem <a href="#pr:hecke-norm" data-reference-type="ref"
+data-reference="pr:hecke-norm">23.3.4</a>, is
+<code>New.LValueData.inner_trivialLift_self_eq_L</code> in
+<code>New/OneLift/HeckeValues/CharacterLiftNorm.lean</code>; it concerns
+the lift of a character from <span
+class="math inline">\(\mathrm{U}(1)\)</span> to a definite <span
+class="math inline">\(\mathrm{U}(2k)\)</span> with <span
+class="math inline">\(k \ge 2\)</span>.</p>
+<h1 id="sec:questions">§23.6. Questions <a class="stable-tag" href="tag/22NG.html" title="Stable tag: cite as Tag 22NG">Tag 22NG</a></h1>
+<p>For <span class="math inline">\(a\)</span> tending to infinity
+through multiples of <span class="math inline">\(4\)</span>, does <span
+class="math inline">\(\log c_a^2 = a\log a - a(1 + \log 2\pi) + O(\log
+a)\)</span> hold? Section <a href="#sec:smallest"
+data-reference-type="ref" data-reference="sec:smallest">23.2</a> gives
+numerical examples.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="seckernel">§<a href="#sec:kernel"
+data-reference-type="ref" data-reference="sec:kernel">23.1</a></h2>
+<dl>
+<dt><a href="#pr:hom" data-reference-type="ref"
+data-reference="pr:hom">23.1.1</a></dt>
+<dd>
+<p>In bases, <span class="math inline">\(h(x,y) = \sum_{\alpha,\beta}
+x_{\beta\alpha} \bar y_{\beta\alpha}\)</span> when <span
+class="math inline">\(L\)</span> and <span
+class="math inline">\(L&#39;\)</span> are standard. In general, if <span
+class="math inline">\(G\)</span> and <span
+class="math inline">\(G&#39;\)</span> are the Gram matrices of <span
+class="math inline">\(L\)</span> and <span
+class="math inline">\(L&#39;\)</span>, so that <span
+class="math inline">\(h(u,v) = \bar v^{t} G u\)</span>, then <span
+class="math inline">\(y^* = G^{-1}\bar y^{t} G&#39;\)</span>; compute
+the Gram matrix of <span
+class="math inline">\(\operatorname{Hom}(L,L&#39;)\)</span> and its
+determinant.</p>
+</dd>
+<dt><a href="#pr:jet" data-reference-type="ref"
+data-reference="pr:jet">23.1.2</a></dt>
+<dd>
+<p>Differentiate under the sum; <span
+class="math inline">\(\partial/\partial Z_{\alpha\beta}\)</span> brings
+down <span class="math inline">\(x_{\beta\alpha}\)</span>.</p>
+</dd>
+<dt><a href="#pr:entries" data-reference-type="ref"
+data-reference="pr:entries">23.1.3</a></dt>
+<dd>
+<p>The entries of <span class="math inline">\(x^{\otimes k}\)</span> are
+monomials in the entries of <span class="math inline">\(x\)</span>. For
+the vanishing, replace <span class="math inline">\(x\)</span> by <span
+class="math inline">\(\mathrm{i}x\)</span>.</p>
+</dd>
+<dt><a href="#pr:equiv" data-reference-type="ref"
+data-reference="pr:equiv">23.1.4</a></dt>
+<dd>
+<p>Substitute <span class="math inline">\(x \mapsto \gamma&#39;
+x\)</span> and <span class="math inline">\(x \mapsto x\gamma\)</span>;
+both preserve <span
+class="math inline">\(\operatorname{Hom}_\mathcal{O}(L,L&#39;)\)</span>
+and <span class="math inline">\(h(x,x)\)</span>.</p>
+</dd>
+<dt><a href="#pr:adjoint" data-reference-type="ref"
+data-reference="pr:adjoint">23.1.5</a></dt>
+<dd>
+<p><span class="math inline">\(\mathbb{S}_\lambda(x)^* =
+\mathbb{S}_\lambda(x^*)\)</span>. What does <span
+class="math inline">\(x \mapsto x^*\)</span> do to <span
+class="math inline">\(\operatorname{Hom}(L,L&#39;)\)</span> when <span
+class="math inline">\(L\)</span> and <span
+class="math inline">\(L&#39;\)</span> are unimodular?</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secsmallest">§<a href="#sec:smallest"
+data-reference-type="ref" data-reference="sec:smallest">23.2</a></h2>
+<dl>
+<dt><a href="#pr:ca" data-reference-type="ref"
+data-reference="pr:ca">23.2.1</a></dt>
+<dd>
+<p>Use the symmetries of the square lattice and Problem <a
+href="20261124T214500--supersingular-theta-divisibility__workbook.html#pr:gauss" data-reference-type="ref"
+data-reference="st-pr:gauss">15.1.3</a>. For rationality: the
+Laurent coefficients of <span class="math inline">\(\wp\)</span> lie in
+<span class="math inline">\(\mathbb{Q}[g_2, g_3]\)</span>, and <span
+class="math inline">\((\log\sigma)&#39;&#39; = -\wp\)</span>.</p>
+</dd>
+<dt><a href="#pr:Fa" data-reference-type="ref"
+data-reference="pr:Fa">23.2.2</a></dt>
+<dd>
+<p>Expand <span class="math inline">\(\sigma\)</span> and <span
+class="math inline">\(\wp\)</span> with <span class="math inline">\(g_2
+= 4\)</span>, <span class="math inline">\(g_3 = 0\)</span> further than
+in Problem <a href="20261124T214500--supersingular-theta-divisibility__workbook.html#pr:F" data-reference-type="ref"
+data-reference="st-pr:F">15.1.2</a>.</p>
+</dd>
+<dt><a href="#pr:U1U1" data-reference-type="ref"
+data-reference="pr:U1U1">23.2.3</a></dt>
+<dd>
+<p><span class="math inline">\(\Gamma_{I_1} = \mu_4\)</span>, and <span
+class="math inline">\(\operatorname{Sym}^a(x)\)</span> is multiplication
+by <span class="math inline">\(x^a\)</span>.</p>
+</dd>
+<dt><a href="#pr:U1U2" data-reference-type="ref"
+data-reference="pr:U1U2">23.2.4</a></dt>
+<dd>
+<p><span class="math inline">\(\operatorname{Sym}^a(x)\)</span> sends
+<span class="math inline">\(1 \in
+\operatorname{Sym}^a(\mathbb{C})\)</span> to <span
+class="math inline">\((x_1 e_1 + x_2 e_2)^a\)</span>. Expand by the
+binomial theorem; the sum over <span
+class="math inline">\(\mathcal{O}^2\)</span> factors.</p>
+</dd>
+<dt><a href="#pr:U2U1" data-reference-type="ref"
+data-reference="pr:U2U1">23.2.5</a></dt>
+<dd>
+<p><span class="math inline">\(\operatorname{Hom}(I_2, I_1)\)</span>
+consists of rows <span class="math inline">\(y\)</span>, and <span
+class="math inline">\(\operatorname{Sym}^a(y)\, e_1^j e_2^{a-j} = y_1^j
+y_2^{a-j}\)</span>. Alternatively use Problems <a href="#pr:adjoint"
+data-reference-type="ref" data-reference="pr:adjoint">23.1.5</a> and <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:sym-norm" data-reference-type="ref"
+data-reference="dt-pr:sym-norm">21.3.2</a>.</p>
+</dd>
+<dt><a href="#pr:ca-size" data-reference-type="ref"
+data-reference="pr:ca-size">23.2.6</a></dt>
+<dd>
+<p><span class="math inline">\(\lvert c_a \rvert \le \sum_\alpha
+f(\alpha)\)</span> with <span class="math inline">\(f(z) := \lvert
+z\rvert^a e^{-\pi\lvert z\rvert^2}\)</span>. Bound the <span
+class="math inline">\(O(a)\)</span> terms with <span
+class="math inline">\(\lvert\alpha\rvert^2 \le a\)</span> by <span
+class="math inline">\(\max f\)</span>, attained at <span
+class="math inline">\(\lvert z\rvert^2 = a/2\pi\)</span>, and the others
+by a geometric series.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secnorm">§<a href="#sec:norm"
+data-reference-type="ref" data-reference="sec:norm">23.3</a></h2>
+<dl>
+<dt><a href="#pr:CS" data-reference-type="ref"
+data-reference="pr:CS">23.3.1</a></dt>
+<dd>
+<p>Problem <a href="#pr:jet" data-reference-type="ref"
+data-reference="pr:jet">23.1.2</a>, and the Cauchy–Schwarz inequality.</p>
+</dd>
+<dt><a href="#pr:rallis" data-reference-type="ref"
+data-reference="pr:rallis">23.3.2</a></dt>
+<dd>
+<p><span class="math inline">\(\lVert\Theta\varphi\rVert^2 = \langle
+\Theta&#39;\Theta\varphi, \varphi\rangle\)</span>; use Problems <a
+href="#pr:U1U2" data-reference-type="ref" data-reference="pr:U1U2">23.2.4</a>
+and <a href="#pr:U2U1" data-reference-type="ref"
+data-reference="pr:U2U1">23.2.5</a>. For the middle expression use <span
+class="math inline">\(\langle u^a, v^a \rangle = \langle u,
+v\rangle^a\)</span>.</p>
+</dd>
+<dt>Theorem <a href="#thm:norm" data-reference-type="ref"
+data-reference="thm:norm">23.3.1</a></dt>
+<dd>
+<p>Combine Problems <a href="#pr:U1U1" data-reference-type="ref"
+data-reference="pr:U1U1">23.2.3</a>, <a href="#pr:ca-size"
+data-reference-type="ref" data-reference="pr:ca-size">23.2.6</a> and <a
+href="#pr:rallis" data-reference-type="ref"
+data-reference="pr:rallis">23.3.2</a> with <span
+class="math inline">\(\binom{a}{j}j!(a-j)!=a!\)</span> and Stirling’s
+formula.</p>
+</dd>
+<dt><a href="#pr:hecke-positive" data-reference-type="ref"
+data-reference="pr:hecke-positive">23.3.3</a></dt>
+<dd>
+<p>Separate the units, and compare the other terms with Problem <a
+href="20261124T223000--elliptic-curves-for-the-proof__workbook.html#pr:epstein" data-reference-type="ref"
+data-reference="ec-pr:epstein">11.3.4</a> at <span
+class="math inline">\(s = 2\)</span>.</p>
+</dd>
+<dt><a href="#pr:hecke-norm" data-reference-type="ref"
+data-reference="pr:hecke-norm">23.3.4</a></dt>
+<dd>
+<p>Problem <a href="#pr:ca" data-reference-type="ref"
+data-reference="pr:ca">23.2.1</a>, the expression of <span
+class="math inline">\(L(\bar\upsilon_n, n)\)</span> by <span
+class="math inline">\(H_n\)</span>, and Problem <a
+href="#pr:hecke-positive" data-reference-type="ref"
+data-reference="pr:hecke-positive">23.3.3</a>. For <span
+class="math inline">\(\kappa_8\)</span>: <span
+class="math inline">\(H_{16} = 43659/170\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secseesaw">§<a href="#sec:seesaw"
+data-reference-type="ref" data-reference="sec:seesaw">23.4</a></h2>
+<dl>
+<dt><a href="#pr:factor" data-reference-type="ref"
+data-reference="pr:factor">23.4.1</a></dt>
+<dd>
+<p>How does <span
+class="math inline">\(\operatorname{Hom}_\mathcal{O}(L, L_1 \perp
+L_2)\)</span> decompose, and what happens to <span
+class="math inline">\(h\)</span> and <span
+class="math inline">\(\operatorname{tr}(Zx)\)</span>?</p>
+</dd>
+<dt><a href="#pr:seesaw" data-reference-type="ref"
+data-reference="pr:seesaw">23.4.2</a></dt>
+<dd>
+<p>Problems <a href="#pr:U1U1" data-reference-type="ref"
+data-reference="pr:U1U1">23.2.3</a>, <a href="#pr:U1U2"
+data-reference-type="ref" data-reference="pr:U1U2">23.2.4</a> and <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:sym-norm" data-reference-type="ref"
+data-reference="dt-pr:sym-norm">21.3.2</a>.</p>
+</dd>
+<dt><a href="#pr:seesaw-eight" data-reference-type="ref"
+data-reference="pr:seesaw-eight">23.4.3</a></dt>
+<dd>
+<p>Problems <a href="#pr:ca" data-reference-type="ref"
+data-reference="pr:ca">23.2.1</a> and <a href="20261124T214500--supersingular-theta-divisibility__workbook.html#pr:F"
+data-reference-type="ref" data-reference="st-pr:F">15.1.2</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secchain">§<a href="#sec:chain"
+data-reference-type="ref" data-reference="sec:chain">23.5</a></h2>
+<dl>
+<dt><a href="#pr:compose" data-reference-type="ref"
+data-reference="pr:compose">23.5.1</a></dt>
+<dd>
+<p>Substitute <a href="#eq:lift" data-reference-type="eqref"
+data-reference="eq:lift">(1)</a> into itself.</p>
+</dd>
+<dt><a href="#pr:rational" data-reference-type="ref"
+data-reference="pr:rational">23.5.2</a></dt>
+<dd>
+<p>Expand a single monomial coefficient of <span
+class="math inline">\(\operatorname{Sym}^a(x)\, e^\mu\)</span>, sum it
+over <span class="math inline">\(x\)</span>, and compare with Problem <a
+href="#pr:ca" data-reference-type="ref"
+data-reference="pr:ca">23.2.1</a>.</p>
+</dd>
+<dt><a href="#pr:clear" data-reference-type="ref"
+data-reference="pr:clear">23.5.3</a></dt>
+<dd>
+<p>Induction on <span class="math inline">\(m\)</span>: move <span
+class="math inline">\(D_1\)</span> inside the first sum.</p>
+</dd>
+<dt><a href="#pr:det-compose" data-reference-type="ref"
+data-reference="pr:det-compose">23.5.4</a></dt>
+<dd>
+<p>In orthonormal bases <span class="math inline">\(\det(u^*u) =
+\lvert\det u\rvert^2\)</span>. For the lifts use Problem <a
+href="#pr:U1U1" data-reference-type="ref"
+data-reference="pr:U1U1">23.2.3</a>.</p>
+</dd>
+<dt><a href="#pr:det-ratio" data-reference-type="ref"
+data-reference="pr:det-ratio">23.5.5</a></dt>
+<dd>
+<p>Express the Gram identity through the adjoint.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Ku"><span class="bib-label">[Ku]</span> S. S. Kudla, <em>Seesaw dual reductive pairs</em>, in <em>Automorphic Forms of Several Variables (Katata, 1983)</em>, Progr. Math. 46, Birkhäuser, 1984, 244–268.</p>
+<p id="ref-Ra"><span class="bib-label">[Ra]</span> S. Rallis, <em>Injectivity properties of liftings associated to Weil representations</em>, Compositio Math. <strong>52</strong> (1984), 139–169.</p>
+<p id="ref-We65"><span class="bib-label">[We65]</span> A. Weil, <em>Sur la formule de Siegel dans la théorie des groupes classiques</em>, Acta Math. <strong>113</strong> (1965), 1–87.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

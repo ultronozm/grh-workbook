@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-M66oh6O8CB8/8Cm8IzlM9mGciUHccpq0fj1je85+jaM=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Good forms and the count of the target</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","F":"\\mathbb{F}","Gb":"\\bar G","Rb":"\\bar R_0","Po":"{\\mathcal P^\\circ}","Kc":"\\mathcal K","Uc":"\\mathcal U","Mcal":"\\mathcal M","rB":"\\rho_{\\mathrm{Bes}}","Did":"D_{\\mathrm{id}}","Dmain":"D_{\\mathrm{main}}","mass":"\\mathrm{mass}_r","GL":"\\mathrm{GL}","tr":"\\operatorname{tr}","pr":"\\mathrm{pr}","End":"\\operatorname{End}","Ind":"\\operatorname{Ind}","tlus":"\\textunderscore\\allowbreak","tl":["{\\let\\_\\tlus\\texttt{#1}}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="48">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-27 02:28:23
+      <a href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T052100--good-forms-and-the-count-of-the-target__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Good forms and the count of the target</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:shares" id="toc-sec:shares">§48.1. Central idempotents and their shares</a></li>
+<li><a href="#sec:trace" id="toc-sec:trace">§48.2. The trace on the Bessel subgroup</a></li>
+<li><a href="#sec:count" id="toc-sec:count">§48.3. The count of the target</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secshares" id="toc-secshares">§48.1</a></li>
+<li><a href="#sectrace" id="toc-sectrace">§48.2</a></li>
+<li><a href="#seccount" id="toc-seccount">§48.3</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Characters of finite groups, central idempotents, induced
+representations and Mackey’s formula <span class="citation"
+data-cites="Se">[<a href="#ref-Se">Se</a>]</span>; the characters of <span
+class="math inline">\(\mathrm{GL}_2(\mathbb{F}_q)\)</span> <span
+class="citation" data-cites="FH">[<a href="#ref-FH">FH</a>]</span>. From
+Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>, <em>Spaces, forms and
+twists</em>: the chosen places <span class="math inline">\(\mathcal M=
+\mathcal M_0 \cup \mathcal M_1\)</span>, the groups <span
+class="math inline">\(\bar G= \bar G_0 \times \bar G_1\)</span>, labels,
+the characters <span class="math inline">\(\Xi_c\)</span>, the
+idempotents <span class="math inline">\(e_c\)</span>, good families and
+the idempotent <span class="math inline">\(e_0\)</span> (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chosen" data-reference-type="ref"
+data-reference="ob-sec:chosen">37.1</a>), with the integer
+<span class="math inline">\(q_2\)</span> of the data; the space <span
+class="math inline">\(W_m\)</span> and the standard lattice stabilizer
+<span class="math inline">\(K^\circ(V)\)</span> (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces" data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a>); principal forms
+<span class="math inline">\(H(V)\)</span>, good forms <span
+class="math inline">\(H_g(V)\)</span>, the target <span
+class="math inline">\(T\)</span> of dimension <span
+class="math inline">\(d_T\)</span> (Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:forms"
+data-reference-type="ref"
+data-reference="ob-sec:forms">37.4</a>); <span
+class="math inline">\(D_X\)</span> (Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:source"
+data-reference-type="ref"
+data-reference="ob-sec:source">37.5</a>). From Chapter <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">39</a>: the unipotent group <span
+class="math inline">\(\mathcal U\)</span> (Section <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:subgroup" data-reference-type="ref"
+data-reference="bp-sec:subgroup">39.1</a>) and the
+character <span class="math inline">\(\psi_{\mathcal U}\)</span> that
+the proof fixes on its points (Section <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:poincare"
+data-reference-type="ref"
+data-reference="bp-sec:poincare">39.2</a>), the scaled
+Poincaré map <span class="math inline">\({\mathcal P^\circ}\)</span> and
+the Gram operators <span class="math inline">\(\mathcal K_s\)</span>
+(Definition <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:scaled" data-reference-type="ref"
+data-reference="bp-def:scaled">39.4.1</a>), the group <span
+class="math inline">\(\bar R_0\)</span> and its representation <span
+class="math inline">\(\rho_{\mathrm{Bes}}\)</span> (Definition <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:bessel-rep" data-reference-type="ref"
+data-reference="bp-def:bessel-rep">39.4.2</a>), the product
+<span class="math inline">\(\deg\)</span> of the degrees of the Bessel
+systems, the mass <span class="math inline">\(\mathrm{mass}_r\)</span>,
+and admissible fillings with Weil data (Definition <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:filling" data-reference-type="ref"
+data-reference="bp-def:filling">39.4.3</a>). From Chapter <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#chap" data-reference-type="ref"
+data-reference="m1-chap">40</a>: the block identity (Theorem <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#thm:blocks" data-reference-type="ref"
+data-reference="m1-thm:blocks">40.3.2</a>), the sizes <span
+class="math inline">\(D_{\mathrm{id}}\)</span>, <span
+class="math inline">\(D_{\mathrm{main}}\)</span> (Definition <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#def:two-sizes" data-reference-type="ref"
+data-reference="m1-def:two-sizes">40.3.2</a>) and
+Problems <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:bessel-translate" data-reference-type="ref"
+data-reference="m1-pr:bessel-translate">40.4.2</a>
+and <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:near-one" data-reference-type="ref"
+data-reference="m1-pr:near-one">40.4.3</a>. From Chapter <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#chap" data-reference-type="ref"
+data-reference="m2-chap">43</a>: Theorem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:strip"
+data-reference-type="ref"
+data-reference="m2-thm:strip">43.3.3</a> and Problems <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#pr:agree" data-reference-type="ref"
+data-reference="m2-pr:agree">43.1.1</a>, <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#pr:near-one-data" data-reference-type="ref"
+data-reference="m2-pr:near-one-data">43.3.9</a>, <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#pr:gl2-cells" data-reference-type="ref"
+data-reference="m2-pr:gl2-cells">43.1.2</a> and <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#pr:gl3-cells" data-reference-type="ref"
+data-reference="m2-pr:gl3-cells">43.1.3</a>. From Chapter <a
+href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#chap" data-reference-type="ref"
+data-reference="rl-chap">9</a>: Hilbert–Schmidt norms <span
+class="math inline">\(\lVert L\rVert^2 = \operatorname{tr}L^*L\)</span>,
+near isometries, Problem <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#pr:near-isom"
+data-reference-type="ref"
+data-reference="rl-pr:near-isom">9.3.1</a> and Theorem <a
+href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#thm:spread" data-reference-type="ref"
+data-reference="rl-thm:spread">9.3.1</a>. From Chapter <a
+href="20261125T002000--definite-theta-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dt-chap">21</a>: class sets, masses, forms and
+Weyl’s formula <a href="20261125T002000--definite-theta-lifts__workbook.html#eq:weyl" data-reference-type="eqref"
+data-reference="dt-eq:weyl">(4)</a> (Section <a
+href="20261125T002000--definite-theta-lifts__workbook.html#sec:forms" data-reference-type="ref"
+data-reference="dt-sec:forms">21.3</a>). From Chapter <a
+href="20261126T050500--equal-multiplicities__workbook.html#chap" data-reference-type="ref"
+data-reference="c2-chap">70</a>: Corollary <a
+href="20261126T050500--equal-multiplicities__workbook.html#cor:equal" data-reference-type="ref"
+data-reference="c2-cor:equal">70.4.1</a>.</p>
+<p>Theorem B (Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">39</a>) is deduced from three estimates
+for the scaled Poincaré map: a second moment over <span
+class="math inline">\(\bar G\)</span>, the near isometry of <span
+class="math inline">\(e_0{\mathcal P^\circ}\)</span>, and an upper bound
+for <span class="math inline">\(d_T\)</span>. This sheet proves the last
+two from Chapters <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#chap" data-reference-type="ref"
+data-reference="m1-chap">40</a> and <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#chap"
+data-reference-type="ref" data-reference="m2-chap">43</a> and
+from equal multiplicities. Why does cutting <span
+class="math inline">\({\mathcal P^\circ}\)</span> down to the good forms
+lose so little, and why is the target no larger than <span
+class="math inline">\(\#\bar G\cdot\deg\cdot\mathrm{mass}_r\)</span>?
+The first answer is a trace against the Bessel representation, small
+because the conjugacy average of <span
+class="math inline">\(\psi_{\mathcal U}\)</span> is small; the second is
+a count of classes on the definite space <span
+class="math inline">\(W_m\)</span>, where the level is free.</p>
+<h1 id="sec:shares">§48.1. Central idempotents and their shares</h1>
+<p>For a finite group <span class="math inline">\(H\)</span>, an element
+of <span class="math inline">\(\mathbb{C}[H]\)</span> is written <span
+class="math inline">\(g = \sum_{t \in H} g(t)\,t\)</span>; in a
+representation <span class="math inline">\(\rho\)</span> it acts by
+<span class="math inline">\(\rho(g) := \sum_t g(t)\rho(t)\)</span>. It
+is a <em>central idempotent</em> if <span class="math inline">\(g^2 =
+g\)</span> and <span class="math inline">\(t \mapsto g(t)\)</span> is a
+class function.</p>
+<div id="def:share" class="definition">
+<p><strong>Definition 48.1.1</strong>. We define the <em>share</em> of a
+central idempotent <span class="math inline">\(g \in
+\mathbb{C}[H]\)</span> to be its coefficient <span
+class="math inline">\(g(1)\)</span> at the identity.</p>
+</div>
+<p>In this sheet <span class="math inline">\(q\)</span> is the number of
+elements of a residue field.</p>
+<div id="pr:labels" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:labels&quot;]">
+<p><strong>Problem 48.1.1</strong>. The labels of degree <span
+class="math inline">\(2\)</span> over <span
+class="math inline">\(\mathbb{F}_3\)</span> are <span
+class="math inline">\(X^2+1\)</span>, <span
+class="math inline">\(X^2+2\)</span>, <span
+class="math inline">\(X^2+X+2\)</span> and <span
+class="math inline">\(X^2+2X+2\)</span>. The multiplicative orders of
+their roots in <span class="math inline">\(\mathbb{F}_9^\times\)</span>
+are <span class="math inline">\((4,4)\)</span>, <span
+class="math inline">\((1,2)\)</span>, <span
+class="math inline">\((8,8)\)</span> and <span
+class="math inline">\((8,8)\)</span>. Three of them have no root <span
+class="math inline">\(1\)</span>, and two are irreducible with a root of
+order <span class="math inline">\(8 = 3^2-1\)</span>.</p>
+</div>
+<p><em>Green’s degrees.</em> For a label <span
+class="math inline">\(c\)</span> of degree <span
+class="math inline">\(r\)</span> over a finite field <span
+class="math inline">\(k\)</span> with <span class="math inline">\(q =
+\#k\)</span>, the value <span class="math inline">\(d :=
+\Xi_c(1)\)</span> of the character of Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chosen"
+data-reference-type="ref"
+data-reference="ob-sec:chosen">37.1</a> satisfies <span
+class="math display">\[\operatorname{Re} d \ge 0, \qquad \frac{\lvert
+d\rvert^2}{\#\mathrm{GL}_r(k)} \ge \frac{1 - r/q}{q^r} .\]</span>
+<em>Status</em>: classical; Green <span class="citation"
+data-cites="Gr">[<a href="#ref-Gr">Gr</a>, Thms. 12–14]</span>. For <span
+class="math inline">\(r = 2\)</span> the degree is <span
+class="math inline">\(q+1\)</span> for a label with two roots in <span
+class="math inline">\(k\)</span>, <span
+class="math inline">\(q-1\)</span> for an irreducible one <span
+class="citation" data-cites="FH">[<a href="#ref-FH">FH</a>]</span>.</p>
+<div id="pr:gl2-shares" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:gl2-shares&quot;]">
+<p><strong>Problem 48.1.2</strong>. In <span
+class="math inline">\(\mathrm{GL}_2(\mathbb{F}_3)\)</span>, of order
+<span class="math inline">\(48\)</span>, the idempotent <span
+class="math inline">\(e_c\)</span> of the label <span
+class="math inline">\(X^2+2\)</span> has share <span
+class="math inline">\(1/3\)</span>, and that of each irreducible label
+has share <span class="math inline">\(1/12 \ge (1 - 2/3)/9\)</span>. The
+sum of the <span class="math inline">\(e_c\)</span> over the three
+labels without root <span class="math inline">\(1\)</span> is a central
+idempotent of share <span class="math inline">\(1/4\)</span>.</p>
+</div>
+<div id="pr:central-proj" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:central-proj&quot;]">
+<p><strong>Problem 48.1.3</strong>. Let <span
+class="math inline">\(g\)</span> be a central idempotent of <span
+class="math inline">\(\mathbb{C}[H]\)</span>, <span
+class="math inline">\(H\)</span> finite. In every unitary representation
+of <span class="math inline">\(H\)</span>, <span
+class="math inline">\(g\)</span> acts as an orthogonal projection, and
+<span class="math inline">\(g(1)\)</span> is the share <span
+class="math inline">\(\dim(g\mathbb{C}[H])/\#H\)</span> of the regular
+representation that <span class="math inline">\(g\)</span> keeps.
+Moreover <span class="math inline">\(\sum_{t \in H}\lvert g(t)\rvert^2 =
+g(1)\)</span>, and <span class="math inline">\(1 - g\)</span> is a
+central idempotent.</p>
+</div>
+<h4 id="the-idempotents-of-the-data.">The idempotents of the data.</h4>
+<p>For <span class="math inline">\(i = 0, 1\)</span> let <span
+class="math inline">\(g_i \in \mathbb{C}[\bar G_i]\)</span> be the sum,
+over the families <span class="math inline">\((c_w)_{w \in \mathcal
+M_i}\)</span> of labels such that no <span
+class="math inline">\(c_w\)</span> has a root <span
+class="math inline">\(z \in k_w\)</span> with <span
+class="math inline">\(z^{q_2} = 1\)</span> and some <span
+class="math inline">\(c_w\)</span> is irreducible with a root of order
+<span class="math inline">\(p_i^r - 1\)</span>, of the tensor products
+<span class="math inline">\(\bigotimes_w e_{c_w}\)</span>. These are
+central idempotents, and <span class="math inline">\(g_0 \otimes g_1 \in
+\mathbb{C}[\bar G]\)</span> acts on <span
+class="math inline">\(H(Y_0)\)</span> as <span
+class="math inline">\(e_0\)</span>. Call a label of degree <span
+class="math inline">\(r\)</span> over <span
+class="math inline">\(k_w\)</span> <em>allowed</em> if it has no root
+<span class="math inline">\(z \in k_w\)</span> with <span
+class="math inline">\(z^{q_2} = 1\)</span>, and <em>primitive</em> if it
+is irreducible with a root of order <span class="math inline">\(q^r -
+1\)</span>; at one place <span class="math inline">\(w \in \mathcal
+M_i\)</span>, with <span class="math inline">\(q = p_i\)</span>, let
+<span class="math inline">\(A\)</span> be the set of allowed labels,
+<span class="math inline">\(B\)</span> the set of monic polynomials of
+degree <span class="math inline">\(r\)</span> over <span
+class="math inline">\(k_w\)</span> that are not primitive labels, and
+<span class="math inline">\(m&#39; := (1 - r/q)/q^r\)</span>. For <span
+class="math inline">\(1 &lt; r &lt; q\)</span> the proof shows that each
+tensor product <span class="math inline">\(\bigotimes_w e_{c_w}\)</span>
+has share at least <span class="math inline">\(m&#39;^f\)</span> (by
+Green’s degrees), that <span class="math inline">\(\#A\cdot m&#39; \ge 1
+- \varepsilon&#39;\)</span> whenever <span
+class="math inline">\(\varepsilon&#39; \ge (1 + q_2 + 2r)/q\)</span>,
+and that <span class="math inline">\(\#B\cdot m&#39; \le \eta :=
+\exp\bigl(-1/(2r(2r\log q + 1))\bigr)\)</span>.</p>
+<div id="pr:bernoulli" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:bernoulli&quot;]">
+<p><strong>Problem 48.1.4</strong>. Let <span class="math inline">\(f \ge
+1\)</span> be an integer, <span class="math inline">\(A\)</span>, <span
+class="math inline">\(B\)</span> finite sets, <span
+class="math inline">\(m&#39; &gt; 0\)</span>, <span
+class="math inline">\(0 \le \varepsilon&#39; \le 1\)</span> and <span
+class="math inline">\(\eta \ge 0\)</span>, with <span
+class="math inline">\(\#A\cdot m&#39; \ge 1 - \varepsilon&#39;\)</span>
+and <span class="math inline">\(\#B\cdot m&#39; \le \eta\)</span>. Then
+<span class="math inline">\((1 - \varepsilon&#39;)^f \ge 1 -
+f\varepsilon&#39;\)</span> and <span
+class="math inline">\(m&#39;^f(\#A^f - \#B^f) \ge 1 - f\varepsilon&#39;
+- \eta^f\)</span>. Hence, in the paragraph above, the families counted
+in <span class="math inline">\(g_i\)</span> include every family of
+allowed labels not all in <span class="math inline">\(B\)</span>, and
+<span class="math inline">\(\operatorname{Re}(1 - g_i)(1) \le
+f\varepsilon&#39; + \eta^f\)</span>.</p>
+</div>
+<p>With one place, <span class="math inline">\(\eta\)</span> is close to
+<span class="math inline">\(1\)</span>; only its <span
+class="math inline">\(f\)</span>-th power is small. The proof takes
+<span class="math inline">\(\varepsilon&#39; = (1 + q_2 +
+2r)/p_i\)</span> and checks, for the data, <span class="math inline">\(1
+&lt; r &lt; p_i\)</span>, <span class="math inline">\(\varepsilon&#39;
+\le 1\)</span>, <span class="math inline">\(2r(2r\log p_i + 1)\cdot
+9\log b \le f\)</span> and <span class="math inline">\(f\varepsilon&#39;
++ e^{-9\log b} \le b^{-8}/2\)</span>. So <span
+class="math inline">\(\operatorname{Re}(1 - g_i)(1) \le
+b^{-8}/2\)</span> for <span class="math inline">\(i = 0, 1\)</span>.</p>
+<div id="pr:two-proj" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:two-proj&quot;]">
+<p><strong>Problem 48.1.5</strong>. Let <span class="math inline">\(\mathcal
+X\)</span> and <span class="math inline">\(\mathcal Y\)</span> be
+finite-dimensional complex inner product spaces, and let <span
+class="math inline">\(L\colon\mathcal X\to\mathcal Y\)</span> be linear.
+If <span class="math inline">\(p\)</span> is an orthogonal projection
+and <span class="math inline">\(q&#39;\)</span> is a linear operator on
+<span class="math inline">\(\mathcal Y\)</span>, then <span
+class="math inline">\(\lVert(1-pq&#39;)L\rVert^2\le\lVert(1-p)L\rVert^2+\lVert(1-q&#39;)L\rVert^2\)</span>.
+In the regular representation of <span class="math inline">\(C_5 \times
+C_5\)</span>, with <span class="math inline">\(p\)</span> and <span
+class="math inline">\(q&#39;\)</span> the projections removing one
+character of the first and of the second factor and <span
+class="math inline">\(L = 1\)</span>, the two sides divided by <span
+class="math inline">\(25\)</span> are <span class="math inline">\(9/25
+\le 2/5\)</span>.</p>
+</div>
+<h1 id="sec:trace">§48.2. The trace on the Bessel subgroup</h1>
+<p>In this section, as in Theorem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:strip"
+data-reference-type="ref"
+data-reference="m2-thm:strip">43.3.3</a>, consider an admissible
+filling over a CM field <span class="math inline">\(E\)</span> with Weil
+data, a unitary representation <span class="math inline">\(\rho\)</span>
+of <span class="math inline">\(\bar G\)</span> on a finite-dimensional
+complex inner product space, and a linear map <span
+class="math inline">\({\mathcal P^\circ}\)</span> from the coordinate
+space of Definition <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:scaled" data-reference-type="ref"
+data-reference="bp-def:scaled">39.4.1</a> to it that satisfies
+the block identity of Theorem <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#thm:blocks"
+data-reference-type="ref"
+data-reference="m1-thm:blocks">40.3.2</a>; <span
+class="math inline">\(\mathcal K_s = \mathcal P^{\circ*}\rho(s){\mathcal
+P^\circ}\)</span>, <span
+class="math inline">\(\rho_{\mathrm{Bes}}\)</span>, <span
+class="math inline">\(\bar R_0\)</span>, <span
+class="math inline">\(D_X\)</span> and <span
+class="math inline">\(D_{\mathrm{id}}= \#\bar R_0\cdot D_X\)</span> are
+as there. In this setting, as for the data, <span
+class="math inline">\(\rho_{\mathrm{Bes}}(s) = 0\)</span> for <span
+class="math inline">\(s \notin \bar R_0\)</span>, <span
+class="math inline">\(\rho_{\mathrm{Bes}}\)</span> is a unitary
+representation of <span class="math inline">\(\bar R_0\)</span>, and
+<span class="math inline">\(\mathcal K_{st} = \mathcal
+K_s\rho_{\mathrm{Bes}}(t)\)</span>, <span class="math inline">\(\mathcal
+K_{ts} = \rho_{\mathrm{Bes}}(t)\mathcal K_s\)</span> for <span
+class="math inline">\(t \in \bar R_0\)</span> (read from the proof;
+Problem <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:bessel-translate" data-reference-type="ref"
+data-reference="m1-pr:bessel-translate">40.4.2</a>).
+In this sheet <span class="math inline">\(\iota_i\colon\bar G_i\to\bar
+G\)</span> is the inclusion with identity component in the other factor,
+and <span class="math inline">\(\rho(g) := \sum_t
+g(t)\rho(\iota_i(t))\)</span> for <span class="math inline">\(g \in
+\mathbb{C}[\bar G_i]\)</span>.</p>
+<div id="pr:conv" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:conv&quot;]">
+<p><strong>Problem 48.2.1</strong>. (a) Let <span
+class="math inline">\(\varphi\colon H&#39;\to H\)</span> be a
+homomorphism of finite groups, <span class="math inline">\(g\)</span> a
+central idempotent of <span
+class="math inline">\(\mathbb{C}[H&#39;]\)</span>, and <span
+class="math inline">\(F\)</span> a function on <span
+class="math inline">\(H\)</span> with values in a complex inner product
+space. Then <span class="math inline">\(\sum_{s\in H}\lVert\sum_{t\in
+H&#39;}g(t)F(s\varphi(t))\rVert^2\le\sum_{s\in H}\lVert
+F(s)\rVert^2\)</span>.</p>
+<p>(b) Let <span class="math inline">\(g \in \mathbb{C}[\bar
+G_i]\)</span> be a central idempotent and <span
+class="math inline">\(D_g := \sum_{t \in \bar G_i} g(t)\bigl(\mathcal
+K_{\iota_i(t)} - \rho_{\mathrm{Bes}}(\iota_i(t))\bigr)\)</span>. Then
+<span class="math inline">\(\#\bar R_0\cdot\lVert D_g\rVert^2 \le
+b^{-12}D_{\mathrm{id}}\)</span>, so <span class="math inline">\(\lVert
+D_g\rVert^2 \le b^{-12}D_X\)</span> and <span
+class="math inline">\(\lvert\operatorname{tr}D_g\rvert \le
+b^{-6}D_X\)</span>.</p>
+</div>
+<p>There remains the trace of <span
+class="math inline">\(\rho_{\mathrm{Bes}}\)</span> against <span
+class="math inline">\(g\)</span>. The proof shows: if <span
+class="math inline">\(s \in \bar G\)</span> has component <span
+class="math inline">\(1\)</span> in <span class="math inline">\(\bar
+G_0\)</span> or in <span class="math inline">\(\bar G_1\)</span>, then
+<span class="math display">\[\operatorname{tr}\rho_{\mathrm{Bes}}(s) =
+D_X\,\psi_{\mathcal U}(s).\]</span> Here <span
+class="math inline">\(\psi_{\mathcal U}(s)\)</span> is the reduced
+character of the filling <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>
+(<span><code>Filling.reducedChar</code></span>). (The trace uses the
+diagonal amplitude blocks over <span
+class="math inline">\(s^{-1}\)</span>. For these blocks the definite
+part of each Bessel term is trivial by the freeness argument of
+Problem <a href="#pr:free" data-reference-type="ref"
+data-reference="pr:free">48.3.2</a>, and the amplitude block over <span
+class="math inline">\(s^{-1}\)</span> is <span
+class="math inline">\(\psi_{\mathcal U}(s)\)</span> times the one over
+<span class="math inline">\(1\)</span>.)</p>
+<div id="def:conj-average" class="definition">
+<p><strong>Definition 48.2.1</strong>. Define the <em>conjugacy average</em>
+of a function <span class="math inline">\(\psi\)</span> on a finite
+group <span class="math inline">\(H\)</span> by <span
+class="math inline">\(\psi^\natural(s) := (\#H)^{-1}\sum_{y \in
+H}\psi(ysy^{-1})\)</span>.</p>
+</div>
+<div id="pr:s3-average" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:s3-average&quot;]">
+<p><strong>Problem 48.2.2</strong>. In <span
+class="math inline">\(S_3\)</span> let <span
+class="math inline">\(\varphi = 1\)</span> at <span
+class="math inline">\(1\)</span>, <span
+class="math inline">\(-1\)</span> at <span
+class="math inline">\((12)\)</span> and <span
+class="math inline">\(0\)</span> elsewhere. Its conjugacy average is
+<span class="math inline">\(1\)</span>, <span
+class="math inline">\(-1/3\)</span>, <span
+class="math inline">\(0\)</span> on the identity, the transpositions and
+the <span class="math inline">\(3\)</span>-cycles, and <span
+class="math inline">\(\sum_s\lvert\varphi(s)\rvert^2 = 2\)</span>, <span
+class="math inline">\(\sum_s\lvert\varphi^\natural(s)\rvert^2 =
+4/3\)</span>.</p>
+</div>
+<div id="pr:conj-average" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:conj-average&quot;]">
+<p><strong>Problem 48.2.3</strong>. For a character <span
+class="math inline">\(\psi\)</span> of a subgroup <span
+class="math inline">\(R \subseteq H\)</span>, extended by zero to <span
+class="math inline">\(H\)</span>, <span class="math inline">\(\sum_{s
+\in H}\lvert\psi^\natural(s)\rvert^2 =
+\#R^2\cdot\dim\operatorname{End}_H(\operatorname{Ind}_R^H\psi)/\#H\)</span>.</p>
+</div>
+<div id="pr:psi-average" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:psi-average&quot;]">
+<p><strong>Problem 48.2.4</strong>. Let <span class="math inline">\(U \subset
+\mathrm{GL}_2(\mathbb{F}_p)\)</span> be the upper unitriangular group
+and <span class="math inline">\(\psi_U(u) := e^{2\pi\mathrm i
+u_{12}/p}\)</span>. By Problem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#pr:gl2-cells"
+data-reference-type="ref"
+data-reference="m2-pr:gl2-cells">43.1.2</a>, <span
+class="math inline">\(\sum_s\lvert\psi_U^\natural(s)\rvert^2 =
+p^2/(p^2-1)\)</span>: <span class="math inline">\(9/8\)</span> for <span
+class="math inline">\(p = 3\)</span>, <span
+class="math inline">\(25/24\)</span> for <span class="math inline">\(p =
+5\)</span>. For the upper unitriangular group of <span
+class="math inline">\(\mathrm{GL}_3(\mathbb{F}_2)\)</span> and <span
+class="math inline">\(\psi_U(u) = (-1)^{u_{12}+u_{23}}\)</span>,
+Problem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#pr:gl3-cells" data-reference-type="ref"
+data-reference="m2-pr:gl3-cells">43.1.3</a> gives <span
+class="math inline">\(32/21\)</span>.</p>
+</div>
+<p><em>The conjugacy average of <span
+class="math inline">\(\psi_{\mathcal U}\)</span>.</em> For an admissible
+filling with Weil data, <span class="math display">\[\sum_{s \in \bar
+G}\lvert\psi_{\mathcal U}^\natural(s)\rvert^2 \le 2 .\]</span>
+<em>Status</em>: read from the proof. There the conjugacy average is the
+normalized Haar average of the extended character on the conjugates of a
+lift, over the integral unitary group at the chosen places and their
+conjugates. The bound for the sum of squares comes from an integral of
+the squared modulus of this average, estimated by counting shells.</p>
+<div id="pr:one-prime" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:one-prime&quot;]">
+<p><strong>Problem 48.2.5</strong>. Let <span class="math inline">\(g \in
+\mathbb{C}[\bar G_i]\)</span> be a central idempotent with <span
+class="math inline">\(\operatorname{Re} g(1) \le b^{-8}/2\)</span>. Then
+<span class="math inline">\(\bigl\lvert\sum_t
+g(t)\operatorname{tr}\rho_{\mathrm{Bes}}(\iota_i(t))\bigr\rvert \le
+D_X\sqrt{2\operatorname{Re} g(1)} \le b^{-4}D_X\)</span>, and <span
+class="math inline">\(\lVert\rho(g){\mathcal P^\circ}\rVert^2 \le
+2b^{-4}D_X\)</span>.</p>
+</div>
+<p>Recall from Chapter <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#chap" data-reference-type="ref"
+data-reference="rl-chap">9</a> that <span
+class="math inline">\(L\colon\mathcal X\to\mathcal Y\)</span> is a near
+isometry with error <span class="math inline">\(\varepsilon\)</span> if
+<span class="math inline">\(\dim Z-\varepsilon\dim\mathcal X\le\lVert
+L\,\mathrm{pr}_Z\rVert^2\)</span> for every subspace <span
+class="math inline">\(Z\subset\mathcal X\)</span>, where <span
+class="math inline">\(\mathrm{pr}_Z\)</span> is the orthogonal
+projection onto <span class="math inline">\(Z\)</span>, and that by
+Problem <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#pr:near-isom" data-reference-type="ref"
+data-reference="rl-pr:near-isom">9.3.1</a> this holds if
+<span class="math inline">\(\varepsilon\ge0\)</span> and <span
+class="math inline">\(\lVert L^*L-1\rVert^2\le\varepsilon^2\dim\mathcal
+X\)</span>.</p>
+<div id="pr:proj-comp" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:proj-comp&quot;]">
+<p><strong>Problem 48.2.6</strong>. If <span
+class="math inline">\(L\)</span> is a near isometry with error <span
+class="math inline">\(\varepsilon\)</span>, <span
+class="math inline">\(p\)</span> is an orthogonal projection and <span
+class="math inline">\(\lVert(1-p)L\rVert^2\le\varepsilon&#39;\dim\mathcal
+X\)</span>, then <span class="math inline">\(pL\)</span> is a near
+isometry with error <span
+class="math inline">\(\varepsilon+\varepsilon&#39;\)</span>.</p>
+</div>
+<p>For central idempotents <span class="math inline">\(g_0 \in
+\mathbb{C}[\bar G_0]\)</span>, <span class="math inline">\(g_1 \in
+\mathbb{C}[\bar G_1]\)</span>, the element <span
+class="math inline">\(g_0 \otimes g_1 \in \mathbb{C}[\bar G]\)</span>
+has coefficient <span class="math inline">\(g_0(s_0)g_1(s_1)\)</span> at
+<span class="math inline">\((s_0, s_1)\)</span>, and <span
+class="math inline">\(\rho(g_0 \otimes g_1) =
+\rho(g_0)\rho(g_1)\)</span>, a product of two commuting orthogonal
+projections. Problems <a href="#pr:central-proj"
+data-reference-type="ref" data-reference="pr:central-proj">48.1.3</a>, <a
+href="#pr:two-proj" data-reference-type="ref"
+data-reference="pr:two-proj">48.1.5</a> and <a href="#pr:one-prime"
+data-reference-type="ref" data-reference="pr:one-prime">48.2.5</a> prove
+part (a) of the following theorem; Problem <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#pr:near-one-data" data-reference-type="ref"
+data-reference="m2-pr:near-one-data">43.3.9</a>, whose
+proof (Theorem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:strip" data-reference-type="ref"
+data-reference="m2-thm:strip">43.3.3</a> on <span
+class="math inline">\(\bar R_0\)</span> and Problem <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#pr:near-one" data-reference-type="ref"
+data-reference="m1-pr:near-one">40.4.3</a>) holds in the
+setting of this section, and Problems <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#pr:near-isom"
+data-reference-type="ref"
+data-reference="rl-pr:near-isom">9.3.1</a> and <a
+href="#pr:proj-comp" data-reference-type="ref"
+data-reference="pr:proj-comp">48.2.6</a> then prove part (b). Part (c)
+follows from (b) and the paragraph on the idempotents of the data.</p>
+<div id="thm:good" class="theorem">
+<p><strong>Theorem 48.2.2</strong> (good forms). <em>In the setting of this
+section, let <span class="math inline">\(g_i \in \mathbb{C}[\bar
+G_i]\)</span> be central idempotents with <span
+class="math inline">\(\operatorname{Re}(1 - g_i)(1) \le
+b^{-8}/2\)</span> for <span class="math inline">\(i = 0, 1\)</span>, and
+<span class="math inline">\(e := \rho(g_0 \otimes g_1)\)</span>.
+Then</em></p>
+<ol>
+<li><p><em><span class="math inline">\(\lVert(1 - e){\mathcal
+P^\circ}\rVert^2 \le 4b^{-4}D_X\)</span>;</em></p></li>
+<li><p><em><span class="math inline">\(\lVert e{\mathcal
+P^\circ}\,\mathrm{pr}_Z\rVert^2 \ge \dim Z - 5b^{-4}D_X\)</span> for
+every subspace <span class="math inline">\(Z\)</span> of the coordinate
+space: <span class="math inline">\(e{\mathcal P^\circ}\)</span> is a
+near isometry with error <span
+class="math inline">\(5b^{-4}\)</span>.</em></p></li>
+</ol>
+<p><em>(c) For the data, with <span class="math inline">\(\rho\)</span>
+the action of <span class="math inline">\(\bar G\)</span> on <span
+class="math inline">\(H(Y_0)\)</span> and <span
+class="math inline">\({\mathcal P^\circ}\)</span> the scaled Poincaré
+map, which satisfy the hypotheses of this section (Chapter <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#chap" data-reference-type="ref"
+data-reference="m1-chap">40</a>), the idempotents <span
+class="math inline">\(g_0, g_1\)</span> of Section <a href="#sec:shares"
+data-reference-type="ref" data-reference="sec:shares">48.1</a> satisfy
+these hypotheses and <span class="math inline">\(e\)</span> is the
+action of <span class="math inline">\(e_0\)</span>: <span
+class="math inline">\(e_0{\mathcal P^\circ}\)</span> is a near isometry
+with error <span class="math inline">\(5b^{-4}\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:spread-hyp">Problem 48.3.6</a>; <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html">Chapter 39</a>; <a href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.html">Chapter 47</a></div><!-- used-in:end -->
+</div>
+<h1 id="sec:count">§48.3. The count of the target</h1>
+<p>In this section <span class="math inline">\(K\)</span>, <span
+class="math inline">\(K&#39;\)</span> are levels, not the field <span
+class="math inline">\(K\)</span>. On a definite group a form is a vector
+of the weight at each class, fixed by the stabilizer of the class. First
+the smallest case.</p>
+<div id="pr:gaussian-classes" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:gaussian-classes&quot;]">
+<p><strong>Problem 48.3.1</strong>. Let <span class="math inline">\(E =
+\mathbb{Q}(\mathrm i)\)</span>, and let the unitary group of rank one
+over <span class="math inline">\(E\)</span>, at the level <span
+class="math inline">\(K\)</span> of the lattice <span
+class="math inline">\(\mathbb{Z}[\mathrm i]\)</span>, have class number
+one, stabilizer <span class="math inline">\(\Gamma \cap K =
+\mu_4\)</span> (<span class="math inline">\(\Gamma\)</span> the rational
+points) and mass <span class="math inline">\(\mathrm{mass}_1 =
+1/4\)</span>. At the split prime <span class="math inline">\(13 =
+(3+2\mathrm i)(3-2\mathrm i)\)</span> take the place <span
+class="math inline">\(w = (3+2\mathrm i)\)</span>, where <span
+class="math inline">\(\mathrm i \equiv 5\)</span>. Then <span
+class="math inline">\(\mu_4\)</span> reduces to <span
+class="math inline">\(\{1, 5, 12, 8\} \subset
+\mathbb{F}_{13}^\times\)</span>, no unit other than <span
+class="math inline">\(1\)</span> reduces to <span
+class="math inline">\(1\)</span>, and the level of integral elements
+reducing to <span class="math inline">\(1\)</span> at <span
+class="math inline">\(w\)</span> has <span class="math inline">\(12/4 =
+3\)</span> classes, which is <span class="math inline">\(\#\bar
+G\cdot\mathrm{mass}_1\)</span> for <span class="math inline">\(\bar G=
+\mathbb{F}_{13}^\times\)</span>.</p>
+</div>
+<p>In Problem <a href="#pr:free" data-reference-type="ref"
+data-reference="pr:free">48.3.2</a>, <span class="math inline">\(n \ge
+1\)</span> is a size.</p>
+<div id="pr:free" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:free&quot;]">
+<p><strong>Problem 48.3.2</strong>. Let <span
+class="math inline">\(E\)</span> be a CM field, <span
+class="math inline">\(\gamma\)</span> a rational unitary matrix of size
+<span class="math inline">\(n\)</span> of the standard definite space
+over <span class="math inline">\(E\)</span>, and <span
+class="math inline">\(h\)</span> a finite adelic unitary matrix such
+that <span class="math inline">\(h^{-1}\gamma h\)</span> is integral at
+every finite place and reduces to <span class="math inline">\(1\)</span>
+at distinct finite places <span class="math inline">\(w_1, \dots,
+w_l\)</span> with <span class="math inline">\((2n)^{[E:\mathbb{Q}]} &lt;
+\prod_i \#k_{w_i}\)</span>. Then <span class="math inline">\(\gamma =
+1\)</span>. In particular this holds if <span
+class="math inline">\((2n)^2 &lt; p\)</span>, <span
+class="math inline">\([E:\mathbb{Q}] = 2f\)</span>, and <span
+class="math inline">\(w_1, \dots, w_f\)</span> have residue fields with
+<span class="math inline">\(p\)</span> elements.</p>
+</div>
+<p>The proof checks this inequality at the <span
+class="math inline">\(f\)</span> chosen places above <span
+class="math inline">\(p_0\)</span> for the rank <span
+class="math inline">\(r\)</span> of <span
+class="math inline">\(W_m\)</span>. So every class of <span
+class="math inline">\(W_m\)</span> at the principal level has trivial
+stabilizer.</p>
+<div id="pr:class-count" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:class-count&quot;]">
+<p><strong>Problem 48.3.3</strong>. Let <span
+class="math inline">\(G\)</span> be the unitary group of a definite
+space. Let <span class="math inline">\(G_f\)</span> be its group of
+finite adelic points and <span class="math inline">\(\Gamma\subseteq
+G_f\)</span> the diagonal image of its rational points. Let <span
+class="math inline">\(K&#39;\subseteq K\)</span> be compact subgroups of
+<span class="math inline">\(G_f\)</span> that are neighborhoods of <span
+class="math inline">\(1\)</span>, and let <span
+class="math inline">\(\Gamma_h(K) := \Gamma\cap hKh^{-1}\)</span>. (a)
+<span class="math inline">\(\sum_{[h] \in \Gamma\backslash G_f/K&#39;}
+1/\#\Gamma_h(K&#39;) = [K : K&#39;]\sum_{[h] \in \Gamma\backslash G_f/K}
+1/\#\Gamma_h(K)\)</span>. (b) If every <span
+class="math inline">\(\Gamma_h(K&#39;)\)</span> is trivial and <span
+class="math inline">\(\pi\)</span> is a representation of <span
+class="math inline">\(\Gamma\)</span> on a finite-dimensional complex
+vector space <span class="math inline">\(A\)</span>, the functions <span
+class="math inline">\(\varphi\colon G_f \to A\)</span> with <span
+class="math inline">\(\varphi(\gamma h k) =
+\pi(\gamma)\varphi(h)\)</span> for <span class="math inline">\(\gamma
+\in \Gamma\)</span>, <span class="math inline">\(k \in K&#39;\)</span>
+form a space of dimension <span
+class="math inline">\(\#(\Gamma\backslash G_f/K&#39;)\cdot\dim
+A\)</span>. (c) For <span class="math inline">\(W_m\)</span>, <span
+class="math inline">\(K = K^\circ(W_m)\)</span> and <span
+class="math inline">\(K&#39;\)</span> the principal level, <span
+class="math inline">\([K : K&#39;] = \#\bar G\)</span>, and, since the
+principal level is free and <span
+class="math inline">\(\mathrm{mass}_r\)</span> is the sum of (a) at the
+level <span class="math inline">\(K\)</span>, the number of classes at
+the principal level is <span class="math inline">\(\#\bar
+G\cdot\mathrm{mass}_r\)</span>.</p>
+</div>
+<p><em>Harish-Chandra’s formal degree.</em> Let <span
+class="math inline">\(r\ge1\)</span>, let <span
+class="math inline">\(\varepsilon=(\varepsilon_1,\dots,\varepsilon_r)\)</span>
+be signs, and let <span class="math inline">\(l=(l_1,\dots,l_r)\)</span>
+be distinct integers <span class="math inline">\(\equiv r-1 \pmod
+2\)</span> with <span class="math inline">\(\lvert
+l_i-l_j\rvert\ge2(500r^3+10r^5)\)</span> whenever <span
+class="math inline">\(\varepsilon_i\ne\varepsilon_j\)</span>. The formal
+degree of the discrete series of the unitary group of the signs <span
+class="math inline">\(\varepsilon\)</span> with doubled parameter <span
+class="math inline">\(l\)</span> is <span
+class="math display">\[\prod_{l_i &gt; l_j}\frac{l_i -
+l_j}{2}\Bigm/\prod_{a=0}^{r-1}a! ,\]</span> in the compact-dual Haar
+normalization of Theorem <a href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.html#thm:schur"
+data-reference-type="ref"
+data-reference="bd-thm:schur">41.2</a>. For definite signs,
+write <span class="math inline">\(l_{(1)} &gt; \cdots &gt;
+l_{(r)}\)</span>. The degree is the Vandermonde quotient in Weyl’s
+formula <a href="20261125T002000--definite-theta-lifts__workbook.html#eq:weyl" data-reference-type="eqref"
+data-reference="dt-eq:weyl">(4)</a> at <span
+class="math inline">\(z_k = l_{(k)}/2 + (r-1)/2\)</span>. A common
+integer shift of the <span class="math inline">\(z_k\)</span> leaves the
+quotient unchanged and can make the highest weight nonnegative. For the
+rank-two parameter <span class="math inline">\(l=(-2\mathsf
+a-1,-2\mathsf a-2\mathsf N+1)\)</span> with integers <span
+class="math inline">\(\mathsf a\ge1\)</span> and <span
+class="math inline">\(\mathsf N\ge2\)</span>, Problem <a
+href="20261126T081400--black-box-discrete-series-and-the-comparison-of-traces__workbook.html#pr:degree" data-reference-type="ref"
+data-reference="bd-pr:degree">41.1.5</a> computes the degree
+<span class="math inline">\(\mathsf N-1\)</span> for both <span
+class="math inline">\(U(1,1)\)</span> and <span
+class="math inline">\(U(2)\)</span>.</p>
+<div id="pr:weyl-check" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:weyl-check&quot;]">
+<p><strong>Problem 48.3.4</strong>. For the doubled parameter <span
+class="math inline">\((6, 2, -2)\)</span> the quotient is <span
+class="math inline">\(8\)</span>, the dimension of <span
+class="math inline">\(\mathbb S_{(2,1,0)}(\mathbb{C}^3)\)</span>.</p>
+</div>
+<p>In the proof the degree of the Bessel system at each infinite place
+<span class="math inline">\(\tau\)</span> is this product for the
+doubled parameter <span class="math inline">\(2\varsigma_\tau\)</span>,
+so <span class="math inline">\(\deg\)</span> is the product over <span
+class="math inline">\(\tau\)</span> of the formal degrees. On the
+definite space <span class="math inline">\(W_m\)</span>, the space of
+principal forms is isomorphic over <span
+class="math inline">\(\mathbb{C}\)</span> to the space of functions in
+Problem <a href="#pr:class-count" data-reference-type="ref"
+data-reference="pr:class-count">48.3.3</a>(b) at the principal level, with
+values in a representation of dimension <span
+class="math inline">\(\deg\)</span>.</p>
+<div id="pr:count-toy" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:count-toy&quot;]">
+<p><strong>Problem 48.3.5</strong>. Hence <span class="math inline">\(\dim
+H(W_m) = \#\bar G\cdot\mathrm{mass}_r\cdot\deg\)</span>, and with
+Corollary <a href="20261126T050500--equal-multiplicities__workbook.html#cor:equal" data-reference-type="ref"
+data-reference="c2-cor:equal">70.4.1</a> for <span
+class="math inline">\(j = m\)</span>, <span class="math inline">\(d_T
+\le \#\bar G\cdot\deg\cdot\mathrm{mass}_r\)</span>. In the toy of
+Chapter <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#chap" data-reference-type="ref"
+data-reference="m1-chap">40</a>, the <span
+class="math inline">\(32\)</span> elements of <span
+class="math inline">\(\Gamma_{I_2}\)</span> have distinct reductions
+modulo <span class="math inline">\(2 + \mathrm i\)</span> in <span
+class="math inline">\(\mathrm{GL}_2(\mathbb{F}_5)\)</span> (order <span
+class="math inline">\(480\)</span>). For weight <span
+class="math inline">\(\mathbb{C}^2\)</span>, the space of principal
+forms has dimension <span class="math inline">\(30 =
+480\cdot\tfrac1{32}\cdot2\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:free" data-reference-type="ref"
+data-reference="pr:free">48.3.2</a>, <a href="#pr:class-count"
+data-reference-type="ref" data-reference="pr:class-count">48.3.3</a> and <a
+href="#pr:count-toy" data-reference-type="ref"
+data-reference="pr:count-toy">48.3.5</a>, with Corollary <a
+href="20261126T050500--equal-multiplicities__workbook.html#cor:equal" data-reference-type="ref"
+data-reference="c2-cor:equal">70.4.1</a>, Harish-Chandra’s
+formal degree and the facts read from the proof stated after Problems <a
+href="#pr:free" data-reference-type="ref"
+data-reference="pr:free">48.3.2</a> and <a href="#pr:weyl-check"
+data-reference-type="ref" data-reference="pr:weyl-check">48.3.4</a>, prove
+the following.</p>
+<div id="thm:count" class="theorem">
+<p><strong>Theorem 48.3.1</strong> (the count). <em>For all data, <span
+class="math inline">\(d_T \le \#\bar
+G\cdot\deg\cdot\mathrm{mass}_r\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html">Chapter 39</a>; <a href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.html">Chapter 47</a></div><!-- used-in:end -->
+</div>
+<p>The second moment, Theorem <a href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.html#thm:second-moment"
+data-reference-type="ref"
+data-reference="m4-thm:second-moment">47.3.1</a>, reads
+<span class="math display">\[\sum_{s \in \bar G}\lVert\mathcal
+K_s\rVert^2 \le (1 + 9b^{-4})\,D_{\mathrm{main}}.\]</span></p>
+<div id="pr:spread-hyp" class="problem" data-progress-ids="[&quot;20261126T052100--good-forms-and-the-count-of-the-target__workbook.tex#pr:spread-hyp&quot;]">
+<p><strong>Problem 48.3.6</strong>. Then <span
+class="math inline">\(d_T\sum_{s \in \bar G}\lVert\mathcal K_s\rVert^2
+\le \#\bar G\,(1 + 9b^{-4})\,D_X^2\)</span>: with Theorem <a
+href="#thm:good" data-reference-type="ref"
+data-reference="thm:good">48.2.2</a>(c), these are the two hypotheses of the
+one-translate theorem as recalled in Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap"
+data-reference-type="ref" data-reference="bp-chap">39</a>
+(Theorem <a href="20261125T010000--rank-lemma-and-zero-estimate__workbook.html#thm:spread" data-reference-type="ref"
+data-reference="rl-thm:spread">9.3.1</a>), with <span
+class="math inline">\(\mathcal Y_0=T\)</span>, for any <span
+class="math inline">\(\varepsilon\ge9b^{-4}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html">Chapter 39</a>; <a href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.html">Chapter 47</a></div><!-- used-in:end -->
+</div>
+<p>This sheet has proved Theorem <a href="#thm:good"
+data-reference-type="ref" data-reference="thm:good">48.2.2</a>(a), (b) from
+Theorem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:strip" data-reference-type="ref"
+data-reference="m2-thm:strip">43.3.3</a>, Problem <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#pr:near-one-data" data-reference-type="ref"
+data-reference="m2-pr:near-one-data">43.3.9</a> and two
+statements taken as given (the trace of <span
+class="math inline">\(\rho_{\mathrm{Bes}}\)</span> and the bound for the
+conjugacy average of <span class="math inline">\(\psi_{\mathcal
+U}\)</span>), and Theorem <a href="#thm:count" data-reference-type="ref"
+data-reference="thm:count">48.3.1</a> from equal multiplicities, freeness and
+class sums. Also taken as given: Green’s degrees, Harish-Chandra’s
+formal degree, the facts read from the proof after Problems <a
+href="#pr:free" data-reference-type="ref"
+data-reference="pr:free">48.3.2</a> and <a href="#pr:weyl-check"
+data-reference-type="ref" data-reference="pr:weyl-check">48.3.4</a> and in
+the paragraph on the idempotents of the data. Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap"
+data-reference-type="ref" data-reference="bp-chap">39</a>
+combines both theorems with the second moment to obtain Theorem B.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. In the Lean proof <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>
+(<span><code>grh/src/</code></span>, namespace
+<span><code>New</code></span> omitted), Theorem <a href="#thm:good"
+data-reference-type="ref" data-reference="thm:good">48.2.2</a>(a), (b) are
+<span><code>Filling.HasAmplitudeBlocks.hilbertSchmidtNormonesubpiTensorElemcompsqle</code></span>
+and
+<span><code>Filling.HasAmplitudeBlocks.isNearIsometrypiTensorElemcomp</code></span>;
+(c) is <span><code>Data.badtypesrare</code></span> with
+<span><code>Data.isNearIsometrye</code><span
+class="math inline">\(_0\)</span><code>compscaledPoincare</code></span>.
+The trace of <span class="math inline">\(\rho_{\mathrm{Bes}}\)</span> is
+<span><code>Filling.tracebesselTranslateeqmulreducedChar</code></span>,
+and the bound for the conjugacy average is
+<span><code>Filling.sumnormreducedCharMeansqle</code></span>. The two
+inequalities for the character degrees are
+<span><code>labelChardegreebounds</code></span>, and Harish-Chandra’s
+formal degree is the first part of
+<span><code>Orbital.harishchandradegreeandorbital</code></span>.
+Theorem <a href="#thm:count" data-reference-type="ref"
+data-reference="thm:count">48.3.1</a> is
+<span><code>Data.targetDimlecardmulbesselDegreemulmass</code></span>.
+For Problem <a href="#pr:free" data-reference-type="ref"
+data-reference="pr:free">48.3.2</a>, see
+<span><code>Variety.eqoneofreduceAteqone</code></span>.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secshares">§<a href="#sec:shares"
+data-reference-type="ref" data-reference="sec:shares">48.1</a></h2>
+<dl>
+<dt><a href="#pr:labels" data-reference-type="ref"
+data-reference="pr:labels">48.1.1</a></dt>
+<dd>
+<p><span class="math inline">\(\mathbb{F}_9 = \mathbb{F}_3[\mathrm
+i]\)</span>.</p>
+</dd>
+<dt><a href="#pr:gl2-shares" data-reference-type="ref"
+data-reference="pr:gl2-shares">48.1.2</a></dt>
+<dd>
+<p>The share of <span class="math inline">\(e_c\)</span> is <span
+class="math inline">\(\Xi_c(1)^2/\#\mathrm{GL}_2(\mathbb{F}_3)\)</span>.
+Which labels are irreducible?</p>
+</dd>
+<dt><a href="#pr:central-proj" data-reference-type="ref"
+data-reference="pr:central-proj">48.1.3</a></dt>
+<dd>
+<p>Write <span class="math inline">\(g\)</span> as a sum of the
+idempotents <span class="math inline">\(e_\chi\)</span> of the
+irreducible characters. For the last identity compare the coefficients
+at <span class="math inline">\(1\)</span> of <span
+class="math inline">\(g^2\)</span> and <span
+class="math inline">\(g\)</span>.</p>
+</dd>
+<dt><a href="#pr:bernoulli" data-reference-type="ref"
+data-reference="pr:bernoulli">48.1.4</a></dt>
+<dd>
+<p>Induction on <span class="math inline">\(f\)</span>. The good tuples
+are the tuples of allowed labels minus those with no primitive
+member.</p>
+</dd>
+<dt><a href="#pr:two-proj" data-reference-type="ref"
+data-reference="pr:two-proj">48.1.5</a></dt>
+<dd>
+<p>Split <span class="math inline">\(1 - pq&#39;\)</span> into two
+orthogonal pieces.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="sectrace">§<a href="#sec:trace"
+data-reference-type="ref" data-reference="sec:trace">48.2</a></h2>
+<dl>
+<dt>Theorem <a href="#thm:good" data-reference-type="ref"
+data-reference="thm:good">48.2.2</a>(a)</dt>
+<dd>
+<p>Apply Problem <a href="#pr:one-prime" data-reference-type="ref"
+data-reference="pr:one-prime">48.2.5</a> with <span
+class="math inline">\(g=1-g_i\)</span>.</p>
+</dd>
+<dt><a href="#pr:conv" data-reference-type="ref"
+data-reference="pr:conv">48.2.1</a></dt>
+<dd>
+<p>(a) <span class="math inline">\(H&#39;\)</span> acts unitarily on
+functions on <span class="math inline">\(H\)</span> by right translation
+through <span class="math inline">\(\varphi\)</span>. (b) Apply (a),
+with <span class="math inline">\(\varphi = \iota_i\)</span> and the
+Hilbert–Schmidt inner product, to <span class="math inline">\(\mathcal
+K_s - \rho_{\mathrm{Bes}}(s)\)</span> on the set of Theorem <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:strip" data-reference-type="ref"
+data-reference="m2-thm:strip">43.3.3</a> pinned in <span
+class="math inline">\(\bar G_{1-i}\)</span>, and <span
+class="math inline">\(0\)</span> elsewhere.</p>
+</dd>
+<dt><a href="#pr:conj-average" data-reference-type="ref"
+data-reference="pr:conj-average">48.2.3</a></dt>
+<dd>
+<p><span class="math inline">\(\psi^\natural\)</span> is a multiple of
+the induced character.</p>
+</dd>
+<dt><a href="#pr:psi-average" data-reference-type="ref"
+data-reference="pr:psi-average">48.2.4</a></dt>
+<dd>
+<p>By Mackey, <span
+class="math inline">\(\dim\operatorname{End}_H(\operatorname{Ind}_U^H\psi_U)\)</span>
+is the number of double cosets supporting the functions of Problem <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#pr:agree" data-reference-type="ref"
+data-reference="m2-pr:agree">43.1.1</a>.</p>
+</dd>
+<dt><a href="#pr:one-prime" data-reference-type="ref"
+data-reference="pr:one-prime">48.2.5</a></dt>
+<dd>
+<p>Since <span class="math inline">\(g\)</span> is a class function,
+<span class="math inline">\(\psi_{\mathcal U}\)</span> may be replaced
+by <span class="math inline">\(\psi_{\mathcal U}^\natural\)</span>. For
+the second bound, <span class="math inline">\(\lVert\rho(g){\mathcal
+P^\circ}\rVert^2 = \operatorname{tr}(\mathcal P^{\circ*}\rho(g){\mathcal
+P^\circ})\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="seccount">§<a href="#sec:count"
+data-reference-type="ref" data-reference="sec:count">48.3</a></h2>
+<dl>
+<dt><a href="#pr:gaussian-classes" data-reference-type="ref"
+data-reference="pr:gaussian-classes">48.3.1</a></dt>
+<dd>
+<p>The classes are the orbits of <span
+class="math inline">\(\mu_4\)</span> on <span
+class="math inline">\(\mathbb{F}_{13}^\times\)</span>.</p>
+</dd>
+<dt><a href="#pr:free" data-reference-type="ref"
+data-reference="pr:free">48.3.2</a></dt>
+<dd>
+<p>Consider the norm from <span class="math inline">\(E\)</span> to
+<span class="math inline">\(\mathbb{Q}\)</span> of <span
+class="math inline">\(\operatorname{tr}(\gamma) - n\)</span>.</p>
+</dd>
+<dt><a href="#pr:class-count" data-reference-type="ref"
+data-reference="pr:class-count">48.3.3</a></dt>
+<dd>
+<p>(a) Each <span class="math inline">\(K\)</span>-class splits into
+<span class="math inline">\(K&#39;\)</span>-classes; count by orbit and
+stabilizer. (c) <span class="math inline">\(W_m\)</span> has identity
+Gram matrix, so <span
+class="math inline">\(\Gamma_h(K^\circ(W_m))\)</span> is the
+automorphism group of the lattice <span class="math inline">\(h\)</span>
+applied to the standard one. Reduction maps <span
+class="math inline">\(K^\circ(W_m)\)</span> onto <span
+class="math inline">\(\bar G\)</span>: the <span
+class="math inline">\(p_i\)</span> split completely and <span
+class="math inline">\(\mathcal M\)</span> contains no two conjugate
+places.</p>
+</dd>
+<dt><a href="#pr:count-toy" data-reference-type="ref"
+data-reference="pr:count-toy">48.3.5</a></dt>
+<dd>
+<p>The principal forms on <span class="math inline">\(W_m\)</span>
+contain the good ones.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-FH"><span class="bib-label">[FH]</span> W. Fulton and J. Harris, <em>Representation Theory: A First Course</em>, Grad. Texts in Math. 129, Springer, 1991.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Gr"><span class="bib-label">[Gr]</span> J. A. Green, <em>The characters of the finite general linear groups</em>, Trans. Amer. Math. Soc. <strong>80</strong> (1955), 402–447.</p>
+<p id="ref-HC"><span class="bib-label">[HC]</span> Harish-Chandra, <em>Discrete series for semisimple Lie groups. II</em>, Acta Math. <strong>116</strong> (1966), 1–111.</p>
+<p id="ref-Se"><span class="bib-label">[Se]</span> J.-P. Serre, <em>Linear Representations of Finite Groups</em>, Grad. Texts in Math. 42, Springer, 1977.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

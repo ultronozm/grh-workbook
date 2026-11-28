@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-N+/nwgX/2/vrOe3Vyd3YLx6T9uWIZ1PUFfC6vlMAPXA=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-25" />
+  <title>Pseudocharacters and the length bound</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","F":"\\mathbb{F}","Zp":"\\Z_p","Qp":"\\Q_p","Oc":"\\mathcal{O}","Tb":"\\mathbf{T}","Frob":"\\mathrm{Frob}","tr":"\\operatorname{tr}","len":"\\operatorname{length}","Sha":"\\mathrm{Sha}","GQ":"G_{\\Q,p}","Eis":"\\mathrm{Eis}","mat":["\\bigl(\\begin{smallmatrix} #1 & #2 \\\\ #3 & #4 \\end{smallmatrix}\\bigr)",4]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="31">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261125T014700--pseudocharacters-and-the-length-bound__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-26 19:19:04
+      <a href="20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex" class="my-link">tex</a>
+      <a href="20261125T014700--pseudocharacters-and-the-length-bound__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Pseudocharacters and the length bound <a class="stable-tag" href="tag/22VM.html" title="Stable tag: cite as Tag 22VM">Tag 22VM</a></h1>
+<p class="date">November 25, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:pseudo" id="toc-sec:pseudo">§31.1. Pseudocharacters of dimension two</a></li>
+<li><a href="#sec:red" id="toc-sec:red">§31.2. The reducibility ideal</a></li>
+<li><a href="#sec:ext" id="toc-sec:ext">§31.3. The quotient by the reducibility ideal and \(\mathrm{Ext}^1\)</a></li>
+<li><a href="#sec:relations" id="toc-sec:relations">§31.4. Cocycles that obey the relations</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secpseudo" id="toc-secpseudo">§31.1</a></li>
+<li><a href="#secred" id="toc-secred">§31.2</a></li>
+<li><a href="#secext" id="toc-secext">§31.3</a></li>
+<li><a href="#secrelations" id="toc-secrelations">§31.4</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Complete local noetherian rings and Hensel’s lemma; the Artin–Rees
+lemma <span class="citation" data-cites="AM">[<a href="#ref-AM">AM</a>,
+Cor. 10.10]</span>; lengths of modules. From Chapter <a href="20261125T004100--tate-twists-and-sha__workbook.html#chap"
+data-reference-type="ref" data-reference="tt-chap">27</a>,
+<em>Odd Tate twists</em>: the groups <span
+class="math inline">\(G_{\mathbb{Q},p}\)</span>, <span
+class="math inline">\(G_p\)</span>, <span
+class="math inline">\(\mathrm{Sha}_p(\mathbb{Q}, e)\)</span>, Problem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#pr:H0" data-reference-type="ref"
+data-reference="tt-pr:H0">27.1.1</a> and Theorem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#thm:MW" data-reference-type="ref"
+data-reference="tt-thm:MW">27.1.2</a>. From Chapter <a
+href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#chap" data-reference-type="ref"
+data-reference="ec-chap">30</a>, <em>Eisenstein congruences and
+Selmer classes</em>: Problem <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:691"
+data-reference-type="ref" data-reference="ec-pr:691">30.1.1</a>,
+the congruence <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#eq:congruence" data-reference-type="eqref"
+data-reference="ec-eq:congruence">(1)</a>, the lattices
+of Section <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#sec:lattices" data-reference-type="ref"
+data-reference="ec-sec:lattices">30.2</a> (Problems <a
+href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:stable" data-reference-type="ref"
+data-reference="ec-pr:stable">30.2.1</a>–<a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:ends"
+data-reference-type="ref" data-reference="ec-pr:ends">30.2.4</a>),
+the inputs (D), (I), (O) of Section <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#sec:ribet"
+data-reference-type="ref"
+data-reference="ec-sec:ribet">30.3</a> with Problems <a
+href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:ss" data-reference-type="ref"
+data-reference="ec-pr:ss">30.3.1</a> and <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:unram"
+data-reference-type="ref"
+data-reference="ec-pr:unram">30.3.3</a>, Section <a
+href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#sec:tangent" data-reference-type="ref"
+data-reference="ec-sec:tangent">30.4</a>, in particular
+Problems <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:red-ideal" data-reference-type="ref"
+data-reference="ec-pr:red-ideal">30.4.6</a>–<a
+href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:691-segment" data-reference-type="ref"
+data-reference="ec-pr:691-segment">30.4.8</a>, and
+Section <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#sec:shapiro" data-reference-type="ref"
+data-reference="ec-sec:shapiro">30.5</a>.</p>
+<p>Section <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#sec:tangent" data-reference-type="ref"
+data-reference="ec-sec:tangent">30.4</a> of Chapter <a
+href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#chap" data-reference-type="ref"
+data-reference="ec-chap">30</a> observed that the Hecke algebra
+sees a Galois representation only through its traces. The Hecke algebra
+on the Eisenstein and cuspidal eigenspaces in Problem <a
+href="#pr:hecke-691" data-reference-type="ref"
+data-reference="pr:hecke-691">31.1.6</a> has two components. In general the
+traces in a Hecke algebra need not be realized by a representation over
+that algebra. What structure do traces alone carry, and how do they
+measure <span class="math inline">\(\mathrm{Sha}\)</span>? The structure
+is a pseudocharacter; the ideal of products <span
+class="math inline">\(b \cdot c\)</span> of Chapter <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#chap"
+data-reference-type="ref" data-reference="ec-chap">30</a> can be
+read off from the traces; and the quotient by it carries extension
+classes, which bound the congruence from above by the length of a Selmer
+group. In the eigenform example, the cocycle obeys every linear relation
+among the matrices <span class="math inline">\(U(g)-1\)</span> for the
+twist <span class="math inline">\(U=\chi^{1-k}\rho_f\)</span>
+(Problem <a href="#pr:kappa-obeys" data-reference-type="ref"
+data-reference="pr:kappa-obeys">31.4.1</a>). Theorem <a href="#thm:graph"
+data-reference-type="ref" data-reference="thm:graph">31.4.1</a> realizes such
+cocycles by equivariant maps on submodules of families of matrices.
+Throughout, <span class="math inline">\(p\)</span> is an odd prime.</p>
+<h1 id="sec:pseudo">§31.1. Pseudocharacters of dimension two <a class="stable-tag" href="tag/22VN.html" title="Stable tag: cite as Tag 22VN">Tag 22VN</a></h1>
+<p>Let <span class="math inline">\(G\)</span> be a group and <span
+class="math inline">\(R\)</span> a commutative ring in which <span
+class="math inline">\(2\)</span> is invertible. A <em>pseudocharacter of
+dimension <span class="math inline">\(2\)</span></em> of <span
+class="math inline">\(G\)</span> with values in <span
+class="math inline">\(R\)</span> is a pair <span
+class="math inline">\((T, D)\)</span> of a function <span
+class="math inline">\(T \colon G \to R\)</span> and a homomorphism <span
+class="math inline">\(D \colon G \to R^\times\)</span> such that <span
+class="math inline">\(T(1) = 2\)</span> and, for all <span
+class="math inline">\(g, h \in G\)</span>, <span
+class="math display">\[T(gh) = T(hg), \qquad T(gh) + D(g)\, T(g^{-1}h) =
+T(g)\, T(h) .\]</span> By <span class="citation"
+data-cites="Ch">[<a href="#ref-Ch">Ch</a>, Lemma 1.9]</span> such pairs are
+the same as Chenevier’s determinants of dimension <span
+class="math inline">\(2\)</span>. The function <span
+class="math inline">\(T\)</span> is then a pseudocharacter of
+dimension <span class="math inline">\(2\)</span> in the sense of Taylor
+<span class="citation" data-cites="Ta">[<a href="#ref-Ta">Ta</a>]</span> and
+Rouquier <span class="citation"
+data-cites="Ro">[<a href="#ref-Ro">Ro</a>]</span>, and conversely every such
+<span class="math inline">\(T\)</span> arises in this way <span
+class="citation" data-cites="Ch">[<a href="#ref-Ch">Ch</a>,
+Prop. 1.29]</span>; see also <span class="citation"
+data-cites="BC">[<a href="#ref-BC">BC</a>]</span>. The notion is due to
+Wiles in dimension two and to Taylor in general <span class="citation"
+data-cites="BC">[<a href="#ref-BC">BC</a>]</span>.</p>
+<div id="pr:trace-pc" class="problem" data-progress-ids="[&quot;22VP&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:trace-pc&quot;]"><a class="stable-tag" href="tag/22VP.html" title="Stable tag: cite as Tag 22VP">Tag 22VP</a>
+<p><strong>Problem 31.1.1</strong>. For every homomorphism <span
+class="math inline">\(\rho \colon G \to \mathrm{GL}_2(R)\)</span>, <span
+class="math inline">\((\operatorname{tr}\rho, \det\rho)\)</span> is a
+pseudocharacter. In particular, so is <span
+class="math inline">\((\psi_1 + \psi_2, \psi_1\psi_2)\)</span> for any
+two characters <span class="math inline">\(\psi_1, \psi_2 \colon G \to
+R^\times\)</span>.</p>
+</div>
+<p>Traces of products need not see every entry.</p>
+<div id="pr:trace-form" class="problem" data-progress-ids="[&quot;238B&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:trace-form&quot;]"><a class="stable-tag" href="tag/238B.html" title="Stable tag: cite as Tag 238B">Tag 238B</a>
+<p><strong>Problem 31.1.2</strong>. Let <span class="math inline">\(e_{ij}
+\in M_3(\mathbb{Q})\)</span> be the matrix units and <span
+class="math inline">\(x = (e_{11}, e_{22}, e_{33}, e_{12})\)</span>. The
+matrix <span class="math inline">\((\operatorname{tr}(x_iy_j))_{i,j \le
+4}\)</span> has determinant <span class="math inline">\(0\)</span> for
+<span class="math inline">\(y = x\)</span>, and <span
+class="math inline">\(1\)</span> for <span class="math inline">\(y =
+(e_{11}, e_{22}, e_{33}, e_{21})\)</span>.</p>
+</div>
+<div id="pr:D-from-T" class="problem" data-progress-ids="[&quot;22VQ&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:D-from-T&quot;]"><a class="stable-tag" href="tag/22VQ.html" title="Stable tag: cite as Tag 22VQ">Tag 22VQ</a>
+<p><strong>Problem 31.1.3</strong>. If <span class="math inline">\((T,
+D)\)</span> is a pseudocharacter, then <span class="math inline">\(D(g)
+= \tfrac12\bigl(T(g)^2 - T(g^2)\bigr)\)</span> and <span
+class="math inline">\(T(g^{-1}) = D(g)^{-1} T(g)\)</span> for all <span
+class="math inline">\(g \in G\)</span>.</p>
+</div>
+<p>So <span class="math inline">\(D\)</span> is determined by <span
+class="math inline">\(T\)</span>, and we often write <span
+class="math inline">\(T\)</span> for the pair.</p>
+<div id="pr:subring" class="problem" data-progress-ids="[&quot;22VR&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:subring&quot;]"><a class="stable-tag" href="tag/22VR.html" title="Stable tag: cite as Tag 22VR">Tag 22VR</a>
+<p><strong>Problem 31.1.4</strong>. Let <span class="math inline">\(R
+\subseteq R_1 \times R_2\)</span> be a subring in which <span
+class="math inline">\(2\)</span> is invertible, and let <span
+class="math inline">\((T_i, D_i)\)</span> be pseudocharacters with
+values in <span class="math inline">\(R_i\)</span>. If <span
+class="math inline">\((T_1(g), T_2(g)) \in R\)</span> for every <span
+class="math inline">\(g\)</span>, then <span
+class="math inline">\(((T_1, T_2), (D_1, D_2))\)</span> is a
+pseudocharacter with values in <span
+class="math inline">\(R\)</span>.</p>
+</div>
+<p>The first example of a pseudocharacter that is not visibly a trace is
+the one carried by a Hecke algebra with one Eisenstein and one cuspidal
+point. Let <span class="math inline">\(G\)</span> be profinite, let
+<span class="math inline">\(\chi \colon G \to
+\mathbb{Z}_p^\times\)</span> be a continuous character whose reduction
+<span class="math inline">\(\bar\chi\)</span> is not trivial, and let
+<span class="math inline">\(\rho \colon G \to
+\mathrm{GL}_2(\mathbb{Q}_p)\)</span> be a continuous representation with
+<span class="math inline">\(\operatorname{tr}\rho(G) \subseteq
+\mathbb{Z}_p\)</span>, <span class="math inline">\(\operatorname{tr}\rho
+\equiv 1 + \chi \pmod p\)</span> and <span
+class="math inline">\(\operatorname{tr}\rho \ne 1 + \chi\)</span>. Put
+<span class="math display">\[e := \min_{g \in G}
+v_p\bigl(\operatorname{tr}\rho(g) - 1 - \chi(g)\bigr), \qquad
+\mathcal{T}(g) := \bigl(1 + \chi(g), \operatorname{tr}\rho(g)\bigr) \in
+\mathbb{Z}_p\times \mathbb{Z}_p.\]</span></p>
+<div id="pr:toy-hecke" class="problem" data-progress-ids="[&quot;22VS&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:toy-hecke&quot;]"><a class="stable-tag" href="tag/22VS.html" title="Stable tag: cite as Tag 22VS">Tag 22VS</a>
+<p><strong>Problem 31.1.5</strong>. The <span
+class="math inline">\(\mathbb{Z}_p\)</span>-subalgebra of <span
+class="math inline">\(\mathbb{Z}_p\times \mathbb{Z}_p\)</span> generated
+by the <span class="math inline">\(\mathcal{T}(g)\)</span> is <span
+class="math inline">\(\mathbf{T}_e := \{(u, v) : u \equiv v
+\pmod{p^e}\}\)</span>, and <span class="math inline">\(x \mapsto (0,
+p^e)\)</span> induces <span class="math inline">\(\mathbb{Z}_p[x]/(x(x -
+p^e)) \cong \mathbf{T}_e\)</span>. The function <span
+class="math inline">\(\mathcal{T}\)</span> is a pseudocharacter with
+values in <span class="math inline">\(\mathbf{T}_e\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:I-toy">Problem 31.2.7</a></div><!-- used-in:end -->
+</div>
+<p>The ring <span class="math inline">\(\mathbf{T}_e\)</span> is the
+<em>toy Hecke algebra</em>: <span class="math inline">\(x = 0\)</span>
+is the Eisenstein point, <span class="math inline">\(x = p^e\)</span>
+the cuspidal point, and <span class="math inline">\(e\)</span> measures
+how close they are. It occurs in nature.</p>
+<div id="pr:hecke-691" class="problem" data-progress-ids="[&quot;22VT&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:hecke-691&quot;]"><a class="stable-tag" href="tag/22VT.html" title="Stable tag: cite as Tag 22VT">Tag 22VT</a>
+<p><strong>Problem 31.1.6</strong>. The <span
+class="math inline">\(\mathbb{Z}_{691}\)</span>-subalgebra of <span
+class="math inline">\(\mathrm{End}(M_{12}(\mathbb{Q}) \otimes
+\mathbb{Q}_{691})\)</span> generated by the Hecke operators <span
+class="math inline">\(T_n\)</span>, <span class="math inline">\(n \ge
+1\)</span>, on modular forms of weight <span
+class="math inline">\(12\)</span> and level <span
+class="math inline">\(1\)</span> is isomorphic to <span
+class="math inline">\(\mathbb{Z}_{691}[x]/(x(x - 691))\)</span>.</p>
+</div>
+<h1 id="sec:red">§31.2. The reducibility ideal <a class="stable-tag" href="tag/22VU.html" title="Stable tag: cite as Tag 22VU">Tag 22VU</a></h1>
+<p>Let <span class="math inline">\(R\)</span> be a complete local
+noetherian ring with maximal ideal <span class="math inline">\(\mathfrak
+m\)</span> and residue field <span
+class="math inline">\(\mathbb{F}\)</span> of characteristic <span
+class="math inline">\(\ne 2\)</span> (so <span class="math inline">\(2
+\in R^\times\)</span>), and let <span class="math inline">\((T,
+D)\)</span> be a pseudocharacter of <span
+class="math inline">\(G\)</span> with values in <span
+class="math inline">\(R\)</span> such that <span class="math inline">\(T
+\equiv \chi_1 + \chi_2 \pmod{\mathfrak m}\)</span> for two distinct
+characters <span class="math inline">\(\chi_1, \chi_2 \colon G \to
+\mathbb{F}^\times\)</span>. Fix <span class="math inline">\(\sigma_0 \in
+G\)</span> with <span class="math inline">\(\chi_1(\sigma_0) \ne
+\chi_2(\sigma_0)\)</span>.</p>
+<div id="pr:roots" class="problem" data-progress-ids="[&quot;22VV&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:roots&quot;]"><a class="stable-tag" href="tag/22VV.html" title="Stable tag: cite as Tag 22VV">Tag 22VV</a>
+<p><strong>Problem 31.2.1</strong>. The polynomial <span
+class="math inline">\(X^2 - T(\sigma_0)X + D(\sigma_0)\)</span> has
+roots <span class="math inline">\(\lambda_1, \lambda_2 \in R\)</span>
+with <span class="math inline">\(\lambda_i \equiv \chi_i(\sigma_0)
+\pmod{\mathfrak m}\)</span>, and <span class="math inline">\(\lambda_1 -
+\lambda_2 \in R^\times\)</span>.</p>
+</div>
+<p>Define <span class="math inline">\(a, d \colon G \to R\)</span> by
+<span class="math display">\[a(g) := \frac{T(\sigma_0 g) - \lambda_2
+T(g)}{\lambda_1 - \lambda_2} , \qquad d(g) := T(g) - a(g) .\]</span></p>
+<div id="pr:a-entry" class="problem" data-progress-ids="[&quot;22VW&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:a-entry&quot;]"><a class="stable-tag" href="tag/22VW.html" title="Stable tag: cite as Tag 22VW">Tag 22VW</a>
+<p><strong>Problem 31.2.2</strong>. Suppose that <span
+class="math inline">\(T = \operatorname{tr}\rho\)</span> for <span
+class="math inline">\(\rho \colon G \to \mathrm{GL}_2(R)\)</span> with
+<span class="math inline">\(\rho(\sigma_0) = \mathrm{diag}(\lambda_1,
+\lambda_2)\)</span>, and write <span class="math inline">\(\rho =
+\bigl(\begin{smallmatrix} a&#39; &amp; b \\ c &amp; d&#39;
+\end{smallmatrix}\bigr)\)</span>. Then <span class="math inline">\(a =
+a&#39;\)</span>, <span class="math inline">\(d = d&#39;\)</span>, and
+<span class="math inline">\(a(gh) - a(g)a(h) = b(g)c(h)\)</span>.</p>
+</div>
+<p>So <span class="math inline">\(a\)</span> and <span
+class="math inline">\(d\)</span> are the diagonal entries of a
+representation that need not exist, and the defect of <span
+class="math inline">\(a\)</span> from being multiplicative stands in for
+the products <span class="math inline">\(b(g)c(h)\)</span>.</p>
+<div id="pr:a-residual" class="problem" data-progress-ids="[&quot;22VX&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:a-residual&quot;]"><a class="stable-tag" href="tag/22VX.html" title="Stable tag: cite as Tag 22VX">Tag 22VX</a>
+<p><strong>Problem 31.2.3</strong>. <span class="math inline">\(a \equiv
+\chi_1\)</span> and <span class="math inline">\(d \equiv \chi_2
+\pmod{\mathfrak m}\)</span>. In particular <span
+class="math inline">\(a(g) \in R^\times\)</span>.</p>
+</div>
+<div id="pr:D-a" class="problem" data-progress-ids="[&quot;22VY&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:D-a&quot;]"><a class="stable-tag" href="tag/22VY.html" title="Stable tag: cite as Tag 22VY">Tag 22VY</a>
+<p><strong>Problem 31.2.4</strong>. <span class="math inline">\(D(g) =
+a(g)T(g) - a(g^2)\)</span> for every <span class="math inline">\(g \in
+G\)</span>.</p>
+</div>
+<p>Define the <em>reducibility ideal</em> <span class="math inline">\(I
+\subseteq R\)</span> as the ideal generated by the elements <span
+class="math inline">\(a(gh) - a(g)a(h)\)</span>, <span
+class="math inline">\(g, h \in G\)</span>.</p>
+<div id="pr:mod-I" class="problem" data-progress-ids="[&quot;22VZ&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:mod-I&quot;]"><a class="stable-tag" href="tag/22VZ.html" title="Stable tag: cite as Tag 22VZ">Tag 22VZ</a>
+<p><strong>Problem 31.2.5</strong>. Modulo <span
+class="math inline">\(I\)</span>, <span class="math inline">\(a\)</span>
+and <span class="math inline">\(d\)</span> are characters <span
+class="math inline">\(G \to (R/I)^\times\)</span>, <span
+class="math inline">\(T \equiv a + d\)</span> and <span
+class="math inline">\(D \equiv ad\)</span>.</p>
+</div>
+<div id="pr:minimal" class="problem" data-progress-ids="[&quot;22W2&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:minimal&quot;]"><a class="stable-tag" href="tag/22W2.html" title="Stable tag: cite as Tag 22W2">Tag 22W2</a>
+<p><strong>Problem 31.2.6</strong>. Let <span class="math inline">\(J
+\subsetneq R\)</span> be an ideal, and let <span
+class="math inline">\(\psi_1, \psi_2 \colon G \to (R/J)^\times\)</span>
+be characters with <span class="math inline">\(\psi_i \equiv \chi_i
+\pmod{\mathfrak m}\)</span> and <span class="math inline">\(T \equiv
+\psi_1 + \psi_2 \pmod J\)</span>. Then <span
+class="math inline">\(\psi_1 \equiv a\)</span> and <span
+class="math inline">\(\psi_2 \equiv d \pmod J\)</span>, and <span
+class="math inline">\(I \subseteq J\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:mod-I" data-reference-type="ref"
+data-reference="pr:mod-I">31.2.5</a> and <a href="#pr:minimal"
+data-reference-type="ref" data-reference="pr:minimal">31.2.6</a> prove the
+following; in particular <span class="math inline">\(I\)</span> does not
+depend on <span class="math inline">\(\sigma_0\)</span>. Over a
+henselian local ring in which <span class="math inline">\(d!\)</span> is
+invertible, Bellaïche and Chenevier give the corresponding reducibility
+ideal for each partition of the pairwise distinct, absolutely
+irreducible residual constituents of a <span
+class="math inline">\(d\)</span>-dimensional pseudocharacter <span
+class="citation" data-cites="BC">[<a href="#ref-BC">BC</a>,
+Prop. 1.5.1]</span>.</p>
+<div id="thm:red" class="theorem"><a class="stable-tag" href="tag/22W3.html" title="Stable tag: cite as Tag 22W3">Tag 22W3</a>
+<p><strong>Theorem 31.2.1</strong>. <em><span
+class="math inline">\(I\)</span> is the smallest ideal <span
+class="math inline">\(J\)</span> of <span
+class="math inline">\(R\)</span> such that <span
+class="math inline">\(T\)</span> is congruent modulo <span
+class="math inline">\(J\)</span> to a sum of two characters lifting
+<span class="math inline">\(\chi_1\)</span> and <span
+class="math inline">\(\chi_2\)</span>.</em></p>
+</div>
+<p>For a representation <span class="math inline">\(\rho\)</span> over a
+discrete valuation ring as in Section <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#sec:lattices"
+data-reference-type="ref"
+data-reference="ec-sec:lattices">30.2</a>, Problems <a
+href="#pr:a-entry" data-reference-type="ref"
+data-reference="pr:a-entry">31.2.2</a> and <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:red-ideal"
+data-reference-type="ref"
+data-reference="ec-pr:red-ideal">30.4.6</a> give <span
+class="math inline">\(I = \pi^{m+n}\mathcal{O}\)</span>, where <span
+class="math inline">\(m + n\)</span> is the length of the segment of
+stable lattices. Return to the toy Hecke algebra.</p>
+<div id="pr:I-toy" class="problem" data-progress-ids="[&quot;22W4&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:I-toy&quot;]"><a class="stable-tag" href="tag/22W4.html" title="Stable tag: cite as Tag 22W4">Tag 22W4</a>
+<p><strong>Problem 31.2.7</strong>. In Problem <a href="#pr:toy-hecke"
+data-reference-type="ref" data-reference="pr:toy-hecke">31.1.5</a>, suppose
+that <span class="math inline">\(\rho\)</span> is irreducible, and let
+<span class="math inline">\(m + n\)</span> be the length of its segment
+of stable lattices (Problem <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:segment"
+data-reference-type="ref"
+data-reference="ec-pr:segment">30.2.3</a>, with <span
+class="math inline">\(\chi_1 = 1\)</span>, <span
+class="math inline">\(\chi_2 = \bar\chi\)</span>). Then <span
+class="math inline">\(m + n \ge e\)</span>, and the reducibility ideal
+of <span class="math inline">\(\mathcal{T}\)</span> is <span
+class="math inline">\(\{0\} \times p^{m+n}\mathbb{Z}_p= p^{m+n-e}\,
+x\mathbf{T}_e\)</span>.</p>
+</div>
+<p>Define the <em>Eisenstein ideal</em> of a pseudocharacter <span
+class="math inline">\(T\)</span> with respect to two given characters
+<span class="math inline">\(\psi_1, \psi_2 \colon G \to
+R^\times\)</span> as the ideal <span
+class="math inline">\(I_\mathrm{Eis}\)</span> generated by the <span
+class="math inline">\(T(g) - \psi_1(g) - \psi_2(g)\)</span>. By
+Theorem <a href="#thm:red" data-reference-type="ref"
+data-reference="thm:red">31.2.1</a>, <span class="math inline">\(I \subseteq
+I_\mathrm{Eis}\)</span> whenever the <span
+class="math inline">\(\psi_i\)</span> lift the <span
+class="math inline">\(\chi_i\)</span>. In the setting of Chapter <a
+href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#chap" data-reference-type="ref"
+data-reference="ec-chap">30</a> the two ideals coincide.</p>
+<div id="pr:seg-eis" class="problem" data-progress-ids="[&quot;22W5&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:seg-eis&quot;]"><a class="stable-tag" href="tag/22W5.html" title="Stable tag: cite as Tag 22W5">Tag 22W5</a>
+<p><strong>Problem 31.2.8</strong>. Let <span
+class="math inline">\(k\)</span>, <span
+class="math inline">\(p\)</span>, <span
+class="math inline">\(f\)</span>, <span
+class="math inline">\(\lambda\)</span> be as in Section <a
+href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#sec:ribet" data-reference-type="ref"
+data-reference="ec-sec:ribet">30.3</a>, and let <span
+class="math inline">\(m + n\)</span> be the length of the segment of
+stable lattices of <span class="math inline">\(\rho_f\)</span>. Then
+<span class="math display">\[m + n = \min_{\ell \ne p} v\bigl(a_\ell(f)
+- 1 - \ell^{k-1}\bigr) ,\]</span> the minimum over primes <span
+class="math inline">\(\ell \ne p\)</span>. So the reducibility ideal of
+<span class="math inline">\(\operatorname{tr}\rho_f\)</span> equals its
+Eisenstein ideal for <span class="math inline">\((1,
+\chi^{k-1})\)</span>.</p>
+</div>
+<p>For <span class="math inline">\(\Delta\)</span> and <span
+class="math inline">\(p = 691\)</span> both sides are <span
+class="math inline">\(1\)</span> (Problem <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:691-segment"
+data-reference-type="ref"
+data-reference="ec-pr:691-segment">30.4.8</a>). When <span
+class="math inline">\(K = \mathbb{Q}_p\)</span>, in the toy Hecke
+algebra built from <span class="math inline">\(\rho = \rho_f\)</span>
+and <span class="math inline">\(\chi^{k-1}\)</span> we get <span
+class="math inline">\(e = m + n\)</span>, and the reducibility ideal is
+<span class="math inline">\(x\mathbf{T}_e\)</span>: the Eisenstein
+component <span class="math inline">\(\mathbf{T}_e/x\mathbf{T}_e =
+\mathbb{Z}_p\)</span> is the largest quotient on which <span
+class="math inline">\(\mathcal{T}\)</span> is reducible.</p>
+<h1 id="sec:ext">§31.3. The quotient by the reducibility ideal and <span
+class="math inline">\(\mathrm{Ext}^1\)</span> <a class="stable-tag" href="tag/22W6.html" title="Stable tag: cite as Tag 22W6">Tag 22W6</a></h1>
+<p>Ribet’s lemma produced a class modulo <span
+class="math inline">\(\pi\)</span>. The reducibility ideal produces a
+class modulo <span class="math inline">\(I\)</span>, which generates a
+copy of <span class="math inline">\(\mathcal{O}/I\)</span>. Keep the
+notation of Section <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#sec:lattices" data-reference-type="ref"
+data-reference="ec-sec:lattices">30.2</a>, with <span
+class="math inline">\(\chi_1 \ne \chi_2\)</span>, and write <span
+class="math inline">\(\rho\)</span> in the basis <span
+class="math inline">\(\pi^m e_1, e_2\)</span> of <span
+class="math inline">\(L_m\)</span> as <span
+class="math inline">\(\bigl(\begin{smallmatrix} a &amp; b \\ c &amp; d
+\end{smallmatrix}\bigr)\)</span>. Then the values of <span
+class="math inline">\(b\)</span> generate <span
+class="math inline">\(\mathcal{O}\)</span>, the values of <span
+class="math inline">\(c\)</span> generate <span class="math inline">\(I
+= \pi^{m+n}\mathcal{O}\)</span>, and by Problem <a href="#pr:mod-I"
+data-reference-type="ref" data-reference="pr:mod-I">31.2.5</a> the
+reductions <span class="math inline">\(\psi_1, \psi_2\)</span> of <span
+class="math inline">\(a, d\)</span> modulo <span
+class="math inline">\(I\)</span> are characters. Put <span
+class="math inline">\(\psi := \psi_1\psi_2^{-1}\)</span>.</p>
+<div id="pr:cocycle" class="problem" data-progress-ids="[&quot;22W7&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:cocycle&quot;]"><a class="stable-tag" href="tag/22W7.html" title="Stable tag: cite as Tag 22W7">Tag 22W7</a>
+<p><strong>Problem 31.3.1</strong>. <span class="math inline">\(\kappa(g) :=
+b(g)\,d(g)^{-1} \bmod I\)</span> is a cocycle on <span
+class="math inline">\(G\)</span> with values in <span
+class="math inline">\((\mathcal{O}/I)(\psi)\)</span>.</p>
+</div>
+<div id="pr:exact-order" class="problem" data-progress-ids="[&quot;22W8&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:exact-order&quot;]"><a class="stable-tag" href="tag/22W8.html" title="Stable tag: cite as Tag 22W8">Tag 22W8</a>
+<p><strong>Problem 31.3.2</strong>. The <span
+class="math inline">\(\mathcal{O}\)</span>-submodule of <span
+class="math inline">\(H^1(G, (\mathcal{O}/I)(\psi))\)</span> generated
+by the class of <span class="math inline">\(\kappa\)</span> is
+isomorphic to <span class="math inline">\(\mathcal{O}/I\)</span>.</p>
+</div>
+<p>Thus the quotient <span class="math inline">\(\mathcal{O}/I\)</span>
+embeds in a group of extensions of <span
+class="math inline">\(\psi_2\)</span> by <span
+class="math inline">\(\psi_1\)</span>. For two distinct residual
+characters over a henselian local ring <span
+class="math inline">\(R\)</span>, Bellaïche and Chenevier construct an
+injection from <span
+class="math inline">\(\operatorname{Hom}_R(B,R/I)\)</span> to the
+algebraic extension group of <span class="math inline">\(\psi_2\)</span>
+by <span class="math inline">\(\psi_1\)</span>, where <span
+class="math inline">\(B\)</span> is the upper right module of a chosen
+Cayley–Hamilton quotient <span class="citation"
+data-cites="BC">[<a href="#ref-BC">BC</a>, Thm. 1.5.5]</span>; for the
+continuous extension group under additional hypotheses, see <span
+class="citation" data-cites="BC">[<a href="#ref-BC">BC</a>,
+Prop. 1.5.10(ii)]</span>. Now take <span class="math inline">\(G =
+G_{\mathbb{Q},p}\)</span>, and <span class="math inline">\(f\)</span>,
+<span class="math inline">\(\lambda\)</span>, <span
+class="math inline">\(\mathcal{O}\)</span> as in Problem <a
+href="#pr:seg-eis" data-reference-type="ref"
+data-reference="pr:seg-eis">31.2.8</a>, so that <span
+class="math inline">\(\psi \equiv \chi^{1-k} \pmod I\)</span>. As in
+Section <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#sec:shapiro" data-reference-type="ref"
+data-reference="ec-sec:shapiro">30.5</a>, <span
+class="math inline">\(\mathrm{Sha}_p(\mathbb{Q}, k-1)
+\otimes_{\mathbb{Z}_p} \mathcal{O}\)</span> is the group of classes in
+<span class="math inline">\(H^1(G_{\mathbb{Q},p},
+(K/\mathcal{O})(1-k))\)</span> that vanish on <span
+class="math inline">\(G_p\)</span>. Use the coefficient embedding <span
+class="math inline">\((\mathcal{O}/I)(1-k)\hookrightarrow(K/\mathcal{O})(1-k)\)</span>,
+<span class="math inline">\(\bar a\mapsto
+a/\pi^{m+n}+\mathcal{O}\)</span>.</p>
+<div id="pr:sha-lower" class="problem" data-progress-ids="[&quot;22W9&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:sha-lower&quot;]"><a class="stable-tag" href="tag/22W9.html" title="Stable tag: cite as Tag 22W9">Tag 22W9</a>
+<p><strong>Problem 31.3.3</strong>. The class of <span
+class="math inline">\(\kappa\)</span> vanishes on <span
+class="math inline">\(G_p\)</span>, and its image in <span
+class="math inline">\(H^1(G_{\mathbb{Q},p},
+(K/\mathcal{O})(1-k))\)</span> generates a submodule isomorphic to <span
+class="math inline">\(\mathcal{O}/I\)</span>. Hence <span
+class="math inline">\(\operatorname{length}_\mathcal{O}\bigl(\mathrm{Sha}_p(\mathbb{Q},
+k-1) \otimes \mathcal{O}\bigr) \ge m + n\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:kappa-obeys">Problem 31.4.1</a>; <a href="20261125T014100--congruence-modules__workbook.html">Chapter 29</a>; <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html">Chapter 83</a></div><!-- used-in:end -->
+</div>
+<p>This is the direction of Ribet and of Mazur and Wiles <span
+class="citation" data-cites="MW">[<a href="#ref-MW">MW</a>]</span>, for one
+eigenform: a congruence of exponent <span class="math inline">\(m +
+n\)</span> produces a cyclic piece of <span
+class="math inline">\(\mathrm{Sha}\)</span> of that length. For <span
+class="math inline">\(\Delta\)</span> it gives <span
+class="math inline">\(\operatorname{length}\mathrm{Sha}_{691}(\mathbb{Q},
+11) \ge 1\)</span>, and Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:MW"
+data-reference-type="ref" data-reference="tt-thm:MW">27.1.2</a>
+gives equality. Read the other way, Problem <a href="#pr:sha-lower"
+data-reference-type="ref" data-reference="pr:sha-lower">31.3.3</a> bounds a
+congruence by a Selmer group: <span class="math inline">\(m + n \le
+\operatorname{length}_\mathcal{O}\bigl(\mathrm{Sha}_p(\mathbb{Q}, k-1)
+\otimes \mathcal{O}\bigr)\)</span>. In the proof, a Selmer length
+contributes, in this direction, to the upper bound for the cost of
+clearing a projection; this is the step of Chapter <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#chap"
+data-reference-type="ref" data-reference="dp-chap">80</a>,
+<em>Denominators of projections to lifts</em>, that this chapter serves.
+In Problem <a href="#pr:sha-lower" data-reference-type="ref"
+data-reference="pr:sha-lower">31.3.3</a> the class already lies in the
+kernel of restriction to <span class="math inline">\(G_p\)</span>, so
+its full length contributes to the lower bound for <span
+class="math inline">\(\mathrm{Sha}\)</span>.</p>
+<h1 id="sec:relations">§31.4. Cocycles that obey the relations <a class="stable-tag" href="tag/237P.html" title="Stable tag: cite as Tag 237P">Tag 237P</a></h1>
+<p>The proof works with cocycles obeying the simultaneous relations
+below, and Problem <a href="#pr:kappa-obeys" data-reference-type="ref"
+data-reference="pr:kappa-obeys">31.4.1</a> gives an example. Let <span
+class="math inline">\(\Lambda\)</span> be a commutative ring, <span
+class="math inline">\(G\)</span> a group, <span
+class="math inline">\(X\)</span> a finite set, and, for <span
+class="math inline">\(i \in X\)</span>, let <span
+class="math inline">\(U_i \colon G \to M_q(\Lambda)\)</span> be
+homomorphisms of monoids; let <span class="math inline">\(\varrho \colon
+G \to M_s(\Lambda)\)</span> be another, and <span
+class="math inline">\(\alpha \in \Lambda\)</span>. Put <span
+class="math inline">\(\mathcal{N} := M_q(\Lambda)^X\)</span>, on which
+<span class="math inline">\(g\)</span> acts by <span
+class="math inline">\((m_i)_i \mapsto (U_i(g)m_i)_i\)</span>, and <span
+class="math inline">\(U(g) - 1 := (U_i(g) - 1)_i \in
+\mathcal{N}\)</span>. A map <span class="math inline">\(\gamma \colon G
+\to (\Lambda/\alpha)^s\)</span> is a <em>cocycle for <span
+class="math inline">\(\varrho\)</span></em> if <span
+class="math inline">\(\gamma(gh) = \gamma(g) +
+\varrho(g)\gamma(h)\)</span>. It <em>obeys the relations among the <span
+class="math inline">\(U(g) - 1\)</span></em> if, for every finitely
+supported <span class="math inline">\(\theta \colon G \to
+\Lambda\)</span>, <span class="math display">\[\sum_{g}
+\theta(g)\,\bigl(U(g) - 1\bigr) = 0 \quad\Longrightarrow\quad \sum_{g}
+\theta(g)\,\gamma(g) = 0 .\]</span> If all <span
+class="math inline">\(U_i\)</span> are trivial, only <span
+class="math inline">\(\gamma = 0\)</span> obeys them.</p>
+<div id="pr:kappa-obeys" class="problem" data-progress-ids="[&quot;237Q&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:kappa-obeys&quot;]"><a class="stable-tag" href="tag/237Q.html" title="Stable tag: cite as Tag 237Q">Tag 237Q</a>
+<p><strong>Problem 31.4.1</strong>. In the setting of Problem <a
+href="#pr:sha-lower" data-reference-type="ref"
+data-reference="pr:sha-lower">31.3.3</a>, put <span
+class="math inline">\(\Lambda := \mathcal{O}\)</span>, <span
+class="math inline">\(\alpha := \pi^{m+n}\)</span>, <span
+class="math inline">\(U := \chi^{1-k}\rho_f\)</span> in the basis <span
+class="math inline">\(\pi^m e_1, e_2\)</span> of <span
+class="math inline">\(L_m\)</span> (one representation, <span
+class="math inline">\(q = 2\)</span>) and <span
+class="math inline">\(\varrho := \chi^{1-k}\)</span> (<span
+class="math inline">\(s = 1\)</span>). Then <span
+class="math inline">\(\kappa(g) = \chi(g)^{1-k} b(g) \bmod I\)</span>,
+and <span class="math inline">\(\kappa\)</span> is a cocycle for <span
+class="math inline">\(\varrho\)</span> that obeys the relations among
+the <span class="math inline">\(U(g) - 1\)</span>.</p>
+</div>
+<p>From now on let <span class="math inline">\(\gamma\)</span> be a
+cocycle for <span class="math inline">\(\varrho\)</span> that obeys the
+relations among the <span class="math inline">\(U(g) - 1\)</span>, and
+let <span class="math inline">\(\mathcal{M} \subseteq
+\mathcal{N}\)</span> be the <span
+class="math inline">\(\Lambda\)</span>-span of the <span
+class="math inline">\(U(g) - 1\)</span>, <span class="math inline">\(g
+\in G\)</span>.</p>
+<div id="pr:graph-map" class="problem" data-progress-ids="[&quot;237R&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:graph-map&quot;]"><a class="stable-tag" href="tag/237R.html" title="Stable tag: cite as Tag 237R">Tag 237R</a>
+<p><strong>Problem 31.4.2</strong>. There is a unique <span
+class="math inline">\(\Lambda\)</span>-linear map <span
+class="math inline">\(\phi \colon \mathcal{M} \to
+(\Lambda/\alpha)^s\)</span> with <span class="math inline">\(\phi(U(g) -
+1) = \gamma(g)\)</span> for all <span class="math inline">\(g\)</span>.
+The module <span class="math inline">\(\mathcal{M}\)</span> is stable
+under <span class="math inline">\(G\)</span>, and <span
+class="math inline">\(\phi(g y) = \varrho(g)\phi(y)\)</span> for <span
+class="math inline">\(y \in \mathcal{M}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html">Chapter 83</a></div><!-- used-in:end -->
+</div>
+<p>So the graph of <span class="math inline">\(\phi\)</span> is a <span
+class="math inline">\(G\)</span>-stable submodule of <span
+class="math inline">\(\mathcal{N} \times (\Lambda/\alpha)^s\)</span>,
+with <span class="math inline">\(g\)</span> acting on the second factor
+through <span class="math inline">\(\varrho\)</span>, on which the first
+projection is injective. It is usually too small: even over <span
+class="math inline">\(\mathbb{Z}_p\)</span>, <span
+class="math inline">\(\mathcal{M}\)</span> need not contain <span
+class="math inline">\(p^j\mathcal{N}\)</span> for any <span
+class="math inline">\(j \ge 0\)</span>. Let <span
+class="math inline">\(\Lambda\)</span> be noetherian. By the Artin–Rees
+lemma <span class="citation" data-cites="AM">[<a href="#ref-AM">AM</a>,
+Cor. 10.10]</span>, applied to the submodule <span
+class="math inline">\(\mathcal{M}\)</span> of the finitely generated
+module <span class="math inline">\(\mathcal{N}\)</span>, there is <span
+class="math inline">\(\nu \ge 1\)</span> with <span
+class="math inline">\(\mathcal{M} \cap \alpha^\nu \mathcal{N} \subseteq
+\alpha\mathcal{M}\)</span>.</p>
+<div id="pr:graph-AR" class="problem" data-progress-ids="[&quot;237S&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:graph-AR&quot;]"><a class="stable-tag" href="tag/237S.html" title="Stable tag: cite as Tag 237S">Tag 237S</a>
+<p><strong>Problem 31.4.3</strong>. Let <span
+class="math inline">\(\mathcal{M} \cap \alpha^\nu \mathcal{N} \subseteq
+\alpha\mathcal{M}\)</span>. Then <span class="math display">\[Y :=
+\bigl\{ \bigl(y + \alpha^\nu v,\ \phi(y)\bigr) : y \in \mathcal{M},\ v
+\in \mathcal{N} \bigr\}\]</span> is a <span
+class="math inline">\(G\)</span>-stable submodule of <span
+class="math inline">\(\mathcal{N} \times (\Lambda/\alpha)^s\)</span>,
+the first projection is injective on <span
+class="math inline">\(Y\)</span>, and <span
+class="math inline">\(\bigl(U(g) - 1 + \alpha^\nu v, \gamma(g)\bigr) \in
+Y\)</span> for all <span class="math inline">\(g \in G\)</span> and
+<span class="math inline">\(v \in \mathcal{N}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:graph-toy">Problem 31.4.4</a></div><!-- used-in:end -->
+</div>
+<div id="pr:graph-toy" class="problem" data-progress-ids="[&quot;237T&quot;,&quot;20261125T014700--pseudocharacters-and-the-length-bound__workbook.tex#pr:graph-toy&quot;]"><a class="stable-tag" href="tag/237T.html" title="Stable tag: cite as Tag 237T">Tag 237T</a>
+<p><strong>Problem 31.4.4</strong>. Let <span class="math inline">\(\Lambda
+= \mathbb{Z}_p\)</span>, <span class="math inline">\(\alpha =
+p\)</span>, <span class="math inline">\(G = \mathbb{Z}\)</span>, <span
+class="math inline">\(X\)</span> a point, <span
+class="math inline">\(U(j) = \bigl(\begin{smallmatrix} 1 &amp; jp \\ 0
+&amp; 1 \end{smallmatrix}\bigr)\)</span>, <span
+class="math inline">\(\varrho = 1\)</span> and <span
+class="math inline">\(\gamma(j) = j \bmod p\)</span>. Then <span
+class="math inline">\(\gamma\)</span> obeys the relations among the
+<span class="math inline">\(U(j) - 1\)</span>, and the least <span
+class="math inline">\(\nu\)</span> with <span
+class="math inline">\(\mathcal{M} \cap p^\nu M_2(\mathbb{Z}_p) \subseteq
+p\mathcal{M}\)</span> is <span class="math inline">\(\nu = 2\)</span>.
+For <span class="math inline">\(\nu = 1\)</span> the set <span
+class="math inline">\(Y\)</span> of Problem <a href="#pr:graph-AR"
+data-reference-type="ref" data-reference="pr:graph-AR">31.4.3</a> contains
+<span class="math inline">\((0, 0)\)</span> and <span
+class="math inline">\((0, 1)\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:graph-map" data-reference-type="ref"
+data-reference="pr:graph-map">31.4.2</a> and <a href="#pr:graph-AR"
+data-reference-type="ref" data-reference="pr:graph-AR">31.4.3</a> prove the
+following theorem, which is stated as in the proof.</p>
+<div id="thm:graph" class="theorem"><a class="stable-tag" href="tag/237U.html" title="Stable tag: cite as Tag 237U">Tag 237U</a>
+<p><strong>Theorem 31.4.1</strong>. <em>Let <span
+class="math inline">\(\Lambda\)</span> be a commutative noetherian ring,
+<span class="math inline">\(\alpha \in \Lambda\)</span>, <span
+class="math inline">\(G\)</span> a group, <span
+class="math inline">\(X\)</span> a finite set, and <span
+class="math inline">\(U_i \colon G \to M_q(\Lambda)\)</span>, <span
+class="math inline">\(i \in X\)</span>, and <span
+class="math inline">\(\varrho \colon G \to M_s(\Lambda)\)</span>
+homomorphisms of monoids. Let <span class="math inline">\(\gamma \colon
+G \to (\Lambda/\alpha)^s\)</span> be a cocycle for <span
+class="math inline">\(\varrho\)</span> that obeys the relations among
+the <span class="math inline">\(U(g) - 1\)</span>. Then there are <span
+class="math inline">\(\nu \ge 0\)</span> and a <span
+class="math inline">\(G\)</span>-stable <span
+class="math inline">\(\Lambda\)</span>-submodule <span
+class="math inline">\(Y\)</span> of <span
+class="math inline">\(M_q(\Lambda)^X \times (\Lambda/\alpha)^s\)</span>,
+with <span class="math inline">\(g\)</span> acting by <span
+class="math inline">\(\bigl((m_i)_i, w\bigr) \mapsto
+\bigl((U_i(g)m_i)_i, \varrho(g)w\bigr)\)</span>, such that the first
+projection is injective on <span class="math inline">\(Y\)</span> and
+<span class="math inline">\(\bigl((U_i(g) - 1)_i + \alpha^\nu v,
+\gamma(g)\bigr) \in Y\)</span> for all <span class="math inline">\(g \in
+G\)</span> and all <span class="math inline">\(v \in
+M_q(\Lambda)^X\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051800--the-local-loss-and-the-sparse-places__workbook.html">Chapter 82</a>; <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html">Chapter 83</a></div><!-- used-in:end -->
+</div>
+<p>If <span class="math inline">\(\Lambda\)</span> is a discrete
+valuation ring and <span class="math inline">\(\alpha \ne 0\)</span>,
+the first projection identifies <span class="math inline">\(Y\)</span>
+with a lattice in <span class="math inline">\(M_q(\Lambda)^X\)</span>:
+its image contains <span class="math inline">\(\alpha^\nu
+M_q(\Lambda)^X\)</span>.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, Theorem <a
+href="#thm:graph" data-reference-type="ref"
+data-reference="thm:graph">31.4.1</a> is
+<code>ribetCocycles.exists_graph_subrepresentation</code>, and the
+cocycles that obey the relations form <code>ribetCocycles</code>, both
+in <code>New/Congruences/LocalLoss/Basic.lean</code> of the readable
+edition.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secpseudo">§<a href="#sec:pseudo"
+data-reference-type="ref" data-reference="sec:pseudo">31.1</a></h2>
+<dl>
+<dt><a href="#pr:trace-pc" data-reference-type="ref"
+data-reference="pr:trace-pc">31.1.1</a></dt>
+<dd>
+<p>Cayley–Hamilton: <span class="math inline">\(\rho(g) +
+\det\rho(g)\,\rho(g)^{-1} = \operatorname{tr}\rho(g)\)</span>.</p>
+</dd>
+<dt><a href="#pr:trace-form" data-reference-type="ref"
+data-reference="pr:trace-form">31.1.2</a></dt>
+<dd>
+<p><span class="math inline">\(\operatorname{tr}(e_{ij}e_{kl})\)</span>
+is <span class="math inline">\(1\)</span> if <span
+class="math inline">\(j = k\)</span> and <span class="math inline">\(i =
+l\)</span>, and <span class="math inline">\(0\)</span> otherwise.</p>
+</dd>
+<dt><a href="#pr:D-from-T" data-reference-type="ref"
+data-reference="pr:D-from-T">31.1.3</a></dt>
+<dd>
+<p>Take <span class="math inline">\(h = g\)</span>, then <span
+class="math inline">\(h = 1\)</span>.</p>
+</dd>
+<dt><a href="#pr:subring" data-reference-type="ref"
+data-reference="pr:subring">31.1.4</a></dt>
+<dd>
+<p>Problem <a href="#pr:D-from-T" data-reference-type="ref"
+data-reference="pr:D-from-T">31.1.3</a>.</p>
+</dd>
+<dt><a href="#pr:toy-hecke" data-reference-type="ref"
+data-reference="pr:toy-hecke">31.1.5</a></dt>
+<dd>
+<p>Subtract the scalar <span class="math inline">\(1 + \chi(g)\)</span>
+from <span class="math inline">\(\mathcal{T}(g)\)</span>. Then
+Problems <a href="#pr:D-from-T" data-reference-type="ref"
+data-reference="pr:D-from-T">31.1.3</a>, <a href="#pr:trace-pc"
+data-reference-type="ref" data-reference="pr:trace-pc">31.1.1</a> and <a
+href="#pr:subring" data-reference-type="ref"
+data-reference="pr:subring">31.1.4</a>.</p>
+</dd>
+<dt><a href="#pr:hecke-691" data-reference-type="ref"
+data-reference="pr:hecke-691">31.1.6</a></dt>
+<dd>
+<p>Use the eigenbasis <span class="math inline">\(E_{12},
+\Delta\)</span>, Problem <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:691" data-reference-type="ref"
+data-reference="ec-pr:691">30.1.1</a>, and <span
+class="math inline">\(\tau(2) = -24\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secred">§<a href="#sec:red"
+data-reference-type="ref" data-reference="sec:red">31.2</a></h2>
+<dl>
+<dt><a href="#pr:roots" data-reference-type="ref"
+data-reference="pr:roots">31.2.1</a></dt>
+<dd>
+<p>Hensel’s lemma.</p>
+</dd>
+<dt><a href="#pr:a-entry" data-reference-type="ref"
+data-reference="pr:a-entry">31.2.2</a></dt>
+<dd>
+<p>Compute <span
+class="math inline">\(\operatorname{tr}(\rho(\sigma_0)\rho(g))\)</span>.</p>
+</dd>
+<dt><a href="#pr:a-residual" data-reference-type="ref"
+data-reference="pr:a-residual">31.2.3</a></dt>
+<dd>
+<p>Reduce modulo <span class="math inline">\(\mathfrak m\)</span> and
+use <span class="math inline">\(T(\sigma_0 g) \equiv \chi_1(\sigma_0 g)
++ \chi_2(\sigma_0 g)\)</span>.</p>
+</dd>
+<dt><a href="#pr:D-a" data-reference-type="ref"
+data-reference="pr:D-a">31.2.4</a></dt>
+<dd>
+<p>Express <span class="math inline">\(T(\sigma_0 g^2)\)</span> by the
+defining identity with <span class="math inline">\((g,
+g\sigma_0)\)</span>, and <span class="math inline">\(T(g^2)\)</span> by
+Problem <a href="#pr:D-from-T" data-reference-type="ref"
+data-reference="pr:D-from-T">31.1.3</a>.</p>
+</dd>
+<dt><a href="#pr:mod-I" data-reference-type="ref"
+data-reference="pr:mod-I">31.2.5</a></dt>
+<dd>
+<p>Problems <a href="#pr:a-residual" data-reference-type="ref"
+data-reference="pr:a-residual">31.2.3</a> and <a href="#pr:D-a"
+data-reference-type="ref" data-reference="pr:D-a">31.2.4</a>.</p>
+</dd>
+<dt><a href="#pr:minimal" data-reference-type="ref"
+data-reference="pr:minimal">31.2.6</a></dt>
+<dd>
+<p>Problem <a href="#pr:D-from-T" data-reference-type="ref"
+data-reference="pr:D-from-T">31.1.3</a>, and the polynomial of Problem <a
+href="#pr:roots" data-reference-type="ref"
+data-reference="pr:roots">31.2.1</a> modulo <span
+class="math inline">\(J\)</span>.</p>
+</dd>
+<dt><a href="#pr:I-toy" data-reference-type="ref"
+data-reference="pr:I-toy">31.2.7</a></dt>
+<dd>
+<p>First, the reduction of a stable lattice has semisimplification <span
+class="math inline">\(1 \oplus \bar\chi\)</span>: its trace is <span
+class="math inline">\(1 + \bar\chi\)</span>, its determinant is <span
+class="math inline">\(\bar\chi\)</span> by Problem <a
+href="#pr:D-from-T" data-reference-type="ref"
+data-reference="pr:D-from-T">31.1.3</a>, and Brauer–Nesbitt applies. The
+roots of Problem <a href="#pr:roots" data-reference-type="ref"
+data-reference="pr:roots">31.2.1</a> and the function <span
+class="math inline">\(a\)</span> may be computed in each factor. Use
+Problem <a href="#pr:a-entry" data-reference-type="ref"
+data-reference="pr:a-entry">31.2.2</a> in the second factor, and note that
+<span class="math inline">\(\mathbf{T}_e\)</span> projects onto the
+second factor.</p>
+</dd>
+<dt><a href="#pr:seg-eis" data-reference-type="ref"
+data-reference="pr:seg-eis">31.2.8</a></dt>
+<dd>
+<p>One inequality is Problem <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:trace-cong"
+data-reference-type="ref"
+data-reference="ec-pr:trace-cong">30.4.7</a>. For the other,
+apply Problem <a href="#pr:minimal" data-reference-type="ref"
+data-reference="pr:minimal">31.2.6</a> with <span
+class="math inline">\(J\)</span> the ideal generated by the <span
+class="math inline">\(a_\ell(f) - 1 - \ell^{k-1}\)</span>, and
+Chebotarev.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secext">§<a href="#sec:ext"
+data-reference-type="ref" data-reference="sec:ext">31.3</a></h2>
+<dl>
+<dt><a href="#pr:cocycle" data-reference-type="ref"
+data-reference="pr:cocycle">31.3.1</a></dt>
+<dd>
+<p>Modulo <span class="math inline">\(I\)</span> the matrix is upper
+triangular; multiply two of them.</p>
+</dd>
+<dt><a href="#pr:exact-order" data-reference-type="ref"
+data-reference="pr:exact-order">31.3.2</a></dt>
+<dd>
+<p>Evaluate at <span class="math inline">\(\sigma_0\)</span>.</p>
+</dd>
+<dt><a href="#pr:sha-lower" data-reference-type="ref"
+data-reference="pr:sha-lower">31.3.3</a></dt>
+<dd>
+<p>Run Problem <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:unram" data-reference-type="ref"
+data-reference="ec-pr:unram">30.3.3</a> modulo <span
+class="math inline">\(I\)</span>, as in Problem <a
+href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:trace-cong" data-reference-type="ref"
+data-reference="ec-pr:trace-cong">30.4.7</a>; <span
+class="math inline">\((\mathcal{O}/I)(1-k)\)</span> has no invariants
+under <span class="math inline">\(I_p\)</span>. Then Problem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#pr:H0" data-reference-type="ref"
+data-reference="tt-pr:H0">27.1.1</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secrelations">§<a href="#sec:relations"
+data-reference-type="ref" data-reference="sec:relations">31.4</a></h2>
+<dl>
+<dt><a href="#pr:kappa-obeys" data-reference-type="ref"
+data-reference="pr:kappa-obeys">31.4.1</a></dt>
+<dd>
+<p>Problem <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:trace-cong" data-reference-type="ref"
+data-reference="ec-pr:trace-cong">30.4.7</a>, and the upper
+right entry of <span class="math inline">\(U(g)\)</span>.</p>
+</dd>
+<dt><a href="#pr:graph-map" data-reference-type="ref"
+data-reference="pr:graph-map">31.4.2</a></dt>
+<dd>
+<p>Expand <span class="math inline">\(U(gh) - 1\)</span> by the cocycle
+rule.</p>
+</dd>
+<dt><a href="#pr:graph-AR" data-reference-type="ref"
+data-reference="pr:graph-AR">31.4.3</a></dt>
+<dd>
+<p>For injectivity, <span class="math inline">\(\alpha\)</span> kills
+<span class="math inline">\((\Lambda/\alpha)^s\)</span>.</p>
+</dd>
+<dt><a href="#pr:graph-toy" data-reference-type="ref"
+data-reference="pr:graph-toy">31.4.4</a></dt>
+<dd>
+<p>Compute <span class="math inline">\(\mathcal{M}\)</span> first.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-AM"><span class="bib-label">[AM]</span> M. F. Atiyah and I. G. Macdonald, <em>Introduction to Commutative Algebra</em>, Addison-Wesley, 1969.</p>
+<p id="ref-BC"><span class="bib-label">[BC]</span> J. Bellaïche and G. Chenevier, <em>Families of Galois representations and Selmer groups</em>, Astérisque <strong>324</strong> (2009).</p>
+<p id="ref-Ch"><span class="bib-label">[Ch]</span> G. Chenevier, <em>The <span class="math inline">\(p\)</span>-adic analytic space of pseudocharacters of a profinite group and pseudorepresentations over arbitrary rings</em>, in: Automorphic Forms and Galois Representations, Vol. 1, London Math. Soc. Lecture Note Ser. 414, Cambridge Univ. Press, 2014, 221–285; <a href="https://arxiv.org/abs/0809.0415" class="uri">https://arxiv.org/abs/0809.0415</a>.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-MW"><span class="bib-label">[MW]</span> B. Mazur and A. Wiles, <em>Class fields of abelian extensions of <span class="math inline">\(\mathbf{Q}\)</span></em>, Invent. Math. <strong>76</strong> (1984), 179–330.</p>
+<p id="ref-Ro"><span class="bib-label">[Ro]</span> R. Rouquier, <em>Caractérisation des caractères et pseudo-caractères</em>, J. Algebra <strong>180</strong> (1996), 571–586.</p>
+<p id="ref-Ta"><span class="bib-label">[Ta]</span> R. Taylor, <em>Galois representations associated to Siegel modular forms of low weight</em>, Duke Math. J. <strong>63</strong> (1991), 281–332.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

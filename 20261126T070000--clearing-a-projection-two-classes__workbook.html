@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-uyH5FfdqnRAq9NKrVmxBw8MykDNsCnM2ZBWMsKnz+pY=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Clearing a projection: two classes</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","F":"\\mathbb{F}","Oc":"\\mathcal{O}","Cg":"\\mathrm{C}","pr":"\\mathrm{pr}","len":"\\operatorname{len}","GL":"\\mathrm{GL}","Frob":"\\mathrm{Fr}","cyc":"\\chi_{\\mathrm{cyc}}","val":"\\operatorname{val}","ord":"\\operatorname{ord}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="81">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T070000--clearing-a-projection-two-classes__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-27 01:16:56
+      <a href="20261126T070000--clearing-a-projection-two-classes__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T070000--clearing-a-projection-two-classes__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T070000--clearing-a-projection-two-classes__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Clearing a projection: two classes</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:clearing" id="toc-sec:clearing">§81.1. Clearing a projection</a></li>
+<li><a href="#sec:eleven" id="toc-sec:eleven">§81.2. Two classes</a></li>
+<li><a href="#sec:classes" id="toc-sec:classes">§81.3. Lifts and the classes they produce</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secclearing" id="toc-secclearing">§81.1</a></li>
+<li><a href="#seceleven" id="toc-seceleven">§81.2</a></li>
+<li><a href="#secclasses" id="toc-secclasses">§81.3</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Chapter <a href="20261126T080900--black-box-galois-representations-of-eigenforms-ii__workbook.html#chap" data-reference-type="ref"
+data-reference="bh-chap">35</a> gives the local conditions above
+<span class="math inline">\(\ell\)</span> and at tame level for the
+attached representations used in <em>Denominators of projections to
+lifts</em>. Discrete valuation rings and lengths of modules; the
+elementary divisor theorem. The Chebotarev density theorem and the
+Brauer–Nesbitt theorem <span class="citation"
+data-cites="CR">[<a href="#ref-CR">CR</a>]</span>. From Chapter <a
+href="20261125T014100--congruence-modules__workbook.html#chap" data-reference-type="ref"
+data-reference="cg-chap">29</a>, <em>Congruence modules</em>: the
+congruence module <span
+class="math inline">\(\mathrm{C}(\,\cdot\,;\,\cdot\,)\)</span> and
+Problems <a href="20261125T014100--congruence-modules__workbook.html#pr:symmetry" data-reference-type="ref"
+data-reference="cg-pr:symmetry">29.1.1</a> and <a
+href="20261125T014100--congruence-modules__workbook.html#pr:denominator" data-reference-type="ref"
+data-reference="cg-pr:denominator">29.1.2</a>. From
+Chapter <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#chap" data-reference-type="ref"
+data-reference="ec-chap">30</a>, <em>Eisenstein congruences and
+Selmer classes</em>: Problem <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:diag"
+data-reference-type="ref" data-reference="ec-pr:diag">30.2.2</a>
+and Ribet’s lemma, Theorem <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#thm:ribet-lemma"
+data-reference-type="ref"
+data-reference="ec-thm:ribet-lemma">30.2.1</a>. From
+Chapter <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="hk-chap">24</a>, <em>Hecke operators and theta
+lifts</em>: Section <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#sec:brandt" data-reference-type="ref"
+data-reference="hk-sec:brandt">24.4</a>, with Problems <a
+href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#pr:brandt" data-reference-type="ref"
+data-reference="hk-pr:brandt">24.4.2</a> and <a
+href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#pr:basis" data-reference-type="ref"
+data-reference="hk-pr:basis">24.4.3</a>. From Chapter <a
+href="20261125T011000--galois-representations-black-box__workbook.html#chap" data-reference-type="ref"
+data-reference="gr-chap">32</a>: Section <a href="20261125T011000--galois-representations-black-box__workbook.html#sec:es"
+data-reference-type="ref" data-reference="gr-sec:es">32.3</a> on
+<span class="math inline">\(X_0(11)\)</span>. For Section <a
+href="#sec:classes" data-reference-type="ref"
+data-reference="sec:classes">81.3</a>: Chapters <a href="20261125T004100--tate-twists-and-sha__workbook.html#chap"
+data-reference-type="ref" data-reference="tt-chap">27</a> and <a
+href="20261126T020430--the-minus-part-by-gauss-sums__workbook.html#chap" data-reference-type="ref"
+data-reference="gs-chap">28</a> on Tate twists and odd classes,
+the chosen places and the integer <span class="math inline">\(\mathcal
+N\)</span> of Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chosen" data-reference-type="ref"
+data-reference="ob-sec:chosen">37.1</a>, and the statement of
+Chapter <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dp-chap">80</a>, <em>Denominators of projections
+to lifts</em>; Chapter <a href="20261125T014700--pseudocharacters-and-the-length-bound__workbook.html#chap" data-reference-type="ref"
+data-reference="pc-chap">31</a> is background.</p>
+<p>Chapter <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dp-chap">80</a> states how large the denominators
+of orthogonal projections onto spaces of lifts can be, measured by the
+determinant of an operator that clears them. This sheet illustrates the
+denominator in a model with two quaternionic ideal classes. In
+Chapter <a href="20261125T014100--congruence-modules__workbook.html#chap" data-reference-type="ref"
+data-reference="cg-chap">29</a> the exponent of a congruence
+module gave the scalar denominator of a projection onto an eigenspace,
+and in Chapter <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#chap" data-reference-type="ref"
+data-reference="ec-chap">30</a> a congruence produced a Galois
+cohomology class. Section <a href="#sec:clearing"
+data-reference-type="ref" data-reference="sec:clearing">81.1</a> measures a
+denominator by a clearing operator and shows why false lifts must be
+excluded; Section <a href="#sec:eleven" data-reference-type="ref"
+data-reference="sec:eleven">81.2</a> computes the denominator for a class
+set with two elements, where it is <span
+class="math inline">\(5\)</span>; Section <a href="#sec:classes"
+data-reference-type="ref" data-reference="sec:classes">81.3</a> explains
+the congruence behind the denominator and the costs on the Galois side
+that enter the clearing bound. In Sections <a href="#sec:clearing"
+data-reference-type="ref" data-reference="sec:clearing">81.1</a> and <a
+href="#sec:eleven" data-reference-type="ref"
+data-reference="sec:eleven">81.2</a> the letters <span
+class="math inline">\(K\)</span>, <span
+class="math inline">\(T\)</span>, <span
+class="math inline">\(V\)</span>, <span
+class="math inline">\(L\)</span>, <span class="math inline">\(Y\)</span>
+and <span class="math inline">\(\Pi\)</span> are local.</p>
+<h1 id="sec:clearing">§81.1. Clearing a projection</h1>
+<p>Let <span class="math inline">\(\mathcal{O}\)</span> be a discrete
+valuation ring with fraction field <span
+class="math inline">\(K\)</span> and valuation <span
+class="math inline">\(\operatorname{ord}\)</span>, normalized by <span
+class="math inline">\(\operatorname{ord}(\varpi) = 1\)</span> for a
+uniformizer <span class="math inline">\(\varpi\)</span>; we use <span
+class="math inline">\(\operatorname{ord}(0) = +\infty\)</span>. Let
+<span class="math inline">\(V\)</span> be a finite-dimensional <span
+class="math inline">\(K\)</span>-vector space with a lattice <span
+class="math inline">\(L\)</span>, and let <span class="math inline">\(V
+= \mathcal F \oplus \mathcal F&#39;\)</span> with projection <span
+class="math inline">\(\mathrm{pr}\colon V \to \mathcal F\)</span> along
+<span class="math inline">\(\mathcal F&#39;\)</span>. Write <span
+class="math inline">\(\mathrm{C}(L; \mathcal F) := \mathrm{pr}(L)/(L
+\cap \mathcal F)\)</span>, as in Chapter <a href="20261125T014100--congruence-modules__workbook.html#chap"
+data-reference-type="ref" data-reference="cg-chap">29</a>. An
+operator <span class="math inline">\(C_\ell \in \mathrm{End}_K(\mathcal
+F)\)</span> (the subscript recalls the prime <span
+class="math inline">\(\ell\)</span> of the later sections)
+<em>clears</em> <span class="math inline">\(\mathrm{pr}\)</span> on a
+subset <span class="math inline">\(Y \subseteq L\)</span> if <span
+class="math inline">\(C_\ell(\mathrm{pr}(y)) \in L\)</span> for every
+<span class="math inline">\(y \in Y\)</span>. A scalar <span
+class="math inline">\(c\)</span> clears <span
+class="math inline">\(\mathrm{pr}\)</span> on <span
+class="math inline">\(L\)</span> when <span
+class="math inline">\(c\,\mathrm{pr}(L) \subseteq L\)</span>; an
+operator may clear different directions of <span
+class="math inline">\(\mathcal F\)</span> by different amounts, and we
+measure it by <span class="math inline">\(\operatorname{ord}(\det
+C_\ell)\)</span>.</p>
+<div id="pr:clear-det" class="problem" data-progress-ids="[&quot;20261126T070000--clearing-a-projection-two-classes__workbook.tex#pr:clear-det&quot;]">
+<p><strong>Problem 81.1.1</strong>. <span
+class="math inline">\(C_\ell\)</span> clears <span
+class="math inline">\(\mathrm{pr}\)</span> on <span
+class="math inline">\(L\)</span> if and only if <span
+class="math inline">\(C_\ell(\mathrm{pr}(L)) \subseteq L \cap \mathcal
+F\)</span>. The least value of <span
+class="math inline">\(\operatorname{ord}(\det C_\ell)\)</span> over such
+<span class="math inline">\(C_\ell\)</span> is <span
+class="math inline">\(\operatorname{len}_{\mathcal{O}} \mathrm{C}(L;
+\mathcal F)\)</span>.</p>
+</div>
+<p>An integral operator that is a nonzero scalar <span
+class="math inline">\(a\)</span> on <span class="math inline">\(\mathcal
+F\)</span> and <span class="math inline">\(0\)</span> on <span
+class="math inline">\(\mathcal F&#39;\)</span> clears <span
+class="math inline">\(\mathrm{pr}\)</span> on <span
+class="math inline">\(L\)</span> as the scalar <span
+class="math inline">\(a\)</span>, so <span
+class="math inline">\(\operatorname{len}_{\mathcal{O}}\mathrm{C}(L;
+\mathcal F) \le \dim \mathcal F \cdot \operatorname{ord}(a)\)</span>;
+see Zhang <span class="citation" data-cites="Zh">[<a href="#ref-Zh">Zh</a>,
+Lemma 5.1]</span>. In part (b) of the next problem, an eigenvalue
+difference gives the exact denominator.</p>
+<div id="pr:proj-cost" class="problem" data-progress-ids="[&quot;20261126T070000--clearing-a-projection-two-classes__workbook.tex#pr:proj-cost&quot;]">
+<p><strong>Problem 81.1.2</strong>. (a) The orthogonal projection of <span
+class="math inline">\(\mathbb{Q}^2\)</span> onto the line through <span
+class="math inline">\((1,2)\)</span> is <span
+class="math inline">\(\frac15\left(\begin{smallmatrix}1&amp;2\\2&amp;4\end{smallmatrix}\right)\)</span>,
+and, for <span class="math inline">\(c \in \mathbb{Q}\)</span>, <span
+class="math inline">\(c\)</span> times it preserves <span
+class="math inline">\(\mathbb{Z}^2\)</span> exactly when <span
+class="math inline">\(c \in 5\mathbb{Z}\)</span>. (b) Let <span
+class="math inline">\(s, c \in \mathbb{Z}\)</span> with <span
+class="math inline">\(s \ge 1\)</span>, and <span
+class="math inline">\(T =
+\left(\begin{smallmatrix}\ell^s&amp;1\\0&amp;0\end{smallmatrix}\right)\)</span>
+over <span class="math inline">\(\mathbb{Z}_\ell\)</span>. The
+projection onto the <span
+class="math inline">\(\ell^s\)</span>-eigenline along <span
+class="math inline">\(\ker T\)</span> is <span
+class="math inline">\(\ell^{-s}T\)</span>, and <span
+class="math inline">\(\ell^{c-s}T\)</span> preserves <span
+class="math inline">\(\mathbb{Z}_\ell^2\)</span> exactly when <span
+class="math inline">\(c \ge s = \operatorname{val}_\ell(\ell^s -
+0)\)</span>.</p>
+</div>
+<p>The operators that clear <span
+class="math inline">\(\mathrm{pr}\)</span> on a given <span
+class="math inline">\(Y\)</span> form an <span
+class="math inline">\(\mathcal{O}\)</span>-module; the definitions make
+sense for any valuation ring <span
+class="math inline">\(\mathcal{O}\)</span> and any <span
+class="math inline">\(\mathcal{O}\)</span>-submodule <span
+class="math inline">\(L\)</span> of <span
+class="math inline">\(V\)</span>. The next problem combines clearing
+operators that are diagonal in one basis.</p>
+<div id="pr:diagonal" class="problem" data-progress-ids="[&quot;20261126T070000--clearing-a-projection-two-classes__workbook.tex#pr:diagonal&quot;]">
+<p><strong>Problem 81.1.3</strong>. Let <span
+class="math inline">\(\mathcal{O}\)</span> be a valuation ring with
+infinite residue field and valuation <span
+class="math inline">\(\operatorname{ord}\)</span>, such as the ring of
+integers of <span class="math inline">\(\bar{\mathbb{Q}}_\ell\)</span>
+with <span class="math inline">\(\operatorname{ord}(\ell) = 1\)</span>,
+and let <span class="math inline">\(b_1, \dots, b_n\)</span> be a basis
+of <span class="math inline">\(\mathcal F\)</span>. Let <span
+class="math inline">\(C_\ell^{(1)}, \dots, C_\ell^{(n)}\)</span> clear
+<span class="math inline">\(\mathrm{pr}\)</span> on <span
+class="math inline">\(Y\)</span>, with <span
+class="math inline">\(C_\ell^{(j)} b_i = \lambda_{ji} b_i\)</span>. Then
+some <span class="math inline">\(C_\ell = \sum_j u_j
+C_\ell^{(j)}\)</span> with <span class="math inline">\(u_j \in
+\mathcal{O}\)</span> has <span class="math inline">\(C_\ell b_i = \mu_i
+b_i\)</span> with <span class="math inline">\(\operatorname{ord}(\mu_i)
+\le \operatorname{ord}(\lambda_{ii})\)</span> for every <span
+class="math inline">\(i\)</span>; it clears <span
+class="math inline">\(\mathrm{pr}\)</span> on <span
+class="math inline">\(Y\)</span>.</p>
+</div>
+<p>Now let <span class="math inline">\(K\)</span> be a subfield of <span
+class="math inline">\(\mathbb{C}\)</span> stable under complex
+conjugation, and <span class="math inline">\(\mathcal{O}\)</span> a
+discrete valuation ring with fraction field <span
+class="math inline">\(K\)</span>. Let <span
+class="math inline">\(V\)</span> carry a positive definite hermitian
+form <span class="math inline">\(\langle\,,\rangle\)</span>, linear in
+the first variable, let <span class="math inline">\(\mathcal F&#39; =
+\mathcal F^\perp\)</span>, and let <span
+class="math inline">\(T\)</span> be a self-adjoint operator on <span
+class="math inline">\(V\)</span> with <span class="math inline">\(T(L)
+\subseteq L\)</span>, diagonalizable with eigenvalues in <span
+class="math inline">\(\mathcal{O}\)</span>, such that <span
+class="math inline">\(\mathcal F \subseteq \ker(T - \lambda)\)</span>.
+Call the vectors of <span class="math inline">\(\mathcal
+F^\perp\)</span> with the eigenvalue of <span
+class="math inline">\(\mathcal F\)</span>, <span
+class="math display">\[F_T := \mathcal F^\perp \cap \ker(T - \lambda)
+,\]</span> the <em>false lifts</em> for <span
+class="math inline">\(T\)</span>. Let <span class="math inline">\(\Pi(X)
+:= \prod_\mu (X - \mu)\)</span>, the product over the eigenvalues <span
+class="math inline">\(\mu \ne \lambda\)</span> of <span
+class="math inline">\(T\)</span>, each taken once.</p>
+<div id="pr:hecke-clear" class="problem" data-progress-ids="[&quot;20261126T070000--clearing-a-projection-two-classes__workbook.tex#pr:hecke-clear&quot;]">
+<p><strong>Problem 81.1.4</strong>. For <span class="math inline">\(y \in
+L\)</span> orthogonal to <span class="math inline">\(F_T\)</span>, <span
+class="math inline">\(\Pi(T)\,y = \Pi(\lambda)\,\mathrm{pr}(y)\)</span>.
+Hence the scalar <span class="math inline">\(\Pi(\lambda)\)</span>
+clears <span class="math inline">\(\mathrm{pr}\)</span> on the <span
+class="math inline">\(y \in L\)</span> orthogonal to <span
+class="math inline">\(F_T\)</span>, and the determinant of the scalar
+<span class="math inline">\(\Pi(\lambda)\)</span> acting on <span
+class="math inline">\(\mathcal F\)</span> has valuation <span
+class="math inline">\(\dim \mathcal F \cdot
+\operatorname{ord}(\Pi(\lambda))\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:eleven-pr">Problem 81.2.2</a></div><!-- used-in:end -->
+</div>
+<p>The cost <span class="math inline">\(\operatorname{ord}(\Pi(\lambda))
+= \sum_\mu \operatorname{ord}(\lambda - \mu)\)</span> counts congruences
+between the eigenvalue of <span class="math inline">\(\mathcal
+F\)</span> and the other eigenvalues. The restriction to vectors
+orthogonal to the false lifts cannot be dropped.</p>
+<div id="pr:false-needed" class="problem" data-progress-ids="[&quot;20261126T070000--clearing-a-projection-two-classes__workbook.tex#pr:false-needed&quot;]">
+<p><strong>Problem 81.1.5</strong>. Let <span class="math inline">\(V =
+K^2\)</span> with <span class="math inline">\(\langle x, y \rangle =
+x_1\bar y_1 + x_2\bar y_2\)</span>, <span class="math inline">\(L =
+\mathcal{O}^2\)</span>, <span class="math inline">\(T = \lambda\cdot
+1\)</span>, <span class="math inline">\(\mathcal F = K(1,1)\)</span>,
+and suppose <span class="math inline">\(\operatorname{ord}(2) &gt;
+0\)</span>. Then <span class="math inline">\(F_T = K(1,-1)\)</span>, no
+unit <span class="math inline">\(c \in \mathcal{O}^\times\)</span>
+clears <span class="math inline">\(\mathrm{pr}\)</span> on <span
+class="math inline">\(L\)</span>, and <span class="math inline">\(c =
+1\)</span> clears it on the <span class="math inline">\(y \in L\)</span>
+orthogonal to <span class="math inline">\(F_T\)</span>.</p>
+</div>
+<h1 id="sec:eleven">§81.2. Two classes</h1>
+<p>We take the class set of Section <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#sec:brandt"
+data-reference-type="ref"
+data-reference="hk-sec:brandt">24.4</a> of Chapter <a
+href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="hk-chap">24</a>: the two left ideal classes of a
+maximal order in the quaternion algebra over <span
+class="math inline">\(\mathbb{Q}\)</span> ramified at <span
+class="math inline">\(11\)</span> and <span
+class="math inline">\(\infty\)</span>, indexed by their right orders,
+with <span class="math inline">\(w_1 = 2\)</span> and <span
+class="math inline">\(w_2 = 3\)</span>. Functions on the two classes are
+vectors <span class="math inline">\(\varphi = (\varphi(1),
+\varphi(2))\)</span>, with <span class="math display">\[\langle \varphi,
+\varphi&#39; \rangle := \frac{\varphi(1)\overline{\varphi&#39;(1)}}{w_1}
++ \frac{\varphi(2)\overline{\varphi&#39;(2)}}{w_2} ,\]</span> and the
+Brandt matrix <span class="math inline">\(B(\ell)\)</span>, for a prime
+<span class="math inline">\(\ell \ne 11\)</span>, acts by <span
+class="math inline">\((B(\ell)\varphi)(i) = \sum_j
+B_{ij}(\ell)\varphi(j)\)</span>. Recall from that section that <span
+class="math inline">\(B(\ell)\)</span> has integer entries, that <span
+class="math inline">\(w_jB_{ij}(\ell) = w_iB_{ji}(\ell)\)</span> and
+<span class="math inline">\(\sum_j B_{ij}(\ell) = \ell + 1\)</span>, and
+that <span class="math inline">\(B(\ell)\)</span> is the action of <span
+class="math inline">\(T_\ell\)</span> on <span
+class="math inline">\(M_2(\Gamma_0(11))\)</span>, which is spanned by an
+Eisenstein series of <span
+class="math inline">\(T_\ell\)</span>-eigenvalue <span
+class="math inline">\(\ell + 1\)</span> and by the form called <span
+class="math inline">\(f\)</span> there; we write <span
+class="math display">\[f_{11} := q\prod_{n \ge 1}(1-q^n)^2(1-q^{11n})^2
+= \sum_{n \ge 1} a_n q^n .\]</span> By Problem <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#pr:brandt"
+data-reference-type="ref"
+data-reference="hk-pr:brandt">24.4.2</a>, <span
+class="math inline">\(B(2) = \begin{pmatrix} 1 &amp; 2 \\ 3 &amp; 0
+\end{pmatrix}\)</span> and <span class="math inline">\(B(3) =
+\begin{pmatrix} 2 &amp; 2 \\ 3 &amp; 1 \end{pmatrix}\)</span>. The
+constant function <span class="math inline">\(1\)</span> plays the role
+of the lifts: <span class="math inline">\(\mathcal F\)</span> is the
+line of constant functions, and <span
+class="math inline">\(\mathrm{pr}\)</span> is the orthogonal projection
+onto <span class="math inline">\(\mathcal F\)</span>. The integral
+functions are <span class="math inline">\(L := \mathbb{Z}^2\)</span>. To
+apply Section <a href="#sec:clearing" data-reference-type="ref"
+data-reference="sec:clearing">81.1</a> over <span
+class="math inline">\(\mathbb{Z}_{(\ell)}\)</span>, use the lattice
+<span class="math inline">\(\mathbb{Z}_{(\ell)}^2\)</span> in <span
+class="math inline">\(\mathbb{Q}^2\)</span>. Over <span
+class="math inline">\(\mathbb{Q}_\ell\)</span> use the lattice <span
+class="math inline">\(\mathbb{Z}_\ell^2\)</span> and the same bilinear
+formula without the bar.</p>
+<div id="pr:eleven-adjoint" class="problem" data-progress-ids="[&quot;20261126T070000--clearing-a-projection-two-classes__workbook.tex#pr:eleven-adjoint&quot;]">
+<p><strong>Problem 81.2.1</strong>. <span
+class="math inline">\(B(\ell)\)</span> is self-adjoint for <span
+class="math inline">\(\langle\,,\rangle\)</span>, <span
+class="math inline">\(B(\ell)1 = (\ell + 1)1\)</span>, and <span
+class="math inline">\(\varphi_{11} := (2, -3)\)</span> spans <span
+class="math inline">\(\mathcal F^\perp\)</span> and satisfies <span
+class="math inline">\(B(\ell)\varphi_{11} =
+a_\ell\varphi_{11}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.html">Chapter 84</a>: <a href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.html#pr:weak">Problem 84.4.4</a></div><!-- used-in:end -->
+</div>
+<div id="pr:eleven-pr" class="problem" data-progress-ids="[&quot;20261126T070000--clearing-a-projection-two-classes__workbook.tex#pr:eleven-pr&quot;]">
+<p><strong>Problem 81.2.2</strong>. <span
+class="math inline">\(\mathrm{pr}(\varphi) = \frac15\bigl(3\varphi(1) +
+2\varphi(2)\bigr)\cdot 1\)</span>, and <span
+class="math inline">\(5\,\mathrm{pr}= B(2) + 2 = B(3) + 1\)</span>.
+Hence <span class="math inline">\(\mathrm{pr}(L) =
+\frac15\mathbb{Z}\cdot 1\)</span> and <span
+class="math inline">\(\mathrm{C}(L; \mathcal F) \cong
+\mathbb{Z}/5\mathbb{Z}\)</span>. The least value of <span
+class="math inline">\(\operatorname{val}_5(\det C_\ell)\)</span> for
+<span class="math inline">\(C_\ell\)</span> clearing <span
+class="math inline">\(\mathrm{pr}\)</span> on <span
+class="math inline">\(\mathbb{Z}_5^2\)</span> is <span
+class="math inline">\(1\)</span>; for <span class="math inline">\(\ell
+\ne 5\)</span> the identity clears <span
+class="math inline">\(\mathrm{pr}\)</span> on <span
+class="math inline">\(\mathbb{Z}_\ell^2\)</span>. The scalar <span
+class="math inline">\(\Pi(\lambda)\)</span> of Problem <a
+href="#pr:hecke-clear" data-reference-type="ref"
+data-reference="pr:hecke-clear">81.1.4</a> is <span
+class="math inline">\(5\)</span> both for <span class="math inline">\(T
+= B(2)\)</span> and for <span class="math inline">\(T =
+B(3)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.html">Chapter 84</a></div><!-- used-in:end -->
+</div>
+<p>What congruence do the Brandt eigenvalues satisfy?</p>
+<div id="pr:eleven-cong" class="problem" data-progress-ids="[&quot;20261126T070000--clearing-a-projection-two-classes__workbook.tex#pr:eleven-cong&quot;]">
+<p><strong>Problem 81.2.3</strong>. <span class="math inline">\(B(\ell) -
+a_\ell = (\ell + 1 - a_\ell)\mathrm{pr}\)</span>. Hence <span
+class="math inline">\(a_\ell \equiv 1 + \ell \pmod 5\)</span> for every
+prime <span class="math inline">\(\ell \ne 11\)</span>; for example
+<span class="math inline">\(a_{13} = 4\)</span> (Problem <a
+href="20261125T011000--galois-representations-black-box__workbook.html#pr:coeffs" data-reference-type="ref"
+data-reference="gr-pr:coeffs">32.3.1</a>).</p>
+</div>
+<p>The denominator <span class="math inline">\(5\)</span> is the
+numerator of the mass <span class="math inline">\(1/w_1 + 1/w_2 = (11 -
+1)/12 = 5/6\)</span>. The next problem gives the denominator at primes
+dividing none of the weights.</p>
+<div id="pr:mass" class="problem" data-progress-ids="[&quot;20261126T070000--clearing-a-projection-two-classes__workbook.tex#pr:mass&quot;]">
+<p><strong>Problem 81.2.4</strong>. Let <span
+class="math inline">\(I\)</span> be a nonempty finite set with positive
+integers <span class="math inline">\(w_i\)</span>, let <span
+class="math inline">\(\langle \varphi, \varphi&#39; \rangle := \sum_i
+\varphi(i)\varphi&#39;(i)/w_i\)</span> on <span
+class="math inline">\(\mathbb{Q}_\ell^I\)</span>, let <span
+class="math inline">\(\mathcal F\)</span> be the line of constant
+functions, and let <span class="math inline">\(\ell\)</span> be a prime
+dividing no <span class="math inline">\(w_i\)</span>. Then <span
+class="math inline">\(\mathfrak m := \sum_i 1/w_i\)</span> has <span
+class="math inline">\(\operatorname{val}_\ell(\mathfrak m) \ge
+0\)</span>, and <span
+class="math inline">\(\mathrm{C}(\mathbb{Z}_\ell^I; \mathcal F) \cong
+\mathbb{Z}/\ell^{\operatorname{val}_\ell(\mathfrak
+m)}\mathbb{Z}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:pairing">Problem 81.2.5</a></div><!-- used-in:end -->
+</div>
+<p>For the quaternion algebra ramified at a prime <span
+class="math inline">\(p\)</span> and <span
+class="math inline">\(\infty\)</span> the mass is <span
+class="math inline">\((p-1)/12\)</span>, and Mazur showed that the index
+of his Eisenstein ideal is the numerator of <span
+class="math inline">\((p-1)/12\)</span> <span class="citation"
+data-cites="Ma">[<a href="#ref-Ma">Ma</a>]</span>. There is also an
+integrality question for the pairing of a cleared form with an integral
+form.</p>
+<div id="pr:pairing" class="problem" data-progress-ids="[&quot;20261126T070000--clearing-a-projection-two-classes__workbook.tex#pr:pairing&quot;]">
+<p><strong>Problem 81.2.5</strong>. In the setting of Problem <a
+href="#pr:mass" data-reference-type="ref"
+data-reference="pr:mass">81.2.4</a>, drop the condition on <span
+class="math inline">\(\ell\)</span>, and let <span
+class="math inline">\(n_0\)</span> be a common multiple of the <span
+class="math inline">\(w_i\)</span>. If <span
+class="math inline">\(C_\ell\)</span> clears <span
+class="math inline">\(\mathrm{pr}\)</span> on <span
+class="math inline">\(Y \subseteq \mathbb{Z}_\ell^I\)</span>, then so
+does <span class="math inline">\(n_0C_\ell\)</span>, and <span
+class="math inline">\(\langle n_0C_\ell\mathrm{pr}(y), \varphi&#39;
+\rangle \in \mathbb{Z}_\ell\)</span> for <span class="math inline">\(y
+\in Y\)</span> and <span class="math inline">\(\varphi&#39; \in
+\mathbb{Z}_\ell^I\)</span>. In the class set with two elements, <span
+class="math inline">\(6\langle \varphi, \varphi&#39; \rangle \in
+\mathbb{Z}\)</span> for <span class="math inline">\(\varphi,
+\varphi&#39; \in \mathbb{Z}^2\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html">Chapter 83</a></div><!-- used-in:end -->
+</div>
+<h1 id="sec:classes">§81.3. Lifts and the classes they produce</h1>
+<p>Where does the congruence of Problem <a href="#pr:eleven-cong"
+data-reference-type="ref" data-reference="pr:eleven-cong">81.2.3</a> come
+from? The constant function carries the Galois representation <span
+class="math inline">\(1 \oplus \chi_{\mathrm{cyc}}\)</span>, where <span
+class="math inline">\(\chi_{\mathrm{cyc}}\)</span> is the <span
+class="math inline">\(5\)</span>-adic cyclotomic character; its trace at
+an arithmetic Frobenius <span
+class="math inline">\(\mathrm{Fr}_\ell\)</span> is <span
+class="math inline">\(1 + \ell\)</span> for <span
+class="math inline">\(\ell \ne 5\)</span>. The form <span
+class="math inline">\(f_{11}\)</span> carries the representation <span
+class="math inline">\(\rho_{11}\)</span> of <span
+class="math inline">\(\mathrm{Gal}(\bar{\mathbb{Q}}/\mathbb{Q})\)</span>
+on the rational <span class="math inline">\(5\)</span>-adic Tate module
+<span class="math inline">\(T_5(X_0(11)) \otimes \mathbb{Q}_5\)</span>,
+whose trace at <span class="math inline">\(\mathrm{Fr}_\ell\)</span> is
+<span class="math inline">\(a_\ell\)</span> for <span
+class="math inline">\(\ell \nmid 55\)</span> (Section <a
+href="20261125T011000--galois-representations-black-box__workbook.html#sec:es" data-reference-type="ref"
+data-reference="gr-sec:es">32.3</a> of Chapter <a href="20261125T011000--galois-representations-black-box__workbook.html#chap"
+data-reference-type="ref" data-reference="gr-chap">32</a>). Let
+<span class="math inline">\(\omega\)</span> be the reduction of <span
+class="math inline">\(\chi_{\mathrm{cyc}}\)</span> modulo <span
+class="math inline">\(5\)</span>.</p>
+<div id="pr:residual" class="problem" data-progress-ids="[&quot;20261126T070000--clearing-a-projection-two-classes__workbook.tex#pr:residual&quot;]">
+<p><strong>Problem 81.3.1</strong>. The semisimplification of the reduction
+of <span class="math inline">\(\rho_{11}\)</span> modulo <span
+class="math inline">\(5\)</span> is <span class="math inline">\(1 \oplus
+\omega\)</span>, and <span class="math inline">\(\omega(c) = -1\)</span>
+for every complex conjugation <span
+class="math inline">\(c\)</span>.</p>
+</div>
+<p>The representation <span class="math inline">\(\rho_{11}\)</span> is
+irreducible: it is semisimple and its commutant is <span
+class="math inline">\(\mathbb{Q}_5\)</span>, by Faltings’ theorem <span
+class="citation" data-cites="Fa">[<a href="#ref-Fa">Fa</a>]</span>, since
+<span class="math inline">\(X_0(11)\)</span> has no complex
+multiplication (its <span class="math inline">\(j\)</span>-invariant
+<span class="math inline">\(-122023936/161051\)</span> is not an
+integer). Ribet’s lemma, Theorem <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#thm:ribet-lemma"
+data-reference-type="ref"
+data-reference="ec-thm:ribet-lemma">30.2.1</a>, then gives
+a nonzero class with values in <span
+class="math inline">\(\mathbb{F}_5(\omega)\)</span> or <span
+class="math inline">\(\mathbb{F}_5(\omega^{-1})\)</span>, an odd
+character.</p>
+<p>In Chapter <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dp-chap">80</a>, <span
+class="math inline">\(E\)</span> is a CM field with maximal real
+subfield <span class="math inline">\(E^+\)</span>. Suppose <span
+class="math inline">\(R\)</span> is a main summand for a descent pair
+and an eigenvalue system in the sense of Definition <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:main-summand" data-reference-type="ref"
+data-reference="dp-def:main-summand">80.1.8</a>. For
+every compatible pair twisted by a tame character <span
+class="math inline">\(\xi\)</span>, every eigenform lifting that system,
+and every representation attached to its Hecke polynomials, the trace of
+the normalized representation at <span
+class="math inline">\(g\in\mathrm{Gal}(\bar{\mathbb{Q}}/E)\)</span> is
+<span class="math inline">\(\hat\xi(g)\operatorname{tr}R(g)+\sum_{0\le
+e&lt;t&#39;}\chi_{\mathrm{cyc}}(g)^{-e}\)</span>. Here <span
+class="math inline">\(\hat\xi\)</span> is the avatar of <span
+class="math inline">\(\xi^{-1}\)</span>, <span
+class="math inline">\(t&#39;\)</span> is the difference between the
+target and source ranks, and <span
+class="math inline">\(\chi_{\mathrm{cyc}}\)</span> is the <span
+class="math inline">\(\ell\)</span>-adic cyclotomic character. For an
+extension of <span
+class="math inline">\(\chi_{\mathrm{cyc}}^{-e&#39;}\)</span> by <span
+class="math inline">\(\chi_{\mathrm{cyc}}^{-e}\)</span> modulo <span
+class="math inline">\(\ell^\nu\)</span>, the extension cocycle takes
+values in <span
+class="math inline">\((\mathcal{O}/\ell^\nu)(-a)\)</span>, where <span
+class="math inline">\(a = e - e&#39;\)</span>. On cocycles <span
+class="math inline">\(z\)</span> of <span
+class="math inline">\(\mathrm{Gal}(\bar{\mathbb{Q}}/E)\)</span> a
+complex conjugation <span class="math inline">\(c\)</span> acts by <span
+class="math inline">\(z^c(g) := z(cgc)\)</span>; call <span
+class="math inline">\(z\)</span> <em>odd</em> if <span
+class="math inline">\(z^c = -z\)</span> and <em>even</em> if <span
+class="math inline">\(z^c = z\)</span>.</p>
+<div id="pr:parity" class="problem" data-progress-ids="[&quot;20261126T070000--clearing-a-projection-two-classes__workbook.tex#pr:parity&quot;]">
+<p><strong>Problem 81.3.2</strong>. Let <span
+class="math inline">\(\ell\)</span> be odd and <span
+class="math inline">\(\mathcal{O}\)</span> the ring of integers of a
+finite extension of <span
+class="math inline">\(\mathbb{Q}_\ell\)</span>. Every cocycle of <span
+class="math inline">\(\mathrm{Gal}(\bar{\mathbb{Q}}/E^+)\)</span> with
+values in <span
+class="math inline">\((\mathcal{O}/\ell^\nu)(-a)\)</span> differs by a
+coboundary from one with <span class="math inline">\(z(c) = 0\)</span>.
+For such <span class="math inline">\(z\)</span>, the restriction to
+<span class="math inline">\(\mathrm{Gal}(\bar{\mathbb{Q}}/E)\)</span>
+satisfies <span class="math inline">\(z^c = (-1)^a z\)</span>.</p>
+</div>
+<p>For odd <span class="math inline">\(\ell\)</span> and odd <span
+class="math inline">\(a\)</span>, restriction from <span
+class="math inline">\(\mathrm{Gal}(\bar{\mathbb{Q}}/E^+)\)</span> to
+<span class="math inline">\(\mathrm{Gal}(\bar{\mathbb{Q}}/E)\)</span>
+therefore gives classes with odd representatives. Use the rank parameter
+<span class="math inline">\(r\)</span> and the moduli <span
+class="math inline">\(q_1,d\)</span> of Chapter <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#chap"
+data-reference-type="ref" data-reference="dp-chap">80</a>, and
+write <span class="math inline">\(t = 5r\)</span>. The main-summand
+hypothesis gives <span class="math inline">\(t&#39; \le t\)</span>.
+Since <span class="math inline">\(E \subseteq
+\mathbb{Q}(\zeta_{q_1d})\)</span>, Theorem <a href="20261125T004100--tate-twists-and-sha__workbook.html#thm:oddsha"
+data-reference-type="ref"
+data-reference="tt-thm:oddsha">27.3.2</a> applies with <span
+class="math inline">\(N = q_1d\)</span>. It gives one positive integer
+<span class="math inline">\(X_{\mathrm{odd}}\)</span> for all primes
+<span class="math inline">\(\ell\)</span>, all coefficient rings <span
+class="math inline">\(\mathcal{O}\)</span> specified in that theorem,
+all <span class="math inline">\(0\le a&lt;t\)</span> and all <span
+class="math inline">\(\nu\ge0\)</span>. For <span
+class="math inline">\(a&gt;0\)</span>, <span
+class="math inline">\(\operatorname{val}_{\mathcal{O}}(X_{\mathrm{odd}})\)</span>
+bounds the <span class="math inline">\(\mathcal{O}\)</span>-length of
+the module of odd cocycles with values in <span
+class="math inline">\((\mathcal{O}/\ell^\nu)(-a)\)</span> and the stated
+local conditions. For <span class="math inline">\(a=0\)</span> it bounds
+the <span class="math inline">\(\mathcal{O}\)</span>-length of the
+module of all continuous everywhere-unramified homomorphisms from <span
+class="math inline">\(\mathrm{Gal}(\bar{\mathbb{Q}}/E)\)</span> to <span
+class="math inline">\(\mathcal{O}/\ell^\nu\)</span>. The proof for
+positive <span class="math inline">\(a\)</span> uses Gauss sums as in
+Chapter <a href="20261126T020430--the-minus-part-by-gauss-sums__workbook.html#chap" data-reference-type="ref"
+data-reference="gs-chap">28</a>. For <span
+class="math inline">\(0&lt;a&lt;t&#39;\)</span> the proof controls the
+even cocycles by tests at auxiliary primes (Chapter <a href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.html#chap"
+data-reference-type="ref" data-reference="n2-chap">84</a>). The
+cost of these tests enters the clearing bound of Chapter <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dp-chap">80</a>, which contains no separate term
+for the length of a module of even cocycles. The next problem uses
+Frobenius to test local vanishing of a Kummer class at primes where it
+is unramified.</p>
+<div id="pr:kummer" class="problem" data-progress-ids="[&quot;20261126T070000--clearing-a-projection-two-classes__workbook.tex#pr:kummer&quot;]">
+<p><strong>Problem 81.3.3</strong>. Let <span
+class="math inline">\(\ell\)</span> be an odd prime, <span
+class="math inline">\(u \in \mathbb{Q}^\times\)</span> not an <span
+class="math inline">\(\ell\)</span>-th power, and <span
+class="math inline">\(\mathrm{kum}_u\)</span> the Kummer class of <span
+class="math inline">\(u\)</span> in <span
+class="math inline">\(H^1(\mathrm{Gal}(\bar{\mathbb{Q}}/\mathbb{Q}),
+\mu_\ell)\)</span>. For a prime <span class="math inline">\(q \equiv 1
+\pmod \ell\)</span> with <span
+class="math inline">\(\operatorname{val}_q(u) = 0\)</span>, <span
+class="math inline">\(\mathrm{kum}_u\)</span> is unramified at <span
+class="math inline">\(q\)</span>, and <span
+class="math inline">\(\mathrm{kum}_u(\mathrm{Fr}_q) = 0\)</span>, a
+condition independent of the choice of <span
+class="math inline">\(\mathrm{Fr}_q\)</span>, if and only if <span
+class="math inline">\(u^{(q-1)/\ell} \equiv 1 \pmod q\)</span>. There
+are infinitely many such <span class="math inline">\(q\)</span> with
+<span class="math inline">\(\mathrm{kum}_u(\mathrm{Fr}_q) \ne
+0\)</span>. For <span class="math inline">\(\ell = 3\)</span> and <span
+class="math inline">\(u = 2\)</span>, <span class="math inline">\(q =
+7\)</span> detects <span class="math inline">\(\mathrm{kum}_2\)</span>
+and <span class="math inline">\(q = 31\)</span> does not.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060500--auxiliary-primes-even-classes-at-no-cost__workbook.html">Chapter 84</a></div><!-- used-in:end -->
+</div>
+<p>Ribet’s lemma needs an element on which the two characters differ
+(Problem <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#pr:diag" data-reference-type="ref"
+data-reference="ec-pr:diag">30.2.2</a>). For the characters <span
+class="math inline">\(\chi_{\mathrm{cyc}}^{-e}\)</span>, <span
+class="math inline">\(0 \le e &lt; t\)</span>, with <span
+class="math inline">\(\chi_{\mathrm{cyc}}\)</span> the <span
+class="math inline">\(\ell\)</span>-adic cyclotomic character, the cost
+of an element <span class="math inline">\(g\)</span> is the valuations
+of the differences <span
+class="math inline">\(\chi_{\mathrm{cyc}}(g)^{a} - 1\)</span>, <span
+class="math inline">\(0 &lt; a &lt; t\)</span>. If <span
+class="math inline">\(\chi_{\mathrm{cyc}}(g)\)</span> reduces to a
+generator of <span class="math inline">\(\mathbb{F}_\ell^\times\)</span>
+and <span class="math inline">\(t \le \ell - 1\)</span>, these
+valuations are <span class="math inline">\(0\)</span>, by Problem <a
+href="#pr:generator" data-reference-type="ref"
+data-reference="pr:generator">81.3.4</a>. If <span
+class="math inline">\(g\)</span> is an arithmetic Frobenius element at a
+chosen place <span class="math inline">\(w\)</span> not dividing <span
+class="math inline">\(\ell\)</span> (Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:chosen"
+data-reference-type="ref"
+data-reference="ob-sec:chosen">37.1</a>), then <span
+class="math inline">\(\chi_{\mathrm{cyc}}(g) = \#k_w\)</span> and these
+valuations are at most <span
+class="math inline">\(\operatorname{val}_\ell(\mathcal N)\)</span>, by
+Problem <a href="#pr:gl-order" data-reference-type="ref"
+data-reference="pr:gl-order">81.3.5</a> with <span class="math inline">\(n =
+rt\)</span>: the integer <span class="math inline">\(\mathcal N\)</span>
+of that section is a multiple of <span
+class="math inline">\(\#\mathrm{GL}_{rt}(k_w)\)</span>.</p>
+<div id="pr:generator" class="problem" data-progress-ids="[&quot;20261126T070000--clearing-a-projection-two-classes__workbook.tex#pr:generator&quot;]">
+<p><strong>Problem 81.3.4</strong>. Let <span class="math inline">\(g \in
+\mathbb{Z}_\ell^\times\)</span> reduce to a generator of <span
+class="math inline">\(\mathbb{F}_\ell^\times\)</span>. Then <span
+class="math inline">\(g^a - 1 \in \mathbb{Z}_\ell^\times\)</span> for
+<span class="math inline">\(0 &lt; a &lt; \ell - 1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html">Chapter 83</a></div><!-- used-in:end -->
+</div>
+<div id="pr:gl-order" class="problem" data-progress-ids="[&quot;20261126T070000--clearing-a-projection-two-classes__workbook.tex#pr:gl-order&quot;]">
+<p><strong>Problem 81.3.5</strong>. Let <span
+class="math inline">\(q\)</span> be a prime power and <span
+class="math inline">\(1 \le a \le n\)</span>. Then <span
+class="math inline">\(q^a - 1\)</span> divides <span
+class="math inline">\(\#\mathrm{GL}_n(\mathbb{F}_q) =
+q^{n(n-1)/2}\prod_{i=1}^n (q^i - 1)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html">Chapter 83</a></div><!-- used-in:end -->
+</div>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span> (<code>grh/src/</code>,
+with the namespace <code>New.</code> omitted), the trace identity of
+Section <a href="#sec:classes" data-reference-type="ref"
+data-reference="sec:classes">81.3</a> occurs in
+<code>Selmer.IsMainSummand</code> and <code>Selmer.HasLiftTrace</code>;
+the uniform length bound is <code>exists_length_shaOdd_le</code>, whose
+witness for <span class="math inline">\(N=q_1d\)</span> is
+<code>Selmer.oddClassBound</code>; the auxiliary primes come from
+<code>Selmer.exists_isPrimeTriangle</code>, and
+<code>Selmer.hasTriangleCost_tateTwist</code> applies their tests to the
+even cocycles. The two separation calculations in Section <a
+href="#sec:classes" data-reference-type="ref"
+data-reference="sec:classes">81.3</a> enter the proof of
+<code>Selmer.exists_cyclotomicChar_pow_sub_one_dvd</code>. For every
+prime <span class="math inline">\(\ell\)</span>, it gives an integer
+<span class="math inline">\(0 \le h \le \operatorname{val}_\ell(\mathcal
+N)\)</span>, with <span class="math inline">\(h = 0\)</span> if <span
+class="math inline">\(\ell &gt; r^{16}\)</span>, and an element <span
+class="math inline">\(\gamma \in
+\mathrm{Gal}(\bar{\mathbb{Q}}/E)\)</span> whose image topologically
+generates the quotient by <span
+class="math inline">\(\ker\chi_{\mathrm{cyc}}\)</span>, such that <span
+class="math inline">\(\chi_{\mathrm{cyc}}(\gamma)^a - 1\)</span> divides
+<span class="math inline">\(\ell^h\)</span> in <span
+class="math inline">\(\mathbb{Z}_\ell\)</span> for every integer <span
+class="math inline">\(0 &lt; a &lt; t\)</span>. Here <span
+class="math inline">\(\mathcal N\)</span> is
+<code>Data.chosenGroupOrder</code>.</p>
+<h4 id="what-this-sheet-takes-as-given.">What this sheet takes as
+given.</h4>
+<p>Gross’s description of the Brandt matrices at <span
+class="math inline">\(11\)</span> (Section <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#sec:brandt"
+data-reference-type="ref"
+data-reference="hk-sec:brandt">24.4</a>); the Tate module of
+<span class="math inline">\(X_0(11)\)</span> and its Frobenius traces
+(Section <a href="20261125T011000--galois-representations-black-box__workbook.html#sec:es" data-reference-type="ref"
+data-reference="gr-sec:es">32.3</a>); Faltings’ theorem; Ribet’s
+lemma (Theorem <a href="20261125T014500--eisenstein-congruences-and-selmer-classes__workbook.html#thm:ribet-lemma" data-reference-type="ref"
+data-reference="ec-thm:ribet-lemma">30.2.1</a>); the
+Brauer–Nesbitt and Chebotarev theorems; the odd-class bound, Theorem <a
+href="20261125T004100--tate-twists-and-sha__workbook.html#thm:oddsha" data-reference-type="ref"
+data-reference="tt-thm:oddsha">27.3.2</a>; and Mazur’s theorem,
+quoted only as a remark.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secclearing">§<a href="#sec:clearing"
+data-reference-type="ref" data-reference="sec:clearing">81.1</a></h2>
+<dl>
+<dt><a href="#pr:clear-det" data-reference-type="ref"
+data-reference="pr:clear-det">81.1.1</a></dt>
+<dd>
+<p><span class="math inline">\(C_\ell\)</span> maps <span
+class="math inline">\(\mathcal F\)</span> to <span
+class="math inline">\(\mathcal F\)</span>. For the minimum, <span
+class="math inline">\(\mathrm{pr}(L)\)</span> and <span
+class="math inline">\(L \cap \mathcal F\)</span> are lattices in <span
+class="math inline">\(\mathcal F\)</span>; use elementary divisors.</p>
+</dd>
+<dt><a href="#pr:proj-cost" data-reference-type="ref"
+data-reference="pr:proj-cost">81.1.2</a></dt>
+<dd>
+<p>Apply the projection to <span class="math inline">\(e_1\)</span> in
+(a) and to <span class="math inline">\(e_2\)</span> in (b).</p>
+</dd>
+<dt><a href="#pr:diagonal" data-reference-type="ref"
+data-reference="pr:diagonal">81.1.3</a></dt>
+<dd>
+<p>Choose the <span class="math inline">\(u_j\)</span> generically
+modulo the maximal ideal.</p>
+</dd>
+<dt><a href="#pr:hecke-clear" data-reference-type="ref"
+data-reference="pr:hecke-clear">81.1.4</a></dt>
+<dd>
+<p>Decompose <span class="math inline">\(y\)</span> into eigenvectors of
+<span class="math inline">\(T\)</span>; <span
+class="math inline">\(\ker(T - \lambda) = \mathcal F \oplus F_T\)</span>
+is orthogonal to the other eigenspaces.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="seceleven">§<a href="#sec:eleven"
+data-reference-type="ref" data-reference="sec:eleven">81.2</a></h2>
+<dl>
+<dt><a href="#pr:eleven-adjoint" data-reference-type="ref"
+data-reference="pr:eleven-adjoint">81.2.1</a></dt>
+<dd>
+<p>Apply the balance and row-sum identities to the two orthogonal
+lines.</p>
+</dd>
+<dt><a href="#pr:eleven-pr" data-reference-type="ref"
+data-reference="pr:eleven-pr">81.2.2</a></dt>
+<dd>
+<p>Apply the projection onto constants to the coordinate functions; then
+Problem <a href="#pr:clear-det" data-reference-type="ref"
+data-reference="pr:clear-det">81.1.1</a>.</p>
+</dd>
+<dt><a href="#pr:eleven-cong" data-reference-type="ref"
+data-reference="pr:eleven-cong">81.2.3</a></dt>
+<dd>
+<p>Compare both sides on a basis.</p>
+</dd>
+<dt><a href="#pr:mass" data-reference-type="ref"
+data-reference="pr:mass">81.2.4</a></dt>
+<dd>
+<p>Compute <span class="math inline">\(\mathrm{pr}\)</span> on the
+indicator functions.</p>
+</dd>
+<dt><a href="#pr:pairing" data-reference-type="ref"
+data-reference="pr:pairing">81.2.5</a></dt>
+<dd>
+<p>Inspect each weight in the class sum.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secclasses">§<a href="#sec:classes"
+data-reference-type="ref" data-reference="sec:classes">81.3</a></h2>
+<dl>
+<dt><a href="#pr:residual" data-reference-type="ref"
+data-reference="pr:residual">81.3.1</a></dt>
+<dd>
+<p>The characteristic polynomial of <span
+class="math inline">\(\rho_{11}(\mathrm{Fr}_\ell)\)</span> is <span
+class="math inline">\(X^2 - a_\ell X + \ell\)</span> for <span
+class="math inline">\(\ell \nmid 55\)</span> (Section <a
+href="20261125T011000--galois-representations-black-box__workbook.html#sec:es" data-reference-type="ref"
+data-reference="gr-sec:es">32.3</a> of Chapter <a href="20261125T011000--galois-representations-black-box__workbook.html#chap"
+data-reference-type="ref" data-reference="gr-chap">32</a>).
+Reduce on the lattice <span class="math inline">\(T_5(X_0(11))\)</span>;
+<span class="math inline">\(\rho_{11}\)</span> is unramified outside
+<span class="math inline">\(55\)</span>. Use Problem <a
+href="#pr:eleven-cong" data-reference-type="ref"
+data-reference="pr:eleven-cong">81.2.3</a>, the Chebotarev density theorem
+and the Brauer–Nesbitt theorem for characteristic polynomials.</p>
+</dd>
+<dt><a href="#pr:parity" data-reference-type="ref"
+data-reference="pr:parity">81.3.2</a></dt>
+<dd>
+<p>Evaluate the cocycle relation on <span class="math inline">\(c \cdot
+c = 1\)</span> and on <span class="math inline">\(c \cdot g \cdot
+c\)</span>, using <span class="math inline">\(\chi_{\mathrm{cyc}}(c) =
+-1\)</span>.</p>
+</dd>
+<dt><a href="#pr:kummer" data-reference-type="ref"
+data-reference="pr:kummer">81.3.3</a></dt>
+<dd>
+<p>Consider the action on <span
+class="math inline">\(u^{1/\ell}\)</span> at a prime above <span
+class="math inline">\(q\)</span>. For infinitude, compare <span
+class="math inline">\(\mathbb{Q}(u^{1/\ell})\)</span> with <span
+class="math inline">\(\mathbb{Q}(\mu_\ell)\)</span> and use the
+Chebotarev density theorem in their compositum.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-CR"><span class="bib-label">[CR]</span> C. W. Curtis and I. Reiner, <em>Representation Theory of Finite Groups and Associative Algebras</em>, Interscience, 1962.</p>
+<p id="ref-Fa"><span class="bib-label">[Fa]</span> G. Faltings, <em>Endlichkeitssätze für abelsche Varietäten über Zahlkörpern</em>, Invent. Math. <strong>73</strong> (1983), 349–366.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Ma"><span class="bib-label">[Ma]</span> B. Mazur, <em>Modular curves and the Eisenstein ideal</em>, Publ. Math. IHÉS <strong>47</strong> (1977), 33–186.</p>
+<p id="ref-Zh"><span class="bib-label">[Zh]</span> R. Zhang, <em>A preliminary note on Alpöge’s proposed proof of the generalized Riemann hypothesis</em>, Hexagon v1, 21 November 2026, <a href="https://hexagonmath.org/pdf/2611.00809v1" class="uri">https://hexagonmath.org/pdf/2611.00809v1</a>.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

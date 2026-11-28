@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-Cm9xhTDEjA6BL1t4wVfN0m9E0wnTMaDsMO7/h72MRyE=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>The seesaw tensor: translated vacua, gluing and the unit</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","F":"\\mathbb{F}","Oc":"\\mathcal{O}","Tc":"\\mathcal{T}","Pc":"\\mathcal{P}","Hom":"\\operatorname{Hom}","Aut":"\\operatorname{Aut}","Nm":"\\mathrm{Nm}\\,","Heis":"\\mathrm{Heis}","vac":"\\mathrm{vac}","zt":"\\mathrm{zt}","gl":"\\mathrm{gl}","Gl":"\\mathrm{Gl}","pl":"\\mathrm{pl}","res":"\\mathrm{res}","ssx":"\\mathrm{ss}_\\xi","Cut":"\\mathrm{Cut}","mult":"\\mathrm{mult}","ev":"\\phi^{\\mathrm{ev}}","cres":"c_{\\mathrm{res}}","cgl":"c_{\\mathrm{gl}}","cvac":"c_{\\mathrm{vac}}","z":"{\\mathfrak{z}}","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="56">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 08:30:58
+      <a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">The seesaw tensor: translated vacua, gluing and the
+unit</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:residues" id="toc-sec:residues">§56.1. Residue modules and Fourier inversion</a></li>
+<li><a href="#sec:lattice" id="toc-sec:lattice">§56.2. The lattice model</a></li>
+<li><a href="#sec:neighbour" id="toc-sec:neighbour">§56.3. The neighbour at \(N\)</a></li>
+<li><a href="#sec:joint" id="toc-sec:joint">§56.4. Invariance</a></li>
+<li><a href="#sec:theorem" id="toc-sec:theorem">§56.5. Denominators and sizes</a></li>
+<li><a href="#sec:unit" id="toc-sec:unit">§56.6. The unit and the seesaw identity</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secresidues" id="toc-secresidues">§56.1</a></li>
+<li><a href="#seclattice" id="toc-seclattice">§56.2</a></li>
+<li><a href="#secneighbour" id="toc-secneighbour">§56.3</a></li>
+<li><a href="#secjoint" id="toc-secjoint">§56.4</a></li>
+<li><a href="#sectheorem" id="toc-sectheorem">§56.5</a></li>
+<li><a href="#secunit" id="toc-secunit">§56.6</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>From Chapter <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#chap" data-reference-type="ref"
+data-reference="s3-chap">55</a>: the cuts <span
+class="math inline">\(\mathrm{Cut}_j(\xi)\)</span>, their multiplicities
+<span class="math inline">\(\mathrm{mult}_j\)</span> and the seesaw
+tensor <span class="math inline">\(\mathrm{ss}_\xi\)</span>
+(Definitions <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#def:cut" data-reference-type="ref"
+data-reference="s3-def:cut">55.3.2</a> and <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#def:ss"
+data-reference-type="ref" data-reference="s3-def:ss">55.4.3</a>),
+the generator ideles <span class="math inline">\(\varpi_\xi\)</span>,
+<span class="math inline">\(\varpi_M\)</span> (Definition <a
+href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#def:u" data-reference-type="ref"
+data-reference="s3-def:u">55.2.6</a>), Problems <a
+href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#pr:mult-dvd" data-reference-type="ref"
+data-reference="s3-pr:mult-dvd">55.3.4</a> and <a
+href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#pr:cut-count" data-reference-type="ref"
+data-reference="s3-pr:cut-count">55.3.5</a>, and Theorem <a
+href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#thm:proportional" data-reference-type="ref"
+data-reference="s3-thm:proportional">55.4.1</a>. From
+Chapter <a href="20261126T051300--two-lifts-at-a-time__workbook.html#chap" data-reference-type="ref"
+data-reference="s2-chap">54</a>: the join <span
+class="math inline">\(\boxtimes\)</span>, the zero term <span
+class="math inline">\(\mathrm{zt}\)</span>, the stacked map <span
+class="math inline">\(A\)</span> and the evaluated pair datum <span
+class="math inline">\(\phi^{\mathrm{ev}}_i(\xi,y)\)</span>
+(Definition <a href="20261126T051300--two-lifts-at-a-time__workbook.html#def:evaluated" data-reference-type="ref"
+data-reference="s2-def:evaluated">54.4.2</a>). From
+Chapter <a href="20261126T030400--the-seesaw-identity__workbook.html#chap" data-reference-type="ref"
+data-reference="ss-chap">52</a>: the translations <span
+class="math inline">\(\mathfrak t\in\mathcal{T}\)</span>, the translated
+vacua <span class="math inline">\(v_j(\mathfrak t)\)</span>, the data
+<span class="math inline">\(\mathbf 1_j(\xi)\)</span> of the lower
+chain, the levels <span class="math inline">\(K^X_j\)</span>, the
+restriction <span class="math inline">\(\mathrm{res}\)</span>, chain
+data and the composite lift <span
+class="math inline">\(B_{\vartheta,\Psi}\)</span> (Section <a
+href="20261126T030400--the-seesaw-identity__workbook.html#sec:theorem" data-reference-type="ref"
+data-reference="ss-sec:theorem">52.4</a>), and Problems <a
+href="20261126T030400--the-seesaw-identity__workbook.html#pr:lattice" data-reference-type="ref"
+data-reference="ss-pr:lattice">52.3.3</a>, <a
+href="20261126T030400--the-seesaw-identity__workbook.html#pr:unit" data-reference-type="ref"
+data-reference="ss-pr:unit">52.5.5</a>, <a
+href="20261126T030400--the-seesaw-identity__workbook.html#pr:degenerate" data-reference-type="ref"
+data-reference="ss-pr:degenerate">52.5.6</a>. In a tensor
+over pairs, later pairs stand on the left. From Chapter <a
+href="20261125T009500--fock-model-and-theta-intertwiners__workbook.html#chap" data-reference-type="ref"
+data-reference="fm-chap">12</a>: theta lines and intertwiners
+(Problems <a href="20261125T009500--fock-model-and-theta-intertwiners__workbook.html#pr:G-line" data-reference-type="ref"
+data-reference="fm-pr:G-line">12.2.1</a>, <a
+href="20261125T009500--fock-model-and-theta-intertwiners__workbook.html#pr:I-explicit" data-reference-type="ref"
+data-reference="fm-pr:I-explicit">12.3.4</a>, <a
+href="20261125T009500--fock-model-and-theta-intertwiners__workbook.html#pr:p-neighbours" data-reference-type="ref"
+data-reference="fm-pr:p-neighbours">12.5.2</a>, Theorem <a
+href="20261125T009500--fock-model-and-theta-intertwiners__workbook.html#thm:compose" data-reference-type="ref"
+data-reference="fm-thm:compose">12.4.1</a>). From Chapter <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>: the adelic frames of the spaces
+(Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces" data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a>), <span
+class="math inline">\(Q_\xi\)</span> and <span
+class="math inline">\(\mathrm{Nm}\,Q_\xi\)</span> (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:twists" data-reference-type="ref"
+data-reference="ob-sec:twists">37.6</a>), the integral vacuum
+and <span class="math inline">\(c_{\mathrm{vac}}\)</span> (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:vacuum" data-reference-type="ref"
+data-reference="ob-sec:vacuum">37.8</a>), and the ring <span
+class="math inline">\(\mathcal{O}^{[q]}\)</span> of the <span
+class="math inline">\(z\in\mathbb{C}\)</span> with <span
+class="math inline">\(\lvert\eta(z)\rvert_\ell\le1\)</span> for every
+prime <span class="math inline">\(\ell\nmid q\)</span> and every ring
+map <span
+class="math inline">\(\eta\colon\mathbb{C}\to\mathbb{C}_\ell\)</span>.
+The Weil representation over the finite adeles in its Schrödinger and
+lattice models <span class="citation"
+data-cites="We">[<a href="#ref-We">We</a>]</span>, <span class="citation"
+data-cites="MVW">[<a href="#ref-MVW">MVW</a>, Ch. 2]</span>. As in Chapter <a
+href="20261126T051300--two-lifts-at-a-time__workbook.html#chap" data-reference-type="ref"
+data-reference="s2-chap">54</a>, <span
+class="math inline">\(\mathbf 1_j(\xi)\)</span> is the finite datum of
+the lift <span class="math inline">\(Y_{j-1}\to Y_j\)</span>; <span
+class="math inline">\(\omega^X_j\)</span> is the finite Weil action on
+the data of the lift <span class="math inline">\(X_j\to
+X_{j+1}\)</span>.</p>
+<p>This chapter is the last of the four that prove the seesaw identity,
+Theorem <a href="20261126T030400--the-seesaw-identity__workbook.html#thm:seesaw" data-reference-type="ref"
+data-reference="ss-thm:seesaw">52.4.1</a>, which Theorem A
+uses. Theorem <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#thm:proportional" data-reference-type="ref"
+data-reference="s3-thm:proportional">55.4.1</a> gives it
+on automorphic forms, for ramified source forms, with the tensor <span
+class="math inline">\(\mathrm{ss}_\xi\)</span>, a weighted sum over the
+cuts of evaluated pair data, in place of a chain datum. Which scalar and
+which common denominator suffice to express <span
+class="math inline">\(\mathrm{ss}_\xi\)</span> in glued vacuum tensors
+<span class="math inline">\(\mathrm{gl}(\mathfrak t)\)</span>? Three
+local facts answer this: Fourier inversion on a residue module, the
+lattice model of the vacuum, and a neighbour lattice at <span
+class="math inline">\(N\)</span>. One complex unit (a nonzero scalar, as
+in Problem <a href="20261126T030400--the-seesaw-identity__workbook.html#pr:unit" data-reference-type="ref"
+data-reference="ss-pr:unit">52.5.5</a>) then works for all
+twists.</p>
+<p>Throughout, <span class="math inline">\(\xi\)</span> is a tame
+character and <span
+class="math inline">\(q:=\mathrm{Nm}\,Q_\xi\)</span>. A finite adelic
+vector is <em>integral away from <span
+class="math inline">\(q\)</span></em> if its entries are integral at
+every finite place not above a prime dividing <span
+class="math inline">\(q\)</span>.</p>
+<h1 id="sec:residues">§56.1. Residue modules and Fourier inversion</h1>
+<div id="def:combination" class="definition">
+<p><strong>Definition 56.1.1</strong>. Let <span
+class="math inline">\((w_\gamma)_{\gamma\in\mathcal Z}\)</span> be
+vectors of a complex vector space, <span class="math inline">\(\mathfrak
+d\ge1\)</span> an integer and <span class="math inline">\(\mathfrak
+s\ge0\)</span> real. A vector <span class="math inline">\(z\)</span> is
+a <em>combination of the <span class="math inline">\(w_\gamma\)</span>,
+<span class="math inline">\(\gamma\in\mathcal Z\)</span>, with
+denominator <span class="math inline">\(\mathfrak d\)</span> and size
+<span class="math inline">\(\mathfrak s\)</span></em> if <span
+class="math inline">\(z=\sum_{\gamma\in\mathcal Z}r_\gamma
+w_\gamma\)</span> with finitely many nonzero <span
+class="math inline">\(r_\gamma\in\mathbb{C}\)</span>, <span
+class="math inline">\(\mathfrak d\,r_\gamma\in\mathcal{O}^{[q]}\)</span>
+for every <span class="math inline">\(\gamma\)</span> and, if <span
+class="math inline">\(Q_\xi=\varnothing\)</span>, <span
+class="math inline">\(\sum_\gamma\lvert\sigma(r_\gamma)\rvert\le\mathfrak
+s\)</span> for every <span
+class="math inline">\(\sigma\in\operatorname{Aut}\mathbb{C}\)</span>.</p>
+</div>
+<p>Let <span class="math inline">\(\mathfrak
+m\subseteq\mathcal{O}_E\)</span> be a nonzero ideal, <span
+class="math inline">\(\mathsf A_{\mathfrak m}:=(\mathcal{O}_E/\mathfrak
+m)^n\)</span>, <span class="math inline">\(\psi_{\mathfrak m}\)</span> a
+primitive additive character of <span
+class="math inline">\(\mathcal{O}_E/\mathfrak m\)</span>, <span
+class="math inline">\(\mathfrak y\cdot\mathfrak b:=\sum_k\mathfrak
+y_k\mathfrak b_k\)</span>, and <span
+class="math inline">\(\chi_{\mathfrak b}(\mathfrak y):=\psi_{\mathfrak
+m}(\mathfrak y\cdot\mathfrak b)\)</span>. For the next problem alone,
+take the additive group <span
+class="math inline">\(\mathbb{Z}/5\mathbb{Z}\)</span> and characters
+with values in the fifth roots of unity of <span
+class="math inline">\(\mathbb{F}_{11}\)</span>.</p>
+<div id="pr:fourier" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:fourier&quot;]">
+<p><strong>Problem 56.1.1</strong>. The class of <span
+class="math inline">\(3\)</span> in <span
+class="math inline">\(\mathbb{F}_{11}\)</span> has order <span
+class="math inline">\(5\)</span>, and <span
+class="math inline">\(\sum_{l=0}^{4}3^{\,l(j-2)}\)</span> is <span
+class="math inline">\(0,0,5,0,0\)</span> in <span
+class="math inline">\(\mathbb{F}_{11}\)</span> for <span
+class="math inline">\(j=0,\dots,4\)</span>.</p>
+</div>
+<p>At the places of <span class="math inline">\(\mathfrak
+m:=(\pi_M)\prod_{w\in Q_\xi}w\)</span> (a modulus prime to its
+conjugate) the datum <span class="math inline">\(\mathbf
+1_j(\xi)\)</span> is the operator of the Schrödinger model attached to
+the point mass at the class <span class="math inline">\(\mathfrak i\in
+\mathsf A_{\mathfrak m}\)</span> of the inclusion matrix, <span
+class="math inline">\(n=\dim Y_{j-1}\dim Y_j\)</span>, applied to the
+vacuum <span class="math inline">\(\mathrm{vac}\)</span>; at the other
+finite places it is the vacuum. Here <span
+class="math inline">\(\psi_{\mathfrak m}(u\bmod\mathfrak
+m)=\psi_0(\varpi_\xi^{-1}u)\)</span> for integral finite adeles <span
+class="math inline">\(u\)</span>, with <span
+class="math inline">\(\varpi_\xi\)</span> the generator idele of <span
+class="math inline">\(\mathfrak m\)</span> of Definition <a
+href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#def:u" data-reference-type="ref"
+data-reference="s3-def:u">55.2.6</a> and <span
+class="math inline">\(\psi_0\)</span> the self-dual character of the
+finite adeles; a residue function is read on the reduction at the places
+of <span class="math inline">\(\mathfrak m\)</span>, and is zero off the
+integral box there. The operator of <span
+class="math inline">\(\chi_{\mathfrak b}\)</span>, on vectors fixed by
+the integral translations at the places of <span
+class="math inline">\(\mathfrak m\)</span> and their conjugates (as
+<span class="math inline">\(\mathrm{vac}\)</span> is), is the Heisenberg
+translation <span class="math inline">\(\mathrm{Heis}(t_{\mathfrak
+b})\)</span>, where <span class="math inline">\(t_{\mathfrak b}\)</span>
+is the complex conjugate of the part at the places of <span
+class="math inline">\(\mathfrak m\)</span> of <span
+class="math inline">\(\varpi_\xi^{-1}\tilde u_{\mathfrak b}\)</span>,
+<span class="math inline">\(\tilde u_{\mathfrak b}\)</span> any integral
+lift of <span class="math inline">\(\mathfrak b\)</span>.</p>
+<div id="pr:delta" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:delta&quot;]">
+<p><strong>Problem 56.1.2</strong>. The point mass at <span
+class="math inline">\(\mathfrak i\)</span> is <span
+class="math inline">\(\lvert \mathsf A_{\mathfrak
+m}\rvert^{-1}\sum_{\mathfrak b}\psi_{\mathfrak m}(-\mathfrak
+i\cdot\mathfrak b)\,\chi_{\mathfrak b}\)</span>. Hence <span
+class="math inline">\(\mathbf 1_j(\xi)=\lvert \mathsf A_{\mathfrak
+m}\rvert^{-1}\sum_{\mathfrak b}\psi_{\mathfrak m}(-\mathfrak
+i\cdot\mathfrak b)\,\mathrm{Heis}(t_{\mathfrak b})\mathrm{vac}\)</span>,
+and for every <span
+class="math inline">\(\sigma\in\operatorname{Aut}\mathbb{C}\)</span> the
+absolute values of the <span
+class="math inline">\(\sigma\)</span>-conjugates of these coefficients
+sum to <span class="math inline">\(1\)</span>.</p>
+</div>
+<div id="pr:delta-den" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:delta-den&quot;]">
+<p><strong>Problem 56.1.3</strong>. Each <span
+class="math inline">\(\bar\pi_Mt_{\mathfrak b}\)</span> is integral away
+from <span class="math inline">\(q\)</span>, and <span
+class="math inline">\(\#(\mathcal{O}_E/\pi_M\mathcal{O}_E)^n\)</span>
+divided by <span class="math inline">\(\lvert \mathsf A_{\mathfrak
+m}\rvert\)</span> is <span
+class="math inline">\(q^{-n}\in\mathcal{O}^{[q]}\)</span>. So <span
+class="math inline">\(\mathbf 1_j(\xi)\)</span> is a combination of the
+<span
+class="math inline">\(\mathrm{Heis}({\mathfrak{z}})\mathrm{vac}\)</span>,
+over the <span class="math inline">\({\mathfrak{z}}\)</span> with <span
+class="math inline">\(\bar\pi_M{\mathfrak{z}}\)</span> integral away
+from <span class="math inline">\(q\)</span>, with denominator <span
+class="math inline">\(\#(\mathcal{O}_E/\pi_M\mathcal{O}_E)^n\)</span>
+and size <span class="math inline">\(1\)</span>.</p>
+</div>
+<h1 id="sec:lattice">§56.2. The lattice model</h1>
+<p>Let <span class="math inline">\(V\)</span> be <span
+class="math inline">\(\operatorname{Hom}(Y_{j-1},Y_j)\)</span> or <span
+class="math inline">\(\operatorname{Hom}(X_j,X_{j+1})\)</span>, with its
+standard lattice <span class="math inline">\(\Lambda\)</span> in the
+finite adelic frame of Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces"
+data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a>, finite Heisenberg
+translations <span
+class="math inline">\(\mathrm{Heis}({\mathfrak{z}})\)</span>, Weil
+representation <span class="math inline">\(\omega\)</span> and vacuum
+<span class="math inline">\(\mathrm{vac}\)</span>. For background on the
+Weil representation and its models see <span class="citation"
+data-cites="We">[<a href="#ref-We">We</a>]</span>, <span class="citation"
+data-cites="MVW">[<a href="#ref-MVW">MVW</a>, Ch. 2]</span>; we use the
+following, in the normalization of <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>. (L1) <span
+class="math inline">\(\mathrm{Heis}({\mathfrak{z}})\mathrm{vac}=\mathrm{vac}\)</span>
+for <span class="math inline">\({\mathfrak{z}}\in\Lambda\)</span>, and
+the vectors of the finite part fixed by all these translations are the
+multiples of <span class="math inline">\(\mathrm{vac}\)</span> (compare
+Problem <a href="20261125T009500--fock-model-and-theta-intertwiners__workbook.html#pr:G-line" data-reference-type="ref"
+data-reference="fm-pr:G-line">12.2.1</a>). (L2) <span
+class="math inline">\(\mathrm{Heis}({\mathfrak{z}})\mathrm{Heis}({\mathfrak{z}}&#39;)=\zeta\,\mathrm{Heis}({\mathfrak{z}}+{\mathfrak{z}}&#39;)\)</span>,
+where <span class="math inline">\(\zeta\)</span> is a root of unity
+depending only on <span
+class="math inline">\(\sum_k\bar{\mathfrak{z}}&#39;_k{\mathfrak{z}}_k\)</span>
+and equal to <span class="math inline">\(1\)</span> when this sum is
+<span class="math inline">\(0\)</span>. (L3) <span
+class="math inline">\(\omega(h)\mathrm{Heis}({\mathfrak{z}})=\mathrm{Heis}(h{\mathfrak{z}})\,\omega(h)\)</span>
+for <span class="math inline">\(h\in U(V)(\mathbb A_f)\)</span>.
+(L4) <span
+class="math inline">\(\omega(h)\mathrm{vac}=c_h\sum_{{\mathfrak{z}}\in\Lambda/(\Lambda\cap
+h^{-1}\Lambda)}\mathrm{Heis}(h{\mathfrak{z}})\mathrm{vac}\)</span> with
+<span class="math inline">\(c_h\ne0\)</span>; compare the intertwiner
+defined in Section <a href="20261125T009500--fock-model-and-theta-intertwiners__workbook.html#sec:intertwiners"
+data-reference-type="ref"
+data-reference="fm-sec:intertwiners">12.3</a> and
+evaluated in Problem <a href="20261125T009500--fock-model-and-theta-intertwiners__workbook.html#pr:I-explicit"
+data-reference-type="ref"
+data-reference="fm-pr:I-explicit">12.3.4</a>. The scalar
+<span class="math inline">\(c_h\)</span> is the Weil multiplier divided
+by its squared absolute value. If <span class="math inline">\(h\)</span>
+is integral away from <span class="math inline">\(q\)</span>, then <span
+class="math inline">\(\lvert\eta(c_h)\rvert_\ell=1\)</span> for every
+prime <span class="math inline">\(\ell\nmid q\)</span> and every ring
+map <span
+class="math inline">\(\eta\colon\mathbb{C}\to\mathbb{C}_\ell\)</span>;
+if <span class="math inline">\(h\)</span> is integral at every finite
+place, then <span class="math inline">\(c_h=1\)</span>. <em>Status</em>:
+we use the classical lattice model in the normalization of <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, which
+proves (L1)–(L4) and the multiplier bounds.</p>
+<div id="pr:line" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:line&quot;]">
+<p><strong>Problem 56.2.1</strong>. Let <span class="math inline">\(h\in
+U(V)(\mathbb A_f)\)</span>. A vector <span
+class="math inline">\(f\)</span> of the finite part with <span
+class="math inline">\(\mathrm{Heis}(h{\mathfrak{z}})f=f\)</span> for all
+<span class="math inline">\({\mathfrak{z}}\in\Lambda\)</span> is a
+multiple of <span
+class="math inline">\(\omega(h)\mathrm{vac}\)</span>.</p>
+</div>
+<div id="pr:move" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:move&quot;]">
+<p><strong>Problem 56.2.2</strong>. Let <span class="math inline">\(h\in
+U(V)(\mathbb A_f)\)</span> be integral away from <span
+class="math inline">\(q\)</span>, and let <span
+class="math inline">\(\bar\pi_M{\mathfrak{z}}_0\)</span> be integral
+away from <span class="math inline">\(q\)</span>. Then <span
+class="math inline">\(\omega(h)\mathrm{Heis}({\mathfrak{z}}_0)\mathrm{vac}\)</span>
+is a combination of the <span
+class="math inline">\(\mathrm{Heis}({\mathfrak{z}})\mathrm{vac}\)</span>,
+over the <span class="math inline">\({\mathfrak{z}}\)</span> with <span
+class="math inline">\(\bar\pi_M{\mathfrak{z}}\)</span> integral away
+from <span class="math inline">\(q\)</span>, with denominator <span
+class="math inline">\(1\)</span> and size <span
+class="math inline">\(1\)</span>.</p>
+</div>
+<p>The action <span class="math inline">\(\omega_j\)</span> on the data
+of the lower chain is that of Problem <a href="#pr:move"
+data-reference-type="ref" data-reference="pr:move">56.2.2</a> times a
+determinant-character factor, which at points integral away from <span
+class="math inline">\(q\)</span> has <span
+class="math inline">\(\ell\)</span>-adic norm <span
+class="math inline">\(1\)</span> for <span
+class="math inline">\(\ell\nmid q\)</span> and absolute value <span
+class="math inline">\(1\)</span> under every <span
+class="math inline">\(\sigma\in\operatorname{Aut}\mathbb{C}\)</span>. So
+the moved data <span class="math inline">\(\mathbf 1_j(\xi)^y\)</span>
+at points integral away from <span class="math inline">\(q\)</span> keep
+the denominators of Problem <a href="#pr:delta-den"
+data-reference-type="ref" data-reference="pr:delta-den">56.1.3</a> and size
+<span class="math inline">\(1\)</span>. If the two translations become
+integral away from <span class="math inline">\(q\)</span> after
+multiplication by <span class="math inline">\(\bar\pi_M\)</span>, the
+join of their translated vacua is a root of unity times a translated
+vacuum on <span
+class="math inline">\(\operatorname{Hom}(Y_{2i+1},Y_{2i}^-\oplus
+Y_{2i+2})\)</span>, whose translation becomes integral away from <span
+class="math inline">\(q\)</span> after multiplication by <span
+class="math inline">\(\pi_M\)</span> on the first block and by <span
+class="math inline">\(\bar\pi_M\)</span> on the second. Evaluation
+translates the joined datum by <span class="math inline">\(A_f\)</span>,
+takes its finite zero term along the isotropic part <span
+class="math inline">\(I\)</span> of the splitting, and applies <span
+class="math inline">\(\boxtimes^{-1}\)</span> on the definite
+spaces.</p>
+<div id="pr:reduction" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:reduction&quot;]">
+<p><strong>Problem 56.2.3</strong>. Let <span
+class="math inline">\(F\)</span> be a nonarchimedean local field with
+integers <span class="math inline">\(\mathcal{O}_F\)</span>, <span
+class="math inline">\(W\)</span> a finite-dimensional <span
+class="math inline">\(F\)</span>-vector space with a nondegenerate
+symmetric or alternating bilinear form, <span
+class="math inline">\(L\subset W\)</span> a lattice with <span
+class="math inline">\(L=\{x:\langle
+x,L\rangle\subseteq\mathcal{O}_F\}\)</span>, and <span
+class="math inline">\(I\subseteq W\)</span> an isotropic subspace. Then
+the image of <span class="math inline">\(L\cap I^\perp\)</span> in <span
+class="math inline">\(I^\perp/I\)</span> is a lattice equal to its own
+dual.</p>
+</div>
+<p>Let <span class="math inline">\(L\)</span> be the standard lattice of
+<span class="math inline">\(\operatorname{Hom}(Y_{2i+1},Y_{2i}^-\oplus
+Y_{2i+2})\)</span> in its finite adelic frame. The proof identifies the
+reduced lattice with a finite adelic unitary image of the standard
+lattice in the quotient and deduces its self-duality for the pairing
+<span class="math inline">\((x,w)\mapsto\psi_0(\bar x^tw)\)</span>;
+Problem <a href="#pr:reduction" data-reference-type="ref"
+data-reference="pr:reduction">56.2.3</a> is the analogue at one place. The
+image of <span class="math inline">\(L\cap I^\perp\)</span> in <span
+class="math inline">\(I^\perp/I\)</span>, identified by the splitting
+with the finite adelic space of <span
+class="math inline">\(\operatorname{Hom}(X_{2i+1},X_{2i}^-\oplus
+X_{2i+2})\)</span>, is the <em>zero-term lattice</em> of pair <span
+class="math inline">\(i\)</span>. The zero term of the vacuum on the
+first Hom space is a number <span
+class="math inline">\(c_i&#39;\ne0\)</span> times the sum of the
+translates of the vacuum on the second by representatives of the
+zero-term lattice modulo its intersection with the standard lattice
+there.</p>
+<h1 id="sec:neighbour">§56.3. The neighbour at <span
+class="math inline">\(N\)</span></h1>
+<p>Which lattice is the zero-term lattice? Let <span
+class="math inline">\(P\)</span> be the set of places <span
+class="math inline">\(w\mid\pi_N\)</span> and <span
+class="math inline">\(\bar P\)</span> the set of their conjugates; they
+are disjoint, with union the set of places above <span
+class="math inline">\(N\)</span>. Let <span
+class="math inline">\(\mathbf 1_P\)</span> be the finite adele equal to
+<span class="math inline">\(1\)</span> on <span
+class="math inline">\(P\)</span> and <span
+class="math inline">\(0\)</span> elsewhere, <span
+class="math inline">\(\pi_P\)</span> the finite idele equal to <span
+class="math inline">\(\pi_N\)</span> on <span
+class="math inline">\(P\)</span>, to <span
+class="math inline">\(\bar\pi_N^{-1}\)</span> on <span
+class="math inline">\(\bar P\)</span> and to <span
+class="math inline">\(1\)</span> elsewhere, and <span
+class="math inline">\(u_{-1}\)</span> a fixed unit of the integral
+finite adeles with <span class="math inline">\(u_{-1}\bar
+u_{-1}=-1\)</span>. For a pair <span class="math inline">\(i\)</span>
+let <span class="math inline">\(e\)</span>, <span
+class="math inline">\(e&#39;&#39;\)</span> be the last basis vectors of
+<span class="math inline">\(X_{2i}\)</span> and <span
+class="math inline">\(X_{2i+2}\)</span> in <span
+class="math inline">\(X_{2i}^-\oplus X_{2i+2}\)</span>, and put <span
+class="math inline">\(e_P:=e+\bar u_{-1}\bar{\mathbf
+1}_Pe&#39;&#39;\)</span>. For columns write <span
+class="math inline">\(z^*:=\bar z^t\)</span>.</p>
+<div id="pr:axis" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:axis&quot;]">
+<p><strong>Problem 56.3.1</strong>. Over a commutative ring with involution,
+let <span class="math inline">\(z\)</span> be a column with <span
+class="math inline">\(z^*z=1\)</span>, <span
+class="math inline">\(\delta\)</span> a scalar and <span
+class="math inline">\(\gamma:=1+(\delta-1)zz^*\)</span>. Then <span
+class="math inline">\(\gamma z=\delta z\)</span>, <span
+class="math inline">\(\gamma z&#39;=z&#39;\)</span> when <span
+class="math inline">\(z^*z&#39;=0\)</span>, and <span
+class="math inline">\(\gamma^*\gamma=1\)</span> if and only if <span
+class="math inline">\(\delta\bar\delta=1\)</span>. Moreover <span
+class="math inline">\(e_P^*e_P=1\)</span> and <span
+class="math inline">\(\pi_P\bar\pi_P=1\)</span>.</p>
+</div>
+<div id="def:neighbour" class="definition">
+<p><strong>Definition 56.3.1</strong>. Define the <em>neighbour lattice</em>
+of pair <span class="math inline">\(i\)</span> as the image of the
+standard lattice of <span
+class="math inline">\(\operatorname{Hom}(X_{2i+1},X_{2i}^-\oplus
+X_{2i+2})\)</span> under the matrix acting on the target as <span
+class="math inline">\(\gamma_P:=1+(\pi_P-1)e_Pe_P^*\)</span> at the
+places above <span class="math inline">\(N\)</span>, and at the other
+finite places as the identity for <span
+class="math inline">\(i&lt;\varrho\)</span>; for <span
+class="math inline">\(i=\varrho\)</span>, at these places it scales the
+last row of <span class="math inline">\(X_{m}\)</span> by <span
+class="math inline">\(\varpi_M/\bar\varpi_M\)</span> and fixes the other
+rows, <span class="math inline">\(\varpi_M\)</span> the generator idele
+of <span class="math inline">\((\pi_M)\)</span> of Definition <a
+href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#def:u" data-reference-type="ref"
+data-reference="s3-def:u">55.2.6</a>.</p>
+</div>
+<p>For a local example take <span class="math inline">\(N=5\)</span> and
+the split algebra <span
+class="math inline">\(\mathbb{Q}_5\times\mathbb{Q}_5\)</span>, with
+factors indexed by <span class="math inline">\(w\in P\)</span> and <span
+class="math inline">\(\bar w\)</span> and conjugation exchanging them;
+take <span class="math inline">\(\pi_N=(5,1)\)</span>, <span
+class="math inline">\(u_{-1}=(1,-1)\)</span>, <span
+class="math inline">\(\mathbf 1_P=(1,0)\)</span>, and keep the rows
+<span class="math inline">\(e\)</span>, <span
+class="math inline">\(e&#39;&#39;\)</span>.</p>
+<div id="pr:split-neighbour" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:split-neighbour&quot;]">
+<p><strong>Problem 56.3.2</strong>. In this model <span
+class="math inline">\(e_P=\bigl((1,1),(0,1)\bigr)\)</span>, <span
+class="math inline">\(\pi_P=(5,\tfrac15)\)</span>, and the components of
+<span class="math inline">\(\gamma_P\)</span> at <span
+class="math inline">\(w\)</span> and <span class="math inline">\(\bar
+w\)</span> are <span
+class="math inline">\(G=\left(\begin{smallmatrix}5&amp;4\\0&amp;1\end{smallmatrix}\right)\)</span>
+and <span
+class="math inline">\(G&#39;=\left(\begin{smallmatrix}1/5&amp;0\\-4/5&amp;1\end{smallmatrix}\right)\)</span>,
+with <span class="math inline">\(G^tG&#39;=1\)</span>.</p>
+</div>
+<p>To a residue modulo <span class="math inline">\(N\)</span> at <span
+class="math inline">\(w\)</span>, with representative <span
+class="math inline">\(y\in\{0,\dots,N-1\}\)</span>, the proof attaches
+the translation supported at <span class="math inline">\(\bar w\)</span>
+with entries <span class="math inline">\(u_{-1}\bar y/N\)</span> in row
+<span class="math inline">\(e\)</span> and <span
+class="math inline">\(-\bar y/N\)</span> in row <span
+class="math inline">\(e&#39;&#39;\)</span>, where <span
+class="math inline">\(\bar y/N\)</span> is the conjugate of the adele
+equal to <span class="math inline">\(y/N\)</span> at <span
+class="math inline">\(w\)</span> and <span
+class="math inline">\(0\)</span> elsewhere.</p>
+<div id="pr:one-residue" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:one-residue&quot;]">
+<p><strong>Problem 56.3.3</strong>. <span class="math inline">\(G\)</span> is
+integral, and <span
+class="math inline">\(G&#39;\mathbb{Z}_5^2+\mathbb{Z}_5^2=\mathbb{Z}_5^2+\mathbb{Z}_5\cdot\tfrac15(1,1)^t\)</span>;
+the five classes modulo <span
+class="math inline">\(\mathbb{Z}_5^2\)</span> are those of <span
+class="math inline">\(\tfrac15(y,y)^t\)</span>, <span
+class="math inline">\(y=0,\dots,4\)</span>. The translation attached to
+<span class="math inline">\(y\)</span> is <span
+class="math inline">\(-\tfrac15(y,y)^t\)</span> at <span
+class="math inline">\(\bar w\)</span>, so one residue labels both
+rows.</p>
+</div>
+<p><em>Black box.</em> For every pair <span
+class="math inline">\(i\)</span> of the proof the zero-term lattice is
+the neighbour lattice; the lift of its columns is integral and
+orthogonal to the finite stacked map. We take the lattice equality and
+the two properties of the lift from <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>.</p>
+<p>A representative of the neighbour lattice modulo its integral points
+is indexed by one residue modulo <span class="math inline">\(N\)</span>
+for each basis vector of <span class="math inline">\(X_{2i+1}\)</span>
+and each <span class="math inline">\(w\in P\)</span>, specifying both
+rows <span class="math inline">\(e\)</span>, <span
+class="math inline">\(e&#39;&#39;\)</span>, and one class away from
+<span class="math inline">\(N\)</span>. Under the join on the definite
+spaces, <span class="math inline">\(\mathrm{Gl}_i\)</span> corresponds
+to the sum of the Heisenberg operators of these residue translations.
+Let <span class="math inline">\(C_i\)</span> be <span
+class="math inline">\(c_i&#39;\)</span> times the number of classes away
+from <span class="math inline">\(N\)</span>; it depends only on the
+data. The proof obtains: for <span class="math inline">\(n\)</span>
+prime to <span class="math inline">\(N\)</span> and <span
+class="math inline">\({\mathfrak{z}}\)</span> on <span
+class="math inline">\(\operatorname{Hom}(Y_{2i+1},Y_{2i}^-\oplus
+Y_{2i+2})\)</span> with <span class="math inline">\(\pi_M\)</span> times
+its first block and <span class="math inline">\(\bar\pi_M\)</span> times
+its second integral away from <span class="math inline">\(n\)</span>,
+the evaluation of <span
+class="math inline">\(\mathrm{Heis}({\mathfrak{z}})\mathrm{vac}\)</span>
+is a finite sum of the vectors <span
+class="math inline">\(C_i\,\mathrm{Gl}_i(\mathrm{Heis}(t_1)\mathrm{vac}\otimes\mathrm{Heis}(t_2)\mathrm{vac})\)</span>,
+with <span class="math inline">\(\bar\pi_Mt_1\)</span>, <span
+class="math inline">\(\bar\pi_Mt_2\)</span> integral away from <span
+class="math inline">\(n\)</span>, whose coefficients become integral
+away from <span class="math inline">\(n\)</span> after multiplication by
+<span
+class="math inline">\(\#(\mathcal{O}_E/\pi_M\mathcal{O}_E)^{(n_{2i}+n_{2i+2})n_{2i+1}}\)</span>
+and have <span class="math inline">\(\sigma\)</span>-conjugates of
+absolute sum at most <span class="math inline">\(1\)</span> for every
+<span
+class="math inline">\(\sigma\in\operatorname{Aut}\mathbb{C}\)</span>.</p>
+<h1 id="sec:joint">§56.4. Invariance</h1>
+<div id="pr:swap" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:swap&quot;]">
+<p><strong>Problem 56.4.1</strong>. Let <span
+class="math inline">\(\mathrm{sw}\)</span> exchange the coordinates of
+<span class="math inline">\(\mathbb{Q}^2\)</span>. For <span
+class="math inline">\(v=(1,2)^t\)</span> and <span
+class="math inline">\(v&#39;=(3,-1)^t\)</span>, the sum of the matrices
+in the orbit of <span class="math inline">\(v{v&#39;}^t\)</span> under
+<span
+class="math inline">\(X\mapsto\mathrm{sw}\,X\,\mathrm{sw}^t\)</span> is
+<span
+class="math inline">\(\left(\begin{smallmatrix}1&amp;5\\5&amp;1\end{smallmatrix}\right)\)</span>
+and is fixed by this action.</p>
+</div>
+<div id="pr:joint" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:joint&quot;]">
+<p><strong>Problem 56.4.2</strong>. Let a group <span
+class="math inline">\(H\)</span> act on finite sets <span
+class="math inline">\(\mathcal X_0,\dots,\mathcal X_{m-1}\)</span> and
+linearly on a complex vector space; let <span
+class="math inline">\(\mathrm{mult}_j\colon\mathcal
+X_j\to\mathbb{Z}_{&gt;0}\)</span> be <span
+class="math inline">\(H\)</span>-invariant and <span
+class="math inline">\(\mathcal E\)</span> a function on <span
+class="math inline">\(\mathcal X_0\times\dots\times\mathcal
+X_{m-1}\)</span> with <span class="math inline">\(\mathcal
+E(bc)=b\,\mathcal E(c)\)</span> for <span class="math inline">\(b\in
+H\)</span>. Then <span
+class="math inline">\(\sum_c\prod_j\mathrm{mult}_j(c_j)^{-1}\mathcal
+E(c)\)</span> is fixed by <span class="math inline">\(H\)</span>.</p>
+</div>
+<p>In the proof, let <span class="math inline">\(b_j\in K^X_j\)</span>
+for <span class="math inline">\(j&lt;m\)</span> and <span
+class="math inline">\(b_m:=1\)</span>. For <span
+class="math inline">\(j&lt;m\)</span> the image of <span
+class="math inline">\(b_j\)</span> in <span
+class="math inline">\(U(Y_j)(\mathbb A_f)\)</span> lies in the finite
+Bessel subgroup, permutes <span
+class="math inline">\(\mathrm{Cut}_j(\xi)\)</span> and keeps the
+multiplicities; and evaluation is equivariant: the evaluated pair datum
+at the translated points is <span
+class="math inline">\(\omega^X_{2i}(b_{2i},b_{2i+1})\otimes\omega^X_{2i+1}(b_{2i+1},b_{2i+2})\)</span>
+applied to <span
+class="math inline">\(\phi^{\mathrm{ev}}_i(\xi,y)\)</span>. By
+Problem <a href="#pr:joint" data-reference-type="ref"
+data-reference="pr:joint">56.4.2</a>, <span
+class="math inline">\(\mathrm{ss}_\xi\)</span> is fixed by <span
+class="math inline">\(\bigotimes_j\omega^X_j(b_j,b_{j+1})\)</span> for
+all such <span class="math inline">\(b\)</span>.</p>
+<h1 id="sec:theorem">§56.5. Denominators and sizes</h1>
+<div id="def:cres" class="definition">
+<p><strong>Definition 56.5.1</strong>. Define the <em>residue count</em> by
+<span class="math inline">\(c_{\mathrm{res}}:=M^{fn_m^2}\)</span>.</p>
+</div>
+<p>Since <span class="math inline">\(q\)</span> is prime to <span
+class="math inline">\(N\)</span>, the pair evaluation applies with <span
+class="math inline">\(n=q\)</span>. Thus for <span
+class="math inline">\(0\le i\le\varrho\)</span> and points <span
+class="math inline">\(y\)</span> integral away from <span
+class="math inline">\(q\)</span>, <span
+class="math inline">\(\phi^{\mathrm{ev}}_i(\xi,y)\)</span> is a
+combination of the vectors <span
+class="math inline">\(C_i\,\mathrm{Gl}_i(\mathrm{Heis}(t_1)\mathrm{vac}\otimes\mathrm{Heis}(t_2)\mathrm{vac})\)</span>,
+over <span class="math inline">\(t_1,t_2\)</span> with <span
+class="math inline">\(\bar\pi_Mt_1\)</span>, <span
+class="math inline">\(\bar\pi_Mt_2\)</span> integral away from <span
+class="math inline">\(q\)</span>, with denominator <span
+class="math inline">\(\#(\mathcal{O}_E/\pi_M\mathcal{O}_E)^{\mathfrak
+e_i}\)</span> and size <span class="math inline">\(1\)</span>, where
+<span class="math inline">\(\mathfrak e_i:=\dim Y_{2i}\dim Y_{2i+1}+\dim
+Y_{2i+1}\dim Y_{2i+2}+(n_{2i}+n_{2i+2})n_{2i+1}\)</span>. The proof
+states this with the uniform denominator <span
+class="math inline">\(c_{\mathrm{res}}^4\)</span>.</p>
+<div id="pr:pair-exponent" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:pair-exponent&quot;]">
+<p><strong>Problem 56.5.1</strong>. Substituting <span
+class="math inline">\(1,2,3\)</span> for the three <span
+class="math inline">\(Y\)</span>-dimensions and for the three <span
+class="math inline">\(X\)</span>-ranks in <span
+class="math inline">\(\mathfrak e_i\)</span> gives <span
+class="math inline">\(16\le4\cdot3^2\)</span>. For the ranks of the
+proof, <span class="math inline">\(\mathfrak e_i\le4n_m^2\)</span>, so
+<span
+class="math inline">\(\#(\mathcal{O}_E/\pi_M\mathcal{O}_E)^{\mathfrak
+e_i}\)</span> divides <span
+class="math inline">\(c_{\mathrm{res}}^4\)</span>.</p>
+</div>
+<div id="pr:substitute" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:substitute&quot;]">
+<p><strong>Problem 56.5.2</strong>. Let <span
+class="math inline">\(z\)</span> be a combination of the <span
+class="math inline">\(w_\gamma\)</span>, <span
+class="math inline">\(\gamma\in\mathcal Z\)</span>, with denominator
+<span class="math inline">\(\mathfrak d\)</span> and size <span
+class="math inline">\(\mathfrak s\)</span>, and let each <span
+class="math inline">\(w_\gamma\)</span> be a combination of the <span
+class="math inline">\(w&#39;_{\gamma&#39;}\)</span>, <span
+class="math inline">\(\gamma&#39;\in\mathcal Z&#39;\)</span>, with
+denominator <span class="math inline">\(\mathfrak d&#39;\)</span> and
+size <span class="math inline">\(\mathfrak s&#39;\)</span>. Then <span
+class="math inline">\(z\)</span> is a combination of the <span
+class="math inline">\(w&#39;_{\gamma&#39;}\)</span> with denominator
+<span class="math inline">\(\mathfrak d\mathfrak d&#39;\)</span> and
+size <span class="math inline">\(\mathfrak s\mathfrak s&#39;\)</span>.
+If <span class="math inline">\(z_k\)</span> is a combination of the
+<span class="math inline">\(w_{k,\gamma}\)</span> with denominator <span
+class="math inline">\(\mathfrak d_k\)</span> and size <span
+class="math inline">\(\mathfrak s_k\)</span> <span
+class="math inline">\((k&lt;l)\)</span>, then <span
+class="math inline">\(z_{l-1}\otimes\dots\otimes z_0\)</span> is a
+combination of the <span
+class="math inline">\(w_{l-1,\gamma_{l-1}}\otimes\dots\otimes
+w_{0,\gamma_0}\)</span> with denominator <span
+class="math inline">\(\prod_k\mathfrak d_k\)</span> and size <span
+class="math inline">\(\prod_k\mathfrak s_k\)</span>.</p>
+</div>
+<p>The integral vacuum of <span
+class="math inline">\(\operatorname{Hom}(X_j,X_{j+1})\)</span> is <span
+class="math inline">\(c_{\mathrm{vac}}^{\,n_jn_{j+1}}\mathrm{vac}\)</span>
+(Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:vacuum" data-reference-type="ref"
+data-reference="ob-sec:vacuum">37.8</a>). Put <span
+class="math display">\[c_{\mathrm{gl}}:=\prod_{i=0}^{\varrho}\frac{C_i}{c_{\mathrm{vac}}^{\,n_{2i}n_{2i+1}}\,c_{\mathrm{vac}}^{\,n_{2i+1}n_{2i+2}}}
+,\]</span> a nonzero number. By Problems <a href="#pr:pair-exponent"
+data-reference-type="ref" data-reference="pr:pair-exponent">56.5.1</a>
+and <a href="#pr:substitute" data-reference-type="ref"
+data-reference="pr:substitute">56.5.2</a>, for points <span
+class="math inline">\(y\)</span> integral away from <span
+class="math inline">\(q\)</span> the tensor <span
+class="math inline">\(\bigotimes_{i=0}^{\varrho}\phi^{\mathrm{ev}}_i(\xi,y)\)</span>
+is a combination of the <span
+class="math inline">\(c_{\mathrm{gl}}\,\mathrm{gl}(\mathfrak
+t)\)</span>, over the <span class="math inline">\(\mathfrak t\)</span>
+with every <span class="math inline">\(\bar\pi_M\mathfrak t_j\)</span>
+integral away from <span class="math inline">\(q\)</span>, with
+denominator <span class="math inline">\(c_{\mathrm{res}}^{2m}\)</span>
+and size <span class="math inline">\(1\)</span>.</p>
+<div id="pr:cut-weights" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:cut-weights&quot;]">
+<p><strong>Problem 56.5.3</strong>. Each <span
+class="math inline">\(\mathrm{mult}_j(c)^{-1}\)</span>, <span
+class="math inline">\(c\in\mathrm{Cut}_j(\xi)\)</span>, lies in <span
+class="math inline">\(\mathcal{O}^{[q]}\)</span>, and if <span
+class="math inline">\(Q_\xi=\varnothing\)</span>, then <span
+class="math inline">\(\sum_{c_0,\dots,c_{m-1}}\prod_j\mathrm{mult}_j(c_j)^{-1}\le
+c_{\mathrm{res}}^m\)</span>. Hence <span
+class="math inline">\(\mathrm{ss}_\xi\)</span> is a combination of the
+<span
+class="math inline">\(\bigotimes_i\phi^{\mathrm{ev}}_i(\xi,c)\)</span>,
+over tuples <span class="math inline">\(c\)</span> of cut points with
+representatives integral away from <span
+class="math inline">\(q\)</span>, with denominator <span
+class="math inline">\(1\)</span> and size <span
+class="math inline">\(c_{\mathrm{res}}^m\)</span>.</p>
+</div>
+<p>The pair evaluation, the tensor bound above and Problem <a
+href="#pr:cut-weights" data-reference-type="ref"
+data-reference="pr:cut-weights">56.5.3</a>, followed by substitution
+(Problem <a href="#pr:substitute" data-reference-type="ref"
+data-reference="pr:substitute">56.5.2</a>), give the following theorem.</p>
+<div id="thm:tensor" class="theorem">
+<p><strong>Theorem 56.5.1</strong>. <em>There is <span
+class="math inline">\(c_{\mathrm{gl}}\in\mathbb{C}\)</span>, depending
+only on the data, such that for every tame character <span
+class="math inline">\(\xi\)</span>, with <span
+class="math inline">\(q=\mathrm{Nm}\,Q_\xi\)</span>, the tensor <span
+class="math inline">\(\mathrm{ss}_\xi\)</span> is a combination of the
+<span class="math inline">\(c_{\mathrm{gl}}\,\mathrm{gl}(\mathfrak
+t)\)</span>, over the <span class="math inline">\(\mathfrak
+t\in\mathcal{T}\)</span> with every <span
+class="math inline">\(\bar\pi_M\mathfrak t_j\)</span> integral away from
+<span class="math inline">\(q\)</span>, with denominator <span
+class="math inline">\(c_{\mathrm{res}}^{2m}\)</span> and size <span
+class="math inline">\(c_{\mathrm{res}}^m\)</span>: there are <span
+class="math inline">\(r_{\xi,\mathfrak t}\in\mathbb{C}\)</span>,
+finitely many nonzero, with <span class="math display">\[\begin{gather*}
+  \mathrm{ss}_\xi=\sum_{\mathfrak t}r_{\xi,\mathfrak
+t}\,c_{\mathrm{gl}}\,\mathrm{gl}(\mathfrak t),\qquad
+  c_{\mathrm{res}}^{2m}r_{\xi,\mathfrak t}\in\mathcal{O}^{[q]},\\
+  Q_\xi=\varnothing\ \Longrightarrow\ \sum_{\mathfrak
+t}\lvert\sigma(r_{\xi,\mathfrak t})\rvert\le c_{\mathrm{res}}^m\
+\text{for all }\sigma\in\operatorname{Aut}\mathbb{C}.
+\end{gather*}\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:chain-datum">Problem 56.6.3</a>; <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a></div><!-- used-in:end -->
+</div>
+<h1 id="sec:unit">§56.6. The unit and the seesaw identity</h1>
+<p>By Theorem <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#thm:proportional" data-reference-type="ref"
+data-reference="s3-thm:proportional">55.4.1</a> and
+Theorem <a href="#thm:tensor" data-reference-type="ref"
+data-reference="thm:tensor">56.5.1</a>, for every ramified source form <span
+class="math inline">\(\varphi\)</span> the composite of the lower lifts
+on automorphic forms applied to <span
+class="math inline">\(\mathcal{P}_{g,\lambda}\varphi\)</span> is <span
+class="math inline">\(c&#39;c_{\mathrm{gl}}/c_{\mathrm{res}}^{2m}\)</span>
+times <span
+class="math inline">\(\mathrm{res}\,\Theta^X_\xi\bigl(\sum_{\mathfrak
+t}c_{\mathrm{res}}^{2m}r_{\xi,\mathfrak t}\mathrm{gl}(\mathfrak
+t)\bigr)\varphi\)</span>, and these coefficients lie in <span
+class="math inline">\(\mathcal{O}^{[q]}\)</span>. The scalar may be
+<span class="math inline">\(0\)</span>.</p>
+<div id="pr:unit-check" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:unit-check&quot;]">
+<p><strong>Problem 56.6.1</strong>. Let <span
+class="math inline">\(c&#39;=2\)</span>, <span
+class="math inline">\(c_{\mathrm{gl}}=3\)</span>, denominator <span
+class="math inline">\(4\)</span> and <span
+class="math inline">\(r=(\tfrac14,-\tfrac12)\)</span>. Applying
+Problem <a href="20261126T030400--the-seesaw-identity__workbook.html#pr:unit" data-reference-type="ref"
+data-reference="ss-pr:unit">52.5.5</a> to the scalar <span
+class="math inline">\(c&#39;c_{\mathrm{gl}}/4\)</span> gives <span
+class="math inline">\(u=\tfrac23\)</span> and <span
+class="math inline">\(c=u^{-1}=\tfrac32\)</span>. The cleared vector
+<span class="math inline">\(\Psi=4r\)</span> is <span
+class="math inline">\((1,-2)\)</span> and satisfies <span
+class="math inline">\(c\Psi=c&#39;c_{\mathrm{gl}}r=(\tfrac32,-3)\)</span>.
+If <span class="math inline">\(c&#39;c_{\mathrm{gl}}=0\)</span>, the
+same identity holds with <span class="math inline">\(c=1\)</span> and
+<span class="math inline">\(\Psi=0\)</span>.</p>
+</div>
+<div id="pr:truncate" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:truncate&quot;]">
+<p><strong>Problem 56.6.2</strong>. Let <span class="math inline">\(\mathcal
+V\)</span> be the set of finite places above the primes dividing <span
+class="math inline">\(Mq\)</span>, and <span
+class="math inline">\(\mathbf 1_{\mathcal V}\mathfrak t:=(\mathbf
+1_{\mathcal V}\mathfrak t_j)_j\)</span>. If every <span
+class="math inline">\(\bar\pi_M\mathfrak t_j\)</span> is integral away
+from <span class="math inline">\(q\)</span>, then <span
+class="math inline">\(v_j(\mathbf 1_{\mathcal V}\mathfrak
+t)=v_j(\mathfrak t)\)</span> for every <span
+class="math inline">\(j\)</span>, so <span
+class="math inline">\(\mathrm{gl}(\mathbf 1_{\mathcal V}\mathfrak
+t)=\mathrm{gl}(\mathfrak t)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:chain-datum">Problem 56.6.3</a></div><!-- used-in:end -->
+</div>
+<div id="pr:chain-datum" class="problem" data-progress-ids="[&quot;20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.tex#pr:chain-datum&quot;]">
+<p><strong>Problem 56.6.3</strong>. Let the tame character <span
+class="math inline">\(\xi\)</span> be a twist <span
+class="math inline">\(\vartheta\)</span>, with <span
+class="math inline">\(c_{\mathrm{gl}}\)</span> as in Theorem <a
+href="#thm:tensor" data-reference-type="ref"
+data-reference="thm:tensor">56.5.1</a>, coefficients <span
+class="math inline">\(r_{\vartheta,\mathfrak t}\)</span> for this choice
+in Theorem <a href="#thm:tensor" data-reference-type="ref"
+data-reference="thm:tensor">56.5.1</a>, and <span
+class="math inline">\(\mathcal V\)</span> as in Problem <a
+href="#pr:truncate" data-reference-type="ref"
+data-reference="pr:truncate">56.6.2</a> for <span
+class="math inline">\(q=\mathrm{Nm}\,Q_\vartheta\)</span>. If <span
+class="math inline">\(c&#39;c_{\mathrm{gl}}\ne0\)</span>, put <span
+class="math inline">\(\Psi(\mathfrak t):=c_{\mathrm{res}}^{2m}\sum
+r_{\vartheta,\mathfrak t&#39;}\)</span> over the <span
+class="math inline">\(\mathfrak t&#39;\)</span> with <span
+class="math inline">\(\mathbf 1_{\mathcal V}\mathfrak t&#39;=\mathfrak
+t\)</span>; otherwise <span class="math inline">\(\Psi:=0\)</span>. Then
+<span class="math inline">\(\Psi\)</span> is a chain datum for <span
+class="math inline">\(\vartheta\)</span>; for <span
+class="math inline">\(Q_\vartheta=\varnothing\)</span> its size is at
+most <span
+class="math inline">\(c_{\mathrm{res}}^{2m}c_{\mathrm{res}}^{m}=M^{3fmn_m^2}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030400--the-seesaw-identity__workbook.html">Chapter 52</a></div><!-- used-in:end -->
+</div>
+<p>Theorem <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#thm:proportional" data-reference-type="ref"
+data-reference="s3-thm:proportional">55.4.1</a>,
+Theorem <a href="#thm:tensor" data-reference-type="ref"
+data-reference="thm:tensor">56.5.1</a>, the invariance of <span
+class="math inline">\(\mathrm{ss}_\xi\)</span>, Problems <a
+href="20261126T030400--the-seesaw-identity__workbook.html#pr:unit" data-reference-type="ref"
+data-reference="ss-pr:unit">52.5.5</a>, <a href="#pr:truncate"
+data-reference-type="ref" data-reference="pr:truncate">56.6.2</a> and <a
+href="#pr:chain-datum" data-reference-type="ref"
+data-reference="pr:chain-datum">56.6.3</a>, and the passage from automorphic
+to algebraic forms on <span class="math inline">\(Y_m\)</span> prove
+Theorem <a href="20261126T030400--the-seesaw-identity__workbook.html#thm:seesaw" data-reference-type="ref"
+data-reference="ss-thm:seesaw">52.4.1</a>, with <span
+class="math inline">\(c=c&#39;c_{\mathrm{gl}}/c_{\mathrm{res}}^{2m}\)</span>
+if <span class="math inline">\(c&#39;c_{\mathrm{gl}}\ne0\)</span> and
+<span class="math inline">\(c=1\)</span>, <span
+class="math inline">\(\Psi=0\)</span> otherwise (compare Problem <a
+href="20261126T030400--the-seesaw-identity__workbook.html#pr:degenerate" data-reference-type="ref"
+data-reference="ss-pr:degenerate">52.5.6</a>). Passage to
+algebraic forms on <span class="math inline">\(Y_m\)</span> carries the
+restriction on the right of the automorphic identity to the restriction
+in <span class="math inline">\(B_{\vartheta,\Psi}\)</span>. Nothing is
+said about the size of <span class="math inline">\(c\)</span>.</p>
+<div id="def:plain" class="definition">
+<p><strong>Definition 56.6.1</strong>. For <span
+class="math inline">\(\mathfrak t\in\mathcal{T}\)</span> let <span
+class="math inline">\(\mathrm{pl}_0(\mathfrak
+t):=1\in\mathbb{C}\)</span> and <span
+class="math inline">\(\mathrm{pl}_{i+1}(\mathfrak
+t):=\bigl(v_{2i}(\mathfrak t)\otimes v_{2i+1}(\mathfrak
+t)\bigr)\otimes\mathrm{pl}_i(\mathfrak t)\)</span> for <span
+class="math inline">\(0\le i\le\varrho\)</span>. Define the <em>plain
+vacuum tensor</em> by <span class="math inline">\(\mathrm{pl}(\mathfrak
+t):=\mathrm{pl}_{\varrho+1}(\mathfrak t)\)</span>.</p>
+</div>
+<p>If every <span class="math inline">\(\mathfrak t_j\)</span> vanishes
+at the places above <span class="math inline">\(N\)</span>, then <span
+class="math inline">\(\mathrm{gl}(\mathfrak t)\)</span> is the sum of
+the <span class="math inline">\(\mathrm{pl}(\mathfrak t+\mathfrak
+g_y)\)</span> over the residues <span class="math inline">\(y\)</span>
+of the gluings, <span class="math inline">\(\mathfrak g_y\)</span> the
+tuple of their translations; Chapter <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#chap"
+data-reference-type="ref" data-reference="dl-chap">57</a> uses
+this expansion of the composite lift.</p>
+<p>This proves Theorem <a href="#thm:tensor" data-reference-type="ref"
+data-reference="thm:tensor">56.5.1</a>, and with it the seesaw identity, from
+the statements taken as given: the Schrödinger and lattice models with
+the multiplier bounds, the zero-term lattice, its lift and the pair
+evaluation quoted above, the passage from automorphic to algebraic forms
+on <span class="math inline">\(Y_m\)</span>, and the statements marked
+“in the proof”.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>Declaration names omit the prefix <code>New.</code>. Theorem <a
+href="#thm:tensor" data-reference-type="ref"
+data-reference="thm:tensor">56.5.1</a> is
+<code>Data.exists_isAdmissibleCombination_seesawDatum</code> in the Lean
+proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>. Definition <a
+href="#def:combination" data-reference-type="ref"
+data-reference="def:combination">56.1.1</a> specializes
+<code>Seesaw.IsAdmissibleCombination</code> to <span
+class="math inline">\(q=\mathrm{Nm}\,Q_\xi\)</span>, the size condition
+<span class="math inline">\(Q_\xi=\varnothing\)</span>, positive
+denominators and nonnegative bounds. Definition <a href="#def:cres"
+data-reference-type="ref" data-reference="def:cres">56.5.1</a> is
+<code>Data.residueMatrixCount</code>; Definition <a href="#def:plain"
+data-reference-type="ref" data-reference="def:plain">56.6.1</a> and <span
+class="math inline">\(\mathrm{gl}(\mathfrak t)\)</span> are
+<code>Data.ungluedVacuum</code> and <code>Data.gluedVacuum</code>. The
+uniform bound for one evaluated pair is
+<code>Data.exists_isAdmissibleCombination_evaluatedDatum</code>, the
+bound for their tensor
+<code>Data.exists_isAdmissibleCombination_gluedVacuum</code>, and joint
+invariance <code>Data.isInvariant_seesawDatum</code>. The zero-term
+lattice equality is
+<code>Seesaw.DoubleLiftData.zeroTermLattice_splitting_eq</code>.
+Theorem <a href="20261126T030400--the-seesaw-identity__workbook.html#thm:seesaw" data-reference-type="ref"
+data-reference="ss-thm:seesaw">52.4.1</a> is
+<code>Data.seesaw_identity</code>. The other statements read from the
+proof are, in <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span> (paths relative to
+<code>grh/src/</code>): for the residue operator
+<code>Lib/Weil/DualPair/Defs.lean</code> (587, 625) and
+<code>New/UpperBound/Objects/Rows.lean</code> (377); for (L1)–(L4)
+<code>Lib/Weil/Construction/VacuumProjections.lean</code> (102, 203,
+450, 755, 928), with the multiplier bounds in
+<code>New/UpperBound/Seesaw/AdmissibleCombinations.lean</code> (451) and
+<code>Lib/Weil/Construction/FiniteMultiplier.lean</code> (948, 979). In
+<code>New/UpperBound/Seesaw/</code>: the moved and joined data
+<code>GoodDatum.lean</code> (267, 370); the evaluation, the reduced
+lattice and the equivariance <code>EdgePairEvaluation.lean</code> (487,
+514, 853, 988); the zero term of the vacuum, the lift and the pair
+evaluation <code>AdmissibleEvaluation.lean</code> (248, 329, 565, 596);
+the residue translations and representatives
+<code>NeighbourLattice.lean</code> (171, 996); the gluing
+<code>NeighbourVacuum.lean</code> (241); the rank bound
+<code>GoodDatum.lean</code> (421); the inputs to invariance
+<code>Cut.lean</code> (173, 182, 199). The plain expansion is in
+<code>New/UpperBound/Divisibility/ChainDatumExpansion.lean</code>
+(233).</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secresidues">§<a href="#sec:residues"
+data-reference-type="ref" data-reference="sec:residues">56.1</a></h2>
+<dl>
+<dt><a href="#pr:delta" data-reference-type="ref"
+data-reference="pr:delta">56.1.2</a></dt>
+<dd>
+<p>Orthogonality of the characters of <span
+class="math inline">\(\mathsf A_{\mathfrak m}\)</span>; the operator
+depends linearly on the function. Compare Problem <a
+href="20261126T030400--the-seesaw-identity__workbook.html#pr:lattice" data-reference-type="ref"
+data-reference="ss-pr:lattice">52.3.3</a>.</p>
+</dd>
+<dt><a href="#pr:delta-den" data-reference-type="ref"
+data-reference="pr:delta-den">56.1.3</a></dt>
+<dd>
+<p><span class="math inline">\(\mathfrak m\)</span> is the product of
+the coprime ideals <span class="math inline">\((\pi_M)\)</span> and
+<span class="math inline">\(\prod_{w\in Q_\xi}w\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="seclattice">§<a href="#sec:lattice"
+data-reference-type="ref" data-reference="sec:lattice">56.2</a></h2>
+<dl>
+<dt><a href="#pr:line" data-reference-type="ref"
+data-reference="pr:line">56.2.1</a></dt>
+<dd>
+<p>Move the problem to the standard lattice.</p>
+</dd>
+<dt><a href="#pr:move" data-reference-type="ref"
+data-reference="pr:move">56.2.2</a></dt>
+<dd>
+<p>(L2)–(L4). If <span class="math inline">\(Q_\xi=\varnothing\)</span>,
+then <span class="math inline">\(h\Lambda=\Lambda\)</span>.</p>
+</dd>
+<dt><a href="#pr:reduction" data-reference-type="ref"
+data-reference="pr:reduction">56.2.3</a></dt>
+<dd>
+<p>Compute the annihilator of <span class="math inline">\(L\cap
+I^\perp\)</span> in <span class="math inline">\(W\)</span>; <span
+class="math inline">\(L\cap I^\perp\)</span> is a direct summand of
+<span class="math inline">\(L\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secneighbour">§<a href="#sec:neighbour"
+data-reference-type="ref" data-reference="sec:neighbour">56.3</a></h2>
+<dl>
+<dt><a href="#pr:axis" data-reference-type="ref"
+data-reference="pr:axis">56.3.1</a></dt>
+<dd>
+<p>Expand <span class="math inline">\(\gamma^*\gamma\)</span>. <span
+class="math inline">\(\mathbf 1_P\bar{\mathbf 1}_P=0\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secjoint">§<a href="#sec:joint"
+data-reference-type="ref" data-reference="sec:joint">56.4</a></h2>
+<dl>
+<dt><a href="#pr:joint" data-reference-type="ref"
+data-reference="pr:joint">56.4.2</a></dt>
+<dd>
+<p>Substitute <span class="math inline">\(c\mapsto bc\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="sectheorem">§<a href="#sec:theorem"
+data-reference-type="ref" data-reference="sec:theorem">56.5</a></h2>
+<dl>
+<dt><a href="#pr:pair-exponent" data-reference-type="ref"
+data-reference="pr:pair-exponent">56.5.1</a></dt>
+<dd>
+<p>All ranks are at most <span class="math inline">\(n_m\)</span>, and
+<span
+class="math inline">\(\#(\mathcal{O}_E/\pi_M\mathcal{O}_E)=M^f\)</span>.</p>
+</dd>
+<dt><a href="#pr:substitute" data-reference-type="ref"
+data-reference="pr:substitute">56.5.2</a></dt>
+<dd>
+<p><span class="math inline">\(\mathcal{O}^{[q]}\)</span> is a ring; the
+triangle inequality gives the sizes.</p>
+</dd>
+<dt><a href="#pr:cut-weights" data-reference-type="ref"
+data-reference="pr:cut-weights">56.5.3</a></dt>
+<dd>
+<p>Problems <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#pr:mult-dvd" data-reference-type="ref"
+data-reference="s3-pr:mult-dvd">55.3.4</a> and <a
+href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#pr:cut-count" data-reference-type="ref"
+data-reference="s3-pr:cut-count">55.3.5</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secunit">§<a href="#sec:unit"
+data-reference-type="ref" data-reference="sec:unit">56.6</a></h2>
+<dl>
+<dt><a href="#pr:truncate" data-reference-type="ref"
+data-reference="pr:truncate">56.6.2</a></dt>
+<dd>
+<p>Split <span class="math inline">\(\mathfrak t_j\)</span> into its
+parts on <span class="math inline">\(\mathcal V\)</span> and off <span
+class="math inline">\(\mathcal V\)</span>. Which part fixes the vacuum,
+and what is their Heisenberg phase?</p>
+</dd>
+<dt><a href="#pr:chain-datum" data-reference-type="ref"
+data-reference="pr:chain-datum">56.6.3</a></dt>
+<dd>
+<p>Problems <a href="#pr:truncate" data-reference-type="ref"
+data-reference="pr:truncate">56.6.2</a> and <a href="#pr:joint"
+data-reference-type="ref" data-reference="pr:joint">56.4.2</a>; regroup
+equal indices.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-MVW"><span class="bib-label">[MVW]</span> C. Mœglin, M.-F. Vignéras and J.-L. Waldspurger, <em>Correspondances de Howe sur un corps <span class="math inline">\(p\)</span>-adique</em>, Lecture Notes in Math. 1291, Springer, 1987.</p>
+<p id="ref-We"><span class="bib-label">[We]</span> A. Weil, <em>Sur certains groupes d’opérateurs unitaires</em>, Acta Math. <strong>111</strong> (1964), 143–211.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

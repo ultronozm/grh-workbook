@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ=' 'sha256-zbeCtcNeCXBant6s4mPij2//W+MvlpXBCdhAkWYAzYQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>The seesaw identity</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","ii":"\\mathrm{i}","Oc":"\\mathcal{O}","Ac":"\\mathcal{A}","Pc":"\\mathcal{P}","Tc":"\\mathcal{T}","Wc":"\\mathcal{W}","Sym":"\\operatorname{Sym}","Hom":"\\operatorname{Hom}","Stab":"\\operatorname{Stab}","ram":"\\mathrm{ram}","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="52">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T030400--the-seesaw-identity__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 09:42:12
+      <a href="20261126T030400--the-seesaw-identity__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T030400--the-seesaw-identity__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T030400--the-seesaw-identity__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">The seesaw identity</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:toy" id="toc-sec:toy">§52.1. A Poincaré map between definite lattices</a></li>
+<li><a href="#sec:step" id="toc-sec:step">§52.2. One lift</a></li>
+<li><a href="#sec:chain" id="toc-sec:chain">§52.3. Chains, weighted sums, and translates of the vacuum</a></li>
+<li><a href="#sec:theorem" id="toc-sec:theorem">§52.4. The seesaw identity</a></li>
+<li><a href="#sec:claim" id="toc-sec:claim">§52.5. Ramified forms, and what is not claimed</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secstep" id="toc-secstep">§52.2</a></li>
+<li><a href="#secchain" id="toc-secchain">§52.3</a></li>
+<li><a href="#secclaim" id="toc-secclaim">§52.5</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>From Chapter <a href="20261125T002000--definite-theta-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dt-chap">21</a>: the lattices <span
+class="math inline">\(I_n\)</span> over <span
+class="math inline">\(\mathcal{O}= \mathbb{Z}[\mathrm{i}]\)</span>, the
+groups <span class="math inline">\(\Gamma_L\)</span>, forms of weight
+<span class="math inline">\((a)\)</span> and their norm (Sections <a
+href="20261125T002000--definite-theta-lifts__workbook.html#sec:lattices" data-reference-type="ref"
+data-reference="dt-sec:lattices">21.1</a> and <a
+href="20261125T002000--definite-theta-lifts__workbook.html#sec:forms" data-reference-type="ref"
+data-reference="dt-sec:forms">21.3</a>), and Problems <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:aut" data-reference-type="ref"
+data-reference="dt-pr:aut">21.1.2</a> and <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:class-one" data-reference-type="ref"
+data-reference="dt-pr:class-one">21.1.4</a>. From Chapter <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#chap" data-reference-type="ref"
+data-reference="tn-chap">23</a>: the lifts <span
+class="math inline">\(\Theta_{(a)}\)</span>, the moments <span
+class="math inline">\(c_a\)</span>, and Problems <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:equiv"
+data-reference-type="ref"
+data-reference="tn-pr:equiv">23.1.4</a>, <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:adjoint"
+data-reference-type="ref"
+data-reference="tn-pr:adjoint">23.1.5</a>, <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:ca"
+data-reference-type="ref" data-reference="tn-pr:ca">23.2.1</a>, <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:U1U1" data-reference-type="ref"
+data-reference="tn-pr:U1U1">23.2.3</a>, <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:U1U2"
+data-reference-type="ref" data-reference="tn-pr:U1U2">23.2.4</a>,
+<a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:U2U1" data-reference-type="ref"
+data-reference="tn-pr:U2U1">23.2.5</a>, <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:seesaw"
+data-reference-type="ref"
+data-reference="tn-pr:seesaw">23.4.2</a> and <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:compose" data-reference-type="ref"
+data-reference="tn-pr:compose">23.5.1</a>. From Chapter <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">39</a>: the finite Poincaré map of
+Section <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:smallest" data-reference-type="ref"
+data-reference="bp-sec:smallest">39.3</a>, the Poincaré
+maps <span class="math inline">\(\mathcal{P}_{g,\lambda}\)</span> and
+<span class="math inline">\(\mathcal{P}\)</span> (Definition <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:poincare" data-reference-type="ref"
+data-reference="bp-def:poincare">39.2.1</a>), and Theorem <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#thm:B" data-reference-type="ref"
+data-reference="bp-thm:B">39.4.2</a>. From Chapter <a
+href="20261126T030600--theorem-a-short-forms__workbook.html#chap" data-reference-type="ref"
+data-reference="ta-chap">49</a>: the normalized translates <span
+class="math inline">\(A_s\)</span> (Definition <a
+href="20261126T030600--theorem-a-short-forms__workbook.html#def:normalized" data-reference-type="ref"
+data-reference="ta-def:normalized">49.3.1</a>). From
+Chapters <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a> and <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap"
+data-reference-type="ref" data-reference="ob-chap">37</a>: the
+data, and the spaces, forms and twists, in the notation fixed there.
+Inner products of forms on definite lattices are linear in the first
+variable.</p>
+<p>In the proof, Theorem A concerns lifts of the normalized translates
+<span class="math inline">\(A_s\)</span> along the chain <span
+class="math inline">\(Y_0 \to \dots \to Y_m\)</span>, whose first space
+is indefinite, while the estimates of size and divisibility are proved
+along the chain <span class="math inline">\(X_0 \to \dots \to
+X_m\)</span> of definite spaces. How does the proof pass between the
+chains? For each twist, the seesaw identity expresses the lift along the
+first chain of the Poincaré image of a ramified form <span
+class="math inline">\(\varphi\)</span> as one nonzero constant times a
+combination of lifts of <span class="math inline">\(\varphi\)</span>
+along the definite chain, restricted to <span
+class="math inline">\(Y_m\)</span>. This chapter states the identity.
+Chapters <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="s1-chap">53</a>–<a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html#chap"
+data-reference-type="ref" data-reference="s4-chap">56</a> develop
+the four theorems and the properties of the seesaw tensor used in its
+deduction, each from statements read from the proof that are listed
+there. We first study an analogue for one lift between lattices of ranks
+one and two.</p>
+<h1 id="sec:toy">§52.1. A Poincaré map between definite lattices</h1>
+<p>We use the finite Poincaré map of Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap"
+data-reference-type="ref" data-reference="bp-chap">39</a>,
+Section <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:smallest" data-reference-type="ref"
+data-reference="bp-sec:smallest">39.3</a>. Let <span
+class="math inline">\(X := \mathcal{O}e_1\)</span> and <span
+class="math inline">\(Y := I_2 = X \perp \mathcal{O}e_2\)</span> (in
+Section <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#sec:seesaw" data-reference-type="ref"
+data-reference="tn-sec:seesaw">23.4</a> the line <span
+class="math inline">\(X\)</span> is called <span
+class="math inline">\(Y\)</span>). By Problem <a href="20261125T002000--definite-theta-lifts__workbook.html#pr:class-one"
+data-reference-type="ref"
+data-reference="dt-pr:class-one">21.1.4</a> a form of weight
+<span class="math inline">\((a)\)</span> on <span
+class="math inline">\(I_n\)</span>, <span class="math inline">\(n \le
+2\)</span>, is a single vector of <span
+class="math inline">\(\operatorname{Sym}^a(\mathbb{C}^n)\)</span> fixed
+by <span class="math inline">\(\Gamma_{I_n}\)</span>, which we identify
+with the form; the inner product of forms is <span
+class="math inline">\(\langle\psi,\psi&#39;\rangle =
+\lvert\Gamma_{I_n}\rvert^{-1}\langle\psi,\psi&#39;\rangle_{\operatorname{Sym}}\)</span>,
+with <span
+class="math inline">\(\langle\,,\rangle_{\operatorname{Sym}}\)</span>
+the inner product of <span
+class="math inline">\(\operatorname{Sym}^a(\mathbb{C}^n)\)</span>. Let
+<span class="math inline">\(0 \le j \le a\)</span> be integers divisible
+by <span class="math inline">\(4\)</span>, and let <span
+class="math inline">\(\varphi_j \in \mathcal{A}_{(j)}(1)\)</span> be the
+form with value <span class="math inline">\(e_1^j\)</span>. For <span
+class="math inline">\(\varphi \in \mathcal{A}_{(j)}(1)\)</span> let
+<span class="math display">\[P\varphi := \sum_{\gamma \in \Gamma_Y /
+\Gamma_{e_2}} \gamma\,\bigl(\varphi\, e_2^{a-j}\bigr) \in
+\mathcal{A}_{(a)}(2) ,\]</span> where <span
+class="math inline">\(\Gamma_{e_2}\)</span> is the stabilizer of <span
+class="math inline">\(e_2\)</span>; it is the map <span
+class="math inline">\(P\)</span> of Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap"
+data-reference-type="ref" data-reference="bp-chap">39</a> with
+<span class="math inline">\(\jmath(\varphi) =
+\varphi\,e_2^{a-j}\)</span>. By Problem <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#pr:unfold"
+data-reference-type="ref"
+data-reference="bp-pr:unfold">39.2.1</a>, <span
+class="math inline">\(\langle\psi, P\varphi\rangle\)</span> is the
+period <span class="math inline">\(\lvert\Gamma_X\rvert^{-1}\langle\psi,
+\varphi\,e_2^{a-j}\rangle_{\operatorname{Sym}}\)</span> of <span
+class="math inline">\(\psi \in \mathcal{A}_{(a)}(2)\)</span> along <span
+class="math inline">\(X\)</span>, that of Section <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#sec:seesaw" data-reference-type="ref"
+data-reference="tn-sec:seesaw">23.4</a>; and by Problem <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#pr:Pj" data-reference-type="ref"
+data-reference="bp-pr:Pj">39.3.1</a>, <span
+class="math inline">\(P\varphi_j = 4\bigl(e_1^j e_2^{a-j} + e_1^{a-j}
+e_2^{j}\bigr)\)</span>.</p>
+<h1 id="sec:step">§52.2. One lift</h1>
+<p>Now lift <span class="math inline">\(P\varphi\)</span> from <span
+class="math inline">\(Y\)</span> to a lattice <span
+class="math inline">\(L&#39; = I_{n&#39;}\)</span>, <span
+class="math inline">\(n&#39; \in \{1,2\}\)</span>, with standard basis
+<span class="math inline">\(e&#39;_1, \dots, e&#39;_{n&#39;}\)</span>;
+write <span class="math inline">\(\mathcal{A}_{(d)}(L&#39;) :=
+\mathcal{A}_{(d)}(n&#39;)\)</span>. For <span class="math inline">\(x
+\colon Y \to L&#39;\)</span> write <span class="math inline">\(x_k := x
+e_k\)</span>, and also view <span class="math inline">\(x_1\)</span> as
+the map <span class="math inline">\(\mathbb{C}e_1 \to
+L&#39;_{\mathbb{C}}\)</span>, <span class="math inline">\(e_1 \mapsto
+x_1\)</span>. Put <span class="math display">\[\mathrm{th}_{L&#39;} :=
+\sum_{v \in L&#39;} v^{a-j}\, e^{-\pi h(v,v)} \in
+\operatorname{Sym}^{a-j}(L&#39;_{\mathbb{C}}) ,\]</span> the vector
+obtained from the line <span
+class="math inline">\(\mathcal{O}e_2\)</span> alone. Products are taken
+in the symmetric algebra, as in Chapter <a href="20261125T002000--definite-theta-lifts__workbook.html#chap"
+data-reference-type="ref" data-reference="dt-chap">21</a>.</p>
+<div id="pr:split" class="problem" data-progress-ids="[&quot;20261126T030400--the-seesaw-identity__workbook.tex#pr:split&quot;]">
+<p><strong>Problem 52.2.1</strong>. For <span class="math inline">\(x = (x_1,
+x_2)\)</span> and <span class="math inline">\(\varphi \in
+\operatorname{Sym}^j(\mathbb{C}e_1)\)</span>, <span
+class="math inline">\(\operatorname{Sym}^a(x)(\varphi\, e_2^{a-j}) =
+\bigl(\operatorname{Sym}^j(x_1)\varphi\bigr)\, x_2^{a-j}\)</span>.</p>
+</div>
+<div id="pr:one-step" class="problem" data-progress-ids="[&quot;20261126T030400--the-seesaw-identity__workbook.tex#pr:one-step&quot;]">
+<p><strong>Problem 52.2.2</strong>. For <span class="math inline">\(\varphi
+\in \mathcal{A}_{(j)}(1)\)</span>, with <span
+class="math inline">\(\Theta_{(a)} \colon \mathcal{A}_{(a)}(2) \to
+\mathcal{A}_{(a)}(L&#39;)\)</span> and <span
+class="math inline">\(\Theta_{(j)} \colon \mathcal{A}_{(j)}(1) \to
+\mathcal{A}_{(j)}(L&#39;)\)</span> the lifts of Chapter <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#chap" data-reference-type="ref"
+data-reference="tn-chap">23</a>, <span
+class="math display">\[\Theta_{(a)}(P\varphi) =
+\bigl(\Theta_{(j)}\varphi\bigr)\, \mathrm{th}_{L&#39;} .\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051300--two-lifts-at-a-time__workbook.html">Chapter 54</a></div><!-- used-in:end -->
+</div>
+<p>The right side lifts <span class="math inline">\(\varphi\)</span>
+from the smaller space <span class="math inline">\(X\)</span>, with the
+kernel multiplied by the fixed vector <span
+class="math inline">\(\mathrm{th}_{L&#39;}\)</span>.</p>
+<div id="pr:theta-vector" class="problem" data-progress-ids="[&quot;20261126T030400--the-seesaw-identity__workbook.tex#pr:theta-vector&quot;]">
+<p><strong>Problem 52.2.3</strong>. <span
+class="math inline">\(\mathrm{th}_{L&#39;}\)</span> is fixed by <span
+class="math inline">\(\Gamma_{L&#39;}\)</span>. For <span
+class="math inline">\(L&#39; = I_1\)</span>, <span
+class="math inline">\(\mathrm{th}_{I_1} = c_{a-j}\,
+{e&#39;_1}^{a-j}\)</span> and <span
+class="math inline">\(\Theta_{(a)}(P\varphi_j) = \tfrac14 c_j c_{a-j}\,
+{e&#39;_1}^a\)</span>, in agreement with Problem <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:U2U1"
+data-reference-type="ref" data-reference="tn-pr:U2U1">23.2.5</a>.
+For <span class="math inline">\(L&#39; = I_2\)</span>, <span
+class="math inline">\(a = 8\)</span> and <span class="math inline">\(j =
+4\)</span>, <span class="math display">\[\Theta_{(8)}(P\varphi_4) =
+\tfrac14 c_0^2 c_4^2\,\bigl({e&#39;_1}^8 + 2 {e&#39;_1}^4 {e&#39;_2}^4 +
+{e&#39;_2}^8\bigr) .\]</span></p>
+</div>
+<div id="pr:transpose" class="problem" data-progress-ids="[&quot;20261126T030400--the-seesaw-identity__workbook.tex#pr:transpose&quot;]">
+<p><strong>Problem 52.2.4</strong>. For <span class="math inline">\(\psi \in
+\mathcal{A}_{(a)}(L&#39;)\)</span>, let <span
+class="math inline">\(\Theta&#39;_{(a)}\psi \in
+\mathcal{A}_{(a)}(2)\)</span> be its lift back to <span
+class="math inline">\(Y\)</span>. Then <span
+class="math display">\[\bigl\langle \Theta&#39;_{(a)}\psi,\ P\varphi
+\bigr\rangle = \bigl\langle \psi,\ (\Theta_{(j)}\varphi)\,
+\mathrm{th}_{L&#39;} \bigr\rangle .\]</span> For <span
+class="math inline">\(L&#39; = I_1\)</span> this is Problem <a
+href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:seesaw" data-reference-type="ref"
+data-reference="tn-pr:seesaw">23.4.2</a>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html">Chapter 53</a></div><!-- used-in:end -->
+</div>
+<h1 id="sec:chain">§52.3. Chains, weighted sums, and translates of the
+vacuum</h1>
+<div id="pr:chain-toy" class="problem" data-progress-ids="[&quot;20261126T030400--the-seesaw-identity__workbook.tex#pr:chain-toy&quot;]">
+<p><strong>Problem 52.3.1</strong>. In this problem take <span
+class="math inline">\(a = 8\)</span> and <span class="math inline">\(j =
+4\)</span>. Let <span class="math inline">\(\Theta^{(2)}\)</span> be the
+composite <span class="math inline">\(\mathcal{A}_{(8)}(2) \to
+\mathcal{A}_{(8)}(1) \to \mathcal{A}_{(8)}(2)\)</span> of two lifts.
+Then <span class="math inline">\(\Theta^{(2)}P\varphi_4 =
+\Theta_{(8)}\bigl((\Theta_{(4)}\varphi_4)\,\mathrm{th}_{I_1}\bigr) =
+\tfrac1{16} c_4^2\bigl(c_0c_8\, {e&#39;_1}^8 + 70\, c_4^2\, {e&#39;_1}^4
+{e&#39;_2}^4 + c_0c_8\, {e&#39;_2}^8\bigr)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051300--two-lifts-at-a-time__workbook.html">Chapter 54</a></div><!-- used-in:end -->
+</div>
+<p>By Problem <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:compose" data-reference-type="ref"
+data-reference="tn-pr:compose">23.5.1</a>, the kernel of <span
+class="math inline">\(\Theta^{(2)}\)</span> is the sum over the middle
+classes of the products of the two weight-eight kernels, each divided by
+the order of the middle stabilizer. In general the data of a chain of
+lifts form a tensor, with one factor for each lift, and the seesaw
+produces a particular tensor.</p>
+<p>The general proof pairs both sides with a form on <span
+class="math inline">\(Y_m\)</span> and transfers the Bessel period along
+the lower chain one lift at a time (Chapter <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html#chap"
+data-reference-type="ref" data-reference="s1-chap">53</a>). The
+finite variables in the resulting outer integrals are summed over finite
+sets of cosets of a level, the cuts, with reciprocal multiplicities as
+weights (Chapter <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#chap" data-reference-type="ref"
+data-reference="s3-chap">55</a>). Here is a finite model for
+those weights.</p>
+<div id="pr:cut" class="problem" data-progress-ids="[&quot;20261126T030400--the-seesaw-identity__workbook.tex#pr:cut&quot;]">
+<p><strong>Problem 52.3.2</strong>. Let a finite group <span
+class="math inline">\(G_0\)</span> act on a finite set <span
+class="math inline">\(\mathcal X\)</span>, let <span
+class="math inline">\(\mathrm{Cut} \subset \mathcal X\)</span> meet
+every orbit, and put <span class="math inline">\(\mathrm{mult}(y) :=
+\#\{\gamma \in G_0 : \gamma^{-1}y \in \mathrm{Cut}\}\)</span>. Then for
+every function <span class="math inline">\(f \colon \mathcal X \to
+\mathbb{C}\)</span>, <span class="math display">\[\sum_{y \in \mathcal
+X} f(y) = \sum_{\gamma \in G_0}\, \sum_{c \in \mathrm{Cut}}
+\frac{f(\gamma c)}{\mathrm{mult}(\gamma c)} .\]</span> If <span
+class="math inline">\(f\)</span> is <span
+class="math inline">\(G_0\)</span>-invariant, the right side is <span
+class="math inline">\(\lvert G_0\rvert \sum_{c \in \mathrm{Cut}}
+f(c)/\mathrm{mult}(c)\)</span>; if <span
+class="math inline">\(\mathrm{Cut}\)</span> has exactly one point in
+each orbit, then <span class="math inline">\(\mathrm{mult}(c) =
+\lvert\operatorname{Stab}_{G_0}(c)\rvert\)</span> for <span
+class="math inline">\(c \in \mathrm{Cut}\)</span>. For <span
+class="math inline">\(G_0 = (\mathbb{Z}/5)^\times\)</span> acting on
+<span class="math inline">\(\mathcal X = \mathbb{Z}/5\)</span> by
+multiplication, <span class="math inline">\(\mathrm{Cut} =
+\{0,1,2\}\)</span> and <span class="math inline">\(f = 1\)</span>, the
+multiplicities are <span class="math inline">\(4, 2, 2\)</span> and both
+sides equal <span class="math inline">\(5\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html">Chapter 55</a></div><!-- used-in:end -->
+</div>
+<p>In the proof the sums are formed for a tame character <span
+class="math inline">\(\xi\)</span> (Definition <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#def:cut"
+data-reference-type="ref" data-reference="s3-def:cut">55.3.2</a>),
+and each multiplicity that occurs divides a power of <span
+class="math inline">\(\mathrm{Nm}\,Q_\xi\)</span> (Problem <a
+href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#pr:mult-dvd" data-reference-type="ref"
+data-reference="s3-pr:mult-dvd">55.3.4</a>).</p>
+<p>The data for the definite chain in the seesaw are finite sums of
+tensors built from translates of the integral vacuum of each lift
+(Definition <a href="#def:definite" data-reference-type="ref"
+data-reference="def:definite">52.4.2</a>). In the simplest local model the
+vacuum is the characteristic function <span
+class="math inline">\(\mathbf 1_{\Lambda_0}\)</span> of a lattice <span
+class="math inline">\(\Lambda_0 \subset \mathbb{Q}_p^n\)</span>, and the
+elementary translation operators are the shifts <span
+class="math inline">\(f(v) \mapsto f(v-x)\)</span> and the
+multiplications <span class="math inline">\(f(v) \mapsto
+\chi(v)f(v)\)</span> by additive characters <span
+class="math inline">\(\chi\)</span> of <span
+class="math inline">\(\mathbb{Q}_p^n\)</span>.</p>
+<div id="pr:lattice" class="problem" data-progress-ids="[&quot;20261126T030400--the-seesaw-identity__workbook.tex#pr:lattice&quot;]">
+<p><strong>Problem 52.3.3</strong>. Let <span class="math inline">\(\Lambda
+\subset \Lambda_0 \subset \mathbb{Q}_p^n\)</span> be lattices with <span
+class="math inline">\([\Lambda_0 : \Lambda] = p^e\)</span>. Then <span
+class="math inline">\(\mathbf 1_{\Lambda_0} = \sum_{x \in
+\Lambda_0/\Lambda} \mathbf 1_{x + \Lambda}\)</span>, and <span
+class="math inline">\(\mathbf 1_\Lambda = p^{-e} \sum_{\chi} \chi\,
+\mathbf 1_{\Lambda_0}\)</span>, where <span
+class="math inline">\(\chi\)</span> runs over one extension to <span
+class="math inline">\(\mathbb{Q}_p^n\)</span> of each of the <span
+class="math inline">\(p^e\)</span> characters of <span
+class="math inline">\(\Lambda_0/\Lambda\)</span>. For every lattice
+<span class="math inline">\(\Lambda&#39;\)</span> commensurable with
+<span class="math inline">\(\Lambda_0\)</span> (their intersection has
+finite index in both), <span class="math inline">\(\mathbf
+1_{\Lambda&#39;}\)</span> is a finite <span
+class="math inline">\(\mathbb{Z}[1/p]\)</span>-linear combination of
+shifts of functions <span class="math inline">\(\chi\mathbf
+1_{\Lambda_0}\)</span>, where the additive characters <span
+class="math inline">\(\chi\)</span> of <span
+class="math inline">\(\mathbb{Q}_p^n\)</span> may depend on <span
+class="math inline">\(\Lambda&#39;\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html">Chapter 56</a></div><!-- used-in:end -->
+</div>
+<h1 id="sec:theorem">§52.4. The seesaw identity</h1>
+<p>We use the field <span class="math inline">\(E\)</span>, the levels
+<span class="math inline">\(M = p_0p_1\)</span> and <span
+class="math inline">\(N\)</span>, the elements <span
+class="math inline">\(\pi_M\)</span> and <span
+class="math inline">\(\pi_N\)</span>, the spaces <span
+class="math inline">\(X_j\)</span> and <span
+class="math inline">\(Y_j\)</span>, the source forms <span
+class="math inline">\(S \supseteq S_{\mathrm{ram}}\)</span>, tame
+characters <span class="math inline">\(\xi\)</span> and twists <span
+class="math inline">\(\vartheta\)</span> with their moduli <span
+class="math inline">\(Q\)</span>, and the characters <span
+class="math inline">\(\mu_j^0\)</span> of the lifts, as in Chapter <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>. Recall <span
+class="math inline">\(\varrho = m/2 - 1\)</span> (Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>).</p>
+<div id="def:lower" class="definition">
+<p><strong>Definition 52.4.1</strong> (the lower chain). For <span
+class="math inline">\(0 \le j \le m\)</span> let <span
+class="math inline">\(K^{Y\circ}_j := K^\circ(Y_j)\)</span> be the
+standard lattice stabilizer of <span class="math inline">\(Y_j\)</span>
+(Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:spaces" data-reference-type="ref"
+data-reference="ob-sec:spaces">37.3</a>) and, for a tame
+character <span class="math inline">\(\xi\)</span>, <span
+class="math inline">\(K^Y_j(\xi) \subseteq K^{Y\circ}_j\)</span> its
+subgroup of elements that reduce to the identity at the places dividing
+<span class="math inline">\(\pi_M\)</span> and at those in <span
+class="math inline">\(Q_\xi\)</span>; <span
+class="math inline">\(K_M\)</span> is the principal level of <span
+class="math inline">\(Y_0\)</span> (Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:forms"
+data-reference-type="ref"
+data-reference="ob-sec:forms">37.4</a>), so that <span
+class="math inline">\(K^Y_0(\xi) \subseteq K_M \subseteq
+K^{Y\circ}_0\)</span>. Let <span class="math inline">\(R_0 = \mathcal U
+\rtimes U(X_0)\)</span> be the Bessel subgroup of <span
+class="math inline">\(Y_0\)</span> and <span
+class="math inline">\(\psi_{\mathcal U}\)</span> its character
+(Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">39</a>). The Bessel function <span
+class="math inline">\(\mathcal{W}_{\lambda,\varphi}\)</span> of a source
+form <span class="math inline">\(\varphi\)</span> formed with a linear
+form <span class="math inline">\(\lambda\)</span>, and the Poincaré map
+<span class="math inline">\(\mathcal{P}_{g,\lambda}\colon S\to
+H(Y_0)\)</span> for a point <span class="math inline">\(g\)</span> of
+the archimedean unitary group of <span
+class="math inline">\(Y_0\)</span>, are those of Definition <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:poincare" data-reference-type="ref"
+data-reference="bp-def:poincare">39.2.1</a>. Its defining
+identity is <span class="math inline">\(\langle
+\mathcal{P}_{g,\lambda}\varphi, y\rangle = \int_{[R_0]}
+\mathcal{W}_{\lambda,\varphi}(r)\,\overline{y(r(g,1))}\,dr\)</span> for
+<span class="math inline">\(y\in H(Y_0)\)</span>, with the Petersson
+product linear in the first variable, as in Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap"
+data-reference-type="ref" data-reference="bp-chap">39</a>. Let
+<span class="math inline">\(\upsilon\)</span> be as in Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:characters" data-reference-type="ref"
+data-reference="ob-sec:characters">37.7</a>. For a tame
+character <span class="math inline">\(\xi\)</span> and <span
+class="math inline">\(1 \le j \le m\)</span>, <em>lift <span
+class="math inline">\(j\)</span> of the lower chain</em>, <span
+class="math inline">\(\Theta_{\xi,j}\)</span>, goes from forms on <span
+class="math inline">\(Y_{j-1}\)</span> to forms on <span
+class="math inline">\(Y_j\)</span>. Its Weil representation <span
+class="math inline">\(\omega_j\)</span>, of <span
+class="math inline">\(U(Y_{j-1})(\mathbb A) \times U(Y_j)(\mathbb
+A)\)</span> on the data on <span
+class="math inline">\(\operatorname{Hom}(Y_{j-1}, Y_j)\)</span>, uses on
+each of the two spaces, of rank <span class="math inline">\(n\)</span>,
+the character <span class="math inline">\(\mu_j^0\xi^j\upsilon^{\lfloor
+n/2\rfloor}\)</span>. Its datum <span
+class="math inline">\(\phi_j(\xi)\)</span> is the product of the joint
+harmonic at infinity for the parameters of <span
+class="math inline">\(Y_{j-1}\)</span> and <span
+class="math inline">\(Y_j\)</span> and the finite datum <span
+class="math inline">\(\mathbf 1_j(\xi)\)</span>, given at the places
+dividing <span class="math inline">\(\pi_M\)</span> and at those in
+<span class="math inline">\(Q_\xi\)</span> by the indicator of the
+reduction of the inclusion matrix and at the other finite places by the
+vacuum. The lift is the theta lift with this datum multiplied by the
+index <span class="math inline">\([K^{Y\circ}_{j-1} :
+K^Y_{j-1}(\xi)]\)</span>. The composite <span
+class="math inline">\(\Theta_{\xi,m}\cdots\Theta_{\xi,1}\)</span>,
+followed by the passage to algebraic forms on <span
+class="math inline">\(Y_m\)</span>, is the lower chain <span
+class="math inline">\(\Theta_\xi\)</span> of Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap"
+data-reference-type="ref" data-reference="ob-chap">37</a>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051300--two-lifts-at-a-time__workbook.html">Chapter 54</a></div><!-- used-in:end -->
+</div>
+<p>The proof checks that this datum sends forms of the prescribed source
+type to forms of the prescribed target type.</p>
+<div id="def:definite" class="definition">
+<p><strong>Definition 52.4.2</strong> (the definite chain). A <em>finite
+datum</em> for a lift is its vector in the finite part of the
+corresponding Weil representation (Section <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#sec:data"
+data-reference-type="ref"
+data-reference="d2-sec:data">59.3</a>). Let <span
+class="math inline">\(\mathcal{T}\)</span> be the set of tuples <span
+class="math inline">\(\mathfrak t = (\mathfrak t_j)_{j \ge 0}\)</span>
+of matrices <span class="math inline">\(\mathfrak t_j\)</span> of finite
+adeles of <span class="math inline">\(E\)</span>, with rows indexed by
+the basis of <span class="math inline">\(X_{j+1}\)</span> and columns by
+that of <span class="math inline">\(X_j\)</span>. Write <span
+class="math inline">\(\mathrm{Heis}(\cdot)\)</span> for the finite
+Heisenberg operators on the finite data on <span
+class="math inline">\(\operatorname{Hom}(X_j, X_{j+1})\)</span>. The
+<em>translated vacuum</em> <span class="math inline">\(v_j(\mathfrak
+t)\)</span> is the integral vacuum of <span
+class="math inline">\(\operatorname{Hom}(X_j, X_{j+1})\)</span>
+(Section <a href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:vacuum" data-reference-type="ref"
+data-reference="ob-sec:vacuum">37.8</a>) translated by <span
+class="math inline">\(\mathrm{Heis}(\mathfrak t_j)\)</span>. For a tame
+character <span class="math inline">\(\xi\)</span>, <span
+class="math inline">\(1 \le j \le m\)</span> and a finite datum <span
+class="math inline">\(v\)</span> on <span
+class="math inline">\(\operatorname{Hom}(X_{j-1}, X_j)\)</span>, <span
+class="math inline">\(\Theta^X_{\xi,j}(v)\)</span> is lift <span
+class="math inline">\(j\)</span> of the definite chain: the algebraic
+theta lift from <span class="math inline">\(X_{j-1}\)</span> to <span
+class="math inline">\(X_j\)</span>, of the weights of Definition <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#def:diagram" data-reference-type="ref"
+data-reference="ob-def:diagram">37.2.1</a>. Its kernel uses
+the rank twists of <span class="math inline">\(\mu_j^0\xi^j\)</span> on
+the two spaces and the matrix of Schur jets of the jet series of the
+datum at the scale <span class="math inline">\(\pi_M
+c_{\mathrm{jet}}\)</span>, with <span
+class="math inline">\(c_{\mathrm{jet}}\)</span> the jet scale of
+Definition <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html#def:jet-series" data-reference-type="ref"
+data-reference="d2-def:jet-series">59.4.3</a>; the integral
+over the source quotient uses Haar measure on <span
+class="math inline">\(U(X_{j-1})(\mathbb A_f)\)</span> normalized by
+<span class="math inline">\(\operatorname{vol}(K^X_{j-1})=1\)</span>.
+The lift is linear in <span class="math inline">\(v\)</span>, and lift
+<span class="math inline">\(j\)</span> uses data on <span
+class="math inline">\(\operatorname{Hom}(X_{j-1}, X_j)\)</span>, such as
+<span class="math inline">\(v_{j-1}(\mathfrak t)\)</span>. For <span
+class="math inline">\(j \ge 0\)</span>, <span
+class="math inline">\(\omega^X_j\)</span> is the finite Weil action of
+<span class="math inline">\(U(X_j)(\mathbb A_f) \times
+U(X_{j+1})(\mathbb A_f)\)</span> on these data for the tame character
+<span class="math inline">\(\xi\)</span> (written <span
+class="math inline">\(\omega^X\)</span> when the lift is clear), and
+<span class="math inline">\(K^X_j\)</span> is the level of <span
+class="math inline">\(X_j\)</span>: the integral finite adelic unitary
+matrices that reduce to the identity at every <span
+class="math inline">\(w \in \mathcal M\)</span> and have last row
+congruent to <span class="math inline">\((0, \dots, 0, 1)\)</span>
+modulo <span class="math inline">\(\pi_N\)</span>; <span
+class="math inline">\(K^X_0\)</span> is the level of the source forms. A
+<em>pair tensor</em> for pair <span class="math inline">\(i\)</span>
+<span class="math inline">\((0 \le i \le \varrho)\)</span> is a tensor
+of finite data on <span class="math inline">\(\operatorname{Hom}(X_{2i},
+X_{2i+1})\)</span> and on <span
+class="math inline">\(\operatorname{Hom}(X_{2i+1}, X_{2i+2})\)</span>.
+For pair tensors <span class="math inline">\(\mathsf T_0, \dots, \mathsf
+T_\varrho\)</span>, <span class="math display">\[\Theta^X_\xi(\mathsf
+T_\varrho \otimes \dots \otimes \mathsf T_0)\]</span> is the composite
+of the <span class="math inline">\(\varrho + 1\)</span> double lifts on
+the smooth algebraic forms of the specified weight on <span
+class="math inline">\(X_0\)</span>, with values in forms on <span
+class="math inline">\(X_m\)</span>, pair <span
+class="math inline">\(i\)</span> acting through <span
+class="math inline">\(v \otimes v&#39; \mapsto
+\Theta^X_{\xi,2i+2}(v&#39;) \circ \Theta^X_{\xi,2i+1}(v)\)</span>,
+extended linearly; in a tensor over pairs, later pairs stand on the
+left.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051300--two-lifts-at-a-time__workbook.html">Chapter 54</a>; <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html">Chapter 57</a>: <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#def:restricted">Definition 57.3.3</a>; <a href="20261126T050200--one-lift-at-a-small-non-split-prime__workbook.html">Chapter 59</a>; <a href="20261126T051600--the-level-prime-and-the-ramified-forms__workbook.html">Chapter 65</a></div><!-- used-in:end -->
+</div>
+<div id="def:composite" class="definition">
+<p><strong>Definition 52.4.3</strong> (gluing, restriction, the composite
+lift). For <span class="math inline">\(0 \le i \le \varrho\)</span> the
+<em>pair gluing</em> <span class="math inline">\(\mathrm{Gl}_i\)</span>,
+for the double lift <span class="math inline">\(X_{2i} \to X_{2i+1} \to
+X_{2i+2}\)</span>, sums over the vectors <span
+class="math inline">\(y\)</span> of residues modulo <span
+class="math inline">\(N\)</span>, each represented in <span
+class="math inline">\(\{0, \dots, N-1\}\)</span>, indexed by a basis of
+<span class="math inline">\(X_{2i+1}\)</span> and the places <span
+class="math inline">\(w \mid \pi_N\)</span>: it translates the first
+factor by the last column <span class="math inline">\(-y/N\)</span>
+supported at these places, and the second by the conjugate last row
+supported at their conjugates. Define the <em>glued vacuum tensor</em>
+of <span class="math inline">\(\mathfrak t \in \mathcal{T}\)</span> by
+<span class="math inline">\(\mathrm{gl}(\mathfrak t) :=
+\mathrm{gl}_{\varrho+1}(\mathfrak t)\)</span>, where <span
+class="math display">\[\mathrm{gl}_0(\mathfrak t) := 1 \in \mathbb{C},
+\qquad
+  \mathrm{gl}_{i+1}(\mathfrak t) := \mathrm{Gl}_i\bigl(v_{2i}(\mathfrak
+t)\otimes v_{2i+1}(\mathfrak t)\bigr) \otimes \mathrm{gl}_i(\mathfrak t)
+\quad (0\le i\le\varrho),\]</span> and for a finitely supported <span
+class="math inline">\(\Psi \colon \mathcal{T}\to \mathbb{C}\)</span> the
+glued tensor is <span class="math inline">\(\Psi^{\mathrm{gl}} :=
+\sum_{\mathfrak t} \Psi(\mathfrak t)\,\mathrm{gl}(\mathfrak t)\)</span>.
+Choose an integral branching map as in <em>The size of the composite
+lift</em>. The <em>restriction</em> <span
+class="math inline">\(\mathrm{res}\)</span> takes an algebraic form on
+<span class="math inline">\(X_m\)</span> to one on <span
+class="math inline">\(Y_m\)</span> by evaluating at <span
+class="math inline">\(\operatorname{diag}(h,1)\)</span>, applying that
+map and multiplying by the scalar <span
+class="math inline">\(b_N\)</span> below. The weight calculation in the
+proof gives <span class="math display">\[b_N = \prod_\tau
+\tau(\bar\pi_N)^{m\Delta/2 - a_\tau},\]</span> where <span
+class="math inline">\(\tau\)</span> is read as the embedding of the CM
+type and <span class="math inline">\(a_\tau = a\)</span> for <span
+class="math inline">\(\tau \in \Phi_a\)</span>, <span
+class="math inline">\(a_\tau = 0\)</span> otherwise. The same letter
+<span class="math inline">\(\mathrm{res}\)</span> is used for the
+corresponding map of automorphic forms. For every tame character <span
+class="math inline">\(\xi\)</span> we define the <em>composite lift</em>
+by <span class="math display">\[B_{\xi,\Psi}(\varphi) :=
+\mathrm{res}\;\Theta^X_\xi\bigl(\Psi^{\mathrm{gl}}\bigr)\varphi \qquad
+(\varphi \in S).\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: Chapter 57: <a href="20261126T030500--divisibility-of-the-composite-lift__workbook.html#def:restricted">Definition 57.3.3</a>; <a href="20261126T051600--the-level-prime-and-the-ramified-forms__workbook.html">Chapter 65</a></div><!-- used-in:end -->
+</div>
+<div id="def:chain-datum" class="definition">
+<p><strong>Definition 52.4.4</strong> (chain data). A finitely supported
+<span class="math inline">\(\Psi \colon \mathcal{T}\to
+\mathbb{C}\)</span> is a <em>chain datum</em> for the twist <span
+class="math inline">\(\vartheta\)</span> if: (i) for <span
+class="math inline">\(\mathfrak t\)</span> in the support of <span
+class="math inline">\(\Psi\)</span>, every entry of every <span
+class="math inline">\(\mathfrak t_j\)</span> becomes integral, after
+multiplication by <span class="math inline">\(\bar\pi_M\)</span>, at
+every finite place <span class="math inline">\(w\)</span> not above a
+prime dividing <span
+class="math inline">\(\mathrm{Nm}\,Q_\vartheta\)</span>, and vanishes at
+every <span class="math inline">\(w\)</span> not above a prime dividing
+<span class="math inline">\(M\,\mathrm{Nm}\,Q_\vartheta\)</span>; (ii)
+every value <span class="math inline">\(\Psi(\mathfrak t)\)</span> lies
+in the ring <span
+class="math inline">\(\mathcal{O}^{[\mathrm{Nm}\,Q_\vartheta]}\)</span>
+of numbers integral away from <span
+class="math inline">\(\mathrm{Nm}\,Q_\vartheta\)</span> (Chapter <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>); (iii) if <span
+class="math inline">\(Q_\vartheta = \emptyset\)</span>, then <span
+class="math inline">\(\sum_{\mathfrak t} \lvert\sigma(\Psi(\mathfrak
+t))\rvert \le M^{3fmn_m^2}\)</span> for every field automorphism <span
+class="math inline">\(\sigma\)</span> of <span
+class="math inline">\(\mathbb{C}\)</span>; (iv) <span
+class="math inline">\(\Psi^{\mathrm{gl}}\)</span> is fixed by <span
+class="math inline">\(\bigotimes_j \omega^X_j(b_j, b_{j+1})\)</span>,
+formed for the twist <span class="math inline">\(\vartheta\)</span>, for
+all <span class="math inline">\(b_j \in K^X_j\)</span> <span
+class="math inline">\((j &lt; m)\)</span> and <span
+class="math inline">\(b_m = 1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051600--the-level-prime-and-the-ramified-forms__workbook.html">Chapter 65</a>; <a href="20261127T100000--overview__workbook.html">Chapter Overview</a></div><!-- used-in:end -->
+</div>
+<div id="thm:seesaw" class="theorem">
+<p><strong>Theorem 52.4.1</strong> (the seesaw identity). <em>Let <span
+class="math inline">\(D\)</span> be admissible data, <span
+class="math inline">\(\lambda\)</span> a linear form on the values of
+the source forms, and <span class="math inline">\(g\)</span> a point of
+the archimedean unitary group of <span
+class="math inline">\(Y_0\)</span>. There is <span
+class="math inline">\(c \in \mathbb{C}^\times\)</span> such that for
+every twist <span class="math inline">\(\vartheta\)</span> there is a
+finitely supported <span class="math inline">\(\Psi \colon
+\mathcal{T}\to \mathbb{C}\)</span> which is a chain datum for <span
+class="math inline">\(\vartheta\)</span> and satisfies <span
+class="math display">\[\Theta_\vartheta\bigl(\mathcal{P}_{g,\lambda}\varphi\bigr)
+= c\, B_{\vartheta,\Psi}(\varphi) \qquad\text{for every } \varphi \in
+S_{\mathrm{ram}} .\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:degenerate">Problem 52.5.6</a>; <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html">Chapter 23</a>; <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html">Chapter 39</a>; <a href="20261126T030600--theorem-a-short-forms__workbook.html">Chapter 49</a>; <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html">Chapter 53</a>; <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html">Chapter 55</a> <details><summary>and 1 more</summary><div><a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html">Chapter 56</a></div></details></div><!-- used-in:end -->
+</div>
+<p>For fixed <span class="math inline">\(D\)</span>, <span
+class="math inline">\(\lambda\)</span>, <span
+class="math inline">\(g\)</span>, one scalar <span
+class="math inline">\(c\)</span> works for all twists, and for each
+twist one <span class="math inline">\(\Psi\)</span> works for all <span
+class="math inline">\(\varphi \in S_{\mathrm{ram}}\)</span>; the
+equality is one of algebraic forms on <span
+class="math inline">\(Y_m\)</span>. For the pair <span
+class="math inline">\((g,\lambda)\)</span> that defines <span
+class="math inline">\(\mathcal{P}\)</span> (Definition <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:poincare" data-reference-type="ref"
+data-reference="bp-def:poincare">39.2.1</a>) the proof fixes
+one such scalar, the <em>seesaw constant</em> <span
+class="math inline">\(c_{\mathrm{ss}}\)</span>; it enters the normalized
+translates <span class="math inline">\(A_s\)</span> of Definition <a
+href="20261126T030600--theorem-a-short-forms__workbook.html#def:normalized" data-reference-type="ref"
+data-reference="ta-def:normalized">49.3.1</a>.</p>
+<p>For the chosen <span class="math inline">\(\mathcal{P}\)</span> and a
+ramified source form <span class="math inline">\(\varphi\)</span>, the
+two routes are <span class="math display">\[\begin{array}{ccccc}
+    \varphi &amp; \xrightarrow{\mathcal{P}} &amp; \mathcal{P}\varphi
+      &amp; \xrightarrow{\Theta_\vartheta} &amp;
+\Theta_\vartheta(\mathcal{P}\varphi) \\
+    \Vert &amp;&amp;&amp;&amp; \Vert \\
+    \varphi &amp; \xrightarrow{\Theta^X_\vartheta(\Psi^{\mathrm{gl}})}
+      &amp; \Theta^X_\vartheta(\Psi^{\mathrm{gl}})\varphi
+      &amp; \xrightarrow{c_{\mathrm{ss}}\mathrm{res}} &amp;
+c_{\mathrm{ss}}B_{\vartheta,\Psi}(\varphi).
+  \end{array}\]</span></p>
+<p>Chapters <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="s1-chap">53</a>–<a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html#chap"
+data-reference-type="ref" data-reference="s4-chap">56</a> develop
+the proof of Theorem <a href="#thm:seesaw" data-reference-type="ref"
+data-reference="thm:seesaw">52.4.1</a>, along the lines of Section <a
+href="#sec:step" data-reference-type="ref"
+data-reference="sec:step">52.2</a>, from statements read from the proof
+that each of them lists. Both sides are paired with a form <span
+class="math inline">\(x\)</span> on <span
+class="math inline">\(Y_m\)</span>. Under the integral, the transposed
+lifts act successively on <span class="math inline">\(\bar x\)</span>,
+of conjugate type, as suggested by Problem <a href="#pr:transpose"
+data-reference-type="ref" data-reference="pr:transpose">52.2.4</a>.
+Theorem <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html#thm:transfer" data-reference-type="ref"
+data-reference="s1-thm:transfer">53.4.1</a> transfers the
+resulting Bessel period through one lift. Theorem <a
+href="20261126T051300--two-lifts-at-a-time__workbook.html#thm:two-lifts" data-reference-type="ref"
+data-reference="s2-thm:two-lifts">54.4.1</a> takes the
+transfers two at a time: after each pair, the function left on the
+definite group is a coefficient of the definite chain with evaluated
+pair data. Theorem <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#thm:proportional"
+data-reference-type="ref"
+data-reference="s3-thm:proportional">55.4.1</a> sums the
+finite variables over the cuts of Definition <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#def:cut"
+data-reference-type="ref" data-reference="s3-def:cut">55.3.2</a>,
+with weights as in Problem <a href="#pr:cut" data-reference-type="ref"
+data-reference="pr:cut">52.3.2</a>: there is <span
+class="math inline">\(c&#39; \in \mathbb{C}\)</span>, possibly zero,
+such that for every tame character <span
+class="math inline">\(\xi\)</span> and every <span
+class="math inline">\(\varphi \in S_{\mathrm{ram}}\)</span> <span
+class="math display">\[\Theta_{\xi,m}\cdots\Theta_{\xi,1}\mathcal{P}_{g,\lambda}\varphi
+= c&#39;\,\mathrm{res}\,\Theta^X_\xi(\mathrm{ss}_\xi)\varphi ,\]</span>
+an equality of automorphic forms on <span
+class="math inline">\(Y_m\)</span>, with the seesaw tensor <span
+class="math inline">\(\mathrm{ss}_\xi\)</span> of Definition <a
+href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#def:ss" data-reference-type="ref"
+data-reference="s3-def:ss">55.4.3</a>. Write <span
+class="math inline">\(c_{\mathrm{res}} := M^{fn_m^2}\)</span>. By
+Theorem <a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html#thm:tensor" data-reference-type="ref"
+data-reference="s4-thm:tensor">56.5.1</a> there is <span
+class="math inline">\(c_{\mathrm{gl}} \in \mathbb{C}\)</span>, depending
+only on the data, such that for every tame <span
+class="math inline">\(\xi\)</span> one has <span
+class="math inline">\(\mathrm{ss}_\xi = c_{\mathrm{gl}}\sum_{\mathfrak
+t} r_\xi(\mathfrak t)\,\mathrm{gl}(\mathfrak t)\)</span>. Only finitely
+many coefficients are nonzero. On their support every <span
+class="math inline">\(\bar\pi_M\mathfrak t_j\)</span> is integral away
+from <span class="math inline">\(\mathrm{Nm}\,Q_\xi\)</span>, and every
+<span class="math inline">\(c_{\mathrm{res}}^{2m} r_\xi(\mathfrak
+t)\)</span> lies in <span
+class="math inline">\(\mathcal{O}^{[\mathrm{Nm}\,Q_\xi]}\)</span>. If
+<span class="math inline">\(Q_\xi = \emptyset\)</span>, then <span
+class="math inline">\(\sum_{\mathfrak t} \lvert\sigma(r_\xi(\mathfrak
+t))\rvert \le c_{\mathrm{res}}^m\)</span> for every field automorphism
+<span class="math inline">\(\sigma\)</span> of <span
+class="math inline">\(\mathbb{C}\)</span>. Take <span
+class="math inline">\(u\)</span> as in Problem <a href="#pr:unit"
+data-reference-type="ref" data-reference="pr:unit">52.5.5</a> for <span
+class="math inline">\(c&#39;c_{\mathrm{gl}}/c_{\mathrm{res}}^{2m}\)</span>.
+For a twist <span class="math inline">\(\vartheta\)</span>, the support
+reduction and joint invariance used in Problem <a
+href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html#pr:chain-datum" data-reference-type="ref"
+data-reference="s4-pr:chain-datum">56.6.3</a> give a chain
+datum <span class="math inline">\(\Psi\)</span> with <span
+class="math inline">\(\Psi^{\mathrm{gl}} = u
+c&#39;\mathrm{ss}_\vartheta\)</span>. Passage to algebraic forms gives
+the theorem with <span class="math inline">\(c = u^{-1}\)</span>.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>Theorem <a href="#thm:seesaw" data-reference-type="ref"
+data-reference="thm:seesaw">52.4.1</a> is <code>Data.seesaw_identity</code>
+in the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>; the objects of
+Definitions <a href="#def:lower" data-reference-type="ref"
+data-reference="def:lower">52.4.1</a>–<a href="#def:chain-datum"
+data-reference-type="ref" data-reference="def:chain-datum">52.4.4</a> are
+<code>Data.liftY</code>, <code>Data.lowerChain</code>,
+<code>Data.liftKernel</code>, <code>Data.levelX</code>,
+<code>Data.Translations</code>, <code>Data.gluedTensor</code>,
+<code>Data.restrictToY</code>, <code>Data.compositeLift</code> and
+<code>Data.IsChainDatum</code>. The passage to algebraic forms is
+<code>lowerChain_eq_of_lowerChainUpTo_eq</code>, and the image formula
+for <span class="math inline">\(S_{\mathrm{ram}}\)</span> is
+<code>ramifiedSourceForms_eq_range</code>. The declarations of the four
+steps are named in Chapters <a href="20261126T051200--transferring-a-bessel-period-through-a-theta-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="s1-chap">53</a>–<a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html#chap"
+data-reference-type="ref" data-reference="s4-chap">56</a>.</p>
+<h1 id="sec:claim">§52.5. Ramified forms, and what is not claimed</h1>
+<p>Where does the proof use the hypothesis that <span
+class="math inline">\(\varphi\)</span> is ramified?</p>
+<div id="pr:mean" class="problem" data-progress-ids="[&quot;20261126T030400--the-seesaw-identity__workbook.tex#pr:mean&quot;]">
+<p><strong>Problem 52.5.1</strong>. Let <span class="math inline">\(n \ge
+1\)</span> be an integer and let <span class="math inline">\(F\)</span>
+be a linear endomorphism of a finite-dimensional complex vector space
+<span class="math inline">\(V\)</span> with <span
+class="math inline">\(F^n = 1\)</span>. Then <span
+class="math inline">\(\ker\bigl(\sum_{i=0}^{n-1} F^i\bigr) =
+\operatorname{im}(1 - F)\)</span>, the sum of the eigenspaces of <span
+class="math inline">\(F\)</span> for eigenvalues <span
+class="math inline">\(\ne 1\)</span>. For the cyclic shift on <span
+class="math inline">\(\mathbb{C}^n\)</span> this space has dimension
+<span class="math inline">\(n - 1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051600--the-level-prime-and-the-ramified-forms__workbook.html">Chapter 65</a></div><!-- used-in:end -->
+</div>
+<div id="pr:mean-several" class="problem" data-progress-ids="[&quot;20261126T030400--the-seesaw-identity__workbook.tex#pr:mean-several&quot;]">
+<p><strong>Problem 52.5.2</strong>. Let <span class="math inline">\(n \ge
+1\)</span> be an integer, and let <span class="math inline">\(F_1,
+\dots, F_l\)</span> be commuting linear endomorphisms of a
+finite-dimensional complex vector space <span
+class="math inline">\(V\)</span> with <span class="math inline">\(F_k^n
+= 1\)</span> for every <span class="math inline">\(k\)</span>. Then
+<span class="math inline">\(\bigcap_k \ker\bigl(\sum_{i=0}^{n-1}
+F_k^i\bigr) = \operatorname{im}\prod_k (1 - F_k)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:fixed">Problem 52.5.4</a>; <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html">Chapter 55</a>; <a href="20261126T051600--the-level-prime-and-the-ramified-forms__workbook.html">Chapter 65</a></div><!-- used-in:end -->
+</div>
+<div id="pr:ram-image" class="problem" data-progress-ids="[&quot;20261126T030400--the-seesaw-identity__workbook.tex#pr:ram-image&quot;]">
+<p><strong>Problem 52.5.3</strong>. <span
+class="math inline">\(S_{\mathrm{ram}}\)</span> is the image of <span
+class="math inline">\(\prod_{w \mid \pi_N}(1 - T_w)\)</span> acting on
+<span class="math inline">\(S\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030600--theorem-a-short-forms__workbook.html">Chapter 49</a>; <a href="20261126T080200--the-good-part-and-the-ramified-forms__workbook.html">Chapter 51</a>; Chapter 65: <a href="20261126T051600--the-level-prime-and-the-ramified-forms__workbook.html#pr:ram-image">Problem 65.1.1</a></div><!-- used-in:end -->
+</div>
+<div id="pr:fixed" class="problem" data-progress-ids="[&quot;20261126T030400--the-seesaw-identity__workbook.tex#pr:fixed&quot;]">
+<p><strong>Problem 52.5.4</strong>. In the situation of Problem <a
+href="#pr:mean-several" data-reference-type="ref"
+data-reference="pr:mean-several">52.5.2</a>, let <span
+class="math inline">\(\Lambda \colon V \to V&#39;\)</span> be linear
+with <span class="math inline">\(\Lambda F_k = \Lambda\)</span> for one
+<span class="math inline">\(k\)</span>. Then <span
+class="math inline">\(\Lambda\)</span> vanishes on <span
+class="math inline">\(\bigcap_k \ker\bigl(\sum_{i=0}^{n-1}
+F_k^i\bigr)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html">Chapter 55</a></div><!-- used-in:end -->
+</div>
+<p>The proof uses Problem <a href="#pr:fixed" data-reference-type="ref"
+data-reference="pr:fixed">52.5.4</a> for chains of lifts (Problem <a
+href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#pr:kills" data-reference-type="ref"
+data-reference="s3-pr:kills">55.2.14</a>): if the Weil action of
+<span class="math inline">\((1, z_w)\)</span> on one lift factor alone
+fixes the tensor of data of a chain, the chain annihilates <span
+class="math inline">\(S_{\mathrm{ram}}\)</span>. With the initial finite
+point in <span class="math inline">\(K_M\)</span>, this vanishing gives
+the lattice bounds of Problem <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#pr:bounds"
+data-reference-type="ref"
+data-reference="s3-pr:bounds">55.2.16</a> at every stage <span
+class="math inline">\(1\le j&lt;m\)</span>, for the graded translates
+specified there; at any point where the stage function is nonzero, the
+orbit of the finite component under the finite adelic Bessel subgroup
+therefore meets the cut (Definition <a href="20261126T051400--lattices-cuts-and-the-ramified-forms__workbook.html#def:cut"
+data-reference-type="ref"
+data-reference="s3-def:cut">55.3.2</a>(d)).</p>
+<p>Theorem <a href="#thm:seesaw" data-reference-type="ref"
+data-reference="thm:seesaw">52.4.1</a> asserts that <span
+class="math inline">\(c \ne 0\)</span>, but not that either side is
+nonzero, for any <span class="math inline">\(\varphi\)</span> or any
+twist.</p>
+<div id="pr:unit" class="problem" data-progress-ids="[&quot;20261126T030400--the-seesaw-identity__workbook.tex#pr:unit&quot;]">
+<p><strong>Problem 52.5.5</strong>. Let <span class="math inline">\(V,
+V&#39;\)</span> be complex vector spaces, <span class="math inline">\(A,
+A&#39; \colon V \to V&#39;\)</span> linear maps, and <span
+class="math inline">\(c&#39; \in \mathbb{C}\)</span> such that <span
+class="math inline">\(A = c&#39; A&#39;\)</span>. Put <span
+class="math inline">\(u := c&#39;^{-1}\)</span> if <span
+class="math inline">\(c&#39; \ne 0\)</span> and <span
+class="math inline">\(u := 1\)</span> otherwise. Then <span
+class="math inline">\(u \ne 0\)</span> and <span class="math inline">\(A
+= u^{-1}(u c&#39; A&#39;)\)</span>, and <span
+class="math inline">\(uc&#39;A&#39; = 0\)</span> if and only if <span
+class="math inline">\(c&#39; = 0\)</span> or <span
+class="math inline">\(A&#39; = 0\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html">Chapter 56</a>: <a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html#pr:unit-check">Problem 56.6.1</a></div><!-- used-in:end -->
+</div>
+<div id="pr:degenerate" class="problem" data-progress-ids="[&quot;20261126T030400--the-seesaw-identity__workbook.tex#pr:degenerate&quot;]">
+<p><strong>Problem 52.5.6</strong>. For <span class="math inline">\(\lambda
+= 0\)</span>, prove that Theorem <a href="#thm:seesaw"
+data-reference-type="ref" data-reference="thm:seesaw">52.4.1</a> holds with
+<span class="math inline">\(c = 1\)</span> and <span
+class="math inline">\(\Psi = 0\)</span> for every twist.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T051500--the-seesaw-tensor-translated-vacua-gluing-and-the-unit__workbook.html">Chapter 56</a></div><!-- used-in:end -->
+</div>
+<p>By Theorem <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#thm:B" data-reference-type="ref"
+data-reference="bp-thm:B">39.4.2</a> some <span
+class="math inline">\(A_s\)</span> is nonzero on <span
+class="math inline">\(S_{\mathrm{ram}}\)</span>, so <span
+class="math inline">\(\mathcal{P}\)</span> is not zero there; Theorem B
+gives no nonvanishing after the lower chain.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secstep">§<a href="#sec:step"
+data-reference-type="ref" data-reference="sec:step">52.2</a></h2>
+<dl>
+<dt><a href="#pr:split" data-reference-type="ref"
+data-reference="pr:split">52.2.1</a></dt>
+<dd>
+<p><span class="math inline">\(e_1^j e_2^{a-j}\)</span> is the
+symmetrization of <span class="math inline">\(e_1^{\otimes j} \otimes
+e_2^{\otimes(a-j)}\)</span>, and <span
+class="math inline">\(\operatorname{Sym}^a(x)\)</span> is the
+restriction of <span class="math inline">\(x^{\otimes a}\)</span>.</p>
+</dd>
+<dt><a href="#pr:one-step" data-reference-type="ref"
+data-reference="pr:one-step">52.2.2</a></dt>
+<dd>
+<p>Problems <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:equiv" data-reference-type="ref"
+data-reference="tn-pr:equiv">23.1.4</a> and <a href="#pr:split"
+data-reference-type="ref" data-reference="pr:split">52.2.1</a>; <span
+class="math inline">\(h(x,x) = h(x_1,x_1) + h(x_2,x_2)\)</span>, and
+<span class="math inline">\(\Gamma_{e_2} = \{\operatorname{diag}(u,1) :
+u \in \mu_4\}\)</span> has the order of <span
+class="math inline">\(\Gamma_X\)</span>.</p>
+</dd>
+<dt><a href="#pr:theta-vector" data-reference-type="ref"
+data-reference="pr:theta-vector">52.2.3</a></dt>
+<dd>
+<p>Substitute <span class="math inline">\(v \mapsto \gamma v\)</span>.
+For the values use Problems <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:U1U1"
+data-reference-type="ref" data-reference="tn-pr:U1U1">23.2.3</a>,
+<a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:U1U2" data-reference-type="ref"
+data-reference="tn-pr:U1U2">23.2.4</a> and <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:ca"
+data-reference-type="ref" data-reference="tn-pr:ca">23.2.1</a>, and
+<span class="math inline">\(c_k = 0\)</span> for <span
+class="math inline">\(4 \nmid k\)</span>.</p>
+</dd>
+<dt><a href="#pr:transpose" data-reference-type="ref"
+data-reference="pr:transpose">52.2.4</a></dt>
+<dd>
+<p>Problems <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:adjoint" data-reference-type="ref"
+data-reference="tn-pr:adjoint">23.1.5</a> and <a
+href="#pr:one-step" data-reference-type="ref"
+data-reference="pr:one-step">52.2.2</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secchain">§<a href="#sec:chain"
+data-reference-type="ref" data-reference="sec:chain">52.3</a></h2>
+<dl>
+<dt><a href="#pr:chain-toy" data-reference-type="ref"
+data-reference="pr:chain-toy">52.3.1</a></dt>
+<dd>
+<p>Apply the second lift to both sides of Problem <a href="#pr:one-step"
+data-reference-type="ref" data-reference="pr:one-step">52.2.2</a>; then
+Problems <a href="#pr:theta-vector" data-reference-type="ref"
+data-reference="pr:theta-vector">52.2.3</a> and <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#pr:U1U2"
+data-reference-type="ref"
+data-reference="tn-pr:U1U2">23.2.4</a>.</p>
+</dd>
+<dt><a href="#pr:cut" data-reference-type="ref"
+data-reference="pr:cut">52.3.2</a></dt>
+<dd>
+<p>Exchange the two sums on the right and group by <span
+class="math inline">\(y = \gamma c\)</span>.</p>
+</dd>
+<dt><a href="#pr:lattice" data-reference-type="ref"
+data-reference="pr:lattice">52.3.3</a></dt>
+<dd>
+<p>Orthogonality of the characters of the finite group <span
+class="math inline">\(\Lambda_0/\Lambda\)</span>. Characters of <span
+class="math inline">\(\Lambda_0\)</span> extend to <span
+class="math inline">\(\mathbb{Q}_p^n\)</span>. For a general lattice
+<span class="math inline">\(\Lambda&#39;\)</span>, use <span
+class="math inline">\(\Lambda_0 \cap \Lambda&#39;\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secclaim">§<a href="#sec:claim"
+data-reference-type="ref" data-reference="sec:claim">52.5</a></h2>
+<dl>
+<dt><a href="#pr:mean" data-reference-type="ref"
+data-reference="pr:mean">52.5.1</a></dt>
+<dd>
+<p><span class="math inline">\(F\)</span> is diagonalizable; for
+Problem <a href="#pr:mean-several" data-reference-type="ref"
+data-reference="pr:mean-several">52.5.2</a> use simultaneous eigenspaces.</p>
+</dd>
+<dt><a href="#pr:ram-image" data-reference-type="ref"
+data-reference="pr:ram-image">52.5.3</a></dt>
+<dd>
+<p>Problem <a href="#pr:mean-several" data-reference-type="ref"
+data-reference="pr:mean-several">52.5.2</a> with <span
+class="math inline">\(F_k=T_w\)</span> and <span
+class="math inline">\(n=N-1\)</span>: the <span
+class="math inline">\(T_w\)</span> commute, and <span
+class="math inline">\(T_w^{N-1}=1\)</span> on <span
+class="math inline">\(S\)</span>.</p>
+</dd>
+<dt><a href="#pr:degenerate" data-reference-type="ref"
+data-reference="pr:degenerate">52.5.6</a></dt>
+<dd>
+<p>Check that <span class="math inline">\(\mathcal{P}_{g,0} =
+0\)</span>, that <span class="math inline">\(\Psi = 0\)</span> is a
+chain datum, and that <span class="math inline">\(B_{\vartheta,0} =
+0\)</span>; the composite lift is linear in the glued tensor.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

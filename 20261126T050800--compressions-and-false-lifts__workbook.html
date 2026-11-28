@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-LJ6/PGQpy7W0r2dmne1eO2mAUFsBfrUDZf6yhvanCLI=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Compressions and false lifts</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"{\\mathbb{Z}}","Q":"{\\mathbb{Q}}","R":"{\\mathbb{R}}","C":"{\\mathbb{C}}","Lc":"{\\mathcal{L}}","Hc":"{\\mathcal{H}}","Mch":"{\\mathcal{M}}","Oc":"{\\mathcal{O}}","Hb":"{\\mathbf{H}}","one":"{\\mathbf{1}}","pr":"\\operatorname{pr}","im":"\\operatorname{im}","End":"\\operatorname{End}","Aut":"\\operatorname{Aut}","Nm":"\\operatorname{Nm}","ex":"\\mathrm{ex}","cl":"\\mathrm{cl}","tl":["\\texttt{#1}",1]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="75">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T050800--compressions-and-false-lifts__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-26 19:19:35
+      <a href="20261126T050800--compressions-and-false-lifts__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T050800--compressions-and-false-lifts__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T050800--compressions-and-false-lifts__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Compressions and false lifts</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:compress" id="toc-sec:compress">§75.1. Compressions</a></li>
+<li><a href="#sec:toy" id="toc-sec:toy">§75.2. False lifts in \({\mathbb{C}}^3\)</a></li>
+<li><a href="#sec:general" id="toc-sec:general">§75.3. The general statement</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#seccompress" id="toc-seccompress">§75.1</a></li>
+<li><a href="#sectoy" id="toc-sectoy">§75.2</a></li>
+<li><a href="#secgeneral" id="toc-secgeneral">§75.3</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Linear algebra over <span
+class="math inline">\({\mathbb{C}}\)</span>: adjoints, orthogonal
+projections, determinants as products of eigenvalues. The fields <span
+class="math inline">\(\bar{\mathbb{Q}}_\ell\)</span> and <span
+class="math inline">\({\mathbb{C}}_\ell\)</span>, with <span
+class="math inline">\(\lvert\ell\rvert_\ell = 1/\ell\)</span>. Inner
+products are conjugate-linear in the first variable. From Chapter <a
+href="20261125T014100--congruence-modules__workbook.html#chap" data-reference-type="ref"
+data-reference="cg-chap">29</a>: congruence modules, Problems <a
+href="20261125T014100--congruence-modules__workbook.html#pr:symmetry" data-reference-type="ref"
+data-reference="cg-pr:symmetry">29.1.1</a> and <a
+href="20261125T014100--congruence-modules__workbook.html#pr:denominator" data-reference-type="ref"
+data-reference="cg-pr:denominator">29.1.2</a>. From
+Chapter <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#chap" data-reference-type="ref"
+data-reference="tn-chap">23</a>: theta lifts between definite
+spaces and their norms (Theorem <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html#thm:norm"
+data-reference-type="ref"
+data-reference="tn-thm:norm">23.3.1</a>). From Chapter <a
+href="20261125T000000--slope-method__workbook.html#chap" data-reference-type="ref"
+data-reference="sd-chap">5</a>: isomorphisms <span
+class="math inline">\(\iota \mid \ell\)</span> and heights of families
+(Section <a href="20261125T000000--slope-method__workbook.html#sec:heights" data-reference-type="ref"
+data-reference="sd-sec:heights">5.3</a>); from Chapter <a
+href="20261126T030100--a-twist-for-each-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="at-chap">6</a>, Theorem <a href="20261126T030100--a-twist-for-each-prime__workbook.html#thm:twist"
+data-reference-type="ref"
+data-reference="at-thm:twist">6.2.1</a>, which needs a height
+bound for <span class="math inline">\(Z(1)/Z(\theta_\iota)\)</span>. For
+Section <a href="#sec:general" data-reference-type="ref"
+data-reference="sec:general">75.3</a> only: the data (Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>) and the spaces, forms, twists
+and single lifts of Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>; the gauge and forms integral at
+a ring map <span class="math inline">\(\eta\)</span> (Definition <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#def:gauge" data-reference-type="ref"
+data-reference="ob-def:gauge">37.5.1</a>); the Hecke operators
+<span class="math inline">\(T_{w,i}\)</span> of Section <a
+href="20261125T011000--galois-representations-black-box__workbook.html#sec:spherical" data-reference-type="ref"
+data-reference="gr-sec:spherical">32.4</a>; the exchange
+factors of Chapter <a href="20261126T050600--the-exchange-identity__workbook.html#chap" data-reference-type="ref"
+data-reference="c3-chap">71</a>; Chapters <a href="20261126T050400--the-norm-of-one-lift__workbook.html#chap"
+data-reference-type="ref" data-reference="c1-chap">69</a> and <a
+href="20261126T050500--equal-multiplicities__workbook.html#chap" data-reference-type="ref"
+data-reference="c2-chap">70</a> for two facts recalled there; and
+Theorem <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#thm:eichler" data-reference-type="ref"
+data-reference="ho-thm:eichler">24.2.1</a> as a model of a
+Hecke relation.</p>
+<p>This sheet serves Theorem <a href="20261126T030800--the-cost-of-one-lift__workbook.html#thm:main"
+data-reference-type="ref"
+data-reference="col-thm:main">74.2.1</a> of Chapter <a
+href="20261126T030800--the-cost-of-one-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="col-chap">74</a>, <em>The cost of one lift</em>:
+for a regular family <span class="math inline">\((\theta_\iota)\)</span>
+of <span class="math inline">\(m\)</span>-fold twists (Definition <a
+href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:regular" data-reference-type="ref"
+data-reference="l5-def:regular">79.1.3</a>), a bound for the
+height of <span class="math inline">\(\iota \mapsto
+Z_j(1)/Z_j(\theta_\iota)\)</span>, where <span
+class="math inline">\(Z_j(\theta_\iota)\)</span> is the Gram determinant
+of the <span class="math inline">\(j\)</span>-th single lift at the
+twist <span class="math inline">\(\theta_\iota^j\)</span>. How can the
+ratio be bounded without evaluating either determinant? The Gram
+determinant at a twist, times the determinant of the compression of a
+second operator to the image of the lift, is a fixed nonzero number
+times a power of a ratio of Hecke values (Theorem <a
+href="#thm:compression" data-reference-type="ref"
+data-reference="thm:compression">75.3.1</a>). The compression determinant is
+bounded under <span
+class="math inline">\(\operatorname{Aut}({\mathbb{C}})\)</span> at the
+trivial twist, and at <span class="math inline">\(\ell\)</span> at a
+twist prime to <span class="math inline">\(\ell\)</span> at which the
+projection is cleared. The second bound projects integral forms
+orthogonal to the <em>false lifts</em>: forms that satisfy the equations
+of a lift and are orthogonal to the lifts (Definition <a
+href="#def:false" data-reference-type="ref"
+data-reference="def:false">75.3.2</a>). We model this on lines in <span
+class="math inline">\({\mathbb{C}}^3\)</span>, then state the theorem of
+the proof.</p>
+<h1 id="sec:compress">§75.1. Compressions</h1>
+<p>Let <span class="math inline">\(A\)</span> and <span
+class="math inline">\(V\)</span> be finite-dimensional complex inner
+product spaces and <span class="math inline">\(u \colon A \to V\)</span>
+an injective linear map, with image <span
+class="math inline">\(R\)</span>. Write <span
+class="math inline">\(\operatorname{pr}_R\)</span> for the orthogonal
+projection of <span class="math inline">\(V\)</span> onto <span
+class="math inline">\(R\)</span>.</p>
+<div id="def:compression" class="definition">
+<p><strong>Definition 75.1.1</strong>. For <span class="math inline">\(G \in
+\operatorname{End}V\)</span>, call <span
+class="math inline">\(\operatorname{pr}_R G|_R \in
+\operatorname{End}R\)</span> the <em>compression</em> of <span
+class="math inline">\(G\)</span> to <span
+class="math inline">\(R\)</span>.</p>
+</div>
+<div id="pr:compression" class="problem" data-progress-ids="[&quot;20261126T050800--compressions-and-false-lifts__workbook.tex#pr:compression&quot;]">
+<p><strong>Problem 75.1.1</strong>. For every <span class="math inline">\(G
+\in \operatorname{End}V\)</span>, <span
+class="math display">\[\det(u^*u)\,\det(\operatorname{pr}_R G|_R) =
+\det(u^* G u) .\]</span></p>
+</div>
+<p>Now let <span class="math inline">\(\vartheta\)</span> run over a set
+with an element <span class="math inline">\(1\)</span>, and suppose
+given for each <span class="math inline">\(\vartheta\)</span> an
+injective <span class="math inline">\(u_\vartheta \colon A \to
+V_\vartheta\)</span> with image <span
+class="math inline">\(R_\vartheta\)</span>, an operator <span
+class="math inline">\(\Upsilon_\vartheta \in
+\operatorname{End}V_\vartheta\)</span>, and a complex number <span
+class="math inline">\(\rho_\vartheta \ne 0\)</span>. In this section and
+the next, <span class="math inline">\(Z(\vartheta) := \det(u_\vartheta^*
+u_\vartheta)\)</span>, <span class="math inline">\(D_\vartheta :=
+\det(\operatorname{pr}_{R_\vartheta}
+\Upsilon_\vartheta|_{R_\vartheta})\)</span> and <span
+class="math inline">\(\rho_\vartheta\)</span> are local notations,
+models of the objects of Section <a href="#sec:general"
+data-reference-type="ref" data-reference="sec:general">75.3</a>.</p>
+<div id="pr:comparison" class="problem" data-progress-ids="[&quot;20261126T050800--compressions-and-false-lifts__workbook.tex#pr:comparison&quot;]">
+<p><strong>Problem 75.1.2</strong>. Suppose that some <span
+class="math inline">\(\Upsilon^\circ \in \operatorname{End}A\)</span>
+has <span class="math inline">\(\langle y, \Upsilon^\circ y\rangle &gt;
+0\)</span> for every <span class="math inline">\(y \ne 0\)</span> and
+that <span class="math inline">\(\langle u_\vartheta y&#39;,
+\Upsilon_\vartheta u_\vartheta y\rangle = \rho_\vartheta \langle y&#39;,
+\Upsilon^\circ y\rangle\)</span> for all <span
+class="math inline">\(\vartheta\)</span> and <span
+class="math inline">\(y&#39;, y \in A\)</span>. Then <span
+class="math inline">\(\det \Upsilon^\circ \ne 0\)</span>, every <span
+class="math inline">\(D_\vartheta\)</span> is nonzero, and <span
+class="math display">\[Z(\vartheta)\,D_\vartheta =
+\det(\Upsilon^\circ)\, \rho_\vartheta^{\dim A}
+  \qquad\text{for every } \vartheta .\]</span> If moreover <span
+class="math inline">\(\rho_1 = 1\)</span>, then <span
+class="math inline">\(Z(1)/Z(\vartheta) =
+(D_\vartheta/D_1)\,\rho_\vartheta^{-\dim A}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:rank-one">Problem 75.1.3</a>, <a href="#pr:toy-scale">Problem 75.1.5</a>; <a href="20261126T060300--the-comparison-operator__workbook.html">Chapter 76</a>: <a href="20261126T060300--the-comparison-operator__workbook.html#pr:scalar">Problem 76.1.1</a></div><!-- used-in:end -->
+</div>
+<p>So <span class="math inline">\(Z(\vartheta)\)</span> is traded for
+<span class="math inline">\(\rho_\vartheta\)</span> and <span
+class="math inline">\(D_\vartheta\)</span>. The simplest operators have
+rank one.</p>
+<div id="pr:rank-one" class="problem" data-progress-ids="[&quot;20261126T050800--compressions-and-false-lifts__workbook.tex#pr:rank-one&quot;]">
+<p><strong>Problem 75.1.3</strong>. Let <span class="math inline">\(A =
+{\mathbb{C}}\)</span>, <span class="math inline">\(u_\vartheta(1) =
+v_\vartheta\)</span>, and <span class="math inline">\(\Upsilon_\vartheta
+= g_\vartheta g_\vartheta^*\)</span> with <span
+class="math inline">\(g_\vartheta \colon {\mathbb{C}}\to
+V_\vartheta\)</span>, <span class="math inline">\(g_\vartheta(1) =
+w_\vartheta\)</span>. Then <span class="math inline">\(Z(\vartheta) =
+\lVert v_\vartheta\rVert^2\)</span> and <span
+class="math inline">\(D_\vartheta = \lvert\langle w_\vartheta,
+v_\vartheta\rangle\rvert^2/\lVert v_\vartheta\rVert^2\)</span>. If <span
+class="math inline">\(\langle w_\vartheta, v_\vartheta\rangle =
+c_\vartheta^{-1} \mathrm{per}\)</span> with numbers <span
+class="math inline">\(c_\vartheta \ne 0\)</span> and <span
+class="math inline">\(\mathrm{per} \ne 0\)</span>, <span
+class="math inline">\(\mathrm{per}\)</span> independent of <span
+class="math inline">\(\vartheta\)</span>, the hypothesis of Problem <a
+href="#pr:comparison" data-reference-type="ref"
+data-reference="pr:comparison">75.1.2</a> holds with <span
+class="math inline">\(\rho_\vartheta = \lvert c_1\rvert^2/\lvert
+c_\vartheta\rvert^2\)</span> and <span
+class="math inline">\(\Upsilon^\circ = \lvert
+\mathrm{per}\rvert^2/\lvert c_1\rvert^2\)</span>.</p>
+</div>
+<p>The <em>toy</em> is the following pair of lines in <span
+class="math inline">\({\mathbb{C}}^3\)</span>, with the standard inner
+product, and the set <span class="math inline">\(\{1,
+\vartheta\}\)</span>: <span class="math display">\[v_1 = (1,-1,0),\quad
+v_\vartheta = (1,1,-2),\qquad w_1 = (2,0,1),\quad w_\vartheta =
+(1,1,0),\]</span> with <span class="math inline">\(u_1(z) =
+zv_1\)</span>, <span class="math inline">\(u_\vartheta(z) =
+zv_\vartheta\)</span>, <span class="math inline">\(\Upsilon_1 =
+w_1w_1^*\)</span> and <span class="math inline">\(\Upsilon_\vartheta =
+w_\vartheta w_\vartheta^*\)</span>.</p>
+<div id="pr:toy-Z" class="problem" data-progress-ids="[&quot;20261126T050800--compressions-and-false-lifts__workbook.tex#pr:toy-Z&quot;]">
+<p><strong>Problem 75.1.4</strong>. In the toy <span
+class="math inline">\(Z(1) = 2\)</span> and <span
+class="math inline">\(Z(\vartheta) = 6\)</span>, <span
+class="math inline">\(D_1 = 2\)</span> and <span
+class="math inline">\(D_\vartheta = 2/3\)</span>, and <span
+class="math inline">\(Z(1)D_1 = Z(\vartheta)D_\vartheta =
+4\)</span>.</p>
+</div>
+<div id="pr:toy-scale" class="problem" data-progress-ids="[&quot;20261126T050800--compressions-and-false-lifts__workbook.tex#pr:toy-scale&quot;]">
+<p><strong>Problem 75.1.5</strong>. Replace <span
+class="math inline">\(w_\vartheta\)</span> by <span
+class="math inline">\(3w_\vartheta\)</span>. Then <span
+class="math inline">\(D_\vartheta = 6\)</span>, the hypothesis of
+Problem <a href="#pr:comparison" data-reference-type="ref"
+data-reference="pr:comparison">75.1.2</a> holds with <span
+class="math inline">\(\Upsilon^\circ = 4\)</span>, <span
+class="math inline">\(\rho_1 = 1\)</span> and <span
+class="math inline">\(\rho_\vartheta = 9\)</span>, and <span
+class="math inline">\((D_\vartheta/D_1)\,\rho_\vartheta^{-1} = 1/3 =
+Z(1)/Z(\vartheta)\)</span>.</p>
+</div>
+<p>Determinants are bounded through eigenvalues.</p>
+<div id="pr:eigen" class="problem" data-progress-ids="[&quot;20261126T050800--compressions-and-false-lifts__workbook.tex#pr:eigen&quot;]">
+<p><strong>Problem 75.1.6</strong>. Let <span
+class="math inline">\(Y\)</span> be a finite-dimensional complex vector
+space, <span class="math inline">\(G \in \operatorname{End}Y\)</span>,
+<span class="math inline">\(f_0 \colon {\mathbb{C}}\to F_0\)</span> a
+ring homomorphism into a field with an absolute value, and <span
+class="math inline">\(c \in {\mathbb{R}}\)</span>. If <span
+class="math inline">\(\lvert f_0(\alpha)\rvert \le c\)</span> for every
+eigenvalue <span class="math inline">\(\alpha\)</span> of <span
+class="math inline">\(G\)</span>, then <span
+class="math inline">\(\lvert f_0(\det G)\rvert \le c^{\dim
+Y}\)</span>.</p>
+</div>
+<h1 id="sec:toy">§75.2. False lifts in <span
+class="math inline">\({\mathbb{C}}^3\)</span></h1>
+<p>Where do bounds for <span class="math inline">\(D_\vartheta\)</span>
+come from? Let <span class="math inline">\(V = {\mathbb{C}}^n\)</span>
+with <span class="math inline">\(\langle y, z\rangle = \sum \bar y_i
+z_i\)</span>. An automorphism <span
+class="math inline">\(\sigma\)</span> of <span
+class="math inline">\({\mathbb{C}}\)</span> acts on <span
+class="math inline">\(V\)</span> coordinatewise; put <span
+class="math inline">\(\langle y, z\rangle_\sigma := \langle\sigma y,
+\sigma z\rangle\)</span>, so that <span class="math inline">\(\langle y,
+y\rangle_\sigma = \lVert\sigma y\rVert^2\)</span>. For <span
+class="math inline">\(\iota \mid \ell\)</span> let <span
+class="math inline">\({\mathcal{L}}_\iota := \{y \in V :
+\lvert\iota(y_i)\rvert_\ell \le 1 \text{ for all } i\}\)</span>, the
+vectors <em>integral at</em> <span
+class="math inline">\(\iota\)</span>.</p>
+<p>In this section let <span class="math inline">\(X \subseteq
+V\)</span> be a subspace, the space cut out by the equations that every
+lift satisfies, and <span class="math inline">\(R \subseteq X\)</span> a
+subspace, the <em>lifts</em>. Put <span class="math inline">\(F := X
+\cap R^\perp\)</span>, the <em>false lifts</em>: they satisfy the
+equations that define <span class="math inline">\(X\)</span> but are
+orthogonal to the lifts. Let <span class="math inline">\(\Upsilon \in
+\operatorname{End}V\)</span> with <span
+class="math inline">\(\Upsilon(R) \perp F\)</span>, and put <span
+class="math inline">\(D := \det(\operatorname{pr}_R
+\Upsilon|_R)\)</span>. In Section <a href="#sec:general"
+data-reference-type="ref" data-reference="sec:general">75.3</a>, <span
+class="math inline">\(X\)</span> is the intersection of the image of an
+idempotent with the kernel of a Hecke operator.</p>
+<div id="pr:false" class="problem" data-progress-ids="[&quot;20261126T050800--compressions-and-false-lifts__workbook.tex#pr:false&quot;]">
+<p><strong>Problem 75.2.1</strong>. If <span class="math inline">\(y \perp
+F\)</span>, then <span class="math inline">\(\operatorname{pr}_R y =
+\operatorname{pr}_X y\)</span>.</p>
+</div>
+<div id="pr:perp" class="problem" data-progress-ids="[&quot;20261126T050800--compressions-and-false-lifts__workbook.tex#pr:perp&quot;]">
+<p><strong>Problem 75.2.2</strong>. Let <span class="math inline">\(e,
+{\mathbf{H}}\in \operatorname{End}V\)</span> with <span
+class="math inline">\(e = e^* = e^2\)</span>, and <span
+class="math inline">\(X = \operatorname{im}e \cap \ker
+{\mathbf{H}}\)</span>. Then <span class="math inline">\(F^\perp = R +
+\ker e + \operatorname{im}{\mathbf{H}}^*\)</span>. In the toy, with
+<span class="math inline">\(e\)</span> the identity and <span
+class="math inline">\({\mathbf{H}}\)</span> the matrix with all entries
+<span class="math inline">\(1\)</span>, <span class="math inline">\(X =
+\{y : y_1 + y_2 + y_3 = 0\}\)</span> contains <span
+class="math inline">\(R_1 = {\mathbb{C}}v_1\)</span> and <span
+class="math inline">\(R_\vartheta = {\mathbb{C}}v_\vartheta\)</span>;
+the false lifts are <span class="math inline">\(F_1 =
+{\mathbb{C}}v_\vartheta\)</span> and <span
+class="math inline">\(F_\vartheta = {\mathbb{C}}v_1\)</span>, and <span
+class="math inline">\(F_1^\perp = {\mathbb{C}}v_1 +
+{\mathbb{C}}(1,1,1)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:sigma">Problem 75.2.4</a></div><!-- used-in:end -->
+</div>
+<p>The projection to <span class="math inline">\(R\)</span> can fail to
+commute with <span class="math inline">\(\sigma\)</span>. The next two
+problems give sufficient conditions for <span
+class="math inline">\(\lVert\sigma(\operatorname{pr}_R y)\rVert \le
+\lVert\sigma y\rVert\)</span> when <span class="math inline">\(y \perp
+F\)</span>.</p>
+<div id="pr:conj" class="problem" data-progress-ids="[&quot;20261126T050800--compressions-and-false-lifts__workbook.tex#pr:conj&quot;]">
+<p><strong>Problem 75.2.3</strong>. Let <span class="math inline">\(K_0
+\subset {\mathbb{C}}\)</span> be a subfield, Galois over <span
+class="math inline">\({\mathbb{Q}}\)</span> with abelian Galois group,
+such as <span class="math inline">\({\mathbb{Q}}\)</span> or <span
+class="math inline">\({\mathbb{Q}}(\mathrm{i})\)</span>, and suppose
+that <span class="math inline">\(X\)</span> is spanned by vectors with
+coordinates in <span class="math inline">\(K_0\)</span>. For <span
+class="math inline">\(\sigma \in
+\operatorname{Aut}({\mathbb{C}})\)</span> and <span
+class="math inline">\(y \in V\)</span>, <span
+class="math inline">\(\sigma(\operatorname{pr}_X y) =
+\operatorname{pr}_{\sigma X}(\sigma y)\)</span>, where <span
+class="math inline">\(\sigma X\)</span> is spanned by the images under
+<span class="math inline">\(\sigma\)</span> of such spanning vectors.
+Hence <span class="math inline">\(\lVert\sigma(\operatorname{pr}_R
+y)\rVert \le \lVert\sigma y\rVert\)</span> whenever <span
+class="math inline">\(y \perp F\)</span>.</p>
+</div>
+<p>The next problem models, without rationality, the adjoint identities
+stated after Definition <a href="#def:false" data-reference-type="ref"
+data-reference="def:false">75.3.2</a>.</p>
+<div id="pr:sigma" class="problem" data-progress-ids="[&quot;20261126T050800--compressions-and-false-lifts__workbook.tex#pr:sigma&quot;]">
+<p><strong>Problem 75.2.4</strong>. Let <span class="math inline">\(e,
+{\mathbf{H}}\)</span> and <span class="math inline">\(X\)</span> be as
+in Problem <a href="#pr:perp" data-reference-type="ref"
+data-reference="pr:perp">75.2.2</a>, and suppose that for every <span
+class="math inline">\(\sigma \in
+\operatorname{Aut}({\mathbb{C}})\)</span>: <span
+class="math inline">\(\langle e y, z\rangle_\sigma = \langle y, e
+z\rangle_\sigma\)</span> for all <span class="math inline">\(y,
+z\)</span>, and <span class="math inline">\(\langle {\mathbf{H}}y,
+z\rangle_\sigma = 0\)</span> whenever <span
+class="math inline">\({\mathbf{H}}z = 0\)</span>. Then <span
+class="math inline">\(\operatorname{im}{\mathbf{H}}^*=\operatorname{im}{\mathbf{H}}\)</span>.
+For every <span class="math inline">\(y\perp F\)</span> there are <span
+class="math inline">\(z\in R\)</span> and <span
+class="math inline">\(x\in V\)</span> such that <span
+class="math inline">\(y=z+x\)</span> and <span
+class="math inline">\(\langle x,z&#39;\rangle_\sigma=0\)</span> for
+every <span class="math inline">\(z&#39;\in R\)</span> and every <span
+class="math inline">\(\sigma\in\operatorname{Aut}({\mathbb{C}})\)</span>.
+For each such <span class="math inline">\(y\)</span>, <span
+class="math inline">\(\lVert\sigma(\operatorname{pr}_R
+y)\rVert\le\lVert\sigma y\rVert\)</span> for every <span
+class="math inline">\(\sigma\in\operatorname{Aut}({\mathbb{C}})\)</span>.</p>
+</div>
+<div id="pr:arch" class="problem" data-progress-ids="[&quot;20261126T050800--compressions-and-false-lifts__workbook.tex#pr:arch&quot;]">
+<p><strong>Problem 75.2.5</strong>. Suppose that <span
+class="math inline">\(\lVert\sigma(\operatorname{pr}_R y)\rVert \le
+\lVert\sigma y\rVert\)</span> for every <span
+class="math inline">\(\sigma\)</span> and every <span
+class="math inline">\(y \perp F\)</span>, and that <span
+class="math inline">\(\lVert\sigma(\Upsilon y)\rVert \le
+\exp(c)\,\lVert\sigma y\rVert\)</span> for all <span
+class="math inline">\(y \in V\)</span> and <span
+class="math inline">\(\sigma \in
+\operatorname{Aut}({\mathbb{C}})\)</span>. Then <span
+class="math inline">\(\lvert\sigma(D)\rvert \le \exp(c\dim R)\)</span>
+for all <span class="math inline">\(\sigma\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:toy-delta">Problem 75.2.8</a></div><!-- used-in:end -->
+</div>
+<div id="pr:padic" class="problem" data-progress-ids="[&quot;20261126T050800--compressions-and-false-lifts__workbook.tex#pr:padic&quot;]">
+<p><strong>Problem 75.2.6</strong>. Suppose that <span
+class="math inline">\(\Upsilon({\mathcal{L}}_\iota) \subseteq
+{\mathcal{L}}_\iota\)</span>, and that <span
+class="math inline">\(\Lambda \in \operatorname{End}R\)</span> satisfies
+<span class="math inline">\(\Lambda(\operatorname{pr}_R y) \in
+{\mathcal{L}}_\iota\)</span> for every <span class="math inline">\(y \in
+{\mathcal{L}}_\iota\)</span> with <span class="math inline">\(y \perp
+F\)</span>. Then <span class="math inline">\(\lvert\iota(\det\Lambda
+\cdot D)\rvert_\ell \le 1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:toy-cong">Problem 75.2.7</a>, <a href="#pr:toy-delta">Problem 75.2.8</a></div><!-- used-in:end -->
+</div>
+<p>For <span class="math inline">\(X\)</span> spanned by vectors in
+<span class="math inline">\({\mathbb{Q}}^n\)</span>, the least positive
+integer <span class="math inline">\(c\)</span> with <span
+class="math inline">\(c\operatorname{pr}_X({\mathbb{Z}}^n)\subseteq{\mathbb{Z}}^n\)</span>
+is the exponent of the congruence module of <span
+class="math inline">\(X\)</span> for <span
+class="math inline">\({\mathbb{Q}}^n=(X\cap{\mathbb{Q}}^n)\oplus(X^\perp\cap{\mathbb{Q}}^n)\)</span>
+(Problem <a href="20261125T014100--congruence-modules__workbook.html#pr:denominator" data-reference-type="ref"
+data-reference="cg-pr:denominator">29.1.2</a>). We return
+to the toy, with <span
+class="math inline">\(w_\vartheta=(1,1,0)\)</span> and <span
+class="math inline">\(X\)</span> as in Problem <a href="#pr:perp"
+data-reference-type="ref" data-reference="pr:perp">75.2.2</a>.</p>
+<div id="pr:toy-cong" class="problem" data-progress-ids="[&quot;20261126T050800--compressions-and-false-lifts__workbook.tex#pr:toy-cong&quot;]">
+<p><strong>Problem 75.2.7</strong>. For the decomposition <span
+class="math inline">\({\mathbb{Q}}^3 = (X \cap {\mathbb{Q}}^3) \oplus
+{\mathbb{Q}}(1,1,1)\)</span>, the congruence module of <span
+class="math inline">\(X\)</span> in <span
+class="math inline">\({\mathbb{Z}}^3\)</span> is <span
+class="math inline">\({\mathbb{Z}}/3{\mathbb{Z}}\)</span>, and <span
+class="math inline">\(3\operatorname{pr}_X({\mathbb{Z}}^3) \subseteq
+{\mathbb{Z}}^3\)</span>. Hence, for <span class="math inline">\(R =
+R_1\)</span> and for <span class="math inline">\(R =
+R_\vartheta\)</span> and at every <span
+class="math inline">\(\iota\)</span>, <span
+class="math inline">\(\Lambda = 3\)</span> satisfies the hypothesis on
+<span class="math inline">\(\Lambda\)</span> in Problem <a
+href="#pr:padic" data-reference-type="ref"
+data-reference="pr:padic">75.2.6</a>. For <span class="math inline">\(R =
+R_1\)</span> already <span class="math inline">\(\Lambda = 1\)</span>
+does.</p>
+</div>
+<div id="pr:toy-delta" class="problem" data-progress-ids="[&quot;20261126T050800--compressions-and-false-lifts__workbook.tex#pr:toy-delta&quot;]">
+<p><strong>Problem 75.2.8</strong>. In the toy, <span
+class="math inline">\(\Upsilon_1(R_1) \perp F_1\)</span> and <span
+class="math inline">\(\Upsilon_\vartheta(R_\vartheta) \perp
+F_\vartheta\)</span>. The hypotheses of Problem <a href="#pr:arch"
+data-reference-type="ref" data-reference="pr:arch">75.2.5</a> hold for <span
+class="math inline">\(\Upsilon_1\)</span> with <span
+class="math inline">\(\exp(c) = 5\)</span>, so <span
+class="math inline">\(\lvert\sigma(D_1)\rvert \le 5\)</span> for every
+<span class="math inline">\(\sigma \in
+\operatorname{Aut}({\mathbb{C}})\)</span>; those of Problem <a
+href="#pr:padic" data-reference-type="ref"
+data-reference="pr:padic">75.2.6</a> hold for <span
+class="math inline">\(\Upsilon_\vartheta\)</span> at <span
+class="math inline">\(\iota \mid 3\)</span> with <span
+class="math inline">\(\Lambda = 3\)</span>, so <span
+class="math inline">\(\lvert D_\vartheta\rvert_3 \le 3\)</span>, and
+equality holds.</p>
+</div>
+<p>So for rational <span class="math inline">\(X\)</span>: if <span
+class="math inline">\(c\operatorname{pr}_X({\mathbb{Z}}^n)\subseteq{\mathbb{Z}}^n\)</span>
+and <span class="math inline">\(\Upsilon\)</span> preserves <span
+class="math inline">\({\mathcal{L}}_\iota\)</span>, then <span
+class="math inline">\(c^{\dim R}D\)</span> is integral at <span
+class="math inline">\(\iota\)</span>; and under the hypotheses of
+Problem <a href="#pr:arch" data-reference-type="ref"
+data-reference="pr:arch">75.2.5</a>, <span
+class="math inline">\(\lvert\sigma(D)\rvert\le\exp(c&#39;\dim
+R)\)</span>, where <span class="math inline">\(\exp(c&#39;)\)</span> is
+the operator bound there. Neither bound uses <span
+class="math inline">\(\det(u^*u)\)</span>.</p>
+<h1 id="sec:general">§75.3. The general statement</h1>
+<p>We use the data of Chapter <a href="20261126T030300--the-data__workbook.html#chap"
+data-reference-type="ref" data-reference="da-chap">36</a> and the
+objects of Chapter <a href="20261126T040100--spaces-forms-and-twists__workbook.html#chap" data-reference-type="ref"
+data-reference="ob-chap">37</a>: the chosen places <span
+class="math inline">\({\mathcal{M}}\)</span> and their residue fields
+<span class="math inline">\(k_w\)</span>, with <span
+class="math inline">\(q_w := \#k_w\)</span>; the group <span
+class="math inline">\(\bar G\)</span> and the idempotent <span
+class="math inline">\(e_0\)</span>; the good forms <span
+class="math inline">\(H_g(W_j)\)</span>; twists <span
+class="math inline">\(\vartheta\)</span>, with modulus <span
+class="math inline">\(Q_\vartheta\)</span> and <span
+class="math inline">\(\operatorname{Nm}Q_\vartheta\)</span>, and <span
+class="math inline">\(m\)</span>-fold twists; the characters <span
+class="math inline">\(\mu_j^0\)</span>, <span
+class="math inline">\(\upsilon\)</span> and <span
+class="math inline">\(\chi_M\)</span>; the single lifts <span
+class="math inline">\(u_{\xi,j}\)</span> and <span
+class="math inline">\(Z_j(\vartheta)\)</span>. Fix <span
+class="math inline">\(1 \le j \le m\)</span>. For a twist <span
+class="math inline">\(\vartheta\)</span>, the single lift <span
+class="math inline">\(u_{\vartheta,j}\)</span> maps <span
+class="math inline">\(H_g(W_j)\)</span> to the space of algebraic forms
+on <span class="math inline">\(V_j\)</span> with the weight, level and
+level character prescribed by the lift datum. Write <span
+class="math inline">\(R_{\vartheta,j}\)</span> for its image and <span
+class="math inline">\(\operatorname{pr}_{\vartheta,j}\)</span> for the
+orthogonal projection onto that image. We use two facts from Chapters <a
+href="20261126T050400--the-norm-of-one-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="c1-chap">69</a> and <a href="20261126T050500--equal-multiplicities__workbook.html#chap"
+data-reference-type="ref" data-reference="c2-chap">70</a>: <span
+class="math inline">\(u_{\vartheta,j}\)</span> is injective for every
+tame character <span class="math inline">\(\vartheta\)</span>
+(Problem <a href="20261126T050400--the-norm-of-one-lift__workbook.html#pr:injective" data-reference-type="ref"
+data-reference="c1-pr:injective">69.4.2</a> with Theorem <a
+href="20261126T050400--the-norm-of-one-lift__workbook.html#thm:one-lift" data-reference-type="ref"
+data-reference="c1-thm:one-lift">69.4.1</a>), and <span
+class="math inline">\(\dim H_g(W_j) = d_T\)</span> (Corollary <a
+href="20261126T050500--equal-multiplicities__workbook.html#cor:equal" data-reference-type="ref"
+data-reference="c2-cor:equal">70.4.1</a>).</p>
+<p>For <span class="math inline">\(\sigma \in
+\operatorname{Aut}({\mathbb{C}})\)</span> and a form <span
+class="math inline">\(y\)</span> on <span
+class="math inline">\(V_j\)</span>, in this sheet <span
+class="math inline">\(N_\sigma(y)\)</span> is the class sum, weighted by
+the reciprocal orders of the stabilizers, of the squared Gram norms of
+the vectors <span class="math inline">\(\sigma(y(g))\)</span>; <span
+class="math inline">\(N_1(y) = \lVert y\rVert^2\)</span>. For a ring
+homomorphism <span class="math inline">\(\eta \colon {\mathbb{C}}\to
+{\mathbb{C}}_\ell\)</span>, a form is <em>integral at</em> <span
+class="math inline">\(\eta\)</span> as in Definition <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#def:gauge" data-reference-type="ref"
+data-reference="ob-def:gauge">37.5.1</a>; integral at <span
+class="math inline">\(\iota \mid \ell\)</span> means integral at <span
+class="math inline">\(\iota\)</span> followed by <span
+class="math inline">\(\bar{\mathbb{Q}}_\ell \subset
+{\mathbb{C}}_\ell\)</span>.</p>
+<div id="def:hecke-product" class="definition">
+<p><strong>Definition 75.3.1</strong>. Put <span
+class="math inline">\(z_\varnothing := (7m + k)/2\)</span>, <span
+class="math inline">\(z_+ := m\)</span>, <span class="math inline">\(z_-
+:= m/2\)</span>, integers, as is <span class="math inline">\((t - 11m -
+1)/2\)</span>, since <span class="math inline">\(m = 2^e\)</span> and
+<span class="math inline">\(r = 3^{e&#39;}\)</span> (Definition <a
+href="20261126T030300--the-data__workbook.html#def:data" data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a>); <span
+class="math inline">\(\epsilon_\varnothing = \epsilon_+ = 1\)</span> and
+<span class="math inline">\(\epsilon_- = -1\)</span>; <span
+class="math inline">\(\nu_\varnothing := \mu_j^0\,\upsilon^{\,j + (t -
+11m - 1)/2}\)</span> and <span class="math inline">\(\nu_\pm :=
+\upsilon^{-z_\pm}\chi_M^{\pm j}\)</span>. Define the <em>Hecke value
+product</em> of lift <span class="math inline">\(j\)</span> at a twist
+<span class="math inline">\(\vartheta\)</span> by <span
+class="math display">\[\begin{align*}
+  {\mathcal{H}}_j(\vartheta) &amp;:= \prod_{i \in \{\varnothing, +, -\}}
+\mathrm{ex}_{z_i}\bigl({\mathcal{M}}\cup Q_\vartheta,\,
+(\nu_i\vartheta^{\epsilon_i})^{-1}\bigr) \\
+  &amp;= \prod_{i} \biggl[\Bigl(\prod_{w \in {\mathcal{M}}\cup
+Q_\vartheta} q_w\Bigr)^{z_i^2} \prod_{n=1}^{z_i} \bigl\lvert
+L^{{\mathcal{M}}\cup Q_\vartheta}\bigl(n,
+(\nu_i\vartheta^{\epsilon_i})^{-1}\bigr)\bigr\rvert^2\biggr] ,
+\end{align*}\]</span> with the exchange factors of Definition <a
+href="20261126T050600--the-exchange-identity__workbook.html#def:exchange-factor" data-reference-type="ref"
+data-reference="c3-def:exchange-factor">71.2.3</a> and
+the partial Hecke values <span class="math inline">\(L^S(z,\nu)\)</span>
+of Definition <a href="20261126T040100--spaces-forms-and-twists__workbook.html#def:pair" data-reference-type="ref"
+data-reference="ob-def:pair">37.10.1</a>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030800--the-cost-of-one-lift__workbook.html">Chapter 74</a>; <a href="20261126T060300--the-comparison-operator__workbook.html">Chapter 76</a>; <a href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html">Chapter 77</a></div><!-- used-in:end -->
+</div>
+<p>Let <span class="math inline">\(w\)</span> be a finite place of <span
+class="math inline">\(E\)</span> with <span class="math inline">\(\bar w
+\ne w\)</span> and <span class="math inline">\(w, \bar w \notin
+{\mathcal{M}}\cup Q_\vartheta\)</span>. Let <span
+class="math inline">\({\mathbf{H}}_w\)</span> be the Hecke polynomial of
+lift <span class="math inline">\(j\)</span> at <span
+class="math inline">\(w\)</span> at its test value: the operator <span
+class="math display">\[{\mathbf{H}}_w := \sum_{i=0}^{r+t} (-c_w)^i\,
+q_w^{i(i-1)/2}\, T_{w,i}\]</span> on the forms on <span
+class="math inline">\(V_j\)</span>, where the <span
+class="math inline">\(T_{w,i}\)</span> are the Hecke operators at <span
+class="math inline">\(w\)</span> (Section <a href="20261125T011000--galois-representations-black-box__workbook.html#sec:spherical"
+data-reference-type="ref"
+data-reference="gr-sec:spherical">32.4</a>) and the
+<em>test value</em> is <span class="math inline">\(c_w := (\nu_w
+q_w^{t-1})^{-1}\)</span>, with <span
+class="math inline">\(\nu_w\)</span> the Frobenius value at <span
+class="math inline">\(w\)</span> of Definition <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:false-lift" data-reference-type="ref"
+data-reference="dp-def:false-lift">80.1.3</a> for the
+descent pair of lift <span class="math inline">\(j\)</span>, of ranks
+<span class="math inline">\(r &lt; r + t\)</span>. The group <span
+class="math inline">\(\bar G\)</span> acts on these forms by right
+translation on the block of rank <span class="math inline">\(r\)</span>
+of <span class="math inline">\(V_j\)</span>, twisted by the tame part of
+the character of the lift, and <span class="math inline">\(e_0\)</span>
+acts through this action.</p>
+<div id="def:false" class="definition">
+<p><strong>Definition 75.3.2</strong>. Call the forms in <span
+class="math inline">\(\operatorname{im}e_0 \cap \ker
+{\mathbf{H}}_w\)</span> orthogonal to <span
+class="math inline">\(R_{\vartheta,j}\)</span> the <em>false lifts
+at</em> <span class="math inline">\(w\)</span>. A form is <em>orthogonal
+to the false lifts</em> if it is orthogonal to the false lifts at every
+such <span class="math inline">\(w\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060300--the-comparison-operator__workbook.html">Chapter 76</a>; Chapter 79: <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:test">Definition 79.1.1</a>; <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html">Chapter 80</a>; <a href="20261127T100000--overview__workbook.html">Chapter Overview</a></div><!-- used-in:end -->
+</div>
+<p>For every such <span class="math inline">\(w\)</span>, the image
+<span class="math inline">\(R_{\vartheta,j}\)</span> is contained in
+<span class="math inline">\(\operatorname{im}e_0 \cap \ker
+{\mathbf{H}}_w\)</span>: this is the unramified Hecke relation of a
+theta lift, with the equivariance of the lift under <span
+class="math inline">\(\bar G\)</span>; for its background see <span
+class="citation" data-cites="Ra82">[<a href="#ref-Ra82">Ra82</a>]</span>, and
+Theorem <a href="20261125T016500--hecke-operators-and-theta-lifts__workbook.html#thm:eichler" data-reference-type="ref"
+data-reference="ho-thm:eichler">24.2.1</a> is a lattice-theta
+analogue. <em>Status</em>: the inclusion, and the estimate below, are
+read from the proof; not proved here. So <span
+class="math inline">\(\operatorname{im}e_0 \cap
+\ker{\mathbf{H}}_w\)</span> plays the part of <span
+class="math inline">\(X\)</span> in Section <a href="#sec:toy"
+data-reference-type="ref" data-reference="sec:toy">75.2</a>, at each <span
+class="math inline">\(w\)</span>. For <span class="math inline">\(\sigma
+\in \operatorname{Aut}({\mathbb{C}})\)</span> let <span
+class="math inline">\(\mathfrak b_\sigma\)</span> be the pairing on
+forms that is <span class="math inline">\(\sigma^{-1}\)</span> of the
+class sum of the Gram pairings of the values after <span
+class="math inline">\(\sigma\)</span>, so that <span
+class="math inline">\(N_\sigma(y)\)</span> is the real part of <span
+class="math inline">\(\sigma(\mathfrak b_\sigma(y,y))\)</span>. The
+<em>projection estimate</em> is <span
+class="math inline">\(N_\sigma(\operatorname{pr}_{\vartheta,j}y) \le
+N_\sigma(y)\)</span> for every <span
+class="math inline">\(\sigma\)</span> and every <span
+class="math inline">\(y\)</span> orthogonal to the false lifts; its
+proof is that of Problem <a href="#pr:sigma" data-reference-type="ref"
+data-reference="pr:sigma">75.2.4</a> at one place <span
+class="math inline">\(w\)</span>, using that for each <span
+class="math inline">\(\sigma\)</span>, <span
+class="math inline">\(e_0\)</span> is self-adjoint for <span
+class="math inline">\(\mathfrak b_\sigma\)</span> and <span
+class="math inline">\({\mathbf{H}}_w\)</span> has an adjoint for <span
+class="math inline">\(\mathfrak b_\sigma\)</span> that commutes with
+<span class="math inline">\({\mathbf{H}}_w\)</span>.</p>
+<div id="def:comparison" class="definition">
+<p><strong>Definition 75.3.3</strong>. A family of operators <span
+class="math inline">\(\Upsilon_\vartheta\)</span> on the target space of
+<span class="math inline">\(u_{\vartheta,j}\)</span>, one for every
+twist <span class="math inline">\(\vartheta\)</span>, is a
+<em>comparison operator</em> if: (1) the ratio <span
+class="math inline">\({\mathcal{H}}_j(\vartheta)/{\mathcal{H}}_j(1)\)</span>
+is defined and nonzero for every twist <span
+class="math inline">\(\vartheta\)</span>; (2) some <span
+class="math inline">\(\Upsilon^\circ \in
+\operatorname{End}H_g(W_j)\)</span> has <span
+class="math inline">\(\langle y, \Upsilon^\circ y\rangle &gt; 0\)</span>
+for <span class="math inline">\(y \ne 0\)</span> and <span
+class="math inline">\(\langle u_{\vartheta,j}y&#39;, \Upsilon_\vartheta
+u_{\vartheta,j}y\rangle =
+({\mathcal{H}}_j(\vartheta)/{\mathcal{H}}_j(1))\langle y&#39;,
+\Upsilon^\circ y\rangle\)</span> for every twist <span
+class="math inline">\(\vartheta\)</span> and all <span
+class="math inline">\(y&#39;, y \in H_g(W_j)\)</span>; (3) for every
+twist <span class="math inline">\(\vartheta\)</span> and <span
+class="math inline">\(z \in R_{\vartheta,j}\)</span>, <span
+class="math inline">\(\Upsilon_\vartheta z\)</span> is orthogonal to the
+false lifts; (4) for every twist <span
+class="math inline">\(\vartheta\)</span>, every prime <span
+class="math inline">\(\ell\)</span> prime to <span
+class="math inline">\(\operatorname{Nm}Q_\vartheta\)</span>, and every
+<span class="math inline">\(\eta \colon {\mathbb{C}}\to
+{\mathbb{C}}_\ell\)</span>, <span
+class="math inline">\(\Upsilon_\vartheta\)</span> maps forms integral at
+<span class="math inline">\(\eta\)</span> to forms integral at <span
+class="math inline">\(\eta\)</span>; (5) <span
+class="math inline">\(N_\sigma(\Upsilon_1 y) \le \exp(3fmb\log^2 b)^2\,
+N_\sigma(y)\)</span> for every form <span
+class="math inline">\(y\)</span> at the trivial twist and every <span
+class="math inline">\(\sigma \in
+\operatorname{Aut}({\mathbb{C}})\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030800--the-cost-of-one-lift__workbook.html">Chapter 74</a>; <a href="20261126T060300--the-comparison-operator__workbook.html">Chapter 76</a>: <a href="20261126T060300--the-comparison-operator__workbook.html#thm:operator">Theorem 76.5.1</a></div><!-- used-in:end -->
+</div>
+<p>For a comparison operator put <span id="eq:D"
+class="math display">\[\begin{equation}
+\label{eq:D}\tag{1}
+  D_\vartheta :=
+\det\bigl(\operatorname{pr}_{\vartheta,j}\Upsilon_\vartheta|_{R_{\vartheta,j}}\bigr)
+.
+\end{equation}\]</span></p>
+<div id="def:clears" class="definition">
+<p><strong>Definition 75.3.4</strong>. For <span class="math inline">\(\iota
+\mid \ell\)</span>, a twist <span
+class="math inline">\(\vartheta\)</span> and a real number <span
+class="math inline">\(\mathrm{cl}(\ell)\)</span>, say that <span
+class="math inline">\(\mathrm{cl}(\ell)\)</span> <em>clears the
+projection</em> at <span
+class="math inline">\((\iota,\vartheta,j)\)</span> if some <span
+class="math inline">\(\Lambda \in
+\operatorname{End}R_{\vartheta,j}\)</span> has <span
+class="math inline">\(\lvert\iota(\det\Lambda)\rvert_\ell \ge e^{-(\dim
+R_{\vartheta,j})\,r\,\mathrm{cl}(\ell)}\)</span> and <span
+class="math inline">\(\Lambda(\operatorname{pr}_{\vartheta,j}y)\)</span>
+is integral at <span class="math inline">\(\iota\)</span> for every
+<span class="math inline">\(y\)</span> that is integral at <span
+class="math inline">\(\iota\)</span> and orthogonal to the false
+lifts.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030800--the-cost-of-one-lift__workbook.html">Chapter 74</a>; Chapter 79: <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html#def:regular">Definition 79.1.3</a>; <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html">Chapter 80</a></div><!-- used-in:end -->
+</div>
+<p>Every class of the finite adelic group modulo the rational points and
+the level has a representative whose components above <span
+class="math inline">\(\ell\)</span> are integral, by weak
+approximation.</p>
+<div id="pr:scale" class="problem" data-progress-ids="[&quot;20261126T050800--compressions-and-false-lifts__workbook.tex#pr:scale&quot;]">
+<p><strong>Problem 75.3.1</strong>. Let <span class="math inline">\(y \ne
+0\)</span> be a form in the target space of <span
+class="math inline">\(u_{\vartheta,j}\)</span>, let <span
+class="math inline">\(\eta \colon {\mathbb{C}}\to
+{\mathbb{C}}_\ell\)</span>, and fix class representatives integral above
+<span class="math inline">\(\ell\)</span>. At <span
+class="math inline">\(g = g_0 s g_1\)</span>, with <span
+class="math inline">\(g_0\)</span> rational, <span
+class="math inline">\(s\)</span> a representative and <span
+class="math inline">\(g_1\)</span> in the level, the gauge of <span
+class="math inline">\(y(g)\)</span> is the largest absolute value of a
+coordinate of <span class="math inline">\(\eta(y(s))\)</span>. Hence
+there is <span class="math inline">\(c \in {\mathbb{C}}^\times\)</span>
+such that <span class="math inline">\(cy\)</span> is integral at <span
+class="math inline">\(\eta\)</span> and <span
+class="math inline">\(\alpha c y\)</span> is integral at <span
+class="math inline">\(\eta\)</span> only if <span
+class="math inline">\(\lvert\eta(\alpha)\rvert_\ell \le 1\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:compression" data-reference-type="ref"
+data-reference="pr:compression">75.1.1</a>, <a href="#pr:comparison"
+data-reference-type="ref" data-reference="pr:comparison">75.1.2</a>, <a
+href="#pr:eigen" data-reference-type="ref"
+data-reference="pr:eigen">75.1.6</a>, <a href="#pr:arch"
+data-reference-type="ref" data-reference="pr:arch">75.2.5</a>, <a
+href="#pr:padic" data-reference-type="ref"
+data-reference="pr:padic">75.2.6</a> and <a href="#pr:scale"
+data-reference-type="ref" data-reference="pr:scale">75.3.1</a>, carried over
+to forms with the projection estimate, the facts that <span
+class="math inline">\(N_\sigma(y) &gt; 0\)</span> for <span
+class="math inline">\(y \ne 0\)</span> and <span
+class="math inline">\(N_\sigma(ay) = \lvert\sigma(a)\rvert^2
+N_\sigma(y)\)</span>, the injectivity of <span
+class="math inline">\(u_{\vartheta,j}\)</span> and <span
+class="math inline">\(\dim H_g(W_j) = d_T\)</span> (so that <span
+class="math inline">\(\dim R_{\vartheta,j} = d_T\)</span>), prove the
+following theorem.</p>
+<div id="thm:compression" class="theorem">
+<p><strong>Theorem 75.3.1</strong>. <em>Let <span class="math inline">\(1 \le
+j \le m\)</span> and let <span
+class="math inline">\((\Upsilon_\vartheta)\)</span> be a comparison
+operator. <span class="upright">(a)</span> The number <span
+class="math inline">\(\det(u_{\vartheta,j}^*u_{\vartheta,j})\,D_\vartheta\,({\mathcal{H}}_j(\vartheta)/{\mathcal{H}}_j(1))^{-d_T}\)</span>
+is nonzero and does not depend on the twist <span
+class="math inline">\(\vartheta\)</span>. <span
+class="upright">(b)</span> For every twist <span
+class="math inline">\(\vartheta\)</span>, every <span
+class="math inline">\(\iota \mid \ell\)</span> with <span
+class="math inline">\(\ell\)</span> prime to <span
+class="math inline">\(\operatorname{Nm}Q_\vartheta\)</span>, and every
+real <span class="math inline">\(\mathrm{cl}(\ell)\)</span> that clears
+the projection at <span
+class="math inline">\((\iota,\vartheta,j)\)</span>, <span
+class="math inline">\(\lvert\iota(D_\vartheta)\rvert_\ell \le e^{d_T
+r\,\mathrm{cl}(\ell)}\)</span>. <span class="upright">(c)</span> <span
+class="math inline">\(\lvert\sigma(D_1)\rvert \le e^{3d_T fmb\log^2
+b}\)</span> for every <span class="math inline">\(\sigma \in
+\operatorname{Aut}({\mathbb{C}})\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030800--the-cost-of-one-lift__workbook.html">Chapter 74</a>; <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html">Chapter 80</a></div><!-- used-in:end -->
+</div>
+<p>In particular every <span class="math inline">\(D_\vartheta\)</span>
+is nonzero. For an <span class="math inline">\(m\)</span>-fold twist
+<span class="math inline">\(\vartheta\)</span> the power <span
+class="math inline">\(\vartheta^j\)</span> is a twist (Section <a
+href="20261126T040100--spaces-forms-and-twists__workbook.html#sec:twists" data-reference-type="ref"
+data-reference="ob-sec:twists">37.6</a>), and <span
+class="math inline">\(1^j = 1\)</span>.</p>
+<div id="pr:quotient" class="problem" data-progress-ids="[&quot;20261126T050800--compressions-and-false-lifts__workbook.tex#pr:quotient&quot;]">
+<p><strong>Problem 75.3.2</strong>. For every comparison operator and every
+<span class="math inline">\(m\)</span>-fold twist <span
+class="math inline">\(\vartheta\)</span>, <span
+class="math display">\[\frac{Z_j(1)}{Z_j(\vartheta)} =
+\frac{D_{\vartheta^j}}{D_1}\Bigl(\frac{{\mathcal{H}}_j(\vartheta^j)}{{\mathcal{H}}_j(1)}\Bigr)^{-d_T}
+.\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030800--the-cost-of-one-lift__workbook.html">Chapter 74</a>; <a href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html">Chapter 77</a></div><!-- used-in:end -->
+</div>
+<p>Chapter <a href="20261126T030800--the-cost-of-one-lift__workbook.html#chap" data-reference-type="ref"
+data-reference="col-chap">74</a> combines Problem <a
+href="#pr:quotient" data-reference-type="ref"
+data-reference="pr:quotient">75.3.2</a> and Theorem <a
+href="#thm:compression" data-reference-type="ref"
+data-reference="thm:compression">75.3.1</a>(b), (c) with the comparison
+operator of Theorem <a href="20261126T060300--the-comparison-operator__workbook.html#thm:operator" data-reference-type="ref"
+data-reference="l2-thm:operator">76.5.1</a> and the height
+bound of Problem <a href="20261126T030800--the-cost-of-one-lift__workbook.html#pr:hecke-height"
+data-reference-type="ref"
+data-reference="col-pr:hecke-height">74.2.4</a> to prove
+Theorem <a href="20261126T030800--the-cost-of-one-lift__workbook.html#thm:main" data-reference-type="ref"
+data-reference="col-thm:main">74.2.1</a>. Taken as given here:
+the injectivity of the single lifts, <span class="math inline">\(\dim
+H_g(W_j) = d_T\)</span>, the inclusion of the lifts in <span
+class="math inline">\(\operatorname{im}e_0 \cap
+\ker{\mathbf{H}}_w\)</span>, and the projection estimate.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. In the Lean proof <span
+class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, in
+<code>grh/src/New/OneLift/LiftVolumeHeight.lean</code> unless said
+otherwise: Theorem <a href="#thm:compression" data-reference-type="ref"
+data-reference="thm:compression">75.3.1</a> is
+<code>Data.IsComparisonOperator.exists_normDet_sq_mul_det_eq</code> (a),
+<code>.norm_padic_det_liftCompression_le</code> (b) and
+<code>.norm_map_det_liftCompression_le</code> (c), stated with <span
+class="math inline">\(\dim H_g(W_j)\)</span> in place of <span
+class="math inline">\(d_T\)</span> and with a named constant in (a);
+comparison operators are <code>Data.IsComparisonOperator</code>; <span
+class="math inline">\({\mathcal{H}}_j\)</span> is
+<code>Data.heckeValueProd</code>
+(<code>New/OneLift/ComparisonOperator/ThreeExchanges.lean</code>);
+orthogonality to the false lifts is
+<code>DescentPair.IsOrthogonalToFalseLifts</code>
+(<code>New/OneLift/TestedForms.lean</code>); clearing is
+<code>Data.ClearsProjection</code>
+(<code>New/Determinant/Twist/FitTwists.lean</code>); the inclusion of
+the lifts in <span class="math inline">\(\operatorname{im}e_0 \cap \ker
+{\mathbf{H}}_w\)</span> is
+<code>Data.range_goodLift_le_range_inf_ker</code>, the projection
+estimate is <code>Data.normSqAt_starProjection_range_goodLift_le</code>,
+and the scaling conclusion of Problem <a href="#pr:scale"
+data-reference-type="ref" data-reference="pr:scale">75.3.1</a> is the
+specialization of
+<code>DescentPair.exists_smul_mem_integralForms_maximal</code> to the
+datum of lift <span class="math inline">\(j\)</span>, whose proof
+contains the gauge calculation.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="seccompress">§<a href="#sec:compress"
+data-reference-type="ref" data-reference="sec:compress">75.1</a></h2>
+<dl>
+<dt><a href="#pr:compression" data-reference-type="ref"
+data-reference="pr:compression">75.1.1</a></dt>
+<dd>
+<p>Since <span class="math inline">\(u^*\)</span> kills <span
+class="math inline">\(R^\perp\)</span>, <span
+class="math inline">\(u^*Gu = u^*\operatorname{pr}_R G u\)</span>. Write
+<span class="math inline">\(u\)</span> as an isomorphism <span
+class="math inline">\(A \to R\)</span> followed by the inclusion.</p>
+</dd>
+<dt><a href="#pr:comparison" data-reference-type="ref"
+data-reference="pr:comparison">75.1.2</a></dt>
+<dd>
+<p>Problem <a href="#pr:compression" data-reference-type="ref"
+data-reference="pr:compression">75.1.1</a> with <span class="math inline">\(G
+= \Upsilon_\vartheta\)</span>; the hypothesis says <span
+class="math inline">\(u_\vartheta^*\Upsilon_\vartheta u_\vartheta =
+\rho_\vartheta \Upsilon^\circ\)</span>.</p>
+</dd>
+<dt><a href="#pr:rank-one" data-reference-type="ref"
+data-reference="pr:rank-one">75.1.3</a></dt>
+<dd>
+<p><span class="math inline">\(g_\vartheta^*v = \langle w_\vartheta,
+v\rangle\)</span>.</p>
+</dd>
+<dt><a href="#pr:toy-Z" data-reference-type="ref"
+data-reference="pr:toy-Z">75.1.4</a></dt>
+<dd>
+<p>Problem <a href="#pr:rank-one" data-reference-type="ref"
+data-reference="pr:rank-one">75.1.3</a>.</p>
+</dd>
+<dt><a href="#pr:eigen" data-reference-type="ref"
+data-reference="pr:eigen">75.1.6</a></dt>
+<dd>
+<p>Factor the characteristic polynomial over <span
+class="math inline">\({\mathbb{C}}\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="sectoy">§<a href="#sec:toy"
+data-reference-type="ref" data-reference="sec:toy">75.2</a></h2>
+<dl>
+<dt><a href="#pr:false" data-reference-type="ref"
+data-reference="pr:false">75.2.1</a></dt>
+<dd>
+<p><span class="math inline">\(X = R \oplus F\)</span>,
+orthogonally.</p>
+</dd>
+<dt><a href="#pr:perp" data-reference-type="ref"
+data-reference="pr:perp">75.2.2</a></dt>
+<dd>
+<p>Take orthogonal complements in the definition of <span
+class="math inline">\(F\)</span>.</p>
+</dd>
+<dt><a href="#pr:conj" data-reference-type="ref"
+data-reference="pr:conj">75.2.3</a></dt>
+<dd>
+<p><span class="math inline">\(\operatorname{pr}_X = \mathsf B(\mathsf
+B^*\mathsf B)^{-1}\mathsf B^*\)</span> for a matrix <span
+class="math inline">\(\mathsf B\)</span> whose columns form a basis of
+<span class="math inline">\(X\)</span> and have coordinates in <span
+class="math inline">\(K_0\)</span>; on <span
+class="math inline">\(K_0\)</span>, complex conjugation commutes with
+<span class="math inline">\(\sigma\)</span>.</p>
+</dd>
+<dt><a href="#pr:sigma" data-reference-type="ref"
+data-reference="pr:sigma">75.2.4</a></dt>
+<dd>
+<p>At <span class="math inline">\(\sigma = 1\)</span>, <span
+class="math inline">\(\ker{\mathbf{H}}\subseteq
+(\operatorname{im}{\mathbf{H}})^\perp = \ker{\mathbf{H}}^*\)</span>.
+Decompose <span class="math inline">\(y\)</span> by Problem <a
+href="#pr:perp" data-reference-type="ref"
+data-reference="pr:perp">75.2.2</a>, and use <span class="math inline">\(R
+\subseteq \operatorname{im}e \cap \ker {\mathbf{H}}\)</span>.</p>
+</dd>
+<dt><a href="#pr:arch" data-reference-type="ref"
+data-reference="pr:arch">75.2.5</a></dt>
+<dd>
+<p>Take an eigenvector <span class="math inline">\(z\)</span> of <span
+class="math inline">\(\operatorname{pr}_R \Upsilon|_R\)</span> and apply
+the hypothesis to <span class="math inline">\(\Upsilon z\)</span>; then
+Problem <a href="#pr:eigen" data-reference-type="ref"
+data-reference="pr:eigen">75.1.6</a>.</p>
+</dd>
+<dt><a href="#pr:padic" data-reference-type="ref"
+data-reference="pr:padic">75.2.6</a></dt>
+<dd>
+<p>Scale an eigenvector of <span
+class="math inline">\(\Lambda\operatorname{pr}_R \Upsilon|_R\)</span> to
+be integral at <span class="math inline">\(\iota\)</span> with a
+coordinate of absolute value <span class="math inline">\(1\)</span>.</p>
+</dd>
+<dt><a href="#pr:toy-cong" data-reference-type="ref"
+data-reference="pr:toy-cong">75.2.7</a></dt>
+<dd>
+<p>Problem <a href="20261125T014100--congruence-modules__workbook.html#pr:symmetry" data-reference-type="ref"
+data-reference="cg-pr:symmetry">29.1.1</a>: the index of <span
+class="math inline">\(({\mathbb{Z}}^3 \cap X) \oplus
+{\mathbb{Z}}(1,1,1)\)</span> in <span
+class="math inline">\({\mathbb{Z}}^3\)</span>; then Problems <a
+href="#pr:false" data-reference-type="ref"
+data-reference="pr:false">75.2.1</a> and <a href="20261125T014100--congruence-modules__workbook.html#pr:denominator"
+data-reference-type="ref"
+data-reference="cg-pr:denominator">29.1.2</a>. For <span
+class="math inline">\(R_1\)</span>, write <span
+class="math inline">\(\operatorname{pr}_{R_1}y\)</span> for <span
+class="math inline">\(y \perp v_\vartheta\)</span>.</p>
+</dd>
+<dt><a href="#pr:toy-delta" data-reference-type="ref"
+data-reference="pr:toy-delta">75.2.8</a></dt>
+<dd>
+<p><span class="math inline">\(\lVert w_1\rVert^2 = 5\)</span>, and
+<span class="math inline">\(w_1\)</span> has rational coordinates; for
+equality, Problem <a href="#pr:toy-Z" data-reference-type="ref"
+data-reference="pr:toy-Z">75.1.4</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secgeneral">§<a href="#sec:general"
+data-reference-type="ref" data-reference="sec:general">75.3</a></h2>
+<dl>
+<dt><a href="#pr:scale" data-reference-type="ref"
+data-reference="pr:scale">75.3.1</a></dt>
+<dd>
+<p>Use the transformation law at <span class="math inline">\(g_0 s
+g_1\)</span>, whose level character has finite order, and compare the
+coordinates at all the representatives.</p>
+</dd>
+<dt><a href="#pr:quotient" data-reference-type="ref"
+data-reference="pr:quotient">75.3.2</a></dt>
+<dd>
+<p>Theorem <a href="#thm:compression" data-reference-type="ref"
+data-reference="thm:compression">75.3.1</a>(a) at <span
+class="math inline">\(\vartheta^j\)</span> and at <span
+class="math inline">\(1\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Ra82"><span class="bib-label">[Ra82]</span> S. Rallis, <em>Langlands’ functoriality and the Weil representation</em>, Amer. J. Math. <strong>104</strong> (1982), 469–515.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

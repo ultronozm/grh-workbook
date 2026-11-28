@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-DDbLzhMa/2dFsRNv7Y0jp65Feyuy4bpL8fjpHqz9XVc=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>The places, the weights and the remainder</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","R":"\\mathbb{R}","Gal":"\\operatorname{Gal}","rem":"\\mathrm{rem}","smain":"s_{\\mathrm{main}}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="3">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261125T005000--galois-fourier-and-averaging__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 17:44:10
+      <a href="20261125T005000--galois-fourier-and-averaging__workbook.tex" class="my-link">tex</a>
+      <a href="20261125T005000--galois-fourier-and-averaging__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261125T005000--galois-fourier-and-averaging__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">The places, the weights and the remainder <a class="stable-tag" href="tag/224S.html" title="Stable tag: cite as Tag 224S">Tag 224S</a></h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:places" id="toc-sec:places">§3.1. The host field and its places</a></li>
+<li><a href="#sec:thick" id="toc-sec:thick">§3.2. Two weights and the prime sum</a></li>
+<li><a href="#sec:two-scales" id="toc-sec:two-scales">§3.3. The remainder at the first scale</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secplaces" id="toc-secplaces">§3.1</a></li>
+<li><a href="#secthick" id="toc-secthick">§3.2</a></li>
+<li><a href="#sectwo-scales" id="toc-sectwo-scales">§3.3</a></li>
+<li><a href="#theorems" id="toc-theorems">Theorems</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>From Chapter <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#chap" data-reference-type="ref"
+data-reference="zr-chap">1</a>, <em>From zeros to a one-sided
+bound</em>: the weight <span class="math inline">\(\lambda\)</span>, the
+constant <span class="math inline">\(c_{d,q}\)</span> and the remainder
+<span class="math inline">\(R_{d,q}\)</span> of equation <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:R" data-reference-type="eqref"
+data-reference="zr-eq:R">(4)</a>, recalled below, and Problem <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#pr:R-limit" data-reference-type="ref"
+data-reference="zr-pr:R-limit">1.4.7</a>. From Chapter <a
+href="20261125T001100--inert-primes-and-estimate-b__workbook.html#chap" data-reference-type="ref"
+data-reference="zi-chap">2</a>, <em>Inert primes and the choice
+of <span class="math inline">\(d\)</span></em>: Section <a
+href="20261125T001100--inert-primes-and-estimate-b__workbook.html#sec:inert" data-reference-type="ref"
+data-reference="zi-sec:inert">2.1</a>, on the values of <span
+class="math inline">\(1 - \chi_K\)</span>. Cyclotomic fields and their
+Galois groups <span class="citation"
+data-cites="Wa">[<a href="#ref-Wa">Wa</a>, Ch. 2]</span>; infinite places of
+a number field as conjugation orbits of embeddings into <span
+class="math inline">\(\mathbb{C}\)</span> <span class="citation"
+data-cites="Ne">[<a href="#ref-Ne">Ne</a>, Ch. II, §8]</span>; quadratic
+reciprocity <span class="citation"
+data-cites="SeA">[<a href="#ref-SeA">SeA</a>, Ch. I, §3]</span>.</p>
+<p>In the proof, the main inequality (Theorem <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.html#thm:main"
+data-reference-type="ref"
+data-reference="mi-thm:main">38.2.1</a>) bounds from above a
+centered sum over the infinite places of class <span
+class="math inline">\(1\)</span> modulo <span
+class="math inline">\(q_0\)</span> in the CM field obtained by adjoining
+a root of unity to <span class="math inline">\(K =
+\mathbb{Q}(\sqrt{-d})\)</span>. Chapter <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#chap"
+data-reference-type="ref" data-reference="zr-chap">1</a> needs
+an upper bound for the remainder of a weighted sum over the prime powers
+<span class="math inline">\(n \equiv 1 \pmod{q_0}\)</span> up to <span
+class="math inline">\(x\)</span>. How does the sum over places give such
+a bound? An exact finite-sum identity gives the answer. In the summand
+indexed by <span class="math inline">\(n\)</span>, the weight at the
+translated place sets the cutoff. For an admissible datum the centered
+total over places of class <span class="math inline">\(1\)</span> modulo
+<span class="math inline">\(q_0\)</span> equals a positive multiple of
+<span class="math inline">\(R_{q_0}(x)\)</span> plus two terms at <span
+class="math inline">\(x_1\)</span> (Theorem <a href="#thm:remainder"
+data-reference-type="ref" data-reference="thm:remainder">3.2.1</a>).</p>
+<p>Throughout, <span class="math inline">\(d \equiv 3 \pmod 4\)</span>
+is a prime, <span class="math inline">\(K :=
+\mathbb{Q}(\sqrt{-d})\)</span>, and <span
+class="math inline">\(\chi_K(n) := \bigl(\frac nd\bigr)\)</span> is the
+Legendre symbol (the <span class="math inline">\(\chi_d\)</span> of
+Chapter <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#chap" data-reference-type="ref"
+data-reference="zr-chap">1</a>), so <span
+class="math inline">\(\chi_K(d) = 0\)</span>. For an integer <span
+class="math inline">\(q \ge 1\)</span> prime to <span
+class="math inline">\(d\)</span> we write, as in Chapter <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#chap" data-reference-type="ref"
+data-reference="zr-chap">1</a>, <span
+class="math display">\[\lambda_q(n) := \begin{cases} \Lambda(n)\bigl(1 -
+\chi_K(n)\bigr), &amp; n \equiv 1 \pmod q, \\ 0, &amp; \text{otherwise},
+\end{cases}
+  \qquad
+  R_q(z) := \sum_{1 \le n \le z} \lambda_q(n) \Bigl(\frac1n -
+\frac1z\Bigr) - \frac{\log z}{\varphi(q)} - c_q\]</span> for real <span
+class="math inline">\(z &gt; 0\)</span>, where <span
+class="math inline">\(c_q := c_{d,q}\)</span> and <span
+class="math inline">\(R_q := R_{d,q}\)</span> are the constant and the
+remainder of equation <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#eq:R" data-reference-type="eqref"
+data-reference="zr-eq:R">(4)</a>, and <span
+class="math inline">\(\lambda_q\)</span> is the weight <span
+class="math inline">\(\lambda\)</span> there for the modulus <span
+class="math inline">\(q\)</span>; we drop <span
+class="math inline">\(d\)</span>, which is fixed. The value of <span
+class="math inline">\(c_q\)</span> plays no role in the identities of
+this chapter. We write <span class="math inline">\(u_+ := \max(u,
+0)\)</span> for real <span class="math inline">\(u\)</span>.</p>
+<h1 id="sec:places">§3.1. The host field and its places <a class="stable-tag" href="tag/22ZU.html" title="Stable tag: cite as Tag 22ZU">Tag 22ZU</a></h1>
+<p>Let <span class="math inline">\(q_0 \ge 3\)</span> and let <span
+class="math inline">\(q_1\)</span> be a multiple of <span
+class="math inline">\(q_0\)</span> such that every prime factor of <span
+class="math inline">\(q_1\)</span> divides <span
+class="math inline">\(q_0\)</span>, and <span class="math inline">\(d
+\nmid q_1\)</span>. Let <span class="math inline">\(E :=
+K(\zeta)\)</span> with <span class="math inline">\(\zeta\)</span> a
+primitive <span class="math inline">\(q_1\)</span>-th root of unity,
+regarded as a subfield of <span
+class="math inline">\(\mathbb{C}\)</span>. For <span
+class="math inline">\(g \in \operatorname{Gal}(E/K)\)</span> let <span
+class="math inline">\(e(g) \in
+(\mathbb{Z}/q_1\mathbb{Z})^\times\)</span> be the class with <span
+class="math inline">\(g(\zeta) = \zeta^{e(g)}\)</span>.</p>
+<div id="pr:galois" class="problem" data-progress-ids="[&quot;22ZV&quot;]"><a class="stable-tag" href="tag/22ZV.html" title="Stable tag: cite as Tag 22ZV">Tag 22ZV</a>
+<p><strong>Problem 3.1.1</strong>. The map <span class="math inline">\(e
+\colon \operatorname{Gal}(E/K) \to
+(\mathbb{Z}/q_1\mathbb{Z})^\times\)</span> is an isomorphism, and <span
+class="math inline">\([E : \mathbb{Q}] = 2\varphi(q_1)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030300--the-data__workbook.html">Chapter 36</a></div><!-- used-in:end -->
+</div>
+<p>Let <span class="math inline">\(\Phi\)</span> be the set of infinite
+places of <span class="math inline">\(E\)</span> and <span
+class="math inline">\(f := \lvert \Phi \rvert\)</span>. For <span
+class="math inline">\(g \in \operatorname{Gal}(E/K)\)</span> let <span
+class="math inline">\(\langle g \rangle \in \Phi\)</span> be the place
+of the embedding <span class="math inline">\(g \colon E \to
+\mathbb{C}\)</span>.</p>
+<div id="pr:cm-type" class="problem" data-progress-ids="[&quot;22ZW&quot;]"><a class="stable-tag" href="tag/22ZW.html" title="Stable tag: cite as Tag 22ZW">Tag 22ZW</a>
+<p><strong>Problem 3.1.2</strong>. Every infinite place of <span
+class="math inline">\(E\)</span> is complex, and <span
+class="math inline">\(g \mapsto \langle g \rangle\)</span> is a
+bijection <span class="math inline">\(\operatorname{Gal}(E/K) \to
+\Phi\)</span>. Hence <span class="math inline">\(f =
+\varphi(q_1)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030300--the-data__workbook.html">Chapter 36</a></div><!-- used-in:end -->
+</div>
+<p>We make <span class="math inline">\(\Phi\)</span> a group through
+<span class="math inline">\(g \mapsto \langle g \rangle\)</span>, and
+identify it with <span
+class="math inline">\((\mathbb{Z}/q_1\mathbb{Z})^\times\)</span> through
+<span class="math inline">\(e\)</span>: the place <span
+class="math inline">\(\sigma \in \Phi\)</span> has <em>label</em> <span
+class="math inline">\(v \in (\mathbb{Z}/q_1\mathbb{Z})^\times\)</span>
+if <span class="math inline">\(\sigma = \langle g \rangle\)</span> with
+<span class="math inline">\(e(g) = v\)</span>. The place with label
+<span class="math inline">\(1\)</span> is the identity. For <span
+class="math inline">\(\nu \in \mathbb{Z}\)</span> let <span
+class="math inline">\([\nu] \in \Phi\)</span> be the place with label
+<span class="math inline">\(\nu \bmod q_1\)</span> if <span
+class="math inline">\(\gcd(\nu, q_1) = 1\)</span>, and the identity
+place otherwise. Let <span class="math inline">\(\mathrm{cl} \colon \Phi
+\to (\mathbb{Z}/q_0\mathbb{Z})^\times\)</span> be the label reduced
+modulo <span class="math inline">\(q_0\)</span>, and let <span
+class="math display">\[\Phi_a := \mathrm{cl}^{-1}(1) ,\]</span> the
+<em><span class="math inline">\(a\)</span>-places</em>. Fix a set <span
+class="math inline">\(\Phi_b \subseteq \mathrm{cl}^{-1}(-1)\)</span> of
+<em><span class="math inline">\(b\)</span>-places</em>. We write <span
+class="math inline">\(\#\)</span> for the number of elements.</p>
+<div id="pr:fibres" class="problem" data-progress-ids="[&quot;22ZX&quot;,&quot;20261125T005000--galois-fourier-and-averaging__workbook.tex#pr:fibres&quot;]"><a class="stable-tag" href="tag/22ZX.html" title="Stable tag: cite as Tag 22ZX">Tag 22ZX</a>
+<p><strong>Problem 3.1.3</strong>. <span class="math inline">\(\#\Phi_a =
+q_1/q_0\)</span> and <span class="math inline">\(f = \#\Phi_a\,
+\varphi(q_0)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T005500--columns-from-a-sphere__workbook.html">Chapter 4</a></div><!-- used-in:end -->
+</div>
+<p><em>Partners.</em> For an integer <span class="math inline">\(n \ge
+1\)</span> and a place <span class="math inline">\(\tau \in
+\Phi\)</span>, the <em>partner</em> of <span
+class="math inline">\(\tau\)</span> for <span
+class="math inline">\(n\)</span> is the place <span
+class="math inline">\([-n]\tau\)</span>, the product of <span
+class="math inline">\([-n]\)</span> and <span
+class="math inline">\(\tau\)</span> in the group <span
+class="math inline">\(\Phi\)</span>. For <span
+class="math inline">\(n\)</span> prime to <span
+class="math inline">\(q_1\)</span>, <span
+class="math display">\[\text{label of } [-n]\tau \;=\; -n \cdot
+(\text{label of } \tau) \pmod{q_1} ,\]</span> and for <span
+class="math inline">\(n\)</span> not prime to <span
+class="math inline">\(q_1\)</span> the partner is <span
+class="math inline">\(\tau\)</span> itself. This notation is used
+throughout the later chapters, mostly for <span
+class="math inline">\(\tau \in \Phi_a\)</span> and <span
+class="math inline">\(n = p^e\)</span> a prime power.</p>
+<p>The minus sign comes from choosing the embedding over <span
+class="math inline">\(K\)</span> after applying Frobenius at an inert
+prime (Problem <a href="#pr:frobenius-partner" data-reference-type="ref"
+data-reference="pr:frobenius-partner">3.1.4</a>).</p>
+<div id="pr:frobenius-partner" class="problem" data-progress-ids="[&quot;23ER&quot;,&quot;20261125T005000--galois-fourier-and-averaging__workbook.tex#pr:frobenius-partner&quot;]"><a class="stable-tag" href="tag/23ER.html" title="Stable tag: cite as Tag 23ER">Tag 23ER</a>
+<p><strong>Problem 3.1.4</strong>. Let <span
+class="math inline">\(p\)</span> be an odd prime inert in <span
+class="math inline">\(K\)</span> with <span class="math inline">\(p
+\nmid q_1\)</span>, and let <span class="math inline">\(A :=
+\mathbb{Z}_{(p)}[\zeta,\sqrt{-d}]\)</span>. Modulo <span
+class="math inline">\(pA\)</span>, the <span
+class="math inline">\(p\)</span>-th power map sends <span
+class="math inline">\(\zeta\)</span> to <span
+class="math inline">\(\zeta^p\)</span> and <span
+class="math inline">\(\sqrt{-d}\)</span> to <span
+class="math inline">\(-\sqrt{-d}\)</span>. For <span
+class="math inline">\(\tau \in \Phi\)</span> write <span
+class="math inline">\(g_\tau\)</span> for its embedding over <span
+class="math inline">\(K\)</span>. For odd <span class="math inline">\(h
+\ge 1\)</span> and <span class="math inline">\(u \in A\)</span>, <span
+class="math display">\[\bigl(g_\tau(u)\bigr)^{p^h} \equiv
+\overline{g_{[-p^h]\tau}(u)} \pmod{pA}.\]</span></p>
+</div>
+<div id="pr:outside" class="problem" data-progress-ids="[&quot;22ZY&quot;]"><a class="stable-tag" href="tag/22ZY.html" title="Stable tag: cite as Tag 22ZY">Tag 22ZY</a>
+<p><strong>Problem 3.1.5</strong>. For <span class="math inline">\(\tau \in
+\Phi_a\)</span> and every integer <span class="math inline">\(n \ge
+1\)</span>, <span class="math inline">\(\mathrm{cl}\bigl([-n]\tau\bigr)
+= -1\)</span> if and only if <span class="math inline">\(n \equiv 1
+\pmod{q_0}\)</span>.</p>
+</div>
+<div id="pr:count" class="problem" data-progress-ids="[&quot;22ZZ&quot;,&quot;20261125T005000--galois-fourier-and-averaging__workbook.tex#pr:count&quot;]"><a class="stable-tag" href="tag/22ZZ.html" title="Stable tag: cite as Tag 22ZZ">Tag 22ZZ</a>
+<p><strong>Problem 3.1.6</strong>. For every integer <span
+class="math inline">\(n \ge 1\)</span>, the number of <span
+class="math inline">\(\tau \in \Phi_a\)</span> with <span
+class="math inline">\([-n]\tau \in \Phi_b\)</span> is <span
+class="math inline">\(\#\Phi_b\)</span> if <span class="math inline">\(n
+\equiv 1 \pmod{q_0}\)</span>, and <span class="math inline">\(0\)</span>
+otherwise.</p>
+</div>
+<p>When <span class="math inline">\(\gcd(n, q_1) &gt; 1\)</span>, our
+convention gives <span class="math inline">\([-n]\tau = \tau\)</span>.
+Under the hypotheses of the next problem such <span
+class="math inline">\(n\)</span> have coefficient <span
+class="math inline">\(\lambda_1(n) = 0\)</span> in the prime sums below,
+so the convention does not affect them.</p>
+<div id="pr:coef" class="problem" data-progress-ids="[&quot;2322&quot;]"><a class="stable-tag" href="tag/2322.html" title="Stable tag: cite as Tag 2322">Tag 2322</a>
+<p><strong>Problem 3.1.7</strong>. (i) If <span class="math inline">\(16
+\mid q_0\)</span>, <span class="math inline">\(q_0 \mid 2(d +
+1)\)</span> and <span class="math inline">\(q_0 \nmid d + 1\)</span>,
+then <span class="math inline">\(d \equiv 7 \pmod 8\)</span> and <span
+class="math inline">\(\chi_K(p) = 1\)</span> for every prime <span
+class="math inline">\(p \mid q_0\)</span>. (ii) In that case <span
+class="math inline">\(\lambda_1(n) = 0\)</span> for every <span
+class="math inline">\(n \ge 1\)</span> with <span
+class="math inline">\(\gcd(n, q_1) &gt; 1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T005500--columns-from-a-sphere__workbook.html">Chapter 4</a></div><!-- used-in:end -->
+</div>
+<p>The <em>toy example</em> is <span class="math inline">\(q_0 =
+4\)</span>, <span class="math inline">\(q_1 = 16\)</span>, <span
+class="math inline">\(d = 7\)</span>, so that <span
+class="math inline">\(f = 8\)</span>, <span
+class="math inline">\(\Phi_a\)</span> consists of the places with labels
+<span class="math inline">\(1, 5, 9, 13\)</span>, and <span
+class="math inline">\(\Phi_b\)</span> consists of the place with label
+<span class="math inline">\(15\)</span>, so <span
+class="math inline">\(\#\Phi_a = 4\)</span> and <span
+class="math inline">\(\#\Phi_b = 1\)</span>. It does not satisfy the
+hypotheses of Problem <a href="#pr:coef" data-reference-type="ref"
+data-reference="pr:coef">3.1.7</a>(i), but <span
+class="math inline">\(\chi_K(2) = (2/7) = 1\)</span>, and the conclusion
+of Problem <a href="#pr:coef" data-reference-type="ref"
+data-reference="pr:coef">3.1.7</a>(ii) holds.</p>
+<div id="pr:table" class="problem" data-progress-ids="[&quot;2323&quot;]"><a class="stable-tag" href="tag/2323.html" title="Stable tag: cite as Tag 2323">Tag 2323</a>
+<p><strong>Problem 3.1.8</strong>. In the toy example, the primes <span
+class="math inline">\(p \le 61\)</span> with <span
+class="math inline">\(\lambda_1(p) \ne 0\)</span> are <span
+class="math inline">\(7\)</span> and the primes inert in <span
+class="math inline">\(K\)</span>, and the label of <span
+class="math inline">\([-p]\)</span> is as follows. <span
+class="math display">\[\begin{array}{c|cccccccc}
+    \text{label} &amp; 1 &amp; 3 &amp; 5 &amp; 7 &amp; 9 &amp; 11 &amp;
+13 &amp; 15 \\ \hline
+    p &amp; 31,\, 47 &amp; 13,\, 61 &amp; 59 &amp; 41 &amp; 7 &amp; 5
+&amp; 3,\, 19 &amp; 17
+  \end{array}\]</span> The other <span class="math inline">\(n \le
+61\)</span> with <span class="math inline">\(\lambda_1(n) \ne 0\)</span>
+are <span class="math inline">\(27\)</span> and <span
+class="math inline">\(49\)</span>, with <span
+class="math inline">\(\lambda_1(27) = 2\log 3\)</span> and <span
+class="math inline">\(\lambda_1(49) = \log 7\)</span>.</p>
+</div>
+<h1 id="sec:thick">§3.2. Two weights and the prime sum <a class="stable-tag" href="tag/2324.html" title="Stable tag: cite as Tag 2324">Tag 2324</a></h1>
+<p>Let <span class="math inline">\(x &lt; x_1\)</span> and <span
+class="math inline">\(b\)</span> be positive integers with <span
+class="math inline">\(x_1 \mid b\)</span>, and let <span
+class="math inline">\(a := xb\)</span>. Define the <em>weight</em> of a
+place <span class="math inline">\(\sigma\)</span> by <span
+class="math display">\[\kappa(\sigma) := \begin{cases} a/x = b, &amp;
+\sigma \in \Phi_b, \\ a/x_1, &amp; \sigma \notin \Phi_b,
+\end{cases}\]</span> an integer; the <span
+class="math inline">\(b\)</span>-places carry the larger weight. For
+real <span class="math inline">\(y\)</span>, define the <em>prime
+sum</em> at a place <span class="math inline">\(\sigma\)</span> by <span
+class="math display">\[s_{\mathrm{fin}}(y, \sigma) := \sum_{n = 1}^{a}
+\lambda_1(n) \Bigl( \frac yn - \kappa\bigl([-n]\sigma\bigr) \Bigr)_+
+.\]</span> For real <span class="math inline">\(z &gt; 0\)</span> and
+<span class="math inline">\(n \ge 1\)</span> let <span
+class="math inline">\(H_z(n) := (a/n - a/z)_+\)</span>.</p>
+<div id="pr:ramp" class="problem" data-progress-ids="[&quot;2325&quot;,&quot;20261125T005000--galois-fourier-and-averaging__workbook.tex#pr:ramp&quot;]"><a class="stable-tag" href="tag/2325.html" title="Stable tag: cite as Tag 2325">Tag 2325</a>
+<p><strong>Problem 3.2.1</strong>. <span class="math inline">\(H_z(n) =
+a(1/n - 1/z)\)</span> for <span class="math inline">\(n &lt; z\)</span>,
+and <span class="math inline">\(H_z(n) = 0\)</span> for <span
+class="math inline">\(n \ge z\)</span>. Hence for <span
+class="math inline">\(1 \le n \le a\)</span> the <span
+class="math inline">\(n\)</span>-th term of <span
+class="math inline">\(s_{\mathrm{fin}}(a, \sigma)\)</span> is <span
+class="math inline">\(\lambda_1(n) H_x(n)\)</span> if <span
+class="math inline">\([-n]\sigma \in \Phi_b\)</span>, and <span
+class="math inline">\(\lambda_1(n) H_{x_1}(n)\)</span> otherwise.</p>
+</div>
+<div id="pr:thin" class="problem" data-progress-ids="[&quot;2326&quot;]"><a class="stable-tag" href="tag/2326.html" title="Stable tag: cite as Tag 2326">Tag 2326</a>
+<p><strong>Problem 3.2.2</strong>. Let <span class="math inline">\(\sigma
+\in \Phi\)</span>. (i) For <span class="math inline">\(0 \le y \le
+a\)</span> and <span class="math inline">\(x_1 \le n \le a\)</span>, the
+<span class="math inline">\(n\)</span>-th term of <span
+class="math inline">\(s_{\mathrm{fin}}(y, \sigma)\)</span> is <span
+class="math inline">\(0\)</span>. (ii) For <span class="math inline">\(x
+\le n &lt; x_1\)</span>, the <span class="math inline">\(n\)</span>-th
+term of <span class="math inline">\(s_{\mathrm{fin}}(a, \sigma)\)</span>
+is <span class="math inline">\(0\)</span> if <span
+class="math inline">\([-n]\sigma \in \Phi_b\)</span>, and <span
+class="math inline">\(\lambda_1(n)\, a (1/n - 1/x_1)\)</span> otherwise,
+which is positive unless <span class="math inline">\(\lambda_1(n) =
+0\)</span>.</p>
+</div>
+<p>The first step towards the total over the <span
+class="math inline">\(a\)</span>-places is a ramp sum in a
+progression.</p>
+<div id="pr:ramp-sum" class="problem" data-progress-ids="[&quot;2327&quot;,&quot;20261125T005000--galois-fourier-and-averaging__workbook.tex#pr:ramp-sum&quot;]"><a class="stable-tag" href="tag/2327.html" title="Stable tag: cite as Tag 2327">Tag 2327</a>
+<p><strong>Problem 3.2.3</strong>. For integers <span
+class="math inline">\(q \ge 1\)</span> prime to <span
+class="math inline">\(d\)</span>, <span class="math inline">\(A_0 \ge
+1\)</span>, and real <span class="math inline">\(0 &lt; z \le
+A_0\)</span>, <span class="math display">\[\sum_{n = 1}^{A_0}
+\lambda_q(n) \Bigl( \frac{A_0}{n} - \frac{A_0}{z} \Bigr)_+ = A_0 \Bigl(
+R_q(z) + \frac{\log z}{\varphi(q)} + c_q \Bigr) .\]</span> For <span
+class="math inline">\(d = 7\)</span>, <span class="math inline">\(q =
+4\)</span>, <span class="math inline">\(A_0 = 60\)</span>, <span
+class="math inline">\(z = 20\)</span>, both sides equal <span
+class="math inline">\(18 \log 5 + \frac{42}{13} \log 13 + \frac{18}{17}
+\log 17 = 40.2565\ldots\)</span>.</p>
+</div>
+<p>In the average over the <span
+class="math inline">\(a\)</span>-places, the place <span
+class="math inline">\([-n]\tau\)</span> selects the residue class of
+<span class="math inline">\(n\)</span>.</p>
+<div id="pr:select" class="problem" data-progress-ids="[&quot;2389&quot;,&quot;20261125T005000--galois-fourier-and-averaging__workbook.tex#pr:select&quot;]"><a class="stable-tag" href="tag/2389.html" title="Stable tag: cite as Tag 2389">Tag 2389</a>
+<p><strong>Problem 3.2.4</strong>. Let <span class="math inline">\(q_0 =
+10\)</span>, <span class="math inline">\(q_1 = 20\)</span>, <span
+class="math inline">\(x = 2\)</span>, <span class="math inline">\(x_1 =
+3\)</span>, <span class="math inline">\(b = 6\)</span> and <span
+class="math inline">\(\Phi_b = \{[9]\}\)</span>, so that <span
+class="math inline">\(a = 12\)</span>, <span
+class="math inline">\(\Phi_a = \{[1], [11]\}\)</span>, and <span
+class="math inline">\(\kappa\)</span> is <span
+class="math inline">\(6\)</span> at <span
+class="math inline">\([9]\)</span> and <span
+class="math inline">\(4\)</span> elsewhere. For <span
+class="math inline">\(1 \le n \le 12\)</span> and <span
+class="math inline">\(\tau \in \Phi_a\)</span>, the term <span
+class="math inline">\((60/n - \kappa([-n]\tau))_+\)</span> differs from
+<span class="math inline">\((60/n - 4)_+\)</span> only for <span
+class="math inline">\(n \in \{1, 11\}\)</span>, and then for one <span
+class="math inline">\(\tau\)</span> only: at <span
+class="math inline">\(n = 1\)</span> it is <span
+class="math inline">\(54\)</span> instead of <span
+class="math inline">\(56\)</span> (for <span class="math inline">\(\tau
+= [11]\)</span>), at <span class="math inline">\(n = 11\)</span> it is
+<span class="math inline">\(0\)</span> instead of <span
+class="math inline">\(16/11\)</span> (for <span
+class="math inline">\(\tau = [1]\)</span>). At <span
+class="math inline">\(n = 3\)</span> both terms are <span
+class="math inline">\(16\)</span>.</p>
+</div>
+<div id="pr:thick-avg" class="problem" data-progress-ids="[&quot;2328&quot;]"><a class="stable-tag" href="tag/2328.html" title="Stable tag: cite as Tag 2328">Tag 2328</a>
+<p><strong>Problem 3.2.5</strong>. For every integer <span
+class="math inline">\(n \ge 1\)</span>, <span
+class="math display">\[\sum_{\tau \in \Phi_a} \lambda_1(n) \Bigl( \frac
+an - \kappa\bigl([-n]\tau\bigr) \Bigr)_+
+  = \#\Phi_a\, \lambda_1(n) H_{x_1}(n) + \#\Phi_b\, \lambda_{q_0}(n)
+\bigl( H_x(n) - H_{x_1}(n) \bigr) .\]</span></p>
+</div>
+<div id="pr:sum-A" class="problem" data-progress-ids="[&quot;2329&quot;,&quot;20261125T005000--galois-fourier-and-averaging__workbook.tex#pr:sum-A&quot;]"><a class="stable-tag" href="tag/2329.html" title="Stable tag: cite as Tag 2329">Tag 2329</a>
+<p><strong>Problem 3.2.6</strong>. <span class="math display">\[\sum_{\tau
+\in \Phi_a} s_{\mathrm{fin}}(a, \tau)
+  = a \Bigl[ \#\Phi_b \bigl( R_{q_0}(x) - R_{q_0}(x_1) \bigr) + \#\Phi_a
+R_1(x_1) \Bigr]
+  + a \Bigl[ \#\Phi_a (\log x_1 + c_1) + \#\Phi_b\, \frac{\log
+(x/x_1)}{\varphi(q_0)} \Bigr] .\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:toy-sum">Problem 3.2.7</a>; <a href="20261127T100000--overview__workbook.html">Chapter Overview</a></div><!-- used-in:end -->
+</div>
+<div id="pr:toy-sum" class="problem" data-progress-ids="[&quot;232A&quot;,&quot;20261125T005000--galois-fourier-and-averaging__workbook.tex#pr:toy-sum&quot;]"><a class="stable-tag" href="tag/232A.html" title="Stable tag: cite as Tag 232A">Tag 232A</a>
+<p><strong>Problem 3.2.7</strong>. In the toy example with <span
+class="math inline">\(x = 20\)</span>, <span class="math inline">\(x_1 =
+60\)</span>, <span class="math inline">\(b = 960\)</span>, so that <span
+class="math inline">\(a = 19200\)</span> and the weights are <span
+class="math inline">\(960\)</span> and <span
+class="math inline">\(320\)</span>, the four prime sums <span
+class="math inline">\(s_{\mathrm{fin}}(a, \tau)\)</span> at the places
+<span class="math inline">\(\tau\)</span> with labels <span
+class="math inline">\(1, 5, 9, 13\)</span> rounded to the nearest
+hundredth, are <span class="math inline">\(45108.01\)</span>, <span
+class="math inline">\(45591.18\)</span>, <span
+class="math inline">\(47772.92\)</span>, <span
+class="math inline">\(46814.23\)</span>. Their total and the right side
+of Problem <a href="#pr:sum-A" data-reference-type="ref"
+data-reference="pr:sum-A">3.2.6</a> both round to <span
+class="math inline">\(185286.35\)</span>.</p>
+</div>
+<p>The expected value uses the mean of the logarithms of the weights
+over all places. We define the <em>expected value</em> <span
+class="math display">\[s_{\mathrm{main}}:= a \Bigl( \log a - \frac1f
+\sum_{\sigma \in \Phi} \log \kappa(\sigma) + c_1 \Bigr) .\]</span></p>
+<div id="pr:log-mean" class="problem" data-progress-ids="[&quot;232B&quot;,&quot;20261125T005000--galois-fourier-and-averaging__workbook.tex#pr:log-mean&quot;]"><a class="stable-tag" href="tag/232B.html" title="Stable tag: cite as Tag 232B">Tag 232B</a>
+<p><strong>Problem 3.2.8</strong>. <span class="math inline">\(\sum_{\sigma
+\in \Phi} \log \kappa(\sigma) = f \log (a/x_1) - \#\Phi_b \log
+(x/x_1)\)</span>. In the toy example both sides equal <span
+class="math inline">\(47.24518\ldots\)</span>.</p>
+</div>
+<div id="pr:main" class="problem" data-progress-ids="[&quot;232C&quot;,&quot;20261125T005000--galois-fourier-and-averaging__workbook.tex#pr:main&quot;]"><a class="stable-tag" href="tag/232C.html" title="Stable tag: cite as Tag 232C">Tag 232C</a>
+<p><strong>Problem 3.2.9</strong>. <span class="math inline">\(\#\Phi_a\,
+s_{\mathrm{main}}= a \bigl[ \#\Phi_a (\log x_1 + c_1) + \#\Phi_b
+\log(x/x_1)/\varphi(q_0) \bigr]\)</span>.</p>
+</div>
+<p>Define the <em>total remainder</em> by <span
+class="math inline">\(\mathrm{rem}:= \sum_{\tau \in \Phi_a} \bigl(
+s_{\mathrm{fin}}(a, \tau) - s_{\mathrm{main}}\bigr)\)</span>, so that
+the mean of <span class="math inline">\(s_{\mathrm{fin}}(a,
+\tau)\)</span> over <span class="math inline">\(\Phi_a\)</span> is <span
+class="math inline">\(s_{\mathrm{main}}+ \mathrm{rem}/\#\Phi_a\)</span>.
+Subtracting the identity of Problem <a href="#pr:main"
+data-reference-type="ref" data-reference="pr:main">3.2.9</a> from that of
+Problem <a href="#pr:sum-A" data-reference-type="ref"
+data-reference="pr:sum-A">3.2.6</a> gives <span id="eq:rem"
+class="math display">\[\begin{equation}
+\label{eq:rem}\tag{1}
+  \mathrm{rem}= a \Bigl[ \#\Phi_b \bigl( R_{q_0}(x) - R_{q_0}(x_1)
+\bigr) + \#\Phi_a R_1(x_1) \Bigr] .
+\end{equation}\]</span> In the toy example, <span
+class="math inline">\(\mathrm{rem}+ 76800\, c_1 =
+-118612.63\ldots\)</span>.</p>
+<p>In the proof the <em>parameters</em> <span
+class="math inline">\((q_0, d)\)</span> are a positive multiple <span
+class="math inline">\(q_0\)</span> of <span
+class="math inline">\(18480\)</span> and a prime <span
+class="math inline">\(d\)</span> with <span class="math inline">\(q_0
+\mid 2(d + 1)\)</span> and <span class="math inline">\(q_0 \nmid d +
+1\)</span> (Definition <a href="20261126T030300--the-data__workbook.html#def:parameters"
+data-reference-type="ref"
+data-reference="dt-def:parameters">36.1.1</a> of Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="dt-chap">36</a>). An <em>admissible datum</em>
+for them is a datum satisfying all the conditions of Definition <a
+href="20261126T030300--the-data__workbook.html#def:data" data-reference-type="ref"
+data-reference="dt-def:data">36.3.1</a> there. We record the
+components used here. The scales <span class="math inline">\(x\)</span>,
+<span class="math inline">\(x_1\)</span>, <span
+class="math inline">\(b\)</span> are positive integers. The number <span
+class="math inline">\(m\)</span> of theta lifts in each chain is a power
+of <span class="math inline">\(2\)</span> with <span
+class="math inline">\(\sqrt x \le m \le 2\sqrt x\)</span>, and the tower
+exponent is <span class="math inline">\(s = 22 \log_2 m\)</span>
+(logarithm to base <span class="math inline">\(2\)</span>). With <span
+class="math inline">\(e_s := \lfloor \log_3 s \rfloor\)</span>
+(logarithm to base <span class="math inline">\(3\)</span>), let <span
+class="math inline">\(q_1 := q_0\,3^{e_s+5}2^s\)</span>; the field <span
+class="math inline">\(E\)</span>, its embedding into <span
+class="math inline">\(\mathbb{C}\)</span>, the primitive root <span
+class="math inline">\(\zeta\)</span> and the labels of the places are as
+in §<a href="#sec:places" data-reference-type="ref"
+data-reference="sec:places">3.1</a>. We have <span
+class="math inline">\(q_1 x_1 \mid b\)</span>. The datum supplies <span
+class="math inline">\(\Phi_b \subseteq \mathrm{cl}^{-1}(-1)\)</span>
+with <span class="math inline">\(q_1/q_0 \le \#\Phi_b \log b\)</span>.
+Since <span class="math inline">\(x_1 \mid b\)</span>, the prescribed
+weight <span class="math inline">\(\lfloor xb/x_1\rfloor\)</span>
+outside <span class="math inline">\(\Phi_b\)</span> equals <span
+class="math inline">\(a/x_1\)</span>.</p>
+<div id="thm:remainder" class="theorem"><a class="stable-tag" href="tag/232D.html" title="Stable tag: cite as Tag 232D">Tag 232D</a>
+<p><strong>Theorem 3.2.1</strong>. <em>For all parameters <span
+class="math inline">\((q_0, d)\)</span> and every admissible datum for
+them, <a href="#eq:rem" data-reference-type="eqref"
+data-reference="eq:rem">(1)</a> holds, where <span
+class="math inline">\(a = xb\)</span> and <span
+class="math inline">\(R_q\)</span> and <span
+class="math inline">\(c_1\)</span> are those of Chapter <a
+href="20261125T001000--zeros-to-ramp-sums__workbook.html#chap" data-reference-type="ref"
+data-reference="zr-chap">1</a> for the prime <span
+class="math inline">\(d\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.html">Chapter 38</a></div><!-- used-in:end -->
+</div>
+<p>For these data <span class="math inline">\(q_0\)</span> and <span
+class="math inline">\(q_1\)</span> have the same prime factors, <span
+class="math inline">\(d \nmid q_1\)</span>, and <span
+class="math inline">\(d \equiv 7 \pmod 8\)</span>. The scale conditions
+give <span class="math inline">\(0 &lt; \log x\)</span> and <span
+class="math inline">\(10^6 \log x \le \log x_1\)</span>, so <span
+class="math inline">\(x &lt; x_1\)</span>.</p>
+<h1 id="sec:two-scales">§3.3. The remainder at the first scale <a class="stable-tag" href="tag/232E.html" title="Stable tag: cite as Tag 232E">Tag 232E</a></h1>
+<p>Chapter <a href="20261125T001000--zeros-to-ramp-sums__workbook.html#chap" data-reference-type="ref"
+data-reference="zr-chap">1</a> needs an upper bound for <span
+class="math inline">\(R_{q_0}(x)\)</span>. When <span
+class="math inline">\(\Phi_b\)</span> is nonempty, equation <a
+href="#eq:rem" data-reference-type="eqref"
+data-reference="eq:rem">(1)</a> isolates <span
+class="math inline">\(R_{q_0}(x)\)</span> at the price of two terms at
+<span class="math inline">\(x_1\)</span>.</p>
+<div id="pr:solve" class="problem" data-progress-ids="[&quot;232F&quot;,&quot;20261125T005000--galois-fourier-and-averaging__workbook.tex#pr:solve&quot;]"><a class="stable-tag" href="tag/232F.html" title="Stable tag: cite as Tag 232F">Tag 232F</a>
+<p><strong>Problem 3.3.1</strong>. If <span class="math inline">\(\#\Phi_b
+&gt; 0\)</span>, then <span class="math inline">\(R_{q_0}(x) =
+\dfrac{\mathrm{rem}}{a\,\#\Phi_b} + R_{q_0}(x_1) -
+\dfrac{\#\Phi_a}{\#\Phi_b} R_1(x_1)\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.html">Chapter 38</a></div><!-- used-in:end -->
+</div>
+<p>For <span class="math inline">\(\#\Phi_b&gt;0\)</span>, the
+coefficient of <span class="math inline">\(R_1(x_1)\)</span> has
+magnitude <span class="math inline">\(\#\Phi_a/\#\Phi_b\)</span>, the
+reciprocal of the proportion of the <span
+class="math inline">\(-1\)</span> fibre occupied by <span
+class="math inline">\(\Phi_b\)</span>; this is why <span
+class="math inline">\(\Phi_b\)</span> must be dense.</p>
+<div id="pr:dense" class="problem" data-progress-ids="[&quot;232G&quot;,&quot;20261125T005000--galois-fourier-and-averaging__workbook.tex#pr:dense&quot;]"><a class="stable-tag" href="tag/232G.html" title="Stable tag: cite as Tag 232G">Tag 232G</a>
+<p><strong>Problem 3.3.2</strong>. If <span class="math inline">\(b &gt;
+1\)</span> and <span class="math inline">\(\#\Phi_a \le \#\Phi_b \log
+b\)</span>, then <span class="math inline">\(\#\Phi_b &gt; 0\)</span>
+and <span class="math display">\[R_{q_0}(x) \le
+\frac{\mathrm{rem}}{a\,\#\Phi_b} + \lvert R_{q_0}(x_1) \rvert + \log b
+\, \lvert R_1(x_1) \rvert .\]</span> In the toy example <span
+class="math inline">\(\#\Phi_a/\#\Phi_b = 4 \le \log 960 =
+6.8669\ldots\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T005500--columns-from-a-sphere__workbook.html">Chapter 4</a></div><!-- used-in:end -->
+</div>
+<p>Write <span class="math inline">\(\theta :=
+\#\Phi_b/\#\Phi_a\)</span> in this section. The main inequality <span
+class="math inline">\(m \cdot \mathrm{rem}\le fa(\log b)^5\)</span>
+bounds the mean excess over the <span
+class="math inline">\(a\)</span>-places in units of <span
+class="math inline">\(a\)</span>, with a saving of <span
+class="math inline">\(1/m\)</span>. Under the density hypothesis of
+Problem <a href="#pr:dense" data-reference-type="ref"
+data-reference="pr:dense">3.3.2</a>, isolating <span
+class="math inline">\(R_{q_0}(x)\)</span> costs a factor <span
+class="math inline">\(1/\theta \le \log b\)</span>, which gives the
+sixth logarithm in the bound at <span
+class="math inline">\(x\)</span>.</p>
+<div id="pr:mean-main" class="problem" data-progress-ids="[&quot;23EQ&quot;,&quot;20261125T005000--galois-fourier-and-averaging__workbook.tex#pr:mean-main&quot;]"><a class="stable-tag" href="tag/23EQ.html" title="Stable tag: cite as Tag 23EQ">Tag 23EQ</a>
+<p><strong>Problem 3.3.3</strong>. For a positive integer <span
+class="math inline">\(m\)</span>, the main inequality implies <span
+class="math display">\[R_1(x_1) + \theta \bigl(R_{q_0}(x) -
+R_{q_0}(x_1)\bigr)
+  \le \frac{\varphi(q_0)(\log b)^5}{m}.\]</span></p>
+</div>
+<div id="pr:with-main" class="problem" data-progress-ids="[&quot;232H&quot;,&quot;20261125T005000--galois-fourier-and-averaging__workbook.tex#pr:with-main&quot;]"><a class="stable-tag" href="tag/232H.html" title="Stable tag: cite as Tag 232H">Tag 232H</a>
+<p><strong>Problem 3.3.4</strong>. Suppose <span class="math inline">\(b
+&gt; 1\)</span>, <span class="math inline">\(\#\Phi_a \le \#\Phi_b \log
+b\)</span>, and <span class="math inline">\(m\)</span> is a positive
+integer. If <span class="math inline">\(m \cdot \mathrm{rem}\le f a
+(\log b)^5\)</span>, then <span class="math display">\[R_{q_0}(x) \le
+\frac{\varphi(q_0) (\log b)^6}{m} + \lvert R_{q_0}(x_1) \rvert + \log b
+\, \lvert R_1(x_1) \rvert .\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.html">Chapter 38</a></div><!-- used-in:end -->
+</div>
+<p>Chapter <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.html#chap" data-reference-type="ref"
+data-reference="mi-chap">38</a> proves the main inequality for
+every admissible datum (Theorem <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.html#thm:main"
+data-reference-type="ref"
+data-reference="mi-thm:main">38.2.1</a>) and applies Problem <a
+href="#pr:with-main" data-reference-type="ref"
+data-reference="pr:with-main">3.3.4</a> in Problem <a href="20261126T031100--theorem-c-and-the-main-inequality__workbook.html#pr:Rx"
+data-reference-type="ref" data-reference="mi-pr:Rx">38.3.1</a>,
+before passing to the asymptotic estimate of Theorem <a
+href="20261126T031100--theorem-c-and-the-main-inequality__workbook.html#thm:one-sided" data-reference-type="ref"
+data-reference="mi-thm:one-sided">38.3.1</a>; Chapter <a
+href="20261125T005500--columns-from-a-sphere__workbook.html#chap" data-reference-type="ref"
+data-reference="cs-chap">4</a> constructs a set <span
+class="math inline">\(\Phi_b\)</span> dense enough for Problem <a
+href="#pr:dense" data-reference-type="ref"
+data-reference="pr:dense">3.3.2</a>.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, the parameters and the
+admissible data are <code>New.Parameters</code> and
+<code>New.Data</code>; Theorem <a href="#thm:remainder"
+data-reference-type="ref" data-reference="thm:remainder">3.2.1</a> is
+<code>New.Data.totalRemainder_eq</code>, in
+<code>New/Reduction/PrimeSums.lean</code>; and the conclusion of
+Problem <a href="#pr:with-main" data-reference-type="ref"
+data-reference="pr:with-main">3.3.4</a> for every admissible datum, without
+further hypotheses, is <code>New.Data.primeRemainder_le</code>, in
+<code>New/Reduction/OneSidedBound.lean</code>.</p>
+<p>For the parameters of the proof, the version of Problem <a
+href="#pr:frobenius-partner" data-reference-type="ref"
+data-reference="pr:frobenius-partner">3.1.4</a> on the integers of <span
+class="math inline">\(E\)</span> is
+<code>New.Parameters.</code><code>natCast_dvd_pow_sub_galOfPlaceInt_star</code>
+in <code>New/Derivatives/Field/PrimeDecomposition.lean</code>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secplaces">§<a href="#sec:places"
+data-reference-type="ref" data-reference="sec:places">3.1</a></h2>
+<dl>
+<dt><a href="#pr:galois" data-reference-type="ref"
+data-reference="pr:galois">3.1.1</a></dt>
+<dd>
+<p><span class="math inline">\(d\)</span> ramifies in <span
+class="math inline">\(K\)</span> and not in <span
+class="math inline">\(\mathbb{Q}(\zeta)\)</span>, so <span
+class="math inline">\(K \cap \mathbb{Q}(\zeta) = \mathbb{Q}\)</span>
+<span class="citation" data-cites="Wa">[<a href="#ref-Wa">Wa</a>,
+Ch. 2]</span>.</p>
+</dd>
+<dt><a href="#pr:cm-type" data-reference-type="ref"
+data-reference="pr:cm-type">3.1.2</a></dt>
+<dd>
+<p>Complex conjugation restricts to the nontrivial automorphism of <span
+class="math inline">\(K\)</span>.</p>
+</dd>
+<dt><a href="#pr:fibres" data-reference-type="ref"
+data-reference="pr:fibres">3.1.3</a></dt>
+<dd>
+<p><span class="math inline">\(\mathrm{cl}\)</span> is a surjective
+homomorphism, and <span class="math inline">\(\varphi(q_1)/\varphi(q_0)
+= q_1/q_0\)</span> when <span class="math inline">\(q_0\)</span> and
+<span class="math inline">\(q_1\)</span> have the same prime
+factors.</p>
+</dd>
+<dt><a href="#pr:frobenius-partner" data-reference-type="ref"
+data-reference="pr:frobenius-partner">3.1.4</a></dt>
+<dd>
+<p>Apply Euler’s criterion to <span class="math inline">\(-d\)</span>
+and compare the two maps on the generators of <span
+class="math inline">\(A\)</span>.</p>
+</dd>
+<dt><a href="#pr:outside" data-reference-type="ref"
+data-reference="pr:outside">3.1.5</a></dt>
+<dd>
+<p><span class="math inline">\(\mathrm{cl}\)</span> is a homomorphism;
+if <span class="math inline">\(\gcd(n, q_1) &gt; 1\)</span>, then <span
+class="math inline">\(n \not\equiv 1 \pmod{q_0}\)</span>.</p>
+</dd>
+<dt><a href="#pr:count" data-reference-type="ref"
+data-reference="pr:count">3.1.6</a></dt>
+<dd>
+<p>Multiplication by <span class="math inline">\([-n]\)</span> is a
+bijection of <span class="math inline">\(\Phi\)</span>; Problem <a
+href="#pr:outside" data-reference-type="ref"
+data-reference="pr:outside">3.1.5</a>.</p>
+</dd>
+<dt><a href="#pr:coef" data-reference-type="ref"
+data-reference="pr:coef">3.1.7</a></dt>
+<dd>
+<p>(i) <span class="math inline">\(d + 1 \equiv q_0/2
+\pmod{q_0}\)</span>; for each odd prime <span class="math inline">\(p
+\mid q_0\)</span>, <span class="math inline">\(d \equiv -1 \pmod
+p\)</span>, and reciprocity. (ii) Section <a href="20261125T001100--inert-primes-and-estimate-b__workbook.html#sec:inert"
+data-reference-type="ref"
+data-reference="zi-sec:inert">2.1</a>.</p>
+</dd>
+<dt><a href="#pr:table" data-reference-type="ref"
+data-reference="pr:table">3.1.8</a></dt>
+<dd>
+<p><span class="math inline">\(p\)</span> is inert in <span
+class="math inline">\(\mathbb{Q}(\sqrt{-7})\)</span> exactly when <span
+class="math inline">\(p \equiv 3, 5, 6 \pmod 7\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secthick">§<a href="#sec:thick"
+data-reference-type="ref" data-reference="sec:thick">3.2</a></h2>
+<dl>
+<dt><a href="#pr:thin" data-reference-type="ref"
+data-reference="pr:thin">3.2.2</a></dt>
+<dd>
+<p>(i) Compare <span class="math inline">\(y/n\)</span> and <span
+class="math inline">\(\kappa([-n]\sigma)\)</span> with <span
+class="math inline">\(a/x_1\)</span>. (ii) Use the two possible weights
+at <span class="math inline">\([-n]\sigma\)</span>.</p>
+</dd>
+<dt><a href="#pr:ramp-sum" data-reference-type="ref"
+data-reference="pr:ramp-sum">3.2.3</a></dt>
+<dd>
+<p>Problem <a href="#pr:ramp" data-reference-type="ref"
+data-reference="pr:ramp">3.2.1</a> with <span
+class="math inline">\(A_0\)</span> in place of <span
+class="math inline">\(a\)</span>, and the definition of <span
+class="math inline">\(R_q\)</span>.</p>
+</dd>
+<dt><a href="#pr:select" data-reference-type="ref"
+data-reference="pr:select">3.2.4</a></dt>
+<dd>
+<p><span class="math inline">\([-n]\tau = [9]\)</span> exactly when
+<span class="math inline">\(n\tau \equiv 11 \pmod{20}\)</span>.</p>
+</dd>
+<dt><a href="#pr:thick-avg" data-reference-type="ref"
+data-reference="pr:thick-avg">3.2.5</a></dt>
+<dd>
+<p>Write <span class="math inline">\((a/n - \kappa(\sigma))_+\)</span>
+as <span class="math inline">\(H_{x_1}(n)\)</span> plus a correction
+supported on <span class="math inline">\(\Phi_b\)</span>; Problem <a
+href="#pr:count" data-reference-type="ref"
+data-reference="pr:count">3.1.6</a>, and <span
+class="math inline">\(\lambda_{q_0}(n) = \lambda_1(n)\)</span> for <span
+class="math inline">\(n \equiv 1 \pmod{q_0}\)</span>.</p>
+</dd>
+<dt><a href="#pr:sum-A" data-reference-type="ref"
+data-reference="pr:sum-A">3.2.6</a></dt>
+<dd>
+<p>Exchange the sums over <span class="math inline">\(\tau\)</span> and
+<span class="math inline">\(n\)</span>; Problem <a href="#pr:ramp-sum"
+data-reference-type="ref" data-reference="pr:ramp-sum">3.2.3</a> three
+times, with <span class="math inline">\((q, z) = (1, x_1), (q_0, x),
+(q_0, x_1)\)</span>.</p>
+</dd>
+<dt><a href="#pr:toy-sum" data-reference-type="ref"
+data-reference="pr:toy-sum">3.2.7</a></dt>
+<dd>
+<p>Only the <span class="math inline">\(n &lt; 60\)</span> with <span
+class="math inline">\(\lambda_1(n) \ne 0\)</span> contribute
+(Problems <a href="#pr:table" data-reference-type="ref"
+data-reference="pr:table">3.1.8</a> and <a href="#pr:thin"
+data-reference-type="ref" data-reference="pr:thin">3.2.2</a>).</p>
+</dd>
+<dt><a href="#pr:main" data-reference-type="ref"
+data-reference="pr:main">3.2.9</a></dt>
+<dd>
+<p>Problems <a href="#pr:fibres" data-reference-type="ref"
+data-reference="pr:fibres">3.1.3</a> and <a href="#pr:log-mean"
+data-reference-type="ref" data-reference="pr:log-mean">3.2.8</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="sectwo-scales">§<a href="#sec:two-scales"
+data-reference-type="ref" data-reference="sec:two-scales">3.3</a></h2>
+<dl>
+<dt><a href="#pr:solve" data-reference-type="ref"
+data-reference="pr:solve">3.3.1</a></dt>
+<dd>
+<p>Equation <a href="#eq:rem" data-reference-type="eqref"
+data-reference="eq:rem">(1)</a>.</p>
+</dd>
+<dt><a href="#pr:dense" data-reference-type="ref"
+data-reference="pr:dense">3.3.2</a></dt>
+<dd>
+<p><span class="math inline">\(\#\Phi_a &gt; 0\)</span>.</p>
+</dd>
+<dt><a href="#pr:mean-main" data-reference-type="ref"
+data-reference="pr:mean-main">3.3.3</a></dt>
+<dd>
+<p>Divide by <span class="math inline">\(ma\,\#\Phi_a\)</span> and use
+<a href="#eq:rem" data-reference-type="eqref"
+data-reference="eq:rem">(1)</a> and Problem <a href="#pr:fibres"
+data-reference-type="ref" data-reference="pr:fibres">3.1.3</a>.</p>
+</dd>
+<dt><a href="#pr:with-main" data-reference-type="ref"
+data-reference="pr:with-main">3.3.4</a></dt>
+<dd>
+<p>Use Problem <a href="#pr:mean-main" data-reference-type="ref"
+data-reference="pr:mean-main">3.3.3</a> and the density bound on <span
+class="math inline">\(1/\theta\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="theorems">Theorems</h2>
+<dl>
+<dt><a href="#thm:remainder" data-reference-type="ref"
+data-reference="thm:remainder">3.2.1</a></dt>
+<dd>
+<p>Compare Problems <a href="#pr:sum-A" data-reference-type="ref"
+data-reference="pr:sum-A">3.2.6</a> and <a href="#pr:main"
+data-reference-type="ref" data-reference="pr:main">3.2.9</a>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Ne"><span class="bib-label">[Ne]</span> J. Neukirch, <em>Algebraic Number Theory</em>, Grundlehren Math. Wiss. <strong>322</strong>, Springer, 1999.</p>
+<p id="ref-SeA"><span class="bib-label">[SeA]</span> J.-P. Serre, <em>A Course in Arithmetic</em>, Grad. Texts in Math. <strong>7</strong>, Springer, 1973.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Wa"><span class="bib-label">[Wa]</span> L. C. Washington, <em>Introduction to Cyclotomic Fields</em>, 2nd ed., Grad. Texts in Math. <strong>83</strong>, Springer, 1997.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

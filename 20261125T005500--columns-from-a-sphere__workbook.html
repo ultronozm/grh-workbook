@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-Z808TaB/cntKJZrOhSpCsfojpF3GmIZ25S9KHBZBgdc=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Places from a sphere</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","R":"\\mathbb{R}","C":"\\mathbb{C}","Pc":"\\mathcal{P}","Nc":"\\mathcal{N}","enc":"\\operatorname{enc}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="4">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261125T005500--columns-from-a-sphere__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-26 20:12:20
+      <a href="20261125T005500--columns-from-a-sphere__workbook.tex" class="my-link">tex</a>
+      <a href="20261125T005500--columns-from-a-sphere__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261125T005500--columns-from-a-sphere__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Places from a sphere <a class="stable-tag" href="tag/225R.html" title="Stable tag: cite as Tag 225R">Tag 225R</a></h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:two" id="toc-sec:two">§4.1. Two requirements</a></li>
+<li><a href="#sec:behrend" id="toc-sec:behrend">§4.2. Behrend’s construction</a></li>
+<li><a href="#sec:places" id="toc-sec:places">§4.3. From exponents to places</a>
+<ul>
+<li><a href="#exercises" id="toc-exercises">Exercises</a></li>
+</ul></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#sectwo" id="toc-sectwo">§4.1</a></li>
+<li><a href="#secbehrend" id="toc-secbehrend">§4.2</a></li>
+<li><a href="#secplaces" id="toc-secplaces">§4.3</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>The structure of <span
+class="math inline">\((\mathbb{Z}/p^c\mathbb{Z})^\times\)</span> for a
+prime <span class="math inline">\(p\)</span> <span class="citation"
+data-cites="IR">[<a href="#ref-IR">IR</a>, Ch. 4, §1]</span>. Linearity of
+expectation. From Chapter <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap" data-reference-type="ref"
+data-reference="gf-chap">3</a> we use the places <span
+class="math inline">\(\Phi\)</span> of <span
+class="math inline">\(E\)</span> and their labels, the reduction <span
+class="math inline">\(\mathrm{cl}\)</span> of the label modulo <span
+class="math inline">\(q_0\)</span>, the place <span
+class="math inline">\([\nu]\)</span> of an integer <span
+class="math inline">\(\nu\)</span>, the <span
+class="math inline">\(a\)</span>-places <span
+class="math inline">\(\Phi_a\)</span> and the <span
+class="math inline">\(b\)</span>-places <span
+class="math inline">\(\Phi_b\)</span> (Section <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#sec:places"
+data-reference-type="ref"
+data-reference="gf-sec:places">3.1</a>), and Problems <a
+href="20261125T005000--galois-fourier-and-averaging__workbook.html#pr:fibres" data-reference-type="ref"
+data-reference="gf-pr:fibres">3.1.3</a>, <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#pr:coef"
+data-reference-type="ref" data-reference="gf-pr:coef">3.1.7</a>
+and <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#pr:dense" data-reference-type="ref"
+data-reference="gf-pr:dense">3.3.2</a>. From Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="c32-chap">36</a>, the admissible data. We write
+<span class="math inline">\(U_m :=
+(\mathbb{Z}/m\mathbb{Z})^\times\)</span> for <span
+class="math inline">\(m \ge 1\)</span>.</p>
+<p>In Chapter <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap" data-reference-type="ref"
+data-reference="gf-chap">3</a> a set <span
+class="math inline">\(\Phi_b\)</span> of places of class <span
+class="math inline">\(-1\)</span> modulo <span
+class="math inline">\(q_0\)</span> was given the weight <span
+class="math inline">\(b\)</span>, and Problem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#pr:dense"
+data-reference-type="ref" data-reference="gf-pr:dense">3.3.2</a>
+showed why it must be dense: if <span class="math inline">\(b &gt;
+1\)</span> and <span class="math inline">\(\#\Phi_a \le \#\Phi_b\log
+b\)</span>, then <span class="math display">\[R_{q_0}(x) \le
+\frac{\mathrm{rem}}{a\,\#\Phi_b} + \lvert R_{q_0}(x_1)\rvert + \log
+b\,\lvert R_1(x_1)\rvert .\]</span> How can <span
+class="math inline">\(\Phi_b\)</span> be chosen? The argument asks for a
+second property, which pulls against density: for every small prime
+<span class="math inline">\(\ell\)</span>, it restricts which signed
+powers of <span class="math inline">\(\ell\)</span> can occur as ratios
+of labels of <span class="math inline">\(b\)</span>-places after
+reduction modulo the prime-to-<span class="math inline">\(\ell\)</span>
+part of <span class="math inline">\(q_1\)</span>. Behrend’s construction
+<span class="citation" data-cites="Beh">[<a href="#ref-Beh">Beh</a>]</span>
+meets both: lattice points on a sphere, written as digits in a large
+base, become exponents of one element of <span
+class="math inline">\(U_{q_1}\)</span>.</p>
+<p>Throughout, for <span class="math inline">\(q&#39; \mid q_1\)</span>
+let <span class="math inline">\(\mathrm{cl}_{q&#39;} \colon \Phi \to
+U_{q&#39;}\)</span> be the label reduced modulo <span
+class="math inline">\(q&#39;\)</span>, so that <span
+class="math inline">\(\mathrm{cl} = \mathrm{cl}_{q_0}\)</span>; for a
+prime <span class="math inline">\(\ell\)</span> let <span
+class="math inline">\(q_{(\ell)}\)</span> be the largest divisor of
+<span class="math inline">\(q_1\)</span> prime to <span
+class="math inline">\(\ell\)</span>. For the parameters <span
+class="math inline">\((q_0, d)\)</span> and an integer <span
+class="math inline">\(s \ge 0\)</span>, Chapter <a href="20261126T030300--the-data__workbook.html#chap"
+data-reference-type="ref" data-reference="c32-chap">36</a> sets
+<span class="math display">\[l_0(s) = 3^{\lfloor \log_3 s\rfloor + 4},
+\qquad q_1 = q_0 \cdot 3\,l_0(s)\,2^s ,\]</span> where <span
+class="math inline">\(\log_3\)</span> is the logarithm to base <span
+class="math inline">\(3\)</span>, with <span
+class="math inline">\(\lfloor\log_3 0\rfloor\)</span> read as <span
+class="math inline">\(0\)</span>. With <span class="math inline">\(e :=
+\lfloor\log_3 s\rfloor\)</span> this is the <span
+class="math inline">\(q_1 = q_0\,3^{e+5}2^s\)</span> of Chapter <a
+href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap" data-reference-type="ref"
+data-reference="gf-chap">3</a>, and Problem <a
+href="20261125T005000--galois-fourier-and-averaging__workbook.html#pr:fibres" data-reference-type="ref"
+data-reference="gf-pr:fibres">3.1.3</a> gives <span
+class="math inline">\(\#\Phi_a = q_1/q_0 = 3l_0(s)2^s\)</span>. We write
+<span class="math inline">\(l_0\)</span> when <span
+class="math inline">\(s\)</span> is fixed. Exponents in group powers and
+congruences are integers, as are the exponents in prime-power
+moduli.</p>
+<h1 id="sec:two">§4.1. Two requirements <a class="stable-tag" href="tag/225S.html" title="Stable tag: cite as Tag 225S">Tag 225S</a></h1>
+<p>The first requirement is size, measured against the class of <span
+class="math inline">\(-1\)</span>.</p>
+<div id="pr:avg-density" class="problem" data-progress-ids="[&quot;232J&quot;]"><a class="stable-tag" href="tag/232J.html" title="Stable tag: cite as Tag 232J">Tag 232J</a>
+<p><strong>Problem 4.1.1</strong>. Multiplication by <span
+class="math inline">\([-1]\)</span> maps <span
+class="math inline">\(\Phi_a\)</span> bijectively onto <span
+class="math inline">\(\mathrm{cl}^{-1}(-1)\)</span>, so <span
+class="math inline">\(\mathrm{cl}^{-1}(-1)\)</span> has <span
+class="math inline">\(\#\Phi_a\)</span> elements. In the toy example of
+Chapter <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap" data-reference-type="ref"
+data-reference="gf-chap">3</a>, <span class="math inline">\(q_0
+= 4\)</span>, <span class="math inline">\(q_1 = 16\)</span>, it consists
+of the places with labels <span class="math inline">\(3, 7, 11,
+15\)</span>.</p>
+</div>
+<p>An admissible datum (Chapter <a href="20261126T030300--the-data__workbook.html#chap"
+data-reference-type="ref" data-reference="c32-chap">36</a>)
+requires <span id="eq:density" class="math display">\[\begin{equation}
+\label{eq:density}\tag{1}
+  q_1/q_0 \le \#\Phi_b \log b ,
+\end{equation}\]</span> so <span class="math inline">\(\Phi_b\)</span>
+must contain at least the proportion <span class="math inline">\(1/\log
+b\)</span> of <span
+class="math inline">\(\mathrm{cl}^{-1}(-1)\)</span>.</p>
+<p>The second requirement concerns ratios of places. For <span
+class="math inline">\(\ell \nmid q_1\)</span>, the label of <span
+class="math inline">\([\ell]\)</span> is <span
+class="math inline">\(\ell \bmod q_1\)</span>. For <span
+class="math inline">\(\ell \mid q_1\)</span>, the convention of
+Chapter <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#chap" data-reference-type="ref"
+data-reference="gf-chap">3</a> makes <span
+class="math inline">\([\ell]\)</span> the identity. In both cases the
+sparsity condition compares the reduced label of a ratio with signed
+powers of <span class="math inline">\(\ell\)</span> modulo <span
+class="math inline">\(q_{(\ell)}\)</span>.</p>
+<div id="pr:frob-prog" class="problem" data-progress-ids="[&quot;232K&quot;]"><a class="stable-tag" href="tag/232K.html" title="Stable tag: cite as Tag 232K">Tag 232K</a>
+<p><strong>Problem 4.1.2</strong>. Let <span
+class="math inline">\(\ell\)</span> be a prime, <span
+class="math inline">\(\sigma \in \Phi\)</span> and <span
+class="math inline">\(i \ge 1\)</span>. (i) If <span
+class="math inline">\(\ell \nmid q_1\)</span>, then <span
+class="math inline">\(q_{(\ell)} = q_1\)</span>, and the places <span
+class="math inline">\(\tau\)</span> with <span
+class="math inline">\(\mathrm{cl}_{q_{(\ell)}}(\tau/\sigma) =
+\pm\ell^i\)</span> are the two places <span
+class="math inline">\([\pm\ell^i]\sigma\)</span>. (ii) If <span
+class="math inline">\(\ell^\nu \Vert q_1\)</span> with <span
+class="math inline">\(\nu \ge 1\)</span>, then for each sign there are
+<span class="math inline">\(\ell^{\nu-1}(\ell-1)\)</span> such places.
+For <span class="math inline">\(q_1 = 36\)</span>, <span
+class="math inline">\(\ell = 3\)</span> this is <span
+class="math inline">\(6\)</span>.</p>
+</div>
+<p>The proof states the second requirement as follows. For a natural
+number <span class="math inline">\(L\)</span>, a finite set <span
+class="math inline">\(\mathcal{P}\subseteq \Phi\)</span> is <em>sparse
+for the primes up to <span class="math inline">\(L\)</span></em> if for
+every prime <span class="math inline">\(\ell \le L\)</span> and all
+integers <span class="math inline">\(0 &lt; i &lt; i&#39; &lt;
+l_0(s)\)</span> there are no <span class="math inline">\(\sigma, \tau,
+\tau&#39; \in \mathcal{P}\)</span>, distinct or not, and no signs <span
+class="math inline">\(\varepsilon, \varepsilon&#39; \in
+\{\pm1\}\)</span> with <span
+class="math display">\[\mathrm{cl}_{q_{(\ell)}}(\tau/\sigma) =
+\varepsilon\,\ell^i \quad\text{and}\quad
+\mathrm{cl}_{q_{(\ell)}}(\tau&#39;/\sigma) =
+\varepsilon&#39;\ell^{i&#39;} \quad\text{in }
+\mathbb{Z}/q_{(\ell)}\mathbb{Z}.\]</span> An admissible datum requires
+<span class="math inline">\(\Phi_b\)</span> to be sparse for the primes
+up to <span class="math inline">\(kt\)</span>, where <span
+class="math inline">\(k = r+1-m\)</span> and <span
+class="math inline">\(t = 5r\)</span>, with <span
+class="math inline">\(m\)</span> the number of lifts and <span
+class="math inline">\(r\)</span> the rank of the target (Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="c32-chap">36</a>).</p>
+<div id="pr:short-orbit" class="problem" data-progress-ids="[&quot;232L&quot;,&quot;20261125T005500--columns-from-a-sphere__workbook.tex#pr:short-orbit&quot;]"><a class="stable-tag" href="tag/232L.html" title="Stable tag: cite as Tag 232L">Tag 232L</a>
+<p><strong>Problem 4.1.3</strong>. Let <span
+class="math inline">\(\mathcal{P}\)</span> be sparse for the primes up
+to <span class="math inline">\(L\)</span>, let <span
+class="math inline">\(\ell \le L\)</span> be prime, <span
+class="math inline">\(v \in U_{q_{(\ell)}}\)</span>, and choose a sign
+<span class="math inline">\(\varepsilon_\mu\)</span> for every integer
+<span class="math inline">\(\mu\)</span>. Among any <span
+class="math inline">\(l_0\)</span> consecutive integers <span
+class="math inline">\(\mu\)</span>, at most two have <span
+class="math inline">\(\varepsilon_\mu\ell^\mu v \in
+\mathrm{cl}_{q_{(\ell)}}(\mathcal{P})\)</span>.</p>
+</div>
+<div id="pr:near-pairs" class="problem" data-progress-ids="[&quot;232M&quot;,&quot;20261125T005500--columns-from-a-sphere__workbook.tex#pr:near-pairs&quot;]"><a class="stable-tag" href="tag/232M.html" title="Stable tag: cite as Tag 232M">Tag 232M</a>
+<p><strong>Problem 4.1.4</strong>. Let <span
+class="math inline">\(\mathcal{P}\)</span> be sparse for the primes up
+to <span class="math inline">\(L\)</span>, let <span
+class="math inline">\(p \le L\)</span> be a prime with <span
+class="math inline">\(p \nmid q_1\)</span>, and <span
+class="math inline">\(0 &lt; i &lt; i&#39; &lt; l_0\)</span>. For no
+<span class="math inline">\(\sigma\)</span> are all three of <span
+class="math inline">\(\sigma\)</span>, <span
+class="math inline">\([-p]^i\sigma\)</span>, <span
+class="math inline">\([-p]^{i&#39;}\sigma\)</span> in <span
+class="math inline">\(\mathcal{P}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030200--the-bound-is-attained__workbook.html">Chapter 19</a></div><!-- used-in:end -->
+</div>
+<p>The sparsity of <span class="math inline">\(\Phi_b\)</span> is used
+in two places. Chapter <a href="20261126T030200--the-bound-is-attained__workbook.html#chap" data-reference-type="ref"
+data-reference="c18-chap">19</a> uses Problem <a
+href="#pr:near-pairs" data-reference-type="ref"
+data-reference="pr:near-pairs">4.1.4</a> for <span
+class="math inline">\(\Phi_b\)</span> when <span class="math inline">\(p
+\le k\)</span> and <span class="math inline">\(\chi_K(p) \ne 1\)</span>,
+in the sharpness argument for the divisibility of derivatives
+(Problem <a href="20261126T030200--the-bound-is-attained__workbook.html#pr:near-pairs" data-reference-type="ref"
+data-reference="c18-pr:near-pairs">19.4.3</a> and the
+paragraph before it). The condition <span
+class="math inline">\(\chi_K(p) \ne 1\)</span> implies <span
+class="math inline">\(p \nmid q_1\)</span>, since every prime divisor of
+<span class="math inline">\(q_1\)</span> divides <span
+class="math inline">\(q_0\)</span> and Problem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#pr:coef"
+data-reference-type="ref"
+data-reference="gf-pr:coef">3.1.7</a>(i) applies. Chapter <a
+href="20261126T031000--twists-with-few-congruences__workbook.html#chap" data-reference-type="ref"
+data-reference="c40-chap">85</a>, Section <a
+href="20261126T031000--twists-with-few-congruences__workbook.html#sec:regular" data-reference-type="ref"
+data-reference="c40-sec:regular">85.2</a>, states the bound
+<span class="math inline">\(4f\,\mathrm{defect}_\ell\)</span> per unit
+of rank for the local defect above <span
+class="math inline">\(\ell\)</span>; at primes <span
+class="math inline">\(\ell \le kt\)</span> the local argument behind it
+uses sparsity to exclude a third <span
+class="math inline">\(b\)</span>-place on a short arc. That chapter
+omits the local argument.</p>
+<p>Why are the two requirements in tension? We shall look for <span
+class="math inline">\(\Phi_b\)</span> among the places <span
+class="math inline">\([-g^n]\)</span> for the integer <span
+class="math inline">\(g\)</span> of Section <a href="#sec:places"
+data-reference-type="ref" data-reference="sec:places">4.3</a>, whose order
+modulo a power of <span class="math inline">\(2\)</span> is <span
+class="math inline">\(2^s\)</span> (Problem <a href="#pr:long-order"
+data-reference-type="ref" data-reference="pr:long-order">4.3.2</a>).
+Section <a href="#sec:places" data-reference-type="ref"
+data-reference="sec:places">4.3</a> uses a set of exponents <span
+class="math inline">\(\mathcal{N}\subseteq [0, 2^s)\)</span> with the
+following property: for all <span class="math inline">\(n_1, n_2, n_3
+\in \mathcal{N}\)</span> and positive integers <span
+class="math inline">\(\alpha, \alpha&#39;\)</span> with <span
+class="math inline">\(\alpha + \alpha&#39; \le 2l_0\)</span>, the
+congruence <span class="math inline">\((\alpha+\alpha&#39;)n_2 \equiv
+\alpha n_1 + \alpha&#39; n_3 \pmod{2^s}\)</span> implies <span
+class="math inline">\(n_1 = n_2 = n_3\)</span>. For <span
+class="math inline">\(\alpha = \alpha&#39; = 1\)</span> this excludes
+nonconstant three-term progressions. The obvious sets without them are
+thin.</p>
+<div id="pr:base3" class="problem" data-progress-ids="[&quot;225W&quot;,&quot;20261125T005500--columns-from-a-sphere__workbook.tex#pr:base3&quot;]"><a class="stable-tag" href="tag/225W.html" title="Stable tag: cite as Tag 225W">Tag 225W</a>
+<p><strong>Problem 4.1.5</strong>. For an integer <span
+class="math inline">\(\mu \ge 0\)</span>, let <span
+class="math inline">\(\mathcal{N}_\mu\)</span> be the set of integers in
+<span class="math inline">\([0, 3^\mu)\)</span> whose base-<span
+class="math inline">\(3\)</span> digits are <span
+class="math inline">\(0\)</span> or <span
+class="math inline">\(1\)</span>. (i) <span
+class="math inline">\(\mathcal{N}_\mu\)</span> contains no nonconstant
+three-term arithmetic progression, and <span
+class="math inline">\(\lvert \mathcal{N}_\mu\rvert = (3^\mu)^{\log
+2/\log 3}\)</span>. (ii) For <span class="math inline">\(\mu \ge
+2\)</span>, <span class="math inline">\(\mathcal{N}_\mu\)</span>
+contains <span class="math inline">\(0, 1, 3\)</span>, and <span
+class="math inline">\(3 \cdot 1 = 2 \cdot 0 + 1 \cdot 3\)</span>, a
+relation with <span class="math inline">\(\alpha = 2\)</span>, <span
+class="math inline">\(\alpha&#39; = 1\)</span>.</p>
+</div>
+<p>We compare the expected size of a random set with its expected number
+of progressions.</p>
+<div id="pr:random-ap" class="problem" data-progress-ids="[&quot;225X&quot;,&quot;20261125T005500--columns-from-a-sphere__workbook.tex#pr:random-ap&quot;]"><a class="stable-tag" href="tag/225X.html" title="Stable tag: cite as Tag 225X">Tag 225X</a>
+<p><strong>Problem 4.1.6</strong>. Let <span class="math inline">\(o \ge
+4\)</span> be even, and let <span class="math inline">\(R \subseteq
+\mathbb{Z}/o\mathbb{Z}\)</span> contain each element independently with
+probability <span class="math inline">\(\delta\)</span>. The expected
+number of pairs <span class="math inline">\((n, \eta)\)</span> with
+<span class="math inline">\(\eta \notin \{0, o/2\}\)</span> and <span
+class="math inline">\(n, n+\eta, n+2\eta \in R\)</span> is <span
+class="math inline">\(o(o-2)\delta^3\)</span>. If <span
+class="math inline">\(\delta^2(o-2) &gt; 1\)</span>, this exceeds the
+expected size <span class="math inline">\(\delta o\)</span> of <span
+class="math inline">\(R\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:random-deletion">Problem 4.1.7</a></div><!-- used-in:end -->
+</div>
+<div id="pr:random-deletion" class="problem" data-progress-ids="[&quot;225Y&quot;,&quot;20261125T005500--columns-from-a-sphere__workbook.tex#pr:random-deletion&quot;]"><a class="stable-tag" href="tag/225Y.html" title="Stable tag: cite as Tag 225Y">Tag 225Y</a>
+<p><strong>Problem 4.1.7</strong>. Let <span
+class="math inline">\(R\)</span> be as in Problem <a
+href="#pr:random-ap" data-reference-type="ref"
+data-reference="pr:random-ap">4.1.6</a>. For each pair <span
+class="math inline">\((n, \eta)\)</span> counted there choose one of
+<span class="math inline">\(n, n+\eta, n+2\eta\)</span>, and let <span
+class="math inline">\(R&#39;\)</span> be obtained from <span
+class="math inline">\(R\)</span> by deleting the chosen points. Then
+<span class="math inline">\(R&#39;\)</span> contains no three distinct
+points <span class="math inline">\(n, n+\eta, n+2\eta\)</span>, and its
+expected size is at least <span class="math inline">\(\delta o -
+\delta^3 o^2\)</span>. For <span class="math inline">\(\delta \le
+(2o)^{-1/2}\)</span> this is at least <span class="math inline">\(\delta
+o/2\)</span>.</p>
+</div>
+<p>For an admissible datum let <span class="math inline">\(o =
+2^s\)</span>. Then <span class="math inline">\(o = m^{22}\)</span>,
+<span class="math inline">\(\sqrt{x} \le m \le 2\sqrt{x}\)</span> and
+<span class="math inline">\((\log b)^{100} \le x\)</span> (Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="c32-chap">36</a>). The density guaranteed by
+Problem <a href="#pr:random-deletion" data-reference-type="ref"
+data-reference="pr:random-deletion">4.1.7</a> is of order <span
+class="math inline">\(o^{-1/2}\)</span> at best, and <span
+class="math inline">\((2o)^{-1/2} &lt; x^{-5}\)</span>. For places
+indexed injectively by exponents modulo <span
+class="math inline">\(o\)</span>, <a href="#eq:density"
+data-reference-type="eqref" data-reference="eq:density">(1)</a>
+asks for an exponent density at least <span
+class="math inline">\(3l_0/\log b &gt; x^{-1/100}\)</span>. The deletion
+estimate falls short of the required density by a power of <span
+class="math inline">\(x\)</span>. We now choose the exponents using
+lattice points on a sphere.</p>
+<h1 id="sec:behrend">§4.2. Behrend’s construction <a class="stable-tag" href="tag/225Z.html" title="Stable tag: cite as Tag 225Z">Tag 225Z</a></h1>
+<p>Behrend <span class="citation"
+data-cites="Beh">[<a href="#ref-Beh">Beh</a>]</span> encodes lattice points
+of fixed squared length by their digits. Let <span
+class="math inline">\(D, H \ge 1\)</span> be integers and <span
+class="math inline">\(\Sigma_\rho := \{v \in \{0, \dots, H-1\}^D :
+\lvert v\rvert^2 = \rho\}\)</span>.</p>
+<div id="pr:line-sphere" class="problem" data-progress-ids="[&quot;2262&quot;,&quot;20261125T005500--columns-from-a-sphere__workbook.tex#pr:line-sphere&quot;]"><a class="stable-tag" href="tag/2262.html" title="Stable tag: cite as Tag 2262">Tag 2262</a>
+<p><strong>Problem 4.2.1</strong>. Let <span class="math inline">\(v,
+v&#39;, v&#39;&#39; \in \mathbb{Z}^D\)</span> have <span
+class="math inline">\(\lvert v\rvert^2 = \lvert v&#39;\rvert^2 = \lvert
+v&#39;&#39;\rvert^2\)</span>, and let <span
+class="math inline">\(\alpha, \alpha&#39;\)</span> be positive integers
+with <span class="math inline">\((\alpha + \alpha&#39;)v&#39; = \alpha v
++ \alpha&#39; v&#39;&#39;\)</span>. Then <span class="math inline">\(v =
+v&#39; = v&#39;&#39;\)</span>.</p>
+</div>
+<div id="pr:pigeonhole" class="problem" data-progress-ids="[&quot;2263&quot;,&quot;20261125T005500--columns-from-a-sphere__workbook.tex#pr:pigeonhole&quot;]"><a class="stable-tag" href="tag/2263.html" title="Stable tag: cite as Tag 2263">Tag 2263</a>
+<p><strong>Problem 4.2.2</strong>. Some <span
+class="math inline">\(\rho\)</span> has <span
+class="math inline">\(\lvert\Sigma_\rho\rvert \ge
+H^D/(DH^2)\)</span>.</p>
+</div>
+<p>Fix <span class="math inline">\(\rho\)</span> with <span
+class="math inline">\(\lvert\Sigma_\rho\rvert \ge H^D/(DH^2)\)</span>
+and an integer <span class="math inline">\(Q \ge 1\)</span>. Let <span
+class="math inline">\(\beta := QH\)</span>, <span
+class="math inline">\(\operatorname{enc}(v) := \sum_{\mu=0}^{D-1} v_\mu
+\beta^\mu\)</span>, and <span class="math inline">\(\mathcal{N}:=
+\operatorname{enc}(\Sigma_\rho)\)</span>.</p>
+<div id="pr:digits" class="problem" data-progress-ids="[&quot;2264&quot;,&quot;20261125T005500--columns-from-a-sphere__workbook.tex#pr:digits&quot;]"><a class="stable-tag" href="tag/2264.html" title="Stable tag: cite as Tag 2264">Tag 2264</a>
+<p><strong>Problem 4.2.3</strong>. If <span class="math inline">\(z_0,
+\dots, z_{D-1}\)</span> are integers with <span
+class="math inline">\(\lvert z_\mu\rvert &lt; \beta\)</span> and <span
+class="math inline">\(\sum_\mu z_\mu \beta^\mu = 0\)</span>, then every
+<span class="math inline">\(z_\mu = 0\)</span>. In particular <span
+class="math inline">\(\operatorname{enc}\)</span> is injective on <span
+class="math inline">\(\{0, \dots, H-1\}^D\)</span>.</p>
+</div>
+<div id="pr:no-relation" class="problem" data-progress-ids="[&quot;2265&quot;,&quot;20261125T005500--columns-from-a-sphere__workbook.tex#pr:no-relation&quot;]"><a class="stable-tag" href="tag/2265.html" title="Stable tag: cite as Tag 2265">Tag 2265</a>
+<p><strong>Problem 4.2.4</strong>. Let <span class="math inline">\(n_1,
+n_2, n_3 \in \mathcal{N}\)</span>, and let <span
+class="math inline">\(\alpha, \alpha&#39;\)</span> be positive integers
+with <span class="math inline">\(\alpha + \alpha&#39; \le Q\)</span>. If
+<span class="math inline">\((\alpha + \alpha&#39;)n_2 = \alpha n_1 +
+\alpha&#39; n_3\)</span>, then <span class="math inline">\(n_1 = n_2 =
+n_3\)</span>.</p>
+</div>
+<div id="pr:example" class="problem" data-progress-ids="[&quot;2266&quot;,&quot;20261125T005500--columns-from-a-sphere__workbook.tex#pr:example&quot;]"><a class="stable-tag" href="tag/2266.html" title="Stable tag: cite as Tag 2266">Tag 2266</a>
+<p><strong>Problem 4.2.5</strong>. For <span class="math inline">\(D =
+3\)</span>, <span class="math inline">\(H = 3\)</span>, <span
+class="math inline">\(Q = 8\)</span>, so <span
+class="math inline">\(\beta = 24\)</span>, the sphere with the most
+points is <span class="math inline">\(\rho = 5\)</span>, with the six
+permutations of <span class="math inline">\((0, 1, 2)\)</span>, and
+<span class="math inline">\(\mathcal{N}= \{26, 49, 578, 624, 1153,
+1176\}\)</span>. With <span class="math inline">\(Q = 6\)</span>, <span
+class="math inline">\(\beta = 18\)</span>, the same sphere gives <span
+class="math inline">\(\{20, 37, 326, 360, 649, 666\}\)</span>.</p>
+</div>
+<div id="pr:size" class="problem" data-progress-ids="[&quot;2267&quot;,&quot;20261125T005500--columns-from-a-sphere__workbook.tex#pr:size&quot;]"><a class="stable-tag" href="tag/2267.html" title="Stable tag: cite as Tag 2267">Tag 2267</a>
+<p><strong>Problem 4.2.6</strong>. Let <span class="math inline">\(o \ge
+\beta^D\)</span> be an integer. (i) Every <span class="math inline">\(n
+\in \mathcal{N}\)</span> satisfies <span class="math inline">\(n &lt;
+o\)</span>. (ii) For <span class="math inline">\(n_1, n_2, n_3 \in
+\mathcal{N}\)</span> and positive integers <span
+class="math inline">\(\alpha, \alpha&#39;\)</span> with <span
+class="math inline">\(\alpha + \alpha&#39; \le Q\)</span>, the
+congruence <span class="math inline">\((\alpha + \alpha&#39;)n_2 \equiv
+\alpha n_1 + \alpha&#39; n_3 \pmod o\)</span> implies <span
+class="math inline">\(n_1 = n_2 = n_3\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:line-sphere" data-reference-type="ref"
+data-reference="pr:line-sphere">4.2.1</a>–<a href="#pr:no-relation"
+data-reference-type="ref" data-reference="pr:no-relation">4.2.4</a> and <a
+href="#pr:size" data-reference-type="ref"
+data-reference="pr:size">4.2.6</a> give the following theorem for <span
+class="math inline">\(D, H \ge 1\)</span>; the statement in the proof
+also covers <span class="math inline">\(DH = 0\)</span>. Here <span
+class="math inline">\(D, H, Q, o\)</span> are natural numbers, and the
+quotient <span class="math inline">\(H^D/(DH^2)\)</span> is taken in
+<span class="math inline">\(\mathbb{R}\)</span>, with value <span
+class="math inline">\(0\)</span> when <span class="math inline">\(DH =
+0\)</span>.</p>
+<div id="thm:behrend" class="theorem"><a class="stable-tag" href="tag/232N.html" title="Stable tag: cite as Tag 232N">Tag 232N</a>
+<p><strong>Theorem 4.2.1</strong>. <em>If <span class="math inline">\(0 &lt;
+Q\)</span> and <span class="math inline">\((QH)^D \le o\)</span>, there
+is a finite set <span class="math inline">\(\mathcal{N}\)</span> of
+natural numbers such that <span class="math inline">\(n &lt; o\)</span>
+for every <span class="math inline">\(n \in \mathcal{N}\)</span>, <span
+class="math inline">\(H^D/(DH^2) \le \#\mathcal{N}\)</span>, and for all
+<span class="math inline">\(n_1, n_2, n_3 \in \mathcal{N}\)</span> and
+all natural numbers <span class="math inline">\(\alpha,
+\alpha&#39;\)</span> with <span class="math inline">\(0 &lt;
+\alpha\)</span>, <span class="math inline">\(0 &lt;
+\alpha&#39;\)</span>, <span class="math inline">\(\alpha + \alpha&#39;
+\le Q\)</span>, the congruence <span class="math inline">\((\alpha +
+\alpha&#39;)n_2 \equiv \alpha n_1 + \alpha&#39; n_3 \pmod o\)</span>
+implies <span class="math inline">\(n_1 = n_2\)</span> and <span
+class="math inline">\(n_2 = n_3\)</span>.</em></p>
+</div>
+<p>For <span class="math inline">\(Q = 2\)</span>, the first Exercise
+below gives the density lower bound <span
+class="math inline">\(\exp(-C\sqrt{\log o})\)</span> of Behrend’s
+construction <span class="citation"
+data-cites="Beh">[<a href="#ref-Beh">Beh</a>]</span>; Shapira <span
+class="citation" data-cites="Sh">[<a href="#ref-Sh">Sh</a>]</span> extends
+such constructions to other linear equations. No construction gives a
+density bounded below by a positive constant independent of <span
+class="math inline">\(N\)</span>: by Roth’s theorem <span
+class="citation" data-cites="Ro">[<a href="#ref-Ro">Ro</a>]</span> a set of
+integers in <span class="math inline">\([0, N)\)</span> without
+nonconstant three-term progressions has <span
+class="math inline">\(o(N)\)</span> elements as <span
+class="math inline">\(N \to \infty\)</span>. The size condition we need
+is <a href="#eq:density" data-reference-type="eqref"
+data-reference="eq:density">(1)</a>.</p>
+<h1 id="sec:places">§4.3. From exponents to places <a class="stable-tag" href="tag/232P.html" title="Stable tag: cite as Tag 232P">Tag 232P</a></h1>
+<p>The exponents of Theorem <a href="#thm:behrend"
+data-reference-type="ref" data-reference="thm:behrend">4.2.1</a> become
+places through one integer <span class="math inline">\(g\)</span> prime
+to <span class="math inline">\(q_1\)</span>. Let <span
+class="math inline">\(w = v_2(q_0)\)</span>, so that <span
+class="math inline">\(2^{s+w} \mid q_1\)</span>; since <span
+class="math inline">\(16 \mid 18480\)</span>, <span
+class="math inline">\(w \ge 4\)</span>, and the problems below use only
+<span class="math inline">\(w \ge 2\)</span>. Following the construction
+of the proof, let <span class="math display">\[g := 1 + 3l_0q_0, \qquad
+\sigma_n := [-g^n] \in \Phi \quad (n \ge 0).\]</span> A toy of the same
+shape has <span class="math inline">\(q_0 = 4\)</span> and <span
+class="math inline">\(l_0 = 3\)</span> in place of the values of the
+proof, and <span class="math inline">\(s = 13\)</span>: then <span
+class="math inline">\(q_1 = 4 \cdot 9 \cdot 2^{13} = 294912\)</span>,
+<span class="math inline">\(w = 2\)</span> and <span
+class="math inline">\(g = 37\)</span>. In the toy the prime <span
+class="math inline">\(3\)</span> divides <span
+class="math inline">\(q_1\)</span> but not <span
+class="math inline">\(q_0\)</span>, which nothing below uses, and
+“sparse” is taken with <span class="math inline">\(l_0 = 3\)</span>.</p>
+<div id="pr:cyclic" class="problem" data-progress-ids="[&quot;232Q&quot;]"><a class="stable-tag" href="tag/232Q.html" title="Stable tag: cite as Tag 232Q">Tag 232Q</a>
+<p><strong>Problem 4.3.1</strong>. (i) If <span class="math inline">\(c \ge
+w \ge 2\)</span> and <span class="math inline">\(y\)</span> is odd, then
+<span class="math inline">\(1 + 2^w y\)</span> has order <span
+class="math inline">\(2^{c-w}\)</span> in <span
+class="math inline">\(U_{2^c}\)</span>. (ii) If <span
+class="math inline">\(c \ge 1\)</span>, then <span
+class="math inline">\(4\)</span> has order <span
+class="math inline">\(3^{c-1}\)</span> in <span
+class="math inline">\(U_{3^c}\)</span>. For example <span
+class="math inline">\(5^0, 5^1, 5^2, 5^3 \equiv 1, 5, 9, 13
+\pmod{16}\)</span>, and <span class="math inline">\(4\)</span> has order
+<span class="math inline">\(3\)</span> modulo <span
+class="math inline">\(9\)</span>.</p>
+</div>
+<div id="pr:long-order" class="problem" data-progress-ids="[&quot;232R&quot;]"><a class="stable-tag" href="tag/232R.html" title="Stable tag: cite as Tag 232R">Tag 232R</a>
+<p><strong>Problem 4.3.2</strong>. The integer <span
+class="math inline">\(g\)</span> has order <span
+class="math inline">\(2^s\)</span> modulo <span
+class="math inline">\(2^{s+w}\)</span>. The places <span
+class="math inline">\(\sigma_n\)</span>, <span class="math inline">\(0
+\le n &lt; 2^s\)</span>, are distinct, and their labels are <span
+class="math inline">\(\equiv -1 \pmod{3l_0q_0}\)</span>, in particular
+modulo <span class="math inline">\(q_0\)</span>. In the toy, <span
+class="math inline">\(37\)</span> has order <span
+class="math inline">\(2^{13}\)</span> modulo <span
+class="math inline">\(2^{15}\)</span>.</p>
+</div>
+<div id="pr:short-order" class="problem" data-progress-ids="[&quot;232S&quot;]"><a class="stable-tag" href="tag/232S.html" title="Stable tag: cite as Tag 232S">Tag 232S</a>
+<p><strong>Problem 4.3.3</strong>. Let <span class="math inline">\(0 &lt; i
+&lt; l_0\)</span> and <span class="math inline">\(n, n&#39; \ge
+0\)</span>. Then <span
+class="math inline">\(\mathrm{cl}_{q_{(2)}}(\sigma_{n&#39;}/\sigma_n)
+\ne \pm 2^i\)</span>.</p>
+</div>
+<div id="pr:frob-thick" class="problem" data-progress-ids="[&quot;232T&quot;]"><a class="stable-tag" href="tag/232T.html" title="Stable tag: cite as Tag 232T">Tag 232T</a>
+<p><strong>Problem 4.3.4</strong>. Let <span
+class="math inline">\(\ell\)</span> be an odd prime, <span
+class="math inline">\(0 &lt; i &lt; i&#39;\)</span>, and <span
+class="math inline">\(n_1, n_2, n_3 \ge 0\)</span>. If <span
+class="math inline">\(\mathrm{cl}_{q_{(\ell)}}(\sigma_{n_2}/\sigma_{n_1})
+= \pm\ell^i\)</span> and <span
+class="math inline">\(\mathrm{cl}_{q_{(\ell)}}(\sigma_{n_3}/\sigma_{n_1})
+= \pm\ell^{i&#39;}\)</span>, then <span
+class="math display">\[2i&#39;\,n_2 \equiv 2(i&#39; - i)\,n_1 + 2i\,n_3
+\pmod{2^s}.\]</span></p>
+</div>
+<div id="pr:two-power" class="problem" data-progress-ids="[&quot;232U&quot;,&quot;20261125T005500--columns-from-a-sphere__workbook.tex#pr:two-power&quot;]"><a class="stable-tag" href="tag/232U.html" title="Stable tag: cite as Tag 232U">Tag 232U</a>
+<p><strong>Problem 4.3.5</strong>. Let <span class="math inline">\(\ell
+&gt; 1\)</span> be an odd integer, <span class="math inline">\(\lambda
+\ge 1\)</span> and <span class="math inline">\(s \ge 0\)</span>. If
+<span class="math inline">\(\ell^\lambda \equiv 1
+\pmod{2^{s+1}}\)</span>, then <span class="math inline">\(2^s \le (\ell
++ 1)\lambda\)</span>.</p>
+</div>
+<div id="pr:toy" class="problem" data-progress-ids="[&quot;232V&quot;,&quot;20261125T005500--columns-from-a-sphere__workbook.tex#pr:toy&quot;]"><a class="stable-tag" href="tag/232V.html" title="Stable tag: cite as Tag 232V">Tag 232V</a>
+<p><strong>Problem 4.3.6</strong>. In the toy, the places <span
+class="math inline">\(\sigma_n\)</span> for <span
+class="math inline">\(n = 20, 37, 326, 360, 649, 666\)</span> have
+labels <span class="math inline">\(153935\)</span>, <span
+class="math inline">\(39851\)</span>, <span
+class="math inline">\(74807\)</span>, <span
+class="math inline">\(243359\)</span>, <span
+class="math inline">\(190331\)</span>, <span
+class="math inline">\(43271\)</span> modulo <span
+class="math inline">\(294912\)</span>. These are <span
+class="math inline">\(\equiv -1 \pmod{36}\)</span>, and the six places
+form a set sparse for the primes up to <span
+class="math inline">\(1364\)</span>, the largest <span
+class="math inline">\(L\)</span> with <span class="math inline">\(6(L+1)
+&lt; 2^{13}\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:long-order" data-reference-type="ref"
+data-reference="pr:long-order">4.3.2</a>–<a href="#pr:two-power"
+data-reference-type="ref" data-reference="pr:two-power">4.3.5</a>, with
+Theorem <a href="#thm:behrend" data-reference-type="ref"
+data-reference="thm:behrend">4.2.1</a> for <span class="math inline">\(Q =
+2l_0\)</span> and <span class="math inline">\(o = 2^s\)</span>, prove
+the next theorem. It concerns the parameters <span
+class="math inline">\((q_0, d)\)</span> and natural numbers <span
+class="math inline">\(s, D, H, L\)</span>, with the same convention for
+<span class="math inline">\(H^D/(DH^2)\)</span> as in Theorem <a
+href="#thm:behrend" data-reference-type="ref"
+data-reference="thm:behrend">4.2.1</a>.</p>
+<div id="thm:progressions" class="theorem"><a class="stable-tag" href="tag/232W.html" title="Stable tag: cite as Tag 232W">Tag 232W</a>
+<p><strong>Theorem 4.3.1</strong>. <em>If <span
+class="math inline">\((2l_0(s)H)^D \le 2^s\)</span> and <span
+class="math inline">\(2l_0(s)(L+1) &lt; 2^s\)</span>, there is a finite
+set <span class="math inline">\(\mathcal{P}\subseteq \Phi\)</span> with
+<span class="math inline">\(\mathrm{cl}(\sigma) = -1\)</span> for every
+<span class="math inline">\(\sigma \in \mathcal{P}\)</span>, with <span
+class="math inline">\(H^D/(DH^2) \le \#\mathcal{P}\)</span>, and sparse
+for the primes up to <span class="math inline">\(L\)</span>.</em></p>
+</div>
+<p>It remains to choose <span class="math inline">\(D\)</span> and <span
+class="math inline">\(H\)</span> so that <span
+class="math inline">\(\#\mathcal{P}\)</span> is large compared with
+<span class="math inline">\(q_1/q_0\)</span>.</p>
+<div id="pr:count" class="problem" data-progress-ids="[&quot;232X&quot;,&quot;20261125T005500--columns-from-a-sphere__workbook.tex#pr:count&quot;]"><a class="stable-tag" href="tag/232X.html" title="Stable tag: cite as Tag 232X">Tag 232X</a>
+<p><strong>Problem 4.3.7</strong>. Let <span class="math inline">\(D \ge
+1\)</span> be an integer and <span class="math inline">\(W \ge
+1\)</span> real, with <span class="math inline">\(W \le 2^s \le
+W^D\)</span>, <span class="math inline">\((2l_0)^D \le W\)</span> and
+<span class="math inline">\(3l_0 D 2^D \le W^3\)</span>, and let <span
+class="math inline">\(H\)</span> be the largest power of <span
+class="math inline">\(2\)</span> with <span class="math inline">\(H^D
+\le 2^s/W\)</span>. Then <span class="math inline">\(H \le W\)</span>,
+<span class="math inline">\((2l_0 H)^D \le 2^s\)</span>, and <span
+class="math inline">\(q_1/q_0 \le W^6 H^D/(DH^2)\)</span>.</p>
+</div>
+<p>With Theorem <a href="#thm:progressions" data-reference-type="ref"
+data-reference="thm:progressions">4.3.1</a> this gives a set of places of
+class <span class="math inline">\(-1\)</span> modulo <span
+class="math inline">\(q_0\)</span>, sparse for the primes up to <span
+class="math inline">\(L\)</span>, with <span
+class="math inline">\(q_1/q_0 \le \#\mathcal{P}\cdot W^6\)</span>, under
+the hypotheses of Problem <a href="#pr:count" data-reference-type="ref"
+data-reference="pr:count">4.3.7</a> and <span
+class="math inline">\(2l_0(L+1) &lt; 2^s\)</span>. If moreover <span
+class="math inline">\(W^6 \le \log b\)</span>, then <span
+class="math inline">\(\mathcal{P}\)</span> satisfies <a
+href="#eq:density" data-reference-type="eqref"
+data-reference="eq:density">(1)</a> in place of <span
+class="math inline">\(\Phi_b\)</span>. This ends the choice of places.
+From Chapter <a href="20261125T000000--slope-method__workbook.html#chap" data-reference-type="ref"
+data-reference="sm-chap">5</a> on, the next part develops the
+comparison of divisibility with size.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, sparsity is the
+definition <code>New.Parameters.IsSparse</code> (file
+<code>New/Reduction/Data/AdmissibleData.lean</code>), and Theorems <a
+href="#thm:behrend" data-reference-type="ref"
+data-reference="thm:behrend">4.2.1</a> and <a href="#thm:progressions"
+data-reference-type="ref" data-reference="thm:progressions">4.3.1</a> are
+<code>New.exists_three_term_free</code> and
+<code>New.Parameters.exists_large_isSparse</code> (file
+<code>New/Reduction/Data/Existence.lean</code>); the proof of the latter
+is the construction of Section <a href="#sec:places"
+data-reference-type="ref" data-reference="sec:places">4.3</a>.</p>
+<h2 class="unnumbered" id="exercises">Exercises</h2>
+<ol>
+<li><p>With <span class="math inline">\(Q = 2\)</span>, <span
+class="math inline">\(D = \lceil\sqrt{\log o}\,\rceil\)</span> and <span
+class="math inline">\(H\)</span> the largest integer with <span
+class="math inline">\((2H)^D \le o\)</span>, Theorem <a
+href="#thm:behrend" data-reference-type="ref"
+data-reference="thm:behrend">4.2.1</a> gives a set <span
+class="math inline">\(\mathcal{N}\subset [0, o)\)</span> without
+nonconstant three-term progressions modulo <span
+class="math inline">\(o\)</span> and with <span
+class="math inline">\(\#\mathcal{N}\ge o\exp(-C\sqrt{\log o})\)</span>
+for large <span class="math inline">\(o\)</span>, for an absolute
+constant <span class="math inline">\(C\)</span>.</p></li>
+<li><p>The hypothesis <span class="math inline">\(o \ge \beta^D\)</span>
+cannot be dropped from Problem <a href="#pr:size"
+data-reference-type="ref" data-reference="pr:size">4.2.6</a>: for <span
+class="math inline">\(D = 3\)</span>, <span class="math inline">\(H = Q
+= 2\)</span>, <span class="math inline">\(\rho = 1\)</span> and <span
+class="math inline">\(o = 27\)</span>, every element of <span
+class="math inline">\(\mathcal{N}\)</span> is less than <span
+class="math inline">\(o\)</span>, but three distinct elements of <span
+class="math inline">\(\mathcal{N}\)</span> form an arithmetic
+progression modulo <span class="math inline">\(o\)</span>.</p></li>
+</ol>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="sectwo">§<a href="#sec:two"
+data-reference-type="ref" data-reference="sec:two">4.1</a></h2>
+<dl>
+<dt><a href="#pr:avg-density" data-reference-type="ref"
+data-reference="pr:avg-density">4.1.1</a></dt>
+<dd>
+<p>Problem <a href="20261125T005000--galois-fourier-and-averaging__workbook.html#pr:fibres" data-reference-type="ref"
+data-reference="gf-pr:fibres">3.1.3</a>.</p>
+</dd>
+<dt><a href="#pr:frob-prog" data-reference-type="ref"
+data-reference="pr:frob-prog">4.1.2</a></dt>
+<dd>
+<p>(ii) Count a fibre of <span class="math inline">\(U_{q_1} \to
+U_{q_{(\ell)}}\)</span>.</p>
+</dd>
+<dt><a href="#pr:short-orbit" data-reference-type="ref"
+data-reference="pr:short-orbit">4.1.3</a></dt>
+<dd>
+<p>Take three such <span class="math inline">\(\mu\)</span>.</p>
+</dd>
+<dt><a href="#pr:near-pairs" data-reference-type="ref"
+data-reference="pr:near-pairs">4.1.4</a></dt>
+<dd>
+<p><span class="math inline">\((-p)^i = (-1)^ip^i\)</span>.</p>
+</dd>
+<dt><a href="#pr:base3" data-reference-type="ref"
+data-reference="pr:base3">4.1.5</a></dt>
+<dd>
+<p>(i) Add the outer terms digit by digit.</p>
+</dd>
+<dt><a href="#pr:random-ap" data-reference-type="ref"
+data-reference="pr:random-ap">4.1.6</a></dt>
+<dd>
+<p>For <span class="math inline">\(\eta \notin \{0, o/2\}\)</span> the
+three points are distinct.</p>
+</dd>
+<dt><a href="#pr:random-deletion" data-reference-type="ref"
+data-reference="pr:random-deletion">4.1.7</a></dt>
+<dd>
+<p>Linearity of expectation.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secbehrend">§<a href="#sec:behrend"
+data-reference-type="ref" data-reference="sec:behrend">4.2</a></h2>
+<dl>
+<dt><a href="#pr:line-sphere" data-reference-type="ref"
+data-reference="pr:line-sphere">4.2.1</a></dt>
+<dd>
+<p>Three distinct points of a sphere are never collinear. Compute <span
+class="math inline">\(\alpha\lvert v\rvert^2 + \alpha&#39;\lvert
+v&#39;&#39;\rvert^2 - (\alpha+\alpha&#39;)\lvert v&#39;\rvert^2\)</span>
+in terms of <span class="math inline">\(v - v&#39;&#39;\)</span>.</p>
+</dd>
+<dt><a href="#pr:pigeonhole" data-reference-type="ref"
+data-reference="pr:pigeonhole">4.2.2</a></dt>
+<dd>
+<p>Count the possible values of <span class="math inline">\(\lvert
+v\rvert^2\)</span>.</p>
+</dd>
+<dt><a href="#pr:digits" data-reference-type="ref"
+data-reference="pr:digits">4.2.3</a></dt>
+<dd>
+<p>Look at the lowest nonzero <span class="math inline">\(z_\mu\)</span>
+modulo <span class="math inline">\(\beta\)</span>.</p>
+</dd>
+<dt><a href="#pr:no-relation" data-reference-type="ref"
+data-reference="pr:no-relation">4.2.4</a></dt>
+<dd>
+<p>Problem <a href="#pr:digits" data-reference-type="ref"
+data-reference="pr:digits">4.2.3</a>.</p>
+</dd>
+<dt><a href="#pr:size" data-reference-type="ref"
+data-reference="pr:size">4.2.6</a></dt>
+<dd>
+<p>(ii) Bound the base-<span class="math inline">\(\beta\)</span> digits
+of both sides.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secplaces">§<a href="#sec:places"
+data-reference-type="ref" data-reference="sec:places">4.3</a></h2>
+<dl>
+<dt><a href="#pr:cyclic" data-reference-type="ref"
+data-reference="pr:cyclic">4.3.1</a></dt>
+<dd>
+<p>Induction on the exponent of <span class="math inline">\(2\)</span>,
+resp. <span class="math inline">\(3\)</span>, in <span
+class="math inline">\((1+2^wy)^{2^r} - 1\)</span>, resp. <span
+class="math inline">\(4^{3^r} - 1\)</span>.</p>
+</dd>
+<dt><a href="#pr:long-order" data-reference-type="ref"
+data-reference="pr:long-order">4.3.2</a></dt>
+<dd>
+<p>Problem <a href="#pr:cyclic" data-reference-type="ref"
+data-reference="pr:cyclic">4.3.1</a>(i).</p>
+</dd>
+<dt><a href="#pr:short-order" data-reference-type="ref"
+data-reference="pr:short-order">4.3.3</a></dt>
+<dd>
+<p>Use <span class="math inline">\(3l_0 \mid q_{(2)}\)</span> and
+Problem <a href="#pr:cyclic" data-reference-type="ref"
+data-reference="pr:cyclic">4.3.1</a>(ii).</p>
+</dd>
+<dt><a href="#pr:frob-thick" data-reference-type="ref"
+data-reference="pr:frob-thick">4.3.4</a></dt>
+<dd>
+<p>For odd <span class="math inline">\(\ell\)</span>, <span
+class="math inline">\(2^{s+w} \mid q_{(\ell)}\)</span>. Work modulo
+<span class="math inline">\(2^{s+w}\)</span>.</p>
+</dd>
+<dt><a href="#pr:two-power" data-reference-type="ref"
+data-reference="pr:two-power">4.3.5</a></dt>
+<dd>
+<p>Compute <span class="math inline">\(v_2(\ell^\lambda - 1)\)</span>
+for <span class="math inline">\(\lambda\)</span> odd and for <span
+class="math inline">\(\lambda\)</span> even; for <span
+class="math inline">\(\lambda\)</span> even use <span
+class="math inline">\(\ell^2 - 1 = (\ell-1)(\ell+1)\)</span> and
+Problem <a href="#pr:cyclic" data-reference-type="ref"
+data-reference="pr:cyclic">4.3.1</a>(i) for <span
+class="math inline">\(\ell^2\)</span>.</p>
+</dd>
+<dt><a href="#pr:toy" data-reference-type="ref"
+data-reference="pr:toy">4.3.6</a></dt>
+<dd>
+<p>Problems <a href="#pr:example" data-reference-type="ref"
+data-reference="pr:example">4.2.5</a> (base <span
+class="math inline">\(18\)</span>), <a href="#pr:short-order"
+data-reference-type="ref" data-reference="pr:short-order">4.3.3</a> and <a
+href="#pr:frob-thick" data-reference-type="ref"
+data-reference="pr:frob-thick">4.3.4</a> with <span
+class="math inline">\(l_0 = 3\)</span>; if the exponents coincide,
+Problem <a href="#pr:two-power" data-reference-type="ref"
+data-reference="pr:two-power">4.3.5</a>.</p>
+</dd>
+<dt><a href="#pr:count" data-reference-type="ref"
+data-reference="pr:count">4.3.7</a></dt>
+<dd>
+<p>Compare <span class="math inline">\((2H)^D\)</span> with <span
+class="math inline">\(2^s/W\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Beh"><span class="bib-label">[Beh]</span> F. A. Behrend, <em>On sets of integers which contain no three terms in arithmetical progression</em>, Proc. Nat. Acad. Sci. U.S.A. <strong>32</strong> (1946), 331–332.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-IR"><span class="bib-label">[IR]</span> K. Ireland and M. Rosen, <em>A Classical Introduction to Modern Number Theory</em>, 2nd ed., Springer, 1990.</p>
+<p id="ref-Ro"><span class="bib-label">[Ro]</span> K. F. Roth, <em>On certain sets of integers</em>, J. London Math. Soc. <strong>28</strong> (1953), 104–109.</p>
+<p id="ref-Sh"><span class="bib-label">[Sh]</span> A. Shapira, <em>Behrend-type constructions for sets of linear equations</em>, Acta Arith. <strong>122</strong> (2006), 17–33.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

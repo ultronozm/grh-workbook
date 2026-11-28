@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-sY/R+UqZSRUfzWe8L2zR0qtk6LDQ9Tw44oOrBF/LHmE=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>The local loss and the sparse places</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","Oc":"\\mathcal{O}","val":"\\operatorname{val}","rk":"\\operatorname{rk}","loc":"\\mathrm{loc}","defect":"\\mathrm{defect}","crys":"\\mathrm{crys}","Int":"\\mathrm{Int}","cl":"\\mathrm{cl}","HT":"\\mathrm{HT}","Gl":"G_{\\Q_\\ell}","half":"(\\Delta/2)"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="82">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T051800--the-local-loss-and-the-sparse-places__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 08:30:58
+      <a href="20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T051800--the-local-loss-and-the-sparse-places__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">The local loss and the sparse places</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:loss" id="toc-sec:loss">§82.1. The loss at one place</a></li>
+<li><a href="#sec:one-prime" id="toc-sec:one-prime">§82.2. The crystalline loss of one prime</a></li>
+<li><a href="#sec:letters" id="toc-sec:letters">§82.3. Thick letters</a></li>
+<li><a href="#sec:sum" id="toc-sec:sum">§82.4. The sum over the primes</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secloss" id="toc-secloss">§82.1</a></li>
+<li><a href="#secone-prime" id="toc-secone-prime">§82.2</a></li>
+<li><a href="#secletters" id="toc-secletters">§82.3</a></li>
+<li><a href="#secsum" id="toc-secsum">§82.4</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Local fields: decomposition groups, the degree <span
+class="math inline">\([E_v : \mathbb{Q}_\ell] = e_vf_v\)</span> <span
+class="citation" data-cites="SLF">[<a href="#ref-SLF">SLF</a>, Ch. II, §2,
+Cor. 1 to Prop. 3]</span>, and Frobenius elements <span class="citation"
+data-cites="SLF">[<a href="#ref-SLF">SLF</a>, Ch. IV]</span>; Legendre’s
+formula <span class="math inline">\(\operatorname{val}_\ell(n!) =
+\sum_{i \ge 1}\lfloor n/\ell^i\rfloor\)</span>. From Chapter <a
+href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>: Definition <a
+href="20261126T030300--the-data__workbook.html#def:data" data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a> (the sparse set <span
+class="math inline">\(\Phi_b\)</span>, <span
+class="math inline">\(l_0(s)\)</span>), Problems <a href="20261126T030300--the-data__workbook.html#pr:class"
+data-reference-type="ref"
+data-reference="da-pr:class">36.1.1</a>, <a href="20261126T030300--the-data__workbook.html#pr:split"
+data-reference-type="ref"
+data-reference="da-pr:split">36.1.2</a>, <a href="20261126T030300--the-data__workbook.html#pr:l0"
+data-reference-type="ref" data-reference="da-pr:l0">36.2.1</a>
+and <a href="20261126T030300--the-data__workbook.html#pr:MN" data-reference-type="ref"
+data-reference="da-pr:MN">36.5.4</a>, and the budget <span
+class="math inline">\(B\)</span> of Definition <a href="20261126T030300--the-data__workbook.html#def:budget"
+data-reference-type="ref"
+data-reference="da-def:budget">36.4.1</a>; the construction of
+<span class="math inline">\(\Phi_b\)</span> in Chapter <a
+href="20261125T005500--columns-from-a-sphere__workbook.html#chap" data-reference-type="ref"
+data-reference="sp-chap">4</a>. Theorem <a href="20261125T014700--pseudocharacters-and-the-length-bound__workbook.html#thm:graph"
+data-reference-type="ref"
+data-reference="pc-thm:graph">31.4.1</a>. From Chapter <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dp-chap">80</a>: coefficient rings <span
+class="math inline">\(\mathcal{O}\)</span> and normalized lengths
+(Section <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#sec:statement" data-reference-type="ref"
+data-reference="dp-sec:statement">80.1</a>),
+Definitions <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:jumps" data-reference-type="ref"
+data-reference="dp-def:jumps">80.1.6</a>, <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:main-summand-like" data-reference-type="ref"
+data-reference="dp-def:main-summand-like">80.1.7</a>
+and <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:clearing-bound" data-reference-type="ref"
+data-reference="dp-def:clearing-bound">80.1.1</a>.
+Chapter <a href="20261126T080800--black-box-crystalline-lattices-and-the-condition-above-l__workbook.html#chap" data-reference-type="ref"
+data-reference="bk-chap">34</a> defines crystalline cocycles and
+states their rank and local duality.</p>
+<p>The clearing bound <span
+class="math inline">\(\mathrm{cl}_\ell\)</span> of Definition <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:clearing-bound" data-reference-type="ref"
+data-reference="dp-def:clearing-bound">80.1.1</a>,
+which controls the denominators of projections onto lifts in Chapter <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#chap" data-reference-type="ref"
+data-reference="dp-chap">80</a>, contains the term <span
+class="math inline">\(\mathrm{loc}_\ell\)</span>, counted per unit of
+rank. For a main summand of rank <span
+class="math inline">\(r&#39;\)</span> the allowance is <span
+class="math inline">\(r&#39;\mathrm{loc}_\ell\)</span> (Problem <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#pr:budget" data-reference-type="ref"
+data-reference="dp-pr:budget">80.1.3</a>), for imposing the
+crystalline relations on the torsion rows above <span
+class="math inline">\(\ell\)</span>. Why is this price a fixed multiple
+of the valuation of one integer, and why is the sum of <span
+class="math inline">\(\mathrm{loc}_\ell\log\ell\)</span> over all primes
+<span class="math inline">\(\ell\)</span> only of size <span
+class="math inline">\(f(m/k)\,b\log b\)</span>, far below <span
+class="math inline">\(B\)</span>? The bound at one place above <span
+class="math inline">\(\ell\)</span> is taken from the proof. What this
+sheet proves is the arithmetic around it: the sum over the places and
+rows, the integer whose valuation determines the allowance, the sparse
+places that keep the small primes cheap, and the sum over <span
+class="math inline">\(\ell\)</span>. For a prime <span
+class="math inline">\(\ell\)</span> and a positive integer <span
+class="math inline">\(n\)</span> we write <span
+class="math inline">\(\operatorname{val}_\ell(n)\)</span> for the
+exponent of <span class="math inline">\(\ell\)</span> in <span
+class="math inline">\(n\)</span>, the valuation <span
+class="math inline">\(\operatorname{val}\)</span> at <span
+class="math inline">\(\ell\)</span>.</p>
+<h1 id="sec:loss">§82.1. The loss at one place</h1>
+<p>We use the data and the notation of Chapter <a href="20261126T030300--the-data__workbook.html#chap"
+data-reference-type="ref" data-reference="da-chap">36</a>: the
+field <span class="math inline">\(E\)</span> with <span
+class="math inline">\(f\)</span> infinite places, the scales, <span
+class="math inline">\(m\)</span>, <span
+class="math inline">\(r\)</span>, <span class="math inline">\(k = r + 1
+- m\)</span>, <span class="math inline">\(t = 5r\)</span>, <span
+class="math inline">\(M = p_0p_1\)</span>, the gap <span
+class="math inline">\(\Delta = 2r^8\)</span>, so <span
+class="math inline">\(\Delta/2 = r^8\)</span>.</p>
+<div id="def:loss" class="definition">
+<p><strong>Definition 82.1.1</strong>. Let <span
+class="math inline">\(\mathrm{Int}_b\)</span> be the product of the
+integers <span class="math inline">\(i\)</span> with <span
+class="math inline">\(\max(0, b - 30(\Delta/2)^3) &lt; i \le b +
+30(\Delta/2)^3\)</span>. For a prime <span
+class="math inline">\(\ell\)</span> put <span
+class="math display">\[\mathrm{crys}_\ell :=
+\operatorname{val}_\ell\bigl((2b)!\,\mathrm{Int}_b^{(\Delta/2)^3}\bigr),
+\qquad
+  \mathrm{defect}_\ell := 10^6\,\frac
+mk\,\bigl(b\,\operatorname{val}_\ell(M) +
+\mathrm{crys}_\ell\bigr),\]</span> and <span
+class="math inline">\(\mathrm{loc}_\ell :=
+4f\,\mathrm{defect}_\ell\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:crys">Problem 82.2.1</a>, <a href="#pr:model-integer">Problem 82.2.2</a>; <a href="20261126T060400--congruences-bounded-by-lengths__workbook.html">Chapter 83</a></div><!-- used-in:end -->
+</div>
+<p>Fix a prime <span class="math inline">\(\ell\)</span>, an isomorphism
+<span class="math inline">\(\iota\colon \mathbb{C}\simeq
+\overline{\mathbb{Q}}_\ell\)</span>, and <span
+class="math inline">\(G_{\mathbb{Q}_\ell}:=
+\mathrm{Gal}(\overline{\mathbb{Q}}_\ell/\mathbb{Q}_\ell)\)</span>. For a
+place <span class="math inline">\(v \mid \ell\)</span> of <span
+class="math inline">\(E\)</span> choose an embedding <span
+class="math inline">\(\jmath\colon E \to
+\overline{\mathbb{Q}}_\ell\)</span> inducing <span
+class="math inline">\(v\)</span>, and let <span
+class="math inline">\(\Gamma_v \subseteq G_{\mathbb{Q}_\ell}\)</span> be
+the subgroup fixing <span class="math inline">\(\jmath(E)\)</span>, the
+Galois group of the completion <span class="math inline">\(E_v\)</span>;
+thus <span class="math inline">\([G_{\mathbb{Q}_\ell}: \Gamma_v] = [E_v
+: \mathbb{Q}_\ell]\)</span>. In the proof of the denominators theorem,
+the congruence cocycles obey the cocycle rule and the linear relations
+among the families <span class="math inline">\((U_x(g)-1)_x\)</span> of
+Chapter <a href="20261125T014700--pseudocharacters-and-the-length-bound__workbook.html#chap" data-reference-type="ref"
+data-reference="pc-chap">31</a>. Theorem <a href="20261125T014700--pseudocharacters-and-the-length-bound__workbook.html#thm:graph"
+data-reference-type="ref"
+data-reference="pc-thm:graph">31.4.1</a> realizes such a cocycle
+with torsion coefficients as the second projection of an integral
+cocycle on a graph lattice. Above <span
+class="math inline">\(\ell\)</span> the proof realizes the restricted
+cocycle as the second projection of a crystalline cocycle on a graph
+lattice in the chosen class. The defect on the Tate dual (Definition <a
+href="#def:dual-defect" data-reference-type="ref"
+data-reference="def:dual-defect">82.1.2</a>) bounds the cost of imposing the
+crystalline relations of the target row on the torsion cocycles. The
+next problem illustrates the index calculation for a finite perfect
+pairing.</p>
+<div id="pr:pairing-model" class="problem" data-progress-ids="[&quot;20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex#pr:pairing-model&quot;]">
+<p><strong>Problem 82.1.1</strong>. Let <span class="math inline">\(F_1
+\times F_2 \to \mathbb{Q}/\mathbb{Z}\)</span> be a perfect pairing of
+finite abelian groups and <span class="math inline">\(F_0 \subseteq
+F_1\)</span> a subgroup. Its orthogonal <span
+class="math inline">\(F_0^\perp \subseteq F_2\)</span> has index <span
+class="math inline">\(\#F_0\)</span>. For <span
+class="math inline">\(F_1 = F_2 = \mathbb{Z}/9\)</span> with <span
+class="math inline">\(\langle y_1, y_2\rangle = y_1y_2/9\)</span> and
+<span class="math inline">\(F_0\)</span> generated by <span
+class="math inline">\(3\)</span>, <span class="math inline">\(F_0^\perp
+= \{0, 3, 6\}\)</span>, of index <span class="math inline">\(3\)</span>:
+one equation costs length <span class="math inline">\(1\)</span> on
+either side.</p>
+</div>
+<p>For a lattice with continuous action of <span
+class="math inline">\(\Gamma_v\)</span>, write <span
+class="math inline">\(Z_f(\cdot)\)</span> for its integral crystalline
+cocycles. We use the following three inputs. (i) <em>Local duality in
+index form.</em> Use the divisibility of indices after Theorem <a
+href="20261126T080800--black-box-crystalline-lattices-and-the-condition-above-l__workbook.html#thm:duality" data-reference-type="ref"
+data-reference="bk-thm:duality">34.2.1</a>, with <span
+class="math inline">\(F_v=E_v\)</span>. (ii) <em>Rank of crystalline
+cocycles.</em> Theorem <a href="20261126T080800--black-box-crystalline-lattices-and-the-condition-above-l__workbook.html#thm:rank" data-reference-type="ref"
+data-reference="bk-thm:rank">34.1.1</a> gives the integral rank
+formula, with <span
+class="math inline">\([E_v:\mathbb{Q}_\ell]=[G_{\mathbb{Q}_\ell}:\Gamma_v]\)</span>.
+Problem <a href="20261126T080800--black-box-crystalline-lattices-and-the-condition-above-l__workbook.html#pr:dual-jump" data-reference-type="ref"
+data-reference="bk-pr:dual-jump">34.1.5</a> gives the product
+of the orders of the reductions of <span
+class="math inline">\(Z_f(L)\)</span> and <span
+class="math inline">\(Z_f(L^*(1))\)</span>. (iii) The bound <a
+href="#eq:dual-defect" data-reference-type="eqref"
+data-reference="eq:dual-defect">(1)</a> below is read from
+the rewritten proof. Its local estimates use an integral frame theorem
+for crystalline lattices (Section <a href="20261126T080800--black-box-crystalline-lattices-and-the-condition-above-l__workbook.html#sec:kisin"
+data-reference-type="ref"
+data-reference="bk-sec:kisin">34.3</a>, where a basis over the
+chart ring also freely generates the associated module over <span
+class="math inline">\(A_{\mathrm{inf}}\)</span>). For the underlying
+module theory see <span class="citation"
+data-cites="Ki">[<a href="#ref-Ki">Ki</a>]</span>, <span class="citation"
+data-cites="BMS">[<a href="#ref-BMS">BMS</a>]</span>.</p>
+<div id="def:dual-defect" class="definition">
+<p><strong>Definition 82.1.2</strong>. Let <span
+class="math inline">\(\mathcal{O}\)</span> be a coefficient ring, <span
+class="math inline">\(\mathcal C\)</span> a class of <span
+class="math inline">\(\mathcal{O}\)</span>-lattices with continuous
+<span class="math inline">\(\Gamma_v\)</span>-action, and <span
+class="math inline">\(L&#39;\)</span> such a lattice. In this sheet let
+<span class="math inline">\(\mathcal C^\perp(L&#39;)\)</span> be the
+<span class="math inline">\(\mathcal{O}\)</span>-module of maps <span
+class="math inline">\(c\colon \Gamma_v \to L&#39;\)</span> such that for
+every <span class="math inline">\(\tilde L \in \mathcal C\)</span>,
+every <span class="math inline">\(n \ge 0\)</span>, every pairing <span
+class="math inline">\(\langle\,,\rangle\colon \tilde L \times L&#39; \to
+\mathbb{Z}/\ell^n(1)\)</span> obtained from an <span
+class="math inline">\(\mathcal{O}\)</span>-linear form <span
+class="math inline">\(\psi\colon \tilde L \otimes_{\mathcal{O}} L&#39;
+\to \mathcal{O}(1)\)</span> whose coboundary <span
+class="math inline">\(g \mapsto g\psi - \psi\)</span> is <span
+class="math inline">\(\ell^n\)</span> times an integral crystalline
+cocycle, followed by a <span
+class="math inline">\(\mathbb{Z}_\ell\)</span>-linear map <span
+class="math inline">\(\mathcal{O}\to \mathbb{Z}_\ell\)</span> and
+reduction modulo <span class="math inline">\(\ell^n\)</span>, and every
+<span class="math inline">\(y \in Z_f(\tilde L)\)</span>, the cochain
+<span class="math inline">\((g, h) \mapsto \langle y(g),
+g\,c(h)\rangle\)</span>, with values in the roots of unity of <span
+class="math inline">\(\overline{\mathbb{Q}}_\ell\)</span>, is the
+coboundary of a locally constant cochain <span
+class="math inline">\(\Gamma_v \to
+\overline{\mathbb{Q}}_\ell^\times\)</span>. Define the <em>dual
+defect</em> of <span class="math inline">\(L&#39;\)</span> for <span
+class="math inline">\(\mathcal C\)</span> as the length of <span
+class="math inline">\(Z_f(L&#39;)/(Z_f(L&#39;) \cap \mathcal
+C^\perp(L&#39;))\)</span>. For an <span
+class="math inline">\(\mathcal{O}\)</span>-lattice <span
+class="math inline">\(L\)</span>, let <span
+class="math inline">\(L^\vee(1):=\operatorname{Hom}_{\mathcal{O}}(L,\mathcal{O}(1))\)</span>
+with the induced <span class="math inline">\(\Gamma_v\)</span>-action.
+The <em>dual defect at <span class="math inline">\(v\)</span></em> of
+<span class="math inline">\(L\)</span> is the dual defect of <span
+class="math inline">\(L^\vee(1)\)</span> for <span
+class="math inline">\(\mathcal C\)</span>, in normalized length.</p>
+</div>
+<p>Fix <span class="math inline">\(v,\jmath\)</span> as above and a
+family <span class="math inline">\(\mathrm{HT}\)</span> admissible for
+<span class="math inline">\((r&#39;,t&#39;)\)</span> in the sense of
+Definition <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:jumps" data-reference-type="ref"
+data-reference="dp-def:jumps">80.1.6</a>. For all sufficiently
+large coefficient rings <span
+class="math inline">\(\mathcal{O}\)</span>, take any local <span
+class="math inline">\(\mathcal{O}\)</span>-lattices with a main row
+<span class="math inline">\(L_0\)</span> of rank <span
+class="math inline">\(r&#39;\)</span> and rows <span
+class="math inline">\(L^{(e)}\)</span> indexed by <span
+class="math inline">\(0\le e&lt;t&#39;\)</span>. For every <span
+class="math inline">\(g\in G_{\mathbb{Q}_\ell}\)</span>, the jump
+multisets at the coefficient embedding <span
+class="math inline">\(z\mapsto g(z)\)</span> are <span
+class="math inline">\(\mathrm{HT}_{\iota^{-1}g^{-1}\jmath}\)</span> for
+<span class="math inline">\(L_0\)</span> and <span
+class="math inline">\(\{e\}\)</span> for <span
+class="math inline">\(L^{(e)}\)</span>. In the application <span
+class="math inline">\(L_0\)</span> is the restriction of a lattice of a
+main-summand-like representation and <span
+class="math inline">\(L^{(e)}=\mathcal{O}(-e)\)</span>.</p>
+<p>Choose a filter <span class="math inline">\(F\)</span> on <span
+class="math inline">\(\Gamma_v\)</span>, a predicate <span
+class="math inline">\(K_s\)</span> on <span
+class="math inline">\(\mathcal{O}[X]\)</span> for each <span
+class="math inline">\(s\in\Gamma_v\)</span>, and a finite set <span
+class="math inline">\(U_\gamma\subset\mathbb{Z}\)</span> for each
+coefficient embedding <span
+class="math inline">\(\gamma\colon\mathcal{O}\to\mathbb{C}_\ell\)</span>
+over <span class="math inline">\(\mathbb{Z}_\ell\)</span>. Let <span
+class="math inline">\(\mathcal C\)</span> consist of the lattices <span
+class="math inline">\(Y\)</span> whose periods fixed by almost all
+elements for the supremum of <span class="math inline">\(F\)</span> and
+the neighborhood filter of <span class="math inline">\(1\)</span> span
+<span class="math inline">\(B_{\max}\otimes_{\mathbb{Z}_\ell}Y\)</span>
+over <span class="math inline">\(B_{\max}\)</span>, whose jumps at <span
+class="math inline">\(\gamma\)</span> lie in <span
+class="math inline">\(U_\gamma\)</span>, and with the following
+property. For each inertia element <span
+class="math inline">\(s\)</span>, let <span
+class="math inline">\(T_s\)</span> be the <span
+class="math inline">\(B_{\max}\)</span>-linear endomorphism of <span
+class="math inline">\(B_{\max}\otimes_{\mathbb{Z}_\ell}Y\)</span>
+agreeing with the diagonal action of <span
+class="math inline">\(s\)</span> on the periods fixed by some
+neighborhood of <span class="math inline">\(1\)</span> in <span
+class="math inline">\(\Gamma_v\)</span>. Require <span
+class="math inline">\(P(T_s)=0\)</span> for every <span
+class="math inline">\(P\in\mathcal{O}[X]\)</span> satisfying <span
+class="math inline">\(K_s\)</span>, with coefficients acting through
+<span class="math inline">\(Y\)</span>. Require each <span
+class="math inline">\(u\in U_\gamma\)</span> to occur as a jump of some
+row at <span class="math inline">\(\gamma\)</span>.</p>
+<p>In the crystalline case take <span
+class="math inline">\(F=\top\)</span> and every <span
+class="math inline">\(K_s\)</span> empty. In the tame case require <span
+class="math inline">\(\ell\in\{p_0,p_1\}\)</span>. Write <span
+class="math inline">\(A=\operatorname{lcm}_{1\le j\le
+r}(\ell^j-1)\)</span>. For each inertia element <span
+class="math inline">\(s\)</span>, require that <span
+class="math inline">\(K_s\)</span> hold for <span
+class="math inline">\(X^A-1\)</span> and for some monic <span
+class="math inline">\(P_s\in\mathbb{Z}_\ell[X]\)</span> of degree at
+most <span class="math inline">\((r+t)r\)</span>, viewed over <span
+class="math inline">\(\mathcal{O}\)</span>. Under either set of
+hypotheses, every indexed row <span class="math inline">\(L\)</span>
+belonging to <span class="math inline">\(\mathcal C\)</span> has
+normalized dual defect at <span class="math inline">\(v\)</span> at most
+<span id="eq:dual-defect" class="math display">\[\begin{equation}
+\label{eq:dual-defect}\tag{1}
+  [G_{\mathbb{Q}_\ell}:
+\Gamma_v]\,\operatorname{rk}_{\mathcal{O}}(L)\,\mathrm{defect}_\ell /
+t_L, \qquad t_L = 1 \text{ for the main row},\quad t_L = t \text{ for a
+row indexed by } e.
+\end{equation}\]</span></p>
+<div id="pr:local-degrees" class="problem" data-progress-ids="[&quot;20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex#pr:local-degrees&quot;]">
+<p><strong>Problem 82.1.2</strong>. <span class="math inline">\(\sum_{v \mid
+\ell} [G_{\mathbb{Q}_\ell}: \Gamma_v] = [E : \mathbb{Q}] = 2f\)</span>.
+In <span class="math inline">\(\mathbb{Q}(i)\)</span> (a model, with
+<span class="math inline">\(1\)</span> in place of <span
+class="math inline">\(f\)</span>) the pairs <span
+class="math inline">\((e_v, f_v)\)</span> are <span
+class="math inline">\((1, 2)\)</span> above <span
+class="math inline">\(3\)</span> and <span class="math inline">\((1, 1),
+(1, 1)\)</span> above <span class="math inline">\(5\)</span>; the sum is
+<span class="math inline">\(2\)</span> both times.</p>
+</div>
+<div id="pr:row-total" class="problem" data-progress-ids="[&quot;20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex#pr:row-total&quot;]">
+<p><strong>Problem 82.1.3</strong>. Let <span
+class="math inline">\(r&#39;,t&#39;\)</span> be integers with <span
+class="math inline">\(r&#39;\ge1\)</span> and <span
+class="math inline">\(0\le t&#39;\le t\)</span>. The bounds <a
+href="#eq:dual-defect" data-reference-type="eqref"
+data-reference="eq:dual-defect">(1)</a> for the main row
+and the <span class="math inline">\(t&#39;\)</span> character rows,
+summed over the rows and the places <span class="math inline">\(v \mid
+\ell\)</span>, total at most <span
+class="math inline">\(4fr&#39;\,\mathrm{defect}_\ell =
+r&#39;\mathrm{loc}_\ell\)</span>.</p>
+</div>
+<p>For the comparison of crystalline colengths and dual defects, see
+<span class="citation" data-cites="GL">[<a href="#ref-GL">GL</a>]</span>.
+Problem <a href="#pr:row-total" data-reference-type="ref"
+data-reference="pr:row-total">82.1.3</a> bounds the sum of the numerical
+estimates for those defects. The resulting allowance <span
+class="math inline">\(r&#39;\mathrm{loc}_\ell\)</span> is the local term
+in the inequality <span class="math inline">\(\mathrm{sel} +
+2t&#39;\,\mathrm{ram} + r&#39;\mathrm{loc}_\ell + \varepsilon_\ell +
+n_\ell \le r&#39;\mathrm{cl}_ell\)</span> of Problem <a
+href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#pr:budget" data-reference-type="ref"
+data-reference="dp-pr:budget">80.1.3</a>.</p>
+<h1 id="sec:one-prime">§82.2. The crystalline loss of one prime</h1>
+<p>The local estimates use both the factorial and interval contributions
+to <span class="math inline">\(\mathrm{crys}_\ell\)</span>.</p>
+<div id="pr:crys" class="problem" data-progress-ids="[&quot;20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex#pr:crys&quot;]">
+<p><strong>Problem 82.2.1</strong>. <span class="math inline">\(\lfloor
+2b/\ell\rfloor \le \mathrm{crys}_\ell\)</span>, so <span
+class="math inline">\(2b &lt; \ell(\mathrm{crys}_\ell + 1)\)</span>. If
+<span class="math inline">\(\ell\)</span> divides an integer of the
+interval of Definition <a href="#def:loss" data-reference-type="ref"
+data-reference="def:loss">82.1.1</a>, then <span
+class="math inline">\(\mathrm{crys}_\ell \ge (\Delta/2)^3\)</span>.</p>
+</div>
+<div id="pr:model-integer" class="problem" data-progress-ids="[&quot;20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex#pr:model-integer&quot;]">
+<p><strong>Problem 82.2.2</strong>. Formally take <span
+class="math inline">\(\Delta/2 = 1\)</span> and <span
+class="math inline">\(b = 32\)</span> (no data have these values). The
+integer of Definition <a href="#def:loss" data-reference-type="ref"
+data-reference="def:loss">82.1.1</a> is <span
+class="math inline">\(64!\prod_{3 \le i \le 62} i\)</span>, and its
+valuations at <span class="math inline">\(\ell = 2, 3, 5, 31, 61,
+67\)</span> are <span class="math inline">\(119, 58, 28, 4, 2,
+0\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:sum-log">Problem 82.4.1</a></div><!-- used-in:end -->
+</div>
+<p>The bound <a href="#eq:dual-defect" data-reference-type="eqref"
+data-reference="eq:dual-defect">(1)</a> is proved by cases,
+which we only describe. If the class is tame (so <span
+class="math inline">\(\ell \in \{p_0, p_1\}\)</span>), the cost is paid
+by the term <span
+class="math inline">\(b\,\operatorname{val}_\ell(M)\)</span>, as <span
+class="math inline">\(\operatorname{val}_\ell(M) \ge 1\)</span>.</p>
+<p>In the crystalline case write <span
+class="math inline">\(H=\Delta/2\)</span>, <span
+class="math inline">\(u=\mathrm{crys}_\ell\)</span>, <span
+class="math inline">\(G=\lfloor a/x_1\rfloor\)</span>, and <span
+class="math inline">\(K_0=\lfloor2u/(kt)\rfloor\)</span>. For the lift
+index <span class="math inline">\(0\le j\le m\)</span> supplied by the
+main weights, put <span
+class="math inline">\(\delta=j\Delta+H-2t\)</span>. The <em>low
+window</em>, the interval of jumps centered at <span
+class="math inline">\(0\)</span>, has radius <span
+class="math inline">\(H^2+1\)</span>. The two sides have <em>far
+windows</em> of opposite signs and width <span
+class="math inline">\(4t\)</span>, with unsigned start <span
+class="math inline">\(b+\delta\)</span> at <em>thick</em> embeddings
+(those over <span class="math inline">\(\Phi_b\)</span>, as specified in
+Section <a href="#sec:letters" data-reference-type="ref"
+data-reference="sec:letters">82.3</a>) and <span
+class="math inline">\(G+\delta\)</span> elsewhere.</p>
+<p>For <span class="math inline">\(\ell\le kt\)</span>, the chart
+estimate uses sparsity, widens the low window to radius <span
+class="math inline">\(2G\)</span>, and gives the annihilating power
+<span class="math inline">\(\ell^{10^4 K_0(\lfloor\log_\ell
+H^3\rfloor+1)}\)</span>. For <span
+class="math inline">\(\ell&gt;kt\)</span> and <span
+class="math inline">\(u\ge H^3\)</span>, the power <span
+class="math inline">\(\ell^{10^4 K_0m}\)</span> suffices. In both cases
+(ii) bounds the number of generators of the quotient. For <span
+class="math inline">\(\ell&gt;kt\)</span> and <span
+class="math inline">\(u&lt;H^3\)</span>, the interval part of Problem <a
+href="#pr:crys" data-reference-type="ref" data-reference="pr:crys">82.2.1</a>
+excludes multiples of <span class="math inline">\(\ell\)</span> near
+<span class="math inline">\(b\)</span>. Together with <span
+class="math inline">\(2b&lt;\ell(u+1)\)</span> and the data size
+inequalities, this gives the exclusions around zero and both signed
+pairs of starts needed for the next estimate, with <span
+class="math inline">\(\lambda=2(u+1)\)</span>.</p>
+<p>Let <span class="math inline">\(\ell\ge5\)</span>, let the completion
+<span class="math inline">\(E_v\)</span> be unramified, and use an
+unramified Kummer chart of residue degree <span
+class="math inline">\(f_v\)</span> for <span
+class="math inline">\(\Gamma_v\)</span>. Choose <span
+class="math inline">\(\xi\in\mathcal{O}\)</span> with <span
+class="math inline">\(\xi^{\ell^{f_v}-1}=1\)</span>. The letters <span
+class="math inline">\(i\)</span> are the elements of <span
+class="math inline">\(\mathbb F_{\ell^{f_v}}^\times\)</span>. A
+coefficient embedding <span
+class="math inline">\(\gamma\colon\mathcal{O}\to\mathbb{C}_\ell\)</span>
+lies above <span class="math inline">\(i\)</span> if <span
+class="math inline">\(\gamma(\xi)\)</span> is the Teichmüller root of
+<span class="math inline">\(i\)</span>. Take integers <span
+class="math inline">\(\lambda,\lambda_1\ge0\)</span> and <span
+class="math inline">\(\lambda_0\ge1\)</span>. For every letter <span
+class="math inline">\(i\)</span> choose a nonnegative integer <span
+class="math inline">\(\mathrm{fs}_i\)</span> and a sign <span
+class="math inline">\(\mathrm{sg}_i=\pm1\)</span>, with <span
+class="math inline">\(\mathrm{fs}_i+\lambda_1+\lambda_0\le(\ell-3)\lambda\)</span>
+and <span
+class="math inline">\(6(\lambda+\lambda_0+\lambda_1)&lt;\mathrm{fs}_i\)</span>.
+Require that <span class="math inline">\(\ell\)</span> divide no nonzero
+integer within distance <span
+class="math inline">\(6(\lambda+\lambda_0+\lambda_1)\)</span> of <span
+class="math inline">\(0\)</span>, <span
+class="math inline">\(\mathrm{fs}_i\)</span> or <span
+class="math inline">\(-\mathrm{fs}_i\)</span>, for every <span
+class="math inline">\(i\)</span>.</p>
+<p>Let <span class="math inline">\(\mathcal C\)</span> be the class of
+crystalline lattices with jumps in given finite sets <span
+class="math inline">\(\mathcal J_\gamma\)</span>, and let <span
+class="math inline">\(L&#39;\)</span> be crystalline with jumps in
+finite sets <span class="math inline">\(\mathcal J&#39;_\gamma\)</span>.
+At each embedding <span class="math inline">\(\gamma\)</span> above
+<span class="math inline">\(i\)</span>, require <span
+class="math inline">\(\mathcal
+J_\gamma\subseteq[-\lambda_0,\lambda_0]\cup-\mathrm{sg}_i[\mathrm{fs}_i,\mathrm{fs}_i+\lambda_1]\)</span>
+and <span class="math inline">\(\mathcal
+J&#39;_\gamma\subseteq[-\lambda_0,\lambda_0]\cup\mathrm{sg}_i[\mathrm{fs}_i,\mathrm{fs}_i+\lambda_1]\)</span>.
+The dual defect of <span class="math inline">\(L&#39;\)</span> for <span
+class="math inline">\(\mathcal C\)</span> vanishes if at every <span
+class="math inline">\(\gamma\)</span> both sets avoid <span
+class="math inline">\([-\lambda,0)\)</span>, or if at every <span
+class="math inline">\(\gamma\)</span> the set <span
+class="math inline">\(\mathcal J&#39;_\gamma\)</span> lies in <span
+class="math inline">\([-\lambda_0,0]\)</span>. For every integer <span
+class="math inline">\(n_{\mathrm{low}}\ge0\)</span>, if at most <span
+class="math inline">\(n_{\mathrm{low}}\)</span> jumps of <span
+class="math inline">\(L&#39;\)</span>, counted with multiplicity, lie in
+<span class="math inline">\([-\lambda_0,\lambda_0]\)</span> at each
+embedding, the normalized defect is at most <span
+class="math inline">\(11
+f_v\bigl(n_{\mathrm{low}}(\lambda+1)+\operatorname{rk}_{\mathcal{O}}(L&#39;)(\lambda_1+1)\bigr)\)</span>.</p>
+<div id="pr:far-start" class="problem" data-progress-ids="[&quot;20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex#pr:far-start&quot;]">
+<p><strong>Problem 82.2.3</strong>. For <span
+class="math inline">\(\ell=101\)</span>, <span
+class="math inline">\(\lambda=\lambda_0=\lambda_1=1\)</span>, and <span
+class="math inline">\(\mathrm{fs}_i=42\)</span> for every chart letter
+<span class="math inline">\(i\)</span>, the height, separation and
+divisibility hypotheses of the preceding estimate hold.</p>
+</div>
+<h1 id="sec:letters">§82.3. Thick letters</h1>
+<p>For <span class="math inline">\(\ell\le kt\)</span>, the estimate
+uses the spacing of the places of weight <span
+class="math inline">\(b\)</span>, together with either an unramified
+chart with <span class="math inline">\(\ell\ge7\)</span> or a constant
+chart sign and a bound on the ramification index. Fix <span
+class="math inline">\(\jmath\colon E \to
+\overline{\mathbb{Q}}_\ell\)</span>. For <span class="math inline">\(g
+\in G_{\mathbb{Q}_\ell}\)</span> let <span
+class="math inline">\(\sigma_g := \iota^{-1}\circ g^{-1}\circ
+\jmath\)</span>, a complex embedding of <span
+class="math inline">\(E\)</span>, with place <span
+class="math inline">\([\sigma_g] \in \Phi\)</span>. For a complex
+embedding <span class="math inline">\(\sigma\)</span> its sign <span
+class="math inline">\(s_\sigma = \pm 1\)</span> for the CM type (as in
+Definition <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#def:jumps" data-reference-type="ref"
+data-reference="dp-def:jumps">80.1.6</a>) is given by <span
+class="math inline">\(\sigma(\sqrt{-d}) = s_\sigma\sqrt{-d}\)</span>,
+with <span class="math inline">\(K \subset \mathbb{C}\)</span> as in
+Chapter <a href="20261126T030300--the-data__workbook.html#chap" data-reference-type="ref"
+data-reference="da-chap">36</a>; if <span
+class="math inline">\(\zeta \in \mathbb{C}\)</span> is the image of
+<span class="math inline">\(\zeta_{q_1}\)</span> under the fixed
+embedding <span class="math inline">\(E \to \mathbb{C}\)</span> over
+<span class="math inline">\(K\)</span>, the class of <span
+class="math inline">\([\sigma]\)</span> in <span
+class="math inline">\((\mathbb{Z}/q_1)^\times\)</span> is the <span
+class="math inline">\(u\)</span> with <span
+class="math inline">\(\sigma(\zeta_{q_1}) = \zeta^{s_\sigma
+u}\)</span>.</p>
+<div id="def:thick" class="definition">
+<p><strong>Definition 82.3.1</strong>. Call <span
+class="math inline">\(\sigma_g\)</span> <em>thick</em> if its place lies
+in <span class="math inline">\(\Phi_b\)</span>. For all sufficiently
+large <span class="math inline">\(\mathcal{O}\)</span>, the proof
+chooses a chart and a primitive <span
+class="math inline">\((\ell^{f_v}-1)\)</span>-th root <span
+class="math inline">\(\xi\in\mathcal{O}\)</span>. A chart letter <span
+class="math inline">\(i\)</span> is <em>thick</em> if its Teichmüller
+root equals <span class="math inline">\(g(\xi)\)</span> for some <span
+class="math inline">\(g\in G_{\mathbb{Q}_\ell}\)</span> with <span
+class="math inline">\(\sigma_g\)</span> thick.</p>
+</div>
+<div id="pr:cycle" class="problem" data-progress-ids="[&quot;20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex#pr:cycle&quot;]">
+<p><strong>Problem 82.3.1</strong>. Let <span
+class="math inline">\(\zeta_\jmath := \jmath(\zeta_{q_1})\)</span>,
+nonnegative integers <span class="math inline">\(h,n\)</span>, and <span
+class="math inline">\(g, g&#39; \in G_{\mathbb{Q}_\ell}\)</span> with
+<span class="math inline">\((g&#39;g^{-1})(\zeta_\jmath^{\ell^h}) =
+\zeta_\jmath^{\ell^{h+n}}\)</span>. For every <span
+class="math inline">\(q&#39; \mid q_1\)</span> coprime to <span
+class="math inline">\(\ell^h\)</span>, the class of <span
+class="math inline">\([\sigma_g]/[\sigma_{g&#39;}]\)</span> modulo <span
+class="math inline">\(q&#39;\)</span> is <span
+class="math inline">\(s_{\sigma_g}s_{\sigma_{g&#39;}}\,\ell^n\)</span>.
+For <span class="math inline">\(\ell = 2\)</span> and <span
+class="math inline">\(31\)</span> in place of <span
+class="math inline">\(q&#39;\)</span>, the powers of <span
+class="math inline">\(\ell\)</span> form the cycle <span
+class="math inline">\(1, 2, 4, 8, 16\)</span>, which does not contain
+<span class="math inline">\(-1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:toy-window">Problem 82.3.3</a></div><!-- used-in:end -->
+</div>
+<p>A lift <span class="math inline">\(\mathrm{Fr}_\ell \in
+G_{\mathbb{Q}_\ell}\)</span> of the Frobenius of the residue field
+raises every root of unity of order prime to <span
+class="math inline">\(\ell\)</span> to its <span
+class="math inline">\(\ell\)</span>-th power. So the embeddings <span
+class="math inline">\(\sigma_{\mathrm{Fr}_\ell^ng}\)</span>, <span
+class="math inline">\(n \in \mathbb{Z}\)</span>, form a cycle along
+which the classes of the places move by <span
+class="math inline">\(\pm\ell^{-1}\)</span> modulo the prime-to-<span
+class="math inline">\(\ell\)</span> part of <span
+class="math inline">\(q_1\)</span>. The sparse condition of
+Definition <a href="20261126T030300--the-data__workbook.html#def:data" data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a>(3) is designed for this
+cycle.</p>
+<div id="pr:sparse-window" class="problem" data-progress-ids="[&quot;20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex#pr:sparse-window&quot;]">
+<p><strong>Problem 82.3.2</strong>. Let <span class="math inline">\(\ell \le
+kt\)</span>, let <span class="math inline">\(\ell^h\)</span> be the
+largest power of <span class="math inline">\(\ell\)</span> dividing
+<span class="math inline">\(q_1\)</span>, and let <span
+class="math inline">\(i,j\)</span> be integers with <span
+class="math inline">\(1 \le i, j \le \lfloor \log_\ell
+(\Delta/2)^3\rfloor\)</span>. Then <span
+class="math inline">\(\lfloor\log_\ell(\Delta/2)^3\rfloor \le
+12s\)</span>, so <span class="math inline">\(i + j &lt; l_0(s)\)</span>.
+If <span class="math inline">\(g_0, g_1, g_2 \in
+G_{\mathbb{Q}_\ell}\)</span>, <span
+class="math inline">\(g_2g_0^{-1}\)</span> raises <span
+class="math inline">\(\zeta_\jmath^{\ell^h}\)</span> to the power <span
+class="math inline">\(\ell^{i+j}\)</span>, <span
+class="math inline">\(g_2g_1^{-1}\)</span> raises it to the power <span
+class="math inline">\(\ell^j\)</span>, and <span
+class="math inline">\(\sigma_{g_0}\)</span>, <span
+class="math inline">\(\sigma_{g_2}\)</span> are thick, then <span
+class="math inline">\(\sigma_{g_1}\)</span> is not thick.</p>
+</div>
+<p>For <span class="math inline">\(\ell\le kt\)</span>, three thick
+embeddings along this Frobenius orbit cannot occur at successive
+positive gaps of at most <span
+class="math inline">\(\lfloor\log_\ell(\Delta/2)^3\rfloor\)</span>. The
+local estimate uses the corresponding exclusion for thick chart letters
+under <span class="math inline">\(i\mapsto i^\ell\)</span>.</p>
+<div id="pr:toy-window" class="problem" data-progress-ids="[&quot;20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex#pr:toy-window&quot;]">
+<p><strong>Problem 82.3.3</strong>. In the cycle of Problem <a
+href="#pr:cycle" data-reference-type="ref"
+data-reference="pr:cycle">82.3.1</a>, call a subset allowed if it contains no
+three elements <span class="math inline">\(\sigma,\tau,\rho\)</span>,
+possibly repeated, with <span
+class="math inline">\(\tau/\sigma\equiv\pm2^i\)</span> and <span
+class="math inline">\(\rho/\sigma\equiv\pm2^j\)</span> modulo <span
+class="math inline">\(31\)</span> for <span
+class="math inline">\(0&lt;i&lt;j&lt;5\)</span>. The set <span
+class="math inline">\(\{1,2\}\)</span> is allowed, <span
+class="math inline">\(\{1,2,8\}\)</span> is forbidden, and every allowed
+subset has at most two elements. With <span
+class="math inline">\(l_0(s)\ge81\)</span> in place of <span
+class="math inline">\(5\)</span>, the empty set is the only allowed
+subset of this cycle.</p>
+</div>
+<p>For <span class="math inline">\(\ell \nmid q_1d\)</span>, the field
+<span class="math inline">\(E \subseteq
+\mathbb{Q}(\zeta_{q_1d})\)</span> is unramified at <span
+class="math inline">\(\ell\)</span>, and <span
+class="math inline">\(\ell\ge13\)</span> since every prime below <span
+class="math inline">\(13\)</span> divides <span
+class="math inline">\(q_0\)</span>. At those places <span
+class="math inline">\(g(\xi)\)</span> determines <span
+class="math inline">\(\sigma_g\)</span> and hence its sign. For <span
+class="math inline">\(\ell\mid q_1d\)</span> the thick embeddings have
+one sign, so the proof can use a constant sign on the chart. The next
+problems treat the two cases of <span class="math inline">\(\ell\mid
+q_1d\)</span>.</p>
+<div id="pr:sign-q1" class="problem" data-progress-ids="[&quot;20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex#pr:sign-q1&quot;]">
+<p><strong>Problem 82.3.4</strong>. If <span class="math inline">\(\ell \mid
+q_1\)</span>, then <span class="math inline">\(s_{\sigma_g} =
+s_{\sigma_{g&#39;}}\)</span> for all <span class="math inline">\(g,
+g&#39; \in G_{\mathbb{Q}_\ell}\)</span>; in particular two thick
+embeddings have the same sign.</p>
+</div>
+<div id="pr:sign-d" class="problem" data-progress-ids="[&quot;20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex#pr:sign-d&quot;]">
+<p><strong>Problem 82.3.5</strong>. <span class="math inline">\(d^2 \equiv
+1\)</span> and <span class="math inline">\(d \not\equiv \pm1
+\pmod{q_0}\)</span>, so <span class="math inline">\(d^n \not\equiv -1
+\pmod{q_0}\)</span> for every <span class="math inline">\(n \ge
+0\)</span>. Hence two thick embeddings over <span
+class="math inline">\(\ell = d\)</span> have the same sign. For <span
+class="math inline">\(q_0 = 18480\)</span> and <span
+class="math inline">\(d = 9239\)</span>, <span class="math inline">\(d^2
+\bmod q_0 = 1\)</span>.</p>
+</div>
+<h1 id="sec:sum">§82.4. The sum over the primes</h1>
+<p>We now sum the local losses over primes with weights <span
+class="math inline">\(\log\ell\)</span>.</p>
+<div id="pr:sum-log" class="problem" data-progress-ids="[&quot;20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex#pr:sum-log&quot;]">
+<p><strong>Problem 82.4.1</strong>. For an integer <span
+class="math inline">\(n \ge 1\)</span> and a finite set <span
+class="math inline">\(P_0\)</span> of primes, <span
+class="math inline">\(\sum_{\ell \in P_0}
+\operatorname{val}_\ell(n)\log\ell \le \log n\)</span>. For the integer
+of Problem <a href="#pr:model-integer" data-reference-type="ref"
+data-reference="pr:model-integer">82.2.2</a> the sum over <span
+class="math inline">\(\ell \le 67\)</span> is <span
+class="math inline">\(401.34123\ldots\)</span>, its logarithm.</p>
+</div>
+<div id="pr:int-bound" class="problem" data-progress-ids="[&quot;20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex#pr:int-bound&quot;]">
+<p><strong>Problem 82.4.2</strong>. <span
+class="math inline">\(\mathrm{Int}_b \le (b +
+30(\Delta/2)^3)^{60(\Delta/2)^3}\)</span>. For data, <span
+class="math display">\[b\log M + \log\Bigl((2b)!\,(b +
+30(\Delta/2)^3)^{60(\Delta/2)^6}\Bigr) \le 26\, b\log b .\]</span></p>
+</div>
+<div id="pr:defect-sum" class="problem" data-progress-ids="[&quot;20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex#pr:defect-sum&quot;]">
+<p><strong>Problem 82.4.3</strong>. For every finite set <span
+class="math inline">\(P_0\)</span> of primes, <span
+class="math inline">\(\sum_{\ell \in P_0}\mathrm{defect}_\ell\log\ell
+\le 26\cdot 10^6\,(m/k)\,b\log b\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:sum-log" data-reference-type="ref"
+data-reference="pr:sum-log">82.4.1</a>–<a href="#pr:defect-sum"
+data-reference-type="ref" data-reference="pr:defect-sum">82.4.3</a> give the
+following theorem.</p>
+<div id="thm:local-loss" class="theorem">
+<p><strong>Theorem 82.4.1</strong>. <em>For all data and every finite set
+<span class="math inline">\(P_0\)</span> of primes, <span
+class="math display">\[\sum_{\ell \in P_0}\mathrm{loc}_\ell\log\ell \le
+4\cdot10^6 e^{180}\, f\,\frac mk\, b\log b .\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:vs-budget">Problem 82.4.4</a>; <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html">Chapter 80</a>; <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a></div><!-- used-in:end -->
+</div>
+<p>The proof states the theorem with the constant <span
+class="math inline">\(e^{180}\)</span>, which it obtains by a general
+comparison of the sizes of the data.</p>
+<div id="pr:vs-budget" class="problem" data-progress-ids="[&quot;20261126T051800--the-local-loss-and-the-sparse-places__workbook.tex#pr:vs-budget&quot;]">
+<p><strong>Problem 82.4.4</strong>. The right side of Theorem <a
+href="#thm:local-loss" data-reference-type="ref"
+data-reference="thm:local-loss">82.4.1</a> is at most <span
+class="math inline">\(16\cdot10^6 e^{180}\,B/(\log b)^2\)</span>.</p>
+</div>
+<p>So the local loss uses a fraction <span class="math inline">\(O((\log
+b)^{-2})\)</span> of the budget <span class="math inline">\(B\)</span>.
+The exercises establish the row sum, the factorial and interval bounds,
+the spacing and signs of thick embeddings, and Theorem <a
+href="#thm:local-loss" data-reference-type="ref"
+data-reference="thm:local-loss">82.4.1</a>. They take (i)–(iii) and the chart
+estimate in the case analysis as given. With its five stated
+comparisons, Problem <a href="20261126T030900--denominators-of-projections-to-lifts__workbook.html#pr:budget-sum"
+data-reference-type="ref"
+data-reference="dp-pr:budget-sum">80.1.7</a> combines the
+bounds for the terms of <span
+class="math inline">\(\mathrm{cl}_\ell\)</span> and the extra valuation
+<span class="math inline">\(\operatorname{val}_\ell(C_1)\)</span>
+defined there. Over every finite set of primes the weighted sum of <span
+class="math inline">\(\mathrm{cl}_\ell+\operatorname{val}_\ell(C_1)\)</span>
+is at most <span class="math inline">\(B\)</span>.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the rewritten Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, Definition <a
+href="#def:loss" data-reference-type="ref"
+data-reference="def:loss">82.1.1</a> uses
+<code>New.Selmer.crystallineLoss</code>,
+<code>New.Selmer.defectBound</code> and
+<code>New.Selmer.localDefectBound</code>. Definition <a
+href="#def:dual-defect" data-reference-type="ref"
+data-reference="def:dual-defect">82.1.2</a> uses
+<code>New.Lift.dualDefect</code>. The local inputs (i)–(iii) use
+<code>New.Period.IsPotentiallyCrystalline.relIndex_dvd_of_orthogonal</code>,
+<code>New.Period.crysCocycles.finrank_eq</code> and
+<code>New.Selmer.summand_defect_le_at_place</code>. The estimate before
+Problem <a href="#pr:far-start" data-reference-type="ref"
+data-reference="pr:far-start">82.2.3</a> is the completion-group case of
+<code>New.Lift.KummerChart.dualDefect_eq_zero_and_dualDefect_le</code>.
+The passage from thick embeddings to chart letters uses
+<code>New.Selmer.eventually_exists_lettersReadThick</code>. Theorem <a
+href="#thm:local-loss" data-reference-type="ref"
+data-reference="thm:local-loss">82.4.1</a> is
+<code>New.Selmer.sum_localDefectBound_mul_log_le</code>. The exercises
+supply their own numerical examples and the intermediate estimate with
+constant <span class="math inline">\(26\)</span>.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secloss">§<a href="#sec:loss"
+data-reference-type="ref" data-reference="sec:loss">82.1</a></h2>
+<dl>
+<dt><a href="#pr:pairing-model" data-reference-type="ref"
+data-reference="pr:pairing-model">82.1.1</a></dt>
+<dd>
+<p>The pairing identifies <span class="math inline">\(F_2\)</span> with
+the dual of <span class="math inline">\(F_1\)</span>; describe <span
+class="math inline">\(F_0^\perp\)</span> in these terms.</p>
+</dd>
+<dt><a href="#pr:local-degrees" data-reference-type="ref"
+data-reference="pr:local-degrees">82.1.2</a></dt>
+<dd>
+<p>The places above <span class="math inline">\(\ell\)</span> are the
+<span class="math inline">\(G_{\mathbb{Q}_\ell}\)</span>-orbits on the
+embeddings <span
+class="math inline">\(E\to\overline{\mathbb{Q}}_\ell\)</span>. Compare
+<span
+class="math inline">\(\sum_{v\mid\ell}e_vf_v=[E:\mathbb{Q}]\)</span>
+<span class="citation" data-cites="SLF">[<a href="#ref-SLF">SLF</a>, Ch. I,
+§4, Prop. 10]</span> with <span
+class="math inline">\([E_v:\mathbb{Q}_\ell]=e_vf_v\)</span> <span
+class="citation" data-cites="SLF">[<a href="#ref-SLF">SLF</a>, Ch. II, §2,
+Cor. 1 to Prop. 3]</span>. Compare <span
+class="math inline">\(X^2+1\)</span> modulo <span
+class="math inline">\(3\)</span> and modulo <span
+class="math inline">\(5\)</span>.</p>
+</dd>
+<dt><a href="#pr:row-total" data-reference-type="ref"
+data-reference="pr:row-total">82.1.3</a></dt>
+<dd>
+<p>Sum first over the places, by Problem <a href="#pr:local-degrees"
+data-reference-type="ref" data-reference="pr:local-degrees">82.1.2</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secone-prime">§<a href="#sec:one-prime"
+data-reference-type="ref" data-reference="sec:one-prime">82.2</a></h2>
+<dl>
+<dt><a href="#pr:crys" data-reference-type="ref"
+data-reference="pr:crys">82.2.1</a></dt>
+<dd>
+<p>Legendre’s formula for <span class="math inline">\((2b)!\)</span>;
+the integer divides <span
+class="math inline">\(\mathrm{Int}_b\)</span>.</p>
+</dd>
+<dt><a href="#pr:model-integer" data-reference-type="ref"
+data-reference="pr:model-integer">82.2.2</a></dt>
+<dd>
+<p>Legendre’s formula, plus the multiples of <span
+class="math inline">\(\ell\)</span> in <span class="math inline">\([3,
+62]\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secletters">§<a href="#sec:letters"
+data-reference-type="ref" data-reference="sec:letters">82.3</a></h2>
+<dl>
+<dt><a href="#pr:cycle" data-reference-type="ref"
+data-reference="pr:cycle">82.3.1</a></dt>
+<dd>
+<p>Write <span class="math inline">\(g(y) = y^{u_g}\)</span> on roots of
+unity of order <span class="math inline">\(q_1\)</span> in <span
+class="math inline">\(\overline{\mathbb{Q}}_\ell\)</span>, for <span
+class="math inline">\(g \in G_{\mathbb{Q}_\ell}\)</span>, and compare
+<span class="math inline">\(\sigma_g(\zeta_{q_1})\)</span> with <span
+class="math inline">\(\sigma_{g&#39;}(\zeta_{q_1})\)</span>.</p>
+</dd>
+<dt><a href="#pr:sparse-window" data-reference-type="ref"
+data-reference="pr:sparse-window">82.3.2</a></dt>
+<dd>
+<p><span class="math inline">\(r \le 3x^5\)</span> and <span
+class="math inline">\(2^s = m^{22} \ge x^{11}\)</span>; then Problem <a
+href="20261126T030300--the-data__workbook.html#pr:l0" data-reference-type="ref"
+data-reference="da-pr:l0">36.2.1</a> and Problem <a href="#pr:cycle"
+data-reference-type="ref" data-reference="pr:cycle">82.3.1</a>.</p>
+</dd>
+<dt><a href="#pr:toy-window" data-reference-type="ref"
+data-reference="pr:toy-window">82.3.3</a></dt>
+<dd>
+<p>For three letters, read their exponents relative to one of them. For
+the last assertion, <span class="math inline">\(\sigma, \tau,
+\rho\)</span> need not be distinct.</p>
+</dd>
+<dt><a href="#pr:sign-q1" data-reference-type="ref"
+data-reference="pr:sign-q1">82.3.4</a></dt>
+<dd>
+<p>Consider <span class="math inline">\(\theta_K = (1 +
+\sqrt{-d})/2\)</span> and Problem <a href="20261126T030300--the-data__workbook.html#pr:split"
+data-reference-type="ref"
+data-reference="da-pr:split">36.1.2</a>.</p>
+</dd>
+<dt><a href="#pr:sign-d" data-reference-type="ref"
+data-reference="pr:sign-d">82.3.5</a></dt>
+<dd>
+<p><span class="math inline">\(d + 1\)</span> is an odd multiple of
+<span class="math inline">\(q_0/2\)</span>. For the second assertion,
+<span class="math inline">\(d \nmid q_1\)</span>, and every element of
+<span class="math inline">\(G_{\mathbb{Q}_d}\)</span> raises the roots
+of unity of order <span class="math inline">\(q_1\)</span> to a power
+<span class="math inline">\(d^n\)</span>; use Problem <a
+href="#pr:cycle" data-reference-type="ref"
+data-reference="pr:cycle">82.3.1</a> with <span class="math inline">\(q&#39;
+= q_0\)</span> and the class of <span
+class="math inline">\(\Phi_b\)</span> modulo <span
+class="math inline">\(q_0\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secsum">§<a href="#sec:sum"
+data-reference-type="ref" data-reference="sec:sum">82.4</a></h2>
+<dl>
+<dt><a href="#pr:sum-log" data-reference-type="ref"
+data-reference="pr:sum-log">82.4.1</a></dt>
+<dd>
+<p>Factor <span class="math inline">\(n\)</span>.</p>
+</dd>
+<dt><a href="#pr:int-bound" data-reference-type="ref"
+data-reference="pr:int-bound">82.4.2</a></dt>
+<dd>
+<p>Count the factors. Then Problem <a href="20261126T030300--the-data__workbook.html#pr:MN"
+data-reference-type="ref" data-reference="da-pr:MN">36.5.4</a>,
+<span class="math inline">\((2b)! \le (2b)^{2b}\)</span>, and <span
+class="math inline">\((\Delta/2)^6 = r^{48}\)</span>, which is tiny
+compared with <span class="math inline">\(b\)</span> by Definition <a
+href="20261126T030300--the-data__workbook.html#def:data" data-reference-type="ref"
+data-reference="da-def:data">36.3.1</a>.</p>
+</dd>
+<dt><a href="#pr:defect-sum" data-reference-type="ref"
+data-reference="pr:defect-sum">82.4.3</a></dt>
+<dd>
+<p>Problem <a href="#pr:sum-log" data-reference-type="ref"
+data-reference="pr:sum-log">82.4.1</a> for <span class="math inline">\(n =
+M^b\)</span> and <span class="math inline">\(n =
+(2b)!\,\mathrm{Int}_b^{(\Delta/2)^3}\)</span>.</p>
+</dd>
+<dt><a href="#pr:vs-budget" data-reference-type="ref"
+data-reference="pr:vs-budget">82.4.4</a></dt>
+<dd>
+<p><span class="math inline">\(B = fxb\log^3b/(mk)\)</span> and <span
+class="math inline">\(m \le 2\sqrt x\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-ADT"><span class="bib-label">[ADT]</span> J. S. Milne, <em>Arithmetic Duality Theorems</em>, 2nd ed., BookSurge, 2006.</p>
+<p id="ref-BK"><span class="bib-label">[BK]</span> S. Bloch and K. Kato, <em><span class="math inline">\(L\)</span>-functions and Tamagawa numbers of motives</em>, in: The Grothendieck Festschrift I, Progr. Math. 86, Birkhäuser, 1990, 333–400.</p>
+<p id="ref-BMS"><span class="bib-label">[BMS]</span> B. Bhatt, M. Morrow and P. Scholze, <em>Integral <span class="math inline">\(p\)</span>-adic Hodge theory</em>, Publ. Math. IHÉS <strong>128</strong> (2018), 219–397.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Ki"><span class="bib-label">[Ki]</span> M. Kisin, <em>Crystalline representations and <span class="math inline">\(F\)</span>-crystals</em>, in: Algebraic Geometry and Number Theory, Progr. Math. 253, Birkhäuser, 2006, 459–496.</p>
+<p id="ref-SGC"><span class="bib-label">[SGC]</span> J.-P. Serre, <em>Galois Cohomology</em>, Springer, 1997.</p>
+<p id="ref-SLF"><span class="bib-label">[SLF]</span> J.-P. Serre, <em>Local Fields</em>, Grad. Texts in Math. 67, Springer, 1979.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

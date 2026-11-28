@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-9TYRbVb2UzOX4eqUEzpGBzrKkHNFP9PS2FLMGbN+i9A=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Size against divisibility</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","R":"\\mathbb{R}","C":"\\mathbb{C}","Oc":"\\mathcal{O}","pp":"\\mathfrak{p}","ii":"\\mathrm{i}","Qlb":"\\overline{\\Q}_\\ell","Aut":"\\operatorname{Aut}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="5">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261125T000000--slope-method__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 09:42:12
+      <a href="20261125T000000--slope-method__workbook.tex" class="my-link">tex</a>
+      <a href="20261125T000000--slope-method__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261125T000000--slope-method__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Size against divisibility <a class="stable-tag" href="tag/226H.html" title="Stable tag: cite as Tag 226H">Tag 226H</a></h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:chebyshev" id="toc-sec:chebyshev">§5.1. Divisibility against size</a></li>
+<li><a href="#sec:minor" id="toc-sec:minor">§5.2. A minor of a jet evaluation map</a></li>
+<li><a href="#sec:heights" id="toc-sec:heights">§5.3. Heights of families</a></li>
+<li><a href="#sec:index" id="toc-sec:index">§5.4. Index and covolume</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#secchebyshev" id="toc-secchebyshev">§5.1</a></li>
+<li><a href="#secminor" id="toc-secminor">§5.2</a></li>
+<li><a href="#secheights" id="toc-secheights">§5.3</a></li>
+<li><a href="#secindex" id="toc-secindex">§5.4</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Linear algebra over <span class="math inline">\(\mathbb{C}\)</span>:
+Hermitian and positive semidefinite matrices, and Hadamard’s inequality,
+in the form <span class="math inline">\(\det A \le a_{11} \cdots
+a_{nn}\)</span> for a positive semidefinite Hermitian matrix <span
+class="math inline">\(A = (a_{ik})\)</span>, or <span
+class="math inline">\(\lvert \det(v_1, \dots, v_n) \rvert \le \lVert v_1
+\rVert \cdots \lVert v_n \rVert\)</span> for vectors. Dedekind domains,
+the absolute norm, the product formula <span class="citation"
+data-cites="Ne">[<a href="#ref-Ne">Ne</a>, Ch. I and Ch. III]</span>, and
+the unique extension of the <span
+class="math inline">\(\ell\)</span>-adic absolute value to an algebraic
+closure <span class="math inline">\(\overline{\mathbb{Q}}_\ell\)</span>
+of <span class="math inline">\(\mathbb{Q}_\ell\)</span> <span
+class="citation" data-cites="Ne">[<a href="#ref-Ne">Ne</a>, Ch. II,
+§4]</span>. Transcendence bases <span class="citation"
+data-cites="La">[<a href="#ref-La">La</a>, Ch. VIII, §1]</span>, and two
+consequences: <span class="math inline">\(\mathbb{C}\)</span> and <span
+class="math inline">\(\overline{\mathbb{Q}}_\ell\)</span> are isomorphic
+fields, both being algebraically closed of characteristic <span
+class="math inline">\(0\)</span> and of transcendence degree the
+continuum over <span class="math inline">\(\mathbb{Q}\)</span>; and an
+isomorphism between two subfields of <span
+class="math inline">\(\mathbb{C}\)</span> that are finitely generated
+over <span class="math inline">\(\mathbb{Q}\)</span> extends to an
+automorphism of <span class="math inline">\(\mathbb{C}\)</span>.
+Legendre’s formula <span class="math inline">\(v_p(n!) = \sum_{e \ge 1}
+\lfloor n/p^e \rfloor\)</span>, Stirling’s formula, and the von Mangoldt
+function <span class="math inline">\(\Lambda\)</span>. No earlier
+chapter is used. The next chapter, <em>A twist for each prime</em>,
+continues this one.</p>
+<h1 id="sec:chebyshev">§5.1. Divisibility against size <a class="stable-tag" href="tag/226J.html" title="Stable tag: cite as Tag 226J">Tag 226J</a></h1>
+<p>How can a divisibility statement bound a sum over primes? A binomial
+coefficient illustrates Chebyshev’s factorial method <span
+class="citation" data-cites="Ch">[<a href="#ref-Ch">Ch</a>]</span>. Let
+<span class="math inline">\(\theta(x) := \sum_{p \le x} \log p\)</span>.
+In the next two problems let <span class="math inline">\(n\)</span> be a
+nonnegative integer.</p>
+<div id="pr:binomial" class="problem" data-progress-ids="[&quot;226K&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:binomial&quot;]"><a class="stable-tag" href="tag/226K.html" title="Stable tag: cite as Tag 226K">Tag 226K</a>
+<p><strong>Problem 5.1.1</strong>. Every prime <span
+class="math inline">\(p\)</span> with <span class="math inline">\(n &lt;
+p \le 2n\)</span> divides <span
+class="math inline">\(\binom{2n}{n}\)</span>, and <span
+class="math inline">\(\binom{2n}{n} \le 4^n\)</span>. Hence <span
+class="math inline">\(\theta(2n) - \theta(n) \le n \log 4\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T008000--one-cm-determinant__workbook.html">Chapter 14</a></div><!-- used-in:end -->
+</div>
+<p>The principle is the following. If a nonzero integer <span
+class="math inline">\(\Delta\)</span> is divisible by <span
+class="math inline">\(p^{e_p}\)</span> for each prime <span
+class="math inline">\(p\)</span> in a set <span
+class="math inline">\(S\)</span>, where the <span
+class="math inline">\(e_p\)</span> are nonnegative integers, then <span id="eq:det"
+class="math display">\[\begin{equation}
+\label{eq:det}\tag{1}
+  \sum_{p \in S} e_p \log p \le \log \lvert \Delta \rvert .
+\end{equation}\]</span></p>
+<p>For <span class="math inline">\(\Delta = n!\)</span> and <span
+class="math inline">\(e_p = v_p(n!)\)</span>, with <span
+class="math inline">\(S\)</span> the primes up to <span
+class="math inline">\(n\)</span>, both sides of <a href="#eq:det"
+data-reference-type="eqref" data-reference="eq:det">(1)</a> are
+known exactly.</p>
+<div id="pr:legendre" class="problem" data-progress-ids="[&quot;226L&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:legendre&quot;]"><a class="stable-tag" href="tag/226L.html" title="Stable tag: cite as Tag 226L">Tag 226L</a>
+<p><strong>Problem 5.1.2</strong>. <span class="math inline">\(\log n! =
+\sum_{r \le n} \Lambda(r) \lfloor n/r \rfloor\)</span>.</p>
+</div>
+<p>By Stirling’s formula the left side is <span
+class="math inline">\(n\log n - n + O(\log n)\)</span>. Without the
+floor function the right side would be <span class="math inline">\(n
+\sum_{r \le n} \Lambda(r)/r\)</span>. Removing the floors overestimates
+the right side by <span class="math inline">\(\sum_{r \le n} \Lambda(r)
+\{n/r\}\)</span>, an error of order <span
+class="math inline">\(n\)</span> by Chebyshev’s bounds, the scale of the
+linear term in Stirling’s formula; so this estimate cannot see <span
+class="math inline">\(\psi(n) - n\)</span>, where <span
+class="math inline">\(\psi(x) := \sum_{r \le x} \Lambda(r)\)</span>. For
+a finer comparison one can seek divisibility bounds with a continuous
+weight on prime powers, such as <span class="math inline">\((x/p^e -
+1)_+\)</span>, where <span class="math inline">\(t_+ := \max(t,
+0)\)</span>, and a size estimate whose error is smaller than its linear
+term.</p>
+<p>The number <span class="math inline">\(\Delta\)</span> will be a
+minor of a matrix.</p>
+<div id="pr:hadamard-det" class="problem" data-progress-ids="[&quot;226M&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:hadamard-det&quot;]"><a class="stable-tag" href="tag/226M.html" title="Stable tag: cite as Tag 226M">Tag 226M</a>
+<p><strong>Problem 5.1.3</strong>. Let <span class="math inline">\(A \in
+M_r(\mathbb{Z})\)</span> with <span class="math inline">\(\det A \ne
+0\)</span>, and suppose that the <span
+class="math inline">\(j\)</span>th column <span
+class="math inline">\(A_j\)</span> is divisible by the positive integer
+<span class="math inline">\(g_j\)</span>. Then <span
+class="math display">\[g_1 \cdots g_r \le \lvert \det A \rvert \le
+\lVert A_1 \rVert \cdots \lVert A_r \rVert .\]</span> For the columns
+<span class="math inline">\((6, 6)\)</span> and <span
+class="math inline">\((10, 20)\)</span>, with <span
+class="math inline">\(g_1 = 6\)</span> and <span
+class="math inline">\(g_2 = 10\)</span>, the three numbers are <span
+class="math inline">\(60\)</span>, <span
+class="math inline">\(60\)</span> and <span
+class="math inline">\(60\sqrt{10}\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:hadamard-gram">Problem 5.4.6</a></div><!-- used-in:end -->
+</div>
+<p>The same principle holds over a number field <span
+class="math inline">\(K\)</span>, where the product formula accounts for
+the size of a number at every place. At a finite place <span
+class="math inline">\(v\)</span> write <span
+class="math inline">\(\mathcal{O}_v\)</span>, <span
+class="math inline">\(\mathfrak{p}_v\)</span> and <span
+class="math inline">\(q_v\)</span> for the valuation ring, its maximal
+ideal and the size of its residue field, and let <span
+class="math inline">\(\lvert x \rvert_v := q_v^{-\operatorname{ord}_v
+x}\)</span>. At an archimedean place use the usual modulus. Let <span
+class="math inline">\(n_v := 2\)</span> at complex places and <span
+class="math inline">\(n_v := 1\)</span> at the other places. Then <span
+class="math inline">\(\sum_v n_v \log \lvert x \rvert_v = 0\)</span> for
+<span class="math inline">\(x \in K^\times\)</span>. Hence, if <span
+class="math inline">\(\gamma \in K^\times\)</span> satisfies <span
+class="math inline">\(\lvert \gamma \rvert_v \le \exp(b_v -
+g_v)\)</span> at every place, where <span
+class="math inline">\(b_v\)</span> and <span
+class="math inline">\(g_v\)</span> are real and vanish for almost all
+<span class="math inline">\(v\)</span>, then <span id="eq:scalar"
+class="math display">\[\begin{equation}
+\label{eq:scalar}\tag{2}
+  \sum_v n_v g_v \le \sum_v n_v b_v .
+\end{equation}\]</span> Typically <span
+class="math inline">\(\gamma\)</span> is a minor of a matrix, <span
+class="math inline">\(b_v\)</span> bounds it through the sizes of the
+entries, and <span class="math inline">\(g_v\)</span> records an
+improvement from a congruence. The minor is chosen once over <span
+class="math inline">\(K\)</span>, but the basis in which one proves the
+congruence may vary with <span class="math inline">\(v\)</span>.</p>
+<h1 id="sec:minor">§5.2. A minor of a jet evaluation map <a class="stable-tag" href="tag/226N.html" title="Stable tag: cite as Tag 226N">Tag 226N</a></h1>
+<p>Where does a minor with many prime factors come from? One source is
+Frobenius. Throughout this section <span
+class="math inline">\(p\)</span> denotes a prime. Let <span
+class="math inline">\(K = \mathbb{Q}(\mathrm{i})\)</span>, so that a
+prime <span class="math inline">\(p \equiv 3 \pmod 4\)</span> is inert
+and <span class="math inline">\(\mathbb{Z}[\mathrm{i}]/p\)</span> is the
+field with <span class="math inline">\(p^2\)</span> elements.</p>
+<div id="pr:frob" class="problem" data-progress-ids="[&quot;226P&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:frob&quot;]"><a class="stable-tag" href="tag/226P.html" title="Stable tag: cite as Tag 226P">Tag 226P</a>
+<p><strong>Problem 5.2.1</strong>. If <span class="math inline">\(p \equiv 3
+\pmod 4\)</span> and <span class="math inline">\(u \in
+\mathbb{Z}[\mathrm{i}]\)</span>, then <span class="math inline">\(\bar u
+\equiv u^p \pmod p\)</span>.</p>
+</div>
+<p>Thus complex conjugation is the Frobenius at every inert prime. Let
+<span class="math inline">\(u_1, \dots, u_I \in
+\mathbb{Z}[\mathrm{i}]\)</span>, let <span
+class="math inline">\(\mathcal{T} \subset \mathbb{Z}_{\ge 0}^2\)</span>
+be a finite set of <span class="math inline">\(s\)</span> exponents, and
+let <span class="math inline">\(J\)</span> be a positive integer. On the
+<span class="math inline">\(K\)</span>-span of the monomials <span
+class="math inline">\(X^a Y^b\)</span>, <span
+class="math inline">\((a,b) \in \mathcal{T}\)</span>, consider the jet
+evaluation map <span class="math display">\[\mathrm{ev} \colon f
+\longmapsto \bigl( (\partial_X^j f)(u_i, \bar u_i) \bigr)_{1 \le i \le
+I,\ 0 \le j &lt; J} .\]</span> Its matrix has entries in <span
+class="math inline">\(\mathbb{Z}[\mathrm{i}]\)</span>. Let <span
+class="math inline">\(g := X^p - Y\)</span>.</p>
+<div id="pr:frob-deriv" class="problem" data-progress-ids="[&quot;226Q&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:frob-deriv&quot;]"><a class="stable-tag" href="tag/226Q.html" title="Stable tag: cite as Tag 226Q">Tag 226Q</a>
+<p><strong>Problem 5.2.2</strong>. Let <span class="math inline">\(p \equiv
+3 \pmod 4\)</span>. For <span class="math inline">\(f \in
+\mathbb{Z}[\mathrm{i}][X, Y]\)</span>, <span class="math inline">\(u \in
+\mathbb{Z}[\mathrm{i}]\)</span> and integers <span
+class="math inline">\(j, k \ge 0\)</span>, the number <span
+class="math inline">\(\bigl(\partial_X^j (g^k f)\bigr)(u, \bar
+u)\)</span> is divisible by <span
+class="math inline">\(p^k\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T007000--stepanov-without-multiplicity__workbook.html">Chapter 7</a>: <a href="20261125T007000--stepanov-without-multiplicity__workbook.html#pr:jet-div">Problem 7.2.2</a></div><!-- used-in:end -->
+</div>
+<div id="pr:minor-div" class="problem" data-progress-ids="[&quot;226R&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:minor-div&quot;]"><a class="stable-tag" href="tag/226R.html" title="Stable tag: cite as Tag 226R">Tag 226R</a>
+<p><strong>Problem 5.2.3</strong>. Let <span class="math inline">\(p \equiv
+3 \pmod 4\)</span>, and suppose that <span class="math inline">\((a - p,
+b + 1) \in \mathcal{T}\)</span> whenever <span class="math inline">\((a,
+b) \in \mathcal{T}\)</span> and <span class="math inline">\(a \ge
+p\)</span>. Then every <span class="math inline">\(s \times s\)</span>
+minor of the matrix of <span class="math inline">\(\mathrm{ev}\)</span>
+is divisible by <span class="math inline">\(p^{N_p}\)</span>, where
+<span class="math inline">\(N_p := \sum_{(a,b) \in \mathcal{T}} \lfloor
+a/p \rfloor\)</span>. The set <span class="math inline">\(\mathcal{T} =
+\{(a,b) : a + 2b \le N\}\)</span> satisfies the hypothesis for every
+<span class="math inline">\(p\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#thm:minor">Theorem 5.2.1</a>; <a href="20261125T007000--stepanov-without-multiplicity__workbook.html">Chapter 7</a>: <a href="20261125T007000--stepanov-without-multiplicity__workbook.html#pr:minor-div">Problem 7.2.3</a></div><!-- used-in:end -->
+</div>
+<p>Let <span class="math inline">\(\beta := \max(1, \lvert u_1 \rvert,
+\dots, \lvert u_I \rvert)\)</span>, <span class="math inline">\(D :=
+\sum_{\mathcal{T}} (a + b)\)</span> and <span class="math inline">\(A_*
+:= \max(\{1\} \cup \{a : (a,b) \in \mathcal{T}\})\)</span>. Every <span
+class="math inline">\(s \times s\)</span> minor of the matrix of <span
+class="math inline">\(\mathrm{ev}\)</span> has absolute value at most
+<span class="math inline">\(s!\,A_*^{s(J-1)}\beta^D\)</span>.</p>
+<div id="thm:minor" class="theorem"><a class="stable-tag" href="tag/226S.html" title="Stable tag: cite as Tag 226S">Tag 226S</a>
+<p><strong>Theorem 5.2.1</strong>. <em>Suppose that <span
+class="math inline">\(\mathrm{ev}\)</span> is injective, and let <span
+class="math inline">\(P\)</span> be a set of primes <span
+class="math inline">\(p \equiv 3 \pmod 4\)</span> for which <span
+class="math inline">\(\mathcal{T}\)</span> satisfies the hypothesis of
+Problem <a href="#pr:minor-div" data-reference-type="ref"
+data-reference="pr:minor-div">5.2.3</a>. Then <span
+class="math display">\[\sum_{p \in P} \log p \sum_{(a,b) \in
+\mathcal{T}} \Bigl\lfloor \frac{a}{p} \Bigr\rfloor \le D \log\beta +
+\log s! + s(J-1)\log A_* .\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:minor-again">Problem 5.4.10</a>; <a href="20261125T007000--stepanov-without-multiplicity__workbook.html">Chapter 7</a></div><!-- used-in:end -->
+</div>
+<p>Over a finite field, Stepanov’s method for curves likewise compares
+the forced vanishing of an auxiliary function with a bound on its degree
+<span class="citation"
+data-cites="Bom">[<a href="#ref-Bom">Bom</a>]</span>.</p>
+<h1 id="sec:heights">§5.3. Heights of families <a class="stable-tag" href="tag/232Y.html" title="Stable tag: cite as Tag 232Y">Tag 232Y</a></h1>
+<p>In Section <a href="#sec:chebyshev" data-reference-type="ref"
+data-reference="sec:chebyshev">5.1</a> the size and the divisibility of
+one number were compared at the places of one field. The height bound in
+the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span> indexes its finite-place
+tests by pairs of a prime <span class="math inline">\(\ell\)</span> and
+a field isomorphism <span class="math inline">\(\mathbb{C}\to
+\overline{\mathbb{Q}}_\ell\)</span>. The complex number tested may vary
+with the isomorphism, even at a fixed prime. The height bound requires
+no number field as a parameter.</p>
+<p>For a prime <span class="math inline">\(\ell\)</span> let <span
+class="math inline">\(\lvert\cdot\rvert_\ell\)</span> be the absolute
+value on <span class="math inline">\(\overline{\mathbb{Q}}_\ell\)</span>
+that extends the <span class="math inline">\(\ell\)</span>-adic one, so
+that <span class="math inline">\(\lvert \ell \rvert_\ell =
+\ell^{-1}\)</span>. Write <span class="math inline">\(\iota \mid
+\ell\)</span> for a field isomorphism <span class="math inline">\(\iota
+\colon \mathbb{C}\to \overline{\mathbb{Q}}_\ell\)</span>, put <span
+class="math inline">\(\lvert x \rvert_\iota := \lvert \iota(x)
+\rvert_\ell\)</span> for <span class="math inline">\(x \in
+\mathbb{C}\)</span>, and let <span class="math inline">\(\bar\iota \mid
+\ell\)</span> be the isomorphism <span class="math inline">\(x \mapsto
+\iota(\bar x)\)</span>. Let <span
+class="math inline">\(\operatorname{Aut}(\mathbb{C})\)</span> be the
+group of all field automorphisms of <span
+class="math inline">\(\mathbb{C}\)</span>; most of them are not
+continuous. A <em>family</em> <span class="math inline">\(y\)</span>
+assigns a complex number <span class="math inline">\(y_\iota\)</span> to
+every isomorphism <span class="math inline">\(\iota \mid \ell\)</span>,
+for every prime <span class="math inline">\(\ell\)</span>.</p>
+<div id="pr:iota" class="problem" data-progress-ids="[&quot;232Z&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:iota&quot;]"><a class="stable-tag" href="tag/232Z.html" title="Stable tag: cite as Tag 232Z">Tag 232Z</a>
+<p><strong>Problem 5.3.1</strong>. Let <span class="math inline">\(\iota
+\mid \ell\)</span>. If <span class="math inline">\(x \in
+\mathbb{Q}\)</span>, then <span class="math inline">\(\lvert x
+\rvert_\iota = \lvert x \rvert_\ell\)</span>. If <span
+class="math inline">\(\ell \equiv 3 \pmod 4\)</span> and <span
+class="math inline">\(0 \ne x \in \mathbb{Z}[\mathrm{i}]\)</span>, then
+<span class="math inline">\(\lvert x \rvert_\iota = \ell^{-v}\)</span>,
+where <span class="math inline">\(\ell^v\)</span> is the exact power of
+<span class="math inline">\(\ell\)</span> dividing <span
+class="math inline">\(x\)</span> in <span
+class="math inline">\(\mathbb{Z}[\mathrm{i}]\)</span>. If <span
+class="math inline">\(\ell = 5\)</span>, then exactly one of <span
+class="math inline">\(\lvert 2 + \mathrm{i}\rvert_\iota\)</span> and
+<span class="math inline">\(\lvert 2 +
+\mathrm{i}\rvert_{\bar\iota}\)</span> equals <span
+class="math inline">\(1/5\)</span>, and the other equals <span
+class="math inline">\(1\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030100--a-twist-for-each-prime__workbook.html">Chapter 6</a>; <a href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html">Chapter 77</a></div><!-- used-in:end -->
+</div>
+<p>So the constant family <span class="math inline">\(2 +
+\mathrm{i}\)</span> has different absolute values at different
+isomorphisms above one prime. The following notion bounds a family by
+one number. Let <span class="math inline">\(c \in \mathbb{R}\)</span>. A
+family <span class="math inline">\(y\)</span> has <em>height at most
+<span class="math inline">\(c\)</span></em> if there are <span
+class="math inline">\(H \in \mathbb{C}\)</span>, <span
+class="math inline">\(\alpha \in \mathbb{R}\)</span> and real numbers
+<span class="math inline">\(h(\ell)\)</span>, one for each prime <span
+class="math inline">\(\ell\)</span>, such that</p>
+<ol>
+<li><p><span class="math inline">\(H \ne 0\)</span>, and <span
+class="math inline">\(h(\ell) \ge 0\)</span> for every prime <span
+class="math inline">\(\ell\)</span>;</p></li>
+<li><p><span class="math inline">\(\lvert \sigma H \rvert \le
+e^\alpha\)</span> for every <span class="math inline">\(\sigma \in
+\operatorname{Aut}(\mathbb{C})\)</span>;</p></li>
+<li><p><span class="math inline">\(\lvert H y_\iota \rvert_\iota \le
+\ell^{h(\ell)}\)</span> for every prime <span
+class="math inline">\(\ell\)</span> and every <span
+class="math inline">\(\iota \mid \ell\)</span>;</p></li>
+<li><p><span class="math inline">\(\alpha + \sum_{\ell \in U} h(\ell)
+\log \ell \le c\)</span> for every finite set <span
+class="math inline">\(U\)</span> of primes.</p></li>
+</ol>
+<p>The multiplier <span class="math inline">\(H\)</span> and the bound
+<span class="math inline">\(\alpha\)</span> at infinity are common to
+all <span class="math inline">\(\iota\)</span>, while <span
+class="math inline">\(y_\iota\)</span> may depend on <span
+class="math inline">\(\iota\)</span>, even among the isomorphisms above
+one prime. There is no condition on the sign of <span
+class="math inline">\(\alpha\)</span>. We write <span
+class="math inline">\(\mathrm{ht}(y) \le c\)</span> when <span
+class="math inline">\(y\)</span> has height at most <span
+class="math inline">\(c\)</span>.</p>
+<div id="pr:height-mul" class="problem" data-progress-ids="[&quot;2332&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:height-mul&quot;]"><a class="stable-tag" href="tag/2332.html" title="Stable tag: cite as Tag 2332">Tag 2332</a>
+<p><strong>Problem 5.3.2</strong>. If the families <span
+class="math inline">\(y\)</span> and <span
+class="math inline">\(y&#39;\)</span> have heights at most <span
+class="math inline">\(c\)</span> and <span
+class="math inline">\(c&#39;\)</span>, then the family <span
+class="math inline">\(\iota \mapsto y_\iota y&#39;_\iota\)</span> has
+height at most <span class="math inline">\(c + c&#39;\)</span>. If <span
+class="math inline">\(y\)</span> has height at most <span
+class="math inline">\(c\)</span>, then for every integer <span
+class="math inline">\(n \ge 0\)</span> the family <span
+class="math inline">\(\iota \mapsto y_\iota^n\)</span> has height at
+most <span class="math inline">\(nc\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030100--a-twist-for-each-prime__workbook.html">Chapter 6</a>; <a href="20261126T040200--theorem-c__workbook.html">Chapter 67</a>; <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a>; <a href="20261126T030800--the-cost-of-one-lift__workbook.html">Chapter 74</a>; <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html">Chapter 79</a></div><!-- used-in:end -->
+</div>
+<div id="pr:height-easy" class="problem" data-progress-ids="[&quot;2333&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:height-easy&quot;]"><a class="stable-tag" href="tag/2333.html" title="Stable tag: cite as Tag 2333">Tag 2333</a>
+<p><strong>Problem 5.3.3</strong>. (a) Let <span
+class="math inline">\(e(\ell)\)</span> be real numbers, of any sign, one
+for each prime <span class="math inline">\(\ell\)</span>, with <span
+class="math inline">\(\sum_{\ell \in U} e(\ell) \le c\)</span> for every
+finite set <span class="math inline">\(U\)</span> of primes. If <span
+class="math inline">\(\lvert y_\iota \rvert_\iota \le
+e^{e(\ell)}\)</span> for every <span class="math inline">\(\iota \mid
+\ell\)</span>, then <span class="math inline">\(y\)</span> has height at
+most <span class="math inline">\(c\)</span>. (b) If <span
+class="math inline">\(H \ne 0\)</span> and <span
+class="math inline">\(\lvert \sigma H \rvert \le e^c\)</span> for every
+<span class="math inline">\(\sigma \in
+\operatorname{Aut}(\mathbb{C})\)</span>, then the constant family <span
+class="math inline">\(H^{-1}\)</span> has height at most <span
+class="math inline">\(c\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030700--the-determinant-of-a-chain__workbook.html">Chapter 68</a>; <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html">Chapter 79</a></div><!-- used-in:end -->
+</div>
+<p>Can a height be negative? For the constant family <span
+class="math inline">\(1\)</span>, every admissible bound is
+nonnegative.</p>
+<div id="pr:transcendental" class="problem" data-progress-ids="[&quot;2334&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:transcendental&quot;]"><a class="stable-tag" href="tag/2334.html" title="Stable tag: cite as Tag 2334">Tag 2334</a>
+<p><strong>Problem 5.3.4</strong>. If <span class="math inline">\(H \in
+\mathbb{C}\)</span> is transcendental over <span
+class="math inline">\(\mathbb{Q}\)</span>, then for every prime <span
+class="math inline">\(\ell\)</span> the numbers <span
+class="math inline">\(\lvert H \rvert_\iota\)</span>, <span
+class="math inline">\(\iota \mid \ell\)</span>, are unbounded. Hence a
+number <span class="math inline">\(H\)</span> with <span
+class="math inline">\(\lvert H \rvert_\iota \le C\)</span> for all <span
+class="math inline">\(\iota \mid 2\)</span> is algebraic.</p>
+</div>
+<div id="pr:one" class="problem" data-progress-ids="[&quot;2335&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:one&quot;]"><a class="stable-tag" href="tag/2335.html" title="Stable tag: cite as Tag 2335">Tag 2335</a>
+<p><strong>Problem 5.3.5</strong>. If the constant family <span
+class="math inline">\(1\)</span> has height at most <span
+class="math inline">\(c\)</span>, then <span class="math inline">\(c \ge
+0\)</span>.</p>
+</div>
+<p>We now compare a height bound for a nonzero constant family with a
+uniform upper bound on the absolute values of its conjugates.</p>
+<div id="thm:product" class="theorem"><a class="stable-tag" href="tag/2336.html" title="Stable tag: cite as Tag 2336">Tag 2336</a>
+<p><strong>Theorem 5.3.1</strong>. <em>Let <span class="math inline">\(z \in
+\mathbb{C}\)</span>, <span class="math inline">\(z \ne 0\)</span>, and
+<span class="math inline">\(c, c&#39; \in \mathbb{R}\)</span>. If the
+constant family <span class="math inline">\(z\)</span> has height at
+most <span class="math inline">\(c\)</span>, and <span
+class="math inline">\(\lvert \sigma z \rvert \le e^{c&#39;}\)</span> for
+every <span class="math inline">\(\sigma \in
+\operatorname{Aut}(\mathbb{C})\)</span>, then <span
+class="math inline">\(-c \le c&#39;\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:height-rational">Problem 5.3.6</a>; <a href="20261126T030100--a-twist-for-each-prime__workbook.html">Chapter 6</a></div><!-- used-in:end -->
+</div>
+<div id="pr:height-rational" class="problem" data-progress-ids="[&quot;2337&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:height-rational&quot;]"><a class="stable-tag" href="tag/2337.html" title="Stable tag: cite as Tag 2337">Tag 2337</a>
+<p><strong>Problem 5.3.6</strong>. Let <span class="math inline">\(x \in
+\mathbb{Q}^\times\)</span>. The constant family <span
+class="math inline">\(x\)</span> has height at most <span
+class="math inline">\(c\)</span> if and only if <span
+class="math inline">\(c \ge -\log \lvert x \rvert\)</span>. For
+instance, the constant family <span class="math inline">\(2\)</span> has
+height at most <span class="math inline">\(-\log 2\)</span>. If <span
+class="math inline">\(g = \prod_{p \in S} p^{e_p}\)</span>, with <span
+class="math inline">\(S\)</span> a finite set of primes, divides the
+nonzero integer <span class="math inline">\(\Delta\)</span>, then the
+constant family <span class="math inline">\(\Delta\)</span> has height
+at most <span class="math inline">\(-\log g\)</span>, and Theorem <a
+href="#thm:product" data-reference-type="ref"
+data-reference="thm:product">5.3.1</a> then gives <a href="#eq:det"
+data-reference-type="eqref" data-reference="eq:det">(1)</a>.</p>
+</div>
+<div id="pr:reciprocal" class="problem" data-progress-ids="[&quot;2338&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:reciprocal&quot;]"><a class="stable-tag" href="tag/2338.html" title="Stable tag: cite as Tag 2338">Tag 2338</a>
+<p><strong>Problem 5.3.7</strong>. Let <span
+class="math inline">\(S\)</span> be a finite set of primes and <span
+class="math inline">\(N := \prod_{\ell \in S} \ell\)</span>. The family
+with <span class="math inline">\(y_\iota = \ell^{-1}\)</span> for <span
+class="math inline">\(\iota \mid \ell\)</span> with <span
+class="math inline">\(\ell \in S\)</span>, and <span
+class="math inline">\(y_\iota = 1\)</span> for <span
+class="math inline">\(\iota \mid \ell\)</span> with <span
+class="math inline">\(\ell \notin S\)</span>, has height at most <span
+class="math inline">\(c\)</span> if and only if <span
+class="math inline">\(c \ge \log N\)</span>. For <span
+class="math inline">\(S = \{2, 3\}\)</span> the least height is <span
+class="math inline">\(\log 6\)</span>.</p>
+</div>
+<h1 id="sec:index">§5.4. Index and covolume <a class="stable-tag" href="tag/2339.html" title="Stable tag: cite as Tag 2339">Tag 2339</a></h1>
+<p>The minors of Section <a href="#sec:minor" data-reference-type="ref"
+data-reference="sec:minor">5.2</a> are Gaussian integers. In the proof of
+the general lattice theorem of Chapter <a href="20261126T030100--a-twist-for-each-prime__workbook.html#chap"
+data-reference-type="ref" data-reference="tw-chap">6</a>, the
+size bound uses the covolume of the given vectors and the squared
+lengths of the completing vectors, both at the trivial twist. At each
+<span class="math inline">\(\iota \mid \ell\)</span> the rows of one
+index matrix give combinations of the given vectors that are integral
+under every map allowed at <span class="math inline">\(\ell\)</span>. At
+each <span class="math inline">\(\iota\)</span>, the completing vectors
+must be integral under every map allowed at its prime after scaling by a
+nonzero scalar that may depend on the twist. Here we use a single
+map.</p>
+<p>For <span class="math inline">\(\iota \mid \ell\)</span> let <span
+class="math inline">\(\mathcal{O}_\iota := \{x \in \mathbb{C}: \lvert x
+\rvert_\iota \le 1\}\)</span>, a subring of <span
+class="math inline">\(\mathbb{C}\)</span>. To specify a <em>lattice
+datum</em>, give</p>
+<ol>
+<li><p>a complex vector space <span class="math inline">\(V\)</span>, a
+complex inner product space <span class="math inline">\(W\)</span>, with
+<span class="math inline">\(\langle \cdot, \cdot \rangle\)</span>
+conjugate-linear in the first variable, and a linear map <span
+class="math inline">\(\Theta \colon V \to W\)</span>;</p></li>
+<li><p>for every prime <span class="math inline">\(\ell\)</span> and
+every <span class="math inline">\(\iota \mid \ell\)</span>, an <span
+class="math inline">\(\mathcal{O}_\iota\)</span>-submodule <span
+class="math inline">\(\Lambda_\iota \subseteq W\)</span>, such that
+<span class="math inline">\(\lvert \langle \varphi, \varphi&#39; \rangle
+\rvert_\iota \le 1\)</span> for all <span class="math inline">\(\varphi
+\in \Lambda_{\bar\iota}\)</span> and <span
+class="math inline">\(\varphi&#39; \in \Lambda_\iota\)</span>;</p></li>
+<li><p>a finite set <span class="math inline">\(I\)</span>, a linear map
+<span class="math inline">\(b \colon W \to \mathbb{C}^I\)</span>, and a
+matrix <span class="math inline">\(G \in M_I(\mathbb{Q})\)</span>,
+positive definite as a complex matrix, with <span
+class="math inline">\(\langle \varphi, \varphi&#39; \rangle =
+b(\varphi)^* G\, b(\varphi&#39;)\)</span> for all <span
+class="math inline">\(\varphi, \varphi&#39; \in W\)</span>, where <span
+class="math inline">\({}^*\)</span> is the conjugate transpose.</p></li>
+</ol>
+<p>A vector <span class="math inline">\(y \in V\)</span> is <em>integral
+at <span class="math inline">\(\iota\)</span></em> if <span
+class="math inline">\(\Theta y \in \Lambda_\iota\)</span>; these vectors
+form an <span class="math inline">\(\mathcal{O}_\iota\)</span>-submodule
+<span class="math inline">\(M_\iota\)</span> of <span
+class="math inline">\(V\)</span>. For the <em>standard datum</em> on
+<span class="math inline">\(\mathbb{C}^n\)</span>, take <span
+class="math inline">\(V = W = \mathbb{C}^n\)</span>, <span
+class="math inline">\(\Theta = b = \mathrm{id}\)</span>, <span
+class="math inline">\(G = 1\)</span> and <span
+class="math inline">\(\Lambda_\iota = \mathcal{O}_\iota^n\)</span>.</p>
+<p>Let <span class="math inline">\(S\)</span> be a finite set, <span
+class="math inline">\(y = (y_s)_{s \in S}\)</span> a family of vectors
+of <span class="math inline">\(V\)</span>, and <span
+class="math inline">\(\delta \in \mathbb{R}\)</span>. The family <span
+class="math inline">\(y\)</span> has <em>index at most <span
+class="math inline">\(\delta\)</span></em> if there are real numbers
+<span class="math inline">\(e(\ell) \ge 0\)</span>, one for each prime
+<span class="math inline">\(\ell\)</span>, with <span
+class="math inline">\(\sum_{\ell \in U} e(\ell) \log \ell \le
+\delta\)</span> for every finite set <span
+class="math inline">\(U\)</span> of primes, such that for every <span
+class="math inline">\(\iota \mid \ell\)</span> some matrix <span
+class="math inline">\(u \in M_S(\mathcal{O}_\iota)\)</span> satisfies
+<span class="math display">\[\lvert \det u \rvert_\iota \ge
+\ell^{-e(\ell)} \quad\text{and}\quad \sum_{k \in S} u_{ik}\, y_k \in
+M_\iota \text{ for every } i \in S .\]</span> The matrix may depend on
+<span class="math inline">\(\iota\)</span>. Every admissible <span
+class="math inline">\(\delta\)</span> is nonnegative.</p>
+<div id="pr:index-basic" class="problem" data-progress-ids="[&quot;233A&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:index-basic&quot;]"><a class="stable-tag" href="tag/233A.html" title="Stable tag: cite as Tag 233A">Tag 233A</a>
+<p><strong>Problem 5.4.1</strong>. The standard datum satisfies condition
+(ii). In it, a family of vectors with entries in <span
+class="math inline">\(\mathbb{Z}[\mathrm{i}]\)</span> has index at most
+<span class="math inline">\(0\)</span>. On <span
+class="math inline">\(\mathbb{C}^1\)</span>, the family consisting of
+the one vector <span class="math inline">\(1/3\)</span> has index at
+most <span class="math inline">\(\delta\)</span> if and only if <span
+class="math inline">\(\delta \ge \log 3\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030100--a-twist-for-each-prime__workbook.html">Chapter 6</a></div><!-- used-in:end -->
+</div>
+<div id="pr:index-sum" class="problem" data-progress-ids="[&quot;233B&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:index-sum&quot;]"><a class="stable-tag" href="tag/233B.html" title="Stable tag: cite as Tag 233B">Tag 233B</a>
+<p><strong>Problem 5.4.2</strong>. If <span class="math inline">\(y =
+(y_s)_{s \in S}\)</span> has index at most <span
+class="math inline">\(\delta\)</span> and <span
+class="math inline">\(y&#39; = (y&#39;_s)_{s \in S&#39;}\)</span> has
+index at most <span class="math inline">\(\delta&#39;\)</span>, then the
+family indexed by the disjoint union <span class="math inline">\(S
+\sqcup S&#39;\)</span> that restricts to <span
+class="math inline">\(y\)</span> and <span
+class="math inline">\(y&#39;\)</span> has index at most <span
+class="math inline">\(\delta + \delta&#39;\)</span>.</p>
+</div>
+<p>An index bound is usually proved one submodule at a time. For <span
+class="math inline">\(\mathcal{O}_\iota\)</span>-submodules <span
+class="math inline">\(M, M&#39;\)</span> of <span
+class="math inline">\(V\)</span> and <span class="math inline">\(z \in
+\mathcal{O}_\iota\)</span>, say that <em>the colength of <span
+class="math inline">\(M&#39;\)</span> in <span
+class="math inline">\(M\)</span> divides <span
+class="math inline">\(z\)</span></em> if for every <span
+class="math inline">\(n \ge 0\)</span> and all <span
+class="math inline">\(\Phi_1, \dots, \Phi_n \in M\)</span> there is a
+matrix <span class="math inline">\(m \in M_n(\mathcal{O}_\iota)\)</span>
+such that <span class="math inline">\(\det m\)</span> divides <span
+class="math inline">\(z\)</span> in <span
+class="math inline">\(\mathcal{O}_\iota\)</span> and <span
+class="math inline">\(\sum_k m_{ik} \Phi_k \in M&#39;\)</span> for every
+<span class="math inline">\(i\)</span>. No inclusion between <span
+class="math inline">\(M\)</span> and <span
+class="math inline">\(M&#39;\)</span> is assumed. This colength
+condition gives an upper bound for the index.</p>
+<div id="thm:colength" class="theorem"><a class="stable-tag" href="tag/233C.html" title="Stable tag: cite as Tag 233C">Tag 233C</a>
+<p><strong>Theorem 5.4.1</strong>. <em>Let <span class="math inline">\(y_1,
+\dots, y_n \in V\)</span>, <span class="math inline">\(\delta \in
+\mathbb{R}\)</span>, and let <span class="math inline">\(e(\ell) \ge
+0\)</span>, one for each prime <span
+class="math inline">\(\ell\)</span>, satisfy <span
+class="math inline">\(\sum_{\ell \in U} e(\ell) \log \ell \le
+\delta\)</span> for every finite set <span
+class="math inline">\(U\)</span> of primes. Suppose that for every <span
+class="math inline">\(\iota \mid \ell\)</span> there are an integer
+<span class="math inline">\(j \ge 0\)</span> and an <span
+class="math inline">\(\mathcal{O}_\iota\)</span>-submodule <span
+class="math inline">\(M \subseteq V\)</span> such that <span
+class="math inline">\(j \le e(\ell)\)</span>, every <span
+class="math inline">\(y_i\)</span> lies in <span
+class="math inline">\(M\)</span>, and the colength of <span
+class="math inline">\(M_\iota\)</span> in <span
+class="math inline">\(M\)</span> divides <span
+class="math inline">\(\ell^j\)</span>. Then <span
+class="math inline">\(y\)</span> has index at most <span
+class="math inline">\(\delta\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261125T013500--hecke-nondegeneracy-on-the-tree__workbook.html">Chapter 18</a>; <a href="20261126T051600--the-level-prime-and-the-ramified-forms__workbook.html">Chapter 65</a></div><!-- used-in:end -->
+</div>
+<div id="pr:lattice-change" class="problem" data-progress-ids="[&quot;227D&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:lattice-change&quot;]"><a class="stable-tag" href="tag/227D.html" title="Stable tag: cite as Tag 227D">Tag 227D</a>
+<p><strong>Problem 5.4.3</strong>. Let <span class="math inline">\(\Lambda
+\subset \mathbb{Q}^n\)</span> be a subgroup that contains <span
+class="math inline">\(\mathbb{Z}^n\)</span> with finite index <span
+class="math inline">\(N\)</span>, and let <span
+class="math inline">\(y_1, \dots, y_n\)</span> be a basis of <span
+class="math inline">\(\Lambda\)</span>. In the standard datum on <span
+class="math inline">\(\mathbb{C}^n\)</span>, the family <span
+class="math inline">\(y\)</span> has index at most <span
+class="math inline">\(\log N\)</span>, and <span
+class="math inline">\(\det(y_i^* y_k)_{i,k} = N^{-2}\)</span>.</p>
+</div>
+<p>Now the size. For <span class="math inline">\(\sigma \in
+\operatorname{Aut}(\mathbb{C})\)</span> and <span
+class="math inline">\(y \in V\)</span> let <span
+class="math inline">\(v_\sigma(y) \in \mathbb{C}^I\)</span> be the
+vector <span class="math inline">\(b(\Theta y)\)</span> with <span
+class="math inline">\(\sigma\)</span> applied to each coordinate, and
+let <span class="math inline">\(N(y, \sigma) :=
+\operatorname{Re}\bigl(v_\sigma(y)^* G\, v_\sigma(y)\bigr)\)</span>. A
+family <span class="math inline">\(y = (y_s)_{s \in S}\)</span> has
+<em>covolume at most <span class="math inline">\(c\)</span></em> if
+<span class="math display">\[\bigl\lvert \det\bigl( v_\sigma(y_i)^* G\,
+v_\sigma(y_k) \bigr)_{i,k \in S} \bigr\rvert \le e^c \quad\text{for
+every } \sigma \in \operatorname{Aut}(\mathbb{C}).\]</span> For <span
+class="math inline">\(\sigma = \mathrm{id}\)</span> the determinant is
+the Gram determinant of the vectors <span class="math inline">\(\Theta
+y_s\)</span>, the square of a volume. So the family of Problem <a
+href="#pr:lattice-change" data-reference-type="ref"
+data-reference="pr:lattice-change">5.4.3</a> has covolume at most <span
+class="math inline">\(c\)</span> exactly when <span
+class="math inline">\(c \ge -2\log N\)</span>. In the next example <span
+class="math inline">\(G\)</span> differs from the identity when <span
+class="math inline">\(D \ge 3\)</span>. For <span
+class="math inline">\(f \in \mathbb{C}[z]\)</span> let <span
+class="math display">\[\lVert f \rVert^2 := \frac{1}{\pi}
+\int_\mathbb{C}\lvert f(z) \rvert^2 e^{-\lvert z \rvert^2} \, d A(z)
+.\]</span></p>
+<div id="pr:fock" class="problem" data-progress-ids="[&quot;2278&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:fock&quot;]"><a class="stable-tag" href="tag/2278.html" title="Stable tag: cite as Tag 2278">Tag 2278</a>
+<p><strong>Problem 5.4.4</strong>. The monomials are orthogonal, and <span
+class="math inline">\(\lVert z^a \rVert^2 = a!\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:fock-datum">Problem 5.4.5</a>; <a href="20261125T013500--hecke-nondegeneracy-on-the-tree__workbook.html">Chapter 18</a>; <a href="20261125T002100--definite-theta-lifts-and-norms__workbook.html">Chapter 23</a>; <a href="20261126T050300--the-size-of-the-composite-lift__workbook.html">Chapter 66</a>; <a href="20261126T050900--hecke-values-as-norms-of-lifts__workbook.html">Chapter 77</a>; <a href="20261126T051100--test-forms-and-the-height-of-a-hecke-ratio__workbook.html">Chapter 79</a></div><!-- used-in:end -->
+</div>
+<div id="pr:fock-datum" class="problem" data-progress-ids="[&quot;233D&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:fock-datum&quot;]"><a class="stable-tag" href="tag/233D.html" title="Stable tag: cite as Tag 233D">Tag 233D</a>
+<p><strong>Problem 5.4.5</strong>. Let <span
+class="math inline">\(D\)</span> be a positive integer, let <span
+class="math inline">\(V = W\)</span> be the polynomials of degree less
+than <span class="math inline">\(D\)</span> with the inner product of
+Problem <a href="#pr:fock" data-reference-type="ref"
+data-reference="pr:fock">5.4.4</a>, <span class="math inline">\(\Theta =
+\mathrm{id}\)</span>, <span class="math inline">\(b(f) = (f_0, \dots,
+f_{D-1})\)</span> the coefficients, <span class="math inline">\(G =
+\operatorname{diag}(0!, 1!, \dots, (D-1)!)\)</span>, and <span
+class="math inline">\(\Lambda_\iota\)</span> the polynomials with
+coefficients in <span class="math inline">\(\mathcal{O}_\iota\)</span>.
+This is a lattice datum. In it, the family <span
+class="math inline">\((z^a/a!)_{0 \le a &lt; D}\)</span> has index at
+most <span class="math inline">\(\sum_{a &lt; D} \log a!\)</span>, and
+covolume at most <span class="math inline">\(c\)</span> if and only if
+<span class="math inline">\(c \ge -\sum_{a &lt; D} \log a!\)</span>. For
+<span class="math inline">\(D = 4\)</span> the sum is <span
+class="math inline">\(\log 12\)</span>.</p>
+</div>
+<div id="pr:hadamard-gram" class="problem" data-progress-ids="[&quot;233E&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:hadamard-gram&quot;]"><a class="stable-tag" href="tag/233E.html" title="Stable tag: cite as Tag 233E">Tag 233E</a>
+<p><strong>Problem 5.4.6</strong>. Let <span class="math inline">\(G \in
+M_I(\mathbb{C})\)</span> be positive semidefinite and <span
+class="math inline">\(w_1, \dots, w_n \in \mathbb{C}^I\)</span>. Then
+<span class="math inline">\(\lvert \det(w_i^* G w_k)_{i,k} \rvert \le
+\prod_i w_i^* G w_i\)</span>. For <span class="math inline">\(G =
+1\)</span> and the columns <span class="math inline">\((6, 6)\)</span>
+and <span class="math inline">\((10, 20)\)</span> of Problem <a
+href="#pr:hadamard-det" data-reference-type="ref"
+data-reference="pr:hadamard-det">5.1.3</a> the two sides are <span
+class="math inline">\(3600\)</span> and <span
+class="math inline">\(36000\)</span>.</p>
+</div>
+<p>A uniform bound on squared norms gives a covolume bound.</p>
+<div id="thm:hadamard" class="theorem"><a class="stable-tag" href="tag/233F.html" title="Stable tag: cite as Tag 233F">Tag 233F</a>
+<p><strong>Theorem 5.4.2</strong>. <em>Let <span class="math inline">\(y_1,
+\dots, y_n \in V\)</span> and <span class="math inline">\(h \in
+\mathbb{R}\)</span>. If <span class="math inline">\(N(y_i, \sigma) \le
+e^h\)</span> for every <span class="math inline">\(i\)</span> and every
+<span class="math inline">\(\sigma \in
+\operatorname{Aut}(\mathbb{C})\)</span>, then <span
+class="math inline">\(y\)</span> has covolume at most <span
+class="math inline">\(nh\)</span>.</em></p>
+</div>
+<p>The hypothesis concerns every <span
+class="math inline">\(\sigma\)</span>. For the vector <span
+class="math inline">\(1 - \sqrt 2\)</span> in the standard datum on
+<span class="math inline">\(\mathbb{C}^1\)</span>, <span
+class="math inline">\(N(1 - \sqrt 2, \mathrm{id}) = 3 - 2\sqrt
+2\)</span>, but <span class="math inline">\(N(1 - \sqrt 2, \sigma) = 3 +
+2\sqrt 2\)</span> when <span class="math inline">\(\sigma\sqrt 2 =
+-\sqrt 2\)</span>.</p>
+<p>Size and divisibility now meet in one determinant. Let <span
+class="math inline">\(y_1, \dots, y_n \in V\)</span>, and let <span
+class="math inline">\(\Gamma := \det(\langle \Theta y_i, \Theta y_k
+\rangle)_{i,k}\)</span> be their Gram determinant. For <span
+class="math inline">\(\sigma \in \operatorname{Aut}(\mathbb{C})\)</span>
+let <span class="math inline">\(\sigma&#39;\)</span> be the automorphism
+<span class="math inline">\(x \mapsto \overline{\sigma(\bar
+x)}\)</span>.</p>
+<div id="pr:conj-gram" class="problem" data-progress-ids="[&quot;233G&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:conj-gram&quot;]"><a class="stable-tag" href="tag/233G.html" title="Stable tag: cite as Tag 233G">Tag 233G</a>
+<p><strong>Problem 5.4.7</strong>. For <span class="math inline">\(y,
+y&#39; \in V\)</span> and <span class="math inline">\(\sigma \in
+\operatorname{Aut}(\mathbb{C})\)</span>, <span
+class="math inline">\(\sigma\langle \Theta y, \Theta y&#39; \rangle =
+v_{\sigma&#39;}(y)^* G\, v_\sigma(y&#39;)\)</span>.</p>
+</div>
+<div id="pr:cs-det" class="problem" data-progress-ids="[&quot;233H&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:cs-det&quot;]"><a class="stable-tag" href="tag/233H.html" title="Stable tag: cite as Tag 233H">Tag 233H</a>
+<p><strong>Problem 5.4.8</strong>. Let <span class="math inline">\(G \in
+M_I(\mathbb{C})\)</span> be positive semidefinite, and let <span
+class="math inline">\(A, B\)</span> be <span class="math inline">\(I
+\times n\)</span> matrices. Then <span class="math inline">\(\lvert
+\det(A^* G B) \rvert^2 \le \lvert \det(A^* G A) \rvert \, \lvert
+\det(B^* G B) \rvert\)</span>. Consequently, if <span
+class="math inline">\(y\)</span> has covolume at most <span
+class="math inline">\(c\)</span>, then <span
+class="math inline">\(\lvert \sigma \Gamma \rvert \le e^c\)</span> for
+every <span class="math inline">\(\sigma \in
+\operatorname{Aut}(\mathbb{C})\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T030100--a-twist-for-each-prime__workbook.html">Chapter 6</a></div><!-- used-in:end -->
+</div>
+<p>The converse fails: a bound for every <span
+class="math inline">\(\lvert \sigma\Gamma \rvert\)</span> does not bound
+the covolume. In the standard datum on <span
+class="math inline">\(\mathbb{C}^2\)</span>, take <span
+class="math inline">\(v = (\sqrt{1+\sqrt{2}},
+\sqrt{2-\sqrt{2}})\)</span>. Its Gram determinant is <span
+class="math inline">\(3\)</span>, so <span
+class="math inline">\(\sigma\Gamma = 3\)</span> for every <span
+class="math inline">\(\sigma\)</span>. For <span
+class="math inline">\(\sigma(\sqrt{2}) = -\sqrt{2}\)</span>, the squared
+norm of <span class="math inline">\(\sigma v\)</span> is <span
+class="math inline">\(1+2\sqrt{2} &gt; 3\)</span>, so <span
+class="math inline">\((v)\)</span> fails the covolume bound <span
+class="math inline">\(c = \log 3\)</span>.</p>
+<div id="pr:gram-local" class="problem" data-progress-ids="[&quot;233J&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:gram-local&quot;]"><a class="stable-tag" href="tag/233J.html" title="Stable tag: cite as Tag 233J">Tag 233J</a>
+<p><strong>Problem 5.4.9</strong>. Let <span class="math inline">\(\iota
+\mid \ell\)</span>, and let <span class="math inline">\(u, u&#39; \in
+M_n(\mathbb{C})\)</span> satisfy <span class="math inline">\(\sum_k
+u_{ik} y_k \in M_\iota\)</span> and <span class="math inline">\(\sum_k
+u&#39;_{ik} y_k \in M_{\bar\iota}\)</span> for every <span
+class="math inline">\(i\)</span>. Then <span
+class="math inline">\(\lvert \overline{\det u&#39;} \rvert_\iota \,
+\lvert \Gamma \rvert_\iota \, \lvert \det u \rvert_\iota \le 1\)</span>.
+Consequently, if <span class="math inline">\(y\)</span> has index at
+most <span class="math inline">\(\delta\)</span>, then the constant
+family <span class="math inline">\(\Gamma\)</span> has height at most
+<span class="math inline">\(2\delta\)</span>.</p>
+</div>
+<p>If <span class="math inline">\(\Theta\)</span> is injective and <span
+class="math inline">\(y\)</span> is a basis of <span
+class="math inline">\(V\)</span>, then <span
+class="math inline">\(\Gamma \ne 0\)</span>.</p>
+<div id="thm:one" class="theorem"><a class="stable-tag" href="tag/227E.html" title="Stable tag: cite as Tag 227E">Tag 227E</a>
+<p><strong>Theorem 5.4.3</strong>. <em>Let <span
+class="math inline">\(\Theta\)</span> be injective, and let <span
+class="math inline">\(y_1, \dots, y_n\)</span> be a basis of <span
+class="math inline">\(V\)</span>. If <span
+class="math inline">\(y\)</span> has covolume at most <span
+class="math inline">\(c\)</span> and index at most <span
+class="math inline">\(\delta\)</span>, then <span
+class="math display">\[0 \le c + 2\delta .\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:minor-again">Problem 5.4.10</a>; <a href="20261126T030100--a-twist-for-each-prime__workbook.html">Chapter 6</a></div><!-- used-in:end -->
+</div>
+<p>By Problems <a href="#pr:index-basic" data-reference-type="ref"
+data-reference="pr:index-basic">5.4.1</a> and <a href="#pr:lattice-change"
+data-reference-type="ref" data-reference="pr:lattice-change">5.4.3</a>,
+equality holds for the vector <span class="math inline">\(1/3\)</span>
+in <span class="math inline">\(\mathbb{C}^1\)</span>, with <span
+class="math inline">\(c = -2\log 3\)</span> and <span
+class="math inline">\(\delta = \log 3\)</span>, and for a basis of a
+lattice <span class="math inline">\(\Lambda \supseteq
+\mathbb{Z}^n\)</span>. In the datum of Problem <a href="#pr:fock-datum"
+data-reference-type="ref" data-reference="pr:fock-datum">5.4.5</a> the
+bounds found there give <span class="math inline">\(c + 2\delta =
+\sum_{a&lt;D} \log a!\)</span>.</p>
+<div id="pr:minor-again" class="problem" data-progress-ids="[&quot;233K&quot;,&quot;20261125T000000--slope-method__workbook.tex#pr:minor-again&quot;]"><a class="stable-tag" href="tag/233K.html" title="Stable tag: cite as Tag 233K">Tag 233K</a>
+<p><strong>Problem 5.4.10</strong>. In the setting of Theorem <a
+href="#thm:minor" data-reference-type="ref"
+data-reference="thm:minor">5.2.1</a>, let <span
+class="math inline">\(\Delta\)</span> be a nonzero <span
+class="math inline">\(s \times s\)</span> minor of the matrix of <span
+class="math inline">\(\mathrm{ev}\)</span>, let <span
+class="math inline">\(g := \prod_{p \in P} p^{N_p}\)</span>, and let
+<span class="math inline">\(B := s!\,A_*^{s(J-1)}\beta^D\)</span>. In
+the standard datum on <span class="math inline">\(\mathbb{C}^1\)</span>,
+the vector <span class="math inline">\(\Delta/g\)</span> has index at
+most <span class="math inline">\(0\)</span> and covolume at most <span
+class="math inline">\(2\log(B/g)\)</span>, and Theorem <a
+href="#thm:one" data-reference-type="ref" data-reference="thm:one">5.4.3</a>
+gives Theorem <a href="#thm:minor" data-reference-type="ref"
+data-reference="thm:minor">5.2.1</a>. For <span class="math inline">\(P =
+\{3\}\)</span>, <span class="math inline">\(I = 1\)</span>, <span
+class="math inline">\(u_1 = \mathrm{i}\)</span>, <span
+class="math inline">\(J = 2\)</span> and <span
+class="math inline">\(\mathcal{T} = \{(3, 0), (0, 1)\}\)</span>: <span
+class="math inline">\(\Delta = \pm 3\mathrm{i}\)</span>, <span
+class="math inline">\(g = 3\)</span> and <span class="math inline">\(B =
+18\)</span>.</p>
+</div>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, the height bound <span
+class="math inline">\(\mathrm{ht}(y) \le c\)</span> is
+<code>HeightLe</code>, Problem <a href="#pr:one"
+data-reference-type="ref" data-reference="pr:one">5.3.5</a> is
+<code>HeightLe.nonneg_of_one</code> and Theorem <a href="#thm:product"
+data-reference-type="ref" data-reference="thm:product">5.3.1</a> is
+<code>HeightLe.neg_le_of_norm_map_le</code> (file
+<code>New/Reduction/Lattices/Heights.lean</code>). In
+<code>HeightLe</code> and <code>TwistedLattice.IndexLe</code>,
+respectively, the functions <span class="math inline">\(h\)</span> and
+<span class="math inline">\(e\)</span> are defined on all natural
+numbers and are nonnegative everywhere. Only their values at primes
+occur in the local bounds and finite sums. A lattice datum is a
+<code>TwistedLattice</code> with a single twist, allowed at every <span
+class="math inline">\(m \in \mathbb{N}\)</span>; index and covolume are
+<code>TwistedLattice.IndexLe</code> and
+<code>TwistedLattice.CovolumeLe</code>, Theorems <a href="#thm:colength"
+data-reference-type="ref" data-reference="thm:colength">5.4.1</a> and <a
+href="#thm:hadamard" data-reference-type="ref"
+data-reference="thm:hadamard">5.4.2</a> are
+<code>TwistedLattice.indexLe_of_colengthDvd</code> and
+<code>TwistedLattice.covolumeLe_of_normSqAt_le</code>, and Theorem <a
+href="#thm:one" data-reference-type="ref" data-reference="thm:one">5.4.3</a>
+is the case of <code>TwistedLattice.covolume_add_index_nonneg</code>
+with this single twist, no completing vectors, the auxiliary scalar
+<span class="math inline">\(1\)</span> and the three auxiliary bounds
+<span class="math inline">\(0\)</span>, for any inner product on <span
+class="math inline">\(V\)</span> (file
+<code>New/Reduction/Lattices/TwistedLattice.lean</code>). The pairs
+<span class="math inline">\(\iota \mid \ell\)</span> are
+<code>PrimePadicIso</code> in the height file. In the lattice file the
+integral vectors are <code>TwistedLattice.integralVectors</code>, the
+local matrices in the index bound satisfy
+<code>PrimePadicIso.Carries</code>, and the squared volumes in the
+general theorem of Chapter <a href="20261126T030100--a-twist-for-each-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="tw-chap">6</a> are
+<code>TwistedLattice.volume</code>.</p>
+<p>Theorem <a href="#thm:one" data-reference-type="ref"
+data-reference="thm:one">5.4.3</a> compares the size and divisibility bounds
+for a single nonzero Gram determinant. In the general lattice theorem of
+Chapter <a href="20261126T030100--a-twist-for-each-prime__workbook.html#chap" data-reference-type="ref"
+data-reference="tw-chap">6</a>, integrality at <span
+class="math inline">\(\iota \mid \ell\)</span> is tested through every
+map allowed at <span class="math inline">\(\ell\)</span>, and covolume
+is measured using the map of the trivial twist. The theorem takes a
+choice of allowed twist for each <span
+class="math inline">\(\iota\)</span> and a height bound for the family
+whose value at <span class="math inline">\(\iota\)</span> is the squared
+volume of the trivial map divided by that of the chosen map.</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="secchebyshev">§<a href="#sec:chebyshev"
+data-reference-type="ref" data-reference="sec:chebyshev">5.1</a></h2>
+<dl>
+<dt><a href="#pr:binomial" data-reference-type="ref"
+data-reference="pr:binomial">5.1.1</a></dt>
+<dd>
+<p>Write <span class="math inline">\(\binom{2n}{n} =
+(2n)!/(n!)^2\)</span>. For the size, expand <span
+class="math inline">\((1+1)^{2n}\)</span>.</p>
+</dd>
+<dt><a href="#pr:legendre" data-reference-type="ref"
+data-reference="pr:legendre">5.1.2</a></dt>
+<dd>
+<p>Count the multiples of <span class="math inline">\(p^e\)</span> up to
+<span class="math inline">\(n\)</span>.</p>
+</dd>
+<dt><a href="#pr:hadamard-det" data-reference-type="ref"
+data-reference="pr:hadamard-det">5.1.3</a></dt>
+<dd>
+<p>Divide each column by <span class="math inline">\(g_j\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secminor">§<a href="#sec:minor"
+data-reference-type="ref" data-reference="sec:minor">5.2</a></h2>
+<dl>
+<dt><a href="#pr:frob" data-reference-type="ref"
+data-reference="pr:frob">5.2.1</a></dt>
+<dd>
+<p>The binomial theorem modulo <span
+class="math inline">\(p\)</span>.</p>
+</dd>
+<dt><a href="#pr:frob-deriv" data-reference-type="ref"
+data-reference="pr:frob-deriv">5.2.2</a></dt>
+<dd>
+<p>Problem <a href="#pr:frob" data-reference-type="ref"
+data-reference="pr:frob">5.2.1</a> and the Leibniz rule.</p>
+</dd>
+<dt><a href="#pr:minor-div" data-reference-type="ref"
+data-reference="pr:minor-div">5.2.3</a></dt>
+<dd>
+<p>Write <span class="math inline">\(a = kp + t\)</span> with <span
+class="math inline">\(0 \le t &lt; p\)</span>, and consider the
+polynomials <span class="math inline">\(X^tY^bg^k\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secheights">§<a href="#sec:heights"
+data-reference-type="ref" data-reference="sec:heights">5.3</a></h2>
+<dl>
+<dt><a href="#pr:iota" data-reference-type="ref"
+data-reference="pr:iota">5.3.1</a></dt>
+<dd>
+<p>The restriction of <span
+class="math inline">\(\lvert\cdot\rvert_\iota\)</span> to <span
+class="math inline">\(\mathbb{Q}(\mathrm{i})\)</span> is an absolute
+value extending <span
+class="math inline">\(\lvert\cdot\rvert_\ell\)</span>. For <span
+class="math inline">\(\ell = 5\)</span>: <span
+class="math inline">\((2+\mathrm{i})(2-\mathrm{i}) = 5\)</span>, and
+<span class="math inline">\(\bar\iota(2+\mathrm{i}) =
+\iota(2-\mathrm{i})\)</span>.</p>
+</dd>
+<dt><a href="#pr:height-mul" data-reference-type="ref"
+data-reference="pr:height-mul">5.3.2</a></dt>
+<dd>
+<p>Multiply the multipliers.</p>
+</dd>
+<dt><a href="#pr:height-easy" data-reference-type="ref"
+data-reference="pr:height-easy">5.3.3</a></dt>
+<dd>
+<p>(a) Take <span class="math inline">\(H = 1\)</span>. (b) Take the
+multiplier <span class="math inline">\(H\)</span>.</p>
+</dd>
+<dt><a href="#pr:transcendental" data-reference-type="ref"
+data-reference="pr:transcendental">5.3.4</a></dt>
+<dd>
+<p>Fix one <span class="math inline">\(\iota_0 \mid \ell\)</span>.
+Extend an isomorphism <span class="math inline">\(\mathbb{Q}(H) \to
+\mathbb{Q}(\iota_0^{-1}(t))\)</span>, for a suitable transcendental
+<span class="math inline">\(t \in \overline{\mathbb{Q}}_\ell\)</span>,
+to an automorphism of <span
+class="math inline">\(\mathbb{C}\)</span>.</p>
+</dd>
+<dt><a href="#pr:one" data-reference-type="ref"
+data-reference="pr:one">5.3.5</a></dt>
+<dd>
+<p>Problem <a href="#pr:transcendental" data-reference-type="ref"
+data-reference="pr:transcendental">5.3.4</a>, then the product formula for
+the norm of <span class="math inline">\(H\)</span> from <span
+class="math inline">\(\mathbb{Q}(H)\)</span> to <span
+class="math inline">\(\mathbb{Q}\)</span>.</p>
+</dd>
+<dt><a href="#pr:height-rational" data-reference-type="ref"
+data-reference="pr:height-rational">5.3.6</a></dt>
+<dd>
+<p>Take <span class="math inline">\(H = x^{-1}\)</span>; for the
+converse, Theorem <a href="#thm:product" data-reference-type="ref"
+data-reference="thm:product">5.3.1</a>.</p>
+</dd>
+<dt><a href="#pr:reciprocal" data-reference-type="ref"
+data-reference="pr:reciprocal">5.3.7</a></dt>
+<dd>
+<p>Compare with the constant family <span
+class="math inline">\(1/N\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secindex">§<a href="#sec:index"
+data-reference-type="ref" data-reference="sec:index">5.4</a></h2>
+<dl>
+<dt><a href="#pr:index-basic" data-reference-type="ref"
+data-reference="pr:index-basic">5.4.1</a></dt>
+<dd>
+<p>At <span class="math inline">\(\iota \mid 3\)</span> a <span
+class="math inline">\(1 \times 1\)</span> matrix <span
+class="math inline">\((u)\)</span> must satisfy <span
+class="math inline">\(\lvert u \rvert_\iota \le 1/3\)</span>.</p>
+</dd>
+<dt><a href="#pr:index-sum" data-reference-type="ref"
+data-reference="pr:index-sum">5.4.2</a></dt>
+<dd>
+<p>Block diagonal matrices.</p>
+</dd>
+<dt><a href="#pr:lattice-change" data-reference-type="ref"
+data-reference="pr:lattice-change">5.4.3</a></dt>
+<dd>
+<p>Express the standard basis in terms of <span
+class="math inline">\(y\)</span>.</p>
+</dd>
+<dt><a href="#pr:fock" data-reference-type="ref"
+data-reference="pr:fock">5.4.4</a></dt>
+<dd>
+<p>Polar coordinates.</p>
+</dd>
+<dt><a href="#pr:fock-datum" data-reference-type="ref"
+data-reference="pr:fock-datum">5.4.5</a></dt>
+<dd>
+<p>A diagonal matrix.</p>
+</dd>
+<dt><a href="#pr:hadamard-gram" data-reference-type="ref"
+data-reference="pr:hadamard-gram">5.4.6</a></dt>
+<dd>
+<p>The matrix <span class="math inline">\((w_i^* G w_k)\)</span> is
+positive semidefinite.</p>
+</dd>
+<dt><a href="#pr:conj-gram" data-reference-type="ref"
+data-reference="pr:conj-gram">5.4.7</a></dt>
+<dd>
+<p>The entries of <span class="math inline">\(G\)</span> are
+rational.</p>
+</dd>
+<dt><a href="#pr:cs-det" data-reference-type="ref"
+data-reference="pr:cs-det">5.4.8</a></dt>
+<dd>
+<p>The Gram matrix of the <span class="math inline">\(2n\)</span>
+columns of <span class="math inline">\(A\)</span> and <span
+class="math inline">\(B\)</span> is positive semidefinite; apply a Schur
+complement after adding <span class="math inline">\(\varepsilon\)</span>
+times the identity, and let <span class="math inline">\(\varepsilon \to
+0\)</span>. Then Problem <a href="#pr:conj-gram"
+data-reference-type="ref" data-reference="pr:conj-gram">5.4.7</a>.</p>
+</dd>
+<dt><a href="#pr:gram-local" data-reference-type="ref"
+data-reference="pr:gram-local">5.4.9</a></dt>
+<dd>
+<p>Compare the matrix of inner products of the two transformed families
+with that of the vectors <span class="math inline">\(\Theta
+y_k\)</span>. Then Problem <a href="#pr:height-easy"
+data-reference-type="ref" data-reference="pr:height-easy">5.3.3</a>(a).</p>
+</dd>
+<dt><a href="#pr:minor-again" data-reference-type="ref"
+data-reference="pr:minor-again">5.4.10</a></dt>
+<dd>
+<p>An automorphism of <span class="math inline">\(\mathbb{C}\)</span>
+restricts to the identity or to complex conjugation on <span
+class="math inline">\(\mathbb{Q}(\mathrm{i})\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Bom"><span class="bib-label">[Bom]</span> E. Bombieri, <em>Counting points on curves over finite fields (d’après S. A. Stepanov)</em>, Séminaire Bourbaki, Exp. 430, Lecture Notes in Math. 383, Springer, 1974, 234–241.</p>
+<p id="ref-Ch"><span class="bib-label">[Ch]</span> P. L. Chebyshev, <em>Mémoire sur les nombres premiers</em>, J. Math. Pures Appl. <strong>17</strong> (1852), 366–390.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-La"><span class="bib-label">[La]</span> S. Lang, <em>Algebra</em>, rev. 3rd ed., Grad. Texts in Math. 211, Springer, 2002.</p>
+<p id="ref-Ne"><span class="bib-label">[Ne]</span> J. Neukirch, <em>Algebraic Number Theory</em>, Grundlehren Math. Wiss. 322, Springer, 1999.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

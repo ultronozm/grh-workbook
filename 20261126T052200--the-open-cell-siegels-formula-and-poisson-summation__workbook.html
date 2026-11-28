@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-UGtkKaZqpNr3iQPVF6rtotwVAuyWse0bk6ykCPP0xCc=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>The open cell: Siegel’s formula and Poisson summation</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","R":"\\mathbb{R}","C":"\\mathbb{C}","A":"\\mathbb{A}","ii":"\\mathrm{i}","Uc":"\\mathcal{U}","Dc":"\\mathcal{D}","cMc":"\\mathcal{M}","Zc":"\\mathcal{Z}","Oh":"\\hat{\\mathcal O}_E","hd":"\\operatorname{hd}","lE":"\\operatorname{le}","disc":"\\operatorname{disc}","vol":"\\operatorname{vol}","Dm":"D_{\\mathrm{main}}","Di":"D_{\\mathrm{id}}","tl":["\\texttt{#1}",1],"glsrc":["\\href{https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/#1\\#L#2}{#3}",3]}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="45">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-28 09:42:12
+      <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">The open cell: Siegel’s formula and Poisson
+summation</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:last" id="toc-sec:last">§45.1. Head, last entry and residual isometry</a></li>
+<li><a href="#sec:siegel" id="toc-sec:siegel">§45.2. Siegel’s formula for six squares</a></li>
+<li><a href="#sec:poisson" id="toc-sec:poisson">§45.3. Poisson summation, one entry at a time</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#seclast" id="toc-seclast">§45.1</a></li>
+<li><a href="#secsiegel" id="toc-secsiegel">§45.2</a></li>
+<li><a href="#secpoisson" id="toc-secpoisson">§45.3</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>From Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap" data-reference-type="ref"
+data-reference="bp-chap">39</a>: the hermitian space <span
+class="math inline">\(Y_0=\bigoplus_aEv_a\oplus X_0\oplus
+Ez\oplus\bigoplus_aEv&#39;_a\)</span> with <span
+class="math inline">\(h(z,z)=-N\)</span>, the unipotent group <span
+class="math inline">\(\mathcal{U}\)</span> (Section <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:subgroup" data-reference-type="ref"
+data-reference="bp-sec:subgroup">39.1</a>), and the
+covolume <span class="math inline">\(\nu\)</span> (Definition <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:scaled" data-reference-type="ref"
+data-reference="bp-def:scaled">39.4.1</a>). From Chapter <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#chap" data-reference-type="ref"
+data-reference="m1-chap">40</a>: the degrees <span
+class="math inline">\(d_\tau\)</span> of Theorem <a
+href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#thm:bessel-system" data-reference-type="ref"
+data-reference="m1-thm:bessel-system">40.3.1</a>, <span
+class="math inline">\(\deg=\prod_\tau d_\tau\)</span>, and the sizes
+<span class="math inline">\(D_{\mathrm{id}}\)</span>, <span
+class="math inline">\(D_{\mathrm{main}}=D_X^2/(\deg\cdot\mathrm{mass}_r)\)</span>
+of Definition <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#def:two-sizes" data-reference-type="ref"
+data-reference="m1-def:two-sizes">40.3.2</a>. From
+Chapter <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#chap" data-reference-type="ref"
+data-reference="m2-chap">43</a>: the <em>Bessel tuple</em> <span
+class="math inline">\((v_1,\dots,v_\varrho,z)\)</span> and the leading
+minors <span class="math inline">\(\langle\gamma\rangle_j\)</span>
+(Definition <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:frame" data-reference-type="ref"
+data-reference="m2-def:frame">43.2.1</a>), <span
+class="math inline">\(\operatorname{disc}\)</span> (Definition <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:disc" data-reference-type="ref"
+data-reference="m2-def:disc">43.2.2</a>), links, open reductions,
+fixers and link second moments (Definitions <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:link"
+data-reference-type="ref"
+data-reference="m2-def:link">43.2.3</a>, <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:open"
+data-reference-type="ref"
+data-reference="m2-def:open">43.2.6</a>, <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:fixer"
+data-reference-type="ref"
+data-reference="m2-def:fixer">43.2.7</a>, <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:moments" data-reference-type="ref"
+data-reference="m2-def:moments">43.3.1</a>). From Chapter <a
+href="20261125T015500--siegel-weil-in-the-smallest-case__workbook.html#chap" data-reference-type="ref"
+data-reference="sw-chap">22</a>: the densities <span
+class="math inline">\(\alpha_\infty\)</span>, <span
+class="math inline">\(\alpha_p\)</span> of Section <a
+href="20261125T015500--siegel-weil-in-the-smallest-case__workbook.html#sec:densities" data-reference-type="ref"
+data-reference="sw-sec:densities">22.2</a> and Braun’s
+formula <a href="20261125T015500--siegel-weil-in-the-smallest-case__workbook.html#eq:sw-herm" data-reference-type="eqref"
+data-reference="sw-eq:sw-herm">(3)</a>. Problem <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:class-one" data-reference-type="ref"
+data-reference="dt-pr:class-one">21.1.4</a>; Problem <a
+href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#pr:formal-degree" data-reference-type="ref"
+data-reference="ps-pr:formal-degree">10.5.5</a>. Fourier
+analysis on finite abelian groups; Hensel’s lemma; Schur orthogonality
+for square-integrable representations <span class="citation"
+data-cites="Kn">[<a href="#ref-Kn">Kn</a>, Ch. IX]</span>. Hermitian forms
+are linear in the first variable, and <span
+class="math inline">\(\lvert\cdot\rvert^2\)</span> is the product with
+the complex conjugate. In this sheet <span
+class="math inline">\(y\)</span> is a vector, <span
+class="math inline">\(\omega\)</span> is an isometry, <span
+class="math inline">\(\mathrm
+e(\cdot):=e^{2\pi\mathrm{i}\,\cdot}\)</span> on <span
+class="math inline">\(\mathbb{R}\)</span>, and <span
+class="math inline">\(K&#39;\)</span> is a level (not the field <span
+class="math inline">\(K\)</span>). In the finite examples <span
+class="math inline">\(p\)</span> denotes a prime.</p>
+<p>Theorem <a href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.html#thm:second-moment" data-reference-type="ref"
+data-reference="m4-thm:second-moment">47.3.1</a> bounds
+the second moment of the Gram operators of Chapter <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#chap"
+data-reference-type="ref" data-reference="bp-chap">39</a> by a
+bootstrap over fixers. In the nonterminal case the proof splits a
+maximizing fixer’s reductions according to whether they satisfy the
+minor condition of Definition <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:open"
+data-reference-type="ref"
+data-reference="m2-def:open">43.2.6</a>. This sheet treats the
+reductions that satisfy that condition. Let <span
+class="math inline">\(\mathcal{D}\)</span> be a set of chosen places
+above <span class="math inline">\(p_0\)</span>. For each <span
+class="math inline">\(w\in\mathcal{D}\)</span>, prescribe a nonzero
+vector in the span of the Bessel tuple modulo either <span
+class="math inline">\(w\)</span> or <span class="math inline">\(\bar
+w\)</span>. Over the open reductions that fix these vectors, the link
+second moment of the terms with <span
+class="math inline">\(\operatorname{disc}\ne0\)</span> is at most <span
+class="math inline">\((1+b^{-4})\,b^{-6k\#\mathcal{D}}\,D_{\mathrm{main}}\,\nu^2\)</span>
+(Theorem <a href="#thm:open" data-reference-type="ref"
+data-reference="thm:open">45.3.3</a>). Where does <span
+class="math inline">\(D_{\mathrm{main}}\)</span> come from? The <em>open
+cell</em> here is the part over reductions satisfying Definition <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:open" data-reference-type="ref"
+data-reference="m2-def:open">43.2.6</a>. There the head
+(Definition <a href="#def:head" data-reference-type="ref"
+data-reference="def:head">45.1.1</a>) and a residual isometry determine a
+double coset (Section <a href="#sec:last" data-reference-type="ref"
+data-reference="sec:last">45.1</a>). For each last entry that contributes,
+the proof bounds the contributions over each class and vector of the
+prescribed norm. It then applies Siegel’s formula to the weighted sum
+over classes and vectors. The heads are summed by Poisson summation, one
+entry at a time: the zero frequencies give an integral, and the other
+frequencies are small. The bound has no small instance: in the proof
+<span class="math inline">\(\varrho\ge10^5\)</span>. The examples use a
+residual isometry, six squares, hermitian forms over finite fields, and
+Fourier analysis on <span class="math inline">\(\mathbb{Z}/5\)</span>
+and <span class="math inline">\(\mathbb{Z}/3\)</span>.</p>
+<h1 id="sec:last">§45.1. Head, last entry and residual isometry</h1>
+<p>Let <span class="math inline">\(V=\bigoplus_{a\le\varrho}Ev_a\oplus
+X\oplus Ez\oplus\bigoplus_{a\le\varrho}Ev&#39;_a\)</span> be a hermitian
+space of the shape of Section <a href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#sec:subgroup"
+data-reference-type="ref"
+data-reference="bp-sec:subgroup">39.1</a>, with <span
+class="math inline">\(X\)</span> of rank <span
+class="math inline">\(k\)</span> and totally positive definite, and
+<span class="math inline">\(h(z,z)=-N\)</span>. A <em>residual
+isometry</em> is an isometry <span class="math inline">\(\omega\)</span>
+of <span class="math inline">\(V\)</span> with <span
+class="math inline">\(\omega v_a=v_a\)</span> and <span
+class="math inline">\(\omega v&#39;_a=v&#39;_a\)</span> for all <span
+class="math inline">\(a\)</span>. It preserves the orthogonal complement
+<span class="math inline">\(X\oplus Ez\)</span> of the <span
+class="math inline">\(v_a\)</span>, <span
+class="math inline">\(v&#39;_a\)</span>.</p>
+<div id="pr:last-entry" class="problem" data-progress-ids="[&quot;20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex#pr:last-entry&quot;]">
+<p><strong>Problem 45.1.1</strong>. Let <span
+class="math inline">\(\omega\)</span> be a residual isometry, and write
+<span class="math inline">\(\omega z=y+c_\omega z\)</span> with <span
+class="math inline">\(y\in X\)</span>, <span
+class="math inline">\(c_\omega\in E\)</span>. Then <span
+class="math inline">\(\lvert h(z,\omega z)\rvert^2=N^2\lvert
+c_\omega\rvert^2\)</span> and <span
+class="math display">\[N\,h(y,y)=\lvert h(z,\omega z)\rvert^2-N^2
+.\]</span> Hence <span class="math inline">\(\lvert\tau h(z,\omega
+z)\rvert\ge N\)</span> at every infinite place <span
+class="math inline">\(\tau\)</span>, with strict inequality at every
+<span class="math inline">\(\tau\)</span> if <span
+class="math inline">\(y\ne0\)</span> and equality at every <span
+class="math inline">\(\tau\)</span> if <span
+class="math inline">\(y=0\)</span>.</p>
+</div>
+<p>Now let <span class="math inline">\(V=Y_0\)</span>, with the Bessel
+tuple and the leading minors <span
+class="math inline">\(\langle\gamma\rangle_j\)</span>, <span
+class="math inline">\(0\le j\le\varrho+1\)</span>, of Definition <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:frame" data-reference-type="ref"
+data-reference="m2-def:frame">43.2.1</a>, so that <span
+class="math inline">\(\langle\gamma\rangle_0=1\)</span> and <span
+class="math inline">\(\langle\gamma\rangle_{\varrho+1}\)</span> is the
+determinant of the <em>pairing matrix</em> of <span
+class="math inline">\(\gamma\)</span>, whose entries are the <em>Bessel
+pairings</em> <span class="math inline">\(h(\gamma
+v_b,v_a)\)</span>.</p>
+<div id="def:head" class="definition">
+<p><strong>Definition 45.1.1</strong>. Let <span
+class="math inline">\(\gamma\in U(Y_0)(F)\)</span> have <span
+class="math inline">\(\langle\gamma\rangle_j\ne0\)</span> for <span
+class="math inline">\(1\le j\le\varrho\)</span>. Define the
+<em>head</em> of <span class="math inline">\(\gamma\)</span> by <span
+class="math inline">\(\operatorname{hd}(\gamma):=\bigl(\langle\gamma\rangle_{a+1}/\langle\gamma\rangle_a\bigr)_{0\le
+a&lt;\varrho}\in(E^\times)^\varrho\)</span>. If also <span
+class="math inline">\(\langle\gamma\rangle_{\varrho+1}\ne0\)</span>,
+define the <em>last entry</em> of <span
+class="math inline">\(\gamma\)</span> by <span
+class="math inline">\(\operatorname{le}(\gamma):=\langle\gamma\rangle_{\varrho+1}/\langle\gamma\rangle_\varrho\)</span>.
+A <em>residual isometry of the last floor</em> is a residual isometry of
+<span class="math inline">\(Y_0\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T080400--the-sieve-over-the-entries__workbook.html">Chapter 46</a>; <a href="20261127T100000--overview__workbook.html">Chapter Overview</a></div><!-- used-in:end -->
+</div>
+<p>By Definition <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:disc" data-reference-type="ref"
+data-reference="m2-def:disc">43.2.2</a>, <span
+class="math inline">\(\operatorname{disc}(\gamma)=\lvert\langle\gamma\rangle_\varrho\rvert^2\bigl(\lvert\operatorname{le}(\gamma)\rvert^2-N^2\bigr)\)</span>
+whenever <span class="math inline">\(\operatorname{le}(\gamma)\)</span>
+is defined. In the proof, if <span class="math inline">\(s\)</span> is
+open, then every term <span class="math inline">\(\gamma\)</span> over
+<span class="math inline">\((c,s,c&#39;)\)</span> has <span
+class="math inline">\(\langle\gamma\rangle_j\ne0\)</span> for <span
+class="math inline">\(j\le\varrho\)</span>. Moreover <span
+class="math inline">\(\gamma=n^{-1}\mathfrak w\,\omega\,n&#39;\)</span>
+with <span class="math inline">\(n,n&#39;\in\mathcal{U}(F)\)</span>,
+<span class="math inline">\(\omega\)</span> a residual isometry of <span
+class="math inline">\(Y_0\)</span>, and <span
+class="math inline">\(\mathfrak w\)</span> a Weyl element that exchanges
+each line <span class="math inline">\(Ev_a\)</span> with <span
+class="math inline">\(Ev&#39;_a\)</span>, fixes <span
+class="math inline">\(X_0\oplus Ez\)</span> and depends only on <span
+class="math inline">\(\operatorname{hd}(\gamma)\)</span>. The ratio
+<span
+class="math inline">\(\langle\gamma\rangle_{\varrho+1}/\langle\gamma\rangle_\varrho\)</span>
+is the <span class="math inline">\((z,z)\)</span> entry of the pairing
+matrix of <span class="math inline">\(\omega\)</span>. By Problem <a
+href="#pr:last-entry" data-reference-type="ref"
+data-reference="pr:last-entry">45.1.1</a> this is nonzero, so the last entry
+is defined and equals this ratio. Thus <span
+class="math inline">\(\operatorname{disc}(\gamma)\ne0\)</span> exactly
+when the <span class="math inline">\(X_0\)</span>-part <span
+class="math inline">\(y\)</span> of <span class="math inline">\(\omega
+z\)</span> is nonzero.</p>
+<p>Consider a block of the link second moment for <span
+class="math inline">\(\operatorname{disc}(\gamma)\ne0\)</span> over an
+open reduction <span class="math inline">\(s\)</span>, and suppose its
+sum of <em>truncated amplitudes</em> is nonzero. These amplitudes use
+<span class="math inline">\(W^\flat\)</span>, the <em>Bessel
+truncation</em> of <span class="math inline">\(W\)</span> by length
+(Definition <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:moments" data-reference-type="ref"
+data-reference="m2-def:moments">43.3.1</a>). In the proof one
+residual isometry <span class="math inline">\(\omega\)</span> names the
+link, and the heads of the terms with nonzero truncated amplitude lie in
+a finite set <span class="math inline">\(\mathcal E^\varrho\)</span>,
+where <span class="math inline">\(\mathcal E\subset E^\times\)</span>
+consists of quotients of two nonzero algebraic integers of <span
+class="math inline">\(E\)</span>, each with squared absolute value at
+most <span class="math inline">\(b^{270(\varrho+1)^2}\)</span> at every
+infinite place. The block is the sum, over <span
+class="math inline">\(\mathfrak h\in\mathcal E^\varrho\)</span>, of the
+sums of the truncated amplitudes of the <span
+class="math inline">\(n^{-1}\mathfrak w\,\omega\,n&#39;\)</span> over
+<span class="math inline">\((c,s,c&#39;)\)</span>, for <span
+class="math inline">\(n,n&#39;\in\mathcal{U}(F)\)</span>, where <span
+class="math inline">\(\mathfrak w\)</span> is the Weyl element of <span
+class="math inline">\(\mathfrak h\)</span>. Different nonzero blocks
+give different <span class="math inline">\((c,c&#39;,s,\omega)\)</span>.
+So the heads are summed inside the square, and the residual isometries
+outside it. For each contributing last entry, group the blocks by the
+class <span class="math inline">\(c\)</span> and the <span
+class="math inline">\(X_0\)</span>-part <span
+class="math inline">\(y\)</span> of <span class="math inline">\(\omega
+z\)</span>. By Problem <a href="#pr:last-entry"
+data-reference-type="ref" data-reference="pr:last-entry">45.1.1</a>, these
+vectors satisfy <span class="math inline">\(N
+h(y,y)=\lvert\operatorname{le}\rvert^2-N^2\)</span>. A bound for the
+contribution over each pair <span class="math inline">\((c,y)\)</span>
+reduces the estimate to a weighted sum over such pairs.</p>
+<h1 id="sec:siegel">§45.2. Siegel’s formula for six squares</h1>
+<p>The smallest rank to which Braun’s formula <a href="20261125T015500--siegel-weil-in-the-smallest-case__workbook.html#eq:sw-herm"
+data-reference-type="eqref"
+data-reference="sw-eq:sw-herm">(3)</a> applies is <span
+class="math inline">\(3\)</span>, and for <span
+class="math inline">\(\mathbb{Z}[\mathrm{i}]^3\)</span> the class set is
+<span class="math inline">\(\{I_3\}\)</span> (Problem <a
+href="20261125T002000--definite-theta-lifts__workbook.html#pr:class-one" data-reference-type="ref"
+data-reference="dt-pr:class-one">21.1.4</a>). For every
+positive integer <span class="math inline">\(j\)</span> the mean over
+the class set is therefore a count: <span
+class="math inline">\(r_{I_3}(j):=\#\{y\in\mathbb{Z}[\mathrm{i}]^3:y^*y=j\}\)</span>
+equals <span
+class="math inline">\(\alpha_\infty(j)\prod_p\alpha_p(j)\)</span>, with
+the densities of Section <a href="20261125T015500--siegel-weil-in-the-smallest-case__workbook.html#sec:densities"
+data-reference-type="ref"
+data-reference="sw-sec:densities">22.2</a> for the form
+<span class="math inline">\(Q(y)=y^*y\)</span>, a sum of six squares on
+<span class="math inline">\(\mathbb{Z}^6\)</span>. Let <span
+class="math inline">\(\chi_{-4}\)</span> be the nontrivial character
+modulo <span class="math inline">\(4\)</span>.</p>
+<div id="pr:six-squares" class="problem" data-progress-ids="[&quot;20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex#pr:six-squares&quot;]">
+<p><strong>Problem 45.2.1</strong>. By machine, <span
+class="math inline">\(r_{I_3}(1)=12\)</span>, <span
+class="math inline">\(r_{I_3}(2)=60\)</span> and <span
+class="math inline">\(r_{I_3}(5)=312\)</span>.</p>
+</div>
+<div id="pr:local-counts" class="problem" data-progress-ids="[&quot;20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex#pr:local-counts&quot;]">
+<p><strong>Problem 45.2.2</strong>. For odd <span
+class="math inline">\(p\)</span>, the number of <span
+class="math inline">\(x\in(\mathbb{Z}/p)^6\)</span> with <span
+class="math inline">\(\sum_ix_i^2=1\)</span> is <span
+class="math inline">\(p^5-\chi_{-4}(p)p^2\)</span>, and the same holds
+with <span class="math inline">\(1\)</span> replaced by any <span
+class="math inline">\(j\)</span> prime to <span
+class="math inline">\(p\)</span>: by machine <span
+class="math inline">\(252\)</span>, <span
+class="math inline">\(3100\)</span>, <span
+class="math inline">\(16856\)</span> for <span
+class="math inline">\(p=3,5,7\)</span>. For right-hand side <span
+class="math inline">\(1\)</span>, by machine there are <span
+class="math inline">\(61236=3^5\cdot252\)</span> solutions modulo <span
+class="math inline">\(9\)</span>, and <span
+class="math inline">\(3\cdot2^{5e}/4\)</span> solutions modulo <span
+class="math inline">\(2^e\)</span> for <span
+class="math inline">\(e=2,3\)</span> (<span
+class="math inline">\(768\)</span>, <span
+class="math inline">\(24576\)</span>). For <span
+class="math inline">\(e\ge3\)</span> the count modulo <span
+class="math inline">\(2^{e+1}\)</span> is <span
+class="math inline">\(2^5\)</span> times the count modulo <span
+class="math inline">\(2^e\)</span>. Hence <span
+class="math inline">\(\alpha_p(1)=1-\chi_{-4}(p)p^{-3}\)</span> for odd
+<span class="math inline">\(p\)</span>, and <span
+class="math inline">\(\alpha_2(1)=3/4\)</span>.</p>
+</div>
+<p>For <span class="math inline">\(p\equiv3\pmod4\)</span>, <span
+class="math inline">\(y\mapsto y^*y\)</span> modulo <span
+class="math inline">\(p\)</span> is the hermitian form <span
+class="math inline">\(\sum_iy_i^{p+1}\)</span> on <span
+class="math inline">\(\mathbb F_{p^2}^3\)</span>.</p>
+<div id="pr:isotropic" class="problem" data-progress-ids="[&quot;20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex#pr:isotropic&quot;]">
+<p><strong>Problem 45.2.3</strong>. Let <span
+class="math inline">\(q\)</span> be a prime power. The form <span
+class="math inline">\(\sum_{i\le n}x_i^{q+1}\)</span> on <span
+class="math inline">\(\mathbb F_{q^2}^n\)</span> has <span
+class="math inline">\((q^n-(-1)^n)(q^{n-1}-(-1)^{n-1})\)</span> nonzero
+isotropic vectors: <span class="math inline">\(9\)</span>, <span
+class="math inline">\(27\)</span>, <span
+class="math inline">\(135\)</span> for <span
+class="math inline">\(q=2\)</span> and <span
+class="math inline">\(n=2,3,4\)</span>. Divided by <span
+class="math inline">\(q^{2n-1}\)</span> this is <span
+class="math inline">\((1-(-1)^nq^{-n})(1+(-1)^nq^{1-n})\)</span>.</p>
+</div>
+<div id="pr:real-density" class="problem" data-progress-ids="[&quot;20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex#pr:real-density&quot;]">
+<p><strong>Problem 45.2.4</strong>. For real <span
+class="math inline">\(j&gt;0\)</span>, <span
+class="math inline">\(\operatorname{vol}\{y\in\mathbb{C}^3:\lvert
+y\rvert^2\le j\}=\pi^3j^3/6\)</span>, so <span
+class="math inline">\(\alpha_\infty(j)=\pi^3j^2/2\)</span>.</p>
+</div>
+<div id="pr:densities" class="problem" data-progress-ids="[&quot;20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex#pr:densities&quot;]">
+<p><strong>Problem 45.2.5</strong>. With <span
+class="math inline">\(L(3,\chi_{-4})=\pi^3/32\)</span>: <span
+class="math inline">\(\frac{\pi^3}2\cdot\frac34\cdot\prod_{p\text{
+odd}}\bigl(1-\chi_{-4}(p)p^{-3}\bigr)=12=r_{I_3}(1)\)</span>. For <span
+class="math inline">\(j=5\)</span> the factor at <span
+class="math inline">\(5\)</span> is <span
+class="math inline">\(\alpha_5(5)=3224/3125\)</span>, the factor at
+infinity is <span
+class="math inline">\(\alpha_\infty(5)=25\pi^3/2\)</span>, the other
+factors are those of <span class="math inline">\(j=1\)</span>, and the
+product is <span class="math inline">\(312=r_{I_3}(5)\)</span>.</p>
+</div>
+<p>Choose one embedding <span class="math inline">\(\tau\colon
+E\hookrightarrow\mathbb{C}\)</span> at each infinite place of the CM
+field <span class="math inline">\(E\)</span>, and let <span
+class="math inline">\(f\)</span> be the number of these places. For <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Weil/Construction/WeilData.lean#L73">Weil
+data</a>, <span class="math inline">\(E\)</span> contains a primitive
+<span class="math inline">\(5040\)</span>th root of unity. There is a
+<span class="math inline">\(j_E\in E\)</span> with <span
+class="math inline">\(\bar j_E=-j_E\)</span>, <span
+class="math inline">\(\operatorname{Im}\tau(j_E)&gt;0\)</span> for each
+chosen <span class="math inline">\(\tau\)</span>, and <span
+class="math inline">\((1-j_E^{-1})/2\)</span> integral. A finite idele
+<span class="math inline">\(a\)</span> makes <span
+class="math inline">\(\hat{\mathcal O}_E\)</span> self-dual for <span
+class="math inline">\((x,y)\mapsto\psi_f(j_E a\bar a xy)\)</span>, with
+<span class="math inline">\(\psi_f\)</span> the finite part of the
+standard additive character. The splitting character <span
+class="math inline">\(\upsilon\)</span> is a unitary Hecke character
+satisfying <span class="math inline">\(\upsilon(\bar
+x)=\upsilon(x)^{-1}\)</span>. For an idele <span
+class="math inline">\(x\)</span> whose finite part belongs to <span
+class="math inline">\(\hat{\mathcal O}_E^\times\)</span>, its value is
+<span class="math inline">\(\prod_\tau x_\tau/\lvert
+x_\tau\rvert\)</span>. Its value at the chosen uniformizer of each
+finite place fixed by conjugation is <span
+class="math inline">\(-1\)</span>. In the <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/Adelic/Adeles/AdditiveCharacter.lean#L128">chosen
+measure</a>, <span
+class="math inline">\(\operatorname{vol}(\hat{\mathcal O}_E)=2^f\lvert
+d_E\rvert^{-1/2}\)</span>, where <span
+class="math inline">\(d_E\)</span> is the discriminant of <span
+class="math inline">\(E\)</span>.</p>
+<div id="thm:siegel" class="theorem">
+<p><strong>Theorem 45.2.1</strong> (Siegel’s formula for one vector). <em>Let
+<span class="math inline">\(E\)</span> be a CM field with Weil data,
+<span class="math inline">\(k\ge3\)</span>, <span
+class="math inline">\(K&#39;\)</span> an open subgroup of the stabilizer
+of <span class="math inline">\(\hat{\mathcal O}_E^k\)</span> in the
+finite adelic unitary group of <span
+class="math inline">\(y^*y\)</span>, <span
+class="math inline">\(\phi\ge0\)</span> a locally constant, compactly
+supported, <span class="math inline">\(K&#39;\)</span>-invariant
+function on <span class="math inline">\(\mathbb{A}_{E,f}^k\)</span>, and
+<span class="math inline">\(\mathfrak n\in E\)</span> with <span
+class="math inline">\(\bar{\mathfrak n}=\mathfrak n\)</span> and <span
+class="math inline">\(\tau\mathfrak n&gt;0\)</span> at every infinite
+place. Then each sum <span class="math inline">\(\sum_{y\in
+E^k,\,y^*y=\mathfrak n}\phi(g^{-1}y)\)</span> converges, and <span
+class="math display">\[\begin{multline*}
+\sum_{[g]}\frac{1}{\#\mathrm{Aut}(g)}\sum_{\substack{y\in E^k\\
+y^*y=\mathfrak n}}\phi(g^{-1}y)\\
+=\Bigl(\sum_{[g]}\frac{1}{\#\mathrm{Aut}(g)}\Bigr)\lvert
+d_E\rvert^{1/4}\prod_\tau\frac{\pi^k(\tau\mathfrak n)^{k-1}}{(k-1)!}
+\int\!\!\int\phi(u)\,\psi_f\bigl(\tfrac12\zeta(u^*u-\mathfrak
+n)\bigr)\,du\,d\zeta ,
+\end{multline*}\]</span> where <span class="math inline">\([g]\)</span>
+runs over the classes of level <span
+class="math inline">\(K&#39;\)</span>, <span
+class="math inline">\(u\)</span> over <span
+class="math inline">\(\mathbb{A}_{E,f}^k\)</span> with <span
+class="math inline">\(\hat{\mathcal O}_E\)</span> of volume <span
+class="math inline">\(\operatorname{vol}(\hat{\mathcal O}_E)\)</span> in
+each coordinate, and <span class="math inline">\(\zeta\)</span> over the
+self-adjoint finite adeles, with Haar measure giving the self-adjoint
+part of the finite adelic codifferent of <span
+class="math inline">\(E/\mathbb{Q}\)</span> volume <span
+class="math inline">\(1\)</span>.</em></p>
+</div>
+<p><em>Status</em>: classical; due to Siegel <span class="citation"
+data-cites="Si">[<a href="#ref-Si">Si</a>]</span> for quadratic forms and
+Braun <span class="citation"
+data-cites="Br">[<a href="#ref-Br">Br</a>]</span> for hermitian forms, and a
+case of Weil’s theorem <span class="citation"
+data-cites="We65">[<a href="#ref-We65">We65</a>, Thm. 5]</span>. The last
+integral is the finite adelic density of <span
+class="math inline">\(\phi\)</span> at <span
+class="math inline">\(\mathfrak n\)</span>. For product test functions
+it factors into local densities with compatible measures. We leave the
+comparison of measures with Chapter <a href="20261125T015500--siegel-weil-in-the-smallest-case__workbook.html#chap"
+data-reference-type="ref" data-reference="sw-chap">22</a> aside.
+With one class its automorphism weight cancels. With trivial
+automorphism groups each class has weight one. For a lattice indicator
+the inner sums count vectors. Problem <a href="#pr:six-squares"
+data-reference-type="ref" data-reference="pr:six-squares">45.2.1</a>
+illustrates the one-class case of the classical formula over <span
+class="math inline">\(\mathbb{Q}(\mathrm{i})\)</span>.</p>
+<p>In the proof, Theorem <a href="#thm:siegel" data-reference-type="ref"
+data-reference="thm:siegel">45.2.1</a> is applied, for each last entry <span
+class="math inline">\(\operatorname{le}\)</span> of a contributing
+block, for which <span
+class="math inline">\(\lvert\tau\operatorname{le}\rvert&gt;N\)</span> at
+every infinite place, to the vectors <span class="math inline">\(y\in
+X_0\)</span> with <span
+class="math inline">\(N\,h(y,y)=\lvert\operatorname{le}\rvert^2-N^2\)</span>,
+that is at <span class="math inline">\(\mathfrak
+n=(\operatorname{le}\,\overline{\operatorname{le}}-N^2)/N\)</span>. It
+is used as an upper bound, with an extra factor <span
+class="math inline">\(1+b^{-6}\)</span> from the local densities.</p>
+<h1 id="sec:poisson">§45.3. Poisson summation, one entry at a time</h1>
+<p>In the proof, each double-coset sum of Section <a href="#sec:last"
+data-reference-type="ref" data-reference="sec:last">45.1</a> is a
+Kloosterman sum at finitely many finite places times an orbital integral
+at the infinite places. Squaring the sum over heads gives a sum over
+pairs of heads, and the pairs of different heads are kept. Poisson
+summation in the common next entry gives a zero-frequency sum over all
+pairs of shorter heads. At positive remaining length, pairs whose last
+entries differ are bounded using the difference of the inverses of those
+entries. For a function <span class="math inline">\(\mathfrak f\)</span>
+on <span class="math inline">\(\mathbb{Z}/p\)</span> let <span
+class="math inline">\(\hat{\mathfrak f}(l):=p^{-1}\sum_j\mathfrak
+f(j)\,\mathrm e(-lj/p)\)</span>, so that <span
+class="math inline">\(\mathfrak f(j)=\sum_l\hat{\mathfrak f}(l)\,\mathrm
+e(lj/p)\)</span>.</p>
+<div id="pr:fourier-five" class="problem" data-progress-ids="[&quot;20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex#pr:fourier-five&quot;]">
+<p><strong>Problem 45.3.1</strong>. On <span
+class="math inline">\(\mathbb{Z}/5\)</span>, <span
+class="math inline">\(\mathfrak f(j)=2+\cos(2\pi j/5)\)</span> has <span
+class="math inline">\(\hat{\mathfrak
+f}=(2,\tfrac12,0,0,\tfrac12)\)</span>. So <span
+class="math inline">\(\mathfrak f(0)=3\)</span>, while the zero
+frequency alone gives <span class="math inline">\(2\)</span>.</p>
+</div>
+<div id="pr:poisson-finite" class="problem" data-progress-ids="[&quot;20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex#pr:poisson-finite&quot;]">
+<p><strong>Problem 45.3.2</strong>. Let <span class="math inline">\(\mathfrak
+f\)</span> be a function on a finite abelian group <span
+class="math inline">\(\mathcal G\)</span>, and <span
+class="math inline">\(\hat{\mathfrak f}(\psi&#39;):=(\#\mathcal
+G)^{-1}\sum_{j\in\mathcal G}\mathfrak
+f(j)\overline{\psi&#39;(j)}\)</span> for the characters <span
+class="math inline">\(\psi&#39;\)</span> of <span
+class="math inline">\(\mathcal G\)</span>. Then <span
+class="math inline">\(\lvert\mathfrak
+f(j)\rvert\le\sum_{\psi&#39;}\lvert\hat{\mathfrak
+f}(\psi&#39;)\rvert\)</span> for every <span
+class="math inline">\(j\)</span>, and <span
+class="math inline">\(\hat{\mathfrak f}(\psi_0)\)</span> is the mean of
+<span class="math inline">\(\mathfrak f\)</span>, for the trivial
+character <span class="math inline">\(\psi_0\)</span>. If <span
+class="math inline">\(\mathfrak f\)</span> is real and <span
+class="math inline">\(\sum_{\psi&#39;\ne\psi_0}\lvert\hat{\mathfrak
+f}(\psi&#39;)\rvert\le c\)</span>, then <span
+class="math inline">\(\mathfrak f(j)\le\hat{\mathfrak
+f}(\psi_0)+c\)</span>.</p>
+</div>
+<p>For <span class="math inline">\(j\in\mathbb{Z}/p\)</span> let <span
+class="math inline">\(\mathrm{Kl}(j):=\sum_{l\in(\mathbb{Z}/p)^\times}\mathrm
+e\bigl((l+jl^{-1})/p\bigr)\)</span>, a Kloosterman sum.</p>
+<div id="pr:kloosterman" class="problem" data-progress-ids="[&quot;20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex#pr:kloosterman&quot;]">
+<p><strong>Problem 45.3.3</strong>. For <span
+class="math inline">\(p=5\)</span> the values <span
+class="math inline">\(\mathrm{Kl}(0),\dots,\mathrm{Kl}(4)\)</span> are
+<span class="math display">\[-1,\quad \tfrac{3-\sqrt5}2,\quad
+-1-\sqrt5,\quad \sqrt5-1,\quad \tfrac{3+\sqrt5}2,\]</span> and <span
+class="math inline">\(\sum_j\lvert\mathrm{Kl}(j)\rvert^2=20\)</span>.</p>
+</div>
+<div id="pr:kloosterman-sum" class="problem" data-progress-ids="[&quot;20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex#pr:kloosterman-sum&quot;]">
+<p><strong>Problem 45.3.4</strong>. Prove <span
+class="math inline">\(\sum_{j\in\mathbb{Z}/p}\lvert\mathrm{Kl}(j)\rvert^2=p(p-1)\)</span>
+and <span class="math inline">\(\bigl(\sum_{j\in\mathbb{Z}/p}\mathrm
+e(j(l^{-1}-l&#39;^{-1})/p)\bigr)_{l,l&#39;\in(\mathbb{Z}/p)^\times}=pI_{p-1}\)</span>.</p>
+</div>
+<p>The next problem compares operator norms at zero and nonzero
+frequency.</p>
+<div id="pr:three" class="problem" data-progress-ids="[&quot;20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex#pr:three&quot;]">
+<p><strong>Problem 45.3.5</strong>. Let <span
+class="math inline">\(\mathfrak A_l:=\bigl(\mathrm
+e(ljj&#39;/3)\bigr)_{j,j&#39;\in\mathbb{Z}/3}\)</span>. Then <span
+class="math inline">\(\mathfrak A_1\mathfrak A_1^*=3\cdot1\)</span>, and
+<span class="math inline">\(\mathfrak A_0\mathfrak A_0^*\)</span> is the
+matrix with all entries <span class="math inline">\(3\)</span>. The
+squared operator norms of <span class="math inline">\(\mathfrak
+A_1\)</span> and <span class="math inline">\(\mathfrak A_0\)</span> are
+<span class="math inline">\(3\)</span> and <span
+class="math inline">\(9\)</span>, respectively. For each integer <span
+class="math inline">\(k\ge1\)</span>, the squared operator norms of
+<span class="math inline">\(\mathfrak A_1^{\otimes k}\)</span> and <span
+class="math inline">\(\mathfrak A_0^{\otimes k}\)</span> are <span
+class="math inline">\(3^k\)</span> and <span
+class="math inline">\(9^k\)</span>, respectively.</p>
+</div>
+<p>In the proof, the rank <span class="math inline">\(k\)</span> of
+<span class="math inline">\(X_0\)</span> enters the exponent in the
+estimate for nonzero frequencies. At each infinite place the bound at a
+nonzero frequency decays at least like the <span
+class="math inline">\((k-(\varrho+1)^7)\)</span>-th power of its inverse
+size. We do not derive these local bounds here.</p>
+<div id="pr:schur" class="problem" data-progress-ids="[&quot;20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex#pr:schur&quot;]">
+<p><strong>Problem 45.3.6</strong>. The entrywise product of two positive
+semidefinite matrices of the same size is positive semidefinite.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T080400--the-sieve-over-the-entries__workbook.html">Chapter 46</a></div><!-- used-in:end -->
+</div>
+<p>In the proof, the form on pairs of heads with a common last entry is
+the entrywise product of positive semidefinite kernels, one at each
+infinite place and one at the finite places. By Problem <a
+href="#pr:schur" data-reference-type="ref"
+data-reference="pr:schur">45.3.6</a> the product kernel is positive
+semidefinite on these heads. At each stage the sum of the kernel over
+all pairs with a common entry is real and nonnegative. Nonnegativity is
+what Theorem <a href="#thm:poisson" data-reference-type="ref"
+data-reference="thm:poisson">45.3.1</a> below needs.</p>
+<div id="pr:formal-degree-sum" class="problem" data-progress-ids="[&quot;20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex#pr:formal-degree-sum&quot;]">
+<p><strong>Problem 45.3.7</strong>. Let <span
+class="math inline">\(\pi\)</span> be an irreducible unitary
+representation of a unimodular group <span
+class="math inline">\(\mathcal G&#39;\)</span> (whose left Haar measure
+is also right invariant) with square-integrable matrix coefficients and
+formal degree <span class="math inline">\(d_\pi\)</span>, so that <span
+class="math inline">\(\int_{\mathcal
+G&#39;}\langle\pi(g)u_1,u_3\rangle\overline{\langle\pi(g)u_2,u_4\rangle}\,dg=d_\pi^{-1}\langle
+u_1,u_2\rangle\overline{\langle u_3,u_4\rangle}\)</span>. For every
+vector <span class="math inline">\(u\)</span> with <span
+class="math inline">\(\lVert u\rVert^2=D&#39;\)</span>, <span
+class="math display">\[\int_{\mathcal
+G&#39;}\lvert\langle\pi(g)u,u\rangle\rvert^2\,dg=\frac{D&#39;^2}{d_\pi}
+.\]</span> For the representation of Problem <a
+href="20261125T010500--poincare-series-and-near-orthogonality__workbook.html#pr:formal-degree" data-reference-type="ref"
+data-reference="ps-pr:formal-degree">10.5.5</a> and <span
+class="math inline">\(D&#39;=1\)</span>, this is the reciprocal of the
+formal degree found there.</p>
+</div>
+<p>Identity (c) of Theorem <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#thm:bessel-system"
+data-reference-type="ref"
+data-reference="m1-thm:bessel-system">40.3.1</a> at each
+infinite place <span class="math inline">\(\tau\)</span> is the relation
+of Problem <a href="#pr:formal-degree-sum" data-reference-type="ref"
+data-reference="pr:formal-degree-sum">45.3.7</a> for the single vector <span
+class="math inline">\(W_\tau\)</span>, whose squared norm is <span
+class="math inline">\(\#I_\tau\)</span>, with <span
+class="math inline">\(d_\pi=d_\tau\)</span>. In the proof, at the zero
+frequency the integral of a form over a common entry is exactly the form
+of one length less, and the form of length zero has modulus at most
+<span class="math inline">\((1+b^{-10})/d_\tau\)</span> at the infinite
+place <span class="math inline">\(\tau\)</span>. This is the factor
+<span class="math inline">\(\prod_\tau1/d_\tau=1/\deg\)</span> of <span
+class="math inline">\(c_{\mathrm{bot}}\)</span> below. Poisson summation
+is used in the following one-sided form.</p>
+<div id="thm:poisson" class="theorem">
+<p><strong>Theorem 45.3.1</strong> (one-sided Poisson summation). <em>Let
+<span class="math inline">\(E\)</span> be a totally complex number field
+with chosen complex embeddings, <span
+class="math inline">\(\psi\)</span> the standard character of <span
+class="math inline">\(\mathbb{A}_E/E\)</span>, and <span
+class="math inline">\(du\)</span> the Haar measure on <span
+class="math inline">\(\mathbb{A}_E\)</span> for which <span
+class="math inline">\(E\)</span> has covolume <span
+class="math inline">\(1\)</span>. Let <span
+class="math inline">\(\mathfrak
+f\colon\mathbb{A}_E\to\mathbb{R}\)</span> be nonnegative and integrable,
+and lower semicontinuous at each point of a finite set <span
+class="math inline">\(\mathcal{Z}\subset E\)</span>, and put <span
+class="math inline">\(\hat{\mathfrak f}(l):=\int\mathfrak
+f(u)\psi(-lu)\,du\)</span>. If <span
+class="math inline">\(\sum_{l\in\mathcal{Z}&#39;}\lvert\hat{\mathfrak
+f}(l)\rvert\le c_{\mathfrak f}\)</span> for every finite <span
+class="math inline">\(\mathcal{Z}&#39;\subset E\)</span>, then <span
+class="math inline">\(\sum_{u\in\mathcal{Z}}\mathfrak f(u)\le
+c_{\mathfrak f}\)</span>.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T080400--the-sieve-over-the-entries__workbook.html">Chapter 46</a></div><!-- used-in:end -->
+</div>
+<p><em>Status</em>: an inequality form of Poisson summation on <span
+class="math inline">\(\mathbb{A}_E/E\)</span> <span class="citation"
+data-cites="Ta">[<a href="#ref-Ta">Ta</a>]</span>, for functions that need
+not be continuous. In the proof a bump on the compact quotient is pulled
+back to the adeles and multiplied by the test function before
+integration.</p>
+<div id="thm:sieve" class="theorem">
+<p><strong>Theorem 45.3.2</strong> (the sieve). <em>For the data, fix <span
+class="math inline">\(\mathcal{D}\)</span> and the vectors of Theorem <a
+href="#thm:open" data-reference-type="ref"
+data-reference="thm:open">45.3.3</a>. Use the product sieve system of
+Section <a href="20261126T080400--the-sieve-over-the-entries__workbook.html#sec:heads" data-reference-type="ref"
+data-reference="m6-sec:heads">46.4</a> for this fixer. Use the
+prefix weights of that section. Complete each rational tuple with
+entries <span class="math inline">\(1\)</span>, then read it at the
+finite places of the sieve and in the scaled Bessel tuple at each
+infinite place, as in Definition <a href="20261126T080400--the-sieve-over-the-entries__workbook.html#def:density-sums"
+data-reference-type="ref"
+data-reference="m6-def:density-sums">46.2.2</a>. There
+are real numbers <span
+class="math inline">\(\Sigma_0,\dots,\Sigma_{\varrho+1}\)</span>, the
+real parts of the sums of the form over all pairs of length-<span
+class="math inline">\(i\)</span> heads in <span
+class="math inline">\(\mathcal E^i\)</span> whose last entries agree
+(for <span class="math inline">\(i=0\)</span>, the real part of the form
+at the empty pair), and <span
+class="math inline">\(\lambda_0,\dots,\lambda_\varrho\ge0\)</span>, the
+sums of the weights of the heads of length <span
+class="math inline">\(i\)</span> with entries in <span
+class="math inline">\(\mathcal E\)</span>. They satisfy, for <span
+class="math inline">\(0\le i\le\varrho\)</span>, <span
+class="math display">\[\Sigma_0\le c_{\mathrm{bot}},\qquad
+\Sigma_{i+1}\le
+c_i\bigl(\Sigma_i+2c_{\mathrm{fr}}\lambda_i^2\bigr),\qquad
+\lambda_i^2\le c_{\mathrm{wt}}\prod_{i&#39;&lt;i}c_{i&#39;} ,\]</span>
+and for every <span class="math inline">\(U\subseteq\mathcal E\)</span>,
+<span class="math inline">\(\Sigma_{\varrho+1}\)</span> bounds the real
+part of the sum of the top form over all <span
+class="math inline">\(t\in U\)</span> and all ordered pairs of heads in
+<span class="math inline">\(\mathcal E^\varrho\)</span> completed by
+<span class="math inline">\(t\)</span>. Here <span
+class="math inline">\(c_i&gt;0\)</span> is the constant of Poisson
+summation in the entry <span class="math inline">\(i\)</span>: <span
+class="math inline">\(\operatorname{vol}(\hat{\mathcal O}_E)\)</span>
+divided by the Jacobian, at the infinite places, of the rescaling that
+the proof applies to that entry. Further <span
+class="math inline">\(c_{\mathrm{bot}}=\prod_\tau\bigl((1+b^{-10})/d_\tau\bigr)\cdot(1+b^{-6})\,b^{-6k\#\mathcal{D}}\)</span>,
+<span
+class="math inline">\(c_{\mathrm{fr}}=b^{2002(\varrho+1)^9f}c_{\mathrm{dec}}\)</span>,
+and <span
+class="math inline">\(c_{\mathrm{wt}}=b^{400(\varrho+1)^9f}\)</span>.
+Here <span class="math inline">\(c_{\mathrm{dec}}&gt;0\)</span> is the
+<a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalSieve.lean#L800">decay
+constant</a> of the proof.</em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:induction">Problem 45.3.8</a>; <a href="20261126T080400--the-sieve-over-the-entries__workbook.html">Chapter 46</a></div><!-- used-in:end -->
+</div>
+<p>Chapter <a href="20261126T080400--the-sieve-over-the-entries__workbook.html#chap" data-reference-type="ref"
+data-reference="m6-chap">46</a> derives the recurrence from the
+six properties of a sieve system and Poisson summation (Theorem <a
+href="20261126T080400--the-sieve-over-the-entries__workbook.html#thm:recurrence" data-reference-type="ref"
+data-reference="m6-thm:recurrence">46.2.1</a>), with one
+step worked out modulo <span class="math inline">\(25\)</span> in
+Problem <a href="20261126T080400--the-sieve-over-the-entries__workbook.html#pr:model-step" data-reference-type="ref"
+data-reference="m6-pr:model-step">46.1.5</a>. Theorem <a
+href="20261126T080400--the-sieve-over-the-entries__workbook.html#thm:frequencies" data-reference-type="ref"
+data-reference="m6-thm:frequencies">46.3.1</a> bounds the
+sum over frequencies. Section <a href="20261126T080400--the-sieve-over-the-entries__workbook.html#sec:heads"
+data-reference-type="ref"
+data-reference="m6-sec:heads">46.4</a> applies these results
+using the local systems, the decay estimate and the bound for the sum of
+the head weights read from the proof.</p>
+<div id="pr:induction" class="problem" data-progress-ids="[&quot;20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex#pr:induction&quot;]">
+<p><strong>Problem 45.3.8</strong>. Under Theorem <a href="#thm:sieve"
+data-reference-type="ref" data-reference="thm:sieve">45.3.2</a>, <span
+class="math inline">\(\Sigma_i\le\bigl(\prod_{i&#39;&lt;i}c_{i&#39;}\bigr)\bigl(c_{\mathrm{bot}}+2i\,c_{\mathrm{wt}}c_{\mathrm{fr}}\bigr)\)</span>
+for <span class="math inline">\(0\le i\le\varrho+1\)</span>.</p>
+</div>
+<p>Let <span class="math inline">\(C_S:=\lvert
+d_E\rvert^{1/4}\operatorname{vol}(\hat{\mathcal
+O}_E)^k\bigl(\pi^k/((k-1)!N^k)\bigr)^f\)</span>. The constant of
+Siegel’s step is <span class="math inline">\(C_S\)</span> times the
+number of classes, the order of the reduction of the integral points of
+<span class="math inline">\(\mathcal{U}\)</span>, and <span
+class="math inline">\(\#\bar R_0\)</span> (Definition <a
+href="20261126T020210--bessel-poincare-series-and-their-gram-operators__workbook.html#def:bessel-rep" data-reference-type="ref"
+data-reference="bp-def:bessel-rep">39.4.2</a>). For each
+finite set of nonzero blocks in the link second moment of Theorem <a
+href="#thm:open" data-reference-type="ref"
+data-reference="thm:open">45.3.3</a>, the sum of their squared norms,
+multiplied by the square of the proof’s normalizing constant, is at most
+<span class="math inline">\((1+b^{-6})\)</span> times the constant of
+Siegel’s step times <span
+class="math inline">\(\Sigma_{\varrho+1}\)</span>. Apply Problem <a
+href="#pr:induction" data-reference-type="ref"
+data-reference="pr:induction">45.3.8</a> with <span
+class="math inline">\(i=\varrho+1\)</span>. The product of the <span
+class="math inline">\(c_i\)</span>, of the constant of Siegel’s step and
+of <span class="math inline">\(c_{\mathrm{bot}}\)</span> is at most
+<span
+class="math inline">\((1+b^{-9})^2(1+b^{-6})\,b^{-6k\#\mathcal{D}}D_{\mathrm{main}}\nu^2\)</span>,
+after multiplying the right-hand side by that same square. The factors
+are: <span class="math inline">\(1+b^{-9}\)</span> for the constants,
+<span class="math inline">\((1+b^{-10})^f\le1+b^{-9}\)</span> for the
+degrees (in the proof <span class="math inline">\(f\le b/1000\)</span>),
+and <span class="math inline">\(1+b^{-6}\)</span> from <span
+class="math inline">\(c_{\mathrm{bot}}\)</span>. After division by that
+square, the error inside the outer factor <span
+class="math inline">\(1+b^{-6}\)</span> from Siegel’s step is at most
+<span class="math inline">\(b^{-10}\cdot
+b^{-6k\#\mathcal{D}}D_{\mathrm{main}}\nu^2\)</span>, because the rank
+bound and <span class="math inline">\(b^{11kf}D_{\mathrm{id}}\le
+D_{\mathrm{main}}\)</span> (Chapter <a href="20261126T051900--unfolding-twice-gram-operators-as-sums-over-rational-points__workbook.html#chap"
+data-reference-type="ref" data-reference="m1-chap">40</a>) absorb
+the powers of <span class="math inline">\(b\)</span> from the error
+estimate. Since <span class="math inline">\(b\ge1000\)</span>, the
+following inequality collects these factors.</p>
+<div id="pr:constants" class="problem" data-progress-ids="[&quot;20261126T052200--the-open-cell-siegels-formula-and-poisson-summation__workbook.tex#pr:constants&quot;]">
+<p><strong>Problem 45.3.9</strong>. For <span
+class="math inline">\(b\ge1000\)</span>: <span
+class="math inline">\((1+b^{-6})\bigl((1+b^{-9})^2(1+b^{-6})+b^{-10}\bigr)\le1+b^{-4}\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:last-entry" data-reference-type="ref"
+data-reference="pr:last-entry">45.1.1</a>, <a href="#pr:poisson-finite"
+data-reference-type="ref" data-reference="pr:poisson-finite">45.3.2</a>, <a
+href="#pr:schur" data-reference-type="ref"
+data-reference="pr:schur">45.3.6</a>, <a href="#pr:formal-degree-sum"
+data-reference-type="ref" data-reference="pr:formal-degree-sum">45.3.7</a>,
+<a href="#pr:induction" data-reference-type="ref"
+data-reference="pr:induction">45.3.8</a> and <a href="#pr:constants"
+data-reference-type="ref" data-reference="pr:constants">45.3.9</a> model the
+steps of the following theorem. The proof proves it by these steps, with
+Theorems <a href="#thm:siegel" data-reference-type="ref"
+data-reference="thm:siegel">45.2.1</a>, <a href="#thm:poisson"
+data-reference-type="ref" data-reference="thm:poisson">45.3.1</a> and <a
+href="#thm:sieve" data-reference-type="ref"
+data-reference="thm:sieve">45.3.2</a> and the statements read from the proof
+in this sheet.</p>
+<div id="thm:open" class="theorem">
+<p><strong>Theorem 45.3.3</strong>. <em>For the data, let <span
+class="math inline">\(\mathcal{D}\subseteq\mathcal{M}_0\)</span> be a
+set of chosen places above <span class="math inline">\(p_0\)</span>, and
+for each <span class="math inline">\(w\in\mathcal{D}\)</span> choose
+<span class="math inline">\(w\)</span> or <span
+class="math inline">\(\bar w\)</span> and a nonzero vector in the span
+of the Bessel tuple modulo it, as in Definition <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#def:fixer"
+data-reference-type="ref"
+data-reference="m2-def:fixer">43.2.7</a>; let the fixer of <span
+class="math inline">\(\mathcal{D}\)</span> be the fixer of these
+vectors. Then the link second moment of the terms <span
+class="math inline">\(\gamma\)</span> with <span
+class="math inline">\(\operatorname{disc}(\gamma)\ne0\)</span>, over the
+reductions that are open and lie in the fixer of <span
+class="math inline">\(\mathcal{D}\)</span>, is at most <span
+class="math display">\[(1+b^{-4})\,b^{-6k\#\mathcal{D}}\,D_{\mathrm{main}}\,\nu^2
+.\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#thm:sieve">Theorem 45.3.2</a>; <a href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.html">Chapter 47</a></div><!-- used-in:end -->
+</div>
+<p><em>Status</em>: read from the proof. It applies to any admissible
+filling over a CM field with Weil data and a family of sided vectors at
+all the chosen places above the first prime. For the data, extend the
+family outside <span class="math inline">\(\mathcal{D}\)</span> by the
+first <em>member of the Bessel tuple</em>, <span
+class="math inline">\(v_1\)</span>, at each unused place; the fixer
+tests only the vectors in <span
+class="math inline">\(\mathcal{D}\)</span>. The comparison of constants
+is read from the proof, as are the local bounds used in Chapter <a
+href="20261126T080400--the-sieve-over-the-entries__workbook.html#chap" data-reference-type="ref"
+data-reference="m6-chap">46</a>.</p>
+<h4 id="what-has-been-proved.">What has been proved.</h4>
+<p>In the open cell a term has the form <span
+class="math inline">\(n^{-1}\mathfrak w(\mathfrak h)\omega
+n&#39;\)</span> of Section <a href="#sec:last" data-reference-type="ref"
+data-reference="sec:last">45.1</a>. The <span
+class="math inline">\(X_0\)</span>-part <span
+class="math inline">\(y\)</span> of <span class="math inline">\(\omega
+z\)</span> satisfies <span class="math inline">\(N
+h(y,y)=\lvert\operatorname{le}\rvert^2-N^2\)</span> by Problem <a
+href="#pr:last-entry" data-reference-type="ref"
+data-reference="pr:last-entry">45.1.1</a>. For a contributing block with
+<span class="math inline">\(\operatorname{disc}(\gamma)\ne0\)</span>,
+this norm is totally positive. Siegel’s formula bounds the resulting
+weighted sum over classes and vectors of this norm (Theorem <a
+href="#thm:siegel" data-reference-type="ref"
+data-reference="thm:siegel">45.2.1</a>, modelled in Problems <a
+href="#pr:six-squares" data-reference-type="ref"
+data-reference="pr:six-squares">45.2.1</a>–<a href="#pr:densities"
+data-reference-type="ref" data-reference="pr:densities">45.2.5</a>). The
+proof applies Poisson summation to one common entry at a time. The
+zero-frequency integrals give shorter forms, whose length-zero bounds
+contain the factors <span class="math inline">\(1/d_\tau\)</span>. The
+rank <span class="math inline">\(k\)</span> enters the bounds for
+nonzero frequencies and for unequal last entries (Problems <a
+href="#pr:fourier-five" data-reference-type="ref"
+data-reference="pr:fourier-five">45.3.1</a>–<a href="#pr:formal-degree-sum"
+data-reference-type="ref" data-reference="pr:formal-degree-sum">45.3.7</a>,
+Theorems <a href="#thm:poisson" data-reference-type="ref"
+data-reference="thm:poisson">45.3.1</a> and <a href="#thm:sieve"
+data-reference-type="ref" data-reference="thm:sieve">45.3.2</a>). Taken as
+given: Theorems <a href="#thm:siegel" data-reference-type="ref"
+data-reference="thm:siegel">45.2.1</a> and <a href="#thm:poisson"
+data-reference-type="ref" data-reference="thm:poisson">45.3.1</a>, the local
+estimates used in Chapter <a href="20261126T080400--the-sieve-over-the-entries__workbook.html#chap" data-reference-type="ref"
+data-reference="m6-chap">46</a>, and the statements marked “in
+the proof”. Chapter <a href="20261126T052300--positive-type-and-the-bootstrap-the-second-moment__workbook.html#chap" data-reference-type="ref"
+data-reference="m4-chap">47</a> combines Theorem <a
+href="#thm:open" data-reference-type="ref"
+data-reference="thm:open">45.3.3</a> with the link bound (Theorem <a
+href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:link-bound" data-reference-type="ref"
+data-reference="m2-thm:link-bound">43.3.1</a>) and the
+<em>truncation bound</em> (Theorem <a href="20261126T052000--which-terms-survive-characters-minors-and-the-gain-at-the-level__workbook.html#thm:cut"
+data-reference-type="ref" data-reference="m2-thm:cut">43.3.2</a>,
+which passes from the link second moment formed with <span
+class="math inline">\(W^\flat\)</span> to the full second moment), and
+bootstraps over fixers, to bound the second moment over all of <span
+class="math inline">\(\bar G\)</span>.</p>
+<div class="leanremark">
+<p><em>In the Lean formalization 1</em>. Theorem <a href="#thm:open"
+data-reference-type="ref" data-reference="thm:open">45.3.3</a> specializes
+<code>New.Filling.linkSecondMoment_isOpenElement_le</code> in the Lean
+proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>. Theorem <a
+href="#thm:siegel" data-reference-type="ref"
+data-reference="thm:siegel">45.2.1</a> is
+<code>New.classSum_eq_mul_normDensity</code>, Theorem <a
+href="#thm:poisson" data-reference-type="ref"
+data-reference="thm:poisson">45.3.1</a> is
+<code>New.IsDualFamily.sum_le_of_fourier</code>, and Theorem <a
+href="#thm:sieve" data-reference-type="ref"
+data-reference="thm:sieve">45.3.2</a> corresponds to
+<code>New.Filling.sieve</code>. Problem <a href="#pr:induction"
+data-reference-type="ref" data-reference="pr:induction">45.3.8</a> gives the
+numerical induction in <code>densitySum_le</code>. For <span
+class="math inline">\(V=Y_0\)</span>, the norm equation in Problem <a
+href="#pr:last-entry" data-reference-type="ref"
+data-reference="pr:last-entry">45.1.1</a> is
+<code>mul_star_dotProduct_eq_last_frameProducts</code>. See also <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalToLocal.lean#L297">the
+strict inequality</a>. Problem <a href="#pr:schur"
+data-reference-type="ref" data-reference="pr:schur">45.3.6</a> is used as
+<code>posSemidef_prod_mul</code>, and the matching of the constants is
+<code>sieve_constant_le</code>. The block as a sum over heads is
+<code>exists_amplitudeSum_eq_sum_cosetAmplitude</code>, and the
+Kloosterman factorization is
+<code>IsFillingData.cosetAmplitude_eq_kloostermanSum_smul</code>. For
+the data see <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/Unfolding/FillingAdmissible.lean#L743">admissibility
+of the filling</a> and <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Derivatives/Field/WeilData.lean#L420">the
+Weil data</a>. For the single-vector identity see <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/Bessel/SchurBound.lean#L237">the
+squared coefficient integral</a> and <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/Bessel/FillingData.lean#L403">its
+normalization</a>. The other statements marked “in the proof” are at
+these places of <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, commit
+<code>72fead1</code>: <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean#L90">minors
+of open terms</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/DiscreteSeries/Bruhat/BigCell.lean#L289">the
+normal form</a> and <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/Lib/DiscreteSeries/Bruhat/BigCell.lean#L90">its
+minors</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean#L666">distinct
+blocks</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/EnergyEstimate.lean#L479">Siegel’s
+step for the blocks</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/SiegelTopBound.lean#L738">Siegel’s
+formula as an upper bound</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/SieveSystem.lean#L147">the
+product of kernels</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalSieve.lean#L580">nonnegative
+densities</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/SieveSystem.lean#L66">the
+zero frequency</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalSieve.lean#L1177">the
+decay</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/MainTerm/GlobalSieve.lean#L731">the
+recurrence</a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/Unfolding/Setup.lean#L113"><span
+class="math inline">\(\varrho\ge 10^5\)</span></a>, <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/Unfolding/Setup.lean#L128"><span
+class="math inline">\(f\le b/1000\)</span></a>, and <a
+href="https://github.com/lsernau/grh-lean/blob/72fead1/grh/src/New/Spanning/Unfolding/Setup.lean#L515"><span
+class="math inline">\(b^{11kf}D_{\mathrm{id}}\le
+D_{\mathrm{main}}\)</span></a>.</p>
+</div>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="seclast">§<a href="#sec:last"
+data-reference-type="ref" data-reference="sec:last">45.1</a></h2>
+<dl>
+<dt><a href="#pr:last-entry" data-reference-type="ref"
+data-reference="pr:last-entry">45.1.1</a></dt>
+<dd>
+<p>Expand <span class="math inline">\(h(\omega z,\omega
+z)=h(z,z)\)</span>, using <span class="math inline">\(y\perp
+z\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secsiegel">§<a href="#sec:siegel"
+data-reference-type="ref" data-reference="sec:siegel">45.2</a></h2>
+<dl>
+<dt><a href="#pr:six-squares" data-reference-type="ref"
+data-reference="pr:six-squares">45.2.1</a></dt>
+<dd>
+<p>In Sage or Python, enumerate the vectors of <span
+class="math inline">\(\mathbb{Z}^6\)</span> with entries in <span
+class="math inline">\([-2,2]\)</span>.</p>
+</dd>
+<dt><a href="#pr:local-counts" data-reference-type="ref"
+data-reference="pr:local-counts">45.2.2</a></dt>
+<dd>
+<p>By machine: convolve the histogram of the squares modulo <span
+class="math inline">\(m\)</span> six times. For the formula, detect the
+equation with <span class="math inline">\(\mathrm e(\cdot/p)\)</span>
+and use the quadratic Gauss sum: every nonzero frequency gives the same
+sixth power. Solutions modulo <span class="math inline">\(p\)</span>
+with a unit coordinate lift by Hensel’s lemma; compare the counts modulo
+<span class="math inline">\(3\)</span> and <span
+class="math inline">\(9\)</span>. Every solution has an odd coordinate;
+for <span class="math inline">\(e\ge3\)</span>, adding <span
+class="math inline">\(2^{e-1}\)</span> to it changes the sum of squares
+by <span class="math inline">\(2^e\)</span> modulo <span
+class="math inline">\(2^{e+1}\)</span>.</p>
+</dd>
+<dt><a href="#pr:isotropic" data-reference-type="ref"
+data-reference="pr:isotropic">45.2.3</a></dt>
+<dd>
+<p>Induction on <span class="math inline">\(n\)</span>: <span
+class="math inline">\(x^{q+1}=c\)</span> has <span
+class="math inline">\(q+1\)</span> solutions in <span
+class="math inline">\(\mathbb F_{q^2}\)</span> if <span
+class="math inline">\(c\in\mathbb F_q^\times\)</span>, one if <span
+class="math inline">\(c=0\)</span>.</p>
+</dd>
+<dt><a href="#pr:real-density" data-reference-type="ref"
+data-reference="pr:real-density">45.2.4</a></dt>
+<dd>
+<p>The unit ball of <span class="math inline">\(\mathbb{R}^6\)</span>
+has volume <span class="math inline">\(\pi^3/6\)</span>.</p>
+</dd>
+<dt><a href="#pr:densities" data-reference-type="ref"
+data-reference="pr:densities">45.2.5</a></dt>
+<dd>
+<p><span class="math inline">\(\prod_{p\text{
+odd}}(1-\chi_{-4}(p)p^{-3})=L(3,\chi_{-4})^{-1}\)</span>. For <span
+class="math inline">\(j=5\)</span>, compute modulo <span
+class="math inline">\(25\)</span> and <span
+class="math inline">\(125\)</span> at <span
+class="math inline">\(5\)</span>, and at <span
+class="math inline">\(2\)</span> use that <span
+class="math inline">\(y\mapsto(2+\mathrm{i})y\)</span> is a bijection
+modulo <span class="math inline">\(2^e\)</span> from the solutions of
+<span class="math inline">\(y^*y\equiv1\)</span> to those of <span
+class="math inline">\(y^*y\equiv5\)</span>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="secpoisson">§<a href="#sec:poisson"
+data-reference-type="ref" data-reference="sec:poisson">45.3</a></h2>
+<dl>
+<dt><a href="#pr:poisson-finite" data-reference-type="ref"
+data-reference="pr:poisson-finite">45.3.2</a></dt>
+<dd>
+<p>Fourier inversion and the triangle inequality.</p>
+</dd>
+<dt><a href="#pr:kloosterman-sum" data-reference-type="ref"
+data-reference="pr:kloosterman-sum">45.3.4</a></dt>
+<dd>
+<p>Expand <span
+class="math inline">\(\lvert\mathrm{Kl}(j)\rvert^2\)</span> and sum over
+<span class="math inline">\(j\)</span> first.</p>
+</dd>
+<dt><a href="#pr:three" data-reference-type="ref"
+data-reference="pr:three">45.3.5</a></dt>
+<dd>
+<p>The rows of <span class="math inline">\(\mathfrak A_1\)</span> are
+the characters of <span class="math inline">\(\mathbb{Z}/3\)</span>; the
+operator norm is multiplicative under tensor products.</p>
+</dd>
+<dt><a href="#pr:schur" data-reference-type="ref"
+data-reference="pr:schur">45.3.6</a></dt>
+<dd>
+<p>The entrywise product is a principal submatrix of the Kronecker
+product; compare <span class="citation"
+data-cites="HJ">[<a href="#ref-HJ">HJ</a>, Thm. 7.5.3]</span>.</p>
+</dd>
+<dt><a href="#pr:formal-degree-sum" data-reference-type="ref"
+data-reference="pr:formal-degree-sum">45.3.7</a></dt>
+<dd>
+<p>Apply the orthogonality relation with <span
+class="math inline">\(u_1=u_2=u_3=u_4=u\)</span>.</p>
+</dd>
+<dt><a href="#pr:induction" data-reference-type="ref"
+data-reference="pr:induction">45.3.8</a></dt>
+<dd>
+<p>Induction on <span class="math inline">\(i\)</span>.</p>
+</dd>
+<dt><a href="#pr:constants" data-reference-type="ref"
+data-reference="pr:constants">45.3.9</a></dt>
+<dd>
+<p>Each of <span class="math inline">\(b^{-6}\)</span>, <span
+class="math inline">\(b^{-9}\)</span>, <span
+class="math inline">\(b^{-10}\)</span> is at most <span
+class="math inline">\(b^{-4}/100\)</span>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-Br"><span class="bib-label">[Br]</span> H. Braun, <em>Zur Theorie der hermitischen Formen</em>, Abh. Math. Sem. Hansischen Univ. <strong>14</strong> (1941), 61–150.</p>
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-HJ"><span class="bib-label">[HJ]</span> R. A. Horn and C. R. Johnson, <em>Matrix Analysis</em>, 2nd ed., Cambridge Univ. Press, 2013.</p>
+<p id="ref-Kn"><span class="bib-label">[Kn]</span> A. W. Knapp, <em>Representation Theory of Semisimple Groups: an Overview Based on Examples</em>, Princeton Univ. Press, 1986.</p>
+<p id="ref-Si"><span class="bib-label">[Si]</span> C. L. Siegel, <em>Über die analytische Theorie der quadratischen Formen</em>, Ann. of Math. <strong>36</strong> (1935), 527–606.</p>
+<p id="ref-Ta"><span class="bib-label">[Ta]</span> J. T. Tate, <em>Fourier analysis in number fields and Hecke’s zeta-functions</em>, in J. W. S. Cassels and A. Fröhlich (eds.), <em>Algebraic Number Theory</em>, Academic Press, 1967, Ch. XV.</p>
+<p id="ref-We65"><span class="bib-label">[We65]</span> A. Weil, <em>Sur la formule de Siegel dans la théorie des groupes classiques</em>, Acta Math. <strong>113</strong> (1965), 1–87.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>

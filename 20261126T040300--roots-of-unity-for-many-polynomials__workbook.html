@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'sha256-+bcP9MhXWBQLHhjAtMWqjy5H94r29d5PS8GUELtoT1Y=' 'sha256-4b5PjfR0ZitBaxH9km/j2D4+RccmsykdFTFAm5G0kOw=' 'sha256-wcfDXAzDdyEE+D4KzvwIO/x3Q1/+5be1mcITypHlftQ='; connect-src 'self' https://api.anthropic.com https://api.openai.com https://grh-progress-sync.ultrono.workers.dev; style-src 'self' 'unsafe-inline'; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://giscus.app">
+<meta name="color-scheme" content="light dark">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-11-26" />
+  <title>Roots of unity for many polynomials</title>
+  <link rel="stylesheet" href="tex.css">
+  <style>
+      .my-links-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right: 20px;
+        padding-top: 10px;
+      }
+      .my-link {
+        margin-left: 10px;
+      }
+      .my-links-container-2 { /* new CSS class for the second row */
+        position: absolute;
+        top: 40px; /* adjust this value based on the height of your links */
+        right: 0;
+        padding-right: 20px;
+      }
+      .my-link-2 {
+        margin-left: 10px;
+      }
+
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
+      background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        color-scheme: light only;
+      }
+      html, body, pre, code {
+        background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
+        color: black;
+      }
+      pre, code {
+        padding: 0;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a, a:visited {
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
+      color: #606060;
+      color: light-dark(#606060, #b6b6b6);
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid currentColor;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+    }
+    th {
+      border-top: 1px solid currentColor;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script>window.MathJax = {tex: {macros: {"Z":"\\mathbb{Z}","Q":"\\mathbb{Q}","C":"\\mathbb{C}","Ql":"\\bar{\\mathbb{Q}}_\\ell","Zl":"\\bar{\\mathbb{Z}}_\\ell","val":"\\operatorname{val}"}}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js" integrity="sha384-NR8saakDju74wZ6sprPPhEoWbaP3iVtXVJH12mRSiaIgxMdi33mOQj8bnF2WxzY3" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="progress.css">
+<script src="progress.js" defer></script>
+<meta name="workbook-chapter" content="86">
+<link rel="stylesheet" href="reference-preview.css">
+<script src="reference-preview.js" defer></script>
+<link rel="stylesheet" href="site-theme.css">
+<link rel="alternate" type="text/plain" href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.txt">
+</head>
+<body>
+    <div class="my-links-container">
+2026-11-26 19:19:14
+      <a href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex" class="my-link">tex</a>
+      <a href="20261126T040300--roots-of-unity-for-many-polynomials__workbook.pdf" class="my-link">pdf</a>
+      <a href="https://github.com/ultronozm/grh-workbook/commits/main/20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex" class="my-link">history</a>
+
+      <a href="." class="my-link">home</a>
+    </div>
+<header id="title-block-header">
+<h1 class="title">Roots of unity for many polynomials</h1>
+<p class="date">November 26, 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#sec:one" id="toc-sec:one">§86.1. One variable</a></li>
+<li><a href="#sec:several" id="toc-sec:several">§86.2. Several variables and several powers</a></li>
+<li><a href="#hints" id="toc-hints">Hints</a>
+<ul>
+<li><a href="#section-secone" id="toc-section-secone">Section 86.1</a></li>
+<li><a href="#section-secseveral"
+id="toc-section-secseveral">Section 86.2</a></li>
+</ul></li>
+</ul>
+</nav>
+<p><span id="chap" data-label="chap"></span></p>
+<h4 id="prerequisites.">Prerequisites.</h4>
+<p>Valuations on <span
+class="math inline">\(\bar{\mathbb{Q}}_\ell\)</span> <span
+class="citation" data-cites="Ne">[<a href="#ref-Ne">Ne</a>, Ch. II]</span>;
+roots of unity of prime power order <span class="citation"
+data-cites="Wa">[<a href="#ref-Wa">Wa</a>, Ch. 1–2]</span>. No earlier
+chapter.</p>
+<p>Chapter <a href="20261126T031000--twists-with-few-congruences__workbook.html#chap" data-reference-type="ref"
+data-reference="tw-chap">85</a>, <em>Twists with few
+congruences</em>, describes how the proof bounds Selmer lengths and the
+valuations of ratios of Hecke <span
+class="math inline">\(L\)</span>-values at each prime <span
+class="math inline">\(\ell\)</span> through values of polynomials at
+points <span class="math inline">\((\zeta_w - 1)_w\)</span>, with the
+<span class="math inline">\(\zeta_w\)</span> of <span
+class="math inline">\(\ell\)</span>-power order. Suppose finitely many
+integral polynomials have starting points whose coordinates have
+valuation at least a fixed rational <span class="math inline">\(\rho
+&gt; 0\)</span>, and the sum of their starting valuations is bounded.
+Can one replace all the points by one tuple <span
+class="math inline">\((\zeta_w - 1)_w\)</span> while increasing each
+valuation by at most a prescribed <span
+class="math inline">\(\varepsilon &gt; 0\)</span>? Theorem <a
+href="#thm:roots" data-reference-type="ref"
+data-reference="thm:roots">86.2.1</a> gives a level depending only on the
+prime, the bound on the number of variables, <span
+class="math inline">\(\rho\)</span>, the sum bound and <span
+class="math inline">\(\varepsilon\)</span>. Corollary <a
+href="#pr:powers" data-reference-type="ref"
+data-reference="pr:powers">86.2.2</a> treats the first <span
+class="math inline">\(m\)</span> powers simultaneously.</p>
+<p>Throughout, <span class="math inline">\(\ell\)</span> is a prime,
+<span class="math inline">\(\operatorname{val}\)</span> is the valuation
+of <span class="math inline">\(\bar{\mathbb{Q}}_\ell\)</span> with <span
+class="math inline">\(\operatorname{val}(\ell) = 1\)</span> and <span
+class="math inline">\(\operatorname{val}(0) = \infty\)</span>, <span
+class="math inline">\(\lVert y\rVert =
+\ell^{-\operatorname{val}(y)}\)</span>, and <span
+class="math inline">\(\bar{\mathbb{Z}}_\ell= \{y : \operatorname{val}(y)
+\ge 0\}\)</span>. For <span class="math inline">\(h \ge 0\)</span> put
+<span class="math display">\[\rho_h := 1/\varphi(\ell^h),\]</span> with
+Euler’s function <span class="math inline">\(\varphi\)</span>. For a
+polynomial <span class="math inline">\(g = \sum_i y_i Y^i \in
+\bar{\mathbb{Q}}_\ell[Y]\)</span> and a rational <span
+class="math inline">\(\rho \ge 0\)</span>, we define the <em>Gauss
+valuation</em> by <span class="math inline">\(v_\rho(g) := \min_i
+\bigl(\operatorname{val}(y_i) + \rho i\bigr)\)</span>, and <span
+class="math inline">\(R_\rho(g)\)</span> is the multiset of roots of
+<span class="math inline">\(g\)</span> in <span
+class="math inline">\(\bar{\mathbb{Q}}_\ell\)</span> of valuation
+exactly <span class="math inline">\(\rho\)</span>, counted with
+multiplicity; for the zero polynomial <span
+class="math inline">\(v_\rho(0) = \infty\)</span> and <span
+class="math inline">\(R_\rho(0) = \varnothing\)</span>. Below, <span
+class="math inline">\(g\)</span> denotes a nonzero polynomial in <span
+class="math inline">\(\bar{\mathbb{Z}}_\ell[Y]\)</span>. “Of order <span
+class="math inline">\(\ell^h\)</span>” means of exact order <span
+class="math inline">\(\ell^h\)</span>. We write <span
+class="math inline">\(\zeta_n\)</span> for a root of unity of exact
+order <span class="math inline">\(n\)</span>.</p>
+<h1 id="sec:one">§86.1. One variable</h1>
+<p>Given <span class="math inline">\(g\)</span> and a point <span
+class="math inline">\(x\)</span> of positive valuation, can one replace
+<span class="math inline">\(x\)</span> by <span
+class="math inline">\(\zeta - 1\)</span>, with <span
+class="math inline">\(\zeta\)</span> a root of unity of <span
+class="math inline">\(\ell\)</span>-power order, without making <span
+class="math inline">\(g\)</span> much more divisible?</p>
+<div id="pr:radius" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:radius&quot;]">
+<p><strong>Problem 86.1.1</strong>. If <span class="math inline">\(h \ge
+1\)</span> and <span class="math inline">\(\zeta\)</span> has order
+<span class="math inline">\(\ell^h\)</span>, then <span
+class="math inline">\(\operatorname{val}(\zeta - 1) = \rho_h\)</span>.
+For <span class="math inline">\(\ell = 3\)</span> the radii <span
+class="math inline">\(\rho_1, \rho_2, \rho_3\)</span> are <span
+class="math inline">\(1/2, 1/6, 1/18\)</span>; for <span
+class="math inline">\(\ell = 2\)</span> they are <span
+class="math inline">\(1, 1/2, 1/4\)</span>. The <span
+class="math inline">\(\rho_h\)</span> with <span class="math inline">\(h
+\ge 1\)</span> are distinct and tend to <span
+class="math inline">\(0\)</span>.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html">Chapter 87</a></div><!-- used-in:end -->
+</div>
+<div id="pr:gauss" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:gauss&quot;]">
+<p><strong>Problem 86.1.2</strong>. Let <span class="math inline">\(0 \ne g
+\in \bar{\mathbb{Z}}_\ell[Y]\)</span>, and write <span
+class="math inline">\(g = c\prod_k (Y - \alpha_k)\)</span> in <span
+class="math inline">\(\bar{\mathbb{Q}}_\ell[Y]\)</span>. For rational
+<span class="math inline">\(\rho \ge 0\)</span>, <span
+class="math display">\[v_\rho(g) = \operatorname{val}(c) +
+\sum\nolimits_k \min\bigl(\operatorname{val}(\alpha_k),
+\rho\bigr).\]</span> Hence <span class="math inline">\(v_\rho(g_1g_2) =
+v_\rho(g_1) + v_\rho(g_2)\)</span>, and <span class="math inline">\(\rho
+\mapsto v_\rho(g)\)</span> is nondecreasing.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html">Chapter 87</a></div><!-- used-in:end -->
+</div>
+<div id="pr:at-point" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:at-point&quot;]">
+<p><strong>Problem 86.1.3</strong>. <span class="upright">(a)</span> If <span
+class="math inline">\(\operatorname{val}(x) \ge \rho\)</span>, then
+<span class="math inline">\(\operatorname{val}(g(x)) \ge
+v_\rho(g)\)</span>. <span class="upright">(b)</span> If <span
+class="math inline">\(\operatorname{val}(y) = \rho\)</span>, then <span
+class="math display">\[\operatorname{val}(g(y)) = v_\rho(g) +
+\sum\nolimits_{\alpha \in R_\rho(g)} \bigl(\operatorname{val}(y -
+\alpha) - \rho\bigr).\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html">Chapter 87</a></div><!-- used-in:end -->
+</div>
+<div id="pr:example" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:example&quot;]">
+<p><strong>Problem 86.1.4</strong>. Let <span class="math inline">\(\ell =
+3\)</span> and <span class="math inline">\(g = Y^2 + 3Y + 3\)</span>.
+Then <span class="math inline">\(v_\rho(g) = \min(1, 2\rho)\)</span>,
+and for <span class="math inline">\(\zeta\)</span> of order <span
+class="math inline">\(3^h\)</span> the valuation <span
+class="math inline">\(\operatorname{val}(g(\zeta - 1))\)</span> is <span
+class="math inline">\(\infty\)</span> if <span class="math inline">\(h =
+1\)</span> and <span class="math inline">\(2\rho_h =
+v_{\rho_h}(g)\)</span> if <span class="math inline">\(h \ge
+2\)</span>.</p>
+</div>
+<p>We bound the root counts on the radii <span
+class="math inline">\(\rho_h \le \rho\)</span>, each weighted by <span
+class="math inline">\(\rho_h\)</span>. For a rational <span
+class="math inline">\(\rho &gt; 0\)</span> and an integer <span
+class="math inline">\(h_0 \ge 1\)</span>, let <span
+class="math inline">\(H(\rho, h_0)\)</span> be the set of <span
+class="math inline">\(h\)</span> with <span class="math inline">\(1 \le
+h \le h_0\)</span> and <span class="math inline">\(\rho_h \le
+\rho\)</span>.</p>
+<div id="pr:few-radii" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:few-radii&quot;]">
+<p><strong>Problem 86.1.5</strong>. <span class="math inline">\(\sum_{h \in
+H(\rho, h_0)} \# R_{\rho_h}(g) \cdot \rho_h \le v_\rho(g)\)</span>.</p>
+</div>
+<div id="pr:pigeon" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:pigeon&quot;]">
+<p><strong>Problem 86.1.6</strong>. Let <span class="math inline">\(\delta
+&gt; 0\)</span> and <span class="math inline">\(\beta \ge 0\)</span> (in
+this sheet <span class="math inline">\(\beta\)</span> is a real bound),
+with <span class="math inline">\(\beta &lt; \delta \sum_{h \in H(\rho,
+h_0)} 1/(h + 1)\)</span>. If <span class="math inline">\(v_\rho(g) \le
+\beta\)</span>, then some <span class="math inline">\(h \in H(\rho,
+h_0)\)</span> has <span class="math inline">\(\# R_{\rho_h}(g) \cdot
+\rho_h \le \delta/(h + 1)\)</span>.</p>
+</div>
+<p>Next, how close can the <span class="math inline">\(\zeta -
+1\)</span> of a given order be to a fixed point?</p>
+<div id="pr:close-to-few" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:close-to-few&quot;]">
+<p><strong>Problem 86.1.7</strong>. Let <span class="math inline">\(\alpha
+\in \bar{\mathbb{Z}}_\ell\)</span> with <span
+class="math inline">\(\operatorname{val}(\alpha) &gt; 0\)</span>, and
+<span class="math inline">\(h \ge 1\)</span>. Then <span
+class="math display">\[\sum\nolimits_{\zeta}
+\min\bigl(\operatorname{val}(\zeta - 1 - \alpha), 1\bigr) \le h +
+1,\]</span> the sum over the <span class="math inline">\(\zeta\)</span>
+of order <span class="math inline">\(\ell^h\)</span>. For <span
+class="math inline">\(\ell = 3\)</span>, <span class="math inline">\(h =
+1\)</span> and <span class="math inline">\(\alpha = \zeta_0 -
+1\)</span>, with <span class="math inline">\(\zeta_0\)</span> of order
+<span class="math inline">\(3\)</span>, the sum is <span
+class="math inline">\(3/2\)</span>.</p>
+</div>
+<div id="pr:ninth" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:ninth&quot;]">
+<p><strong>Problem 86.1.8</strong>. For <span class="math inline">\(\ell =
+3\)</span>, <span class="math inline">\(h = 2\)</span> and <span
+class="math inline">\(\alpha = \zeta_9 - 1\)</span>, the six terms <span
+class="math inline">\(\min(\operatorname{val}(\zeta - 1 - \alpha),
+1)\)</span>, for <span class="math inline">\(\zeta = \zeta_9^e\)</span>
+with <span class="math inline">\(e = 1, 2, 4, 5, 7, 8\)</span>, are
+<span class="math inline">\(1, \tfrac16, \tfrac12, \tfrac16, \tfrac12,
+\tfrac16\)</span>; their sum is <span class="math inline">\(\tfrac52 \le
+h + 1\)</span>.</p>
+</div>
+<div id="pr:average" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:average&quot;]">
+<p><strong>Problem 86.1.9</strong>. Let <span
+class="math inline">\(R\)</span> be a finite multiset of elements of
+<span class="math inline">\(\bar{\mathbb{Z}}_\ell\)</span> of positive
+valuation, and <span class="math inline">\(h \ge 1\)</span>. Some <span
+class="math inline">\(\zeta\)</span> of order <span
+class="math inline">\(\ell^h\)</span> has <span
+class="math inline">\(\sum_{\alpha \in R}
+\min\bigl(\operatorname{val}(\zeta - 1 - \alpha), 1\bigr) \le \#R \cdot
+\rho_h (h + 1)\)</span>.</p>
+</div>
+<div id="pr:one-variable" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:one-variable&quot;]">
+<p><strong>Problem 86.1.10</strong>. Let <span class="math inline">\(0 &lt;
+\delta &lt; 1\)</span>, <span class="math inline">\(\rho &gt; 0\)</span>
+rational, and <span class="math inline">\(\beta &lt; \delta\sum_{h \in
+H(\rho, h_0)} 1/(h + 1)\)</span>. If <span
+class="math inline">\(v_\rho(g) \le \beta\)</span>, then for some <span
+class="math inline">\(h \in H(\rho, h_0)\)</span> and some <span
+class="math inline">\(\zeta\)</span> of order <span
+class="math inline">\(\ell^h\)</span>, <span
+class="math display">\[\operatorname{val}\bigl(g(\zeta - 1)\bigr) \le
+v_{\rho_h}(g) + \delta .\]</span></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="#pr:one-var-point">Problem 86.1.12</a></div><!-- used-in:end -->
+</div>
+<div id="pr:harmonic" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:harmonic&quot;]">
+<p><strong>Problem 86.1.11</strong>. For rational <span
+class="math inline">\(\rho &gt; 0\)</span>, real <span
+class="math inline">\(\delta &gt; 0\)</span> and <span
+class="math inline">\(\beta \ge 0\)</span>, some <span
+class="math inline">\(h_0\)</span> has <span class="math inline">\(\beta
+&lt; \delta\sum_{h \in H(\rho, h_0)} 1/(h + 1)\)</span>. For <span
+class="math inline">\(\ell = 2\)</span>, <span
+class="math inline">\(\rho = \delta = 1/2\)</span> and <span
+class="math inline">\(\beta = 1\)</span>, the least such <span
+class="math inline">\(h_0\)</span> is <span
+class="math inline">\(18\)</span>.</p>
+</div>
+<div id="pr:one-var-point" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:one-var-point&quot;]">
+<p><strong>Problem 86.1.12</strong>. Let <span
+class="math inline">\(\delta\)</span>, <span
+class="math inline">\(\rho\)</span>, <span
+class="math inline">\(\beta\)</span>, <span
+class="math inline">\(h_0\)</span> be as in Problem <a
+href="#pr:one-variable" data-reference-type="ref"
+data-reference="pr:one-variable">86.1.10</a>. If <span
+class="math inline">\(\operatorname{val}(x) \ge \rho\)</span> and <span
+class="math inline">\(\operatorname{val}(g(x)) \le \beta\)</span>, then
+some <span class="math inline">\(\zeta\)</span> with <span
+class="math inline">\(\zeta^{\ell^{h_0}} = 1\)</span> and <span
+class="math inline">\(\operatorname{val}(\zeta - 1) \le \rho\)</span>
+has <span class="math inline">\(\operatorname{val}(g(\zeta - 1)) \le
+\operatorname{val}(g(x)) + \delta\)</span>.</p>
+</div>
+<h1 id="sec:several">§86.2. Several variables and several powers</h1>
+<p>Let <span class="math inline">\(\rho &gt; 0\)</span> be rational, and
+<span class="math inline">\(\mathcal V\)</span> and <span
+class="math inline">\(I\)</span> finite sets. For <span
+class="math inline">\(i \in I\)</span> let <span
+class="math inline">\(F_i \in \bar{\mathbb{Z}}_\ell[X_j : j \in \mathcal
+V]\)</span>, and let <span class="math inline">\(x_i \in
+\bar{\mathbb{Z}}_\ell^\mathcal V\)</span> be a point. We seek one tuple
+of roots of unity that works for every <span
+class="math inline">\(i\)</span>.</p>
+<div id="pr:one-coordinate" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:one-coordinate&quot;]">
+<p><strong>Problem 86.2.1</strong>. Fix <span class="math inline">\(j \in
+\mathcal V\)</span>, and assume <span
+class="math inline">\(\operatorname{val}(x_{ij}) \ge \rho\)</span> for
+all <span class="math inline">\(i\)</span> (the other coordinates are
+only integral). Let <span class="math inline">\(0 &lt; \delta &lt;
+1\)</span>, <span class="math inline">\(\beta &lt; \delta\sum_{h \in
+H(\rho, h_0)} 1/(h + 1)\)</span>, and <span class="math inline">\(\sum_i
+\operatorname{val}(F_i(x_i)) \le \beta\)</span>. There is <span
+class="math inline">\(\zeta\)</span> with <span
+class="math inline">\(\zeta^{\ell^{h_0}} = 1\)</span> and <span
+class="math inline">\(\operatorname{val}(\zeta - 1) \le \rho\)</span>
+such that, if the coordinate <span class="math inline">\(x_{ij}\)</span>
+is replaced by <span class="math inline">\(\zeta - 1\)</span> for every
+<span class="math inline">\(i\)</span>, each <span
+class="math inline">\(\operatorname{val}(F_i(x_i))\)</span>, and also
+their sum, grows by at most <span
+class="math inline">\(\delta\)</span>.</p>
+</div>
+<div id="pr:all-coordinates" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:all-coordinates&quot;]">
+<p><strong>Problem 86.2.2</strong>. Let <span class="math inline">\(0 &lt;
+\delta &lt; 1\)</span>, <span class="math inline">\(\#\mathcal V \cdot
+\delta \le 1\)</span>, <span class="math inline">\(\beta + 1 &lt;
+\delta\sum_{h \in H(\rho, h_0)} 1/(h + 1)\)</span>, <span
+class="math inline">\(\operatorname{val}(x_{ij}) \ge \rho\)</span> for
+all <span class="math inline">\(i, j\)</span>, and <span
+class="math inline">\(\sum_i \operatorname{val}(F_i(x_i)) \le
+\beta\)</span>. There are <span class="math inline">\(\zeta_j\)</span>,
+<span class="math inline">\(j \in \mathcal V\)</span>, with <span
+class="math inline">\(\zeta_j^{\ell^{h_0}} = 1\)</span>, <span
+class="math inline">\(\operatorname{val}(\zeta_j - 1) \le \rho\)</span>,
+and <span class="math inline">\(\operatorname{val}\bigl(F_i((\zeta_j -
+1)_j)\bigr) \le \operatorname{val}(F_i(x_i)) + \#\mathcal
+V\cdot\delta\)</span> for all <span
+class="math inline">\(i\)</span>.</p>
+</div>
+<div id="pr:two-coordinates" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:two-coordinates&quot;]">
+<p><strong>Problem 86.2.3</strong>. Let <span class="math inline">\(\ell =
+3\)</span>, <span class="math inline">\(F_1 = X + Y\)</span>, <span
+class="math inline">\(F_2 = XY + 3\)</span>, <span
+class="math inline">\(F_3 = X^2 + 3X + 3\)</span>, with starting points
+<span class="math inline">\((3, 0)\)</span>, <span
+class="math inline">\((0, 3)\)</span>, <span class="math inline">\((0,
+0)\)</span>, at which each <span class="math inline">\(F_i\)</span> has
+valuation <span class="math inline">\(1\)</span>. For <span
+class="math inline">\(\zeta = \zeta_{27}\)</span>, the common point
+<span class="math inline">\((\zeta - 1, \zeta^2 - 1)\)</span> gives
+<span class="math inline">\(\operatorname{val}(F_i) = \tfrac19\)</span>
+for <span class="math inline">\(i = 1, 2, 3\)</span>.</p>
+</div>
+<p>The following theorem is proved by the problems of this section. In
+Theorem <a href="#thm:roots" data-reference-type="ref"
+data-reference="thm:roots">86.2.1</a>, the level <span
+class="math inline">\(h_0\)</span> depends only on <span
+class="math inline">\(\ell, s_0, \rho, \beta, \varepsilon\)</span>.</p>
+<div id="thm:roots" class="theorem">
+<p><strong>Theorem 86.2.1</strong>. <em>Let <span class="math inline">\(s_0
+\ge 0\)</span> be an integer, <span class="math inline">\(\rho &gt;
+0\)</span> rational, <span class="math inline">\(\beta \ge 0\)</span>
+and <span class="math inline">\(\varepsilon &gt; 0\)</span>. There is
+<span class="math inline">\(h_0\)</span> with the following property.
+Let <span class="math inline">\(\mathcal V\)</span>, <span
+class="math inline">\(I\)</span> be finite sets with <span
+class="math inline">\(\#\mathcal V \le s_0\)</span>, let <span
+class="math inline">\(F_i \in \bar{\mathbb{Z}}_\ell[X_j : j \in \mathcal
+V]\)</span> and <span class="math inline">\(x_i \in
+\bar{\mathbb{Z}}_\ell^\mathcal V\)</span> for <span
+class="math inline">\(i \in I\)</span>, with <span
+class="math inline">\(\operatorname{val}(x_{ij}) \ge \rho\)</span> for
+all <span class="math inline">\(i, j\)</span> and <span
+class="math inline">\(\sum_i \operatorname{val}(F_i(x_i)) \le
+\beta\)</span>. Then there are <span class="math inline">\(\zeta_j \in
+\bar{\mathbb{Z}}_\ell\)</span>, <span class="math inline">\(j \in
+\mathcal V\)</span>, with <span
+class="math display">\[\zeta_j^{\ell^{h_0}} = 1,\quad
+\operatorname{val}(\zeta_j-1)\le\rho
+     \quad(j\in\mathcal V),\qquad
+  \operatorname{val}\bigl(F_i((\zeta_j-1)_j)\bigr)
+     \le \operatorname{val}\bigl(F_i(x_i)\bigr)+\varepsilon \quad(i\in
+I).\]</span></em></p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a></div><!-- used-in:end -->
+</div>
+<p>A twist will be used through its first <span
+class="math inline">\(m\)</span> powers at once, so the roots of unity
+must also serve for <span class="math inline">\(\zeta_j^n - 1\)</span>,
+<span class="math inline">\(1 \le n \le m\)</span>.</p>
+<div id="pr:root-of-x" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:root-of-x&quot;]">
+<p><strong>Problem 86.2.4</strong>. Let <span class="math inline">\(n \ge
+1\)</span> and <span class="math inline">\(x \in
+\bar{\mathbb{Z}}_\ell\)</span> with <span
+class="math inline">\(\operatorname{val}(x) \ge \rho\)</span>. Some
+<span class="math inline">\(x&#39; \in \bar{\mathbb{Z}}_\ell\)</span>
+has <span class="math inline">\((1 + x&#39;)^n = 1 + x\)</span> and
+<span class="math inline">\(\operatorname{val}(x&#39;) \ge
+\rho/n\)</span>.</p>
+</div>
+<div id="pr:powers-far" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:powers-far&quot;]">
+<p><strong>Problem 86.2.5</strong>. Let <span class="math inline">\(0 &lt;
+\rho &lt; 1\)</span>, <span class="math inline">\(1 \le n \le
+m\)</span>, and let <span class="math inline">\(\zeta\)</span> have
+<span class="math inline">\(\ell\)</span>-power order and <span
+class="math inline">\(\operatorname{val}(\zeta - 1) \le \rho/m\)</span>.
+Then <span class="math inline">\(\operatorname{val}(\zeta^n - 1) \le
+\rho\)</span>; in particular <span class="math inline">\(\zeta^n \ne
+1\)</span>. For <span class="math inline">\(\ell = 2\)</span>, <span
+class="math inline">\(\zeta\)</span> of order <span
+class="math inline">\(8\)</span>, <span class="math inline">\(m = n =
+2\)</span> and <span class="math inline">\(\rho = 1/2\)</span>, equality
+holds.</p>
+<!-- used-in:start --><div class="used-in">Used in: <a href="20261126T031000--twists-with-few-congruences__workbook.html">Chapter 85</a></div><!-- used-in:end -->
+</div>
+<div id="pr:powers-table" class="problem" data-progress-ids="[&quot;20261126T040300--roots-of-unity-for-many-polynomials__workbook.tex#pr:powers-table&quot;]">
+<p><strong>Problem 86.2.6</strong>. Let <span class="math inline">\(\ell =
+3\)</span> and <span class="math inline">\(\Phi_3(Y) = Y^2 + Y +
+1\)</span>. The values <span
+class="math inline">\(\operatorname{val}(\Phi_3(\zeta_n^j))\)</span> for
+<span class="math inline">\(j = 1, 2, 3\)</span> are <span
+class="math inline">\(\tfrac13, \tfrac13, \infty\)</span> for <span
+class="math inline">\(n = 9\)</span>; <span
+class="math inline">\(\tfrac19, \tfrac19, \tfrac13\)</span> for <span
+class="math inline">\(n = 27\)</span>; and <span
+class="math inline">\(\tfrac1{27}, \tfrac1{27}, \tfrac19\)</span> for
+<span class="math inline">\(n = 81\)</span>. For <span
+class="math inline">\(m = 3\)</span>, <span class="math inline">\(\rho =
+1/2\)</span>, one variable, <span class="math inline">\(F(X) = \Phi_3(1
++ X)\)</span>, <span class="math inline">\(x = 0\)</span> and <span
+class="math inline">\(\beta = 1\)</span>, no root of order <span
+class="math inline">\(9\)</span> satisfies the conclusion of
+Corollary <a href="#pr:powers" data-reference-type="ref"
+data-reference="pr:powers">86.2.2</a>, for any <span
+class="math inline">\(\varepsilon &gt; 0\)</span>.</p>
+</div>
+<p>Problems <a href="#pr:root-of-x" data-reference-type="ref"
+data-reference="pr:root-of-x">86.2.4</a> and <a href="#pr:powers-far"
+data-reference-type="ref" data-reference="pr:powers-far">86.2.5</a> and
+Theorem <a href="#thm:roots" data-reference-type="ref"
+data-reference="thm:roots">86.2.1</a> give the form used in Chapter <a
+href="20261126T031000--twists-with-few-congruences__workbook.html#chap" data-reference-type="ref"
+data-reference="tw-chap">85</a>:</p>
+<div id="pr:powers" class="corollary">
+<p><strong>Corollary 86.2.2</strong>. <em>Let integers <span
+class="math inline">\(s_0 \ge 0\)</span>, <span class="math inline">\(m
+\ge 1\)</span>, a rational <span class="math inline">\(\rho &gt;
+0\)</span>, <span class="math inline">\(\varepsilon &gt; 0\)</span>, a
+finite set <span class="math inline">\(I\)</span> and numbers <span
+class="math inline">\(\beta_i \ge 0\)</span>, <span
+class="math inline">\(i \in I\)</span>, be given. There is <span
+class="math inline">\(h_0\)</span> such that, for every finite set <span
+class="math inline">\(\mathcal V\)</span> with <span
+class="math inline">\(\#\mathcal V \le s_0\)</span>, all <span
+class="math inline">\(F_i \in \bar{\mathbb{Z}}_\ell[X_j : j \in \mathcal
+V]\)</span> and all <span class="math inline">\(x_i \in
+\bar{\mathbb{Z}}_\ell^\mathcal V\)</span> satisfying <span
+class="math inline">\(\operatorname{val}(x_{ij}) \ge \rho\)</span> for
+every <span class="math inline">\(i, j\)</span> and <span
+class="math inline">\(\operatorname{val}(F_i(x_i)) \le \beta_i\)</span>
+for every <span class="math inline">\(i\)</span>, some <span
+class="math inline">\(\zeta_j\)</span> with <span
+class="math inline">\(\zeta_j^{\ell^{h_0}} = 1\)</span> and <span
+class="math inline">\(\operatorname{val}(\zeta_j - 1) \le
+\rho/m\)</span> satisfy <span
+class="math display">\[\operatorname{val}\bigl(F_i((\zeta_j^n -
+1)_j)\bigr) \le \operatorname{val}\bigl(F_i(x_i)\bigr) + \varepsilon
+\qquad (i \in I,\ 1 \le n \le m).\]</span></em></p>
+</div>
+<p>The exercises derive Theorem <a href="#thm:roots"
+data-reference-type="ref" data-reference="thm:roots">86.2.1</a> and
+Corollary <a href="#pr:powers" data-reference-type="ref"
+data-reference="pr:powers">86.2.2</a> from the stated prerequisites and the
+divergence of the harmonic series. Chapter <a href="20261126T060600--lengths-as-values-of-polynomials__workbook.html#chap"
+data-reference-type="ref" data-reference="w2-chap">87</a> states
+the polynomial input, and Chapter <a href="20261126T031000--twists-with-few-congruences__workbook.html#chap"
+data-reference-type="ref" data-reference="tw-chap">85</a> uses
+Corollary <a href="#pr:powers" data-reference-type="ref"
+data-reference="pr:powers">86.2.2</a> to construct the twist and bound its
+powers.</p>
+<h4 id="in-the-lean-formalization.">In the Lean formalization.</h4>
+<p>In the Lean proof <span class="citation"
+data-cites="GL">[<a href="#ref-GL">GL</a>]</span>, Theorem <a
+href="#thm:roots" data-reference-type="ref"
+data-reference="thm:roots">86.2.1</a> is
+<code>New.Selmer.exists_rootsOfUnity_ellVal_eval_le_add</code>
+(<code>New/Congruences/Selmer/RootsOfUnity.lean</code>); two
+one-variable steps, used in Problems <a href="#pr:pigeon"
+data-reference-type="ref" data-reference="pr:pigeon">86.1.6</a> and <a
+href="#pr:one-variable" data-reference-type="ref"
+data-reference="pr:one-variable">86.1.10</a>, are
+<code>New.Selmer.exists_card_rootsOfValuation_mul_le</code> and
+<code>New.Selmer.exists_rootOfUnity_eval_le_gaussVal_add</code> in the
+same file; the form for powers, Corollary <a href="#pr:powers"
+data-reference-type="ref" data-reference="pr:powers">86.2.2</a>, is
+<code>New.Selmer.exists_rootsOfUnity_ellVal_eval_le</code>
+(<code>New/Congruences/Selmer/GeneralTheorem.lean</code>). The truncated
+valuation <span class="math inline">\(\max(\operatorname{val},
+0)\)</span> is <code>New.ellVal</code>. The polynomial input and the use
+of the first <span class="math inline">\(m\)</span> powers of one twist
+are <code>New.Selmer.exists_twistPolynomials</code>
+(<code>New/Congruences/Selmer/Line.lean</code>) and the proof of
+<code>New.Selmer.exists_anticyclotomic_twist</code>
+(<code>New/Congruences/Selmer/GeneralTheorem.lean</code>). The passage
+from a Stickelberger value to a bound on a Hecke <span
+class="math inline">\(L\)</span>-value ratio uses
+<code>New.Selmer.exists_stickelbergerSystem_ellVal_ratio_le</code>
+(<code>New/Congruences/Selmer/LValueSystems.lean</code>).</p>
+<h1 class="unnumbered" id="hints">Hints</h1>
+<h2 class="unnumbered" id="section-secone">Section <a href="#sec:one"
+data-reference-type="ref" data-reference="sec:one">86.1</a></h2>
+<dl>
+<dt><a href="#pr:radius" data-reference-type="ref"
+data-reference="pr:radius">86.1.1</a></dt>
+<dd>
+<p>The conjugates of <span class="math inline">\(\zeta - 1\)</span> have
+product <span class="math inline">\(\pm\Phi_{\ell^h}(1) =
+\pm\ell\)</span>.</p>
+</dd>
+<dt><a href="#pr:gauss" data-reference-type="ref"
+data-reference="pr:gauss">86.1.2</a></dt>
+<dd>
+<p>For <span class="math inline">\(\rho = 0\)</span> reduce modulo the
+maximal ideal of <span
+class="math inline">\(\bar{\mathbb{Z}}_\ell\)</span>; for <span
+class="math inline">\(\rho = \operatorname{val}(\pi)\)</span> substitute
+<span class="math inline">\(Y = \pi Z\)</span>.</p>
+</dd>
+<dt><a href="#pr:at-point" data-reference-type="ref"
+data-reference="pr:at-point">86.1.3</a></dt>
+<dd>
+<p>For (b), factor <span class="math inline">\(g\)</span> and use <span
+class="math inline">\(\operatorname{val}(y - \alpha) =
+\min(\operatorname{val}(\alpha), \rho)\)</span> when <span
+class="math inline">\(\operatorname{val}(\alpha) \ne \rho\)</span>.</p>
+</dd>
+<dt><a href="#pr:example" data-reference-type="ref"
+data-reference="pr:example">86.1.4</a></dt>
+<dd>
+<p><span class="math inline">\(g(Y) = ((1 + Y)^3 - 1)/Y\)</span>.</p>
+</dd>
+<dt><a href="#pr:few-radii" data-reference-type="ref"
+data-reference="pr:few-radii">86.1.5</a></dt>
+<dd>
+<p>By Problem <a href="#pr:radius" data-reference-type="ref"
+data-reference="pr:radius">86.1.1</a> a root lies in at most one <span
+class="math inline">\(R_{\rho_h}\)</span>; compare with Problem <a
+href="#pr:gauss" data-reference-type="ref"
+data-reference="pr:gauss">86.1.2</a>, using <span
+class="math inline">\(v_0(g) \ge 0\)</span>.</p>
+</dd>
+<dt><a href="#pr:close-to-few" data-reference-type="ref"
+data-reference="pr:close-to-few">86.1.7</a></dt>
+<dd>
+<p>The <span class="math inline">\(\zeta - 1 - \alpha\)</span> are roots
+of <span class="math inline">\((1 + \alpha + Y)^{\ell^h} - 1\)</span>;
+look at its coefficient of <span class="math inline">\(Y\)</span> and
+use Problem <a href="#pr:gauss" data-reference-type="ref"
+data-reference="pr:gauss">86.1.2</a> with <span class="math inline">\(\rho =
+1\)</span>.</p>
+</dd>
+<dt><a href="#pr:ninth" data-reference-type="ref"
+data-reference="pr:ninth">86.1.8</a></dt>
+<dd>
+<p><span class="math inline">\(\zeta_9^e - \zeta_9 =
+\zeta_9(\zeta_9^{e-1} - 1)\)</span>; Problem <a href="#pr:radius"
+data-reference-type="ref" data-reference="pr:radius">86.1.1</a>.</p>
+</dd>
+<dt><a href="#pr:average" data-reference-type="ref"
+data-reference="pr:average">86.1.9</a></dt>
+<dd>
+<p>Sum Problem <a href="#pr:close-to-few" data-reference-type="ref"
+data-reference="pr:close-to-few">86.1.7</a> over <span
+class="math inline">\(R\)</span> and average over the <span
+class="math inline">\(1/\rho_h\)</span> choices of <span
+class="math inline">\(\zeta\)</span>.</p>
+</dd>
+<dt><a href="#pr:one-variable" data-reference-type="ref"
+data-reference="pr:one-variable">86.1.10</a></dt>
+<dd>
+<p>Choose the radius by Problem <a href="#pr:pigeon"
+data-reference-type="ref" data-reference="pr:pigeon">86.1.6</a> and <span
+class="math inline">\(\zeta\)</span> by Problem <a href="#pr:average"
+data-reference-type="ref" data-reference="pr:average">86.1.9</a>.</p>
+</dd>
+<dt><a href="#pr:harmonic" data-reference-type="ref"
+data-reference="pr:harmonic">86.1.11</a></dt>
+<dd>
+<p>The harmonic series diverges.</p>
+</dd>
+<dt><a href="#pr:one-var-point" data-reference-type="ref"
+data-reference="pr:one-var-point">86.1.12</a></dt>
+<dd>
+<p>Problem <a href="#pr:at-point" data-reference-type="ref"
+data-reference="pr:at-point">86.1.3</a>(a) and the monotonicity in Problem <a
+href="#pr:gauss" data-reference-type="ref"
+data-reference="pr:gauss">86.1.2</a>.</p>
+</dd>
+</dl>
+<h2 class="unnumbered" id="section-secseveral">Section <a
+href="#sec:several" data-reference-type="ref"
+data-reference="sec:several">86.2</a></h2>
+<dl>
+<dt><a href="#pr:one-coordinate" data-reference-type="ref"
+data-reference="pr:one-coordinate">86.2.1</a></dt>
+<dd>
+<p>Apply Problem <a href="#pr:one-variable" data-reference-type="ref"
+data-reference="pr:one-variable">86.1.10</a> to the product of the
+one-variable polynomials <span class="math inline">\(g_i(Y)\)</span>
+obtained by freeing the coordinate <span
+class="math inline">\(j\)</span>; for each <span
+class="math inline">\(i\)</span> separately, use <span
+class="math inline">\(\operatorname{val}(g_i(\zeta - 1)) \ge
+v_{\rho_h}(g_i)\)</span>.</p>
+</dd>
+<dt><a href="#pr:all-coordinates" data-reference-type="ref"
+data-reference="pr:all-coordinates">86.2.2</a></dt>
+<dd>
+<p>Induction on the number of coordinates moved, with Problem <a
+href="#pr:one-coordinate" data-reference-type="ref"
+data-reference="pr:one-coordinate">86.2.1</a>, keeping the running sum at
+most <span class="math inline">\(\beta + 1\)</span>. For Theorem <a
+href="#thm:roots" data-reference-type="ref"
+data-reference="thm:roots">86.2.1</a> take <span class="math inline">\(\delta
+= \min(\varepsilon, 1)/(s_0 + 2)\)</span> and <span
+class="math inline">\(h_0\)</span> from Problem <a href="#pr:harmonic"
+data-reference-type="ref" data-reference="pr:harmonic">86.1.11</a> with <span
+class="math inline">\(\beta + 1\)</span> in place of <span
+class="math inline">\(\beta\)</span>.</p>
+</dd>
+<dt><a href="#pr:two-coordinates" data-reference-type="ref"
+data-reference="pr:two-coordinates">86.2.3</a></dt>
+<dd>
+<p>Factor <span class="math inline">\(F_1\)</span> and <span
+class="math inline">\(F_3\)</span> at the point; Problem <a
+href="#pr:radius" data-reference-type="ref"
+data-reference="pr:radius">86.1.1</a>.</p>
+</dd>
+<dt><a href="#pr:root-of-x" data-reference-type="ref"
+data-reference="pr:root-of-x">86.2.4</a></dt>
+<dd>
+<p>The roots of <span class="math inline">\((1 + Y)^n - 1 - x\)</span>
+have product <span class="math inline">\(\pm x\)</span>.</p>
+</dd>
+<dt><a href="#pr:powers-far" data-reference-type="ref"
+data-reference="pr:powers-far">86.2.5</a></dt>
+<dd>
+<p>First compare <span class="math inline">\(m\)</span> with <span
+class="math inline">\(\varphi(\ell^h)\)</span>, where <span
+class="math inline">\(\ell^h\)</span> is the order of <span
+class="math inline">\(\zeta\)</span>. What is the order of <span
+class="math inline">\(\zeta^n\)</span>?</p>
+</dd>
+<dt><a href="#pr:powers-table" data-reference-type="ref"
+data-reference="pr:powers-table">86.2.6</a></dt>
+<dd>
+<p><span class="math inline">\(\Phi_3(y) = (y^3 - 1)/(y - 1)\)</span>;
+Problem <a href="#pr:radius" data-reference-type="ref"
+data-reference="pr:radius">86.1.1</a>.</p>
+</dd>
+<dt>Corollary <a href="#pr:powers" data-reference-type="ref"
+data-reference="pr:powers">86.2.2</a></dt>
+<dd>
+<p>Theorem <a href="#thm:roots" data-reference-type="ref"
+data-reference="thm:roots">86.2.1</a> with radius <span
+class="math inline">\(\rho/m\)</span>, after the substitution <span
+class="math inline">\(X_j \mapsto (1 + X_j)^n - 1\)</span>; Problem <a
+href="#pr:root-of-x" data-reference-type="ref"
+data-reference="pr:root-of-x">86.2.4</a>.</p>
+</dd>
+</dl>
+<h1 class="unnumbered" id="references">References</h1>
+<div class="thebibliography">
+<p id="ref-GL"><span class="bib-label">[GL]</span> L. Sernau, <em>GRH for Dirichlet <span class="math inline">\(L\)</span>-functions, in Lean 4</em>, a shorter rewriting of the Lean proof, text by Claude, <a href="https://github.com/lsernau/grh-lean" class="uri">https://github.com/lsernau/grh-lean</a>, commit <code>72fead1</code>, readable edition <code>grh/</code>.</p>
+<p id="ref-Ne"><span class="bib-label">[Ne]</span> J. Neukirch, <em>Algebraic Number Theory</em>, Grundlehren Math. Wiss. 322, Springer, 1999.</p>
+<p id="ref-Wa"><span class="bib-label">[Wa]</span> L. C. Washington, <em>Introduction to Cyclotomic Fields</em>, 2nd ed., Grad. Texts in Math. 83, Springer, 1997.</p>
+</div>
+<script>
+document.querySelectorAll(".toggle-proof").forEach(function(toggle) {
+  toggle.addEventListener("click", function(e) {
+    e.preventDefault();
+    const content = this.nextElementSibling;
+    const em = this.querySelector('em');
+    if (window.getComputedStyle(content).display === "none") {
+      content.style.display = "inline";
+      em.textContent = em.dataset.defaultText;
+    } else {
+      content.style.display = "none";
+      em.textContent = em.dataset.foldedText;
+    }
+  });
+});
+</script>
+<script>
+document.querySelector("#toggle-all-proofs")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  const proofs = document.querySelectorAll(".proof-content");
+  proofs.forEach(function(proof) {
+    const proofToggle = proof.previousElementSibling;
+    if (window.getComputedStyle(proof).display === "none") {
+      proof.style.display = "inline";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.defaultText}</em>`;
+    } else {
+      proof.style.display = "none";
+      proofToggle.innerHTML = `<em>${proofToggle.dataset.foldedText}</em>`;
+    }
+  });
+});
+</script>
+
+<script src="comments.js"
+        data-repo="ultronozm/grh-workbook"
+        data-repo-id="R_kgDOV7yRcw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOV7yRc84DL9oo"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async></script>
+</body>
+</html>
