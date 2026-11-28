@@ -37,7 +37,6 @@
 \newcommand{\hdir}{h_{\mathrm{dir}}}
 \newcommand{\hgt}{\operatorname{ht}}
 \newcommand{\Gram}{\operatorname{Gram}}
-\newcommand{\lean}[1]{\texttt{#1}}
 \setlength{\emergencystretch}{3em}
 
 \title{The main inequality}
@@ -145,6 +144,8 @@ Two further inputs.  By the prime number theorem in progressions \cite{MV}, for 
 Let \(\varepsilon > 0\).  For all large integers \(x\) and every real \(y\) with \(\log y \ge x^{\varepsilon/12}\), one has \(\lvert R_{q_0}(y) \rvert \le x^{-2}\) and \(\lvert R_1(y) \rvert \le x^{-2}\).
 \end{problem}
 
+The three public versions of the Lean proof treat the cutoff \(x_1\) differently.  The readable edition, followed here, bounds both absolute values at the prescribed \(x_1\) by the prime number theorem for a fixed modulus.  The compact edition needs only an upper bound for the difference \(R_{q_0}(x_1) - (\#\Phi_a/\#\Phi_b) R_1(x_1)\) of Problem~\ref{gf-pr:solve}, at one \(x_1\).  For every large \(t\) and every ratio in \([0,e^t]\), it finds \(\log x_1 \in [t,t^2]\) at which the difference is at most \(e^{-t}\), and takes \(t = 10^6\log x\).  The two transforms continue across \(\operatorname{Re} s = 1\), since Dirichlet \(L\)-functions do not vanish there, and Cauchy's estimate bounds their high moments.  The level \(N\) is then chosen after the cutoff; the construction of the data still uses primes in a progression.  The code as first released~\cite{Rel} instead assumes a bound on arbitrarily late windows \([Y,Y^{1+\delta}]\), and compares high derivatives of the transform with the contributions of its poles.
+
 \begin{problem}\label{pr:integers}
 Let \(0 < \varepsilon < 1/100\).  For all large integers \(x\), \(R_{q_0}(x) \le (64\varphi(q_0) + 3)\, x^{-1/2 + 6\varepsilon}\).
 \end{problem}
@@ -183,7 +184,9 @@ Every zero \(s\) of a Dirichlet \(L\)-function with \(0 < \operatorname{Re} s < 
 
 Theorem~\ref{thm:grh} is the half-plane form of the generalized Riemann hypothesis for Dirichlet \(L\)-functions.  Thus Theorems~A, B and~C give the main inequality, from which the one-sided bound and the criterion of Chapter~\ref{zr-chap} yield Theorem~\ref{thm:grh}.
 
-\paragraph{In the Lean formalization.}  In the Lean proof~\cite{GL}, Theorem~\ref{thm:main} is \lean{New.star\_inequality}, in \lean{grh/src/New/Reduction/MainInequality.lean}; Problem~\ref{pr:Rx}, Theorem~\ref{thm:one-sided} and Theorem~\ref{thm:grh} are \lean{New.Data.primeRemainder\_le}, \lean{New.eventually\_primeRemainder\_le\_rpow} and \lean{New.grh}, in \lean{grh/src/New/Reduction/OneSidedBound.lean}.  Hadamard's inequality for the covolume is \lean{New.TwistedLattice.covolumeLe\_of\_normSqAt\_le}, and Problems~\ref{pr:family}--\ref{pr:errors} follow the proof of \lean{New.star\_inequality}.  Problems~\ref{pr:PNT} and~\ref{pr:integers} are \lean{New.eventually\_abs\_primeRemainder\_exp\_le} and \lean{New.eventually\_primeRemainder\_natCast\_le}.  For the first bound of Problem~\ref{pr:floor} the proof uses \lean{New.primeRemainder\_sub\_primeRemainder\_floor\_le}, which gives \(26/y\) in place of \(3/y\), for every prime \(d\) and every \(q \ge 1\); the sharper bound is an exercise here.  The second bound is \lean{New.natFloor\_rpow\_le\_two\_mul\_rpow}.  Problem~\ref{pr:line} is \lean{New.zeros\_on\_line}, in \lean{grh/src/New/Main.lean}, applied to \lean{New.grh}.
+{\raggedright
+\paragraph{In the Lean formalization.}  In the Lean proof~\cite{GL}, Theorem~\ref{thm:main} is \path{New.star_inequality}, in \path{grh/src/New/Reduction/MainInequality.lean}; Problem~\ref{pr:Rx}, Theorem~\ref{thm:one-sided} and Theorem~\ref{thm:grh} are \path{New.Data.primeRemainder_le}, \path{New.eventually_primeRemainder_le_rpow} and \path{New.grh}, in \path{grh/src/New/Reduction/OneSidedBound.lean}.  Hadamard's inequality for the covolume is \path{New.TwistedLattice.covolumeLe_of_normSqAt_le}, and Problems~\ref{pr:family}--\ref{pr:errors} follow the proof of \path{New.star_inequality}.  Problems~\ref{pr:PNT} and~\ref{pr:integers} are \path{New.eventually_abs_primeRemainder_exp_le} and \path{New.eventually_primeRemainder_natCast_le}.  For the first bound of Problem~\ref{pr:floor} the proof uses \path{New.primeRemainder_sub_primeRemainder_floor_le}, which gives \(26/y\) in place of \(3/y\), for every prime \(d\) and every \(q \ge 1\); the sharper bound is an exercise here.  The second bound is \path{New.natFloor_rpow_le_two_mul_rpow}.  Problem~\ref{pr:line} is \path{New.zeros_on_line}, in \path{grh/src/New/Main.lean}, applied to \path{New.grh}.
+The fixed-modulus estimate used in Problem~\ref{pr:PNT} is \path{New.eventually_abs_primeRemainder_le} in \path{grh/src/New/Reduction/Zeros/PrimeNumberTheorem.lean}.  In \path{grh-compact/src/}, \path{IsPolar.eventually_moment_le} gives \path{IsPolar.exists_window_sub_mul_le} in \path{New/Endgame/OneSidedCriterion.lean}, applied in \path{eventually_primeError_le_rpow} in \path{New/Main.lean}.  The data and level are \path{Data} in \path{New/Data/AdmissibleData.lean} and \path{Data.N} in \path{New/Seesaw/IndexTypes.lean}.  The construction \path{exists_data} in \path{New/Data/DataExist.lean} uses \path{exists_prime_modEq_one_log_mem} in \path{Lib/Analytic/Primes/AuxiliaryPrimes.lean}.  In the release archive, \path{Deduction.lemmaL} and \path{Deduction.landau_window_key} are in \path{lemmaL.lean} and \path{landauWindow.lean} under \path{src/Development/AutomorphicArithmetic/DedekindLFunctions/LandauTheorems/}.\par}
 
 \section*{Hints}
 
@@ -221,6 +224,7 @@ Theorem~\ref{thm:grh} is the half-plane form of the generalized Riemann hypothes
 \bibitem[HJ]{HJ} R.~A.~Horn and C.~R.~Johnson, \emph{Matrix Analysis}, 2nd ed., Cambridge Univ.\ Press, 2013.
 \bibitem[MV]{MV} H.~L.~Montgomery and R.~C.~Vaughan, \emph{Multiplicative Number Theory~I. Classical Theory}, Cambridge Stud.\ Adv.\ Math.\ \textbf{97}, Cambridge University Press, 2007.
 \bibitem[Nas]{Nas} H.~Nashida, \emph{What does the main inequality \((\star)\) assert?}, Zenodo, November 27, 2026, \url{https://doi.org/10.5281/zenodo.24575852}.
+\bibitem[Rel]{Rel} \emph{The Lean code as first released}, archive linked in footnote~1 of \url{https://alpo.ge/remark.pdf}.
 \bibitem[RS]{RS} J.~B.~Rosser and L.~Schoenfeld, \emph{Approximate formulas for some functions of prime numbers}, Illinois J.\ Math.\ \textbf{6} (1962), 64--94.
 \end{thebibliography}
 }

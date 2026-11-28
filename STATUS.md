@@ -16,6 +16,8 @@ Terms are now defined before use: *adelic frame*, *framed space* and *standard l
 
 Additions suggested by M. O. Rubinstein's outline of the shortened proof: in the Overview, the role of the second cutoff, the factor of two for squared lengths, why class 1 is used, the completion to a basis before the product formula, and a paragraph on how the Parts group; a problem on Frobenius and the partner place in *The places, the weights and the remainder*; a two-row diagram in *The seesaw identity*; a counterexample after the Cauchy–Schwarz problem in *Size against divisibility*; and two remarks in *The data* on where the window for $\log N$ and the bound $p \ge 13$ are used.
 
+Later the same day: the Overview gains a table of the identities between lifts, the passage from the half-plane to the critical line, the two uses of twists and a first-pass reading path; *The main inequality* compares how the readable edition, the compact edition and the code as first released treat the second cutoff; *From zeros to a one-sided bound* has an optional problem on the Taylor-series argument behind Landau's theorem.
+
 On the site, the button for feedback on a whole sheet is now at the end of the sheet, and the sync panel can show the sync code again.
 
 ### 27 November 2026. The main inequality in mean form
