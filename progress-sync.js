@@ -172,6 +172,7 @@ export function startSync({endpoint, storage, isProgressKey, stampPrefix, option
   const connected = find("[data-sync-connected]");
   const shownCode = find("[data-sync-code]");
   const copy = find("[data-sync-copy]");
+  const reveal = find("[data-sync-reveal]");
   const stop = find("[data-sync-stop]");
   const remove = find("[data-sync-delete]");
   const status = find("[data-sync-status]");
@@ -189,6 +190,7 @@ export function startSync({endpoint, storage, isProgressKey, stampPrefix, option
     setup.hidden = Boolean(code);
     connected.hidden = !code;
     shownCode.hidden = !code || visibleCode !== code;
+    if (reveal) reveal.textContent = shownCode.hidden ? "Show sync code" : "Hide sync code";
     status.textContent = notice || (code && (syncedAt ? `Synced · ${savedAgo(syncedAt)}` : "Waiting to sync")) || "";
     for (const control of [create, input, form.elements.submitCode, stop, remove]) control.disabled = working;
   }
@@ -300,6 +302,14 @@ export function startSync({endpoint, storage, isProgressKey, stampPrefix, option
         if (hasChanges(snapshot(), local)) changed();
       }, error => { notice = error instanceof SyncError ? error.message : "Could not create a sync code. Try again."; })
         .then(() => { if (!shownCode.hidden) copy.focus(); });
+    });
+    reveal?.addEventListener("click", () => {
+      const code = getCode();
+      if (!code) return;
+      visibleCode = visibleCode === code ? "" : code;
+      shownCode.querySelector("code").textContent = visibleCode;
+      copy.textContent = "Copy";
+      show();
     });
     form.addEventListener("submit", event => {
       event.preventDefault();
