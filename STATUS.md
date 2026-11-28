@@ -10,6 +10,14 @@ Proved here in general are the deductions: the theorem from A, B and C; Theorem 
 
 ## What changed
 
+### 28 November 2026. Terminology, definitions and Rubinstein's outline
+
+Terms are now defined before use: *adelic frame*, *framed space* and *standard lattice* in *Spaces, forms and twists*, and the spaces $Y_j$ in *The data*.  Several overloaded words were replaced: the Bessel sense of "frame" is now *Bessel tuple* and *Bessel pairings*; "cut" in Part VII is *Bessel truncation*; "gain" in Part VII is *congruence saving*; "cell" in *Turns and the auxiliary forms* is *grid square*; "unit of loss" is *local loss allowance*; "defect" in Part VIII is *exponent defect*.  Part VI is now titled *Data, spaces and the main inequality*.  No labels, tags or file names changed.
+
+Additions suggested by M. O. Rubinstein's outline of the shortened proof: in the Overview, the role of the second cutoff, the factor of two for squared lengths, why class 1 is used, the completion to a basis before the product formula, and a paragraph on how the Parts group; a problem on Frobenius and the partner place in *The places, the weights and the remainder*; a two-row diagram in *The seesaw identity*; a counterexample after the Cauchy–Schwarz problem in *Size against divisibility*; and two remarks in *The data* on where the window for $\log N$ and the bound $p \ge 13$ are used.
+
+On the site, the button for feedback on a whole sheet is now at the end of the sheet, and the sync panel can show the sync code again.
+
 ### 27 November 2026. The main inequality in mean form
 
 Two new problems: the remainder as a tail integral (Chapter 1) and the mean form of the main inequality, which shows the saving $1/m$ and the origin of the sixth logarithm (Chapter 3).  The existence theorem of *The data* now states only the three bounds used later, and its scale problem gives the number of decimal digits of $x$.  *The main inequality* compares the inequality with the one in the Lean code as first released, citing H. Nashida's note, and no longer repeats a deduction of Chapter 3.  Chapters 69 and 71 each gain a short explanation suggested by K. Jin's translation.  The Overview states Theorem C for all conjugates and explains the role of the term $H$.
