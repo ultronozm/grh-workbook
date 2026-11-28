@@ -10,6 +10,10 @@ Proved here in general are the deductions: the theorem from A, B and C; Theorem 
 
 ## What changed
 
+### 28 November 2026. The opening and the Lean sources
+
+The opening of the index is shorter and links the Lean code maintained by the Lean community, whose `main` branch has been based since 25 November on the rewriting that the sheets follow.  The Sources list says so, and describes that rewriting as its repository does.
+
 ### 28 November 2026. Terminology, definitions and Rubinstein's outline
 
 Terms are now defined before use: *adelic frame*, *framed space* and *standard lattice* in *Spaces, forms and twists*, and the spaces $Y_j$ in *The data*.  Several overloaded words were replaced: the Bessel sense of "frame" is now *Bessel tuple* and *Bessel pairings*; "cut" in Part VII is *Bessel truncation*; "gain" in Part VII is *congruence saving*; "cell" in *Turns and the auxiliary forms* is *grid square*; "unit of loss" is *local loss allowance*; "defect" in Part VIII is *exponent defect*.  Part VI is now titled *Data, spaces and the main inequality*.  No labels, tags or file names changed.
